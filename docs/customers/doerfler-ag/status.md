@@ -38,3 +38,13 @@
 - **Top 5 TBD:** (1) Logo file SVG/PNG, (2) brand color hex, (3) 2 Kundenzitate, (4) service area confirmation, (5) case notification email confirmation.
 - **Blocker:** Items 1–3 above block Demo build.
 - **Next:** Founder confirms TBD items (especially logo, color, reviews) → Web Agent starts Delivery (Phase A Demo).
+
+### 2026-02-18 | Web Agent | Phase A Demo Built
+- **Done:** Built full landing page at `/doerfler-ag` with all 8 mandatory sections (Hero, Services, Notfall CTA, Process, Proof, Gallery, Über uns, Service Area, Kontakt).
+- **Theme:** Classic Premium palette (Assumption: #1a2e44 navy + #c8965a copper). Wordmark logo "Dörfler AG" (Demo).
+- **Content:** All copy from verified facts (company history, 6 services, Suissetec, partner brands). Notfall reachability stated per verified team page.
+- **Images:** Stock via Unsplash URL. Footer note: "Bilder exemplarisch (Demo)".
+- **Build:** `npm run build` PASS, `npm run lint` PASS. Route: `/doerfler-ag` (static).
+- **Evidence:** web_demo_evidence.md — 25/32 QA gate items passed, 7 deferred (wizard, case creation).
+- **Assumptions:** Palette, slogan, service area — all labeled in footer for founder review.
+- **Next:** Deploy to Vercel preview → share with founder → confirm assumptions → Phase B.
