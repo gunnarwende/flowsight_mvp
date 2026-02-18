@@ -31,3 +31,10 @@
 - **Includes:** Example answers for every field (Sanitär/Heizung context).
 - **Derived from:** INPUTS_REQUIRED.md minimum-viable tier (Web Agent discovery).
 - **Next:** Founder fills out questionnaire + provides logo/photos if available → Web Agent starts delivery.
+
+### 2026-02-18 | Head Ops Agent | AutoFill from Website + Pipeline SSOT
+- **Done:** Fetched doerflerag.ch (homepage, angebot, team, firmengeschichte, kontakt, galleries, links). Created FACTS_VERIFIED.md with Verified/Assumption/TBD labels. Created ONBOARDING_QUESTIONNAIRE.autofill.md (6/12 Pflichtfelder filled, 3 Assumptions, 3 TBD). Updated INPUTS_REQUIRED.md with "TBD ONLY" summary. Created customer_modernization_pipeline.md (Phase A/B model).
+- **Key findings:** Company founded 1926 (~100 years, 3 generations). 7 service areas verified. Address/phone/email confirmed. Suissetec member. Photo galleries exist. No reviews on site, no Notdienst explicitly advertised, no clear brand palette.
+- **Top 5 TBD:** (1) Logo file SVG/PNG, (2) brand color hex, (3) 2 Kundenzitate, (4) service area confirmation, (5) case notification email confirmation.
+- **Blocker:** Items 1–3 above block Demo build.
+- **Next:** Founder confirms TBD items (especially logo, color, reviews) → Web Agent starts Delivery (Phase A Demo).

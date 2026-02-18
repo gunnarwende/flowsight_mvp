@@ -28,8 +28,13 @@
 - Contracts: docs/architecture/contracts/
 
 ## Next 5 Steps
-1) SSOT Backbone: STATUS + Contracts + Env Vars + Agent Briefs (Welle 1)
-2) Supabase SSOT Schema: tenants/cases + constraints (Welle 2, später)
-3) Plumbing: Wizard Submit -> Case -> Email + Retell Webhook -> Case -> Email (Welle 2, später)
-4) Website/Wizard UX polish (Web Agent, später)
+1) SSOT Backbone: STATUS + Contracts + Env Vars + Agent Briefs (Welle 1) ✓
+2) doerfler-ag: Founder confirms TBD items → Web Agent Demo Delivery (Phase A)
+3) Supabase SSOT Schema: tenants/cases + constraints (Welle 2, später)
+4) Plumbing: Wizard Submit -> Case -> Email + Retell Webhook -> Case -> Email (Welle 2, später)
 5) Voice Routing aktivieren sobald CH Nummer vorhanden (Voice Agent, später)
+
+## Recent Updates
+- 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
+- 2026-02-18 | Head Ops | doerfler-ag auto-fill completed: 6/12 fields filled from website, 3 TBD blockers remain (logo, color, reviews)
+- Next: Founder resolves TBD → Web Agent starts Phase A Demo Delivery

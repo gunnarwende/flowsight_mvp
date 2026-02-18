@@ -1,12 +1,39 @@
 # Inputs Required: Dörfler AG
 
-**Date:** 2026-02-18
-**Owner:** Web Agent
+**Date:** 2026-02-18 (updated)
+**Owner:** Web Agent / Head Ops Agent
 **Purpose:** Concrete checklist of what we need from the customer to build the website.
 
 ---
 
-## Minimum Viable Inputs (to ship MVP)
+## TBD ONLY (after AutoFill — 2026-02-18)
+
+Website scrape + Google Maps reference resolved most inputs. Only these remain:
+
+| # | Item | Why still needed | Priority |
+|---|---|---|---|
+| 1 | **Logo file (SVG or PNG)** | Exists on old site but not exportable as vector/high-res. Need founder to provide. | **Blocker** |
+| 2 | **Primary brand color (hex)** | Old website has no clear modern palette. Extract from logo or founder picks. | **Blocker** |
+| 3 | **2 Kundenzitate** | No testimonials on website. Google Reviews could help — founder to provide or approve. | **Blocker** |
+| 4 | **Service area confirmation** | Assumed "Bezirk Horgen / linkes Zürichseeufer" — founder must confirm actual coverage. | High |
+| 5 | **Case notification email** | Assumed info@doerflerag.ch — founder must confirm this is where cases should go. | High |
+| 6 | **Notdienst policy** | Website says "reachable on weekends/holidays" but no explicit 24h claim. Founder to clarify. | High |
+| 7 | **Slogan approval** | Proposed "Ihr Spezialist seit 1926 — Sanitär & Heizung" — founder to confirm or adjust. | Medium |
+| 8 | **Absendername für E-Mails** | Proposed "FlowSight für Dörfler AG" — founder to confirm. | Medium |
+| 9 | **Google Maps/Reviews link** | Old Google+ link is dead. Need current GBP URL for proof pill. | Medium |
+| 10 | **Real photos for Phase B** | Old site has small gallery images. For production: team photo, 3–5 work photos. | Phase B |
+
+**Items 1–3 are blockers.** Items 4–6 are high priority. Items 7–10 can be resolved during demo review.
+
+**Already resolved by AutoFill:** Company name, address, phone, fax, email, 7 service categories, founding year (1926 / ~100 years), Suissetec membership, company history, partner brands, existing gallery structure.
+
+See: `ONBOARDING_QUESTIONNAIRE.autofill.md` and `FACTS_VERIFIED.md` for full details.
+
+---
+
+## Full Checklist (original, for reference)
+
+### Minimum Viable Inputs (to ship MVP)
 
 These are required to launch. Without them, delivery is blocked.
 
