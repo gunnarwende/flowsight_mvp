@@ -17,7 +17,8 @@
 - Repo Layout: src/web (Next.js App Router) vorhanden
 - Sentry Configs vorhanden (sentry.*.config.ts + instrumentation*.ts)
 - Keine API routes (route.ts) bisher vorhanden
-- Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema applied (tenants, cases, tenant_numbers + RLS). Anon/Service-Keys konfiguriert.
+- Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema applied (tenants, cases, tenant_numbers + RLS). Keys in .env.local + Vercel Env.
+- Resend: API Key + MAIL_FROM/REPLY_TO/SUBJECT_PREFIX konfiguriert (.env.local + Vercel Env).
 - Retell Webhook URL gesetzt auf https://flowsight-mvp.vercel.app/api/retell/webhook (Endpoint wird später implementiert)
 - Twilio CH Nummer: gekauft und konfiguriert (Verified: .env.local). SIP Trunk konfiguriert.
 - doerfler-ag Phase A Demo live unter /doerfler-ag
@@ -43,5 +44,5 @@
 - Next: Deploy Vercel preview → founder reviews demo → confirm palette/slogan/area → Phase B
 - 2026-02-19 | Head Ops | WELLE 2A: Env audit completed (3 undocumented vars found + added). Supabase schema migration created (tenants, cases, tenant_numbers + RLS). Runtime bindings documented. Twilio CH number confirmed purchased.
 - Next: Copy Supabase Anon/Service keys to .env.local + Vercel → Supabase client lib → API routes (Welle 2B)
-- 2026-02-19 | Head Ops | WELLE 2A FINALIZE: Schema migration applied to Supabase (supabase db push). Tables tenants, cases, tenant_numbers live. Supabase keys now configured in .env.local. Env audit updated.
+- 2026-02-19 | Head Ops | WELLE 2A FINALIZE: Schema applied (supabase db push). Supabase + Resend keys verified in .env.local + Vercel Env. Env audit updated. TBD remaining: RETELL_AGENT_ID, FALLBACK_TENANT_ID, supabase/.temp/ gitignore.
 - Next: Supabase client lib + API routes (Welle 2B)

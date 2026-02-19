@@ -19,10 +19,10 @@
 | `SUPABASE_URL` | No (not yet) | — | Yes | Set | Welle 2A: will be used by Supabase client |
 | `SUPABASE_ANON_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
 | `SUPABASE_SERVICE_ROLE_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
-| `RESEND_API_KEY` | No (not yet) | — | Yes | Empty | Needs Resend Dashboard |
-| `MAIL_FROM` | No (not yet) | — | Yes | Empty | |
-| `MAIL_REPLY_TO` | No (not yet) | — | Yes | Empty | |
-| `MAIL_SUBJECT_PREFIX` | No (not yet) | — | Yes | Not present | Add to .env.local when needed |
+| `RESEND_API_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 (Vercel + .env.local) |
+| `MAIL_FROM` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
+| `MAIL_REPLY_TO` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
+| `MAIL_SUBJECT_PREFIX` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
 | `RETELL_API_KEY` | No (not yet) | — | Yes | Set | |
 | `RETELL_WEBHOOK_SECRET` | No (not yet) | — | Yes | Set | |
 | `RETELL_AGENT_ID` | No (not yet) | — | Yes | Not present | Optional |
@@ -43,7 +43,8 @@ VERCEL, VERCEL_ENV, VERCEL_URL, VERCEL_TARGET_ENV, VERCEL_GIT_*, VERCEL_OIDC_TOK
 1. **Sentry DSN hardcoded** in `sentry.server.config.ts:9` and `sentry.edge.config.ts:10` — should use `process.env.SENTRY_DSN` like client config does. Low priority (DSN is public), but inconsistent.
 2. **SENTRY_ORG/PROJECT hardcoded** in `next.config.ts:12-14` — could use env vars for flexibility. Low priority.
 3. **3 undocumented vars** need adding to env_vars.md: APP_URL, NEXT_PUBLIC_APP_URL, TWILIO_SIP_TRUNK_NAME.
-4. ~~**Supabase keys empty**~~ — RESOLVED 2026-02-19. Keys now configured in .env.local. Still need adding to Vercel Env for production.
+4. ~~**Supabase keys empty**~~ — RESOLVED 2026-02-19. Keys configured in .env.local + Vercel Env.
+5. ~~**Resend keys empty**~~ — RESOLVED 2026-02-19. RESEND_API_KEY, MAIL_FROM, MAIL_REPLY_TO, MAIL_SUBJECT_PREFIX configured in .env.local + Vercel Env.
 
 ## RLS Decision (MVP)
 
