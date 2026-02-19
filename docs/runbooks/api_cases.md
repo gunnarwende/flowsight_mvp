@@ -25,7 +25,9 @@ Content-Type: `application/json`
 - `photo_url`: string URL
 - `raw_payload`: JSON object
 
-## Curl Example (no PII)
+## Curl Examples (no PII)
+
+### Using canonical fields
 
 ```bash
 curl -X POST http://localhost:3000/api/cases \
@@ -40,6 +42,24 @@ curl -X POST http://localhost:3000/api/cases \
     "description": "Test case from curl."
   }'
 ```
+
+### Using shorthand aliases (phone, email, message)
+
+```bash
+curl -X POST http://localhost:3000/api/cases \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "wizard",
+    "phone": "+41790000000",
+    "plz": "8942",
+    "city": "Oberrieden",
+    "category": "Sanitär",
+    "urgency": "normal",
+    "message": "Test case using aliases."
+  }'
+```
+
+Aliases are normalized server-side before validation (see case_contract.md → API Input Normalization).
 
 ## Responses
 

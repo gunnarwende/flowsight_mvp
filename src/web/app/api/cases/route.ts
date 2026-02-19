@@ -27,6 +27,27 @@ interface CaseBody {
   raw_payload?: Record<string, unknown>;
 }
 
+// ---------------------------------------------------------------------------
+// Input normalization (aliases → canonical fields)
+// ---------------------------------------------------------------------------
+
+function normalizeAliases(raw: Record<string, unknown>): Record<string, unknown> {
+  const b = { ...raw };
+
+  // phone / email → contact_phone / contact_email
+  if (!b.contact_phone && b.phone) b.contact_phone = b.phone;
+  if (!b.contact_email && b.email) b.contact_email = b.email;
+
+  // message → description
+  if (!b.description && b.message) b.description = b.message;
+
+  return b;
+}
+
+// ---------------------------------------------------------------------------
+// Validation (runs AFTER normalization)
+// ---------------------------------------------------------------------------
+
 function validateBody(
   body: unknown
 ): { ok: true; data: CaseBody } | { ok: false; error: string } {
@@ -34,7 +55,7 @@ function validateBody(
     return { ok: false, error: "Request body must be a JSON object." };
   }
 
-  const b = body as Record<string, unknown>;
+  const b = normalizeAliases(body as Record<string, unknown>);
 
   // source
   if (!VALID_SOURCES.includes(b.source as CaseSource)) {
@@ -50,7 +71,7 @@ function validateBody(
   if (!hasPhone && !hasEmail) {
     return {
       ok: false,
-      error: "At least one of contact_phone or contact_email is required.",
+      error: "At least one of contact_phone/phone or contact_email/email is required.",
     };
   }
 

@@ -48,3 +48,5 @@
 - Next: Supabase client lib + API routes (Welle 2B)
 - 2026-02-19 | Head Ops | WELLE 2B: Supabase client lib (server + anon), POST /api/cases route, Resend email notification (fire-and-forget), Sentry tags on all error paths. Seed script for default tenant created. Build + lint pass.
 - Next: Founder seeds tenant + sets FALLBACK_TENANT_ID → smoke test → Wizard frontend (Welle 3)
+- 2026-02-19 | Head Ops | W2B PATCH: /api/cases now accepts shorthand aliases (phone→contact_phone, email→contact_email, message→description). Contract canonical fields unchanged. Regression test (6 checks) pass. ESLint config: scripts/ excluded.
+- Next: Founder smoke test with curl → Wizard frontend (Welle 3)

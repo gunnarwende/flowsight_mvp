@@ -13,6 +13,18 @@ Diese Datei definiert die SSOT-Form des Case-Objekts. Alle Producer (Wizard/Voic
 - urgency ("notfall" | "dringend" | "normal")
 - description (string)
 
+## API Input Normalization
+
+The POST /api/cases endpoint accepts these shorthand aliases. They are normalized to canonical fields before validation; the DB schema is unchanged.
+
+| Alias | Canonical Field |
+|---|---|
+| `phone` | `contact_phone` |
+| `email` | `contact_email` |
+| `message` | `description` |
+
+Canonical fields always take priority — if both `phone` and `contact_phone` are sent, `contact_phone` wins.
+
 ## Optional Fields
 - photo_url (string URL)
 - raw_payload (json) — optional, nur für Debugging (sparsam)
