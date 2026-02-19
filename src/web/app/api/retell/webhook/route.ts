@@ -2,17 +2,19 @@ import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { Retell } from "retell-sdk";
 
-// Webhook security (Retell spec):
-// - Header: x-retell-signature
-// - Secret: RETELL_API_KEY (webhook-badged key in Retell dashboard)
-// We verify using the raw request body text (avoid JSON re-serialization mismatches).
+type RetellCall = {
+  call_id?: string;
+};
 
 type RetellWebhookPayload = {
   event?: string;
-  call?: {
-    call_id?: string;
-  };
+  call?: RetellCall;
 };
+
+function keysOf(value: unknown): string[] {
+  if (!value || typeof value !== "object") return [];
+  return Object.keys(value as Record<string, unknown>);
+}
 
 export async function POST(req: Request) {
   Sentry.setTag("area", "voice");
@@ -33,20 +35,17 @@ export async function POST(req: Request) {
 
   const rawBody = await req.text();
 
-  let verified: boolean;
   try {
-    verified = await Retell.verify(rawBody, apiKey, signature);
+    const verified = await Retell.verify(rawBody, apiKey, signature);
+    if (!verified) {
+      Sentry.captureMessage("Invalid Retell webhook signature", "warning");
+      return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
+    }
   } catch (e) {
     Sentry.captureException(e);
     return NextResponse.json({ error: "signature_verification_error" }, { status: 401 });
   }
 
-  if (!verified) {
-    Sentry.captureMessage("Invalid Retell webhook signature", "warning");
-    return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
-  }
-
-  // Parse payload only after verification
   let payload: RetellWebhookPayload;
   try {
     payload = JSON.parse(rawBody) as RetellWebhookPayload;
@@ -55,9 +54,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
+  // Evidence-only (no PII): log shape (keys only)
+  Sentry.addBreadcrumb({
+    category: "retell.webhook",
+    level: "info",
+    message: "payload_keys",
+    data: {
+      topKeys: keysOf(payload),
+      callKeys: keysOf(payload.call),
+    },
+  });
+
   const retellCallId = payload.call?.call_id;
   if (retellCallId) Sentry.setTag("retell_call_id", retellCallId);
 
-  // Acknowledge fast. Next: tenant resolve + event->case mapping.
+  // Next steps (W2C): tenant resolve + event->case mapping + email attempt
   return new NextResponse(null, { status: 204 });
 }
