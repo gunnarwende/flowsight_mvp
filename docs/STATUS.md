@@ -15,11 +15,12 @@
 
 ## Aktueller Stand (Kurz)
 - Repo Layout: src/web (Next.js App Router) vorhanden
-- Sentry Configs vorhanden (src/web/sentry.*.config.ts + instrumentation*.ts)
+- Sentry Configs vorhanden (sentry.*.config.ts + instrumentation*.ts)
 - Keine API routes (route.ts) bisher vorhanden
-- Supabase Ordner/Migrations noch nicht vorhanden
-- Retell Webhook URL ist gesetzt auf https://flowsight-mvp.vercel.app/api/retell/webhook (Endpoint wird später implementiert)
-- Twilio CH Regulatory Bundle: pending approval → Ziel: CH Nummer kaufen → Voice Routing
+- Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema-Migration erstellt, Anon/Service-Keys noch leer
+- Retell Webhook URL gesetzt auf https://flowsight-mvp.vercel.app/api/retell/webhook (Endpoint wird später implementiert)
+- Twilio CH Nummer: gekauft und konfiguriert (Verified: .env.local). SIP Trunk konfiguriert.
+- doerfler-ag Phase A Demo live unter /doerfler-ag
 
 ## SSOT Dateien
 - Company SSOT: docs/STATUS.md
@@ -40,3 +41,5 @@
 - Next: Founder resolves TBD → Web Agent starts Phase A Demo Delivery
 - 2026-02-18 | Web Agent | doerfler-ag Phase A demo built at `/doerfler-ag` — all 8 sections, verified content, stock images, Classic Premium palette. Build + lint pass.
 - Next: Deploy Vercel preview → founder reviews demo → confirm palette/slogan/area → Phase B
+- 2026-02-19 | Head Ops | WELLE 2A: Env audit completed (3 undocumented vars found + added). Supabase schema migration created (tenants, cases, tenant_numbers + RLS). Runtime bindings documented. Twilio CH number confirmed purchased.
+- Next: Copy Supabase Anon/Service keys to .env.local + Vercel → Supabase client lib → API routes (Welle 2B)

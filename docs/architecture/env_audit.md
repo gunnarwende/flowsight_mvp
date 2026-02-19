@@ -1,0 +1,54 @@
+# Environment Variables Audit
+
+**Date:** 2026-02-19
+**Owner:** Head Ops Agent
+**Scope:** src/web code scan + .env.local status (no values!)
+
+## Code Usage Matrix
+
+| Variable | Used in Code | File:Line | Documented (env_vars.md) | Configured (.env.local) | Notes |
+|---|---|---|---|---|---|
+| `NEXT_RUNTIME` | Yes | instrumentation.ts:4,8 | No | Auto (Next.js) | Next.js internal — no action needed |
+| `SENTRY_ENVIRONMENT` | Yes | sentry.server.config.ts:8, sentry.client.config.ts:5, sentry.edge.config.ts:9 | Yes | Set | |
+| `NEXT_PUBLIC_SENTRY_DSN` | Yes | sentry.client.config.ts:4 | Yes | Set | |
+| `SENTRY_DSN` | Yes (fallback) | sentry.client.config.ts:4 | Yes | Set | |
+| `CI` | Yes | next.config.ts:17 | No | Auto (CI) | CI-only — no action needed |
+| `SENTRY_AUTH_TOKEN` | No (build plugin) | .env.sentry-build-plugin | Yes | Set | Used by @sentry/webpack-plugin at build time |
+| `SENTRY_ORG` | No (hardcoded) | next.config.ts:12 | Yes | Set | Hardcoded as "flowsight-gmbh" in next.config.ts |
+| `SENTRY_PROJECT` | No (hardcoded) | next.config.ts:14 | Yes | Set | Hardcoded as "flowsight-mvp" in next.config.ts |
+| `SUPABASE_URL` | No (not yet) | — | Yes | Set | Welle 2A: will be used by Supabase client |
+| `SUPABASE_ANON_KEY` | No (not yet) | — | Yes | Empty | Needs Supabase Dashboard |
+| `SUPABASE_SERVICE_ROLE_KEY` | No (not yet) | — | Yes | Empty | Needs Supabase Dashboard |
+| `RESEND_API_KEY` | No (not yet) | — | Yes | Empty | Needs Resend Dashboard |
+| `MAIL_FROM` | No (not yet) | — | Yes | Empty | |
+| `MAIL_REPLY_TO` | No (not yet) | — | Yes | Empty | |
+| `MAIL_SUBJECT_PREFIX` | No (not yet) | — | Yes | Not present | Add to .env.local when needed |
+| `RETELL_API_KEY` | No (not yet) | — | Yes | Set | |
+| `RETELL_WEBHOOK_SECRET` | No (not yet) | — | Yes | Set | |
+| `RETELL_AGENT_ID` | No (not yet) | — | Yes | Not present | Optional |
+| `TWILIO_ACCOUNT_SID` | No (not yet) | — | Yes | Set | |
+| `TWILIO_AUTH_TOKEN` | No (not yet) | — | Yes | Set | |
+| `TWILIO_PHONE_NUMBER` | No (not yet) | — | Yes | Set | CH number purchased and configured |
+| `FALLBACK_TENANT_ID` | No (not yet) | — | Yes | Not present | Add after seeding tenants table |
+| `APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
+| `NEXT_PUBLIC_APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
+| `TWILIO_SIP_TRUNK_NAME` | No | — | **No** | Set | Undocumented — add to env_vars.md |
+
+## Vercel Auto-Injected (no action needed)
+
+VERCEL, VERCEL_ENV, VERCEL_URL, VERCEL_TARGET_ENV, VERCEL_GIT_*, VERCEL_OIDC_TOKEN, TURBO_*, NX_DAEMON — auto-injected by Vercel. Not documented in env_vars.md (correct, these are platform vars).
+
+## Issues Found
+
+1. **Sentry DSN hardcoded** in `sentry.server.config.ts:9` and `sentry.edge.config.ts:10` — should use `process.env.SENTRY_DSN` like client config does. Low priority (DSN is public), but inconsistent.
+2. **SENTRY_ORG/PROJECT hardcoded** in `next.config.ts:12-14` — could use env vars for flexibility. Low priority.
+3. **3 undocumented vars** need adding to env_vars.md: APP_URL, NEXT_PUBLIC_APP_URL, TWILIO_SIP_TRUNK_NAME.
+4. **Supabase keys empty** — SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY need to be fetched from Supabase Dashboard and added to .env.local + Vercel Env.
+
+## RLS Decision (MVP)
+
+- Row Level Security: **ENABLED** on all tables (tenants, cases, tenant_numbers).
+- MVP access model: **service_role_key only** for all server-side operations (API routes).
+- Anon key: not used in MVP. No public read access to cases.
+- Rationale: simplest secure default. Cases contain PII (phone, email). No client-side Supabase queries needed in MVP (wizard submits via API route → server-side insert).
+- Phase B consideration: if dashboard needs client-side queries, add RLS policies per tenant.

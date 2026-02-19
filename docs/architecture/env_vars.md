@@ -35,6 +35,9 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - TWILIO_ACCOUNT_SID -> Twilio Console
 - TWILIO_AUTH_TOKEN -> Twilio Console
 - TWILIO_PHONE_NUMBER -> gekaufte CH Nummer (E.164)
+- TWILIO_SIP_TRUNK_NAME -> SIP Trunk Name für Retell-Routing
 
-## Tenant / Routing (temporär bis CH Nummer live)
-- FALLBACK_TENANT_ID -> UUID eines Default-Tenants (nur server-side)
+## App / Routing
+- APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
+- NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
+- FALLBACK_TENANT_ID -> UUID eines Default-Tenants (nur server-side, temporär bis Routing steht)
