@@ -15,6 +15,15 @@ export const metadata: Metadata = {
 const HERO_IMG =
   "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1920&q=80";
 
+/* ------------------------------------------------------------------ */
+/*  Service → Wizard category mapping (only matched services deep-link) */
+/* ------------------------------------------------------------------ */
+const SERVICE_CATEGORY_MAP: Record<string, string> = {
+  "Sanitär": "Sanitär allgemein",
+  "Heizung": "Heizung",
+  "Reparaturservice": "Sanitär allgemein",
+};
+
 const GALLERY: { label: string; url: string; alt: string }[] = [
   {
     label: "Sanitär",
@@ -178,11 +187,11 @@ export default function DoerflerAgDemo() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="#kontakt"
+                  href="/doerfler-ag/meldung"
                   className="inline-flex items-center justify-center px-8 py-4 rounded-lg text-white font-semibold text-lg transition-colors"
                   style={{ backgroundColor: theme.accentHex }}
                 >
-                  Anfrage senden
+                  Online melden
                 </a>
                 <a
                   href={theme.phoneHref}
@@ -222,29 +231,42 @@ export default function DoerflerAgDemo() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {theme.services.map((svc) => (
-                <div
-                  key={svc.name}
-                  className="p-8 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
-                >
-                  <h3
-                    className="text-xl font-semibold mb-3"
-                    style={{ color: theme.primaryHex }}
+              {theme.services.map((svc) => {
+                const cat = SERVICE_CATEGORY_MAP[svc.name];
+                const href = cat
+                  ? `/doerfler-ag/meldung?category=${encodeURIComponent(cat)}`
+                  : "/doerfler-ag/meldung";
+                return (
+                  <a
+                    key={svc.name}
+                    href={href}
+                    className="block p-8 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
                   >
-                    {svc.name}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">{svc.desc}</p>
-                </div>
-              ))}
+                    <h3
+                      className="text-xl font-semibold mb-3"
+                      style={{ color: theme.primaryHex }}
+                    >
+                      {svc.name}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">{svc.desc}</p>
+                    <p
+                      className="mt-4 text-sm font-medium"
+                      style={{ color: theme.accentHex }}
+                    >
+                      Jetzt melden &rarr;
+                    </p>
+                  </a>
+                );
+              })}
             </div>
 
             <div className="mt-12 text-center">
               <a
-                href="#kontakt"
+                href="/doerfler-ag/meldung"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-lg text-white font-semibold text-lg transition-colors"
                 style={{ backgroundColor: theme.accentHex }}
               >
-                Jetzt Anfrage stellen
+                Jetzt online melden
               </a>
             </div>
           </div>
@@ -268,14 +290,22 @@ export default function DoerflerAgDemo() {
               Quelle: doerflerag.ch (Team-Seite) — Erreichbarkeit bestätigt. Kein
               expliziter 24h-Notdienst beworben.
             </p>
-            <a
-              href={theme.phoneHref}
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-lg bg-white font-bold text-xl transition-colors"
-              style={{ color: theme.primaryHex }}
-            >
-              <PhoneIcon className="w-6 h-6" />
-              Jetzt anrufen: {theme.phone}
-            </a>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <a
+                href={theme.phoneHref}
+                className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-lg bg-white font-bold text-xl transition-colors"
+                style={{ color: theme.primaryHex }}
+              >
+                <PhoneIcon className="w-6 h-6" />
+                Jetzt anrufen: {theme.phone}
+              </a>
+              <a
+                href="/doerfler-ag/meldung"
+                className="inline-flex items-center justify-center px-10 py-5 rounded-lg border-2 border-white/30 text-white font-bold text-xl hover:bg-white/10 transition-colors"
+              >
+                Online melden
+              </a>
+            </div>
           </div>
         </section>
 
@@ -398,11 +428,11 @@ export default function DoerflerAgDemo() {
 
             <div className="mt-12 text-center">
               <a
-                href="#kontakt"
+                href="/doerfler-ag/meldung"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-lg text-white font-semibold text-lg transition-colors"
                 style={{ backgroundColor: theme.accentHex }}
               >
-                Jetzt Anfrage stellen
+                Jetzt online melden
               </a>
             </div>
           </div>
@@ -628,11 +658,11 @@ export default function DoerflerAgDemo() {
 
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <a
-                  href={`mailto:${theme.email}?subject=Anfrage%20via%20Website`}
+                  href="/doerfler-ag/meldung"
                   className="inline-flex items-center justify-center px-8 py-4 rounded-lg text-white font-semibold text-lg transition-colors"
                   style={{ backgroundColor: theme.accentHex }}
                 >
-                  Anfrage per E-Mail senden
+                  Online melden
                 </a>
                 <a
                   href={theme.phoneHref}
@@ -646,11 +676,6 @@ export default function DoerflerAgDemo() {
                   Anrufen
                 </a>
               </div>
-
-              <p className="text-sm text-gray-400 mt-8">
-                Der Wizard (Online-Formular) wird in einer späteren Phase
-                implementiert.
-              </p>
             </div>
           </div>
         </section>
