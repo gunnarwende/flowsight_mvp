@@ -1,6 +1,6 @@
 # FlowSight – STATUS (Company SSOT)
 
-**Datum:** 2026-02-18
+**Datum:** 2026-02-19
 **Owner:** Head Ops Agent
 **Scope (MVP):** High-End Website + Wizard + Voice (Retell) + SSOT (Supabase) + E-Mail (Resend) + Sentry + Internal Ops Dashboard (intern)
 
@@ -16,12 +16,14 @@
 ## Aktueller Stand (Kurz)
 - Repo Layout: src/web (Next.js App Router) vorhanden
 - Sentry Configs vorhanden (sentry.*.config.ts + instrumentation*.ts)
-- API: POST /api/cases live (Supabase insert + Resend email notification)
+- API: POST /api/cases live (Supabase insert + Resend email + structured JSON log + Sentry tags)
 - Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema applied (tenants, cases, tenant_numbers + RLS). Keys in .env.local + Vercel Env.
 - Resend: API Key + MAIL_FROM/REPLY_TO/SUBJECT_PREFIX konfiguriert (.env.local + Vercel Env).
-- Retell Webhook URL gesetzt auf https://flowsight-mvp.vercel.app/api/retell/webhook (Endpoint wird später implementiert)
+- Retell Webhook: /api/retell/webhook live (event gating call_analyzed, multi-path extraction, structured logging)
 - Twilio CH Nummer: gekauft und konfiguriert (Verified: .env.local). SIP Trunk konfiguriert.
-- doerfler-ag Phase A Demo live unter /doerfler-ag
+- Voice E2E: Twilio→Retell→Webhook→Supabase→Resend — proven (case f2fddfef)
+- Wizard: /wizard (standalone) + /doerfler-ag/meldung (branded funnel mit ?category= preselect) — proven (cases 812ee2ed, df85ee52)
+- doerfler-ag: Landing Page live unter /doerfler-ag mit CTAs → /doerfler-ag/meldung, Service deep-links
 
 ## SSOT Dateien
 - Company SSOT: docs/STATUS.md
@@ -31,10 +33,11 @@
 
 ## Next 5 Steps
 1) SSOT Backbone: STATUS + Contracts + Env Vars + Agent Briefs (Welle 1) ✓
-2) doerfler-ag: Founder confirms TBD items → Web Agent Demo Delivery (Phase A)
-3) Supabase SSOT Schema: tenants/cases + constraints (Welle 2A) ✓
-4) Plumbing: Case API + Email done (Welle 2B) ✓ — Wizard frontend + Retell webhook next
-5) Voice E2E: Webhook strict mapping + tenant resolve + case creation done (Welle 2C) ✓ — Twilio→Retell routing TBD (debugger evidence needed)
+2) Supabase SSOT Schema: tenants/cases + constraints (Welle 2A) ✓
+3) Plumbing: Case API + Email + Aliases + Structured Errors (Welle 2B) ✓
+4) Voice E2E: Webhook + tenant resolve + case creation + observability (Welle 2C) ✓
+5) Wizard Frontend + doerfler-ag Integration (Welle 3) ✓ — Evidence-complete
+6) Next: doerfler-ag Phase B (Founder confirms TBD: logo, color, reviews) + Hardening + Ops Dashboard
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -63,3 +66,13 @@
 - 2026-02-19 | Head Ops | W2C OBSERVABILITY: Root cause confirmed — calls hit POST 204 but no case created because custom_analysis_data not configured → all structured fields missing → decision=missing_fields skip. Fix: structured JSON logging at every 204 path (_tag=retell_webhook, decision field). Visible in Vercel Function Logs without Sentry. tenant_numbers seeded (+41445057420→default tenant). verify_voice_pipeline.mjs script. Retell agent config runbook with exact prompt + schema for Founder.
 - BLOCKER: Founder must configure Retell agent custom_analysis_data schema (see docs/runbooks/retell_agent_config.md) then make 1 test call.
 - Next: Founder configures Retell → test call → verify case created → Welle 3 (Wizard)
+- 2026-02-19 | Head Ops | W2C VOICE E2E COMPLETE: Event gating fixed (only call_analyzed, not call_ended). Multi-path extraction probe. Founder configured Retell agent. Test call → case f2fddfef created (source=voice, Rohrbruch, notfall, 8942 Oberrieden). Voice pipeline proven end-to-end.
+- 2026-02-19 | Head Ops | WELLE 3: Wizard frontend (3-step premium flow: Problem→Ort→Kontakt). Category cards + urgency cards + dark gradient surface + review summary + success screen. Zero new deps. POST /api/cases source=wizard. Structured JSON log + Sentry tags on success path.
+- 2026-02-19 | Head Ops | WELLE 3 INTEGRATION: Wizard extracted to shared WizardForm component. /doerfler-ag/meldung renders wizard with ?category= preselect (allowlist: 6 values). Landing page CTAs → "Online melden", service cards deep-link with category mapping. Placeholder "wird später implementiert" removed.
+- 2026-02-19 | Head Ops | WELLE 3 EVIDENCE-COMPLETE:
+  - A) Supabase: 2 wizard cases (df85ee52 dringend, 812ee2ed normal), both source=wizard category=Heizung
+  - B) Vercel Logs: console.log _tag=cases_api decision=created (route.ts:200-206) — verify in Dashboard → Logs → Function api/cases
+  - C) Sentry Tags: Sentry.setTag source/tenant_id/case_id (route.ts:197-199) — verify in Dashboard → Performance → /api/cases transactions
+  - D) Voice regression: green (tenant_numbers=1, webhook=live, cases found)
+- TBD remaining: Sentry API 403 scope fix. RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
+- Next: doerfler-ag Phase B → Hardening → Ops Dashboard
