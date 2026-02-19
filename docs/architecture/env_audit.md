@@ -29,7 +29,7 @@
 | `TWILIO_ACCOUNT_SID` | No (not yet) | — | Yes | Set | |
 | `TWILIO_AUTH_TOKEN` | No (not yet) | — | Yes | Set | |
 | `TWILIO_PHONE_NUMBER` | No (not yet) | — | Yes | Set | CH number purchased and configured |
-| `FALLBACK_TENANT_ID` | Yes | app/api/cases/route.ts | Yes | **TBD** | Seed tenant first → set UUID. See docs/runbooks/supabase_seed_tenant.md |
+| `FALLBACK_TENANT_ID` | Yes | app/api/cases/route.ts | Yes | Set | Verified 2026-02-19 (Vercel + .env.local, proven by /api/cases 201 with tenant_id) |
 | `APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
 | `NEXT_PUBLIC_APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
 | `TWILIO_SIP_TRUNK_NAME` | No | — | **No** | Set | Undocumented — add to env_vars.md |

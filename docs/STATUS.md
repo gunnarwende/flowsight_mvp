@@ -52,3 +52,5 @@
 - Next: Founder smoke test with curl → Wizard frontend (Welle 3)
 - 2026-02-19 | Head Ops | W2B DX CLOSEOUT: /api/cases 400 response now returns structured { error, missing_fields, allowed_values }. Min payload runbook added. Build + lint pass.
 - Next: Founder seeds tenant + smoke test → Wizard frontend (Welle 3)
+- 2026-02-19 | Head Ops | FALLBACK_TENANT_ID verified (Vercel + .env.local, proven by /api/cases 201). Only TBD remaining: RETELL_AGENT_ID.
+- Next: Wizard frontend (Welle 3)
