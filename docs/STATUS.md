@@ -16,7 +16,7 @@
 ## Aktueller Stand (Kurz)
 - Repo Layout: src/web (Next.js App Router) vorhanden
 - Sentry Configs vorhanden (sentry.*.config.ts + instrumentation*.ts)
-- Keine API routes (route.ts) bisher vorhanden
+- API: POST /api/cases live (Supabase insert + Resend email notification)
 - Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema applied (tenants, cases, tenant_numbers + RLS). Keys in .env.local + Vercel Env.
 - Resend: API Key + MAIL_FROM/REPLY_TO/SUBJECT_PREFIX konfiguriert (.env.local + Vercel Env).
 - Retell Webhook URL gesetzt auf https://flowsight-mvp.vercel.app/api/retell/webhook (Endpoint wird später implementiert)
@@ -33,7 +33,7 @@
 1) SSOT Backbone: STATUS + Contracts + Env Vars + Agent Briefs (Welle 1) ✓
 2) doerfler-ag: Founder confirms TBD items → Web Agent Demo Delivery (Phase A)
 3) Supabase SSOT Schema: tenants/cases + constraints (Welle 2A) ✓
-4) Plumbing: Wizard Submit -> Case -> Email + Retell Webhook -> Case -> Email (Welle 2, später)
+4) Plumbing: Case API + Email done (Welle 2B) ✓ — Wizard frontend + Retell webhook next
 5) Voice Routing aktivieren sobald CH Nummer vorhanden (Voice Agent, später)
 
 ## Recent Updates
@@ -46,3 +46,5 @@
 - Next: Copy Supabase Anon/Service keys to .env.local + Vercel → Supabase client lib → API routes (Welle 2B)
 - 2026-02-19 | Head Ops | WELLE 2A FINALIZE: Schema applied (supabase db push). Supabase + Resend keys verified in .env.local + Vercel Env. Env audit updated. TBD remaining: RETELL_AGENT_ID, FALLBACK_TENANT_ID, supabase/.temp/ gitignore.
 - Next: Supabase client lib + API routes (Welle 2B)
+- 2026-02-19 | Head Ops | WELLE 2B: Supabase client lib (server + anon), POST /api/cases route, Resend email notification (fire-and-forget), Sentry tags on all error paths. Seed script for default tenant created. Build + lint pass.
+- Next: Founder seeds tenant + sets FALLBACK_TENANT_ID → smoke test → Wizard frontend (Welle 3)

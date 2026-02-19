@@ -16,20 +16,20 @@
 | `SENTRY_AUTH_TOKEN` | No (build plugin) | .env.sentry-build-plugin | Yes | Set | Used by @sentry/webpack-plugin at build time |
 | `SENTRY_ORG` | No (hardcoded) | next.config.ts:12 | Yes | Set | Hardcoded as "flowsight-gmbh" in next.config.ts |
 | `SENTRY_PROJECT` | No (hardcoded) | next.config.ts:14 | Yes | Set | Hardcoded as "flowsight-mvp" in next.config.ts |
-| `SUPABASE_URL` | No (not yet) | — | Yes | Set | Welle 2A: will be used by Supabase client |
-| `SUPABASE_ANON_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
-| `SUPABASE_SERVICE_ROLE_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
-| `RESEND_API_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 (Vercel + .env.local) |
-| `MAIL_FROM` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
-| `MAIL_REPLY_TO` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
-| `MAIL_SUBJECT_PREFIX` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
+| `SUPABASE_URL` | Yes | src/lib/supabase/server.ts, client.ts | Yes | Set | Welle 2B |
+| `SUPABASE_ANON_KEY` | Yes | src/lib/supabase/client.ts | Yes | Set | Configured 2026-02-19 |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | src/lib/supabase/server.ts | Yes | Set | Configured 2026-02-19. Server-only (import "server-only") |
+| `RESEND_API_KEY` | Yes | src/lib/email/resend.ts | Yes | Set | Configured 2026-02-19 (Vercel + .env.local) |
+| `MAIL_FROM` | Yes | src/lib/email/resend.ts | Yes | Set | Defaults to noreply@flowsight.ch |
+| `MAIL_REPLY_TO` | Yes | src/lib/email/resend.ts | Yes | Set | Notification recipient |
+| `MAIL_SUBJECT_PREFIX` | Yes | src/lib/email/resend.ts | Yes | Set | Defaults to [FlowSight] |
 | `RETELL_API_KEY` | No (not yet) | — | Yes | Set | |
 | `RETELL_WEBHOOK_SECRET` | No (not yet) | — | Yes | Set | |
 | `RETELL_AGENT_ID` | No (not yet) | — | Yes | Not present | Optional |
 | `TWILIO_ACCOUNT_SID` | No (not yet) | — | Yes | Set | |
 | `TWILIO_AUTH_TOKEN` | No (not yet) | — | Yes | Set | |
 | `TWILIO_PHONE_NUMBER` | No (not yet) | — | Yes | Set | CH number purchased and configured |
-| `FALLBACK_TENANT_ID` | No (not yet) | — | Yes | Not present | Add after seeding tenants table |
+| `FALLBACK_TENANT_ID` | Yes | app/api/cases/route.ts | Yes | **TBD** | Seed tenant first → set UUID. See docs/runbooks/supabase_seed_tenant.md |
 | `APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
 | `NEXT_PUBLIC_APP_URL` | No | — | **No** | Set | Undocumented — add to env_vars.md |
 | `TWILIO_SIP_TRUNK_NAME` | No | — | **No** | Set | Undocumented — add to env_vars.md |
