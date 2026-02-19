@@ -22,12 +22,16 @@ interface RetellCall {
   direction?: string;
   transcript?: string;
   call_analysis?: RetellCallAnalysis;
+  // Fallback paths — Retell may evolve its payload shape
+  analysis?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 interface RetellWebhookPayload {
   event?: string;
   call?: RetellCall;
+  [key: string]: unknown;
 }
 
 // ---------------------------------------------------------------------------
@@ -58,6 +62,47 @@ function nonEmptyStr(v: unknown): string | undefined {
 /** Structured log line for Vercel Function Logs (no PII, machine-parseable). */
 function logDecision(fields: Record<string, unknown>) {
   console.log(JSON.stringify({ _tag: "retell_webhook", ...fields }));
+}
+
+/**
+ * Probe multiple payload paths for extracted analysis data.
+ * Returns { data, path } where path indicates which location had data.
+ */
+function probeExtractedData(
+  call: RetellCall | undefined,
+  payload: RetellWebhookPayload,
+): { data: Record<string, unknown>; path: string } {
+  // Path 1: canonical SDK path
+  const cad = call?.call_analysis?.custom_analysis_data;
+  if (cad && typeof cad === "object" && Object.keys(cad).length > 0) {
+    return { data: cad as Record<string, unknown>, path: "call.call_analysis.custom_analysis_data" };
+  }
+
+  // Path 2: call.analysis (possible alternative)
+  const ca = call?.analysis;
+  if (ca && typeof ca === "object" && Object.keys(ca).length > 0) {
+    return { data: ca as Record<string, unknown>, path: "call.analysis" };
+  }
+
+  // Path 3: call.metadata (some integrations put data here)
+  const md = call?.metadata;
+  if (md && typeof md === "object" && Object.keys(md).length > 0) {
+    return { data: md as Record<string, unknown>, path: "call.metadata" };
+  }
+
+  // Path 4: top-level payload keys besides event/call
+  const topExtra: Record<string, unknown> = {};
+  for (const k of Object.keys(payload)) {
+    if (k !== "event" && k !== "call") {
+      topExtra[k] = payload[k];
+    }
+  }
+  if (Object.keys(topExtra).length > 0) {
+    return { data: topExtra, path: "payload_top_level" };
+  }
+
+  // Nothing found
+  return { data: {}, path: "none" };
 }
 
 // ---------------------------------------------------------------------------
@@ -125,43 +170,48 @@ export async function POST(req: Request) {
   Sentry.setTag("retell_event", event);
 
   // Evidence breadcrumb (keys only, no PII)
+  const topKeys = keysOf(payload);
+  const callKeys = keysOf(call);
+  const analysisKeys = keysOf(call?.call_analysis);
+  const customDataKeys = keysOf(call?.call_analysis?.custom_analysis_data);
+
   Sentry.addBreadcrumb({
     category: "retell.webhook",
     level: "info",
     message: "payload_keys",
-    data: {
-      event,
-      topKeys: keysOf(payload),
-      callKeys: keysOf(call),
-      analysisKeys: keysOf(call?.call_analysis),
-      customDataKeys: keysOf(call?.call_analysis?.custom_analysis_data),
-    },
+    data: { event, topKeys, callKeys, analysisKeys, customDataKeys },
   });
 
   // ── Event gating ───────────────────────────────────────────────────
-  // Only process call_ended and call_analyzed events for case creation.
-  // Other events (call_started, transcript_updated, etc.) → ack silently.
-  if (event !== "call_ended" && event !== "call_analyzed") {
-    logDecision({ decision: "event_skipped", event, call_id: retellCallId });
+  // ONLY process call_analyzed — this is when post-call extraction data
+  // is populated. call_ended fires BEFORE analysis and has no extracted
+  // fields, causing false missing_fields decisions.
+  if (event !== "call_analyzed") {
+    logDecision({
+      decision: "event_skipped",
+      event,
+      call_id: retellCallId,
+      call_keys: callKeys,
+      analysis_keys: analysisKeys,
+    });
     return new NextResponse(null, { status: 204 });
   }
+
+  // ── Probe extraction paths ──────────────────────────────────────────
+  const { data: extractedData, path: extractedPath } = probeExtractedData(call, payload);
+  const extractedKeys = Object.keys(extractedData);
 
   // ── Extract fields ─────────────────────────────────────────────────
   const callerPhone = nonEmptyStr(call?.from_number);
   const calledNumber = nonEmptyStr(call?.to_number);
-  const customData = call?.call_analysis?.custom_analysis_data ?? {};
-  const customDataKeys = Object.keys(customData);
-  const hasCustomData = customDataKeys.length > 0;
-  const hasTranscript = !!call?.transcript;
-  const hasCallSummary = !!call?.call_analysis?.call_summary;
 
-  // Structured fields from Retell agent's custom_analysis_data
-  const plz = nonEmptyStr(customData.plz ?? customData.postal_code ?? customData.zip);
-  const city = nonEmptyStr(customData.city ?? customData.ort ?? customData.stadt);
-  const category = nonEmptyStr(customData.category ?? customData.kategorie);
-  const urgencyRaw = nonEmptyStr(customData.urgency ?? customData.dringlichkeit);
+  // Structured fields — read from whichever path had data
+  const plz = nonEmptyStr(extractedData.plz ?? extractedData.postal_code ?? extractedData.zip);
+  const city = nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt);
+  const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
+  const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
   const description =
-    nonEmptyStr(customData.description ?? customData.beschreibung) ??
+    nonEmptyStr(extractedData.description ?? extractedData.beschreibung) ??
     nonEmptyStr(call?.call_analysis?.call_summary) ??
     nonEmptyStr(call?.transcript);
 
@@ -187,21 +237,25 @@ export async function POST(req: Request) {
       extra: {
         missing_fields: missing,
         event,
-        has_custom_analysis_data: hasCustomData,
-        custom_data_keys: customDataKeys,
-        has_transcript: hasTranscript,
-        has_call_summary: hasCallSummary,
+        extracted_path_used: extractedPath,
+        extracted_keys: extractedKeys,
+        has_transcript: !!call?.transcript,
+        has_call_summary: !!call?.call_analysis?.call_summary,
+        call_keys: callKeys,
+        analysis_keys: analysisKeys,
       },
     });
     logDecision({
       decision: "missing_fields",
       event,
       call_id: retellCallId,
+      extracted_path_used: extractedPath,
+      extracted_keys: extractedKeys,
       missing_fields: missing,
-      has_custom_data: hasCustomData,
-      custom_data_keys: customDataKeys,
-      has_transcript: hasTranscript,
-      has_call_summary: hasCallSummary,
+      has_transcript: !!call?.transcript,
+      has_call_summary: !!call?.call_analysis?.call_summary,
+      call_keys: callKeys,
+      analysis_keys: analysisKeys,
     });
     return new NextResponse(null, { status: 204 });
   }
@@ -298,6 +352,8 @@ export async function POST(req: Request) {
       call_id: retellCallId,
       tenant_id: tenantId,
       case_id: caseId,
+      extracted_path_used: extractedPath,
+      extracted_keys: extractedKeys,
     });
 
     return new NextResponse(null, { status: 204 });
