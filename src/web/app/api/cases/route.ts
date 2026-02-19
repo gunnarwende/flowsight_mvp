@@ -48,45 +48,66 @@ function normalizeAliases(raw: Record<string, unknown>): Record<string, unknown>
 // Validation (runs AFTER normalization)
 // ---------------------------------------------------------------------------
 
+interface ValidationError {
+  error: string;
+  missing_fields: string[];
+  allowed_values: Record<string, readonly string[]>;
+}
+
 function validateBody(
   body: unknown
-): { ok: true; data: CaseBody } | { ok: false; error: string } {
+):
+  | { ok: true; data: CaseBody }
+  | { ok: false; detail: ValidationError } {
   if (!body || typeof body !== "object") {
-    return { ok: false, error: "Request body must be a JSON object." };
+    return {
+      ok: false,
+      detail: {
+        error: "Request body must be a JSON object.",
+        missing_fields: [],
+        allowed_values: {
+          source: VALID_SOURCES,
+          urgency: VALID_URGENCIES,
+        },
+      },
+    };
   }
 
   const b = normalizeAliases(body as Record<string, unknown>);
+  const missing: string[] = [];
 
   // source
-  if (!VALID_SOURCES.includes(b.source as CaseSource)) {
-    return {
-      ok: false,
-      error: `source must be one of: ${VALID_SOURCES.join(", ")}`,
-    };
-  }
+  const validSource = VALID_SOURCES.includes(b.source as CaseSource);
+  if (!validSource) missing.push("source");
 
   // contact: at least one required
   const hasPhone = typeof b.contact_phone === "string" && b.contact_phone.length > 0;
   const hasEmail = typeof b.contact_email === "string" && b.contact_email.length > 0;
-  if (!hasPhone && !hasEmail) {
-    return {
-      ok: false,
-      error: "At least one of contact_phone/phone or contact_email/email is required.",
-    };
-  }
+  if (!hasPhone && !hasEmail) missing.push("contact_phone/contact_email");
 
   // required strings
-  for (const field of ["plz", "city", "category", "description"] as const) {
+  const REQUIRED_STRINGS = ["plz", "city", "category", "description"] as const;
+  for (const field of REQUIRED_STRINGS) {
     if (typeof b[field] !== "string" || (b[field] as string).trim().length === 0) {
-      return { ok: false, error: `${field} is required and must be a non-empty string.` };
+      missing.push(field);
     }
   }
 
   // urgency
-  if (!VALID_URGENCIES.includes(b.urgency as CaseUrgency)) {
+  const validUrgency = VALID_URGENCIES.includes(b.urgency as CaseUrgency);
+  if (!validUrgency) missing.push("urgency");
+
+  if (missing.length > 0) {
     return {
       ok: false,
-      error: `urgency must be one of: ${VALID_URGENCIES.join(", ")}`,
+      detail: {
+        error: `Missing or invalid fields: ${missing.join(", ")}. Aliases accepted: phone→contact_phone, email→contact_email, message→description.`,
+        missing_fields: missing,
+        allowed_values: {
+          source: VALID_SOURCES,
+          urgency: VALID_URGENCIES,
+        },
+      },
     };
   }
 
@@ -128,7 +149,7 @@ export async function POST(request: NextRequest) {
 
   const validation = validateBody(body);
   if (!validation.ok) {
-    return NextResponse.json({ error: validation.error }, { status: 400 });
+    return NextResponse.json(validation.detail, { status: 400 });
   }
 
   const data = validation.data;

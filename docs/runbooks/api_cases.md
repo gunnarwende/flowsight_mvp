@@ -66,7 +66,7 @@ Aliases are normalized server-side before validation (see case_contract.md → A
 | Status | Meaning |
 |---|---|
 | 201 | Case created. Body: `{ id, tenant_id, source, urgency, category, city, created_at }` |
-| 400 | Validation error. Body: `{ error: "..." }` |
+| 400 | Validation error. Body: `{ error, missing_fields, allowed_values }` |
 | 500 | Server error (Supabase or internal). Sentry event emitted. |
 
 ## Side Effects
@@ -74,6 +74,10 @@ Aliases are normalized server-side before validation (see case_contract.md → A
 - Inserts row into `cases` table (Supabase).
 - Sends email notification via Resend (fire-and-forget; failure does not affect response).
 - Sentry events on: insert error (`area:api, feature:cases`), email error (`area:email, provider:resend`).
+
+## Related
+
+- **Minimum payload examples + validation error shapes:** `docs/runbooks/api_cases_min_payload.md`
 
 ## Files
 

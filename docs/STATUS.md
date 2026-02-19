@@ -50,3 +50,5 @@
 - Next: Founder seeds tenant + sets FALLBACK_TENANT_ID → smoke test → Wizard frontend (Welle 3)
 - 2026-02-19 | Head Ops | W2B PATCH: /api/cases now accepts shorthand aliases (phone→contact_phone, email→contact_email, message→description). Contract canonical fields unchanged. Regression test (6 checks) pass. ESLint config: scripts/ excluded.
 - Next: Founder smoke test with curl → Wizard frontend (Welle 3)
+- 2026-02-19 | Head Ops | W2B DX CLOSEOUT: /api/cases 400 response now returns structured { error, missing_fields, allowed_values }. Min payload runbook added. Build + lint pass.
+- Next: Founder seeds tenant + smoke test → Wizard frontend (Welle 3)
