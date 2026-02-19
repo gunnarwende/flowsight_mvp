@@ -194,6 +194,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    Sentry.setTag("source", data.source);
+    Sentry.setTag("tenant_id", tenantId);
+    Sentry.setTag("case_id", row.id);
+    console.log(JSON.stringify({
+      _tag: "cases_api",
+      decision: "created",
+      source: data.source,
+      tenant_id: tenantId,
+      case_id: row.id,
+    }));
+
     // Fire-and-forget email notification (non-blocking)
     sendCaseNotification({
       caseId: row.id,
