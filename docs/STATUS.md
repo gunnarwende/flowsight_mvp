@@ -74,5 +74,8 @@
   - B) Vercel Logs: console.log _tag=cases_api decision=created (route.ts:200-206) — verify in Dashboard → Logs → Function api/cases
   - C) Sentry Tags: Sentry.setTag source/tenant_id/case_id (route.ts:197-199) — verify in Dashboard → Performance → /api/cases transactions
   - D) Voice regression: green (tenant_numbers=1, webhook=live, cases found)
-- TBD remaining: Sentry API 403 scope fix. RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
+- 2026-02-19 | Head Ops | WELLE 4 (Ops/Observability): Email notification structured logging added to sendCaseNotification (resend.ts). Every exit path now has _tag:"email" JSON log (decision: skipped/sent/failed) + source tag in all Sentry captures. Early return on missing RESEND_API_KEY (no throw). Evidence case 49643597 (wizard, Boiler, normal).
+  - Vercel Logs: Dashboard → Logs → Function api/cases → search "_tag":"email" + case_id
+  - Sentry Token: PREP done — verify_sentry_token.mjs + runbook (docs/runbooks/sentry_token_setup.md). Token creation deferred (Founder action, no active use case yet).
+- TBD remaining: Sentry API token (ready to execute, see runbook). RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
 - Next: doerfler-ag Phase B → Hardening → Ops Dashboard
