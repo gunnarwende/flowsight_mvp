@@ -17,8 +17,8 @@
 | `SENTRY_ORG` | No (hardcoded) | next.config.ts:12 | Yes | Set | Hardcoded as "flowsight-gmbh" in next.config.ts |
 | `SENTRY_PROJECT` | No (hardcoded) | next.config.ts:14 | Yes | Set | Hardcoded as "flowsight-mvp" in next.config.ts |
 | `SUPABASE_URL` | No (not yet) | — | Yes | Set | Welle 2A: will be used by Supabase client |
-| `SUPABASE_ANON_KEY` | No (not yet) | — | Yes | Empty | Needs Supabase Dashboard |
-| `SUPABASE_SERVICE_ROLE_KEY` | No (not yet) | — | Yes | Empty | Needs Supabase Dashboard |
+| `SUPABASE_ANON_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
+| `SUPABASE_SERVICE_ROLE_KEY` | No (not yet) | — | Yes | Set | Configured 2026-02-19 |
 | `RESEND_API_KEY` | No (not yet) | — | Yes | Empty | Needs Resend Dashboard |
 | `MAIL_FROM` | No (not yet) | — | Yes | Empty | |
 | `MAIL_REPLY_TO` | No (not yet) | — | Yes | Empty | |
@@ -43,7 +43,7 @@ VERCEL, VERCEL_ENV, VERCEL_URL, VERCEL_TARGET_ENV, VERCEL_GIT_*, VERCEL_OIDC_TOK
 1. **Sentry DSN hardcoded** in `sentry.server.config.ts:9` and `sentry.edge.config.ts:10` — should use `process.env.SENTRY_DSN` like client config does. Low priority (DSN is public), but inconsistent.
 2. **SENTRY_ORG/PROJECT hardcoded** in `next.config.ts:12-14` — could use env vars for flexibility. Low priority.
 3. **3 undocumented vars** need adding to env_vars.md: APP_URL, NEXT_PUBLIC_APP_URL, TWILIO_SIP_TRUNK_NAME.
-4. **Supabase keys empty** — SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY need to be fetched from Supabase Dashboard and added to .env.local + Vercel Env.
+4. ~~**Supabase keys empty**~~ — RESOLVED 2026-02-19. Keys now configured in .env.local. Still need adding to Vercel Env for production.
 
 ## RLS Decision (MVP)
 

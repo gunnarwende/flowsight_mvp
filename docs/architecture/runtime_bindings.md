@@ -10,16 +10,17 @@
 | Project Ref | `oyouhwcwkdcblioecduo` | Extracted from SUPABASE_URL in .env.local |
 | Region | EU (de.sentry.io pattern suggests EU hosting) | Assumption from URL structure |
 | Dashboard | https://supabase.com/dashboard/project/oyouhwcwkdcblioecduo | Derived |
-| Status | Project exists, URL configured. Anon + Service Role keys **not yet set** in .env.local. | Verified: .env.local |
+| Status | Project exists, URL configured. Anon + Service Role keys **configured** in .env.local. Schema applied via `supabase db push`. | Verified: .env.local + CLI output |
 
 ### Supabase Access Model (MVP)
 - **Server-side only**: all DB operations go through API routes using `SUPABASE_SERVICE_ROLE_KEY`.
 - **No client-side Supabase**: wizard submits to API route, not directly to Supabase.
 - **RLS**: Enabled on all tables. No anon policies in MVP. Service role bypasses RLS.
-- **Keys needed**: Founder/admin must copy SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY from Supabase Dashboard → .env.local + Vercel Env.
+- **Keys**: SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY configured in .env.local. Still needed in Vercel Env for production deploy.
 
 ### Schema
 - Migration: `supabase/migrations/20260219000000_initial_schema.sql`
+- **Applied**: 2026-02-19 via `supabase link` + `supabase db push`
 - Tables: `tenants`, `cases`, `tenant_numbers`
 - Enums: `case_source` ('wizard','voice'), `case_urgency` ('notfall','dringend','normal')
 - Contract alignment: all fields match `docs/architecture/contracts/case_contract.md`
