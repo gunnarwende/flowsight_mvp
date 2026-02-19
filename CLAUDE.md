@@ -30,6 +30,8 @@
 - Before every commit: run git diff + git status -sb, verify only intended files
 - No force-push to main
 - No secrets in any file (grep-check before commit)
+- Never run `vercel deploy` from repo root — only from src/web
+- Delete any .vercel/ directory at repo root after Vercel CLI commands (vercel ls, inspect, etc. re-create it)
 
 ## Monitoring (for later waves)
 - Every failure path must emit a Sentry event

@@ -58,4 +58,6 @@
 - TBD: Twilio→Retell SIP routing (inbound calls fail at duration 0). Run evidence scripts. Retell agent custom_analysis_data schema not yet configured. RETELL_AGENT_ID still TBD. Sentry API 403 needs scope fix.
 - Next: Run evidence scripts → fix Twilio routing → configure Retell agent → smoke test E2E → Wizard frontend (Welle 3)
 - 2026-02-19 | Head Ops | W2C FIX: Production 404 root cause = CLI deploy from repo root overwrote Git deploy. Fix: removed root .vercel/, added GET health-check to webhook, push triggers correct Git-connected deploy (Root Dir = src/web). Probe script added. Twilio→Retell routing now verified (completed calls, duration >0).
-- Next: Verify prod probe returns 401 → configure Retell agent custom_analysis_data → E2E smoke test → Welle 3
+- 2026-02-19 | Head Ops | W2C FIX (final): Production still 404 after deploy fix. Second root cause: Vercel project Framework Preset = "Other" (auto-detected from repo root at project creation, never corrected). Fix: added src/web/vercel.json with {"framework":"nextjs"}. All 5 production routes now verified: / (200), /doerfler-ag (200), /api/retell/webhook GET (200), POST (401), /api/cases POST (400). Probe script passes.
+- TBD: Retell agent custom_analysis_data schema not yet configured. RETELL_AGENT_ID still TBD. Sentry API 403 needs scope fix.
+- Next: Configure Retell agent → E2E smoke test → Wizard frontend (Welle 3)

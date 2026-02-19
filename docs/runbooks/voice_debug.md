@@ -19,10 +19,19 @@
 
 ```
 Every route returns 404 (not just webhook)?
-├── YES → Deployment broken. Likely a CLI deploy from repo root.
-│   ├── Fix: push any commit to trigger Git-connected deploy (uses Root Dir = src/web).
-│   ├── Prevention: do NOT run `vercel deploy` from repo root. Only from src/web.
-│   └── Verify: run probe script → expect 401.
+├── YES → Check probe script first: node scripts/_ops/probe_prod_retell_webhook.mjs
+│   ├── Cause A: CLI deploy from repo root overwrote Git deploy.
+│   │   ├── Fix: push any commit to trigger Git-connected deploy (uses Root Dir = src/web).
+│   │   ├── Prevention: do NOT run `vercel deploy` from repo root. Only from src/web.
+│   │   ├── Also: delete any .vercel/ directory at repo root (prevents accidental re-link).
+│   │   └── Note: `vercel ls --yes` also creates .vercel/ at CWD — always clean up after.
+│   ├── Cause B: Vercel project Framework Preset = "Other" instead of "Next.js".
+│   │   ├── Symptom: `vercel inspect <url>` shows `Builds: . [0ms]` — no build ran.
+│   │   ├── Root cause: project auto-detected framework from repo root (no next.config) at creation.
+│   │   ├── Fix: ensure src/web/vercel.json contains {"framework":"nextjs"}.
+│   │   ├── Alt fix: Vercel Dashboard → Project Settings → General → Framework Preset → Next.js.
+│   │   └── Verify: after redeploy, `vercel inspect` should show Next.js build artifacts.
+│   └── Verify: run probe script → expect POST 401 + GET 200.
 └── NO → Only webhook 404? Check route.ts exists at src/web/app/api/retell/webhook/route.ts.
 ```
 
@@ -82,5 +91,7 @@ Case exists in Supabase but no email in Resend dashboard?
 
 - Twilio evidence: `scripts/_ops/twilio_debug_evidence.mjs`
 - Sentry evidence: `scripts/_ops/sentry_probe.mjs`
+- Prod probe: `scripts/_ops/probe_prod_retell_webhook.mjs`
+- Vercel framework config: `src/web/vercel.json`
 - Webhook handler: `src/web/app/api/retell/webhook/route.ts`
 - Tenant resolver: `src/web/src/lib/tenants/resolveTenant.ts`
