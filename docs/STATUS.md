@@ -34,7 +34,7 @@
 2) doerfler-ag: Founder confirms TBD items → Web Agent Demo Delivery (Phase A)
 3) Supabase SSOT Schema: tenants/cases + constraints (Welle 2A) ✓
 4) Plumbing: Case API + Email done (Welle 2B) ✓ — Wizard frontend + Retell webhook next
-5) Voice Routing aktivieren sobald CH Nummer vorhanden (Voice Agent, später)
+5) Voice E2E: Webhook strict mapping + tenant resolve + case creation done (Welle 2C) ✓ — Twilio→Retell routing TBD (debugger evidence needed)
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -54,3 +54,6 @@
 - Next: Founder seeds tenant + smoke test → Wizard frontend (Welle 3)
 - 2026-02-19 | Head Ops | FALLBACK_TENANT_ID verified (Vercel + .env.local, proven by /api/cases 201). Only TBD remaining: RETELL_AGENT_ID.
 - Next: Wizard frontend (Welle 3)
+- 2026-02-19 | Voice+Head Ops | WELLE 2C: Retell webhook strict mapping (event gating, field extraction from custom_analysis_data, no silent defaults, missing_fields Sentry capture). Tenant resolver (called_number→tenant_numbers→fallback). Direct DB case insert with source="voice" + fire-and-forget Resend. Evidence scripts: twilio_debug_evidence.mjs + sentry_probe.mjs. Runbooks: voice_debug.md (decision tree), voice_e2e.md. Analytics event names defined. Build + lint pass.
+- TBD: Twilio→Retell SIP routing (inbound calls fail at duration 0). Run evidence scripts. Retell agent custom_analysis_data schema not yet configured. RETELL_AGENT_ID still TBD. Sentry API 403 needs scope fix.
+- Next: Run evidence scripts → fix Twilio routing → configure Retell agent → smoke test E2E → Wizard frontend (Welle 3)
