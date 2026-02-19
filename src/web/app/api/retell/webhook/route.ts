@@ -333,16 +333,6 @@ export async function POST(req: Request) {
     Sentry.setTag("decision", "created");
 
     // Fire-and-forget email (non-blocking)
-    // Log "attempted" synchronously BEFORE the async call — guarantees
-    // visibility in serverless even if the function freezes after response.
-    console.log(JSON.stringify({
-      _tag: "email",
-      provider: "resend",
-      decision: "attempted",
-      case_id: caseId,
-      tenant_id: tenantId,
-      source: "voice",
-    }));
     sendCaseNotification({
       caseId,
       tenantId,
@@ -356,12 +346,14 @@ export async function POST(req: Request) {
       // Already captured in Sentry inside sendCaseNotification
     });
 
+    // Single log line — Vercel Hobby captures only ONE console.log per invocation.
     logDecision({
       decision: "created",
       event,
       call_id: retellCallId,
       tenant_id: tenantId,
       case_id: caseId,
+      email_attempted: true,
       extracted_path_used: extractedPath,
       extracted_keys: extractedKeys,
     });
