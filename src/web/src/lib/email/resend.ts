@@ -14,6 +14,11 @@ function getResend(): Resend {
   return _resend;
 }
 
+/** Structured log line for Vercel Function Logs (no PII). */
+function logEmail(fields: Record<string, unknown>) {
+  console.log(JSON.stringify({ _tag: "email", provider: "resend", ...fields }));
+}
+
 interface CaseEmailPayload {
   caseId: string;
   tenantId: string;
@@ -36,11 +41,17 @@ export async function sendCaseNotification(
   const to = process.env.MAIL_REPLY_TO;
   const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
+  if (!process.env.RESEND_API_KEY) {
+    logEmail({ decision: "skipped", reason: "no_RESEND_API_KEY", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+    return false;
+  }
+
   if (!to) {
     Sentry.captureMessage("MAIL_REPLY_TO not configured — skipping email", {
       level: "warning",
-      tags: { area: "email", provider: "resend" },
+      tags: { area: "email", provider: "resend", source: payload.source },
     });
+    logEmail({ decision: "skipped", reason: "no_MAIL_REPLY_TO", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
     return false;
   }
 
@@ -75,23 +86,28 @@ export async function sendCaseNotification(
         tags: {
           area: "email",
           provider: "resend",
+          source: payload.source,
           tenant_id: payload.tenantId,
           case_id: payload.caseId,
         },
       });
+      logEmail({ decision: "failed", reason: "resend_api_error", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
       return false;
     }
 
+    logEmail({ decision: "sent", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
     return true;
   } catch (err) {
     Sentry.captureException(err, {
       tags: {
         area: "email",
         provider: "resend",
+        source: payload.source,
         tenant_id: payload.tenantId,
         case_id: payload.caseId,
       },
     });
+    logEmail({ decision: "failed", reason: "exception", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
     return false;
   }
 }
