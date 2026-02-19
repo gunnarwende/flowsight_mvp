@@ -333,6 +333,16 @@ export async function POST(req: Request) {
     Sentry.setTag("decision", "created");
 
     // Fire-and-forget email (non-blocking)
+    // Log "attempted" synchronously BEFORE the async call — guarantees
+    // visibility in serverless even if the function freezes after response.
+    console.log(JSON.stringify({
+      _tag: "email",
+      provider: "resend",
+      decision: "attempted",
+      case_id: caseId,
+      tenant_id: tenantId,
+      source: "voice",
+    }));
     sendCaseNotification({
       caseId,
       tenantId,

@@ -206,6 +206,16 @@ export async function POST(request: NextRequest) {
     }));
 
     // Fire-and-forget email notification (non-blocking)
+    // Log "attempted" synchronously BEFORE the async call — guarantees
+    // visibility in serverless even if the function freezes after response.
+    console.log(JSON.stringify({
+      _tag: "email",
+      provider: "resend",
+      decision: "attempted",
+      case_id: row.id,
+      tenant_id: tenantId,
+      source: data.source,
+    }));
     sendCaseNotification({
       caseId: row.id,
       tenantId,
