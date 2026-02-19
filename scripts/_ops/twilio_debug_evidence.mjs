@@ -1,151 +1,95 @@
-#!/usr/bin/env node
-/**
- * Twilio Debug Evidence — fetch recent calls + notifications for CH number.
- * Run: node scripts/_ops/twilio_debug_evidence.mjs
- *
- * Outputs ONLY: call_sid, direction, status, start/end, duration, error_code,
- * notification metadata. NO auth tokens, NO full payloads.
- */
+import fs from "node:fs";
+import path from "node:path";
 
-import { readFileSync } from "fs";
-import { join } from "path";
-
-// ---------------------------------------------------------------------------
-// Parse .env.local (no dotenv dependency)
-// ---------------------------------------------------------------------------
-function loadEnv() {
-  const envPath = join(process.cwd(), "src", "web", ".env.local");
-  const env = {};
-  try {
-    for (const line of readFileSync(envPath, "utf8").split(/\r?\n/)) {
-      const l = line.trim();
-      if (!l || l.startsWith("#")) continue;
-      const m = l.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
-      if (!m) continue;
-      let v = m[2].trim();
-      if (
-        (v.startsWith('"') && v.endsWith('"')) ||
-        (v.startsWith("'") && v.endsWith("'"))
-      )
-        v = v.slice(1, -1);
-      env[m[1]] = v;
-    }
-  } catch (e) {
-    console.error("Cannot read src/web/.env.local:", e.message);
-    process.exit(1);
+function loadEnvFile(filePath) {
+  const txt = fs.readFileSync(filePath, "utf8");
+  for (const line of txt.split(/\r?\n/)) {
+    if (!line || line.trim().startsWith("#")) continue;
+    const idx = line.indexOf("=");
+    if (idx === -1) continue;
+    const key = line.slice(0, idx).trim();
+    let val = line.slice(idx + 1).trim();
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1, -1);
+    if (!process.env[key]) process.env[key] = val;
   }
-  return env;
 }
 
-const env = loadEnv();
-const SID = env.TWILIO_ACCOUNT_SID;
-const TOKEN = env.TWILIO_AUTH_TOKEN;
-const PHONE = env.TWILIO_PHONE_NUMBER;
+const envPath = path.resolve(process.cwd(), "src", "web", ".env.local");
+if (!fs.existsSync(envPath)) {
+  console.error("Missing src/web/.env.local");
+  process.exit(1);
+}
+loadEnvFile(envPath);
 
-if (!SID || !TOKEN || !PHONE) {
-  console.error(
-    "Missing TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER in .env.local"
-  );
+const phone = process.env.TWILIO_PHONE_NUMBER;
+const sid = process.env.TWILIO_ACCOUNT_SID;
+const token = process.env.TWILIO_AUTH_TOKEN;
+
+if (!phone || !sid || !token) {
+  console.error("Missing TWILIO_* env vars after loading .env.local");
   process.exit(1);
 }
 
-const BASE = `https://api.twilio.com/2010-04-01/Accounts/${SID}`;
-const AUTH = "Basic " + Buffer.from(`${SID}:${TOKEN}`).toString("base64");
+const auth = Buffer.from(`${sid}:${token}`).toString("base64");
 
-async function twilioGet(path) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { Authorization: AUTH },
-  });
-  if (!res.ok) {
-    console.error(`Twilio API ${res.status} for ${path}`);
-    return null;
-  }
-  return res.json();
+async function twilioGet(url) {
+  const res = await fetch(url, { headers: { Authorization: `Basic ${auth}` } });
+  if (!res.ok) throw new Error(`Twilio API ${res.status} ${res.statusText}`);
+  return await res.json();
 }
 
-// ---------------------------------------------------------------------------
-// Fetch calls
-// ---------------------------------------------------------------------------
-console.log(`\n=== Twilio Debug Evidence ===`);
-console.log(`Phone: ${PHONE.slice(0, 6)}***${PHONE.slice(-2)} (redacted)`);
-console.log(`Fetching last 20 calls...\n`);
+function redactE164(e164) {
+  if (!e164) return e164;
+  if (e164.length < 6) return "***";
+  return e164.slice(0, 5) + "***" + e164.slice(-2);
+}
 
-const callsData = await twilioGet(
-  `/Calls.json?PageSize=20&To=${encodeURIComponent(PHONE)}`
-);
-const callsFrom = await twilioGet(
-  `/Calls.json?PageSize=20&From=${encodeURIComponent(PHONE)}`
-);
+async function run() {
+  console.log("=== Twilio Debug Evidence ===");
+  console.log(`Phone: ${redactE164(phone)} (redacted)`);
 
-const allCalls = [
-  ...(callsData?.calls || []),
-  ...(callsFrom?.calls || []),
-];
+  // Query inbound calls TO this number (most relevant for PSTN inbound)
+  const callsUrl = new URL(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Calls.json`);
+  callsUrl.searchParams.set("To", phone);
+  callsUrl.searchParams.set("PageSize", "100");
 
-// Dedupe by SID
-const seen = new Set();
-const calls = allCalls.filter((c) => {
-  if (seen.has(c.sid)) return false;
-  seen.add(c.sid);
-  return true;
+  console.log("Fetching last 100 calls with To=TWILIO_PHONE_NUMBER ...");
+  const callsData = await twilioGet(callsUrl);
+
+  const calls = (callsData.calls || []).slice(0, 10);
+  console.log(`\nFound ${calls.length} call(s) (showing up to 10):\n`);
+  console.log("SID | Direction | Status | Start | End | Duration(s) | ErrorCode");
+  console.log("-".repeat(100));
+  for (const c of calls) {
+    console.log(`${c.sid} | ${c.direction} | ${c.status} | ${c.start_time} | ${c.end_time} | ${c.duration} | ${c.error_code || "—"}`);
+  }
+
+  // Pull recent Notifications (last 50) and correlate by CallSid
+  console.log("\n=== Notifications / Debugger (last 50) ===\n");
+  const notifUrl = new URL(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Notifications.json`);
+  notifUrl.searchParams.set("PageSize", "50");
+  const notifData = await twilioGet(notifUrl);
+
+  const byCall = new Map();
+  for (const n of (notifData.notifications || [])) {
+    const callSid = n?.message_text?.match(/CallSid:\s*(CA[a-zA-Z0-9]+)/)?.[1] || n?.call_sid;
+    if (!callSid) continue;
+    if (!byCall.has(callSid)) byCall.set(callSid, []);
+    byCall.get(callSid).push(n);
+  }
+
+  for (const c of calls) {
+    const list = byCall.get(c.sid) || [];
+    for (const n of list) {
+      const msg = (n.message_text || "").replace(/\s+/g, " ").slice(0, 160);
+      console.log(`CallSid: ${c.sid} | NotifSid: ${n.sid} | ErrorCode: ${n.error_code || "—"} | Level: ${n.log_level} | Date: ${n.date_created} | Message: ${msg}`);
+    }
+  }
+
+  console.log("\n=== Done ===");
+}
+
+run().catch(err => {
+  console.error(err?.message || err);
+  process.exit(1);
 });
-
-if (calls.length === 0) {
-  console.log("No calls found involving this number.");
-  process.exit(0);
-}
-
-console.log(`Found ${calls.length} call(s):\n`);
-console.log(
-  "SID | Direction | Status | Start | End | Duration(s) | ErrorCode"
-);
-console.log("-".repeat(100));
-
-for (const c of calls) {
-  console.log(
-    [
-      c.sid,
-      c.direction || "—",
-      c.status || "—",
-      c.start_time || "—",
-      c.end_time || "—",
-      c.duration ?? "—",
-      c.error_code ?? "—",
-    ].join(" | ")
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Fetch notifications for each call
-// ---------------------------------------------------------------------------
-console.log(`\n=== Notifications / Debugger ===\n`);
-
-let foundNotifications = false;
-for (const c of calls) {
-  const nData = await twilioGet(
-    `/Calls/${c.sid}/Notifications.json?PageSize=10`
-  );
-  const notifications = nData?.notifications || [];
-  if (notifications.length === 0) continue;
-
-  foundNotifications = true;
-  for (const n of notifications) {
-    const msg = (n.message_text || "").slice(0, 160);
-    console.log(
-      [
-        `CallSid: ${c.sid}`,
-        `NotifSid: ${n.sid}`,
-        `ErrorCode: ${n.error_code ?? "—"}`,
-        `Level: ${n.log ?? "—"}`,
-        `Date: ${n.date_created ?? "—"}`,
-        `Message: ${msg}`,
-      ].join(" | ")
-    );
-  }
-}
-
-if (!foundNotifications) {
-  console.log("No notifications found for any call.");
-}
-
-console.log("\n=== Done ===");

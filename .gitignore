@@ -22,3 +22,5 @@ pnpm-debug.log*
 # Local agent artifacts
 .claude/
 
+.vercel
+.env*.local

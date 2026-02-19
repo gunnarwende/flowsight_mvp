@@ -11,8 +11,20 @@
 | Twilio notifications | Same script | notification_sid, error_code, message |
 | Sentry events | `node scripts/_ops/sentry_probe.mjs` | issue IDs, event meta |
 | Retell dashboard | Manual | Call logs, agent config, webhook events |
+| Prod webhook probe | `node scripts/_ops/probe_prod_retell_webhook.mjs` | HTTP status (expect 401) |
 
 ## Decision Tree
+
+### 0. All production routes return 404
+
+```
+Every route returns 404 (not just webhook)?
+├── YES → Deployment broken. Likely a CLI deploy from repo root.
+│   ├── Fix: push any commit to trigger Git-connected deploy (uses Root Dir = src/web).
+│   ├── Prevention: do NOT run `vercel deploy` from repo root. Only from src/web.
+│   └── Verify: run probe script → expect 401.
+└── NO → Only webhook 404? Check route.ts exists at src/web/app/api/retell/webhook/route.ts.
+```
 
 ### 1. Inbound call fails immediately (duration 0)
 
