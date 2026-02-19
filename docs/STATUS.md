@@ -74,8 +74,17 @@
   - B) Vercel Logs: console.log _tag=cases_api decision=created (route.ts:200-206) — verify in Dashboard → Logs → Function api/cases
   - C) Sentry Tags: Sentry.setTag source/tenant_id/case_id (route.ts:197-199) — verify in Dashboard → Performance → /api/cases transactions
   - D) Voice regression: green (tenant_numbers=1, webhook=live, cases found)
-- 2026-02-19 | Head Ops | WELLE 4 (Ops/Observability): Email notification structured logging added to sendCaseNotification (resend.ts). Every exit path now has _tag:"email" JSON log (decision: skipped/sent/failed) + source tag in all Sentry captures. Early return on missing RESEND_API_KEY (no throw). Evidence case 49643597 (wizard, Boiler, normal).
-  - Vercel Logs: Dashboard → Logs → Function api/cases → search "_tag":"email" + case_id
+- 2026-02-19 | Head Ops | WELLE 4 (Ops/Observability):
+  - Email structured logging in resend.ts (5 exit paths: skipped/sent/failed + source tag in all Sentry captures). Early return on missing RESEND_API_KEY.
+  - Root cause: Vercel Hobby plan captures only ONE console.log per serverless invocation → separate _tag:"email" log was silently dropped.
+  - Fix: merged email_attempted:true into existing cases_api/retell_webhook decision log (single log line).
   - Sentry Token: PREP done — verify_sentry_token.mjs + runbook (docs/runbooks/sentry_token_setup.md). Token creation deferred (Founder action, no active use case yet).
+- 2026-02-19 | Head Ops | WELLE 4 EVIDENCE-COMPLETE:
+  - A) Supabase: case 080727c5 (wizard, Rohrbruch, notfall, 8942 Oberrieden)
+  - B) Vercel Log (programmatisch via vercel logs --project flowsight-mvp --json aus temp dir):
+    {"_tag":"cases_api","decision":"created","source":"wizard","case_id":"080727c5-...","email_attempted":true}
+  - C) Sentry: resend.ts has captureException + tags (area/provider/source/tenant_id/case_id) on all error paths. Success tags via route.ts Sentry.setTag. Token for API verification deferred (see runbook).
+  - D) Voice regression: green (webhook live, tenant_numbers active)
+  - E) Vercel CLI method: npx vercel logs --project <name> --json from temp dir (C:\tmp\vercel_logs), no .vercel/ in repo.
 - TBD remaining: Sentry API token (ready to execute, see runbook). RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
 - Next: doerfler-ag Phase B → Hardening → Ops Dashboard
