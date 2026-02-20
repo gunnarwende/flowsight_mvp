@@ -183,7 +183,7 @@ export async function POST(
         `FlowSight Termin`,
         `──────────────────────`,
         `Fall:    ${shortId}`,
-        `Termin:  ${dtStart.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}`,
+        `Termin:  ${dtStart.toLocaleDateString("de-CH", { timeZone: "Europe/Zurich", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}`,
         ``,
         `Fall öffnen: ${opsLink}`,
         `(Login erforderlich)`,

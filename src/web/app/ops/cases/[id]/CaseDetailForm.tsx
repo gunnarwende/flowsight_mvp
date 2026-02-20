@@ -375,5 +375,6 @@ function formatDate(iso: string): string {
     year: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Zurich",
   });
 }
