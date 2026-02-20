@@ -1,6 +1,6 @@
 # FlowSight – STATUS (Company SSOT)
 
-**Datum:** 2026-02-19
+**Datum:** 2026-02-20
 **Owner:** Head Ops Agent
 **Scope (MVP):** High-End Website + Wizard + Voice (Retell) + SSOT (Supabase) + E-Mail (Resend) + Sentry + Internal Ops Dashboard (intern)
 
@@ -41,11 +41,19 @@
 7) Ops Core: Auth + Cases + Workflow (Welle 5) ✓
 8) Deep Links + Notifications (Welle 5.5) ✓
 9) Hardening: safeNext + dirty state UX (Welle 5.6a) ✓
+10) Scheduling + ICS Invite (Welle 6) ✓ — f88ba73 + Hotfix e09423e
+11) Attachments / Storage (Welle 7) ✓ — 5eeddd1
 
 ## Next (Countdown to Go-Live)
 See docs/NORTH_STAR.md for full Launch Plan.
-- Next: Welle 6 (Scheduling C-light: ICS per Email + scheduled_at UX)
-- Then: Welle 7 (Attachments) → Welle 9 (Monitoring) → Voice Config → Mobile QA → Go-Live
+- Next: Mobile QA (30min, blocker) → Welle 9 (Monitoring/Alerting) → Go-Live
+- Voice Config: RETELL_AGENT_ID gesetzt, 1 real call verified (case f2fddfef). Needs 2nd testcall evidence.
+- W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
+
+## Go-Live Blockers (offen)
+- [ ] Voice Config: 2nd testcall mit korrekten Feldern (plz/city/category/urgency/description)
+- [ ] Welle 9: Monitoring/Alerting (health probes, Sentry scopes)
+- [ ] Mobile QA: iOS + Android manuell (/ops/cases flow, attachments, ICS)
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -94,7 +102,7 @@ See docs/NORTH_STAR.md for full Launch Plan.
   - C) Sentry: resend.ts has captureException + tags (area/provider/source/tenant_id/case_id) on all error paths. Success tags via route.ts Sentry.setTag. Token for API verification deferred (see runbook).
   - D) Voice regression: green (webhook live, tenant_numbers active)
   - E) Vercel CLI method: npx vercel logs --project <name> --json from temp dir (C:\tmp\vercel_logs), no .vercel/ in repo.
-- TBD remaining: Sentry API token (ready to execute, see runbook). RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
+- TBD remaining: Sentry API token (ready to execute, see runbook). doerfler-ag Phase B (logo, color, reviews). Voice Config 2nd testcall.
 - 2026-02-20 | Head Ops | WELLE 5 (Ops Core / Ticketing Light):
   - Auth: Supabase Magic Link via @supabase/ssr, proxy.ts gating /ops/*, /auth/confirm callback, /ops/login page
   - DB: Migration 20260220 — cases table + status (CHECK: new/contacted/scheduled/done), assignee_text, scheduled_at, internal_notes, updated_at (trigger)
@@ -104,5 +112,25 @@ See docs/NORTH_STAR.md for full Launch Plan.
   - Case contract updated: Ops-managed fields section (producers never write these)
   - Founder handoff: docs/runbooks/ops_setup.md (Supabase Auth config, redirect URLs, NEXT_PUBLIC env vars, migration)
   - Gates: ESLint clean, build passes (14 routes, 0 warnings), voice regression green
-- TBD: Founder must execute ops_setup.md (auth config + migration + env vars). Sentry API token. RETELL_AGENT_ID.
+- TBD: Founder must execute ops_setup.md (auth config + migration + env vars). Sentry API token.
 - Next: Founder executes ops_setup → smoke test /ops → doerfler-ag Phase B → Hardening
+- 2026-02-20 | Head Ops | WELLE 6 (Scheduling + ICS Invite):
+  - Quick Actions (Heute/Morgen) + datetime-local input in Ops Case Detail
+  - "Termin senden" disabled wenn dirty (Save-Guard UX)
+  - ICS Invite Route: /api/ops/cases/[id]/send-invite (Resend inline, METHOD:REQUEST, ORGANIZER/ATTENDEE, UTC Z)
+  - Hotfix: datetime-local zeigte UTC (slice(0,16)); Fix: toDatetimeLocal() → browser-lokal
+  - Evidence: Outlook Invite Accept/Decline funktioniert
+  - Commits: f88ba73 + e09423e
+- 2026-02-20 | Head Ops | WELLE 7 (Attachments / Storage):
+  - case_attachments table + RLS (Supabase migration executed by Founder)
+  - API: /api/ops/cases/[id]/attachments (GET list + signed download, POST request-upload + confirm)
+  - UI: AttachmentsSection in Ops Case Detail (upload, list, download)
+  - Supabase Storage Bucket "case-attachments" (private) erstellt by Founder
+  - Evidence: Upload, Liste, Download im Ops Case Detail funktioniert
+  - Commit: 5eeddd1
+- 2026-02-20 | Head Ops | Voice Config Status:
+  - RETELL_AGENT_ID + RETELL_API_KEY + RETELL_WEBHOOK_SECRET gesetzt (Vercel Env)
+  - Retell Webhooks konfiguriert (global + agent-level, events: call_started/ended/analyzed)
+  - Real test call #1: Case erstellt, source=voice, Felder plausibel
+  - OFFEN: 2nd testcall mit Feld-Verifikation (plz/city/category/urgency/description)
+- 2026-02-20 | Head Ops | SSOT Sync: STATUS.md + NORTH_STAR.md + mobile_qa.md runbook

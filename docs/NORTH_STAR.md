@@ -28,27 +28,18 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 | 5 | Ops Core (Auth Magic Link, cases list/detail, workflow fields) | Done |
 | 5.5 | Deep Links + Notifications (email deep link, auth return-to) | Done |
 | 5.6a | Hardening Minimal (safeNext, dirty state UX) | Done |
+| 6 | Scheduling + ICS Invite (Quick Actions, Outlook-compatible) | Done — f88ba73 + e09423e |
+| 7 | Attachments / Storage (Supabase Storage, signed URLs, Upload UI) | Done — 5eeddd1 |
 
-**Closed loop live:** Wizard/Voice → Case → Email → Deep Link → /ops login → Case Detail → PATCH persists.
+**Closed loop live:** Wizard/Voice → Case → Email → Deep Link → /ops login → Case Detail → Schedule → ICS Invite → Attachments.
 
 ## Roadmap (Countdown to Go-Live)
 
-### Welle 6 — Scheduling C-light
-- scheduled_at Quick Actions + robust input in Ops
-- "Termin senden" als ICS per Email an Dispatcher (MAIL_REPLY_TO)
-- Kein zweites Recipient-Feld, kein OAuth
-- ICS muss in Outlook/Apple/Google annehmbar sein
-
-### Welle 7 — Attachments (Fotos/Beweise)
-- Supabase Storage + RLS + signed URLs
-- Upload UI in Ops Case Detail
-- Ziel: weniger Rückfragen, bessere Diagnose, Nachweisführung
-
-### Mini-Welle "Voice Config" (Go-Live Blocker)
-- RETELL_AGENT_ID fix (Vercel env)
-- Agent Prompt/Flow: max 7 Fragen, Recording OFF, sanitär-spezifisch
-- Extraction contract-treu (plz, city, category, urgency, description)
-- Evidence: 2 Testcalls → call_analyzed → Cases korrekt
+### Mini-Welle "Voice Config" (Go-Live Blocker) — ~90%
+- ~~RETELL_AGENT_ID fix (Vercel env)~~ Done
+- Agent Prompt/Flow: max 7 Fragen, Recording OFF, sanitär-spezifisch — configured
+- Extraction contract-treu (plz, city, category, urgency, description) — configured
+- Evidence: 1/2 Testcalls verified (case f2fddfef). **Needs 2nd testcall.**
 - Scope: Founder-Console heavy, kleiner Code-Anteil
 
 ### Welle 9 — Monitoring/Alerting
@@ -69,12 +60,12 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 ## Go-Live Trigger (Dörfler AG)
 
 **Go-Live = ALL of:**
-1. Welle 6 (Scheduling) — Done
-2. Welle 7 (Attachments) — Done
-3. Welle 9 (Monitoring) — Done
-4. Mini-Welle "Voice Config" — Done (RETELL_AGENT_ID + 2 Testcalls)
-5. Mobile QA — Done (iOS + Android, keine Blocker)
-6. Email deliverability stable (Resend Dashboard: sent > 0, no bounces)
+1. Welle 6 (Scheduling) — ✅ Done (f88ba73 + e09423e)
+2. Welle 7 (Attachments) — ✅ Done (5eeddd1)
+3. Mini-Welle "Voice Config" — ⏳ 1/2 testcalls (needs 2nd call)
+4. Mobile QA — ⏳ offen (iOS + Android, see docs/runbooks/mobile_qa.md)
+5. Welle 9 (Monitoring) — ⏳ offen
+6. Email deliverability stable (Resend Dashboard: sent > 0, no bounces) — ✅ verified
 
 **Bewusste Entscheidung:** Kein "half-live". Erst alle Gates, dann echter Betrieb.
 
