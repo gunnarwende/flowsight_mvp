@@ -22,15 +22,21 @@ const URGENCY_COLORS: Record<string, string> = {
 
 const QUICK_TIMES = ["08:00", "10:00", "13:00", "16:00"] as const;
 
+/** Convert any ISO/UTC date string to a datetime-local value in browser tz. */
+function toDatetimeLocal(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 /** Build a datetime-local string for a given day offset + time in browser tz. */
 function quickDateTime(dayOffset: number, time: string): string {
   const d = new Date();
   d.setDate(d.getDate() + dayOffset);
   const [h, m] = time.split(":").map(Number);
   d.setHours(h, m, 0, 0);
-  // datetime-local format: YYYY-MM-DDTHH:MM
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return toDatetimeLocal(d.toISOString());
 }
 
 // ---------------------------------------------------------------------------
@@ -43,9 +49,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     initialData.assignee_text ?? ""
   );
   const [scheduledAt, setScheduledAt] = useState(
-    initialData.scheduled_at
-      ? initialData.scheduled_at.slice(0, 16) // datetime-local format
-      : ""
+    initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : ""
   );
   const [internalNotes, setInternalNotes] = useState(
     initialData.internal_notes ?? ""
@@ -66,7 +70,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     status !== initialData.status ||
     assigneeText !== (initialData.assignee_text ?? "") ||
     scheduledAt !==
-      (initialData.scheduled_at ? initialData.scheduled_at.slice(0, 16) : "") ||
+      (initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "") ||
     internalNotes !== (initialData.internal_notes ?? "");
 
   // Warn on tab close / navigate away with unsaved changes
