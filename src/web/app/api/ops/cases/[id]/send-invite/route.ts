@@ -199,7 +199,7 @@ export async function POST(
 
     if (error) {
       Sentry.captureException(error, {
-        tags: { area: "email", provider: "resend", case_id: id },
+        tags: { _tag: "resend", area: "email", provider: "resend", case_id: id, stage: "email", decision: "failed", error_code: "RESEND_API_ERROR" },
       });
       const apiErr = error as Record<string, unknown>;
       return respond(502, { ok: false, error: "resend_error" }, {
@@ -220,7 +220,7 @@ export async function POST(
     });
   } catch (err) {
     Sentry.captureException(err, {
-      tags: { area: "email", provider: "resend", case_id: id },
+      tags: { _tag: "resend", area: "email", provider: "resend", case_id: id, stage: "email", decision: "failed", error_code: "RESEND_EXCEPTION" },
     });
     return respond(502, { ok: false, error: "resend_error" }, {
       decision: "failed",

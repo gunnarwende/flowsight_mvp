@@ -43,16 +43,17 @@
 9) Hardening: safeNext + dirty state UX (Welle 5.6a) ✓
 10) Scheduling + ICS Invite (Welle 6) ✓ — f88ba73 + Hotfix e09423e
 11) Attachments / Storage (Welle 7) ✓ — 5eeddd1
+12) Monitoring/Alerting (Welle 9) ✓ — health endpoint, Sentry tags, alert runbook
 
 ## Next (Countdown to Go-Live)
 See docs/NORTH_STAR.md for full Launch Plan.
-- Next: Mobile QA (30min, blocker) → Welle 9 (Monitoring/Alerting) → Go-Live
+- Next: Mobile QA (30min, blocker) → Voice Config 2nd testcall → Go-Live
 - Voice Config: RETELL_AGENT_ID gesetzt, 1 real call verified (case f2fddfef). Needs 2nd testcall evidence.
 - W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
 
 ## Go-Live Blockers (offen)
 - [ ] Voice Config: 2nd testcall mit korrekten Feldern (plz/city/category/urgency/description)
-- [ ] Welle 9: Monitoring/Alerting (health probes, Sentry scopes)
+- [x] Welle 9: Monitoring/Alerting — health endpoint + Sentry tags + alert runbook. Founder: create 2 Sentry alerts (docs/runbooks/monitoring_w9.md)
 - [ ] Mobile QA: iOS + Android manuell (/ops/cases flow, attachments, ICS)
 
 ## Recent Updates
@@ -134,3 +135,11 @@ See docs/NORTH_STAR.md for full Launch Plan.
   - Real test call #1: Case erstellt, source=voice, Felder plausibel
   - OFFEN: 2nd testcall mit Feld-Verifikation (plz/city/category/urgency/description)
 - 2026-02-20 | Head Ops | SSOT Sync: STATUS.md + NORTH_STAR.md + mobile_qa.md runbook
+- 2026-02-20 | Head Ops | Timezone Fix: timeZone:"Europe/Zurich" in alle 4 formatDate Stellen (list/detail/attachments/invite email). Commit: 39c2784
+- 2026-02-20 | Head Ops | WELLE 9 (Monitoring/Alerting):
+  - Health endpoint: GET /api/health (200 JSON, no DB, no secrets, commit SHA + env)
+  - Sentry high-signal tagging: _tag + stage + decision + error_code on all P0 failure paths
+  - Routes: retell/webhook (9 paths), resend.ts (4 paths), cases/route.ts (2 paths), send-invite (2 paths)
+  - Monitoring runbook: docs/runbooks/monitoring_w9.md (2 Sentry alerts, click-by-click)
+  - Logging discipline: no new console.logs, existing 1-log-per-invocation preserved
+  - Gates: build clean (17 routes), voice regression green (webhook path unchanged)

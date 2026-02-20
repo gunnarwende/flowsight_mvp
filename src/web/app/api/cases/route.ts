@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       Sentry.captureException(error, {
-        tags: { area: "api", feature: "cases", tenant_id: tenantId },
+        tags: { _tag: "cases_api", area: "api", feature: "cases", tenant_id: tenantId, stage: "db", error_code: "DB_INSERT_ERROR", decision: "failed" },
       });
       return NextResponse.json(
         { error: "Failed to create case." },
@@ -216,7 +216,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(row, { status: 201 });
   } catch (err) {
     Sentry.captureException(err, {
-      tags: { area: "api", feature: "cases" },
+      tags: { _tag: "cases_api", area: "api", feature: "cases", stage: "db", error_code: "UNEXPECTED", decision: "failed" },
     });
     return NextResponse.json(
       { error: "Internal server error." },

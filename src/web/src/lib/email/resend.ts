@@ -63,7 +63,7 @@ export async function sendCaseNotification(
   if (!to) {
     Sentry.captureMessage("MAIL_REPLY_TO not configured — skipping email", {
       level: "warning",
-      tags: { area: "email", provider: "resend", source: payload.source },
+      tags: { _tag: "resend", area: "email", provider: "resend", source: payload.source, decision: "skipped", error_code: "NO_REPLY_TO" },
     });
     console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_MAIL_REPLY_TO" }));
     return false;
@@ -113,11 +113,15 @@ export async function sendCaseNotification(
     if (error) {
       Sentry.captureException(error, {
         tags: {
+          _tag: "resend",
           area: "email",
           provider: "resend",
           source: payload.source,
           tenant_id: payload.tenantId,
           case_id: payload.caseId,
+          decision: "failed",
+          stage: "email",
+          error_code: "RESEND_API_ERROR",
         },
       });
       const apiErr = error as Record<string, unknown>;
@@ -141,11 +145,15 @@ export async function sendCaseNotification(
   } catch (err) {
     Sentry.captureException(err, {
       tags: {
+        _tag: "resend",
         area: "email",
         provider: "resend",
         source: payload.source,
         tenant_id: payload.tenantId,
         case_id: payload.caseId,
+        decision: "failed",
+        stage: "email",
+        error_code: "RESEND_EXCEPTION",
       },
     });
     console.log(JSON.stringify({

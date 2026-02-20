@@ -30,6 +30,7 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 | 5.6a | Hardening Minimal (safeNext, dirty state UX) | Done |
 | 6 | Scheduling + ICS Invite (Quick Actions, Outlook-compatible) | Done — f88ba73 + e09423e |
 | 7 | Attachments / Storage (Supabase Storage, signed URLs, Upload UI) | Done — 5eeddd1 |
+| 9 | Monitoring/Alerting (health endpoint, Sentry tags, alert runbook) | Done |
 
 **Closed loop live:** Wizard/Voice → Case → Email → Deep Link → /ops login → Case Detail → Schedule → ICS Invite → Attachments.
 
@@ -42,9 +43,10 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 - Evidence: 1/2 Testcalls verified (case f2fddfef). **Needs 2nd testcall.**
 - Scope: Founder-Console heavy, kleiner Code-Anteil
 
-### Welle 9 — Monitoring/Alerting
-- Health probes + Alerts
-- Sentry API token scopes fix (nur wenn Use Case aktiv)
+### ~~Welle 9 — Monitoring/Alerting~~ Done
+- ~~Health probes + Alerts~~ GET /api/health + 2 Sentry alerts (see docs/runbooks/monitoring_w9.md)
+- Sentry tags: _tag/stage/decision/error_code on all P0 paths
+- Founder action: create 2 Sentry alerts per runbook
 
 ### Mobile QA (Go-Live Blocker)
 - 30min manueller Test auf Phone (iOS + Android)
@@ -64,7 +66,7 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 2. Welle 7 (Attachments) — ✅ Done (5eeddd1)
 3. Mini-Welle "Voice Config" — ⏳ 1/2 testcalls (needs 2nd call)
 4. Mobile QA — ⏳ offen (iOS + Android, see docs/runbooks/mobile_qa.md)
-5. Welle 9 (Monitoring) — ⏳ offen
+5. Welle 9 (Monitoring) — ✅ Done (health endpoint + Sentry tags + runbook)
 6. Email deliverability stable (Resend Dashboard: sent > 0, no bounces) — ✅ verified
 
 **Bewusste Entscheidung:** Kein "half-live". Erst alle Gates, dann echter Betrieb.

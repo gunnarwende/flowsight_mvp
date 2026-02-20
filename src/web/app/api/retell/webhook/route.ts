@@ -121,18 +121,25 @@ export async function POST(req: Request) {
   Sentry.setTag("area", "voice");
   Sentry.setTag("provider", "retell");
   Sentry.setTag("endpoint", "/api/retell/webhook");
+  Sentry.setTag("_tag", "retell_webhook");
 
   // ── Signature verification ──────────────────────────────────────────
   const signature = req.headers.get("x-retell-signature");
   if (!signature) {
-    Sentry.captureMessage("Retell webhook missing x-retell-signature header", "warning");
+    Sentry.captureMessage("Retell webhook missing x-retell-signature header", {
+      level: "warning",
+      tags: { stage: "verify", decision: "rejected", error_code: "NO_SIG_HEADER" },
+    });
     logDecision({ decision: "rejected", reason: "missing_signature" });
     return NextResponse.json({ error: "missing_signature_header" }, { status: 401 });
   }
 
   const apiKey = process.env.RETELL_API_KEY;
   if (!apiKey) {
-    Sentry.captureMessage("RETELL_API_KEY missing on server", "error");
+    Sentry.captureMessage("RETELL_API_KEY missing on server", {
+      level: "error",
+      tags: { stage: "verify", decision: "rejected", error_code: "NO_API_KEY" },
+    });
     logDecision({ decision: "rejected", reason: "no_api_key" });
     return NextResponse.json({ error: "server_misconfigured" }, { status: 500 });
   }
@@ -142,12 +149,17 @@ export async function POST(req: Request) {
   try {
     const verified = await Retell.verify(rawBody, apiKey, signature);
     if (!verified) {
-      Sentry.captureMessage("Invalid Retell webhook signature", "warning");
+      Sentry.captureMessage("Invalid Retell webhook signature", {
+        level: "warning",
+        tags: { stage: "verify", decision: "rejected", error_code: "INVALID_SIG" },
+      });
       logDecision({ decision: "rejected", reason: "invalid_signature" });
       return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
     }
   } catch (e) {
-    Sentry.captureException(e);
+    Sentry.captureException(e, {
+      tags: { stage: "verify", decision: "rejected", error_code: "VERIFY_EXCEPTION" },
+    });
     logDecision({ decision: "rejected", reason: "signature_error" });
     return NextResponse.json({ error: "signature_verification_error" }, { status: 401 });
   }
@@ -157,7 +169,9 @@ export async function POST(req: Request) {
   try {
     payload = JSON.parse(rawBody) as RetellWebhookPayload;
   } catch (e) {
-    Sentry.captureException(e);
+    Sentry.captureException(e, {
+      tags: { stage: "parse", decision: "rejected", error_code: "PARSE_ERROR" },
+    });
     logDecision({ decision: "rejected", reason: "invalid_json" });
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
@@ -233,6 +247,8 @@ export async function POST(req: Request) {
         provider: "retell",
         retell_call_id: retellCallId,
         decision: "missing_fields",
+        stage: "validate",
+        error_code: "MISSING_FIELDS",
       },
       extra: {
         missing_fields: missing,
@@ -271,6 +287,8 @@ export async function POST(req: Request) {
         provider: "retell",
         retell_call_id: retellCallId,
         decision: "no_tenant",
+        stage: "validate",
+        error_code: "NO_TENANT",
       },
     });
     logDecision({ decision: "no_tenant", event, call_id: retellCallId });
@@ -315,6 +333,8 @@ export async function POST(req: Request) {
           tenant_id: tenantId,
           retell_call_id: retellCallId,
           decision: "insert_error",
+          stage: "db",
+          error_code: "DB_INSERT_ERROR",
         },
       });
       logDecision({
@@ -356,6 +376,8 @@ export async function POST(req: Request) {
         feature: "cases",
         tenant_id: tenantId,
         decision: "unexpected_error",
+        stage: "db",
+        error_code: "UNEXPECTED",
       },
     });
     logDecision({
