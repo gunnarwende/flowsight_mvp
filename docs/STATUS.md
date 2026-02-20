@@ -47,14 +47,13 @@
 
 ## Next (Countdown to Go-Live)
 See docs/NORTH_STAR.md for full Launch Plan.
-- Next: Mobile QA (30min, blocker) → Voice Config 2nd testcall → Go-Live
-- Voice Config: RETELL_AGENT_ID gesetzt, 1 real call verified (case f2fddfef). Needs 2nd testcall evidence.
+- **All Go-Live gates passed.** Next: Founder Go-Live decision + Sentry alerts config (docs/runbooks/monitoring_w9.md).
 - W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
 
-## Go-Live Blockers (offen)
-- [ ] Voice Config: 2nd testcall mit korrekten Feldern (plz/city/category/urgency/description)
+## Go-Live Blockers — ALL DONE ✓
+- [x] Voice Config: 2/2 testcalls verified (case f2fddfef + case 28941f2c). Mail delivered, deep link ok.
 - [x] Welle 9: Monitoring/Alerting — health endpoint + Sentry tags + alert runbook. Founder: create 2 Sentry alerts (docs/runbooks/monitoring_w9.md)
-- [ ] Mobile QA: iOS + Android manuell (/ops/cases flow, attachments, ICS)
+- [x] Mobile QA: iOS + Android verified by Founder. Keine Blocker.
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -143,3 +142,7 @@ See docs/NORTH_STAR.md for full Launch Plan.
   - Monitoring runbook: docs/runbooks/monitoring_w9.md (2 Sentry alerts, click-by-click)
   - Logging discipline: no new console.logs, existing 1-log-per-invocation preserved
   - Gates: build clean (17 routes), voice regression green (webhook path unchanged)
+- 2026-02-20 | Head Ops | GO-LIVE GATES ALL PASSED:
+  - Voice Config: 2/2 testcalls (f2fddfef + 28941f2c), mail delivered, deep link ok
+  - Mobile QA: Founder verified, keine Blocker
+  - All 6 Go-Live gates ✓. Next: Founder Go-Live decision.

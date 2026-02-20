@@ -36,22 +36,19 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 
 ## Roadmap (Countdown to Go-Live)
 
-### Mini-Welle "Voice Config" (Go-Live Blocker) — ~90%
+### ~~Mini-Welle "Voice Config"~~ Done
 - ~~RETELL_AGENT_ID fix (Vercel env)~~ Done
 - Agent Prompt/Flow: max 7 Fragen, Recording OFF, sanitär-spezifisch — configured
 - Extraction contract-treu (plz, city, category, urgency, description) — configured
-- Evidence: 1/2 Testcalls verified (case f2fddfef). **Needs 2nd testcall.**
-- Scope: Founder-Console heavy, kleiner Code-Anteil
+- Evidence: 2/2 Testcalls verified (case f2fddfef + case 28941f2c). Mail delivered, deep link ok.
 
 ### ~~Welle 9 — Monitoring/Alerting~~ Done
 - ~~Health probes + Alerts~~ GET /api/health + 2 Sentry alerts (see docs/runbooks/monitoring_w9.md)
 - Sentry tags: _tag/stage/decision/error_code on all P0 paths
 - Founder action: create 2 Sentry alerts per runbook
 
-### Mobile QA (Go-Live Blocker)
-- 30min manueller Test auf Phone (iOS + Android)
-- Scope: /ops/cases list + detail + save + ICS flow
-- Fixes nur wenn wirklich Blocker
+### ~~Mobile QA~~ Done
+- ~~30min manueller Test auf Phone (iOS + Android)~~ Founder verified, keine Blocker.
 
 ### Welle 8 — Post-Job Voice Note (R&D / optional)
 - Voice note upload → Transcription → Extraction → Suggested Updates → Apply
@@ -64,8 +61,8 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 **Go-Live = ALL of:**
 1. Welle 6 (Scheduling) — ✅ Done (f88ba73 + e09423e)
 2. Welle 7 (Attachments) — ✅ Done (5eeddd1)
-3. Mini-Welle "Voice Config" — ⏳ 1/2 testcalls (needs 2nd call)
-4. Mobile QA — ⏳ offen (iOS + Android, see docs/runbooks/mobile_qa.md)
+3. Mini-Welle "Voice Config" — ✅ Done (2/2 testcalls: f2fddfef + 28941f2c)
+4. Mobile QA — ✅ Done (Founder verified, keine Blocker)
 5. Welle 9 (Monitoring) — ✅ Done (health endpoint + Sentry tags + runbook)
 6. Email deliverability stable (Resend Dashboard: sent > 0, no bounces) — ✅ verified
 
