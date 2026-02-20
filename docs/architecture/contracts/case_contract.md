@@ -25,9 +25,20 @@ The POST /api/cases endpoint accepts these shorthand aliases. They are normalize
 
 Canonical fields always take priority — if both `phone` and `contact_phone` are sent, `contact_phone` wins.
 
-## Optional Fields
+## Optional Fields (Producer)
 - photo_url (string URL)
 - raw_payload (json) — optional, nur für Debugging (sparsam)
+
+## Ops-managed Fields (Welle 5)
+
+These fields are written ONLY by the Ops UI/API — Producers (wizard, voice) never set them.
+They are not part of the case creation contract; they exist for workflow management.
+
+- status (text, default "new") — allowed: "new" | "contacted" | "scheduled" | "done"
+- assignee_text (text, nullable) — free text, e.g. operator name
+- scheduled_at (timestamptz, nullable) — when the job is scheduled
+- internal_notes (text, nullable) — private notes, never exposed to customers
+- updated_at (timestamptz, auto) — auto-updated on every row change via DB trigger
 
 ## Urgency Regeln (deterministisch)
 Wenn description (oder voice answers/transcript) einen Notfall-Trigger enthält → urgency="notfall".

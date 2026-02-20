@@ -37,7 +37,9 @@
 3) Plumbing: Case API + Email + Aliases + Structured Errors (Welle 2B) ✓
 4) Voice E2E: Webhook + tenant resolve + case creation + observability (Welle 2C) ✓
 5) Wizard Frontend + doerfler-ag Integration (Welle 3) ✓ — Evidence-complete
-6) Next: doerfler-ag Phase B (Founder confirms TBD: logo, color, reviews) + Hardening + Ops Dashboard
+6) Ops/Observability: Email logging + Sentry token prep (Welle 4) ✓ — Evidence-complete
+7) Ops Core: Auth (Magic Link) + Cases list/detail + Workflow fields (Welle 5) ✓ — Pending Founder setup (ops_setup.md)
+8) Next: Founder executes ops_setup.md → doerfler-ag Phase B → Hardening
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -87,4 +89,14 @@
   - D) Voice regression: green (webhook live, tenant_numbers active)
   - E) Vercel CLI method: npx vercel logs --project <name> --json from temp dir (C:\tmp\vercel_logs), no .vercel/ in repo.
 - TBD remaining: Sentry API token (ready to execute, see runbook). RETELL_AGENT_ID env var. doerfler-ag Phase B (logo, color, reviews).
-- Next: doerfler-ag Phase B → Hardening → Ops Dashboard
+- 2026-02-20 | Head Ops | WELLE 5 (Ops Core / Ticketing Light):
+  - Auth: Supabase Magic Link via @supabase/ssr, proxy.ts gating /ops/*, /auth/confirm callback, /ops/login page
+  - DB: Migration 20260220 — cases table + status (CHECK: new/contacted/scheduled/done), assignee_text, scheduled_at, internal_notes, updated_at (trigger)
+  - API: GET/PATCH /api/ops/cases/[id] with auth check + allowlist update + structured log (_tag:ops_cases_api, no PII)
+  - UI: /ops/cases (list, default=open, filter chips: status/urgency), /ops/cases/[id] (detail + edit form: status/assignee/scheduled/notes)
+  - Logout: POST /api/ops/logout
+  - Case contract updated: Ops-managed fields section (producers never write these)
+  - Founder handoff: docs/runbooks/ops_setup.md (Supabase Auth config, redirect URLs, NEXT_PUBLIC env vars, migration)
+  - Gates: ESLint clean, build passes (14 routes, 0 warnings), voice regression green
+- TBD: Founder must execute ops_setup.md (auth config + migration + env vars). Sentry API token. RETELL_AGENT_ID.
+- Next: Founder executes ops_setup → smoke test /ops → doerfler-ag Phase B → Hardening

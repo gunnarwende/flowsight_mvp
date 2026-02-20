@@ -11,6 +11,8 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - SUPABASE_URL -> Supabase Project Settings
 - SUPABASE_ANON_KEY -> Supabase API Keys (public)
 - SUPABASE_SERVICE_ROLE_KEY -> Supabase API Keys (server-only)
+- NEXT_PUBLIC_SUPABASE_URL -> Same as SUPABASE_URL (browser-accessible, for Auth flows)
+- NEXT_PUBLIC_SUPABASE_ANON_KEY -> Same as SUPABASE_ANON_KEY (browser-accessible, for Auth flows)
 
 ## Resend (Mail Provider)
 - RESEND_API_KEY -> Resend Dashboard
