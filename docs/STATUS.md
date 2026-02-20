@@ -31,15 +31,21 @@
 - Runbooks: docs/runbooks/
 - Contracts: docs/architecture/contracts/
 
-## Next 5 Steps
-1) SSOT Backbone: STATUS + Contracts + Env Vars + Agent Briefs (Welle 1) ✓
-2) Supabase SSOT Schema: tenants/cases + constraints (Welle 2A) ✓
-3) Plumbing: Case API + Email + Aliases + Structured Errors (Welle 2B) ✓
-4) Voice E2E: Webhook + tenant resolve + case creation + observability (Welle 2C) ✓
-5) Wizard Frontend + doerfler-ag Integration (Welle 3) ✓ — Evidence-complete
-6) Ops/Observability: Email logging + Sentry token prep (Welle 4) ✓ — Evidence-complete
-7) Ops Core: Auth (Magic Link) + Cases list/detail + Workflow fields (Welle 5) ✓ — Pending Founder setup (ops_setup.md)
-8) Next: Founder executes ops_setup.md → doerfler-ag Phase B → Hardening
+## Wellen (Done)
+1) SSOT Backbone (Welle 1) ✓
+2) Supabase Schema (Welle 2A) ✓
+3) Case API + Email (Welle 2B) ✓
+4) Voice E2E (Welle 2C) ✓
+5) Wizard + doerfler-ag (Welle 3) ✓
+6) Ops/Observability (Welle 4) ✓
+7) Ops Core: Auth + Cases + Workflow (Welle 5) ✓
+8) Deep Links + Notifications (Welle 5.5) ✓
+9) Hardening: safeNext + dirty state UX (Welle 5.6a) ✓
+
+## Next (Countdown to Go-Live)
+See docs/NORTH_STAR.md for full Launch Plan.
+- Next: Welle 6 (Scheduling C-light: ICS per Email + scheduled_at UX)
+- Then: Welle 7 (Attachments) → Welle 9 (Monitoring) → Voice Config → Mobile QA → Go-Live
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
