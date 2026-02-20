@@ -9,9 +9,16 @@ const ERROR_MESSAGES: Record<string, string> = {
   config: "Auth ist nicht konfiguriert. Bitte Admin kontaktieren.",
 };
 
+/** Sanitize next param: must start with "/" and not "//" (open redirect). */
+function safeNext(raw: string | null): string | null {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null;
+  return raw;
+}
+
 export function LoginForm() {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error");
+  const nextPath = safeNext(searchParams.get("next"));
 
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
@@ -28,10 +35,13 @@ export function LoginForm() {
 
     try {
       const supabase = getBrowserClient();
+      const confirmUrl = new URL("/auth/confirm", window.location.origin);
+      if (nextPath) confirmUrl.searchParams.set("next", nextPath);
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
+          emailRedirectTo: confirmUrl.toString(),
         },
       });
 

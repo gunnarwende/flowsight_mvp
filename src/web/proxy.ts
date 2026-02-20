@@ -35,14 +35,16 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Gate /ops routes: redirect unauthenticated users to /ops/login
+  // Gate /ops routes: redirect unauthenticated users to /ops/login?next=<path>
   if (
     !user &&
     request.nextUrl.pathname.startsWith("/ops") &&
     !request.nextUrl.pathname.startsWith("/ops/login")
   ) {
     const loginUrl = request.nextUrl.clone();
+    const returnTo = request.nextUrl.pathname + request.nextUrl.search;
     loginUrl.pathname = "/ops/login";
+    loginUrl.searchParams.set("next", returnTo);
     return NextResponse.redirect(loginUrl);
   }
 

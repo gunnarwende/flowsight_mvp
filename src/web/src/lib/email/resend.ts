@@ -28,6 +28,8 @@ interface CaseEmailPayload {
   city: string;
   plz: string;
   description: string;
+  contactPhone?: string;
+  contactEmail?: string;
 }
 
 /**
@@ -63,6 +65,16 @@ export async function sendCaseNotification(
         : "Neuer Fall";
 
   try {
+    const baseUrl =
+      process.env.APP_URL ??
+      process.env.NEXT_PUBLIC_APP_URL ??
+      "https://flowsight-mvp.vercel.app";
+    const deepLink = `${baseUrl}/ops/cases/${payload.caseId}`;
+
+    const contactLines: string[] = [];
+    if (payload.contactPhone) contactLines.push(`Telefon:   ${payload.contactPhone}`);
+    if (payload.contactEmail) contactLines.push(`E-Mail:    ${payload.contactEmail}`);
+
     const { error } = await getResend().emails.send({
       from,
       to,
@@ -70,14 +82,19 @@ export async function sendCaseNotification(
       text: [
         `Neuer Case erstellt`,
         `──────────────────────`,
-        `ID:        ${payload.caseId}`,
+        `ID:        ${payload.caseId.slice(0, 8)}`,
         `Quelle:    ${payload.source}`,
         `Kategorie: ${payload.category}`,
         `Dringend:  ${payload.urgency}`,
         `PLZ/Ort:   ${payload.plz} ${payload.city}`,
+        ...(contactLines.length > 0 ? contactLines : []),
         `──────────────────────`,
         `Beschreibung:`,
         payload.description,
+        ``,
+        `──────────────────────`,
+        `Fall öffnen: ${deepLink}`,
+        `(Login erforderlich)`,
       ].join("\n"),
     });
 

@@ -342,6 +342,7 @@ export async function POST(req: Request) {
       city: city!,
       plz: plz!,
       description: description!,
+      contactPhone: callerPhone ?? undefined,
     }).catch(() => {
       // Already captured in Sentry inside sendCaseNotification
     });

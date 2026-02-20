@@ -215,6 +215,8 @@ export async function POST(request: NextRequest) {
       city: data.city,
       plz: data.plz,
       description: data.description,
+      contactPhone: data.contact_phone,
+      contactEmail: data.contact_email,
     }).catch(() => {
       // Already captured in Sentry inside sendCaseNotification
     });
