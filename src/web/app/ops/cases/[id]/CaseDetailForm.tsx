@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { CaseDetail } from "./page";
 
 // ---------------------------------------------------------------------------
@@ -42,6 +42,26 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     "idle" | "saving" | "saved" | "error"
   >("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Dirty state: compare current values against initial
+  const isDirty =
+    status !== initialData.status ||
+    assigneeText !== (initialData.assignee_text ?? "") ||
+    scheduledAt !==
+      (initialData.scheduled_at ? initialData.scheduled_at.slice(0, 16) : "") ||
+    internalNotes !== (initialData.internal_notes ?? "");
+
+  // Warn on tab close / navigate away with unsaved changes
+  const onBeforeUnload = useCallback(
+    (e: BeforeUnloadEvent) => {
+      if (isDirty) e.preventDefault();
+    },
+    [isDirty],
+  );
+  useEffect(() => {
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [onBeforeUnload]);
 
   async function handleSave() {
     setSaveState("saving");
@@ -210,7 +230,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         <div className="mt-5 flex items-center gap-3">
           <button
             onClick={handleSave}
-            disabled={saveState === "saving"}
+            disabled={!isDirty || saveState === "saving"}
             className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saveState === "saving" ? "Speichern\u2026" : "Speichern"}

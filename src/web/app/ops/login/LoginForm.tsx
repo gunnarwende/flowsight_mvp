@@ -9,10 +9,19 @@ const ERROR_MESSAGES: Record<string, string> = {
   config: "Auth ist nicht konfiguriert. Bitte Admin kontaktieren.",
 };
 
-/** Sanitize next param: must start with "/" and not "//" (open redirect). */
+/** Sanitize next param: must be a relative path, no open-redirect vectors. */
 function safeNext(raw: string | null): string | null {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null;
-  return raw;
+  if (!raw) return null;
+  let v: string;
+  try {
+    v = decodeURIComponent(raw.trim());
+  } catch {
+    return null;
+  }
+  // Normalize backslashes (IE/legacy edge case for open redirect via \)
+  v = v.replace(/\\/g, "/");
+  if (!v.startsWith("/") || v.startsWith("//")) return null;
+  return v;
 }
 
 export function LoginForm() {
