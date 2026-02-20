@@ -29,19 +29,21 @@ interface CaseEmailPayload {
 
 /**
  * Send a case-created notification email.
- * Non-blocking: errors are captured to Sentry but never thrown.
+ * MUST be awaited by callers — fire-and-forget causes Vercel to terminate
+ * before the Resend API call + console.log complete.
  *
- * This function owns the SINGLE console.log per invocation (Vercel Hobby limit).
- * Callers (route.ts, webhook) must NOT console.log on their success path.
+ * Errors are captured to Sentry but never thrown.
+ * Owns the SINGLE console.log per invocation (Vercel Hobby limit).
  */
 export async function sendCaseNotification(
   payload: CaseEmailPayload
 ): Promise<boolean> {
-  const from = process.env.MAIL_FROM ?? "noreply@flowsight.ch";
+  const fromEnvValue = process.env.MAIL_FROM;
+  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
   const to = process.env.MAIL_REPLY_TO;
   const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
-  // Base log fields — always present, no PII
+  // Base log fields — always present, no PII (no actual addresses)
   const base: Record<string, unknown> = {
     _tag: "resend",
     case_id: payload.caseId,
@@ -49,6 +51,8 @@ export async function sendCaseNotification(
     tenant_id: payload.tenantId,
     recipient_env: "MAIL_REPLY_TO",
     recipient_present: !!to,
+    from_env: fromEnvValue ? "MAIL_FROM" : "default",
+    from_domain: from.split("@")[1] ?? "unknown",
   };
 
   if (!process.env.RESEND_API_KEY) {
@@ -122,6 +126,7 @@ export async function sendCaseNotification(
         decision: "failed",
         reason: "resend_api_error",
         error_code: apiErr.name ?? null,
+        error_message: typeof apiErr.message === "string" ? apiErr.message : null,
         http_status: apiErr.statusCode ?? null,
       }));
       return false;
@@ -147,7 +152,8 @@ export async function sendCaseNotification(
       ...base,
       decision: "failed",
       reason: "exception",
-      error_code: err instanceof Error ? err.message : "unknown",
+      error_code: err instanceof Error ? err.name : "unknown",
+      error_message: err instanceof Error ? err.message : "unknown",
     }));
     return false;
   }

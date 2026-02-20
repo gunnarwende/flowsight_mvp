@@ -197,9 +197,10 @@ export async function POST(request: NextRequest) {
     Sentry.setTag("source", data.source);
     Sentry.setTag("tenant_id", tenantId);
     Sentry.setTag("case_id", row.id);
-    // Log moved to sendCaseNotification (resend.ts) — Hobby limit: ONE console.log per invocation.
-    // resend.ts logs: _tag:"resend", decision, case_id, source, tenant_id, provider_message_id
-    sendCaseNotification({
+    // MUST await — fire-and-forget causes Vercel to kill the invocation
+    // before the Resend API call + console.log complete (msgLen=0 bug).
+    // resend.ts owns the single console.log: _tag:"resend", decision, case_id, etc.
+    await sendCaseNotification({
       caseId: row.id,
       tenantId,
       source: data.source,
@@ -210,8 +211,6 @@ export async function POST(request: NextRequest) {
       description: data.description,
       contactPhone: data.contact_phone,
       contactEmail: data.contact_email,
-    }).catch(() => {
-      // Already captured in Sentry inside sendCaseNotification
     });
 
     return NextResponse.json(row, { status: 201 });

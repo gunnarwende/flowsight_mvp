@@ -332,8 +332,9 @@ export async function POST(req: Request) {
     Sentry.setTag("case_id", caseId);
     Sentry.setTag("decision", "created");
 
-    // Fire-and-forget email (non-blocking)
-    sendCaseNotification({
+    // MUST await — fire-and-forget causes Vercel to kill the invocation
+    // before the Resend API call + console.log complete (msgLen=0 bug).
+    await sendCaseNotification({
       caseId,
       tenantId,
       source: "voice",
@@ -343,12 +344,7 @@ export async function POST(req: Request) {
       plz: plz!,
       description: description!,
       contactPhone: callerPhone ?? undefined,
-    }).catch(() => {
-      // Already captured in Sentry inside sendCaseNotification
     });
-
-    // Log moved to sendCaseNotification (resend.ts) — Hobby limit: ONE console.log per invocation.
-    // resend.ts logs: _tag:"resend", decision, case_id, source, tenant_id, provider_message_id
 
     return new NextResponse(null, { status: 204 });
   } catch (err) {
