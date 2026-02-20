@@ -347,17 +347,8 @@ export async function POST(req: Request) {
       // Already captured in Sentry inside sendCaseNotification
     });
 
-    // Single log line — Vercel Hobby captures only ONE console.log per invocation.
-    logDecision({
-      decision: "created",
-      event,
-      call_id: retellCallId,
-      tenant_id: tenantId,
-      case_id: caseId,
-      email_attempted: true,
-      extracted_path_used: extractedPath,
-      extracted_keys: extractedKeys,
-    });
+    // Log moved to sendCaseNotification (resend.ts) — Hobby limit: ONE console.log per invocation.
+    // resend.ts logs: _tag:"resend", decision, case_id, source, tenant_id, provider_message_id
 
     return new NextResponse(null, { status: 204 });
   } catch (err) {

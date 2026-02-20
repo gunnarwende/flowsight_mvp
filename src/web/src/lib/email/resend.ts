@@ -14,11 +14,6 @@ function getResend(): Resend {
   return _resend;
 }
 
-/** Structured log line for Vercel Function Logs (no PII). */
-function logEmail(fields: Record<string, unknown>) {
-  console.log(JSON.stringify({ _tag: "email", provider: "resend", ...fields }));
-}
-
 interface CaseEmailPayload {
   caseId: string;
   tenantId: string;
@@ -35,6 +30,9 @@ interface CaseEmailPayload {
 /**
  * Send a case-created notification email.
  * Non-blocking: errors are captured to Sentry but never thrown.
+ *
+ * This function owns the SINGLE console.log per invocation (Vercel Hobby limit).
+ * Callers (route.ts, webhook) must NOT console.log on their success path.
  */
 export async function sendCaseNotification(
   payload: CaseEmailPayload
@@ -43,8 +41,18 @@ export async function sendCaseNotification(
   const to = process.env.MAIL_REPLY_TO;
   const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
+  // Base log fields — always present, no PII
+  const base: Record<string, unknown> = {
+    _tag: "resend",
+    case_id: payload.caseId,
+    source: payload.source,
+    tenant_id: payload.tenantId,
+    recipient_env: "MAIL_REPLY_TO",
+    recipient_present: !!to,
+  };
+
   if (!process.env.RESEND_API_KEY) {
-    logEmail({ decision: "skipped", reason: "no_RESEND_API_KEY", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_RESEND_API_KEY" }));
     return false;
   }
 
@@ -53,7 +61,7 @@ export async function sendCaseNotification(
       level: "warning",
       tags: { area: "email", provider: "resend", source: payload.source },
     });
-    logEmail({ decision: "skipped", reason: "no_MAIL_REPLY_TO", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_MAIL_REPLY_TO" }));
     return false;
   }
 
@@ -75,7 +83,7 @@ export async function sendCaseNotification(
     if (payload.contactPhone) contactLines.push(`Telefon:   ${payload.contactPhone}`);
     if (payload.contactEmail) contactLines.push(`E-Mail:    ${payload.contactEmail}`);
 
-    const { error } = await getResend().emails.send({
+    const { data, error } = await getResend().emails.send({
       from,
       to,
       subject: `${subjectPrefix} ${urgencyLabel} – ${payload.category} (${payload.city})`,
@@ -108,11 +116,22 @@ export async function sendCaseNotification(
           case_id: payload.caseId,
         },
       });
-      logEmail({ decision: "failed", reason: "resend_api_error", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+      const apiErr = error as Record<string, unknown>;
+      console.log(JSON.stringify({
+        ...base,
+        decision: "failed",
+        reason: "resend_api_error",
+        error_code: apiErr.name ?? null,
+        http_status: apiErr.statusCode ?? null,
+      }));
       return false;
     }
 
-    logEmail({ decision: "sent", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+    console.log(JSON.stringify({
+      ...base,
+      decision: "sent",
+      provider_message_id: data?.id ?? null,
+    }));
     return true;
   } catch (err) {
     Sentry.captureException(err, {
@@ -124,7 +143,12 @@ export async function sendCaseNotification(
         case_id: payload.caseId,
       },
     });
-    logEmail({ decision: "failed", reason: "exception", case_id: payload.caseId, tenant_id: payload.tenantId, source: payload.source });
+    console.log(JSON.stringify({
+      ...base,
+      decision: "failed",
+      reason: "exception",
+      error_code: err instanceof Error ? err.message : "unknown",
+    }));
     return false;
   }
 }

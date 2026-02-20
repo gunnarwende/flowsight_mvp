@@ -197,15 +197,8 @@ export async function POST(request: NextRequest) {
     Sentry.setTag("source", data.source);
     Sentry.setTag("tenant_id", tenantId);
     Sentry.setTag("case_id", row.id);
-    // Single log line — Vercel Hobby captures only ONE console.log per invocation.
-    console.log(JSON.stringify({
-      _tag: "cases_api",
-      decision: "created",
-      source: data.source,
-      tenant_id: tenantId,
-      case_id: row.id,
-      email_attempted: true,
-    }));
+    // Log moved to sendCaseNotification (resend.ts) — Hobby limit: ONE console.log per invocation.
+    // resend.ts logs: _tag:"resend", decision, case_id, source, tenant_id, provider_message_id
     sendCaseNotification({
       caseId: row.id,
       tenantId,
