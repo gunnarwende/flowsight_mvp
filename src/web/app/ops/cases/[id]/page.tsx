@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { AttachmentsSection } from "./AttachmentsSection";
 import { CaseDetailForm } from "./CaseDetailForm";
 
 // ---------------------------------------------------------------------------
@@ -80,6 +81,9 @@ export default async function CaseDetailPage({
         </Link>
 
         <CaseDetailForm initialData={caseData} />
+        <div className="mt-6">
+          <AttachmentsSection caseId={caseData.id} />
+        </div>
       </main>
     </div>
   );
