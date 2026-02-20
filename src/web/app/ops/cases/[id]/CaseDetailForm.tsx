@@ -20,6 +20,19 @@ const URGENCY_COLORS: Record<string, string> = {
   normal: "bg-blue-900/40 text-blue-300 border-blue-700",
 };
 
+const QUICK_TIMES = ["08:00", "10:00", "13:00", "16:00"] as const;
+
+/** Build a datetime-local string for a given day offset + time in browser tz. */
+function quickDateTime(dayOffset: number, time: string): string {
+  const d = new Date();
+  d.setDate(d.getDate() + dayOffset);
+  const [h, m] = time.split(":").map(Number);
+  d.setHours(h, m, 0, 0);
+  // datetime-local format: YYYY-MM-DDTHH:MM
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -42,6 +55,11 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     "idle" | "saving" | "saved" | "error"
   >("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [inviteState, setInviteState] = useState<
+    "idle" | "sending" | "sent" | "error"
+  >("idle");
+  const [inviteMsg, setInviteMsg] = useState("");
 
   // Dirty state: compare current values against initial
   const isDirty =
@@ -89,6 +107,30 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     } catch (err) {
       setSaveState("error");
       setErrorMsg(err instanceof Error ? err.message : "Speichern fehlgeschlagen.");
+    }
+  }
+
+  const canSendInvite = !isDirty && !!scheduledAt && inviteState !== "sending";
+
+  async function handleSendInvite() {
+    setInviteState("sending");
+    setInviteMsg("");
+
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, {
+        method: "POST",
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? `HTTP ${res.status}`);
+      }
+
+      setInviteState("sent");
+      setTimeout(() => setInviteState("idle"), 3000);
+    } catch (err) {
+      setInviteState("error");
+      setInviteMsg(err instanceof Error ? err.message : "Senden fehlgeschlagen.");
     }
   }
 
@@ -208,6 +250,25 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
           </div>
         </div>
 
+        {/* Quick Actions for scheduled_at */}
+        <div className="mt-3">
+          <p className="text-xs font-medium text-slate-400 mb-2">Schnellwahl</p>
+          <div className="flex flex-wrap gap-2">
+            {([0, 1] as const).map((dayOffset) => (
+              QUICK_TIMES.map((time) => (
+                <button
+                  key={`${dayOffset}-${time}`}
+                  type="button"
+                  onClick={() => setScheduledAt(quickDateTime(dayOffset, time))}
+                  className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 hover:border-blue-500 hover:text-white"
+                >
+                  {dayOffset === 0 ? "Heute" : "Morgen"} {time}
+                </button>
+              ))
+            ))}
+          </div>
+        </div>
+
         {/* Internal notes */}
         <div className="mt-4">
           <label
@@ -226,8 +287,8 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
           />
         </div>
 
-        {/* Save button */}
-        <div className="mt-5 flex items-center gap-3">
+        {/* Save + Send Invite */}
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <button
             onClick={handleSave}
             disabled={!isDirty || saveState === "saving"}
@@ -236,11 +297,32 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
             {saveState === "saving" ? "Speichern\u2026" : "Speichern"}
           </button>
 
+          <button
+            onClick={handleSendInvite}
+            disabled={!canSendInvite}
+            title={
+              isDirty
+                ? "Bitte zuerst speichern"
+                : !scheduledAt
+                  ? "Kein Termin gesetzt"
+                  : undefined
+            }
+            className="rounded-lg border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-medium text-slate-200 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {inviteState === "sending" ? "Sende\u2026" : "Termin senden"}
+          </button>
+
           {saveState === "saved" && (
             <span className="text-emerald-400 text-sm">Gespeichert</span>
           )}
           {saveState === "error" && (
             <span className="text-red-400 text-sm">{errorMsg}</span>
+          )}
+          {inviteState === "sent" && (
+            <span className="text-emerald-400 text-sm">Invite gesendet</span>
+          )}
+          {inviteState === "error" && (
+            <span className="text-red-400 text-sm">{inviteMsg}</span>
           )}
         </div>
       </section>
