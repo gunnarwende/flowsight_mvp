@@ -46,3 +46,18 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 
 ## Review Engine (W12)
 - GOOGLE_REVIEW_URL -> Google Maps Review-URL des Kunden (single tenant, server-side)
+
+---
+
+## How to sync env (no drift)
+
+**One-time setup:** `npx vercel login` (once per machine).
+
+**Sync command:**
+```powershell
+pwsh scripts/env_sync.ps1
+```
+
+This pulls the current Vercel production env vars into `src/web/.env.local` using a temp dir (`C:\tmp\vercel_envsync_flowsight`). It creates a timestamped backup of the previous `.env.local` and verifies required keys are present.
+
+**WARNING:** Never run `vercel link`, `vercel pull`, or any Vercel CLI command inside the repo root. Always use the script or a temp directory. See CLAUDE.md.
