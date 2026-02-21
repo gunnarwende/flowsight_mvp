@@ -157,10 +157,27 @@ function buildAgent(p) {
         },
         {
           name: "Logic Split Node",
-          edges: [],
+          edges: [
+            {
+              destination_node_id: "node-out-of-scope",
+              id: "edge-out-of-scope",
+              transition_condition: {
+                type: "prompt",
+                prompt: "out_of_scope is true (the user's request is not about plumbing or heating)",
+              },
+            },
+            {
+              destination_node_id: "node-closing",
+              id: "edge-intake-complete",
+              transition_condition: {
+                type: "prompt",
+                prompt: "intake_complete is true (all required fields have been collected: plz, city, category, urgency, description)",
+              },
+            },
+          ],
           id: "node-logic-split",
           else_edge: {
-            destination_node_id: "node-closing",
+            destination_node_id: "node-intake",
             id: "edge-logic-else",
             transition_condition: { type: "prompt", prompt: "Else" },
           },
@@ -175,6 +192,7 @@ function buildAgent(p) {
           type: "conversation",
           display_position: { x: 1363, y: 796 },
           skip_response_edge: {
+            destination_node_id: "end-call-node",
             id: "skip-response-edge-closing",
             transition_condition: { type: "prompt", prompt: "Skip response" },
           },
@@ -190,6 +208,7 @@ function buildAgent(p) {
           type: "conversation",
           display_position: { x: 943, y: 944 },
           skip_response_edge: {
+            destination_node_id: "end-call-node",
             id: "skip-response-edge-oos",
             transition_condition: { type: "prompt", prompt: "Skip response" },
           },
