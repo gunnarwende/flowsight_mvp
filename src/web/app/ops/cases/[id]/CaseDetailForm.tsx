@@ -57,6 +57,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   const [contactEmail, setContactEmail] = useState(
     initialData.contact_email ?? ""
   );
+  const [quickDay, setQuickDay] = useState<0 | 1>(0);
 
   const [saveState, setSaveState] = useState<
     "idle" | "saving" | "saved" | "error"
@@ -304,19 +305,37 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         {/* Quick Actions for scheduled_at */}
         <div className="mt-3">
           <p className="text-xs font-medium text-slate-400 mb-2">Schnellwahl</p>
-          <div className="flex flex-wrap gap-2">
-            {([0, 1] as const).map((dayOffset) => (
-              QUICK_TIMES.map((time) => (
+          <div className="flex items-center gap-3">
+            {/* Day tabs */}
+            <div className="flex rounded-lg border border-slate-700 overflow-hidden">
+              {([0, 1] as const).map((d) => (
                 <button
-                  key={`${dayOffset}-${time}`}
+                  key={d}
                   type="button"
-                  onClick={() => setScheduledAt(quickDateTime(dayOffset, time))}
-                  className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 hover:border-blue-500 hover:text-white"
+                  onClick={() => setQuickDay(d)}
+                  className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                    quickDay === d
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-800 text-slate-400 hover:text-white"
+                  }`}
                 >
-                  {dayOffset === 0 ? "Heute" : "Morgen"} {time}
+                  {d === 0 ? "Heute" : "Morgen"}
                 </button>
-              ))
-            ))}
+              ))}
+            </div>
+            {/* Time chips */}
+            <div className="flex gap-1.5">
+              {QUICK_TIMES.map((time) => (
+                <button
+                  key={time}
+                  type="button"
+                  onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
+                  className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs text-slate-300 hover:border-blue-500 hover:text-white transition-colors"
+                >
+                  {time}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -338,68 +357,71 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
           />
         </div>
 
-        {/* Save + Send Invite */}
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <button
-            onClick={handleSave}
-            disabled={!isDirty || saveState === "saving"}
-            className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {saveState === "saving" ? "Speichern\u2026" : "Speichern"}
-          </button>
-
-          <button
-            onClick={handleSendInvite}
-            disabled={!canSendInvite}
-            title={
-              isDirty
-                ? "Bitte zuerst speichern"
-                : !scheduledAt
-                  ? "Kein Termin gesetzt"
-                  : undefined
-            }
-            className="rounded-lg border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-medium text-slate-200 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {inviteState === "sending" ? "Sende\u2026" : "Termin senden"}
-          </button>
-
-          {saveState === "saved" && (
-            <span className="text-emerald-400 text-sm">Gespeichert</span>
-          )}
-          {saveState === "error" && (
-            <span className="text-red-400 text-sm">{errorMsg}</span>
-          )}
-          {inviteState === "sent" && (
-            <span className="text-emerald-400 text-sm">Invite gesendet</span>
-          )}
-          {inviteState === "error" && (
-            <span className="text-red-400 text-sm">{inviteMsg}</span>
-          )}
-        </div>
-
-        {/* Review request — only when done + email present */}
-        {status === "done" && (
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-800 pt-4">
+        {/* Actions */}
+        <div className="mt-5 space-y-3">
+          {/* Primary: Save */}
+          <div className="flex items-center gap-3">
             <button
-              onClick={handleRequestReview}
-              disabled={!canRequestReview}
+              onClick={handleSave}
+              disabled={!isDirty || saveState === "saving"}
+              className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {saveState === "saving" ? "Speichern\u2026" : "Speichern"}
+            </button>
+            {saveState === "saved" && (
+              <span className="text-emerald-400 text-sm">Gespeichert</span>
+            )}
+            {saveState === "error" && (
+              <span className="text-red-400 text-sm">{errorMsg}</span>
+            )}
+          </div>
+
+          {/* Secondary: Termin senden + Review anfragen */}
+          <div className="flex flex-wrap items-center gap-3 border-t border-slate-800 pt-3">
+            <button
+              onClick={handleSendInvite}
+              disabled={!canSendInvite}
               title={
                 isDirty
                   ? "Bitte zuerst speichern"
-                  : !contactEmail.trim()
-                    ? "Keine Melder E-Mail vorhanden"
-                    : reviewState === "sent"
-                      ? "Review bereits angefragt"
-                      : undefined
+                  : !scheduledAt
+                    ? "Kein Termin gesetzt"
+                    : undefined
               }
-              className="rounded-lg border border-emerald-700 bg-emerald-900/40 px-5 py-2 text-sm font-medium text-emerald-300 hover:border-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-medium text-slate-200 hover:border-blue-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {reviewState === "sending"
-                ? "Sende\u2026"
-                : reviewState === "sent"
-                  ? "Review angefragt"
-                  : "Review anfragen"}
+              {inviteState === "sending" ? "Sende\u2026" : "Termin senden"}
             </button>
+
+            {status === "done" && (
+              <button
+                onClick={handleRequestReview}
+                disabled={!canRequestReview}
+                title={
+                  isDirty
+                    ? "Bitte zuerst speichern"
+                    : !contactEmail.trim()
+                      ? "Keine Melder E-Mail vorhanden"
+                      : reviewState === "sent"
+                        ? "Review bereits angefragt"
+                        : undefined
+                }
+                className="rounded-lg border border-emerald-700 bg-emerald-900/40 px-5 py-2 text-sm font-medium text-emerald-300 hover:border-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {reviewState === "sending"
+                  ? "Sende\u2026"
+                  : reviewState === "sent"
+                    ? "Review angefragt"
+                    : "Review anfragen"}
+              </button>
+            )}
+
+            {inviteState === "sent" && (
+              <span className="text-emerald-400 text-sm">Invite gesendet</span>
+            )}
+            {inviteState === "error" && (
+              <span className="text-red-400 text-sm">{inviteMsg}</span>
+            )}
             {reviewState === "sent" && (
               <span className="text-emerald-400 text-sm">
                 {initialData.review_sent_at
@@ -411,7 +433,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
               <span className="text-red-400 text-sm">{reviewMsg}</span>
             )}
           </div>
-        )}
+        </div>
       </section>
     </div>
   );

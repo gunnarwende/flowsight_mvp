@@ -49,12 +49,11 @@
 15) Review Engine — manual button + review_sent_at (Welle 12) ✓
 16) Mini-Dashboard — 3 tiles on /ops/cases (Welle 13) ✓
 17) Onboarding Docs — full + reviews-only (Welle 14) ✓
+18) Env Sync + Ops UI Quickwins (Welle 15) ✓
 
 ## Next
 - **All Go-Live gates passed.** System ready for production.
-- Founder TODO: Sentry alerts config (docs/runbooks/monitoring_w9.md)
-- Founder TODO: GOOGLE_REVIEW_URL in Vercel Env setzen
-- Founder TODO: Supabase migration `review_sent_at` ausführen (supabase/migrations/20260221000000_review_sent_at.sql)
+- Founder TODO: Sentry alerts config (docs/runbooks/monitoring_w9.md) — bewusst später, nicht blocking
 - W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
 
 ## Go-Live Blockers — ALL DONE ✓
@@ -161,3 +160,10 @@
   - W14: Onboarding Docs (onboarding_customer_full.md + onboarding_reviews_only.md, skip-section hints)
   - Gates: build clean (18 routes), voice webhook path unchanged, 1-log-per-invocation preserved
   - Founder TODO: run migration review_sent_at, set GOOGLE_REVIEW_URL env, configure Sentry alerts
+- 2026-02-21 | Head Ops | Founder TODOs: migration review_sent_at DONE, GOOGLE_REVIEW_URL DONE. Sentry alerts: bewusst später.
+- 2026-02-21 | Head Ops | WELLE 15 (Env Sync + Ops UI Quickwins):
+  - Env sync: scripts/env_sync.ps1 (Vercel pull via temp dir, backup, key verification)
+  - Review engine: deployed (45372fb), verified on prod (/api/health commit match, request-review route 401)
+  - Ops list: uppercase table headers, better spacing, group hover, source+assignee filter chips
+  - Ops detail: Schnellwahl day tabs (Heute/Morgen toggle) + 4 time chips, action grouping (Save primary, Termin+Review secondary)
+  - Gates: build clean (18 routes), ESLint clean

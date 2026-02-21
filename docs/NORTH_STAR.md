@@ -36,6 +36,7 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 | 12 | Review Engine (manual button, review_sent_at, GOOGLE_REVIEW_URL) | Done |
 | 13 | Mini-Dashboard (3 tiles: open, today, done 7d) | Done |
 | 14 | Onboarding Docs (full + reviews-only runbooks) | Done |
+| 15 | Env Sync + Ops UI Quickwins (filters, Schnellwahl, action grouping) | Done |
 
 **Full closed loop:** Wizard/Voice → Case → Confirmation Email → Ops Notification → Deep Link → /ops → Case Detail → Schedule → ICS Invite → Attachments → Done → Review Request.
 

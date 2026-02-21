@@ -66,6 +66,7 @@ export default async function OpsCasesPage({
   const filterUrgency = params.urgency;
   const filterCategory = params.category;
   const filterSource = params.source;
+  const filterAssigned = params.assigned;
   const showAll = params.show === "all";
 
   const supabase = getServiceClient();
@@ -95,6 +96,7 @@ export default async function OpsCasesPage({
   if (filterUrgency) listQuery = listQuery.eq("urgency", filterUrgency);
   if (filterCategory) listQuery = listQuery.ilike("category", filterCategory);
   if (filterSource) listQuery = listQuery.eq("source", filterSource);
+  if (filterAssigned === "yes") listQuery = listQuery.not("assignee_text", "is", null);
 
   const [{ data: allCases }, { data: cases, error }] = await Promise.all([
     statsQuery,
@@ -140,7 +142,7 @@ export default async function OpsCasesPage({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap items-center gap-2 mb-6">
         <FilterChip
           label="Offen"
           active={!filterStatus && !showAll}
@@ -151,7 +153,7 @@ export default async function OpsCasesPage({
           active={showAll && !filterStatus}
           href="/ops/cases?show=all"
         />
-        <span className="border-l border-slate-700 mx-1" />
+        <span className="border-l border-slate-700 mx-1 h-5 inline-block" />
         {(["new", "contacted", "scheduled", "done"] as const).map((s) => (
           <FilterChip
             key={s}
@@ -160,7 +162,7 @@ export default async function OpsCasesPage({
             href={`/ops/cases?status=${s}`}
           />
         ))}
-        <span className="border-l border-slate-700 mx-1" />
+        <span className="border-l border-slate-700 mx-1 h-5 inline-block" />
         {(["notfall", "dringend", "normal"] as const).map((u) => (
           <FilterChip
             key={u}
@@ -169,6 +171,20 @@ export default async function OpsCasesPage({
             href={`/ops/cases?urgency=${u}`}
           />
         ))}
+        <span className="border-l border-slate-700 mx-1 h-5 inline-block" />
+        {(["wizard", "voice"] as const).map((src) => (
+          <FilterChip
+            key={src}
+            label={src === "wizard" ? "Wizard" : "Voice"}
+            active={filterSource === src}
+            href={`/ops/cases?source=${src}`}
+          />
+        ))}
+        <FilterChip
+          label="Zugewiesen"
+          active={filterAssigned === "yes"}
+          href="/ops/cases?assigned=yes"
+        />
       </div>
 
       {/* Count */}
@@ -183,53 +199,53 @@ export default async function OpsCasesPage({
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="text-left text-slate-400 border-b border-slate-800">
-                <th className="pb-2 pr-3 font-medium">Datum</th>
-                <th className="pb-2 pr-3 font-medium">Status</th>
-                <th className="pb-2 pr-3 font-medium">Dringlichkeit</th>
-                <th className="pb-2 pr-3 font-medium">Kategorie</th>
-                <th className="pb-2 pr-3 font-medium">Ort</th>
-                <th className="pb-2 pr-3 font-medium">Quelle</th>
-                <th className="pb-2 font-medium">Zuständig</th>
+              <tr className="text-left text-slate-400 text-xs uppercase tracking-wide border-b border-slate-700">
+                <th className="pb-2.5 pr-4 font-medium">Datum</th>
+                <th className="pb-2.5 pr-4 font-medium">Status</th>
+                <th className="pb-2.5 pr-4 font-medium">Dringlichkeit</th>
+                <th className="pb-2.5 pr-4 font-medium">Kategorie</th>
+                <th className="pb-2.5 pr-4 font-medium">Ort</th>
+                <th className="pb-2.5 pr-4 font-medium">Quelle</th>
+                <th className="pb-2.5 font-medium">Zuständig</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((c) => (
                 <tr
                   key={c.id}
-                  className="border-b border-slate-800/50 hover:bg-slate-800/30"
+                  className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/40 group"
                 >
-                  <td className="py-2.5 pr-3">
+                  <td className="py-3 pr-4">
                     <Link
                       href={`/ops/cases/${c.id}`}
-                      className="text-blue-400 hover:text-blue-300 hover:underline"
+                      className="text-blue-400 group-hover:text-blue-300 hover:underline font-medium"
                     >
                       {formatDate(c.created_at)}
                     </Link>
                   </td>
-                  <td className="py-2.5 pr-3">
+                  <td className="py-3 pr-4">
                     <span
-                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[c.status] ?? "bg-slate-700 text-slate-300"}`}
+                      className={`inline-block px-2.5 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[c.status] ?? "bg-slate-700 text-slate-300"}`}
                     >
                       {STATUS_LABELS[c.status] ?? c.status}
                     </span>
                   </td>
-                  <td className="py-2.5 pr-3">
+                  <td className="py-3 pr-4">
                     <span
-                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium border ${URGENCY_COLORS[c.urgency] ?? ""}`}
+                      className={`inline-block px-2.5 py-0.5 rounded text-xs font-medium border ${URGENCY_COLORS[c.urgency] ?? ""}`}
                     >
                       {c.urgency}
                     </span>
                   </td>
-                  <td className="py-2.5 pr-3 text-slate-300">{c.category}</td>
-                  <td className="py-2.5 pr-3 text-slate-400">
+                  <td className="py-3 pr-4 text-slate-300">{c.category}</td>
+                  <td className="py-3 pr-4 text-slate-400">
                     {c.plz} {c.city}
                   </td>
-                  <td className="py-2.5 pr-3 text-slate-500">{c.source}</td>
-                  <td className="py-2.5 text-slate-500">
-                    {c.assignee_text ?? "\u2014"}
+                  <td className="py-3 pr-4 text-slate-500 capitalize">{c.source}</td>
+                  <td className="py-3 text-slate-400">
+                    {c.assignee_text ?? <span className="text-slate-600">&mdash;</span>}
                   </td>
                 </tr>
               ))}
