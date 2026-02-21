@@ -70,7 +70,14 @@ export default async function OpsCasesPage({
 
   const supabase = getServiceClient();
 
-  let query = supabase
+  // Stats query (lightweight, all cases, for dashboard tiles)
+  const statsQuery = supabase
+    .from("cases")
+    .select("id, status, created_at, updated_at")
+    .limit(1000);
+
+  // Filtered list query
+  let listQuery = supabase
     .from("cases")
     .select(
       "id, created_at, status, urgency, category, city, plz, source, assignee_text"
@@ -80,16 +87,38 @@ export default async function OpsCasesPage({
 
   // Default: open cases (status != done), unless showAll or explicit status filter
   if (filterStatus) {
-    query = query.eq("status", filterStatus);
+    listQuery = listQuery.eq("status", filterStatus);
   } else if (!showAll) {
-    query = query.neq("status", "done");
+    listQuery = listQuery.neq("status", "done");
   }
 
-  if (filterUrgency) query = query.eq("urgency", filterUrgency);
-  if (filterCategory) query = query.ilike("category", filterCategory);
-  if (filterSource) query = query.eq("source", filterSource);
+  if (filterUrgency) listQuery = listQuery.eq("urgency", filterUrgency);
+  if (filterCategory) listQuery = listQuery.ilike("category", filterCategory);
+  if (filterSource) listQuery = listQuery.eq("source", filterSource);
 
-  const { data: cases, error } = await query;
+  const [{ data: allCases }, { data: cases, error }] = await Promise.all([
+    statsQuery,
+    listQuery,
+  ]);
+
+  // Dashboard counts
+  const todayZurich = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(new Date());
+  const sevenDaysAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const openCount = allCases?.filter((c) => c.status !== "done").length ?? 0;
+  const todayCount =
+    allCases?.filter((c) => {
+      const cDate = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Zurich",
+      }).format(new Date(c.created_at));
+      return cDate === todayZurich;
+    }).length ?? 0;
+  const doneWeekCount =
+    allCases?.filter(
+      (c) => c.status === "done" && new Date(c.updated_at) >= sevenDaysAgo
+    ).length ?? 0;
 
   if (error) {
     return (
@@ -103,6 +132,13 @@ export default async function OpsCasesPage({
 
   return (
     <OpsShell user={user.email ?? ""}>
+      {/* Dashboard tiles */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <DashTile label="Offen" value={openCount} accent="text-blue-400" />
+        <DashTile label="Heute erstellt" value={todayCount} accent="text-slate-300" />
+        <DashTile label="Erledigt (7 Tage)" value={doneWeekCount} accent="text-emerald-400" />
+      </div>
+
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         <FilterChip
@@ -237,6 +273,27 @@ function OpsShell({
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard tile
+// ---------------------------------------------------------------------------
+
+function DashTile({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: number;
+  accent: string;
+}) {
+  return (
+    <div className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-3">
+      <p className="text-slate-400 text-xs font-medium mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${accent}`}>{value}</p>
     </div>
   );
 }

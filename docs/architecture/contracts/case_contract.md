@@ -39,6 +39,12 @@ They are not part of the case creation contract; they exist for workflow managem
 - scheduled_at (timestamptz, nullable) — when the job is scheduled
 - internal_notes (text, nullable) — private notes, never exposed to customers
 - updated_at (timestamptz, auto) — auto-updated on every row change via DB trigger
+- review_sent_at (timestamptz, nullable) — set when review request email is sent
+
+## Ops-editable Producer Fields (W10)
+
+These fields are set by Producers but can also be updated by Ops:
+- contact_email (text, nullable) — Ops can add/update after callback
 
 ## Urgency Regeln (deterministisch)
 Wenn description (oder voice answers/transcript) einen Notfall-Trigger enthält → urgency="notfall".

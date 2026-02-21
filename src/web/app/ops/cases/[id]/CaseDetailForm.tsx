@@ -54,6 +54,9 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   const [internalNotes, setInternalNotes] = useState(
     initialData.internal_notes ?? ""
   );
+  const [contactEmail, setContactEmail] = useState(
+    initialData.contact_email ?? ""
+  );
 
   const [saveState, setSaveState] = useState<
     "idle" | "saving" | "saved" | "error"
@@ -65,13 +68,19 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   >("idle");
   const [inviteMsg, setInviteMsg] = useState("");
 
+  const [reviewState, setReviewState] = useState<
+    "idle" | "sending" | "sent" | "error"
+  >(initialData.review_sent_at ? "sent" : "idle");
+  const [reviewMsg, setReviewMsg] = useState("");
+
   // Dirty state: compare current values against initial
   const isDirty =
     status !== initialData.status ||
     assigneeText !== (initialData.assignee_text ?? "") ||
     scheduledAt !==
       (initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "") ||
-    internalNotes !== (initialData.internal_notes ?? "");
+    internalNotes !== (initialData.internal_notes ?? "") ||
+    contactEmail !== (initialData.contact_email ?? "");
 
   // Warn on tab close / navigate away with unsaved changes
   const onBeforeUnload = useCallback(
@@ -98,6 +107,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
           assignee_text: assigneeText || null,
           scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
           internal_notes: internalNotes || null,
+          contact_email: contactEmail.trim() || null,
         }),
       });
 
@@ -115,6 +125,14 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   }
 
   const canSendInvite = !isDirty && !!scheduledAt && inviteState !== "sending";
+
+  // Review gate: status=done + email present + not yet sent + form saved
+  const canRequestReview =
+    !isDirty &&
+    status === "done" &&
+    !!contactEmail.trim() &&
+    reviewState !== "sent" &&
+    reviewState !== "sending";
 
   async function handleSendInvite() {
     setInviteState("sending");
@@ -135,6 +153,27 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     } catch (err) {
       setInviteState("error");
       setInviteMsg(err instanceof Error ? err.message : "Senden fehlgeschlagen.");
+    }
+  }
+
+  async function handleRequestReview() {
+    setReviewState("sending");
+    setReviewMsg("");
+
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/request-review`, {
+        method: "POST",
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? `HTTP ${res.status}`);
+      }
+
+      setReviewState("sent");
+    } catch (err) {
+      setReviewState("error");
+      setReviewMsg(err instanceof Error ? err.message : "Senden fehlgeschlagen.");
     }
   }
 
@@ -164,16 +203,6 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
                 className="text-blue-400 hover:underline"
               >
                 {initialData.contact_phone}
-              </a>
-            </InfoField>
-          )}
-          {initialData.contact_email && (
-            <InfoField label="E-Mail">
-              <a
-                href={`mailto:${initialData.contact_email}`}
-                className="text-blue-400 hover:underline"
-              >
-                {initialData.contact_email}
               </a>
             </InfoField>
           )}
@@ -232,6 +261,24 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
               value={assigneeText}
               onChange={(e) => setAssigneeText(e.target.value)}
               placeholder="z.B. Ramon D."
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Contact Email (editable — Ops can add after callback) */}
+          <div>
+            <label
+              htmlFor="contact_email"
+              className="block text-xs font-medium text-slate-400 mb-1"
+            >
+              Melder E-Mail
+            </label>
+            <input
+              id="contact_email"
+              type="email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              placeholder="name@beispiel.ch"
               className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -329,6 +376,42 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
             <span className="text-red-400 text-sm">{inviteMsg}</span>
           )}
         </div>
+
+        {/* Review request — only when done + email present */}
+        {status === "done" && (
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-800 pt-4">
+            <button
+              onClick={handleRequestReview}
+              disabled={!canRequestReview}
+              title={
+                isDirty
+                  ? "Bitte zuerst speichern"
+                  : !contactEmail.trim()
+                    ? "Keine Melder E-Mail vorhanden"
+                    : reviewState === "sent"
+                      ? "Review bereits angefragt"
+                      : undefined
+              }
+              className="rounded-lg border border-emerald-700 bg-emerald-900/40 px-5 py-2 text-sm font-medium text-emerald-300 hover:border-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {reviewState === "sending"
+                ? "Sende\u2026"
+                : reviewState === "sent"
+                  ? "Review angefragt"
+                  : "Review anfragen"}
+            </button>
+            {reviewState === "sent" && (
+              <span className="text-emerald-400 text-sm">
+                {initialData.review_sent_at
+                  ? `Gesendet am ${formatDate(initialData.review_sent_at)}`
+                  : "Review-Anfrage gesendet"}
+              </span>
+            )}
+            {reviewState === "error" && (
+              <span className="text-red-400 text-sm">{reviewMsg}</span>
+            )}
+          </div>
+        )}
       </section>
     </div>
   );

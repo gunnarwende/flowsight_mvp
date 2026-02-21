@@ -43,3 +43,6 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
 - FALLBACK_TENANT_ID -> UUID eines Default-Tenants (nur server-side, temporär bis Routing steht)
+
+## Review Engine (W12)
+- GOOGLE_REVIEW_URL -> Google Maps Review-URL des Kunden (single tenant, server-side)

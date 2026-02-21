@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { sendCaseNotification } from "@/src/lib/email/resend";
+import { sendCaseNotification, sendReporterConfirmation } from "@/src/lib/email/resend";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -197,6 +197,18 @@ export async function POST(request: NextRequest) {
     Sentry.setTag("source", data.source);
     Sentry.setTag("tenant_id", tenantId);
     Sentry.setTag("case_id", row.id);
+
+    // Reporter confirmation (no log — result merged into notification log below)
+    let reporterEmailSent: boolean | undefined;
+    if (data.contact_email) {
+      reporterEmailSent = await sendReporterConfirmation({
+        caseId: row.id,
+        tenantId,
+        contactEmail: data.contact_email,
+        category: data.category,
+      });
+    }
+
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
     // resend.ts owns the single console.log: _tag:"resend", decision, case_id, etc.
@@ -211,6 +223,7 @@ export async function POST(request: NextRequest) {
       description: data.description,
       contactPhone: data.contact_phone,
       contactEmail: data.contact_email,
+      reporterEmailSent,
     });
 
     return NextResponse.json(row, { status: 201 });

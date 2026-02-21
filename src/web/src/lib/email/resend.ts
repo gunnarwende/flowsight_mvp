@@ -25,6 +25,8 @@ interface CaseEmailPayload {
   description: string;
   contactPhone?: string;
   contactEmail?: string;
+  /** Injected by caller — result of sendReporterConfirmation (no extra log). */
+  reporterEmailSent?: boolean;
 }
 
 /**
@@ -53,6 +55,9 @@ export async function sendCaseNotification(
     recipient_present: !!to,
     from_env: fromEnvValue ? "MAIL_FROM" : "default",
     from_domain: from.split("@")[1] ?? "unknown",
+    ...(payload.reporterEmailSent !== undefined && {
+      reporter_email_sent: payload.reporterEmailSent,
+    }),
   };
 
   if (!process.env.RESEND_API_KEY) {
@@ -163,6 +168,186 @@ export async function sendCaseNotification(
       error_code: err instanceof Error ? err.name : "unknown",
       error_message: err instanceof Error ? err.message : "unknown",
     }));
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Reporter confirmation email (Wizard only)
+// ---------------------------------------------------------------------------
+
+interface ReporterConfirmationPayload {
+  caseId: string;
+  tenantId: string;
+  contactEmail: string;
+  category: string;
+}
+
+/**
+ * Send a short confirmation email to the person who submitted the case.
+ * Plain text, minimal content, no PII in logs.
+ *
+ * NO console.log — the caller (route) merges the boolean result into
+ * sendCaseNotification's log to respect the 1-log-per-invocation rule.
+ *
+ * Errors are captured to Sentry but never thrown.
+ */
+export async function sendReporterConfirmation(
+  payload: ReporterConfirmationPayload
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+
+  const from = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
+
+  try {
+    const { error } = await getResend().emails.send({
+      from,
+      to: payload.contactEmail,
+      subject: `${subjectPrefix} Ihre Meldung wurde erfasst`,
+      text: [
+        `Guten Tag`,
+        ``,
+        `Vielen Dank für Ihre Meldung (${payload.category}).`,
+        `Wir haben Ihre Anfrage erhalten und melden uns schnellstmöglich bei Ihnen.`,
+        ``,
+        `Referenz: ${payload.caseId.slice(0, 8)}`,
+        ``,
+        `Freundliche Grüsse`,
+        `Ihr Service-Team`,
+      ].join("\n"),
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: {
+          _tag: "resend",
+          area: "email",
+          provider: "resend",
+          email_type: "reporter_confirmation",
+          case_id: payload.caseId,
+          tenant_id: payload.tenantId,
+          decision: "failed",
+          stage: "email",
+          error_code: "RESEND_API_ERROR",
+        },
+      });
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: {
+        _tag: "resend",
+        area: "email",
+        provider: "resend",
+        email_type: "reporter_confirmation",
+        case_id: payload.caseId,
+        tenant_id: payload.tenantId,
+        decision: "failed",
+        stage: "email",
+        error_code: "RESEND_EXCEPTION",
+      },
+    });
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Review request email (Ops-triggered)
+// ---------------------------------------------------------------------------
+
+interface ReviewRequestPayload {
+  caseId: string;
+  tenantId: string;
+  contactEmail: string;
+  googleReviewUrl: string;
+}
+
+/**
+ * Send a review request email after a completed job.
+ * Plain text, minimal, one-time. Owns its own console.log
+ * (this runs in a separate invocation via the request-review route).
+ *
+ * Errors are captured to Sentry but never thrown.
+ */
+export async function sendReviewRequest(
+  payload: ReviewRequestPayload
+): Promise<boolean> {
+  const fromEnvValue = process.env.MAIL_FROM;
+  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
+  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
+
+  const base: Record<string, unknown> = {
+    _tag: "resend",
+    email_type: "review_request",
+    case_id: payload.caseId,
+    tenant_id: payload.tenantId,
+  };
+
+  if (!process.env.RESEND_API_KEY) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_RESEND_API_KEY" }));
+    return false;
+  }
+
+  try {
+    const { error } = await getResend().emails.send({
+      from,
+      to: payload.contactEmail,
+      subject: `${subjectPrefix} Wie war unser Service?`,
+      text: [
+        `Guten Tag`,
+        ``,
+        `Wir hoffen, dass Sie mit unserem Service zufrieden waren.`,
+        `Über eine kurze Bewertung würden wir uns sehr freuen:`,
+        ``,
+        payload.googleReviewUrl,
+        ``,
+        `Vielen Dank für Ihr Vertrauen.`,
+        ``,
+        `Freundliche Grüsse`,
+        `Ihr Service-Team`,
+        ``,
+        `Sie erhalten diese Nachricht, weil wir einen Auftrag für Sie erledigt haben.`,
+      ].join("\n"),
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: {
+          _tag: "resend",
+          area: "email",
+          provider: "resend",
+          email_type: "review_request",
+          case_id: payload.caseId,
+          tenant_id: payload.tenantId,
+          decision: "failed",
+          stage: "email",
+          error_code: "RESEND_API_ERROR",
+        },
+      });
+      console.log(JSON.stringify({ ...base, decision: "failed", reason: "resend_api_error" }));
+      return false;
+    }
+
+    console.log(JSON.stringify({ ...base, decision: "sent" }));
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: {
+        _tag: "resend",
+        area: "email",
+        provider: "resend",
+        email_type: "review_request",
+        case_id: payload.caseId,
+        tenant_id: payload.tenantId,
+        decision: "failed",
+        stage: "email",
+        error_code: "RESEND_EXCEPTION",
+      },
+    });
+    console.log(JSON.stringify({ ...base, decision: "failed", reason: "exception" }));
     return false;
   }
 }

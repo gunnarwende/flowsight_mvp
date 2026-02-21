@@ -31,8 +31,13 @@ Kernnutzen: Geschwindigkeit + Klarheit.
 | 6 | Scheduling + ICS Invite (Quick Actions, Outlook-compatible) | Done — f88ba73 + e09423e |
 | 7 | Attachments / Storage (Supabase Storage, signed URLs, Upload UI) | Done — 5eeddd1 |
 | 9 | Monitoring/Alerting (health endpoint, Sentry tags, alert runbook) | Done |
+| 10 | Editable contact_email in Ops | Done |
+| 11 | Wizard auto-confirmation to reporter | Done |
+| 12 | Review Engine (manual button, review_sent_at, GOOGLE_REVIEW_URL) | Done |
+| 13 | Mini-Dashboard (3 tiles: open, today, done 7d) | Done |
+| 14 | Onboarding Docs (full + reviews-only runbooks) | Done |
 
-**Closed loop live:** Wizard/Voice → Case → Email → Deep Link → /ops login → Case Detail → Schedule → ICS Invite → Attachments.
+**Full closed loop:** Wizard/Voice → Case → Confirmation Email → Ops Notification → Deep Link → /ops → Case Detail → Schedule → ICS Invite → Attachments → Done → Review Request.
 
 ## Roadmap (Countdown to Go-Live)
 

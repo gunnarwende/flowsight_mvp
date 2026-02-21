@@ -14,6 +14,7 @@ const OPS_UPDATABLE_FIELDS = [
   "assignee_text",
   "scheduled_at",
   "internal_notes",
+  "contact_email",
 ] as const;
 
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
@@ -130,7 +131,7 @@ export async function PATCH(
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, assignee_text, scheduled_at, internal_notes, updated_at"
+        "id, status, assignee_text, scheduled_at, internal_notes, contact_email, updated_at"
       )
       .single();
 

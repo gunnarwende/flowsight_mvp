@@ -44,10 +44,17 @@
 10) Scheduling + ICS Invite (Welle 6) ✓ — f88ba73 + Hotfix e09423e
 11) Attachments / Storage (Welle 7) ✓ — 5eeddd1
 12) Monitoring/Alerting (Welle 9) ✓ — health endpoint, Sentry tags, alert runbook
+13) Editable contact_email in Ops (Welle 10) ✓
+14) Wizard auto-confirmation to reporter (Welle 11) ✓
+15) Review Engine — manual button + review_sent_at (Welle 12) ✓
+16) Mini-Dashboard — 3 tiles on /ops/cases (Welle 13) ✓
+17) Onboarding Docs — full + reviews-only (Welle 14) ✓
 
-## Next (Countdown to Go-Live)
-See docs/NORTH_STAR.md for full Launch Plan.
-- **All Go-Live gates passed.** Next: Founder Go-Live decision + Sentry alerts config (docs/runbooks/monitoring_w9.md).
+## Next
+- **All Go-Live gates passed.** System ready for production.
+- Founder TODO: Sentry alerts config (docs/runbooks/monitoring_w9.md)
+- Founder TODO: GOOGLE_REVIEW_URL in Vercel Env setzen
+- Founder TODO: Supabase migration `review_sent_at` ausführen (supabase/migrations/20260221000000_review_sent_at.sql)
 - W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
 
 ## Go-Live Blockers — ALL DONE ✓
@@ -146,3 +153,11 @@ See docs/NORTH_STAR.md for full Launch Plan.
   - Voice Config: 2/2 testcalls (f2fddfef + 28941f2c), mail delivered, deep link ok
   - Mobile QA: Founder verified, keine Blocker
   - All 6 Go-Live gates ✓. Next: Founder Go-Live decision.
+- 2026-02-21 | Head Ops | WELLEN 10–14 (Closed Loop + Outtake):
+  - W10: contact_email editable in Ops (PATCH allowlist + CaseDetailForm input)
+  - W11: Wizard auto-confirmation email to reporter (sendReporterConfirmation, no extra log, merged into existing JSON)
+  - W12: Review Engine (manual button, POST /api/ops/cases/[id]/request-review, review_sent_at migration, GOOGLE_REVIEW_URL env)
+  - W13: Mini-Dashboard (3 tiles: open/today/done-7d on /ops/cases, parallel stats query)
+  - W14: Onboarding Docs (onboarding_customer_full.md + onboarding_reviews_only.md, skip-section hints)
+  - Gates: build clean (18 routes), voice webhook path unchanged, 1-log-per-invocation preserved
+  - Founder TODO: run migration review_sent_at, set GOOGLE_REVIEW_URL env, configure Sentry alerts

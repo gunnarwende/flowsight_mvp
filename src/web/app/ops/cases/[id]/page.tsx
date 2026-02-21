@@ -27,6 +27,7 @@ export interface CaseDetail {
   assignee_text: string | null;
   scheduled_at: string | null;
   internal_notes: string | null;
+  review_sent_at: string | null;
 }
 
 // ---------------------------------------------------------------------------
