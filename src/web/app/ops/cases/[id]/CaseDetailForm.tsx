@@ -59,6 +59,15 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   );
   const [quickDay, setQuickDay] = useState<0 | 1>(0);
 
+  // Baseline for dirty-check — updated after each successful save
+  const [baseline, setBaseline] = useState({
+    status: initialData.status,
+    assignee_text: initialData.assignee_text ?? "",
+    scheduled_at: initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "",
+    internal_notes: initialData.internal_notes ?? "",
+    contact_email: initialData.contact_email ?? "",
+  });
+
   const [saveState, setSaveState] = useState<
     "idle" | "saving" | "saved" | "error"
   >("idle");
@@ -74,14 +83,13 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   >(initialData.review_sent_at ? "sent" : "idle");
   const [reviewMsg, setReviewMsg] = useState("");
 
-  // Dirty state: compare current values against initial
+  // Dirty state: compare current values against last-saved baseline
   const isDirty =
-    status !== initialData.status ||
-    assigneeText !== (initialData.assignee_text ?? "") ||
-    scheduledAt !==
-      (initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "") ||
-    internalNotes !== (initialData.internal_notes ?? "") ||
-    contactEmail !== (initialData.contact_email ?? "");
+    status !== baseline.status ||
+    assigneeText !== baseline.assignee_text ||
+    scheduledAt !== baseline.scheduled_at ||
+    internalNotes !== baseline.internal_notes ||
+    contactEmail !== baseline.contact_email;
 
   // Warn on tab close / navigate away with unsaved changes
   const onBeforeUnload = useCallback(
@@ -117,6 +125,14 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         throw new Error(data.error ?? `HTTP ${res.status}`);
       }
 
+      // Update baseline so isDirty resets and actions unlock immediately
+      setBaseline({
+        status,
+        assignee_text: assigneeText,
+        scheduled_at: scheduledAt,
+        internal_notes: internalNotes,
+        contact_email: contactEmail,
+      });
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 2000);
     } catch (err) {
