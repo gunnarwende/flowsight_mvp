@@ -8,7 +8,7 @@
 | `business_name` | Dörfler AG |
 | `greeting_text` | Guten Tag, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen? |
 | `closing_text` | Vielen Dank. Die Dörfler AG hat Ihre Meldung aufgenommen und meldet sich schnellstmöglich. |
-| `voice_id` | minimax-Cimo |
+| `voice_id` | minimax-Max |
 | `webhook_url` | https://flowsight-mvp.vercel.app/api/retell/webhook |
 
 ## Post-Import UI Steps

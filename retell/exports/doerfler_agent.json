@@ -54,7 +54,7 @@
   "analysis_successful_prompt": "Evaluate whether the agent had a successful call with the user. For a successful call, the agent should have a complete conversation with user, finished the task, and have not ran into technical issues, or caused user frustration. Besides, the agent was not blocked by a call screen or encountered voicemail.",
   "analysis_summary_prompt": "Write a 1-3 sentence summary of the call based on the call transcript. Should capture the important information and actions taken during the call.",
   "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
-  "voice_id": "minimax-Cimo",
+  "voice_id": "minimax-Max",
   "max_call_duration_ms": 420000,
   "interruption_sensitivity": 0.9,
   "allow_user_dtmf": true,
