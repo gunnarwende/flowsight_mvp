@@ -1,6 +1,6 @@
 # FlowSight – STATUS (Company SSOT)
 
-**Datum:** 2026-02-20
+**Datum:** 2026-02-22
 **Owner:** Head Ops Agent
 **Scope (MVP):** High-End Website + Wizard + Voice (Retell) + SSOT (Supabase) + E-Mail (Resend) + Sentry + Internal Ops Dashboard (intern)
 
@@ -50,16 +50,19 @@
 16) Mini-Dashboard — 3 tiles on /ops/cases (Welle 13) ✓
 17) Onboarding Docs — full + reviews-only (Welle 14) ✓
 18) Env Sync + Ops UI Quickwins (Welle 15) ✓
+19) Voice Prompt v2 + Testcall-Fixes (Welle 16) ✓ — 33889cb
 
 ## Next
-- **All Go-Live gates passed.** System ready for production.
-- Founder TODO: Sentry alerts config (docs/runbooks/monitoring_w9.md) — bewusst später, nicht blocking
-- W8 (Post-Job Voice Note): R&D/optional, nicht Go-Live-blocking.
+- **All go-live critical closed.** System in production.
+- W8 (Post-Job Voice Note): R&D/optional, parked.
 
 ## Go-Live Blockers — ALL DONE ✓
 - [x] Voice Config: 2/2 testcalls verified (case f2fddfef + case 28941f2c). Mail delivered, deep link ok.
-- [x] Welle 9: Monitoring/Alerting — health endpoint + Sentry tags + alert runbook. Founder: create 2 Sentry alerts (docs/runbooks/monitoring_w9.md)
+- [x] Welle 9: Monitoring/Alerting — health endpoint + Sentry tags + alert runbook.
+- [x] Sentry Alerts: DONE — Case Creation Failed + Email Dispatch Failed, test notifications received.
 - [x] Mobile QA: iOS + Android verified by Founder. Keine Blocker.
+- [x] Review Engine: PASS — button works, mail sent, disabled after send, review_sent_at persists after reload.
+- [x] Twilio E2E: PASS — real call via production number, full audio path verified.
 
 ## Recent Updates
 - 2026-02-18 | Head Ops | Customer modernization pipeline SSOT added (docs/architecture/customer_modernization_pipeline.md)
@@ -167,3 +170,12 @@
   - Ops list: uppercase table headers, better spacing, group hover, source+assignee filter chips
   - Ops detail: Schnellwahl day tabs (Heute/Morgen toggle) + 4 time chips, action grouping (Save primary, Termin+Review secondary)
   - Gates: build clean (18 routes), ESLint clean
+- 2026-02-22 | Head Ops | WELLE 16 (Voice Prompt v2 + Testcall-Fixes):
+  - Voice prompt v2 (9affef7): natural tone, full EN/FR switch, anti-robot, "Postleitzahl" enforced
+  - Testcall-fixes (33889cb): no duplicate questions (KEIN-DOPPELT-FRAGEN-REGEL), sticky language mode, turn-taking (interruption_sensitivity 1.0), single confirmation step, PLZ digit-by-digit confirmation, separate PLZ/Ort questions
+  - Closing/OOS/End nodes: static_text → prompt (language-aware closing for EN/FR calls)
+  - Agent-as-file: retell/exports/doerfler_agent.json reimported in Retell
+  - Voice bakeoff winner: minimax-Max
+  - Sentry Alerts: DONE (Case Creation Failed + Email Dispatch Failed)
+  - Review Engine: PASS (button, mail, disabled state, review_sent_at persist)
+  - Twilio E2E: PASS (real call via production number +41 44 505 74 20)
