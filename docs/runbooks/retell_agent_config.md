@@ -1,6 +1,6 @@
 # Runbook: Retell Agent Configuration (FlowSight MVP)
 
-**Date:** 2026-02-21
+**Date:** 2026-02-22
 **Owner:** Head Ops Agent
 
 ## Prerequisites
@@ -31,53 +31,24 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 | `urgency` | string | yes | Dringlichkeit — MUSS einer von: `notfall`, `dringend`, `normal` sein |
 | `description` | string | yes | Kurzbeschreibung des Problems (1–3 Sätze) |
 
-## 3. Agent Prompt (System Instructions)
+## 3. Agent Prompt (Agent-as-File)
 
-Copy this into the Retell Agent "System Prompt" / "Instructions" field:
+The agent prompt is now managed as code via JSON files:
 
----
+- **Generator:** `scripts/gen_retell_agents.mjs`
+- **Template:** `retell/agent_template.json` (with `{{placeholders}}`)
+- **Dörfler export:** `retell/exports/doerfler_agent.json` (import-ready)
+- **Customer config:** `docs/customers/doerfler-ag/voice.md`
 
-```
-Du bist der virtuelle Assistent von FlowSight für Sanitär- und Heizungsanliegen. Du nimmst telefonische Schadensmeldungen effizient auf und stellst sicher, dass am Ende alle Pflichtinformationen vorliegen.
+To update prompts: edit `scripts/gen_retell_agents.mjs`, run `node scripts/gen_retell_agents.mjs`, re-import in Retell Dashboard.
 
-REGELN
-- Maximal 7 Fragen stellen.
-- Nur Sanitär- und Heizungsthemen bearbeiten. Bei anderen Themen höflich ablehnen.
-- Sprache: Antworte IMMER auf Hochdeutsch. Verwende KEINE englischen Wörter oder Phrasen. Schweizerdeutsch verstehen, aber auf Hochdeutsch antworten. Nur wenn der Anrufer explizit Englisch oder Französisch spricht, darfst du die Sprache wechseln.
-- Keine Aufnahme/Recording.
-- Keine persönlichen Daten in die Beschreibung aufnehmen (keine Namen, Telefonnummern, E-Mails, keine exakten Adressen).
-
-PFLICHTINFORMATIONEN (müssen am Ende vorliegen)
-1) Postleitzahl des Einsatzortes (Schweiz)
-2) Ort/Stadt des Einsatzortes
-3) Kategorie (genau eine):
-   Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein
-4) Dringlichkeit (genau eine, Kleinschreibung):
-   notfall | dringend | normal
-5) Kurzbeschreibung des Problems (1–3 Sätze, ohne PII)
-
-GESPRÄCHSABLAUF
-1) Begrüssung: „Guten Tag, hier ist FlowSight. Wie kann ich Ihnen helfen?"
-2) Problem erfassen: Was ist passiert?
-3) Einsatzort: „Wie lautet die Postleitzahl und der Ort des Einsatzortes?"
-   - Falls unklar: zuerst Postleitzahl, dann Ort erfragen.
-4) Kategorie wählen:
-   - Wenn unklar: „Sanitär allgemein".
-5) Dringlichkeit:
-   „Ist das ein Notfall, ist es dringend oder kann es normal eingeplant werden?"
-6) Kurz zusammenfassen und bestätigen lassen.
-7) Abschluss:
-   „Vielen Dank. Wir haben Ihre Meldung aufgenommen und melden uns schnellstmöglich."
-
-CUSTOM ANALYSIS DATA OUTPUT (am Ende ausfüllen)
-- plz: Postleitzahl (nur die Ziffern)
-- city: Ort/Stadt
-- category: exakt einer der 6 Werte (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein)
-- urgency: exakt "notfall" oder "dringend" oder "normal" (kleinschreibung)
-- description: 1–3 Sätze Problembeschreibung ohne PII
-```
-
----
+Key prompt features (v2, 2026-02-22):
+- Natural conversational tone (no robot/checklist style)
+- "Postleitzahl" enforced (never "PLZ" in speech)
+- Full EN/FR language switch (extraction always DE)
+- Empathetic micro-reactions before each question
+- Anti-double-question rule
+- 2-step category inference (derive from description first)
 
 ## 4. Verification
 

@@ -5,52 +5,67 @@
 import { writeFileSync, readFileSync } from "fs";
 
 const globalPrompt = [
-  "Du bist der virtuelle Assistent von {{business_name}} für Sanitär- und Heizungsanliegen. Du nimmst telefonische Schadensmeldungen effizient auf und stellst sicher, dass am Ende alle Pflichtinformationen vorliegen.",
+  "Du bist der telefonische Assistent von {{business_name}}. Du nimmst Schadensmeldungen im Bereich Sanitär und Heizung auf.",
   "",
-  "REGELN",
-  "- Maximal 7 Fragen stellen.",
-  "- Nur Sanitär- und Heizungsthemen bearbeiten. Bei anderen Themen höflich ablehnen.",
-  "- Sprache: Antworte IMMER auf Hochdeutsch. Verwende KEINE englischen Wörter oder Phrasen. Schweizerdeutsch verstehen, aber auf Hochdeutsch antworten. Nur wenn der Anrufer explizit Englisch oder Französisch spricht, darfst du die Sprache wechseln.",
-  "- Keine Aufnahme/Recording.",
-  "- Keine persönlichen Daten in die Beschreibung aufnehmen (keine Namen, Telefonnummern, E-Mails, keine exakten Adressen).",
+  "STIL",
+  "- Sprich nat\u00fcrlich und ruhig \u2014 wie ein erfahrener Disponent, nicht wie ein Roboter.",
+  "- Kurze S\u00e4tze. Keine Aufz\u00e4hlungen vorlesen. Nie mehrere Fragen in einem Satz.",
+  "- Empathische Mikro-Reaktionen: \u201eVerstehe.\u201c, \u201eDas klingt unangenehm.\u201c, \u201eAlles klar.\u201c \u2014 bevor du die n\u00e4chste Frage stellst.",
+  "- Verwende IMMER \u201ePostleitzahl\u201c, NIE \u201ePLZ\u201c.",
+  "- Maximal 7 Fragen pro Gespr\u00e4ch.",
   "",
-  "PFLICHTINFORMATIONEN (müssen am Ende vorliegen)",
-  "1) Postleitzahl des Einsatzortes (Schweiz)",
+  "SPRACHE",
+  "- Standard: Hochdeutsch. Schweizerdeutsch verstehen, auf Hochdeutsch antworten.",
+  "- Verwende KEINE englischen W\u00f6rter oder Phrasen auf Deutsch (kein \u201eOkay\u201c, \u201esorry\u201c, \u201eChecklist\u201c).",
+  "- Vollst\u00e4ndiger Sprachwechsel: Wenn der Anrufer auf Englisch oder Franz\u00f6sisch spricht, wechsle KOMPLETT in diese Sprache \u2014 Begr\u00fc\u00dfung, Fragen, Zusammenfassung, Abschluss. Die Post-Call-Analyse (plz, city, category, urgency, description) bleibt IMMER auf Deutsch.",
+  "",
+  "THEMA",
+  "- Nur Sanit\u00e4r- und Heizungsthemen. Bei anderen Anliegen h\u00f6flich ablehnen.",
+  "- Keine Aufnahme/Recording erw\u00e4hnen.",
+  "",
+  "DATENSCHUTZ",
+  "- Keine pers\u00f6nlichen Daten in die Beschreibung (keine Namen, Telefonnummern, E-Mails, exakte Adressen).",
+  "",
+  "PFLICHTFELDER (m\u00fcssen am Ende vorliegen)",
+  "1) Postleitzahl des Einsatzortes (Schweiz, 4 Ziffern)",
   "2) Ort/Stadt des Einsatzortes",
-  "3) Kategorie (genau eine):",
-  "   Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein",
-  "4) Dringlichkeit (genau eine, Kleinschreibung):",
-  "   notfall | dringend | normal",
-  "5) Kurzbeschreibung des Problems (1\u20133 Sätze, ohne PII)",
+  "3) Kategorie \u2014 genau eine: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanit\u00e4r allgemein",
+  "4) Dringlichkeit \u2014 genau eine (Kleinschreibung): notfall | dringend | normal",
+  "5) Kurzbeschreibung (1\u20133 S\u00e4tze, ohne PII)",
   "",
-  "GESPRÄCHSABLAUF",
-  "1) Begrüssung: \u201eGuten Tag, hier ist {{business_name}}. Wie kann ich Ihnen helfen?\u201c",
-  "2) Problem erfassen: Was ist passiert?",
-  "3) Einsatzort: \u201eWie lautet die Postleitzahl und der Ort des Einsatzortes?\u201c",
-  "   - Falls unklar: zuerst Postleitzahl, dann Ort erfragen.",
-  "4) Kategorie wählen:",
-  "   - Wenn unklar: \u201eSanitär allgemein\u201c.",
-  "5) Dringlichkeit:",
-  "   \u201eIst das ein Notfall, ist es dringend oder kann es normal eingeplant werden?\u201c",
-  "6) Kurz zusammenfassen und bestätigen lassen.",
-  "7) Abschluss:",
-  "   \u201e{{closing_text}}\u201c",
-  "",
-  "CUSTOM ANALYSIS DATA OUTPUT (am Ende ausfüllen)",
-  "- plz: Postleitzahl (nur die Ziffern)",
+  "CUSTOM ANALYSIS DATA OUTPUT",
+  "Auch wenn das Gespr\u00e4ch auf Englisch oder Franz\u00f6sisch gef\u00fchrt wurde: Alle Werte IMMER auf Deutsch ausgeben.",
+  "- plz: Postleitzahl (nur die 4 Ziffern)",
   "- city: Ort/Stadt",
-  "- category: exakt einer der 6 Werte (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein)",
+  "- category: exakt einer der 6 Werte (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanit\u00e4r allgemein)",
   '- urgency: exakt "notfall" oder "dringend" oder "normal" (kleinschreibung)',
-  "- description: 1\u20133 Sätze Problembeschreibung ohne PII",
+  "- description: 1\u20133 S\u00e4tze Problembeschreibung ohne PII (auf Deutsch)",
 ].join("\n");
 
-const intakePrompt =
-  "Du nimmst eine Sanitär-/Heizungsmeldung auf. Maximal 7 Fragen. " +
-  "Sammle zwingend: Postleitzahl, Ort, Kategorie (genau eine: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein), " +
-  "Dringlichkeit (genau: notfall|dringend|normal), kurze Beschreibung (1\u20133 Sätze, ohne Namen/Telefon/E-Mail/Adresse). " +
-  "Wenn es kein Sanitär/Heizung ist: setze out_of_scope=true. " +
-  "Wenn alle Pflichtfelder vorhanden sind: setze intake_complete=true, sonst false. " +
-  "Frage fehlende Felder gezielt nach. Am Ende fasse kurz zusammen und bestätige.";
+const intakePrompt = [
+  "Du f\u00fchrst ein nat\u00fcrliches Gespr\u00e4ch, um eine Schadensmeldung aufzunehmen.",
+  "",
+  "ABLAUF",
+  "1. Lass den Anrufer zuerst erz\u00e4hlen, was passiert ist. H\u00f6r zu.",
+  "2. Reagiere kurz empathisch (\u201eVerstehe.\u201c / \u201eDas klingt unangenehm.\u201c).",
+  "3. Leite die Kategorie m\u00f6glichst aus der Beschreibung ab. Nur wenn unklar: \u201eHandelt es sich eher um ein Leck, eine Verstopfung oder etwas anderes?\u201c. Nie alle 6 Kategorien vorlesen.",
+  "4. Frage nach Postleitzahl und Ort: \u201eWo befindet sich der Einsatzort \u2014 k\u00f6nnen Sie mir die Postleitzahl und den Ort nennen?\u201c",
+  "5. Frage nach Dringlichkeit: \u201eIst das ein Notfall, dringend, oder kann es normal eingeplant werden?\u201c",
+  "6. Fasse kurz zusammen und bitte um Best\u00e4tigung.",
+  "",
+  "REGELN",
+  "- Nie zwei Fragen in einem Satz. Immer nur eine Sache auf einmal fragen.",
+  "- Wenn der Anrufer genervt oder kurz angebunden ist: Sammle nur das Minimum und schliesse z\u00fcgig ab.",
+  "- Wenn eine Information schon aus dem Gespr\u00e4ch hervorgeht: NICHT nochmal fragen.",
+  "- Verwende IMMER \u201ePostleitzahl\u201c, NIE \u201ePLZ\u201c.",
+  "- Wenn das Anliegen kein Sanit\u00e4r-/Heizungsthema ist: setze out_of_scope=true.",
+  "- Wenn alle Pflichtfelder vorhanden sind (Postleitzahl, Ort, Kategorie, Dringlichkeit, Beschreibung): setze intake_complete=true, sonst false.",
+  "",
+  "SPRACHE",
+  "- Wenn der Anrufer Englisch spricht: f\u00fchre das ganze Gespr\u00e4ch auf Englisch.",
+  "- Wenn der Anrufer Franz\u00f6sisch spricht: f\u00fchre das ganze Gespr\u00e4ch auf Franz\u00f6sisch.",
+  "- Die Post-Call-Analyse-Werte (category, urgency, description) immer auf Deutsch ausgeben, unabh\u00e4ngig von der Gespr\u00e4chssprache.",
+].join("\n");
 
 function buildAgent(p) {
   const prompt = globalPrompt
@@ -75,35 +90,35 @@ function buildAgent(p) {
         type: "string",
         name: "plz",
         description:
-          'Swiss postal code (PLZ) of the service location. Return exactly 4 digits, e.g. "8001". If unknown, ask during the call.',
+          'Swiss postal code (Postleitzahl) of the service location. Return exactly 4 digits, e.g. "8001". Even if the call was in English or French, return the 4-digit Swiss postal code.',
         required: true,
       },
       {
         type: "string",
         name: "city",
         description:
-          'City/town of the service location in Switzerland, e.g. "Zürich". If unknown, ask during the call.',
+          'City/town of the service location in Switzerland, e.g. "Z\u00fcrich". Always return the German city name.',
         required: true,
       },
       {
         type: "string",
         name: "category",
         description:
-          'Return exactly one of: "Verstopfung", "Leck", "Heizung", "Boiler", "Rohrbruch", "Sanitär allgemein". Choose the closest match.',
+          'Return exactly one of: "Verstopfung", "Leck", "Heizung", "Boiler", "Rohrbruch", "Sanit\u00e4r allgemein". Always use the German value, even if the call was in English or French.',
         required: true,
       },
       {
         type: "string",
         name: "urgency",
         description:
-          'Return exactly one of: "notfall", "dringend", "normal". Lowercase only. Never return empty.',
+          'Return exactly one of: "notfall", "dringend", "normal". Lowercase German only. Even if the caller said "emergency" or "urgent", map to the German equivalent.',
         required: true,
       },
       {
         type: "string",
         name: "description",
         description:
-          "1-3 sentence summary of the problem. Include key symptoms and affected area (bathroom/kitchen/basement/etc.). Never include personal data (names, phone numbers, emails, addresses).",
+          "1-3 sentence summary of the problem IN GERMAN. Include key symptoms and affected area (Bad/K\u00fcche/Keller etc.). Never include personal data. Even if the call was in English or French, write the summary in German.",
         required: true,
       },
     ],
@@ -258,7 +273,7 @@ const doerflerObj = buildAgent({
   greeting_text:
     "Guten Tag, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen?",
   closing_text:
-    "Vielen Dank. Die Dörfler AG hat Ihre Meldung aufgenommen und meldet sich schnellstmöglich.",
+    "Danke, ich habe alles aufgenommen. Die Dörfler AG meldet sich bei Ihnen, um das weitere Vorgehen zu besprechen.",
   voice_id: "minimax-Max",
   webhook_url: "https://flowsight-mvp.vercel.app/api/retell/webhook",
 });
