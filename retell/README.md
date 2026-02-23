@@ -11,7 +11,8 @@ retell/
     doerfler_agent_intl.json     # Ready-to-import INTL instance for Dörfler AG
   README.md                      # This file
 scripts/
-  gen_retell_agents.mjs          # Generator script (produces all JSON files)
+  gen_retell_agents.mjs          # Generator (produces all JSON files)
+  patch_retell_agent_ids.mjs     # Patcher (wires DE→INTL agent_id before import)
 docs/customers/<slug>/voice.md   # Per-customer voice config
 ```
 
@@ -63,33 +64,48 @@ Each customer gets TWO agents:
 4. Run: `node scripts/gen_retell_agents.mjs`
 5. Import in Retell (see below)
 
-## Import Steps (Retell Dashboard)
+## Import & Wiring (per customer)
 
-**Import order matters: INTL first, then DE.**
+**Import order: INTL first, then DE.**
 
-### 1. Import INTL agent
-- All Agents -> Import -> `exports/<slug>_agent_intl.json`
-- Retell generates new agent_id
-- Copy the agent_id
+### 1. Import + Publish INTL agent
+- Retell Dashboard → All Agents → Import → `exports/<slug>_agent_intl.json`
+- Retell generates new `agent_id` — copy it
+- Publish the agent
 
-### 2. Update DE agent with INTL agent_id
-- In `scripts/gen_retell_agents.mjs`: set `intl_agent_id` to the copied ID
-- Re-run: `node scripts/gen_retell_agents.mjs`
+### 2. Wire DE agent → INTL agent
 
-### 3. Import DE agent
-- All Agents -> Import -> `exports/<slug>_agent.json`
-- Assign phone number to this agent
-- Verify webhook URL on both agents
-- Publish both agents
+**Preferred (Retell UI — no source edit):**
+1. Import `exports/<slug>_agent.json`
+2. Open agent → Conversation Flow → Intake Node → Tools → `swap_to_intl_agent`
+3. Set `agent_id` to the INTL agent_id from step 1
+4. Save + Publish
+
+**Fallback (CLI patcher):**
+```bash
+node scripts/patch_retell_agent_ids.mjs \
+  --in  retell/exports/<slug>_agent.json \
+  --out retell/exports/<slug>_agent_patched.json \
+  --intl <INTL_AGENT_ID>
+```
+Import the `_patched.json` file. Do NOT commit it.
+
+### 3. Configure
+- Assign phone number to **DE agent** (INTL agent has no phone number)
+- Verify webhook URL on both: `https://flowsight-mvp.vercel.app/api/retell/webhook`
 
 ### 4. Verification
-- Test call (German): full intake in German with Susi voice
-- Test call (English): German greeting, then transfer to Juniper, English intake
-- Test call (French): same transfer, French intake
-- Test call (Italian): same transfer, Italian intake
-- Check Vercel Logs: `_tag:retell_webhook, decision:created`
-- Verify case appears in Supabase with correct German fields
-- Check email notification delivered
+| Test | Expected |
+|------|----------|
+| German call | DE agent (Susi) handles fully, no transfer |
+| English call | DE greets → detects EN → transfers to INTL (Juniper) → EN intake |
+| French call | Same transfer → FR intake |
+| Italian call | Same transfer → IT intake |
+
+For each call check:
+- Vercel Logs: `_tag:retell_webhook`, `event_type:call_analyzed`, `decision:created`
+- Case in `/ops/cases` with correct German extraction
+- Notification email delivered
 
 ## Constraints (from CLAUDE.md)
 
@@ -101,6 +117,7 @@ Each customer gets TWO agents:
 - No PII in description
 - max_call_duration_ms: 420000 (7 min)
 - Post-call analysis: ALWAYS in German regardless of call language
+- Webhook processes only `call_analyzed` events
 
 ## Privacy Note
 

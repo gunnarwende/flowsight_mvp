@@ -27,27 +27,47 @@ Two agents work together: the DE agent handles German calls, the INTL agent hand
 | `language` | en-US |
 | `webhook_url` | https://flowsight-mvp.vercel.app/api/retell/webhook |
 
-## Post-Import Steps
+## Founder Checklist — Import & Go-Live
 
-### Step 1: Import INTL agent first
-1. Retell Dashboard: All Agents -> Import -> `retell/exports/doerfler_agent_intl.json`
-2. Copy the new agent_id from Retell Dashboard
+### Step 1: Import INTL agent
+1. Retell Dashboard → All Agents → Import → `retell/exports/doerfler_agent_intl.json`
+2. Publish the INTL agent
+3. Copy its `agent_id` from the Retell Dashboard
 
-### Step 2: Update DE agent with INTL agent_id
-1. In `scripts/gen_retell_agents.mjs`: replace `REPLACE_WITH_INTL_AGENT_ID` with the INTL agent_id
-2. Re-run: `node scripts/gen_retell_agents.mjs`
-3. Import DE agent: `retell/exports/doerfler_agent.json`
+### Step 2: Wire DE agent → INTL agent
 
-### Step 3: Configure & Test
+**Preferred (UI):** Import DE agent first, then set swap target in Retell:
+1. Import `retell/exports/doerfler_agent.json` → Retell creates agent
+2. Open DE agent → Conversation Flow → Intake Node → Tools → `swap_to_intl_agent`
+3. Set the `agent_id` field to the INTL agent_id from Step 1
+4. Save + Publish
+
+**Fallback (CLI patcher):** Pre-wire before import:
+```bash
+node scripts/patch_retell_agent_ids.mjs \
+  --in  retell/exports/doerfler_agent.json \
+  --out retell/exports/doerfler_agent_patched.json \
+  --intl <INTL_AGENT_ID>
+```
+Then import `doerfler_agent_patched.json` (do NOT commit patched file).
+
+### Step 3: Configure
 1. Assign phone number (Twilio CH: +41 44 505 74 20) to the **DE agent**
-2. Verify webhook URL on both agents
-3. Publish both agents
-4. Test calls:
-   - German call -> DE agent handles fully
-   - English call -> DE agent transfers to INTL agent (seamless)
-   - French call -> same transfer
-   - Italian call -> same transfer
-5. Check Vercel Logs: `_tag:retell_webhook, decision:created`
+2. Verify webhook URL on both agents: `https://flowsight-mvp.vercel.app/api/retell/webhook`
+3. Ensure both agents are published
+
+### Step 4: Test calls
+| Test | Expected |
+|------|----------|
+| German call | DE agent (Susi) handles fully, no transfer |
+| English call | DE agent greets → detects EN → transfers to INTL (Juniper) → EN intake |
+| French call | Same transfer → FR intake |
+| Italian call | Same transfer → IT intake |
+
+For each call verify:
+- Vercel Logs: `_tag:retell_webhook`, `event_type:call_analyzed`, `decision:created`
+- Case appears in `/ops/cases` with correct German extraction (plz, city, category, urgency)
+- Notification email delivered
 
 ## Agent Transfer Details
 
@@ -55,7 +75,8 @@ Two agents work together: the DE agent handles German calls, the INTL agent hand
 - **Trigger**: Caller speaks EN/FR/IT (auto-detected, no question asked)
 - **Context**: Full conversation history carries over to INTL agent
 - **Webhook**: `post_call_analysis_setting: only_destination_agent` — only INTL agent sends webhook (no duplicate)
-- **Voice switch**: Susi (DE) -> Juniper (INTL) — near-instant
+- **Voice switch**: Susi (DE) → Juniper (INTL) — near-instant
+- **Events**: only `call_analyzed` is processed by our webhook (call_started/call_ended ignored)
 
 ## Notes
 
