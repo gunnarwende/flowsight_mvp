@@ -144,7 +144,10 @@ Rules:
 3. **Verify** Recording = OFF
 4. **Data Retention**: set to shortest available, or document manual deletion cadence (quarterly)
 
-### Debug Mode (temporary)
-When debugging transfer/ASR issues: temporarily set Data Storage = "Everything", run tests, then **immediately switch back** to "Everything except PII" and delete test data.
+### Ultra-Safe Mode (after go-live stabilization)
+Set Data Storage = **"Basic Attributes Only"** on both agents. Stores only call metadata — no transcripts, no analysis text. Only enable after transfer + intake are confirmed stable.
 
-See `docs/customers/<slug>/voice.md` for per-customer privacy checklist.
+### Debug Mode (temporary, for testing only)
+Temporarily set Data Storage = "Everything", run tests, then **immediately switch back** to "Everything except PII" and delete test data.
+
+See `docs/customers/<slug>/voice.md` for per-customer privacy checklist + Founder Testcard.

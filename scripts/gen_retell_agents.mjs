@@ -83,8 +83,9 @@ const deGlobalPrompt = [
   "",
   "Schritt 2 — Sprach-Plausibilitäts-Check (bei JEDER Nachricht):",
   "Wenn die Nachricht des Anrufers KEINEN Sinn als Deutsch ergibt — z.B. wirre Silben, sinnlose Wörter, offensichtlich falsch transkribiertes Englisch/Französisch/Italienisch (typisch: ASR transkribiert Fremdsprache als deutsch-klingende Silben wie 'Herr Bend' statt 'I have an emergency'):",
+  "Besonders stark transferieren wenn: die Nachricht zwar kein verständliches Deutsch ist, aber der TONFALL oder INHALT auf ein Problem/Notfall/Anliegen hindeutet (z.B. dringliche Stimme, Wörter die wie 'emergency', 'help', 'water', 'urgence' klingen könnten).",
   "=> Frage EINMAL auf Deutsch nach: 'Entschuldigung, ich habe Sie nicht verstanden. Sprechen Sie Deutsch?'",
-  "=> Wenn die NÄCHSTE Antwort wieder kein verständliches Deutsch ist: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN.",
+  "=> Wenn die NÄCHSTE Antwort wieder kein verständliches Deutsch ist: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN. Nicht nochmal nachfragen — nach 1 Retry sofort transferieren.",
   "",
   "Schritt 3 — Explizite Sprachwunsch-Erkennung:",
   "Wenn der Anrufer zu irgendeinem Zeitpunkt im Gespräch explizit eine andere Sprache anfordert (auch mitten im Gespräch, auch nach bereits gesammelten Daten):",
@@ -131,9 +132,9 @@ const deIntakePrompt = [
   "Die Sprachprüfung aus dem Global Prompt gilt hier für JEDE Nachricht des Anrufers.",
   "",
   "Bei der ERSTEN Nachricht des Anrufers:",
-  "1. Enthält sie ein Trigger-Keyword (english, englisch, français, italiano etc.)? => SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN.",
-  "2. Ergibt sie keinen Sinn als Deutsch? (z.B. ASR-Drift: 'Hi, Herr Bend' statt 'I have an emergency') => Frage EINMAL: 'Entschuldigung, ich habe Sie nicht verstanden. Sprechen Sie Deutsch?'",
-  "3. Wenn die zweite Antwort auch kein verständliches Deutsch ist => SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN.",
+  "1. Enthält sie ein Trigger-Keyword (english, englisch, français, italiano etc.)? => SOFORT Tool 'swap_to_intl_agent' AUFRUFEN (execute). Sage NICHTS vorher — kein 'Moment', kein 'Ich verbinde Sie'. Einfach das Tool aufrufen.",
+  "2. Ergibt sie keinen Sinn als Deutsch? (z.B. ASR-Drift: 'Hi, Herr Bend' statt 'I have an emergency'; oder Gibberish das nach Problem/Notfall klingt) => Frage EINMAL: 'Entschuldigung, ich habe Sie nicht verstanden. Sprechen Sie Deutsch?'",
+  "3. Wenn die zweite Antwort auch kein verständliches Deutsch ist => SOFORT Tool 'swap_to_intl_agent' AUFRUFEN (execute). Kein zweiter Retry.",
   "",
   "Bei JEDER WEITEREN Nachricht:",
   "- Wenn der Anrufer ein Trigger-Keyword sagt (z.B. 'Englisch.', 'English please', 'Français') => SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN, auch mitten im Gespräch.",
@@ -160,6 +161,7 @@ const deIntakePrompt = [
   "- Wenn das Anliegen kein Sanitär-/Heizungsthema ist: setze out_of_scope=true.",
   "- Wenn alle Pflichtfelder vorhanden sind (Postleitzahl, Ort, Kategorie, Dringlichkeit, Beschreibung): setze intake_complete=true, sonst false.",
   "- Strasse und Hausnummer sind wünschenswert aber KEIN Blocker für intake_complete.",
+  "- ERINNERUNG: Sprach-Trigger gelten JEDERZEIT — auch nach bereits gesammelten Feldern. Wenn der Anrufer z.B. nach der Postleitzahl plötzlich 'English please' sagt: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN (execute). Gesammelte Daten gehen beim Transfer nicht verloren.",
 ].join("\n");
 
 // ═══════════════════════════════════════════════════════════════════════════

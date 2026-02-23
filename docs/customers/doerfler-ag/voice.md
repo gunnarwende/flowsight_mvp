@@ -82,16 +82,33 @@ For each call verify:
 - **Voice switch**: Susi (DE) → Juniper (INTL) — near-instant
 - **Events**: only `call_analyzed` is processed by our webhook (call_started/call_ended ignored)
 
-## Transfer Verification (Founder must test)
+## Founder Testcard — Transfer Verification
 
-| Test scenario | Expected behavior | How to verify |
-|---------------|-------------------|---------------|
-| EN from start ("I have an emergency") | Transfer within first exchange, INTL agent continues in English | Retell call timeline shows `agent_transfer` event |
-| DE call, mid-call "Englisch." | Transfer immediately, INTL agent continues in English | Retell call timeline shows `agent_transfer` event after DE turns |
-| ASR drift (EN garbled to DE) | Agent asks "Sprechen Sie Deutsch?" once, then transfers | Call timeline: 1 clarification turn, then `agent_transfer` |
-| No flip-flop | Only 1 transfer event in call timeline | Check Retell call detail: exactly 1 `agent_transfer` |
+After importing both agents and wiring DE→INTL, run these 3 test calls:
 
-**Critical check**: After "Ich verbinde Sie" (or equivalent), the transfer MUST actually happen (tool execution). If the call just hangs/stalls after the announcement, the tool was not called — re-import with updated config.
+### Test 1: EN from first utterance
+**You say (as first response after greeting):** "Hi, I have a water leak in my kitchen, it's urgent."
+**Expected:** Transfer to INTL agent within 1–2 exchanges. INTL agent (Juniper) continues in English.
+**Verify in Retell:** Open call detail → Timeline tab → look for `agent_transfer` event near the start.
+
+### Test 2: Mid-call language switch
+**You say (in German first, then switch):** Start normally in German, give PLZ "8942". Then say: **"Englisch."** or **"Can you speak English?"**
+**Expected:** Immediate transfer to INTL agent. No further German questions.
+**Verify in Retell:** Timeline shows DE turns, then `agent_transfer` event right after the language request.
+
+### Test 3: French trigger
+**You say (as first response):** "Bonjour, j'ai un problème de chauffage."
+**Expected:** Transfer to INTL agent. INTL agent continues in French.
+**Verify in Retell:** Timeline shows `agent_transfer` event near the start.
+
+### For ALL test calls, check:
+- [ ] Retell call detail → Timeline: exactly 1 `agent_transfer` event (no flip-flop)
+- [ ] Transfer actually happened (INTL agent spoke, not just DE saying "Ich verbinde Sie")
+- [ ] Vercel Logs: `_tag:retell_webhook`, `decision:created` (case was created)
+- [ ] Case appears in `/ops/cases` with correct German extraction
+- [ ] Notification email delivered
+
+**If transfer does NOT happen** (call hangs after "Ich verbinde Sie"): the tool was not executed. Re-import agents with latest config from `retell/exports/`.
 
 ## Privacy Defaults — DSGVO Checklist (Founder must configure in Retell UI)
 
@@ -108,9 +125,16 @@ For each call verify:
 - [ ] **Recording**: OFF on both agents (CLAUDE.md constraint — verify toggle)
 - [ ] **Data Retention**: If Retell offers retention settings → set to shortest available. If not configurable: document manual deletion cadence (quarterly review recommended, create calendar reminder)
 
-### Optional — Ultra-Safe Debug Mode
+### Optional — Ultra-Safe Mode (production hardening)
 
-For debugging transfer/ASR issues during testing:
+For maximum DSGVO compliance after go-live stabilization:
+1. Set Data Storage = **"Basic Attributes Only"** on both agents
+2. This stores only call metadata (duration, timestamps, agent used) — no transcripts, no analysis text
+3. Trade-off: you lose debugging capability. Only enable after transfer + intake are confirmed stable.
+
+### Temporary Debug Mode (for testing only)
+
+When debugging transfer/ASR issues:
 1. Temporarily set Data Storage = "Everything" on the test agent
 2. Run test calls, inspect full transcript + analysis
 3. **MANDATORY**: Switch back to "Everything except PII" immediately after debugging
