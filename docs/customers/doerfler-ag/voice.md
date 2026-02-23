@@ -71,12 +71,59 @@ For each call verify:
 
 ## Agent Transfer Details
 
-- **Mechanism**: AgentSwapTool on the DE Intake Node
-- **Trigger**: Caller speaks EN/FR/IT (auto-detected, no question asked)
+- **Mechanism**: AgentSwapTool on the DE Intake Node (real tool execution, not just spoken announcement)
+- **Trigger (3-layer detection)**:
+  1. **Keyword match** — explicit language tokens (english, englisch, français, italiano, etc.) → instant transfer
+  2. **Plausibility check** — first utterance doesn't parse as German (ASR drift, e.g. "Hi, Herr Bend") → ask once "Sprechen Sie Deutsch?", if still no German → transfer
+  3. **Mid-call request** — caller says language keyword at any point → instant transfer
+- **Max transfers**: 1 per call (after transfer, DE agent is no longer involved)
 - **Context**: Full conversation history carries over to INTL agent
 - **Webhook**: `post_call_analysis_setting: only_destination_agent` — only INTL agent sends webhook (no duplicate)
 - **Voice switch**: Susi (DE) → Juniper (INTL) — near-instant
 - **Events**: only `call_analyzed` is processed by our webhook (call_started/call_ended ignored)
+
+## Transfer Verification (Founder must test)
+
+| Test scenario | Expected behavior | How to verify |
+|---------------|-------------------|---------------|
+| EN from start ("I have an emergency") | Transfer within first exchange, INTL agent continues in English | Retell call timeline shows `agent_transfer` event |
+| DE call, mid-call "Englisch." | Transfer immediately, INTL agent continues in English | Retell call timeline shows `agent_transfer` event after DE turns |
+| ASR drift (EN garbled to DE) | Agent asks "Sprechen Sie Deutsch?" once, then transfers | Call timeline: 1 clarification turn, then `agent_transfer` |
+| No flip-flop | Only 1 transfer event in call timeline | Check Retell call detail: exactly 1 `agent_transfer` |
+
+**Critical check**: After "Ich verbinde Sie" (or equivalent), the transfer MUST actually happen (tool execution). If the call just hangs/stalls after the announcement, the tool was not called — re-import with updated config.
+
+## Privacy Defaults — DSGVO Checklist (Founder must configure in Retell UI)
+
+### Mandatory before Live
+
+- [ ] **Data Storage**: Both agents → Security & Fallback Settings → Data Storage = **"Everything except PII"** (config-as-code default is now `everything_except_pii`, but verify after import)
+- [ ] **PII Redaction**: Both agents → Security & Fallback Settings → PII Redaction → Enable → configure categories:
+  - [x] Person names
+  - [x] Phone numbers
+  - [x] Email addresses
+  - [x] Physical addresses (street, house number)
+  - [x] Postal codes / city names (if available)
+  - [x] Free text with personal references
+- [ ] **Recording**: OFF on both agents (CLAUDE.md constraint — verify toggle)
+- [ ] **Data Retention**: If Retell offers retention settings → set to shortest available. If not configurable: document manual deletion cadence (quarterly review recommended, create calendar reminder)
+
+### Optional — Ultra-Safe Debug Mode
+
+For debugging transfer/ASR issues during testing:
+1. Temporarily set Data Storage = "Everything" on the test agent
+2. Run test calls, inspect full transcript + analysis
+3. **MANDATORY**: Switch back to "Everything except PII" immediately after debugging
+4. Delete test call data in Retell Dashboard
+
+### Post-Import Verification
+
+After every agent import, verify in Retell Dashboard:
+- [ ] Data Storage = "Everything except PII"
+- [ ] PII Redaction = enabled with categories above
+- [ ] Recording = OFF
+- [ ] Webhook URL = `https://flowsight-mvp.vercel.app/api/retell/webhook`
+- [ ] Voice ID: DE = `v3V1d2rk6528UrLKRuy8` (Susi), INTL = `aMSt68OGf4xUZAnLpTU8` (Juniper)
 
 ## Notes
 
@@ -84,4 +131,4 @@ For each call verify:
 - Categories: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein
 - Urgency: notfall | dringend | normal (Kleinschreibung)
 - Post-call analysis: ALWAYS in German, regardless of call language
-- data_storage_setting: "everything" (bei Datenschutz-Anforderung auf "none" setzen)
+- data_storage_setting: `"everything_except_pii"` (config-as-code default)

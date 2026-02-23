@@ -9,7 +9,7 @@
   },
   "webhook_url": "{{webhook_url}}",
   "language": "en-US",
-  "data_storage_setting": "everything",
+  "data_storage_setting": "everything_except_pii",
   "opt_in_signed_url": false,
   "post_call_analysis_data": [
     {

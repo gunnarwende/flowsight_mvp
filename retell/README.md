@@ -107,6 +107,19 @@ For each call check:
 - Case in `/ops/cases` with correct German extraction
 - Notification email delivered
 
+## Language Detection & Transfer
+
+The DE agent has a 3-layer language detection system:
+
+1. **Keyword match** — scans every user message for explicit language tokens (english, englisch, français, italiano, etc.) → instant AgentSwapTool execution
+2. **Plausibility check** — if first utterance doesn't parse as German (ASR drift, garbled foreign language) → asks once "Sprechen Sie Deutsch?" → if still no German → transfer
+3. **Mid-call request** — language keyword at any point in conversation → instant transfer
+
+Rules:
+- Max 1 transfer per call (no flip-flop)
+- Agent MUST execute the tool, not just announce "I'll connect you"
+- `post_call_analysis_setting: only_destination_agent` ensures only the INTL agent fires the webhook
+
 ## Constraints (from CLAUDE.md)
 
 - Recording: OFF
@@ -119,6 +132,19 @@ For each call check:
 - Post-call analysis: ALWAYS in German regardless of call language
 - Webhook processes only `call_analyzed` events
 
-## Privacy Note
+## Privacy & DSGVO Defaults
 
-`data_storage_setting` is set to `"everything"` (Retell default). For stricter privacy, change to `"none"` in Retell Dashboard after import.
+### Config-as-Code Defaults (set in generator)
+- `data_storage_setting: "everything_except_pii"` — Retell stores call data but redacts PII automatically
+- `pii_config: { mode: "post_call" }` — PII redaction runs after call ends
+
+### Founder Must Configure in Retell UI (after each import)
+1. **Verify** Data Storage = "Everything except PII" on both agents
+2. **Enable PII Redaction** → configure: names, phone numbers, emails, addresses
+3. **Verify** Recording = OFF
+4. **Data Retention**: set to shortest available, or document manual deletion cadence (quarterly)
+
+### Debug Mode (temporary)
+When debugging transfer/ASR issues: temporarily set Data Storage = "Everything", run tests, then **immediately switch back** to "Everything except PII" and delete test data.
+
+See `docs/customers/<slug>/voice.md` for per-customer privacy checklist.
