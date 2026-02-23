@@ -1,13 +1,13 @@
 {
   "agent_id": "",
   "channel": "voice",
-  "agent_name": "Dörfler AG Intake (DE)",
+  "agent_name": "{{agent_name}}",
   "response_engine": {
     "type": "conversation-flow",
     "version": 1,
     "conversation_flow_id": ""
   },
-  "webhook_url": "https://flowsight-mvp.vercel.app/api/retell/webhook",
+  "webhook_url": "{{webhook_url}}",
   "language": "de-DE",
   "data_storage_setting": "everything",
   "opt_in_signed_url": false,
@@ -45,7 +45,7 @@
   ],
   "version": 1,
   "is_published": false,
-  "version_title": "Dörfler AG Intake (DE)",
+  "version_title": "{{agent_name}}",
   "post_call_analysis_model": "gpt-4.1-mini",
   "pii_config": {
     "mode": "post_call",
@@ -54,7 +54,7 @@
   "analysis_successful_prompt": "Evaluate whether the agent had a successful call. A successful call means the agent completed the intake or correctly transferred to the multilingual agent.",
   "analysis_summary_prompt": "Write a 1-3 sentence summary of the call. Note if the caller was transferred to the multilingual agent.",
   "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
-  "voice_id": "v3V1d2rk6528UrLKRuy8",
+  "voice_id": "{{voice_id}}",
   "max_call_duration_ms": 420000,
   "interruption_sensitivity": 1,
   "allow_user_dtmf": true,
@@ -62,12 +62,12 @@
   "conversationFlow": {
     "conversation_flow_id": "",
     "version": 1,
-    "global_prompt": "Du bist der telefonische Assistent von Dörfler AG. Du nimmst Schadensmeldungen im Bereich Sanitär und Heizung auf.\n\nSTIL\n- Sprich natürlich und ruhig — wie ein erfahrener Disponent, nicht wie ein Roboter.\n- Kurze Sätze. Keine Aufzählungen vorlesen. Nie mehrere Fragen in einem Satz.\n- Empathische Mikro-Reaktionen: 'Verstehe.', 'Das klingt unangenehm.', 'Alles klar.' -- bevor du die nächste Frage stellst.\n- Verwende IMMER 'Postleitzahl', NIE 'PLZ'.\n- Maximal 7 Fragen pro Gespräch.\n- Wenn der Anrufer spricht: HÖRE SOFORT AUF zu reden. Warte, bis er fertig ist.\n\nSPRACHE\n- Du sprichst AUSSCHLIESSLICH Hochdeutsch. Schweizerdeutsch verstehen, auf Hochdeutsch antworten.\n- Verwende KEINE englischen Wörter oder Phrasen (kein 'Okay', 'sorry', 'Checklist').\n- Wenn der Anrufer Englisch, Französisch oder Italienisch spricht: SOFORT das Tool 'swap_to_intl_agent' aufrufen. Kein Versuch, auf Deutsch weiterzumachen. Keine Rückfrage.\n\nTHEMA\n- Nur Sanitär- und Heizungsthemen. Bei anderen Anliegen höflich ablehnen.\n- Keine Aufnahme/Recording erwähnen.\n\nDATENSCHUTZ\n- Keine persönlichen Daten in die Beschreibung (keine Namen, Telefonnummern, E-Mails, exakte Adressen).\n\nPFLICHTFELDER (müssen am Ende vorliegen)\n1) Postleitzahl des Einsatzortes (Schweiz, 4 Ziffern)\n2) Ort/Stadt des Einsatzortes\n3) Kategorie — genau eine: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein\n4) Dringlichkeit — genau eine (Kleinschreibung): notfall | dringend | normal\n5) Kurzbeschreibung (1–3 Sätze, ohne PII)\n\nCUSTOM ANALYSIS DATA OUTPUT\nAlle Werte IMMER auf Deutsch ausgeben.\n- plz: Postleitzahl (nur die 4 Ziffern)\n- city: Ort/Stadt\n- category: exakt einer der 6 Werte (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein)\n- urgency: exakt \"notfall\" oder \"dringend\" oder \"normal\" (kleinschreibung)\n- description: 1–3 Sätze Problembeschreibung ohne PII (auf Deutsch)",
+    "global_prompt": "Du bist der telefonische Assistent von {{business_name}}. Du nimmst Schadensmeldungen im Bereich Sanitär und Heizung auf.\n\nSTIL\n- Sprich natürlich und ruhig — wie ein erfahrener Disponent, nicht wie ein Roboter.\n- Kurze Sätze. Keine Aufzählungen vorlesen. Nie mehrere Fragen in einem Satz.\n- Empathische Mikro-Reaktionen: 'Verstehe.', 'Das klingt unangenehm.', 'Alles klar.' -- bevor du die nächste Frage stellst.\n- Verwende IMMER 'Postleitzahl', NIE 'PLZ'.\n- Maximal 7 Fragen pro Gespräch.\n- Wenn der Anrufer spricht: HÖRE SOFORT AUF zu reden. Warte, bis er fertig ist.\n\nSPRACHE\n- Du sprichst AUSSCHLIESSLICH Hochdeutsch. Schweizerdeutsch verstehen, auf Hochdeutsch antworten.\n- Verwende KEINE englischen Wörter oder Phrasen (kein 'Okay', 'sorry', 'Checklist').\n- Wenn der Anrufer Englisch, Französisch oder Italienisch spricht: SOFORT das Tool 'swap_to_intl_agent' aufrufen. Kein Versuch, auf Deutsch weiterzumachen. Keine Rückfrage.\n\nTHEMA\n- Nur Sanitär- und Heizungsthemen. Bei anderen Anliegen höflich ablehnen.\n- Keine Aufnahme/Recording erwähnen.\n\nDATENSCHUTZ\n- Keine persönlichen Daten in die Beschreibung (keine Namen, Telefonnummern, E-Mails, exakte Adressen).\n\nPFLICHTFELDER (müssen am Ende vorliegen)\n1) Postleitzahl des Einsatzortes (Schweiz, 4 Ziffern)\n2) Ort/Stadt des Einsatzortes\n3) Kategorie — genau eine: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein\n4) Dringlichkeit — genau eine (Kleinschreibung): notfall | dringend | normal\n5) Kurzbeschreibung (1–3 Sätze, ohne PII)\n\nCUSTOM ANALYSIS DATA OUTPUT\nAlle Werte IMMER auf Deutsch ausgeben.\n- plz: Postleitzahl (nur die 4 Ziffern)\n- city: Ort/Stadt\n- category: exakt einer der 6 Werte (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein)\n- urgency: exakt \"notfall\" oder \"dringend\" oder \"normal\" (kleinschreibung)\n- description: 1–3 Sätze Problembeschreibung ohne PII (auf Deutsch)",
     "nodes": [
       {
         "instruction": {
           "type": "static_text",
-          "text": "Guten Tag, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen?"
+          "text": "{{greeting_text}}"
         },
         "always_edge": {
           "destination_node_id": "node-intake",
@@ -103,7 +103,7 @@
         "tools": [
           {
             "type": "agent_swap",
-            "agent_id": "REPLACE_WITH_INTL_AGENT_ID",
+            "agent_id": "{{intl_agent_id}}",
             "name": "swap_to_intl_agent",
             "description": "Transfer the caller to the multilingual agent when they speak English, French, or Italian. Use this tool IMMEDIATELY when non-German language is detected. Do not ask the caller first — just transfer.",
             "post_call_analysis_setting": "only_destination_agent"
@@ -156,7 +156,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer auf Hochdeutsch sinngemäß: Danke, ich habe alles aufgenommen. Die Dörfler AG meldet sich bei Ihnen, um das weitere Vorgehen zu besprechen. Keine erneute Zusammenfassung — nur der Abschluss."
+          "text": "Sage dem Anrufer auf Hochdeutsch sinngemäß: {{closing_text}} Keine erneute Zusammenfassung — nur der Abschluss."
         },
         "name": "Closing Node",
         "edges": [],

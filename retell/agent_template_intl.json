@@ -1,0 +1,225 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "agent_name": "{{agent_name}}",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 1,
+    "conversation_flow_id": ""
+  },
+  "webhook_url": "{{webhook_url}}",
+  "language": "en-US",
+  "data_storage_setting": "everything",
+  "opt_in_signed_url": false,
+  "post_call_analysis_data": [
+    {
+      "type": "string",
+      "name": "plz",
+      "description": "Swiss postal code (Postleitzahl). Return exactly 4 digits, e.g. \"8001\". Always return the numeric postal code regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "city",
+      "description": "City/town of the service location in Switzerland, e.g. \"Zürich\". Always return the German city name.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "category",
+      "description": "Return exactly one of: \"Verstopfung\", \"Leck\", \"Heizung\", \"Boiler\", \"Rohrbruch\", \"Sanitär allgemein\". Always use the German value regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "urgency",
+      "description": "Return exactly one of: \"notfall\", \"dringend\", \"normal\". Lowercase German only.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "description": "1-3 sentence summary of the problem IN GERMAN. Include key symptoms and affected area. Never include personal data. Always write in German regardless of call language.",
+      "required": true
+    }
+  ],
+  "version": 1,
+  "is_published": false,
+  "version_title": "{{agent_name}}",
+  "post_call_analysis_model": "gpt-4.1-mini",
+  "pii_config": {
+    "mode": "post_call",
+    "categories": []
+  },
+  "analysis_successful_prompt": "Evaluate whether the agent had a successful call. The caller was transferred from the German agent. A successful call means the agent completed the intake in the caller's language (EN/FR/IT).",
+  "analysis_summary_prompt": "Write a 1-3 sentence summary of the call. Note the language used and that this was a transferred call.",
+  "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
+  "voice_id": "{{voice_id}}",
+  "max_call_duration_ms": 420000,
+  "interruption_sensitivity": 1,
+  "allow_user_dtmf": true,
+  "user_dtmf_options": {},
+  "conversationFlow": {
+    "conversation_flow_id": "",
+    "version": 1,
+    "global_prompt": "You are the phone assistant for {{business_name}}. You take damage reports for plumbing and heating services in Switzerland.\n\nCONTEXT\n- The caller was transferred from the German-speaking agent because they spoke English, French, or Italian.\n- The full conversation history carries over. Check what was already said before asking again.\n\nSTYLE\n- Speak naturally and calmly — like an experienced dispatcher, not a robot.\n- Short sentences. No lists. Never ask multiple questions at once.\n- Empathetic micro-reactions: \"I understand.\", \"That sounds unpleasant.\", \"Got it.\" — before your next question.\n- Maximum 7 questions per call.\n- When the caller speaks: STOP talking immediately. Wait until they finish.\n\nLANGUAGE (STICKY MODE)\n- Detect the caller's language from the conversation history or their first sentence.\n- Supported: English, French, Italian.\n- Once you identify the language, STAY in that language for the ENTIRE call — questions, summary, closing, everything.\n- NEVER switch to German during the conversation.\n- Post-call analysis values (category, urgency, description) must ALWAYS be in German — regardless of conversation language.\n\nTOPIC\n- Plumbing and heating only. Politely decline other requests.\n- Never mention recording.\n\nPRIVACY\n- No personal data in the description (no names, phone numbers, emails, exact addresses).\n\nREQUIRED FIELDS (must be collected by end of call)\n1) Postal code of the service location (Switzerland, 4 digits)\n2) City/town of the service location\n3) Category — exactly one: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Sanitär allgemein\n4) Urgency — exactly one (lowercase German): notfall | dringend | normal\n5) Short description (1–3 sentences, no PII)\n\nCUSTOM ANALYSIS DATA OUTPUT\nEven though the call is in English/French/Italian: ALL values must be in GERMAN.\n- plz: Postal code (4 digits only)\n- city: City/town (German name)\n- category: exactly one of the 6 German values\n- urgency: exactly \"notfall\" or \"dringend\" or \"normal\" (lowercase)\n- description: 1–3 sentences in German summarizing the problem, no PII",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You were transferred from the German agent. Check the conversation history to understand what language the caller speaks and what they already said. Greet them warmly in their language (English, French, or Italian) and let them know you are here to help. If they already described their problem, acknowledge it briefly."
+        },
+        "always_edge": {
+          "destination_node_id": "node-intake",
+          "id": "always-edge-welcome",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Always"
+          }
+        },
+        "name": "Welcome Node",
+        "edges": [],
+        "start_speaker": "agent",
+        "id": "start-node",
+        "type": "conversation",
+        "display_position": {
+          "x": 232,
+          "y": 24
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You are continuing an intake conversation. The caller was transferred from the German agent.\n\nCHECK CONVERSATION HISTORY FIRST\n- Review what the caller already said to the German agent before transfer.\n- Do NOT re-ask information that was already provided.\n- If the caller already described their problem, acknowledge it and continue with missing fields only.\n\nGREETING (only on your first turn after transfer)\n- Greet warmly in the detected language. Acknowledge what they already said.\n- English: \"Hello! I'll be happy to help you. [Acknowledge what they said]. Let me just confirm a few details.\"\n- French: \"Bonjour ! Je suis là pour vous aider. [Acknowledge]. Permettez-moi de confirmer quelques détails.\"\n- Italian: \"Buongiorno! Sono qui per aiutarla. [Acknowledge]. Mi permetta di confermare alcuni dettagli.\"\n\nWORKFLOW (flexible order — adapt to conversation)\n1. Let the caller explain what happened. Listen.\n2. React briefly with empathy.\n3. Derive category from description if possible. Only if unclear: ask (never list all 6).\n4. Ask for postal code: confirm digits one by one (e.g. \"eight, zero, zero, one — correct?\").\n5. Ask separately for the city/town.\n6. Ask about urgency — ONLY if not yet answered.\n7. EXACTLY ONE summary: summarize all collected data and ask \"Is that correct?\" After confirmation: set intake_complete=true. No further summary.\n\nNO-DOUBLE-ASKING RULE\n- Ask each required field EXACTLY ONCE. If the caller already answered (even casually), do NOT ask again.\n- On silence or unclear answer: ask ONCE more, then move on.\n- Before each question: check if the information is already available. If yes: skip.\n\nADDITIONAL RULES\n- Never ask two questions in one sentence.\n- If the caller is impatient: collect minimum and wrap up quickly.\n- If the request is not plumbing/heating: set out_of_scope=true.\n- When all required fields are collected (postal code, city, category, urgency, description): set intake_complete=true.\n\nLANGUAGE (STICKY)\n- Stay in the caller's language for ALL turns — questions, summary, closing.\n- Post-call analysis values (category, urgency, description) always in German."
+        },
+        "name": "Intake Node",
+        "edges": [],
+        "id": "node-intake",
+        "type": "conversation",
+        "display_position": {
+          "x": 623,
+          "y": 310
+        },
+        "skip_response_edge": {
+          "destination_node_id": "node-logic-split",
+          "id": "skip-response-edge-intake",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "name": "Logic Split Node",
+        "edges": [
+          {
+            "destination_node_id": "node-out-of-scope",
+            "id": "edge-out-of-scope",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "out_of_scope is true (the user's request is not about plumbing or heating)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing",
+            "id": "edge-intake-complete",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "intake_complete is true (all required fields have been collected: plz, city, category, urgency, description)"
+            }
+          }
+        ],
+        "id": "node-logic-split",
+        "else_edge": {
+          "destination_node_id": "node-intake",
+          "id": "edge-logic-else",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Else"
+          }
+        },
+        "type": "branch",
+        "display_position": {
+          "x": 989,
+          "y": 704
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the caller IN THEIR LANGUAGE: {{closing_text}} No summary — just the closing. Stay in the caller's language (English, French, or Italian)."
+        },
+        "name": "Closing Node",
+        "edges": [],
+        "id": "node-closing",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 796
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-closing",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the caller IN THEIR LANGUAGE: Thank you, but this is not something we handle. We can help with plumbing and heating issues."
+        },
+        "name": "Out-of-scope Closing",
+        "edges": [],
+        "id": "node-out-of-scope",
+        "type": "conversation",
+        "display_position": {
+          "x": 943,
+          "y": 944
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-oos",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "name": "End Call",
+        "id": "end-call-node",
+        "type": "end",
+        "display_position": {
+          "x": 1766,
+          "y": 1116
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "End the call politely IN THE CALLER'S LANGUAGE. Goodbye / Au revoir / Arrivederci."
+        }
+      }
+    ],
+    "start_node_id": "start-node",
+    "start_speaker": "agent",
+    "model_choice": {
+      "type": "cascading",
+      "model": "gpt-4.1"
+    },
+    "tool_call_strict_mode": true,
+    "knowledge_base_ids": [],
+    "kb_config": {
+      "top_k": 3,
+      "filter_score": 0.6
+    },
+    "begin_tag_display_position": {
+      "x": 46,
+      "y": -43
+    },
+    "is_published": false,
+    "flex_mode": true,
+    "is_transfer_cf": true
+  }
+}
