@@ -22,5 +22,8 @@ pnpm-debug.log*
 # Local agent artifacts
 .claude/
 
+# Chain reports / debug artifacts (PII, audio, raw API responses)
+tmp/
+
 .vercel
 .env*.local
