@@ -477,9 +477,10 @@ function auditExtraction(raw) {
 function auditTiming(turns, raw) {
   const findings = [];
 
-  const callDurationMs = raw.end_timestamp && raw.start_timestamp
-    ? (raw.end_timestamp - raw.start_timestamp) * 1000
-    : null;
+  const callDurationMs = raw.duration_ms
+    ?? (raw.end_timestamp && raw.start_timestamp
+      ? raw.end_timestamp - raw.start_timestamp
+      : null);
 
   // Calculate talk time per role
   let agentTalkMs = 0;
@@ -590,9 +591,10 @@ export function analyzeCall(raw) {
     }
   }
 
-  const callDurationMs = raw.end_timestamp && raw.start_timestamp
-    ? (raw.end_timestamp - raw.start_timestamp) * 1000
-    : null;
+  const callDurationMs = raw.duration_ms
+    ?? (raw.end_timestamp && raw.start_timestamp
+      ? raw.end_timestamp - raw.start_timestamp
+      : null);
 
   const meta = {
     call_id_short: callId.slice(0, 12),

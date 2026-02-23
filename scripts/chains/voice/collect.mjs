@@ -14,9 +14,7 @@ const BASE_URL = "https://api.retellai.com";
 function getApiKey() {
   const key = process.env.RETELL_API_KEY;
   if (!key) {
-    throw new Error(
-      "RETELL_API_KEY not set. Run: $env:RETELL_API_KEY='rk_...' in PowerShell before running.",
-    );
+    throw new Error("RETELL_API_KEY not set. Use run_chain.mjs as entry point.");
   }
   return key;
 }

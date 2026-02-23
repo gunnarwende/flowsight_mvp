@@ -12,6 +12,73 @@
 // Output: tmp/chains/voice/reports/<date>_<call_id>.{md,json} + summary.md
 
 import { parseArgs } from "node:util";
+import { readFileSync, existsSync } from "node:fs";
+import { createInterface } from "node:readline";
+
+// ── Resolve RETELL_API_KEY ───────────────────────────────────────────────
+
+const ENV_LOCAL_PATH = "src/web/.env.local";
+
+function loadKeyFromEnvLocal() {
+  if (!existsSync(ENV_LOCAL_PATH)) {
+    console.error(`[key] ${ENV_LOCAL_PATH} not found.`);
+    process.exit(1);
+  }
+
+  let content;
+  try {
+    content = readFileSync(ENV_LOCAL_PATH, "utf8");
+  } catch (err) {
+    console.error(`[key] Cannot read ${ENV_LOCAL_PATH}: ${err.message}`);
+    process.exit(1);
+  }
+
+  const match = content.match(/^RETELL_API_KEY\s*=\s*(.+)$/m);
+  if (!match) {
+    console.error(`[key] No RETELL_API_KEY entry found in ${ENV_LOCAL_PATH}.`);
+    process.exit(1);
+  }
+
+  // Trim whitespace + remove surrounding quotes (single or double)
+  const raw = match[1].trim().replace(/^["']|["']$/g, "");
+  if (raw.length === 0) {
+    console.error(`[key] RETELL_API_KEY in ${ENV_LOCAL_PATH} is empty.`);
+    process.exit(1);
+  }
+
+  return raw;
+}
+
+function askYesNo(question) {
+  return new Promise((resolve) => {
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === "y");
+    });
+  });
+}
+
+async function ensureApiKey() {
+  if (process.env.RETELL_API_KEY) {
+    console.log(`[key] RETELL_API_KEY from env (${process.env.RETELL_API_KEY.length} chars)`);
+    return;
+  }
+
+  console.log("[key] RETELL_API_KEY not set in environment.");
+  const yes = await askYesNo(`[key] Load from ${ENV_LOCAL_PATH}? (y/N) `);
+
+  if (!yes) {
+    console.error("[key] Aborted. Set RETELL_API_KEY in your shell first:");
+    console.error("  PowerShell: $env:RETELL_API_KEY='rk_...'");
+    console.error("  bash:       export RETELL_API_KEY=rk_...");
+    process.exit(1);
+  }
+
+  const key = loadKeyFromEnvLocal();
+  process.env.RETELL_API_KEY = key;
+  console.log(`[key] loaded from ${ENV_LOCAL_PATH} (${key.length} chars)`);
+}
 
 // ── Parse CLI args ───────────────────────────────────────────────────────
 
@@ -53,6 +120,9 @@ if (chainName !== "voice") {
 // ── Run voice chain ──────────────────────────────────────────────────────
 
 async function runVoiceChain() {
+  // 0. Resolve API key (interactive fallback if env not set)
+  await ensureApiKey();
+
   const runId = new Date().toISOString();
   console.log(`[voice-chain] run_id=${runId}`);
 
@@ -72,7 +142,9 @@ async function runVoiceChain() {
     calls = await collectCalls(opts);
   } catch (err) {
     console.error(`[voice-chain] collect failed: ${err.message}`);
-    process.exit(1);
+    // Allow event loop to drain before exit (avoids UV_HANDLE_CLOSING assertion on Windows)
+    setTimeout(() => process.exit(1), 50);
+    return;
   }
 
   console.log(`[voice-chain] collected ${calls.length} call(s)`);
