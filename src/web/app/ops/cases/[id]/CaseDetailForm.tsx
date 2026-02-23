@@ -57,6 +57,8 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   const [contactEmail, setContactEmail] = useState(
     initialData.contact_email ?? ""
   );
+  const [street, setStreet] = useState(initialData.street ?? "");
+  const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [quickDay, setQuickDay] = useState<0 | 1>(0);
 
   // Baseline for dirty-check — updated after each successful save
@@ -66,6 +68,8 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     scheduled_at: initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "",
     internal_notes: initialData.internal_notes ?? "",
     contact_email: initialData.contact_email ?? "",
+    street: initialData.street ?? "",
+    house_number: initialData.house_number ?? "",
   });
 
   const [saveState, setSaveState] = useState<
@@ -89,7 +93,9 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     assigneeText !== baseline.assignee_text ||
     scheduledAt !== baseline.scheduled_at ||
     internalNotes !== baseline.internal_notes ||
-    contactEmail !== baseline.contact_email;
+    contactEmail !== baseline.contact_email ||
+    street !== baseline.street ||
+    houseNumber !== baseline.house_number;
 
   // Warn on tab close / navigate away with unsaved changes
   const onBeforeUnload = useCallback(
@@ -117,6 +123,8 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
           scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
           internal_notes: internalNotes || null,
           contact_email: contactEmail.trim() || null,
+          street: street.trim() || null,
+          house_number: houseNumber.trim() || null,
         }),
       });
 
@@ -132,6 +140,8 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         scheduled_at: scheduledAt,
         internal_notes: internalNotes,
         contact_email: contactEmail,
+        street,
+        house_number: houseNumber,
       });
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 2000);
@@ -209,6 +219,9 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
               {initialData.urgency}
             </span>
           </InfoField>
+          <InfoField label="Adresse" value={
+            [initialData.street, initialData.house_number].filter(Boolean).join(" ") || "\u2014"
+          } />
           <InfoField label="PLZ / Ort" value={`${initialData.plz} ${initialData.city}`} />
           <InfoField label="Quelle" value={initialData.source} />
           <InfoField label="Erstellt" value={formatDate(initialData.created_at)} />
@@ -296,6 +309,40 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               placeholder="name@beispiel.ch"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Street + House Number (editable — Ops can add after callback) */}
+          <div>
+            <label
+              htmlFor="street"
+              className="block text-xs font-medium text-slate-400 mb-1"
+            >
+              Strasse
+            </label>
+            <input
+              id="street"
+              type="text"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
+              placeholder="Bahnhofstrasse"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="house_number"
+              className="block text-xs font-medium text-slate-400 mb-1"
+            >
+              Hausnummer
+            </label>
+            <input
+              id="house_number"
+              type="text"
+              value={houseNumber}
+              onChange={(e) => setHouseNumber(e.target.value)}
+              placeholder="12a"
               className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>

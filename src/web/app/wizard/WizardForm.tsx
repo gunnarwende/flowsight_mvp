@@ -182,6 +182,8 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
   // Form data
   const [category, setCategory] = useState(initialCategory ?? "");
   const [urgency, setUrgency] = useState("");
+  const [street, setStreet] = useState("");
+  const [houseNumber, setHouseNumber] = useState("");
   const [plz, setPlz] = useState("");
   const [city, setCity] = useState("");
   const [contactPhone, setContactPhone] = useState("");
@@ -190,7 +192,7 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
 
   // Step validation
   const step1Valid = category !== "" && urgency !== "";
-  const step2Valid = plz.trim().length > 0 && city.trim().length > 0;
+  const step2Valid = street.trim().length > 0 && houseNumber.trim().length > 0 && plz.trim().length > 0 && city.trim().length > 0;
   const hasContact = contactPhone.trim().length > 0 || contactEmail.trim().length > 0;
   const step3Valid = hasContact && description.trim().length > 0;
 
@@ -207,6 +209,8 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
 
     const body: Record<string, string> = {
       source: "wizard",
+      street: street.trim(),
+      house_number: houseNumber.trim(),
       plz: plz.trim(),
       city: city.trim(),
       category,
@@ -241,6 +245,8 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
     setPageState({ status: "form" });
     setCategory(initialCategory ?? "");
     setUrgency("");
+    setStreet("");
+    setHouseNumber("");
     setPlz("");
     setCity("");
     setContactPhone("");
@@ -364,15 +370,27 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
           <div className="space-y-5">
             <div>
               <StepLabel>Einsatzort</StepLabel>
-              <p className="mb-4 text-xs text-white/40">PLZ und Ort werden für die Einsatzplanung benötigt.</p>
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <FieldLabel htmlFor="plz">PLZ</FieldLabel>
-                  <Input id="plz" type="text" required value={plz} onChange={setPlz} placeholder="8000" maxLength={5} />
+              <p className="mb-4 text-xs text-white/40">Adresse, PLZ und Ort werden für die Einsatzplanung benötigt.</p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="col-span-2">
+                    <FieldLabel htmlFor="street">Strasse</FieldLabel>
+                    <Input id="street" type="text" required value={street} onChange={setStreet} placeholder="Bahnhofstrasse" />
+                  </div>
+                  <div>
+                    <FieldLabel htmlFor="house_number">Nr.</FieldLabel>
+                    <Input id="house_number" type="text" required value={houseNumber} onChange={setHouseNumber} placeholder="12a" />
+                  </div>
                 </div>
-                <div className="col-span-2">
-                  <FieldLabel htmlFor="city">Ort</FieldLabel>
-                  <Input id="city" type="text" required value={city} onChange={setCity} placeholder="Zürich" />
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <FieldLabel htmlFor="plz">PLZ</FieldLabel>
+                    <Input id="plz" type="text" required value={plz} onChange={setPlz} placeholder="8000" maxLength={5} />
+                  </div>
+                  <div className="col-span-2">
+                    <FieldLabel htmlFor="city">Ort</FieldLabel>
+                    <Input id="city" type="text" required value={city} onChange={setCity} placeholder="Zürich" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -419,8 +437,10 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
                 <span>{category || "—"}</span>
                 <span className="text-white/40">Dringlichkeit</span>
                 <span>{URGENCIES.find((u) => u.value === urgency)?.label || "—"}</span>
+                <span className="text-white/40">Adresse</span>
+                <span>{street && houseNumber ? `${street} ${houseNumber}` : "\u2014"}</span>
                 <span className="text-white/40">Ort</span>
-                <span>{plz && city ? `${plz} ${city}` : "—"}</span>
+                <span>{plz && city ? `${plz} ${city}` : "\u2014"}</span>
                 <span className="text-white/40">Kontakt</span>
                 <span>{contactPhone ? `${contactPhone.slice(0, 7)}…` : contactEmail ? `${contactEmail.split("@")[0].slice(0, 4)}…@${contactEmail.split("@")[1]}` : "—"}</span>
               </div>

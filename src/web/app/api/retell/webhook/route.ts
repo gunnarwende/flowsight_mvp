@@ -222,6 +222,8 @@ export async function POST(req: Request) {
   // Structured fields — read from whichever path had data
   const plz = nonEmptyStr(extractedData.plz ?? extractedData.postal_code ?? extractedData.zip);
   const city = nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt);
+  const street = nonEmptyStr(extractedData.street ?? extractedData.strasse);
+  const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
   const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
   const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
   const description =
@@ -308,6 +310,8 @@ export async function POST(req: Request) {
         source: "voice" as const,
         contact_phone: callerPhone!,
         contact_email: null,
+        street: street ?? null,
+        house_number: houseNumber ?? null,
         plz: plz!,
         city: city!,
         category: category!,

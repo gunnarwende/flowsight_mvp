@@ -17,6 +17,8 @@ export interface CaseDetail {
   updated_at: string;
   contact_phone: string | null;
   contact_email: string | null;
+  street: string | null;
+  house_number: string | null;
   plz: string;
   city: string;
   category: string;

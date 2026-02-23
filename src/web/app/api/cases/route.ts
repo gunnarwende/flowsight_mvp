@@ -18,6 +18,8 @@ interface CaseBody {
   source: CaseSource;
   contact_phone?: string;
   contact_email?: string;
+  street?: string;
+  house_number?: string;
   plz: string;
   city: string;
   category: string;
@@ -93,6 +95,16 @@ function validateBody(
     }
   }
 
+  // street + house_number: required for wizard, optional for voice
+  if (b.source === "wizard") {
+    if (typeof b.street !== "string" || (b.street as string).trim().length === 0) {
+      missing.push("street");
+    }
+    if (typeof b.house_number !== "string" || (b.house_number as string).trim().length === 0) {
+      missing.push("house_number");
+    }
+  }
+
   // urgency
   const validUrgency = VALID_URGENCIES.includes(b.urgency as CaseUrgency);
   if (!validUrgency) missing.push("urgency");
@@ -118,6 +130,8 @@ function validateBody(
       source: b.source as CaseSource,
       contact_phone: hasPhone ? (b.contact_phone as string) : undefined,
       contact_email: hasEmail ? (b.contact_email as string) : undefined,
+      street: typeof b.street === "string" && b.street.trim() ? b.street.trim() : undefined,
+      house_number: typeof b.house_number === "string" && b.house_number.trim() ? b.house_number.trim() : undefined,
       plz: (b.plz as string).trim(),
       city: (b.city as string).trim(),
       category: (b.category as string).trim(),
@@ -173,6 +187,8 @@ export async function POST(request: NextRequest) {
         source: data.source,
         contact_phone: data.contact_phone ?? null,
         contact_email: data.contact_email ?? null,
+        street: data.street ?? null,
+        house_number: data.house_number ?? null,
         plz: data.plz,
         city: data.city,
         category: data.category,

@@ -7,6 +7,8 @@ Diese Datei definiert die SSOT-Form des Case-Objekts. Alle Producer (Wizard/Voic
 - source ("wizard" | "voice")
 - created_at (timestamp)
 - contact_phone OR contact_email (mindestens eins)
+- street (string) — required for wizard, optional for voice
+- house_number (string) — required for wizard, optional for voice
 - plz (string)
 - city (string)
 - category (string)
@@ -29,6 +31,17 @@ Canonical fields always take priority — if both `phone` and `contact_phone` ar
 - photo_url (string URL)
 - raw_payload (json) — optional, nur für Debugging (sparsam)
 
+## Address Fields — Source-dependent Validation
+
+| Field | Wizard | Voice | Ops |
+|-------|--------|-------|-----|
+| street | required | best-effort (extract if mentioned) | editable |
+| house_number | required | best-effort (extract if mentioned) | editable |
+| plz | required | required | read-only |
+| city | required | required | read-only |
+
+DB columns are nullable (old rows + voice cases without address). Application-layer validation enforces requirements per source.
+
 ## Ops-managed Fields (Welle 5)
 
 These fields are written ONLY by the Ops UI/API — Producers (wizard, voice) never set them.
@@ -41,10 +54,12 @@ They are not part of the case creation contract; they exist for workflow managem
 - updated_at (timestamptz, auto) — auto-updated on every row change via DB trigger
 - review_sent_at (timestamptz, nullable) — set when review request email is sent
 
-## Ops-editable Producer Fields (W10)
+## Ops-editable Producer Fields (W10+)
 
 These fields are set by Producers but can also be updated by Ops:
 - contact_email (text, nullable) — Ops can add/update after callback
+- street (text, nullable) — Ops can add/update after callback
+- house_number (text, nullable) — Ops can add/update after callback
 
 ## Urgency Regeln (deterministisch)
 Wenn description (oder voice answers/transcript) einen Notfall-Trigger enthält → urgency="notfall".
@@ -69,6 +84,8 @@ Sonst → urgency="normal".
   "created_at": "2026-02-18T10:00:00Z",
   "contact_phone": "+4179...",
   "contact_email": null,
+  "street": "Bahnhofstrasse",
+  "house_number": "12",
   "plz": "8000",
   "city": "Zürich",
   "category": "Sanitär",
@@ -84,6 +101,8 @@ Sonst → urgency="normal".
   "created_at": "2026-02-18T10:05:00Z",
   "contact_phone": "+4179...",
   "contact_email": null,
+  "street": "Seestrasse",
+  "house_number": "45",
   "plz": "8600",
   "city": "Dübendorf",
   "category": "Heizung",
