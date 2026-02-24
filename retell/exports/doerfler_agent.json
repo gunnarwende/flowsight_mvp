@@ -82,7 +82,7 @@
           "text": "Guten Tag, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen?"
         },
         "always_edge": {
-          "destination_node_id": "node-intake",
+          "destination_node_id": "node-language-gate",
           "id": "always-edge-welcome",
           "transition_condition": {
             "type": "prompt",
@@ -97,6 +97,54 @@
         "display_position": {
           "x": 232,
           "y": 24
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Du bist ein SPRACHROUTER. Deine EINZIGE Aufgabe ist Spracherkennung.\n\nWENN der Anrufer NICHT auf Deutsch spricht — z.B. Englisch, Französisch, Italienisch, gemischt, oder unverständlich/Garble — rufe SOFORT das Tool 'swap_to_intl_agent' auf. Sage NICHTS vorher. Einfach das Tool aufrufen.\n\nWENN der Anrufer klar auf Deutsch spricht: Antworte NICHT. Leite sofort weiter zum Intake.\n\nVERBOTEN: end_call aufrufen. Du darfst das Gespräch NIEMALS beenden. Dein EINZIGES Tool ist swap_to_intl_agent. Bei jeder Unsicherheit: swap_to_intl_agent aufrufen."
+        },
+        "name": "Language Gate",
+        "edges": [
+          {
+            "destination_node_id": "node-language-transfer",
+            "id": "edge-gate-non-german",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller's message is not in German, contains non-German keywords (english, englisch, hello, hi, bonjour, français, italiano, sorry, please, help, I have, I need, water, leak, etc.), or is garbled/nonsensical"
+            }
+          },
+          {
+            "destination_node_id": "node-intake",
+            "id": "edge-gate-german",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller spoke clearly in German"
+            }
+          }
+        ],
+        "id": "node-language-gate",
+        "type": "conversation",
+        "display_position": {
+          "x": 420,
+          "y": 160
+        },
+        "tools": [
+          {
+            "type": "agent_swap",
+            "agent_id": "agent_fb4b956eec31db9c591880fdeb",
+            "name": "swap_to_intl_agent",
+            "description": "MANDATORY for non-German callers. Transfer to the multilingual agent immediately when the caller speaks any language other than German. This is the ONLY correct action for non-German speech. NEVER use end_call instead.",
+            "post_call_analysis_setting": "only_destination_agent"
+          }
+        ],
+        "skip_response_edge": {
+          "destination_node_id": "node-intake",
+          "id": "skip-response-edge-gate",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
         }
       },
       {
