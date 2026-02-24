@@ -31,12 +31,14 @@ const AGENTS = {
   },
 };
 
-// ── Voice IDs ────────────────────────────────────────────────────────────
-// Voice is UI-managed (set in Retell Dashboard). Retell wraps ElevenLabs
-// voices in custom_voice_* IDs. We do NOT touch voice_id during deploy.
-// Mapping (reference only):
-//   DE  → ElevenLabs v3V1d2rk6528UrLKRuy8 (Susi)  → Retell custom_voice_c0c7eb84f182225ef8003c9576
-//   INTL→ ElevenLabs aMSt68OGf4xUZAnLpTU8 (Juniper)→ Retell custom_voice_cf152ba48ccbac0370ecebcd88
+// ── Voice IDs (SSOT) ──────────────────────────────────────────────────────
+// Retell wraps ElevenLabs voices in internal custom_voice_* IDs.
+// Deploy sets voice_id deterministically using these Retell-internal IDs.
+// Source: GET /get-agent/{id} response, verified 2026-02-24.
+const VOICES = {
+  de:   "custom_voice_c0c7eb84f182225ef8003c9576",  // ElevenLabs Susi   (v3V1d2rk6528UrLKRuy8)
+  intl: "custom_voice_cf152ba48ccbac0370ecebcd88",   // ElevenLabs Juniper (aMSt68OGf4xUZAnLpTU8)
+};
 
 // ── Privacy tiers ────────────────────────────────────────────────────────
 const PRIVACY = {
@@ -128,14 +130,18 @@ async function retellFetch(path, options = {}) {
       ...options.headers,
     },
   });
+  // Always read body as text first — publish-agent may return 200 with empty body
+  const text = await res.text();
   if (!res.ok) {
-    const text = await res.text();
     throw new Error(`Retell API ${path} → ${res.status}: ${text}`);
   }
-  // publish-agent returns 204 (no body)
-  const ct = res.headers.get("content-type") || "";
-  if (res.status === 204 || !ct.includes("application/json")) return {};
-  return res.json();
+  if (!text || text.trim().length === 0) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Non-JSON success response (e.g. "OK") — treat as success
+    return {};
+  }
 }
 
 // Paths from retell-sdk@5.2.0: Agent + ConversationFlow use NO /v2/ prefix.
@@ -320,18 +326,21 @@ async function runVerify() {
     // 4. Diff agent-level fields
     console.log("  Diffing agent fields...");
     // Fields from retell-sdk@5.2.0 AgentResponse
-    // voice_id excluded — UI-managed (Retell wraps ElevenLabs in custom_voice_*)
+    // data_storage_setting + pii_config excluded — controlled by deploy --mode, not SSOT
     const agentFields = [
-      "language", "data_storage_setting", "webhook_url",
+      "voice_id", "language", "webhook_url",
       "max_call_duration_ms", "interruption_sensitivity",
-      "post_call_analysis_data", "pii_config",
+      "post_call_analysis_data",
       "analysis_successful_prompt", "analysis_summary_prompt",
       "post_call_analysis_model",
     ];
 
+    // Override: voice_id uses Retell internal IDs (VOICES), not ElevenLabs IDs from export JSON
+    const fieldOverrides = { voice_id: VOICES[variant] };
+
     const agentDiffs = [];
     for (const field of agentFields) {
-      const expected = genObj[field];
+      const expected = fieldOverrides[field] ?? genObj[field];
       const actual = apiAgent[field];
       if (expected === undefined) continue;
       const fieldDiffs = deepDiff(expected, actual, field);
@@ -416,6 +425,11 @@ async function runVerify() {
     modelDiffs.forEach((d) => flowConflicts.push({ ...d, type: "conflict" }));
 
     const allFlowDiffs = [...flowAdditions, ...flowRemovals, ...flowConflicts];
+
+    // Privacy state (informational — controlled by deploy --mode, not SSOT)
+    const apiPrivacy = apiAgent.data_storage_setting || "(unknown)";
+    const apiPiiCount = (apiAgent.pii_config?.categories || []).length;
+    console.log(`  Privacy (current): data_storage=${apiPrivacy}, PII categories=${apiPiiCount}`);
 
     // 6. Summary for this agent
     console.log(`\n  Agent-level diffs: ${agentDiffs.length}`);
@@ -534,9 +548,10 @@ async function runDeploy() {
     console.log(`  Fetching current flow (${cfId})...`);
     const currentFlow = await getConversationFlow(cfId);
 
-    // 2. Build agent update params (voice_id excluded — UI-managed)
+    // 2. Build agent update params
     const agentUpdate = {
       agent_name: genObj.agent_name,
+      voice_id: VOICES[variant],
       language: genObj.language,
       webhook_url: genObj.webhook_url,
       max_call_duration_ms: genObj.max_call_duration_ms,
@@ -552,9 +567,39 @@ async function runDeploy() {
 
     // 3. Build flow update params
     const genFlow = genObj.conversationFlow;
+
+    // Normalize: Retell API silently drops new end-type nodes via PATCH.
+    // Strip end nodes that don't already exist in API, and edges pointing to them.
+    const apiNodeIds = new Set((currentFlow.nodes || []).map((n) => n.id));
+    const droppedNodeIds = new Set();
+    const normalizedNodes = [];
+    for (const node of genFlow.nodes) {
+      if (node.type === "end" && !apiNodeIds.has(node.id)) {
+        droppedNodeIds.add(node.id);
+        console.log(`  [normalize] Stripping end-node "${node.id}" (API doesn't support adding end-type nodes via PATCH)`);
+        continue;
+      }
+      normalizedNodes.push(node);
+    }
+    // Strip skip_response_edge / edges that reference dropped nodes
+    const cleanedNodes = normalizedNodes.map((node) => {
+      const cleaned = { ...node };
+      if (cleaned.skip_response_edge && droppedNodeIds.has(cleaned.skip_response_edge.destination_node_id)) {
+        console.log(`  [normalize] Stripping skip_response_edge on "${node.id}" (target "${cleaned.skip_response_edge.destination_node_id}" dropped)`);
+        delete cleaned.skip_response_edge;
+      }
+      if (cleaned.edges) {
+        cleaned.edges = cleaned.edges.filter((e) => !droppedNodeIds.has(e.destination_node_id));
+      }
+      if (cleaned.always_edge && droppedNodeIds.has(cleaned.always_edge.destination_node_id)) {
+        delete cleaned.always_edge;
+      }
+      return cleaned;
+    });
+
     const flowUpdate = {
       global_prompt: genFlow.global_prompt,
-      nodes: genFlow.nodes,
+      nodes: cleanedNodes,
       start_node_id: genFlow.start_node_id,
       start_speaker: genFlow.start_speaker,
       model_choice: genFlow.model_choice,
@@ -563,11 +608,12 @@ async function runDeploy() {
       is_transfer_cf: genFlow.is_transfer_cf,
     };
 
-    // 4. Compute diffs for display
+    // 4. Compute diffs for display (current → target)
     const agentDiffs = [];
     for (const [key, newVal] of Object.entries(agentUpdate)) {
       const oldVal = currentAgent[key];
-      const diffs = deepDiff(newVal, oldVal, key);
+      // deepDiff(expected=current, actual=target) so log reads "current → target"
+      const diffs = deepDiff(oldVal, newVal, key);
       agentDiffs.push(...diffs);
     }
 
@@ -586,7 +632,8 @@ async function runDeploy() {
     }
     if (agentDiffs.length > 10) console.log(`    ↳ ... and ${agentDiffs.length - 10} more`);
     console.log(`    Global prompt: ${promptChanged ? "CHANGED" : "unchanged"} (gen=${genFlow.global_prompt.length} chars, api=${(currentFlow.global_prompt || "").length} chars)`);
-    console.log(`    Nodes: ${nodesChanged ? "CHANGED" : "unchanged"} (${genFlow.nodes.length} nodes)`);
+    const nodesNote = droppedNodeIds.size > 0 ? ` (${droppedNodeIds.size} end-node(s) stripped)` : "";
+    console.log(`    Nodes: ${nodesChanged ? "CHANGED" : "unchanged"} (${cleanedNodes.length} nodes sent${nodesNote})`);
     console.log(`    Privacy: data_storage=${privacy.data_storage_setting}, PII categories=${privacy.pii_config.categories.length}`);
 
     if (dryRun) {
@@ -621,7 +668,10 @@ async function runDeploy() {
 
     const checks = [];
 
-    // voice_id: not checked — UI-managed (Retell custom_voice_* wrapper)
+    // Check voice_id (uses Retell internal custom_voice_* IDs)
+    const expectedVoice = VOICES[variant];
+    const voiceOk = verifiedAgent.voice_id === expectedVoice;
+    checks.push({ field: "voice_id", ok: voiceOk, got: verifiedAgent.voice_id });
 
     // Check data_storage_setting
     const storageOk = verifiedAgent.data_storage_setting === privacy.data_storage_setting;
@@ -635,9 +685,9 @@ async function runDeploy() {
     const promptLenOk = (verifiedFlow.global_prompt || "").length === genFlow.global_prompt.length;
     checks.push({ field: "global_prompt.length", ok: promptLenOk, got: (verifiedFlow.global_prompt || "").length });
 
-    // Check node count
-    const nodeCountOk = (verifiedFlow.nodes || []).length === genFlow.nodes.length;
-    checks.push({ field: "nodes.count", ok: nodeCountOk, got: (verifiedFlow.nodes || []).length });
+    // Check node count (against normalized nodes, not raw export — API drops new end-type nodes)
+    const nodeCountOk = (verifiedFlow.nodes || []).length === cleanedNodes.length;
+    checks.push({ field: "nodes.count", ok: nodeCountOk, got: `${(verifiedFlow.nodes || []).length} (sent ${cleanedNodes.length})` });
 
     // Check webhook
     const webhookOk = verifiedAgent.webhook_url === genObj.webhook_url;
