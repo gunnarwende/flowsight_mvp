@@ -32,10 +32,11 @@ const AGENTS = {
 };
 
 // ── Voice IDs ────────────────────────────────────────────────────────────
-const VOICES = {
-  de: "v3V1d2rk6528UrLKRuy8",   // Susi
-  intl: "aMSt68OGf4xUZAnLpTU8", // Juniper
-};
+// Voice is UI-managed (set in Retell Dashboard). Retell wraps ElevenLabs
+// voices in custom_voice_* IDs. We do NOT touch voice_id during deploy.
+// Mapping (reference only):
+//   DE  → ElevenLabs v3V1d2rk6528UrLKRuy8 (Susi)  → Retell custom_voice_c0c7eb84f182225ef8003c9576
+//   INTL→ ElevenLabs aMSt68OGf4xUZAnLpTU8 (Juniper)→ Retell custom_voice_cf152ba48ccbac0370ecebcd88
 
 // ── Privacy tiers ────────────────────────────────────────────────────────
 const PRIVACY = {
@@ -318,9 +319,10 @@ async function runVerify() {
 
     // 4. Diff agent-level fields
     console.log("  Diffing agent fields...");
-    // Fields from retell-sdk@5.2.0 AgentResponse (analysis_user_sentiment_prompt removed — not in SDK)
+    // Fields from retell-sdk@5.2.0 AgentResponse
+    // voice_id excluded — UI-managed (Retell wraps ElevenLabs in custom_voice_*)
     const agentFields = [
-      "language", "voice_id", "data_storage_setting", "webhook_url",
+      "language", "data_storage_setting", "webhook_url",
       "max_call_duration_ms", "interruption_sensitivity",
       "post_call_analysis_data", "pii_config",
       "analysis_successful_prompt", "analysis_summary_prompt",
@@ -339,16 +341,23 @@ async function runVerify() {
     // 5. Diff conversation flow
     console.log("  Diffing conversation flow...");
     const genFlow = genObj.conversationFlow;
-    const flowDiffs = [];
+
+    // Classify flow diffs into: addition (gen has, API doesn't — safe to push),
+    // removal (API has, gen doesn't), conflict (different values), cosmetic (skip)
+    const flowAdditions = [];
+    const flowRemovals = [];
+    const flowConflicts = [];
+    const flowCosmetic = [];
 
     // Compare global_prompt
     if (genFlow.global_prompt !== apiFlow.global_prompt) {
       const genLen = (genFlow.global_prompt || "").length;
       const apiLen = (apiFlow.global_prompt || "").length;
-      flowDiffs.push({
+      flowConflicts.push({
         path: "global_prompt",
         expected: `(${genLen} chars)`,
         actual: `(${apiLen} chars)`,
+        type: "conflict",
       });
     }
 
@@ -361,73 +370,115 @@ async function runVerify() {
     const allNodeIds = new Set([...Object.keys(genNodeMap), ...Object.keys(apiNodeMap)]);
     for (const nodeId of allNodeIds) {
       if (!genNodeMap[nodeId]) {
-        flowDiffs.push({ path: `nodes.${nodeId}`, expected: "(absent)", actual: "(exists in API)" });
+        flowRemovals.push({ path: `nodes.${nodeId}`, expected: "(absent)", actual: "(exists in API)", type: "removal" });
         continue;
       }
       if (!apiNodeMap[nodeId]) {
-        flowDiffs.push({ path: `nodes.${nodeId}`, expected: "(exists in gen)", actual: "(absent in API)" });
+        flowAdditions.push({ path: `nodes.${nodeId}`, expected: "(exists in gen)", actual: "(absent in API)", type: "addition" });
         continue;
       }
-      const nodeDiffs = deepDiff(genNodeMap[nodeId], apiNodeMap[nodeId], `nodes.${nodeId}`);
-      flowDiffs.push(...nodeDiffs);
+      // Both exist — deep diff, but separate additions (gen has field, API doesn't) from conflicts
+      const genNode = genNodeMap[nodeId];
+      const apiNode = apiNodeMap[nodeId];
+      const allKeys = new Set([...Object.keys(genNode), ...Object.keys(apiNode)]);
+      for (const key of allKeys) {
+        if (SKIP_FIELDS.has(key)) {
+          const kd = deepDiff(genNode[key], apiNode[key], `nodes.${nodeId}.${key}`);
+          kd.forEach((d) => flowCosmetic.push({ ...d, type: "cosmetic" }));
+          continue;
+        }
+        if (key in genNode && !(key in apiNode)) {
+          flowAdditions.push({ path: `nodes.${nodeId}.${key}`, expected: summarize(genNode[key]), actual: "(absent)", type: "addition" });
+        } else if (!(key in genNode) && key in apiNode) {
+          flowRemovals.push({ path: `nodes.${nodeId}.${key}`, expected: "(absent)", actual: summarize(apiNode[key]), type: "removal" });
+        } else {
+          const kd = deepDiff(genNode[key], apiNode[key], `nodes.${nodeId}.${key}`);
+          kd.forEach((d) => {
+            if (SKIP_FIELDS.has(d.path.split(".").pop())) {
+              flowCosmetic.push({ ...d, type: "cosmetic" });
+            } else {
+              flowConflicts.push({ ...d, type: "conflict" });
+            }
+          });
+        }
+      }
     }
 
     // Compare other flow-level fields
     for (const field of ["start_node_id", "start_speaker", "tool_call_strict_mode", "flex_mode", "is_transfer_cf"]) {
       if (genFlow[field] !== undefined && genFlow[field] !== apiFlow[field]) {
-        flowDiffs.push({ path: field, expected: genFlow[field], actual: apiFlow[field] });
+        flowConflicts.push({ path: field, expected: genFlow[field], actual: apiFlow[field], type: "conflict" });
       }
     }
 
     // Compare model_choice
     const modelDiffs = deepDiff(genFlow.model_choice, apiFlow.model_choice, "model_choice");
-    flowDiffs.push(...modelDiffs);
+    modelDiffs.forEach((d) => flowConflicts.push({ ...d, type: "conflict" }));
+
+    const allFlowDiffs = [...flowAdditions, ...flowRemovals, ...flowConflicts];
 
     // 6. Summary for this agent
     console.log(`\n  Agent-level diffs: ${agentDiffs.length}`);
     for (const d of agentDiffs.slice(0, 20)) {
       console.log(`    ${d.path}: expected=${d.expected} actual=${d.actual}`);
     }
-    console.log(`  Flow diffs: ${flowDiffs.length}`);
-    for (const d of flowDiffs.slice(0, 20)) {
-      console.log(`    ${d.path}: expected=${d.expected} actual=${d.actual}`);
+    console.log(`  Flow diffs: ${allFlowDiffs.length} (${flowAdditions.length} additions, ${flowConflicts.length} conflicts, ${flowRemovals.length} removals, ${flowCosmetic.length} cosmetic)`);
+    if (flowAdditions.length > 0) {
+      console.log(`    Additions (safe to push):`);
+      for (const d of flowAdditions) console.log(`      + ${d.path}`);
+    }
+    if (flowConflicts.length > 0) {
+      console.log(`    Conflicts (value differs):`);
+      for (const d of flowConflicts.slice(0, 10)) console.log(`      ! ${d.path}: expected=${d.expected} actual=${d.actual}`);
+    }
+    if (flowRemovals.length > 0) {
+      console.log(`    Removals (API has, gen doesn't):`);
+      for (const d of flowRemovals) console.log(`      - ${d.path}`);
     }
 
-    const compatible = flowDiffs.filter((d) =>
-      !d.path.includes("display_position") &&
-      !d.path.includes("version") &&
-      !d.path.includes("is_published")
-    ).length === 0 && agentDiffs.length === 0;
+    // Compatible = no conflicts + no agent diffs. Additions are safe to push.
+    const compatible = flowConflicts.length === 0 && agentDiffs.length === 0;
 
     results.push({
       variant,
       compatible,
       agentDiffs: agentDiffs.length,
-      flowDiffs: flowDiffs.length,
+      flowDiffs: allFlowDiffs.length,
+      flowAdditions: flowAdditions.length,
+      flowConflicts: flowConflicts.length,
+      flowRemovals: flowRemovals.length,
       cfId,
       allAgentDiffs: agentDiffs,
-      allFlowDiffs: flowDiffs,
+      allFlowDiffs,
     });
 
-    console.log(`  Compatible: ${compatible ? "YES ✓" : "NO — mapping needed"}\n`);
+    console.log(`  Compatible: ${compatible ? "YES ✓" : "NO — conflicts found"}\n`);
   }
 
   // 7. Write full diff report
+  const hasAdditionsOnly = results.every((r) => r.compatible);
+  const hasConflicts = results.some((r) => r.flowConflicts > 0 || r.agentDiffs > 0);
+  const verdict = hasConflicts ? "NEEDS_MAPPING" : "COMPATIBLE";
+
   const report = {
     timestamp: new Date().toISOString(),
     results,
-    verdict: results.every((r) => r.compatible) ? "COMPATIBLE" : "NEEDS_MAPPING",
+    verdict,
   };
   const reportPath = `${OUT_DIR}/verify_report.json`;
   writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
 
-  console.log(`\n=== Verdict: ${report.verdict} ===`);
+  console.log(`\n=== Verdict: ${verdict} ===`);
   console.log(`Full report: ${reportPath}`);
   console.log(`API snapshots: ${OUT_DIR}/api_agent_*.json, ${OUT_DIR}/api_flow_*.json`);
 
-  if (!results.every((r) => r.compatible)) {
-    console.log("\nDiffs found — review the report to determine if they are:");
-    console.log("  (a) Expected differences (prompt updates we WANT to push)");
+  const totalAdditions = results.reduce((s, r) => s + (r.flowAdditions || 0), 0);
+  if (totalAdditions > 0 && !hasConflicts) {
+    console.log(`\n${totalAdditions} addition(s) will be pushed (new nodes/edges). No conflicts → deploy is safe.`);
+  }
+  if (hasConflicts) {
+    console.log("\nConflicts found — review the report to determine if they are:");
+    console.log("  (a) Intentional content updates we WANT to push");
     console.log("  (b) Structural incompatibilities (field names/shapes that differ)");
     console.log("\nIf (a) only: deploy will work. If (b): mapping layer needed first.");
   }
@@ -483,10 +534,9 @@ async function runDeploy() {
     console.log(`  Fetching current flow (${cfId})...`);
     const currentFlow = await getConversationFlow(cfId);
 
-    // 2. Build agent update params
+    // 2. Build agent update params (voice_id excluded — UI-managed)
     const agentUpdate = {
       agent_name: genObj.agent_name,
-      voice_id: variant === "de" ? VOICES.de : VOICES.intl,
       language: genObj.language,
       webhook_url: genObj.webhook_url,
       max_call_duration_ms: genObj.max_call_duration_ms,
@@ -571,9 +621,7 @@ async function runDeploy() {
 
     const checks = [];
 
-    // Check voice_id
-    const voiceOk = verifiedAgent.voice_id === (variant === "de" ? VOICES.de : VOICES.intl);
-    checks.push({ field: "voice_id", ok: voiceOk, got: verifiedAgent.voice_id });
+    // voice_id: not checked — UI-managed (Retell custom_voice_* wrapper)
 
     // Check data_storage_setting
     const storageOk = verifiedAgent.data_storage_setting === privacy.data_storage_setting;
