@@ -105,7 +105,16 @@
           "text": "Du führst ein natürliches Gespräch, um eine Schadensmeldung aufzunehmen.\n\nSPRACHERKENNUNG (PRIORITÄT 1 — BEI JEDER NACHRICHT PRÜFEN)\nDie vollständigen Sprachregeln stehen im Global Prompt. Hier die Kurzfassung:\n\nBei JEDER Nachricht des Anrufers:\n1. Enthält sie Fremdsprache-Signale (hello, bonjour, buongiorno, I have, j'ai, sorry, please, help, etc.)? => SOFORT Tool 'swap_to_intl_agent' AUFRUFEN (execute). Sage NICHTS vorher.\n2. Ergibt sie keinen Sinn als Deutsch (ASR-Drift/Garble)? => Stelle EINMAL die zweisprachige Frage: 'Entschuldigung, ich habe Sie leider nicht verstanden. Sprechen Sie Deutsch? — Sorry, do you speak German?'\n3. Wenn die nächste Antwort wieder kein klares Deutsch ist => SOFORT Tool 'swap_to_intl_agent' AUFRUFEN. Kein zweites Nachfragen.\n4. Sprachwechsel jederzeit => SOFORT Tool 'swap_to_intl_agent' AUFRUFEN.\n\nWICHTIG: Du musst das Tool AUFRUFEN (execute), nicht nur sagen 'Ich verbinde Sie'. Im Zweifel: transferieren.\n\nABLAUF (flexible Reihenfolge — passe dich dem Gespräch an)\n1. Lass den Anrufer zuerst erzählen, was passiert ist. Hör zu.\n2. Reagiere kurz empathisch ('Verstehe.' / 'Das klingt unangenehm.').\n3. Leite die Kategorie möglichst aus der Beschreibung ab. Nur wenn unklar: 'Handelt es sich eher um ein Leck, eine Verstopfung oder etwas anderes?' Nie alle 6 Kategorien vorlesen.\n4. Frage nach der Adresse: 'Wie lautet die Strasse und Hausnummer des Einsatzortes?' Wenn der Anrufer die Adresse nicht nennen will, akzeptiere es und gehe weiter.\n5. Frage nach Postleitzahl und Ort zusammen: 'Und die Postleitzahl und der Ort?' Bestätige als ganzes zurück (z.B. 'Ich habe 8942 Oberrieden, stimmt das?'). NICHT Ziffer für Ziffer bestätigen.\n6. Frage nach Dringlichkeit — NUR wenn noch nicht beantwortet: 'Ist das ein Notfall, dringend, oder kann es normal eingeplant werden?'\n7. GENAU EINE Zusammenfassung: Fasse alle gesammelten Daten kurz zusammen und frage 'Stimmt das so?' Nach Bestätigung: setze intake_complete=true. Keine weitere Zusammenfassung danach.\n\nKEIN-DOPPELT-FRAGEN-REGEL\n- Frage jedes Pflichtfeld GENAU EINMAL. Wenn der Anrufer es bereits beantwortet hat (auch beiläufig), frage es NICHT erneut.\n- Bei Stille oder unklarer Antwort: EINMAL nachfragen, dann weiter zum nächsten Feld.\n- Prüfe VOR jeder Frage, ob die Information schon vorliegt. Wenn ja: überspringe sie.\n\nWEITERE REGELN\n- Nie zwei Fragen in einem Satz.\n- Wenn der Anrufer genervt oder kurz angebunden ist: Sammle nur das Minimum und schliesse zügig ab.\n- Verwende IMMER 'Postleitzahl', NIE 'PLZ'.\n- Setze out_of_scope=true NUR wenn das URSPRÜNGLICHE Anliegen des Anrufers (von Gesprächsbeginn) NICHT Sanitär/Heizung betrifft. Wenn der Anrufer WÄHREND eines laufenden Intakes eine einzelne themenfremde Frage stellt (z.B. 'Könnt ihr auch meine Steuererklärung machen?'), antworte kurz ('Dafür sind wir nicht zuständig. Zurück zu Ihrem Anliegen:') und fahre mit dem Intake fort. KEIN out_of_scope für beiläufige Nebenfragen.\n- Wenn alle Pflichtfelder vorhanden sind (Postleitzahl, Ort, Kategorie, Dringlichkeit, Beschreibung): setze intake_complete=true, sonst false.\n- Strasse und Hausnummer sind wünschenswert aber KEIN Blocker für intake_complete.\n- ERINNERUNG: Sprach-Signale gelten JEDERZEIT — auch nach bereits gesammelten Feldern. Wenn der Anrufer z.B. nach der Postleitzahl in eine andere Sprache wechselt oder Fremdsprache-Signale nutzt: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN (execute). Gesammelte Daten gehen beim Transfer nicht verloren."
         },
         "name": "Intake Node",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "node-language-decision",
+            "id": "edge-after-clarification",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has asked the bilingual clarification question ('Sprechen Sie Deutsch?' or 'Do you speak German?') in the current conversation"
+            }
+          }
+        ],
         "id": "node-intake",
         "type": "conversation",
         "display_position": {
@@ -133,6 +142,14 @@
       {
         "name": "Logic Split Node",
         "edges": [
+          {
+            "destination_node_id": "node-language-transfer",
+            "id": "edge-logic-language-check",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller does not speak German or has requested to continue in English, French, or Italian"
+            }
+          },
           {
             "destination_node_id": "node-out-of-scope",
             "id": "edge-out-of-scope",
@@ -223,6 +240,56 @@
             "agent_id": "agent_fb4b956eec31db9c591880fdeb",
             "name": "swap_to_intl_agent",
             "description": "Transfer the caller to the multilingual (EN/FR/IT) agent. Call this tool immediately if the caller responds in a non-German language or requests a different language, even during the out-of-scope closing.",
+            "post_call_analysis_setting": "only_destination_agent"
+          }
+        ]
+      },
+      {
+        "name": "Language Decision",
+        "edges": [
+          {
+            "destination_node_id": "node-intake",
+            "id": "edge-caller-speaks-german",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller's most recent message is clearly in German (a coherent German sentence, not garbled or foreign)"
+            }
+          }
+        ],
+        "id": "node-language-decision",
+        "else_edge": {
+          "destination_node_id": "node-language-transfer",
+          "id": "edge-caller-not-german",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Else"
+          }
+        },
+        "type": "branch",
+        "display_position": {
+          "x": 623,
+          "y": 550
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Der Anrufer spricht kein Deutsch. Führe SOFORT das Tool 'swap_to_intl_agent' aus. Sage nichts weiter — rufe nur das Tool auf."
+        },
+        "name": "Language Transfer",
+        "edges": [],
+        "id": "node-language-transfer",
+        "type": "conversation",
+        "display_position": {
+          "x": 623,
+          "y": 700
+        },
+        "tools": [
+          {
+            "type": "agent_swap",
+            "agent_id": "agent_fb4b956eec31db9c591880fdeb",
+            "name": "swap_to_intl_agent",
+            "description": "Transfer the caller to the multilingual (EN/FR/IT) agent. Execute this tool IMMEDIATELY — the caller does not speak German.",
             "post_call_analysis_setting": "only_destination_agent"
           }
         ]
