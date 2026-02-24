@@ -6,7 +6,7 @@
 //   const result = analyzeCall(rawCallJson);
 
 // ── Trigger keywords (must match gen_retell_agents.mjs) ──────────────────
-const TRIGGER_KEYWORDS = [
+export const TRIGGER_KEYWORDS = [
   "english",
   "englisch",
   "in english",

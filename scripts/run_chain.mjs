@@ -88,6 +88,11 @@ const { positionals, values } = parseArgs({
     last: { type: "string", short: "n" },
     id: { type: "string", multiple: true },
     help: { type: "boolean", short: "h" },
+    "with-audio": { type: "boolean" },
+    "no-whisperx": { type: "boolean" },
+    "keep-audio": { type: "boolean" },
+    "whisper-model": { type: "string" },
+    mode: { type: "string" },
   },
 });
 
@@ -95,19 +100,26 @@ const chainName = positionals[0];
 
 if (values.help || !chainName) {
   console.log(`
-Voice Debug Chain — P0
+Voice Debug Chain
 
 Usage:
-  node scripts/run_chain.mjs voice --last 2       # analyze last 2 calls
-  node scripts/run_chain.mjs voice --id <id> ...   # analyze specific call(s)
+  node scripts/run_chain.mjs voice --last 2          # Spur 1: analyze last 2 calls
+  node scripts/run_chain.mjs voice --id <id> ...     # Spur 1: specific call(s)
+  node scripts/run_chain.mjs voice --last 1 --with-audio   # Spur 1+2: with audio forensics
+
+Audio Forensics (Spur 2):
+  --with-audio         Download recordings + run WhisperX + correlate
+  --no-whisperx        Download audio only, skip WhisperX transcription
+  --keep-audio         Keep WAV files after analysis (default ON in debug mode)
+  --whisper-model <m>  WhisperX model size: tiny, base, small, medium (default: base)
+  --mode <m>           debug (default, full artifacts) or live (redacted)
 
 Environment:
   RETELL_API_KEY   Required. Retell API key (rk_...).
 
 Output:
-  tmp/chains/voice/reports/<date>_<call_id>.md     Per-call report (human-readable)
-  tmp/chains/voice/reports/<date>_<call_id>.json   Per-call report (machine-readable)
-  tmp/chains/voice/reports/<date>_summary.md       Cross-call summary
+  tmp/chains/voice/reports/     Per-call .md/.json + summary
+  tmp/chains/voice/audio/       WAV + WhisperX output + correlation (Spur 2)
   `.trim());
   process.exit(0);
 }
@@ -120,11 +132,18 @@ if (chainName !== "voice") {
 // ── Run voice chain ──────────────────────────────────────────────────────
 
 async function runVoiceChain() {
-  // 0. Resolve API key (interactive fallback if env not set)
+  // 0. Resolve mode + flags
+  const mode = values.mode ?? "debug";
+  const withAudio = values["with-audio"] ?? false;
+  const noWhisperx = values["no-whisperx"] ?? false;
+  const keepAudio = values["keep-audio"] ?? (mode === "debug"); // ON by default in debug
+  const whisperModel = values["whisper-model"] ?? "base";
+
+  // 0b. Resolve API key (interactive fallback if env not set)
   await ensureApiKey();
 
   const runId = new Date().toISOString();
-  console.log(`[voice-chain] run_id=${runId}`);
+  console.log(`[voice-chain] run_id=${runId} mode=${mode} audio=${withAudio}`);
 
   // 1. Collect
   console.log("[voice-chain] collecting calls from Retell API...");
@@ -142,8 +161,7 @@ async function runVoiceChain() {
     calls = await collectCalls(opts);
   } catch (err) {
     console.error(`[voice-chain] collect failed: ${err.message}`);
-    // Allow event loop to drain before exit (avoids UV_HANDLE_CLOSING assertion on Windows)
-    setTimeout(() => process.exit(1), 50);
+    process.exitCode = 1;
     return;
   }
 
@@ -165,7 +183,7 @@ async function runVoiceChain() {
     console.log(`[voice-chain] filtered: ${preFilterCount} → ${calls.length} call(s) (${preFilterCount - calls.length} ultra-short skipped)`);
   }
 
-  // 2. Analyze
+  // 2. Analyze (Spur 1)
   console.log("[voice-chain] analyzing...");
   const { analyzeCall } = await import("./chains/voice/analyze.mjs");
 
@@ -175,17 +193,91 @@ async function runVoiceChain() {
     console.log(
       `  ${analysis.meta.call_id_short}: ${analysis.findings.length} findings, audio=${analysis.audio.available ? "yes" : "no"}`,
     );
-    results.push({ callId, analysis, rawPath });
+    results.push({ callId, raw, analysis, rawPath });
   }
 
-  // 3. Report
+  // 3. Audio Forensics (Spur 2) — only if --with-audio
+  if (withAudio) {
+    console.log("[voice-chain] === Spur 2: Audio Forensics ===");
+
+    const { collectAudio } = await import("./chains/voice/audio_collect.mjs");
+    const { correlateCall } = await import("./chains/voice/correlate.mjs");
+
+    // Lazy-import transcribe only if WhisperX is enabled
+    let transcribeAudio;
+    if (!noWhisperx) {
+      ({ transcribeAudio } = await import("./chains/voice/transcribe.mjs"));
+    }
+
+    for (const r of results) {
+      if (!r.analysis.audio.available) {
+        console.log(`  ${r.analysis.meta.call_id_short}: no recording, skipping`);
+        continue;
+      }
+
+      // 3a. Download audio
+      console.log(`  ${r.analysis.meta.call_id_short}: downloading audio...`);
+      const audioResult = await collectAudio(r.raw);
+      if (!audioResult.wavPath) {
+        console.log(`  ${r.analysis.meta.call_id_short}: download failed: ${audioResult.error}`);
+        continue;
+      }
+      console.log(
+        `  ${r.analysis.meta.call_id_short}: ${audioResult.cached ? "cached" : "downloaded"} (${audioResult.sizeMb}MB)`,
+      );
+
+      // 3b. Transcribe with WhisperX (unless --no-whisperx)
+      let whisperWords = null;
+      if (!noWhisperx && transcribeAudio) {
+        console.log(`  ${r.analysis.meta.call_id_short}: running WhisperX (model=${whisperModel})...`);
+        try {
+          const txResult = await transcribeAudio(audioResult.wavPath, audioResult.callDir, {
+            model: whisperModel,
+          });
+          console.log(
+            `  ${r.analysis.meta.call_id_short}: WhisperX ${txResult.status === "cached" ? "(cached)" : "done"} — ${txResult.word_count} words, lang=${txResult.language}`,
+          );
+
+          // Load words for correlation
+          const { readFileSync } = await import("fs");
+          whisperWords = JSON.parse(readFileSync(txResult.words_path, "utf8"));
+        } catch (err) {
+          console.error(`  ${r.analysis.meta.call_id_short}: WhisperX failed: ${err.message}`);
+        }
+      }
+
+      // 3c. Correlate (only if we have WhisperX words)
+      if (whisperWords && whisperWords.length > 0) {
+        console.log(`  ${r.analysis.meta.call_id_short}: correlating...`);
+        const correlation = correlateCall(r.raw, whisperWords, audioResult.callDir);
+        r.correlation = correlation;
+        console.log(
+          `  ${r.analysis.meta.call_id_short}: ${correlation.summary.triggers_found} triggers, ${correlation.summary.critical_count} critical`,
+        );
+      }
+
+      // 3d. Cleanup audio if not keeping
+      if (!keepAudio && audioResult.wavPath) {
+        const { unlinkSync } = await import("fs");
+        try {
+          unlinkSync(audioResult.wavPath);
+          console.log(`  ${r.analysis.meta.call_id_short}: audio cleaned up`);
+        } catch {
+          // ignore cleanup errors
+        }
+      }
+    }
+  }
+
+  // 4. Report
   console.log("[voice-chain] writing reports...");
   const { writeCallReport, writeSummary } = await import(
     "./chains/voice/report.mjs"
   );
 
   for (const r of results) {
-    const { mdPath, jsonPath } = writeCallReport(r.analysis, runId);
+    const extras = r.correlation ? { correlation: r.correlation } : {};
+    const { mdPath, jsonPath } = writeCallReport(r.analysis, runId, extras);
     r.report = { mdPath, jsonPath };
     console.log(`  ${r.analysis.meta.call_id_short}: ${mdPath}`);
   }
@@ -193,7 +285,7 @@ async function runVoiceChain() {
   const summaryPath = writeSummary(results, runId);
   console.log(`\n[voice-chain] summary: ${summaryPath}`);
 
-  // 4. Print verdict
+  // 5. Print verdict
   const criticals = results.reduce(
     (n, r) => n + r.analysis.findings.filter((f) => f.severity === "critical").length,
     0,
@@ -211,7 +303,8 @@ async function runVoiceChain() {
   console.log(`\n[voice-chain] verdict: ${verdict} (${criticals} critical, ${warnings} warning)`);
 
   // Exit code: 0=pass, 1=fail (scheduler-ready)
-  process.exit(criticals > 0 ? 1 : 0);
+  // Use process.exitCode instead of process.exit() to avoid UV_HANDLE_CLOSING on Windows
+  process.exitCode = criticals > 0 ? 1 : 0;
 }
 
 runVoiceChain();
