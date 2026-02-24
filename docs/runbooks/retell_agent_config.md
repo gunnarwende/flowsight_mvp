@@ -31,26 +31,51 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 | `urgency` | string | yes | Dringlichkeit — MUSS einer von: `notfall`, `dringend`, `normal` sein |
 | `description` | string | yes | Kurzbeschreibung des Problems (1–3 Sätze) |
 
-## 3. Agent Prompt (Agent-as-File)
+## 3. Dual-Agent Architecture
 
-The agent prompt is now managed as code via JSON files:
+| Agent | ID | Flow | Role |
+|-------|----|------|------|
+| DE Intake | `agent_d7dfe45ab444e1370e836c3e0f` | `conversation_flow_8170ad3c2ca9` | German router + intake |
+| INTL Intake | `agent_fb4b956eec31db9c591880fdeb` | `conversation_flow_608d542979bb` | Multilingual intake (EN/FR/IT/DE) |
 
-- **Generator:** `scripts/gen_retell_agents.mjs`
-- **Template:** `retell/agent_template.json` (with `{{placeholders}}`)
-- **Dörfler export:** `retell/exports/doerfler_agent.json` (import-ready)
-- **Customer config:** `docs/customers/doerfler-ag/voice.md`
+### DE Agent Flow (8 nodes)
+- **Welcome** (static greeting) → always → **Language Gate** (branch, no LLM)
+- Language Gate: German → **Intake**, else → **Language Transfer** (swap-only)
+- **Intake** (pure German, no swap tool) → skip → **Logic Split** (branch)
+- Intake/Closing/OOS all have language-trigger edges → Language Transfer
+- **Language Transfer**: only tool = `swap_to_intl_agent`, single instruction: "call swap immediately"
+- `flex_mode: false` (CRITICAL — flex_mode=true bypasses the entire node graph)
 
-To update prompts: edit `scripts/gen_retell_agents.mjs`, run `node scripts/gen_retell_agents.mjs`, re-import in Retell Dashboard.
+### INTL Agent Flow (6 nodes)
+- Welcome → Intake → Logic Split → Closing / Out-of-scope → End Call
+- Language policy: **FOLLOW MODE** — always follow the caller's latest language, never lock
+- `flex_mode: false`
 
-Key prompt features (v2, 2026-02-22):
-- Natural conversational tone (no robot/checklist style)
-- "Postleitzahl" enforced (never "PLZ" in speech)
-- Full EN/FR language switch (extraction always DE)
-- Empathetic micro-reactions before each question
-- Anti-double-question rule
-- 2-step category inference (derive from description first)
+### Agent Prompt (Agent-as-File)
 
-## 4. Verification
+SSOT files:
+- **DE:** `retell/exports/doerfler_agent.json`
+- **INTL:** `retell/exports/doerfler_agent_intl.json`
+- **Deploy:** `node scripts/retell_deploy.mjs deploy --mode debug`
+- **Verify:** `node scripts/retell_deploy.mjs verify`
+
+## 4. Publishing (CRITICAL — Founder-only until proven stable)
+
+The Retell API `publish-agent` endpoint updates the draft but does NOT reliably publish the conversation flow to production. Callers may continue using the old published version.
+
+**Rule: Always publish from the Retell Dashboard.**
+
+1. Go to Retell Dashboard → Agent → Dörfler AG Intake (DE)
+2. Verify the flow matches expectations (nodes, edges, prompts)
+3. Click **"Publish"** — note the version number
+4. Repeat for Dörfler AG Intake (INTL)
+5. Make 1 test call and verify `agent_version` in the call JSON matches the published version
+
+**How to verify:** After a call, check `agent_version` in the raw call JSON (via Spur 1). If it matches the Dashboard version → publish succeeded. If it shows an old version → re-publish from Dashboard.
+
+**Deploy script (`scripts/retell_deploy.mjs`)** updates drafts and calls `publish-agent` as a best-effort. But treat Dashboard Publish as SSOT.
+
+## 5. Verification
 
 After configuring:
 
