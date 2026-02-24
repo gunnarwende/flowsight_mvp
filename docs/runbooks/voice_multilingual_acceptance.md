@@ -4,7 +4,7 @@
 **Owner:** Founder
 **Status:** Pending acceptance
 
-## 15-Point Checklist
+## 17-Point Checklist
 
 1. [ ] **DE agent ID correct:** `agent_d7dfe45ab444e1370e836c3e0f`
 2. [ ] **INTL agent ID correct:** `agent_fb4b956eec31db9c591880fdeb`
@@ -19,8 +19,10 @@
 11. [ ] **Mid-call switch:** say "In French please." → verify agent switches to French
 12. [ ] **Switch back:** say "German/Deutsch." → verify agent switches back (no refusal)
 13. [ ] **Run Spur 1+2:** `node scripts/run_chain.mjs voice --id <call_id> --with-audio` → 0 criticals in trigger/transfer
-14. [ ] **Reprompt timing:** after a question, agent waits ~4s before reprompt; max 1 reprompt per question; `responsiveness: 0.3` on both agents
+14. [ ] **Reprompt timing:** agent does NOT chain multiple questions without user input; `skip_response_edge` removed from Intake; `responsiveness: 0.9`
 15. [ ] **Back-transfer DE:** on INTL agent, say "Deutsch bitte" → verify transfer back to DE agent (swap_to_de_agent fires, caller hears Susi's voice)
+16. [ ] **Natural latency:** typical response lag < ~2s after user turn (no 6–10s waits); `responsiveness: 0.9` on both agents
+17. [ ] **Back-transfer continuity:** switching to German does NOT restart intake; DE agent continues with preserved context (no full re-greeting)
 
 ## Evidence Archive
 
@@ -40,5 +42,8 @@
 - **flex_mode=true bypasses the entire node graph.** Must be OFF for conversation flows to work.
 - **end_call is a built-in tool on all conversation nodes.** Use branch nodes for routing to eliminate LLM tool choice.
 - **STICKY language mode causes language lock.** Use FOLLOW mode instead.
-- **responsiveness=1 (default) causes rapid-fire reprompts.** Set to 0.3 for ~4s patience.
+- **skip_response_edge with "Skip response" causes rapid-fire loop:** Intake→Logic Split→Intake cycles without user input. Fix: remove skip_response_edge from Intake, add routing edges directly.
+- **skip_response_edge.prompt is hardcoded:** Retell API only allows `"Skip response"` — custom conditions rejected with 400.
+- **responsiveness=0.3 causes 6s lag; 0.9 is natural.** Only use low values for specific no-input scenarios, not globally.
 - **Back-transfer uses symmetric swap:** INTL has `swap_to_de_agent` targeting DE agent ID, mirroring DE's `swap_to_intl_agent`.
+- **DE Welcome must be prompt-based (not static_text) for context-aware re-entry.** Static text always plays the full greeting, even on back-transfer.

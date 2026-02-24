@@ -39,19 +39,20 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 | INTL Intake | `agent_fb4b956eec31db9c591880fdeb` | `conversation_flow_608d542979bb` | Multilingual intake (EN/FR/IT/DE) |
 
 ### DE Agent Flow (8 nodes)
-- **Welcome** (static greeting) → always → **Language Gate** (branch, no LLM)
+- **Welcome** (prompt-based, context-aware: detects re-entry from INTL transfer) → always → **Language Gate** (branch, no LLM)
 - Language Gate: German → **Intake**, else → **Language Transfer** (swap-only)
-- **Intake** (pure German, no swap tool) → skip → **Logic Split** (branch)
+- **Intake** (pure German, no swap tool, NO skip_response_edge) → edges: language-trigger → Transfer, intake_complete → Closing, out_of_scope → OOS
 - Intake/Closing/OOS all have language-trigger edges → Language Transfer
 - **Language Transfer**: only tool = `swap_to_intl_agent`, single instruction: "call swap immediately"
-- `flex_mode: false` (CRITICAL — flex_mode=true bypasses the entire node graph)
+- `flex_mode: false`, `responsiveness: 0.9`
 
 ### INTL Agent Flow (7 nodes)
 - Welcome → Intake → Logic Split → Closing / Out-of-scope → End Call
+- **Intake** NO skip_response_edge — edges: german-trigger → DE Transfer, intake_complete → Closing, out_of_scope → OOS
 - **DE Transfer** node (swap-only): only tool = `swap_to_de_agent` to DE agent ID
 - German-detection edges on Intake/Closing/OOS/Logic Split → DE Transfer
 - Language policy: **FOLLOW MODE** — always follow the caller's latest language, never lock
-- `flex_mode: false`
+- `flex_mode: false`, `responsiveness: 0.9`
 - `responsiveness: 0.3` (patience ~4s before reprompt)
 
 ### Agent Prompt (Agent-as-File)
