@@ -149,6 +149,22 @@ async function runVoiceChain() {
 
   console.log(`[voice-chain] collected ${calls.length} call(s)`);
 
+  // 1b. Filter out ultra-short calls (< 3s = connection noise, 0:00 calls)
+  const MIN_DURATION_MS = 3000;
+  const preFilterCount = calls.length;
+  calls = calls.filter(({ raw }) => {
+    const dur = (raw.end_timestamp || 0) - (raw.start_timestamp || 0);
+    if (dur > 0 && dur < MIN_DURATION_MS) {
+      const shortId = (raw.call_id || "").slice(0, 12);
+      console.log(`  Skipping ${shortId}: duration ${dur}ms < ${MIN_DURATION_MS}ms`);
+      return false;
+    }
+    return true;
+  });
+  if (calls.length < preFilterCount) {
+    console.log(`[voice-chain] filtered: ${preFilterCount} → ${calls.length} call(s) (${preFilterCount - calls.length} ultra-short skipped)`);
+  }
+
   // 2. Analyze
   console.log("[voice-chain] analyzing...");
   const { analyzeCall } = await import("./chains/voice/analyze.mjs");
