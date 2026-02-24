@@ -4,7 +4,7 @@
 **Owner:** Founder
 **Status:** Pending acceptance
 
-## 13-Point Checklist
+## 15-Point Checklist
 
 1. [ ] **DE agent ID correct:** `agent_d7dfe45ab444e1370e836c3e0f`
 2. [ ] **INTL agent ID correct:** `agent_fb4b956eec31db9c591880fdeb`
@@ -19,6 +19,8 @@
 11. [ ] **Mid-call switch:** say "In French please." → verify agent switches to French
 12. [ ] **Switch back:** say "German/Deutsch." → verify agent switches back (no refusal)
 13. [ ] **Run Spur 1+2:** `node scripts/run_chain.mjs voice --id <call_id> --with-audio` → 0 criticals in trigger/transfer
+14. [ ] **Reprompt timing:** after a question, agent waits ~4s before reprompt; max 1 reprompt per question; `responsiveness: 0.3` on both agents
+15. [ ] **Back-transfer DE:** on INTL agent, say "Deutsch bitte" → verify transfer back to DE agent (swap_to_de_agent fires, caller hears Susi's voice)
 
 ## Evidence Archive
 
@@ -38,3 +40,5 @@
 - **flex_mode=true bypasses the entire node graph.** Must be OFF for conversation flows to work.
 - **end_call is a built-in tool on all conversation nodes.** Use branch nodes for routing to eliminate LLM tool choice.
 - **STICKY language mode causes language lock.** Use FOLLOW mode instead.
+- **responsiveness=1 (default) causes rapid-fire reprompts.** Set to 0.3 for ~4s patience.
+- **Back-transfer uses symmetric swap:** INTL has `swap_to_de_agent` targeting DE agent ID, mirroring DE's `swap_to_intl_agent`.

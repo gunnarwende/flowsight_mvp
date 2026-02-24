@@ -330,6 +330,7 @@ async function runVerify() {
     const agentFields = [
       "voice_id", "language", "webhook_url",
       "max_call_duration_ms", "interruption_sensitivity",
+      "responsiveness", "reminder_trigger_ms", "reminder_max_count",
       "post_call_analysis_data",
       "analysis_successful_prompt", "analysis_summary_prompt",
       "post_call_analysis_model",
@@ -556,6 +557,9 @@ async function runDeploy() {
       webhook_url: genObj.webhook_url,
       max_call_duration_ms: genObj.max_call_duration_ms,
       interruption_sensitivity: genObj.interruption_sensitivity,
+      responsiveness: genObj.responsiveness,
+      reminder_trigger_ms: genObj.reminder_trigger_ms,
+      reminder_max_count: genObj.reminder_max_count,
       post_call_analysis_data: genObj.post_call_analysis_data,
       post_call_analysis_model: genObj.post_call_analysis_model,
       analysis_successful_prompt: genObj.analysis_successful_prompt,

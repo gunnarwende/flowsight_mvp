@@ -46,10 +46,13 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 - **Language Transfer**: only tool = `swap_to_intl_agent`, single instruction: "call swap immediately"
 - `flex_mode: false` (CRITICAL — flex_mode=true bypasses the entire node graph)
 
-### INTL Agent Flow (6 nodes)
+### INTL Agent Flow (7 nodes)
 - Welcome → Intake → Logic Split → Closing / Out-of-scope → End Call
+- **DE Transfer** node (swap-only): only tool = `swap_to_de_agent` to DE agent ID
+- German-detection edges on Intake/Closing/OOS/Logic Split → DE Transfer
 - Language policy: **FOLLOW MODE** — always follow the caller's latest language, never lock
 - `flex_mode: false`
+- `responsiveness: 0.3` (patience ~4s before reprompt)
 
 ### Agent Prompt (Agent-as-File)
 
