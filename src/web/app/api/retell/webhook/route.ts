@@ -303,27 +303,32 @@ export async function POST(req: Request) {
   try {
     const supabase = getServiceClient();
 
+    // Build insert payload — street/house_number are optional columns
+    // that may not exist if the address migration hasn't been applied yet.
+    // Include them only when we have values to avoid DB errors on missing columns.
+    const insertPayload: Record<string, unknown> = {
+      tenant_id: tenantId,
+      source: "voice" as const,
+      contact_phone: callerPhone!,
+      contact_email: null,
+      plz: plz!,
+      city: city!,
+      category: category!,
+      urgency: urgencyRaw as CaseUrgency,
+      description: description!,
+      photo_url: null,
+      raw_payload: {
+        provider: "retell",
+        retell_call_id: retellCallId,
+        event,
+      },
+    };
+    if (street) insertPayload.street = street;
+    if (houseNumber) insertPayload.house_number = houseNumber;
+
     const { data: row, error } = await supabase
       .from("cases")
-      .insert({
-        tenant_id: tenantId,
-        source: "voice" as const,
-        contact_phone: callerPhone!,
-        contact_email: null,
-        street: street ?? null,
-        house_number: houseNumber ?? null,
-        plz: plz!,
-        city: city!,
-        category: category!,
-        urgency: urgencyRaw as CaseUrgency,
-        description: description!,
-        photo_url: null,
-        raw_payload: {
-          provider: "retell",
-          retell_call_id: retellCallId,
-          event,
-        },
-      })
+      .insert(insertPayload)
       .select("id")
       .single();
 
@@ -358,7 +363,7 @@ export async function POST(req: Request) {
 
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
-    await sendCaseNotification({
+    const emailSent = await sendCaseNotification({
       caseId,
       tenantId,
       source: "voice",
@@ -368,6 +373,16 @@ export async function POST(req: Request) {
       plz: plz!,
       description: description!,
       contactPhone: callerPhone ?? undefined,
+    });
+
+    logDecision({
+      decision: "created",
+      event,
+      call_id: retellCallId,
+      tenant_id: tenantId,
+      case_id: caseId,
+      email_attempted: true,
+      email_sent: !!emailSent,
     });
 
     return new NextResponse(null, { status: 204 });

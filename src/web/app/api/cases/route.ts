@@ -180,23 +180,27 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = getServiceClient();
 
+    // Build insert payload — street/house_number are optional columns
+    // that may not exist if the address migration hasn't been applied yet.
+    const insertPayload: Record<string, unknown> = {
+      tenant_id: tenantId,
+      source: data.source,
+      contact_phone: data.contact_phone ?? null,
+      contact_email: data.contact_email ?? null,
+      plz: data.plz,
+      city: data.city,
+      category: data.category,
+      urgency: data.urgency,
+      description: data.description,
+      photo_url: data.photo_url ?? null,
+      raw_payload: data.raw_payload ?? null,
+    };
+    if (data.street) insertPayload.street = data.street;
+    if (data.house_number) insertPayload.house_number = data.house_number;
+
     const { data: row, error } = await supabase
       .from("cases")
-      .insert({
-        tenant_id: tenantId,
-        source: data.source,
-        contact_phone: data.contact_phone ?? null,
-        contact_email: data.contact_email ?? null,
-        street: data.street ?? null,
-        house_number: data.house_number ?? null,
-        plz: data.plz,
-        city: data.city,
-        category: data.category,
-        urgency: data.urgency,
-        description: data.description,
-        photo_url: data.photo_url ?? null,
-        raw_payload: data.raw_payload ?? null,
-      })
+      .insert(insertPayload)
       .select("id, tenant_id, source, urgency, category, city, created_at")
       .single();
 
