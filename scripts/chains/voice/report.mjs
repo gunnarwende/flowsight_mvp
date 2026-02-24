@@ -312,7 +312,12 @@ export function writeSummary(results, runId) {
   let audioAvailableCount = 0;
 
   for (const r of results) {
-    const verdict = computeVerdict(r.analysis.findings);
+    // Combine Spur 1 + Spur 2 findings for verdict
+    const combinedFindings = [
+      ...r.analysis.findings,
+      ...(r.correlation?.findings ?? []),
+    ];
+    const verdict = computeVerdict(combinedFindings);
     totalCritical += verdict.critical_count;
     totalWarning += verdict.warning_count;
     callVerdicts.push({
@@ -321,7 +326,7 @@ export function writeSummary(results, runId) {
       critical: verdict.critical_count,
       warning: verdict.warning_count,
     });
-    allFindings.push(...r.analysis.findings);
+    allFindings.push(...combinedFindings);
     if (r.analysis.audio.available) audioAvailableCount++;
   }
 

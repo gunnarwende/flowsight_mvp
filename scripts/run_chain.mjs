@@ -285,15 +285,17 @@ async function runVoiceChain() {
   const summaryPath = writeSummary(results, runId);
   console.log(`\n[voice-chain] summary: ${summaryPath}`);
 
-  // 5. Print verdict
-  const criticals = results.reduce(
-    (n, r) => n + r.analysis.findings.filter((f) => f.severity === "critical").length,
-    0,
-  );
-  const warnings = results.reduce(
-    (n, r) => n + r.analysis.findings.filter((f) => f.severity === "warning").length,
-    0,
-  );
+  // 5. Print verdict (Spur 1 + Spur 2 findings combined)
+  const criticals = results.reduce((n, r) => {
+    let c = r.analysis.findings.filter((f) => f.severity === "critical").length;
+    if (r.correlation) c += (r.correlation.findings ?? []).filter((f) => f.severity === "critical").length;
+    return n + c;
+  }, 0);
+  const warnings = results.reduce((n, r) => {
+    let w = r.analysis.findings.filter((f) => f.severity === "warning").length;
+    if (r.correlation) w += (r.correlation.findings ?? []).filter((f) => f.severity === "warning").length;
+    return n + w;
+  }, 0);
 
   let verdict;
   if (criticals > 0) verdict = "FAIL";

@@ -84,10 +84,44 @@ for (const [lang, keywords] of Object.entries(WHISPER_TRIGGERS)) {
 // ── Helpers ──────────────────────────────────────────────────────────────
 
 /**
+ * Build agent speech windows from Retell transcript_object.
+ * Single-channel audio mixes agent+user — we need these to filter
+ * out triggers spoken BY the agent (false positives).
+ */
+function buildAgentWindows(retellTurns) {
+  const windows = [];
+  for (const t of retellTurns) {
+    if (t.role !== "agent") continue;
+    const ws = t.words ?? [];
+    if (ws.length === 0) continue;
+    const start = ws[0].start ?? ws[0].start_timestamp ?? null;
+    const last = ws[ws.length - 1];
+    const end = last.end ?? last.end_timestamp ?? null;
+    if (start != null && end != null) {
+      windows.push({ start, end });
+    }
+  }
+  return windows;
+}
+
+/**
+ * Check if a timestamp falls within any agent speech window.
+ */
+function isInAgentWindow(timeSec, agentWindows, bufferS = 0.5) {
+  for (const w of agentWindows) {
+    if (timeSec >= w.start - bufferS && timeSec <= w.end + bufferS) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Scan WhisperX words for trigger keywords.
  * Returns detections with timestamps.
+ * Marks triggers as agent_spoken if they fall within agent speech windows.
  */
-function findTriggerWords(words) {
+function findTriggerWords(words, agentWindows = []) {
   const detections = [];
   const fullText = words.map((w) => w.word).join(" ").toLowerCase();
 
@@ -136,6 +170,7 @@ function findTriggerWords(words) {
             w.start === matchStart &&
             w.word.toLowerCase().includes(keyword.split(" ")[0]),
         )?.score ?? null,
+        agent_spoken: isInAgentWindow(matchStart, agentWindows),
       });
     }
   }
@@ -246,10 +281,14 @@ export function correlateCall(raw, whisperWords, callDir) {
   const findings = [];
   const callId = (raw.call_id ?? "unknown").slice(0, 12);
 
-  // 1. Detect triggers in WhisperX output
-  const triggerDetections = findTriggerWords(whisperWords);
+  // 1. Build agent speech windows for false-positive filtering
+  const retellTurns = raw.transcript_object ?? [];
+  const agentWindows = buildAgentWindows(retellTurns);
 
-  // 2. Get Retell transfer events
+  // 2. Detect triggers in WhisperX output (with agent-speech tagging)
+  const triggerDetections = findTriggerWords(whisperWords, agentWindows);
+
+  // 3. Get Retell transfer events
   const transferEvents = getTransferEvents(raw);
   const hasTransfer =
     raw.disconnection_reason === "agent_transfer" ||
@@ -257,10 +296,28 @@ export function correlateCall(raw, whisperWords, callDir) {
       (e) => e.name === "swap_to_intl_agent" || e.type === "transfer_call",
     );
 
-  // 3. Correlate triggers with transfers
+  // 4. Correlate triggers with transfers
   const TRANSFER_WINDOW_S = 5.0; // transfer should happen within 5s of trigger
 
   for (const det of triggerDetections) {
+    // Skip agent-spoken triggers (false positives from single-channel audio)
+    if (det.agent_spoken) {
+      findings.push({
+        category: "trigger_agent_spoken",
+        severity: "info",
+        title: `'${det.keyword}' [${det.lang}] @ ${det.start_s?.toFixed(1)}s — agent speech (filtered)`,
+        detail: `Trigger keyword detected in agent speech window. Not a caller trigger — filtered out.`,
+        timestamp_s: det.start_s,
+        evidence: {
+          keyword: det.keyword,
+          lang: det.lang,
+          trigger_time_s: det.start_s,
+          agent_spoken: true,
+        },
+      });
+      continue;
+    }
+
     const triggerTime = det.start_s ?? 0;
 
     // Find closest transfer event after trigger
@@ -292,7 +349,7 @@ export function correlateCall(raw, whisperWords, callDir) {
         category: "trigger_heard_no_transfer",
         severity: "critical",
         title: `WhisperX heard '${det.keyword}' [${det.lang}] @ ${det.start_s?.toFixed(1)}s — NO transfer`,
-        detail: `Trigger keyword detected in audio but no agent_transfer event found. The agent failed to transfer.`,
+        detail: `Trigger keyword detected in caller audio but no agent_transfer event found.`,
         timestamp_s: det.start_s,
         evidence: {
           keyword: det.keyword,
@@ -304,8 +361,7 @@ export function correlateCall(raw, whisperWords, callDir) {
     }
   }
 
-  // 4. Speech gaps: WhisperX heard words where Retell had nothing
-  const retellTurns = raw.transcript_object ?? [];
+  // 5. Speech gaps: WhisperX heard words where Retell had nothing
   const speechGaps = findSpeechGaps(whisperWords, retellTurns);
 
   for (const gap of speechGaps) {
@@ -324,7 +380,7 @@ export function correlateCall(raw, whisperWords, callDir) {
     });
   }
 
-  // 5. Inaudible start: first 3s of audio
+  // 6. Inaudible start: first 3s of audio
   const earlyWords = whisperWords.filter((w) => w.start <= 3.0);
   const earlyLowConf = earlyWords.filter((w) => w.score < 0.3);
   if (earlyWords.length === 0 || earlyLowConf.length === earlyWords.length) {
@@ -341,8 +397,8 @@ export function correlateCall(raw, whisperWords, callDir) {
     });
   }
 
-  // 6. Overlap hint: user words during agent turn windows
-  const agentWindows = retellTurns
+  // 7. Overlap hint: user words during agent turn windows
+  const agentWindowsForOverlap = retellTurns
     .filter((t) => t.role === "agent" && t.words?.length > 0)
     .map((t) => ({
       start: t.words[0].start,
@@ -351,7 +407,7 @@ export function correlateCall(raw, whisperWords, callDir) {
 
   let overlapCount = 0;
   for (const w of whisperWords) {
-    for (const aw of agentWindows) {
+    for (const aw of agentWindowsForOverlap) {
       if (w.start >= aw.start && w.start <= aw.end) {
         overlapCount++;
         break;
