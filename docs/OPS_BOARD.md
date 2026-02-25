@@ -9,7 +9,7 @@
 |---|-------------|-------|---------|--------|----------|
 | 1 | Test data cleanup + Morning Report fix | CC + Founder (SQL) | — | DONE ✓ | Before: RED(20/17). After: YELLOW(2/0). Verified by Founder. |
 | 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder decides retention periods | DONE ✓ | docs/compliance/data_processing.md (as-built, retention TBD) |
-| 3 | Onboarding Template Refresh | CC | none | pending | — |
+| 3 | Onboarding Template Refresh | CC | none | DONE ✓ | docs/runbooks/onboarding_customer_full.md (~55 min voice, ~25 min wizard-only) |
 | 4 | Voice Post-Deploy Smoke Script | CC | none | pending | — |
 | 5 | Release Evidence Standard | CC | none | pending | — |
 | 6 | Ops Daily Driver Quick Fixes | CC + Founder | Founder provides top 3 pain points | pending | — |
