@@ -112,7 +112,8 @@
     - #1 Test data cleanup: archived status (migration + ops dashboard + morning report + archive runbook)
     - Before: morning report RED (20 backlog, 17 stuck — all test data). After: real state only.
     - Founder TODO: run migration + archive SQL (docs/runbooks/archive_test_data.md)
-    - #2-#6: see docs/OPS_BOARD.md
+    - #2 Compliance Doc Pack: docs/compliance/data_processing.md (7 subprocessors, retention as-built, 5-step deletion)
+    - #3-#6: see docs/OPS_BOARD.md
 
 ## Next
 - **Autopilot OS Sprint (6 deliverables):** see docs/OPS_BOARD.md for full board

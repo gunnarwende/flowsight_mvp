@@ -8,7 +8,7 @@
 | # | Deliverable | Owner | Blocker | Status | Evidence |
 |---|-------------|-------|---------|--------|----------|
 | 1 | Test data cleanup + Morning Report fix | CC + Founder (SQL) | — | DONE ✓ | Before: RED(20/17). After: YELLOW(2/0). Verified by Founder. |
-| 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder confirms retention periods | pending | — |
+| 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder decides retention periods | DONE ✓ | docs/compliance/data_processing.md (as-built, retention TBD) |
 | 3 | Onboarding Template Refresh | CC | none | pending | — |
 | 4 | Voice Post-Deploy Smoke Script | CC | none | pending | — |
 | 5 | Release Evidence Standard | CC | none | pending | — |
