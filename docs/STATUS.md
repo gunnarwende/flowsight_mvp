@@ -107,11 +107,17 @@
     - Routing proof: call_9211c02b… → agent answers (connectivity PASS)
     - E2E proof: call_b2feefb1… → case 255136a3 (voice, Leck, notfall, 8942). Full pipeline PASS ✓
 
+29) Autopilot OS Sprint (Welle 26) — in progress
+    - OPS_BOARD.md: NOW/NEXT/LATER roadmap SSOT with CC vs Founder ownership
+    - #1 Test data cleanup: archived status (migration + ops dashboard + morning report + archive runbook)
+    - Before: morning report RED (20 backlog, 17 stuck — all test data). After: real state only.
+    - Founder TODO: run migration + archive SQL (docs/runbooks/archive_test_data.md)
+    - #2-#6: see docs/OPS_BOARD.md
+
 ## Next
-- **All go-live critical closed.** System in production. Voice pipeline proven E2E.
-- **Foundations + Control Plane done:** Security, monitoring, WhatsApp alerts, entitlements — all shipped.
-- **Strang B DONE:** Peoplefone Front Door E2E verified (case 255136a3, full pipeline PASS).
-- **Product (Strang D):** Ops Daily Driver polish, Reviews productization
+- **Autopilot OS Sprint (6 deliverables):** see docs/OPS_BOARD.md for full board
+- **Founder TODO:** Run archived migration + archive test data SQL
+- **Product (Strang D):** Ops Daily Driver polish, Reviews productization — after sprint
 - W8 (Post-Job Voice Note): R&D/optional, parked.
 
 ## Go-Live Blockers — ALL DONE ✓
