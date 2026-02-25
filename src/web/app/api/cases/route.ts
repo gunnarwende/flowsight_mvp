@@ -248,14 +248,10 @@ export async function POST(request: NextRequest) {
       reporterEmailSent,
     });
 
-    // Notify: notfall → immediate WhatsApp, email failure → RED alert
-    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
-    const opsLink = `${baseUrl}/ops/cases/${row.id}`;
-
-    if (data.urgency === "notfall") {
-      await notify({ severity: "RED", code: "NOTFALL_CASE", refs: { case_id: row.id }, opsLink });
-    } else if (!emailSent) {
-      await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink });
+    // Notify: system failures only (email dispatch fail → RED alert)
+    if (!emailSent) {
+      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+      await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${baseUrl}/ops/cases/${row.id}` });
     }
 
     return NextResponse.json(row, { status: 201 });

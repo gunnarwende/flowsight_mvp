@@ -383,27 +383,17 @@ export async function POST(req: Request) {
       contactPhone: callerPhone ?? undefined,
     });
 
-    // Notify: notfall case → immediate WhatsApp, email failure → RED alert
-    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
-    const opsLink = `${baseUrl}/ops/cases/${caseId}`;
+    // Notify: system failures only (email dispatch fail → RED alert)
     let waSent = false;
     let waSid: string | undefined;
 
-    if (urgencyRaw === "notfall") {
-      const wa = await notify({
-        severity: "RED",
-        code: "NOTFALL_CASE",
-        refs: { case_id: caseId, call_id: retellCallId },
-        opsLink,
-      });
-      waSent = wa.sent;
-      waSid = wa.messageSid;
-    } else if (!emailSent) {
+    if (!emailSent) {
+      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
       const wa = await notify({
         severity: "RED",
         code: "EMAIL_DISPATCH_FAILED",
         refs: { case_id: caseId, call_id: retellCallId },
-        opsLink,
+        opsLink: `${baseUrl}/ops/cases/${caseId}`,
       });
       waSent = wa.sent;
       waSid = wa.messageSid;
