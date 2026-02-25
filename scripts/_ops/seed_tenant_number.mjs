@@ -14,7 +14,8 @@
 const TENANT_ID = "48cae49e-ec12-4ce4-b5f7-c058de87c93e";
 
 const NUMBERS = [
-  { phone: "+41445057420", label: "Twilio direct (carrier)" },
+  { phone: "+41445057420", label: "Twilio original (legacy direct)" },
+  { phone: "+41445053019", label: "Twilio Entry (Peoplefone forward target)" },
   { phone: "+41445520919", label: "Peoplefone brand (front door)" },
 ];
 

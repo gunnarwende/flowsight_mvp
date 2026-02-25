@@ -21,7 +21,8 @@
 - Resend: API Key + MAIL_FROM/REPLY_TO/SUBJECT_PREFIX konfiguriert (.env.local + Vercel Env).
 - Retell Webhook: /api/retell/webhook live (event gating call_analyzed, multi-path extraction, conditional address insert, structured logging)
 - Voice: Dual-Agent Architektur (DE: agent_d7dfe4, INTL: agent_fb4b95). Language Gate (branch node), INTL Follow-Mode, PLZ digit-by-digit, explicit call termination.
-- Twilio CH Nummer: +41 44 505 74 20 (SIP Trunk → Retell). Proven E2E.
+- Peoplefone Brand-Nummer: +41 44 552 09 19 → Line 1 Forward → Twilio Entry +41 44 505 30 19 → SIP "flowsight-retell-ch" → Retell. LIVE ✓
+- Twilio Entry: +41 44 505 30 19 ("entry-3019"), SIP Trunk → Retell. Original: +41 44 505 74 20 (legacy).
 - Wizard: /wizard (standalone) + /doerfler-ag/meldung (branded funnel mit ?category= preselect)
 - doerfler-ag: Landing Page live unter /doerfler-ag mit CTAs → /doerfler-ag/meldung
 - FlowSight GmbH: Marketing Website live (homepage, pricing, legal)
@@ -94,21 +95,20 @@
     - Migration SQL: docs/runbooks/entitlements_setup.md (Founder applies)
     - Entitlements migration: DONE — applied by Founder (tenants.modules jsonb + Dörfler AG all true)
 
-28) Peoplefone Front Door (Welle 25) — Strang B Delivery
+28) Peoplefone Front Door (Welle 25) ✓ — Strang B Delivery — LIVE
     - Brand-Nummer: +41 44 552 09 19 (Peoplefone, active/paid)
-    - Architecture: Peoplefone → Call Forward → Twilio +41 44 505 74 20 → SIP → Retell (no code changes)
-    - Runbook: docs/runbooks/peoplefone_front_door.md (Founder console checklist + fallback plan)
-    - Seed script: scripts/_ops/seed_tenant_number.mjs (both numbers → Dörfler AG)
-    - tenant_numbers SQL: +41445520919 + +41445057420 → same tenant (covers both DNIS scenarios)
-    - Onboarding docs updated: Peoplefone step added (5b)
-    - env_vars.md updated: Peoplefone section (no env vars needed, portal-only)
-    - Evidence checklist: test call via brand number + case_id + email + webhook log
-    - Founder TODO: Peoplefone portal forward config + seed tenant_numbers + test call
+    - Verified route: Peoplefone → Line 1 Forward → Twilio Entry +41 44 505 30 19 → SIP "flowsight-retell-ch" → Retell "entry-3019" → "Dörfler AG Intake (DE)" (voice Susi)
+    - Runbook: docs/runbooks/peoplefone_front_door.md (verified live, evidence placeholders)
+    - Seed script: scripts/_ops/seed_tenant_number.mjs (3 numbers → Dörfler AG)
+    - tenant_numbers: +41445520919 (brand) + +41445053019 (entry) + +41445057420 (legacy)
+    - WhatsApp Ops Alerts: Twilio Sandbox live, proof PASS, comms policy committed
+    - Comms policy: email-only customer, WhatsApp founder-only (system RED, no PII)
+    - Founder TODO: seed tenant_numbers (3 numbers) + record proof call evidence (call_id + case_id)
 
 ## Next
 - **All go-live critical closed.** System in production. Voice pipeline proven E2E.
 - **Foundations + Control Plane done:** Security, monitoring, WhatsApp alerts, entitlements — all shipped.
-- **Strang B in progress:** Peoplefone Front Door — Founder console steps pending (portal forward + DB seed + test call)
+- **Strang B LIVE:** Peoplefone Front Door verified (call rings, agent answers). Founder TODO: seed tenant_numbers + record proof evidence.
 - **Product (Strang D):** Ops Daily Driver polish, Reviews productization
 - W8 (Post-Job Voice Note): R&D/optional, parked.
 
