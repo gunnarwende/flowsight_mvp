@@ -1,29 +1,31 @@
 # FlowSight – STATUS (Company SSOT)
 
-**Datum:** 2026-02-22
+**Datum:** 2026-02-25
 **Owner:** Head Ops Agent
 **Scope (MVP):** High-End Website + Wizard + Voice (Retell) + SSOT (Supabase) + E-Mail (Resend) + Sentry + Internal Ops Dashboard (intern)
 
 ## Fixe Entscheidungen (No Drift)
 - Website + Wizard = MVP-kritisch
 - Voice Agent (Intake-only, max 7 Fragen, sanitär-spezifisch, Recording OFF) = MVP-kritisch
-- Output: E-Mail only (keine SMS/WhatsApp im MVP)
+- Output: E-Mail only (Kunden). WhatsApp: Founder-only Ops Alerts (kein Customer-facing, keine PII).
 - SSOT: Supabase (tenants + cases)
 - Deploy: Vercel, Root Directory = src/web
-- Secrets: nur Vercel Env + Bitwarden (niemals ins Repo)
+- Secrets: Vercel Env = SSOT (Runtime). Lokal nur .env.local via temp-dir pull sync. Niemals ins Repo.
 - Mail Provider MVP: Resend (365 Graph nein im MVP)
 
 ## Aktueller Stand (Kurz)
 - Repo Layout: src/web (Next.js App Router) vorhanden
 - Sentry Configs vorhanden (sentry.*.config.ts + instrumentation*.ts)
 - API: POST /api/cases live (Supabase insert + Resend email + structured JSON log + Sentry tags)
-- Supabase: Projekt verbunden (oyouhwcwkdcblioecduo), Schema applied (tenants, cases, tenant_numbers + RLS). Keys in .env.local + Vercel Env.
+- Supabase: Projekt verbunden, Schema applied (tenants, cases, tenant_numbers + RLS). street + house_number Spalten: DONE (verified by Founder).
 - Resend: API Key + MAIL_FROM/REPLY_TO/SUBJECT_PREFIX konfiguriert (.env.local + Vercel Env).
-- Retell Webhook: /api/retell/webhook live (event gating call_analyzed, multi-path extraction, structured logging)
-- Twilio CH Nummer: gekauft und konfiguriert (Verified: .env.local). SIP Trunk konfiguriert.
-- Voice E2E: Twilio→Retell→Webhook→Supabase→Resend — proven (case f2fddfef)
-- Wizard: /wizard (standalone) + /doerfler-ag/meldung (branded funnel mit ?category= preselect) — proven (cases 812ee2ed, df85ee52)
-- doerfler-ag: Landing Page live unter /doerfler-ag mit CTAs → /doerfler-ag/meldung, Service deep-links
+- Retell Webhook: /api/retell/webhook live (event gating call_analyzed, multi-path extraction, conditional address insert, structured logging)
+- Voice: Dual-Agent Architektur (DE: agent_d7dfe4, INTL: agent_fb4b95). Language Gate (branch node), INTL Follow-Mode, PLZ digit-by-digit, explicit call termination.
+- Twilio CH Nummer: +41 44 505 74 20 (SIP Trunk → Retell). Proven E2E.
+- Wizard: /wizard (standalone) + /doerfler-ag/meldung (branded funnel mit ?category= preselect)
+- doerfler-ag: Landing Page live unter /doerfler-ag mit CTAs → /doerfler-ag/meldung
+- FlowSight GmbH: Marketing Website live (homepage, pricing, legal)
+- Voice Tooling: retell_deploy.mjs (verify/deploy), run_chain.mjs (Spur 1+2 + audio forensics)
 
 ## SSOT Dateien
 - Company SSOT: docs/STATUS.md
@@ -51,9 +53,36 @@
 17) Onboarding Docs — full + reviews-only (Welle 14) ✓
 18) Env Sync + Ops UI Quickwins (Welle 15) ✓
 19) Voice Prompt v2 + Testcall-Fixes (Welle 16) ✓ — 33889cb
+20) Dual-Agent Architecture + Address Fields (Welle 17) ✓ — ce68b63, 14b0014, 9157aa8
+    - DE/INTL Agent Split (Susi/Juniper) mit agent-transfer routing
+    - Address fields e2e (street + house_number), language triggers hardened, PLZ UX
+    - W17 Migration (street + house_number Spalten): DONE — verified by Founder
+21) Language Detection + Voice Debug Tooling (Welle 18) ✓ — ec0ec1d, c38b177, 2ebcdb3
+    - 3-layer language detection, ASR-drift handling, privacy defaults
+    - Voice Debug Chain P0 (Spur 1): call analysis reports from Retell API
+22) Retell Deploy Tool + Transfer Fixes (Welle 19) ✓ — f79415d, 98ea131, 377ed22, c2e4569
+    - retell_deploy.mjs: verify/deploy/probe, flow normalization, PII categories
+    - Transfer agent_id fix (placeholder → real ID), FR trigger expansion
+    - Language detection re-design: 50+ natural speech keywords, bilingual fallback, max 1 retry
+23) Audio Forensics + Voice Hardening (Welle 20) ✓ — 640f568, 0a7d7ee
+    - Spur 2: WhisperX transcription + correlation (trigger/transfer analysis)
+    - Language Gate = branch node (no LLM, no end_call), flex_mode=false
+    - INTL Follow-Mode (no language lock), 5 edges to Language Transfer
+    - Acceptance checklist (17 points): docs/runbooks/voice_multilingual_acceptance.md
+24) P0 Voice Finishing (Welle 21) ✓ — 71f8a1c, becf4a7, dee17de, 9a63112
+    - Rapid-fire loop fix, reprompt patience (responsiveness 0.3→0.9), INTL→DE back-transfer
+    - Webhook conditional insert fix (address columns), logDecision on success path
+    - PLZ digit-by-digit confirmation, explicit call termination (no "Sind Sie noch dran?")
+    - Secrets policy runbook: docs/runbooks/99-secrets-policy.md
+25) FlowSight GmbH Marketing Website (Welle 22) ✓ — 32c9398
+    - Homepage, Pricing, Legal pages
 
 ## Next
-- **All go-live critical closed.** System in production.
+- **All go-live critical closed.** System in production. Voice pipeline proven E2E.
+- **Foundations (Strang E+C):** Security policies, monitoring consolidation, Notification Router (WhatsApp Founder-only alerts)
+- **Control Plane (Strang A):** Minimal entitlements (modules jsonb on tenants), industry packs
+- **Delivery (Strang B, P1):** Peoplefone Front Door (Brand-Nummer → Twilio → Retell)
+- **Product (Strang D):** Ops Daily Driver polish, Reviews productization
 - W8 (Post-Job Voice Note): R&D/optional, parked.
 
 ## Go-Live Blockers — ALL DONE ✓
@@ -148,7 +177,7 @@
   - Health endpoint: GET /api/health (200 JSON, no DB, no secrets, commit SHA + env)
   - Sentry high-signal tagging: _tag + stage + decision + error_code on all P0 failure paths
   - Routes: retell/webhook (9 paths), resend.ts (4 paths), cases/route.ts (2 paths), send-invite (2 paths)
-  - Monitoring runbook: docs/runbooks/monitoring_w9.md (2 Sentry alerts, click-by-click)
+  - Monitoring runbook: docs/runbooks/monitoring.md (2 Sentry alerts, click-by-click)
   - Logging discipline: no new console.logs, existing 1-log-per-invocation preserved
   - Gates: build clean (17 routes), voice regression green (webhook path unchanged)
 - 2026-02-20 | Head Ops | GO-LIVE GATES ALL PASSED:
@@ -179,3 +208,12 @@
   - Sentry Alerts: DONE (Case Creation Failed + Email Dispatch Failed)
   - Review Engine: PASS (button, mail, disabled state, review_sent_at persist)
   - Twilio E2E: PASS (real call via production number +41 44 505 74 20)
+- 2026-02-22→25 | Head Ops | WELLEN 17–22 (Voice Architecture + Hardening + Marketing):
+  - W17: Dual-Agent split DE/INTL, address fields e2e, language triggers. Migration street+house_number DONE (verified by Founder).
+  - W18: 3-layer language detection, ASR-drift handling, privacy defaults, voice debug chain P0.
+  - W19: retell_deploy.mjs (verify/deploy/probe), transfer agent_id fix, language re-design (50+ keywords, bilingual fallback).
+  - W20: Audio Forensics Spur 2 (WhisperX), Language Gate branch node, INTL Follow-Mode, acceptance checklist.
+  - W21: Rapid-fire loop fix, webhook conditional insert, PLZ digit-by-digit, explicit call termination, secrets policy.
+  - W22: FlowSight GmbH marketing website (homepage, pricing, legal).
+  - Gates: build clean, voice regression green, P0 call→case→email pipeline proven.
+  - Next: Foundations (Security + Monitoring + WhatsApp Alerts) → Control Plane → Delivery.

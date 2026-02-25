@@ -1,5 +1,7 @@
-# Monitoring & Alerting Runbook (Welle 9)
+# Monitoring & Alerting Runbook
 
+**Owner:** Head Ops Agent
+**Last updated:** 2026-02-25 (originally Welle 9)
 **Ziel:** "We know within minutes if intake is broken."
 
 ## Health Endpoint

@@ -2,11 +2,11 @@
 
 ## No Drift (Fixed Decisions)
 - MVP-critical: Website + Wizard + Voice Agent (Retell)
-- Output: E-Mail only (no SMS/WhatsApp in MVP)
+- Output: E-Mail only (customers). WhatsApp: Founder-only Ops Alerts (no customer-facing, no PII).
 - Mail Provider: Resend (no 365 Graph in MVP)
 - SSOT: Supabase (tenants + cases)
 - Deploy: Vercel, Root Directory = src/web
-- Secrets: Vercel Env + Bitwarden only — never commit to repo
+- Secrets: Vercel Env = SSOT (runtime). Local .env.local via temp-dir pull sync only. Never commit to repo.
 - Voice: intake-only, max 7 questions, sanitär-spezifisch, Recording OFF
 
 ## SSOT Paths
