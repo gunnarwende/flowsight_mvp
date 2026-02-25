@@ -9,6 +9,7 @@
  * Without --send: prints report to stdout only.
  * With --send: also sends via WhatsApp (requires TWILIO_* + FOUNDER_WHATSAPP_* env vars).
  *
+ * All queries exclude status='archived' (test data).
  * No PII in output — only counts, ages, and IDs (truncated).
  */
 
@@ -40,10 +41,11 @@ const h24ago = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
 const h48ago = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
 const d7ago = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-// 1. Cases created in last 24h (by source)
+// 1. Cases created in last 24h (by source), excluding archived
 const { data: recent, error: e1 } = await supabase
   .from("cases")
   .select("id, source, urgency")
+  .neq("status", "archived")
   .gte("created_at", h24ago);
 if (e1) console.error("Query recent:", e1.message);
 
@@ -67,7 +69,7 @@ const { count: stuck48h, error: e3 } = await supabase
   .lt("created_at", h48ago);
 if (e3) console.error("Query stuck:", e3.message);
 
-// 4. Scheduled today
+// 4. Scheduled today (excluding archived)
 const todayStart = new Date(now);
 todayStart.setHours(0, 0, 0, 0);
 const todayEnd = new Date(now);
@@ -75,6 +77,7 @@ todayEnd.setHours(23, 59, 59, 999);
 const { count: scheduledToday, error: e4 } = await supabase
   .from("cases")
   .select("id", { count: "exact", head: true })
+  .neq("status", "archived")
   .gte("scheduled_at", todayStart.toISOString())
   .lte("scheduled_at", todayEnd.toISOString());
 if (e4) console.error("Query scheduled:", e4.message);

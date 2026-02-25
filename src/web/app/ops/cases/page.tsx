@@ -28,6 +28,7 @@ const STATUS_LABELS: Record<string, string> = {
   contacted: "Kontaktiert",
   scheduled: "Geplant",
   done: "Erledigt",
+  archived: "Archiviert",
 };
 
 const URGENCY_COLORS: Record<string, string> = {
@@ -41,6 +42,7 @@ const STATUS_COLORS: Record<string, string> = {
   contacted: "bg-sky-900/50 text-sky-300",
   scheduled: "bg-violet-900/50 text-violet-300",
   done: "bg-emerald-900/50 text-emerald-300",
+  archived: "bg-slate-800/50 text-slate-500",
 };
 
 // ---------------------------------------------------------------------------
@@ -86,11 +88,13 @@ export default async function OpsCasesPage({
     .order("created_at", { ascending: false })
     .limit(200);
 
-  // Default: open cases (status != done), unless showAll or explicit status filter
+  // Default: open cases (exclude done + archived), unless showAll or explicit status filter
   if (filterStatus) {
     listQuery = listQuery.eq("status", filterStatus);
   } else if (!showAll) {
-    listQuery = listQuery.neq("status", "done");
+    listQuery = listQuery.not("status", "in", "(done,archived)");
+  } else {
+    listQuery = listQuery.neq("status", "archived");
   }
 
   if (filterUrgency) listQuery = listQuery.eq("urgency", filterUrgency);
@@ -109,9 +113,10 @@ export default async function OpsCasesPage({
   }).format(new Date());
   const sevenDaysAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const openCount = allCases?.filter((c) => c.status !== "done").length ?? 0;
+  const openCount = allCases?.filter((c) => c.status !== "done" && c.status !== "archived").length ?? 0;
   const todayCount =
     allCases?.filter((c) => {
+      if (c.status === "archived") return false;
       const cDate = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Europe/Zurich",
       }).format(new Date(c.created_at));
@@ -154,7 +159,7 @@ export default async function OpsCasesPage({
           href="/ops/cases?show=all"
         />
         <span className="border-l border-slate-700 mx-1 h-5 inline-block" />
-        {(["new", "contacted", "scheduled", "done"] as const).map((s) => (
+        {(["new", "contacted", "scheduled", "done", "archived"] as const).map((s) => (
           <FilterChip
             key={s}
             label={STATUS_LABELS[s]}

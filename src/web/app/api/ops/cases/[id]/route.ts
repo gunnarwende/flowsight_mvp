@@ -7,7 +7,7 @@ import { getAuthClient } from "@/src/lib/supabase/server-auth";
 // Allowed values for ops fields
 // ---------------------------------------------------------------------------
 
-const VALID_STATUSES = ["new", "contacted", "scheduled", "done"] as const;
+const VALID_STATUSES = ["new", "contacted", "scheduled", "done", "archived"] as const;
 
 const OPS_UPDATABLE_FIELDS = [
   "status",
