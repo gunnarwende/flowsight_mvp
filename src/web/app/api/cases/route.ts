@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification, sendReporterConfirmation } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
+import { hasModule } from "@/src/lib/tenants/hasModule";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -175,6 +176,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "tenant_id not provided and FALLBACK_TENANT_ID not configured." },
       { status: 400 }
+    );
+  }
+
+  // Module check: website_wizard for wizard source
+  if (data.source === "wizard" && !(await hasModule(tenantId, "website_wizard"))) {
+    return NextResponse.json(
+      { error: "Module 'website_wizard' not enabled for this tenant." },
+      { status: 403 }
     );
   }
 

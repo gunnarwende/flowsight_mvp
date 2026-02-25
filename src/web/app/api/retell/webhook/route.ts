@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { Retell } from "retell-sdk";
 import { resolveTenant } from "@/src/lib/tenants/resolveTenant";
+import { hasModule } from "@/src/lib/tenants/hasModule";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
@@ -299,6 +300,16 @@ export async function POST(req: Request) {
   }
 
   Sentry.setTag("tenant_id", tenantId);
+
+  // ── Module check: voice ─────────────────────────────────────────────
+  if (!(await hasModule(tenantId, "voice"))) {
+    Sentry.captureMessage("voice_module_disabled", {
+      level: "warning",
+      tags: { stage: "entitlement", decision: "module_disabled", error_code: "MODULE_DISABLED", tenant_id: tenantId },
+    });
+    logDecision({ decision: "module_disabled", module: "voice", event, call_id: retellCallId, tenant_id: tenantId });
+    return new NextResponse(null, { status: 204 });
+  }
 
   // ── Create case (direct DB insert via service role) ────────────────
   try {

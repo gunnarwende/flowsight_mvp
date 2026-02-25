@@ -77,7 +77,7 @@
 25) FlowSight GmbH Marketing Website (Welle 22) ✓ — 32c9398
     - Homepage, Pricing, Legal pages
 
-26) Foundations E1–E3 + Notification Router C1+C2 (Welle 23) ✓ — c4ba94d, 7b9154c, d163054, e783bf3
+26) Foundations E1–E3 + Notification Router C1+C2 (Welle 23) ✓ — c4ba94d → cc68a62
     - E1: Secrets policy consolidated (Vercel SSOT, incident playbook, compliance modes)
     - E2: Device loss runbook (10-step, priority-ordered)
     - E3: Monitoring rename (monitoring_w9.md → monitoring.md), incident triage populated
@@ -87,10 +87,17 @@
     - CLAUDE.md: WhatsApp scope amendment + Vercel SSOT for secrets
     - Evidence: Proof alert received (FK error → WhatsApp RED), build clean (21 routes)
 
+27) Morning Report + Minimal Entitlements (Welle 24) ✓
+    - C3: Morning Report script (scripts/_ops/morning_report.mjs) — 10 KPIs, severity ampel, --send flag
+    - A1: hasModule(tenantId, module) — tenants.modules jsonb, graceful fallback (empty = allow all)
+    - Enforcement: /api/retell/webhook (voice), /api/cases (website_wizard)
+    - Migration SQL: docs/runbooks/entitlements_setup.md (Founder applies)
+    - Founder TODO: run migration + set Dörfler AG modules
+
 ## Next
 - **All go-live critical closed.** System in production. Voice pipeline proven E2E.
-- **Foundations done:** Security policies, monitoring, WhatsApp Founder-only alerts — all shipped.
-- **Control Plane (Strang A):** Minimal entitlements (modules jsonb on tenants), industry packs
+- **Foundations + Control Plane done:** Security, monitoring, WhatsApp alerts, entitlements — all shipped.
+- **Founder TODO:** Apply entitlements migration (docs/runbooks/entitlements_setup.md)
 - **Delivery (Strang B, P1):** Peoplefone Front Door (Brand-Nummer → Twilio → Retell)
 - **Product (Strang D):** Ops Daily Driver polish, Reviews productization
 - W8 (Post-Job Voice Note): R&D/optional, parked.
