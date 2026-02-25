@@ -12,7 +12,7 @@
 | 3 | Onboarding Template Refresh | CC | none | DONE ✓ | docs/runbooks/onboarding_customer_full.md (~55 min voice, ~25 min wizard-only) |
 | 4 | Voice Post-Deploy Smoke Script | CC | none | DONE ✓ | scripts/_ops/smoke_voice.mjs — {"pass":true} verified |
 | 5 | Release Evidence Standard | CC | none | DONE ✓ | docs/runbooks/release_checklist.md |
-| 6 | Ops Daily Driver Quick Fixes | CC + Founder | Founder provides top 3 pain points | pending | — |
+| 6 | Ops Daily Driver Quick Fixes | CC + Founder | — | DEFERRED | Trigger: ≥5 active customers or same friction observed 3× |
 
 ## NEXT (after NOW is closed, no overlap)
 

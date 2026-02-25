@@ -116,8 +116,8 @@
     - #3 Onboarding Refresh: [F]/[CC] owner tags, modules step, deliverability gate, ~55 min timed checklist
     - #4 Voice Smoke Script: scripts/_ops/smoke_voice.mjs — 4 checks, single JSON, pass/fail, evidence {"pass":true}
     - #5 Release Checklist: docs/runbooks/release_checklist.md (gates, smoke, evidence, rollback)
-    - #6: see docs/OPS_BOARD.md
-    - Founder Backlog expanded: F1-F11 (security, compliance, billing, per-customer gates)
+    - #6 Ops Daily Driver: DEFERRED (trigger: ≥5 customers or friction observed 3×)
+    - Sprint result: 5/6 shipped, 1 deferred. Founder Backlog F1-F11 tracked.
 
 ## Next
 - **Autopilot OS Sprint (6 deliverables):** see docs/OPS_BOARD.md for full board
