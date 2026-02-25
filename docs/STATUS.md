@@ -103,12 +103,14 @@
     - tenant_numbers: +41445520919 (brand) + +41445053019 (entry) + +41445057420 (legacy)
     - WhatsApp Ops Alerts: Twilio Sandbox live, proof PASS, comms policy committed
     - Comms policy: email-only customer, WhatsApp founder-only (system RED, no PII)
-    - Founder TODO: seed tenant_numbers (3 numbers) + record proof call evidence (call_id + case_id)
+    - tenant_numbers seeded: 3/3 PASS (+41445057420, +41445053019, +41445520919 → Dörfler AG)
+    - Routing proof: call_9211c02b… → agent answers (connectivity PASS, no case — short test call)
+    - Founder TODO: one full E2E intake call via brand number → record case_id + email evidence
 
 ## Next
 - **All go-live critical closed.** System in production. Voice pipeline proven E2E.
 - **Foundations + Control Plane done:** Security, monitoring, WhatsApp alerts, entitlements — all shipped.
-- **Strang B LIVE:** Peoplefone Front Door verified (call rings, agent answers). Founder TODO: seed tenant_numbers + record proof evidence.
+- **Strang B LIVE:** Peoplefone Front Door verified. Routing PASS, DB seeded (3/3). Founder TODO: one full E2E intake call for case evidence.
 - **Product (Strang D):** Ops Daily Driver polish, Reviews productization
 - W8 (Post-Job Voice Note): R&D/optional, parked.
 

@@ -117,21 +117,38 @@ If Peoplefone forwarding causes problems:
 - [x] **Peoplefone portal:** Line 1 forward configured → +41 44 505 30 19 (Twilio Entry)
 - [x] **Test call (Peoplefone):** Call +41 44 552 09 19 → Retell agent "Dörfler AG Intake (DE)" answers (voice Susi)
 - [x] **WhatsApp Ops Alerts:** Twilio Sandbox live, proof PASS, comms policy committed
-- [ ] **DB seed:** `SELECT * FROM tenant_numbers WHERE active = true` → all 3 numbers present (Founder TODO)
-- [ ] **Webhook log:** Vercel Function Logs → `_tag:retell_webhook`, `decision:created` with proof call_id
-- [ ] **Case created:** Supabase → `SELECT id, source, category, created_at FROM cases ORDER BY created_at DESC LIMIT 1` → source=voice
-- [ ] **Email sent:** Notification email received at MAIL_REPLY_TO
+- [x] **DB seed:** 3 numbers active (seed script run 2026-02-25, all PASS)
+- [ ] **E2E proof call:** Full intake via brand number → case created + email sent (pending — routing proof below was connectivity-only)
 - [ ] **Regression:** Call +41 44 505 30 19 directly (Twilio Entry) → still works without Peoplefone hop
 
-### Evidence (proof call — Founder to fill)
+### Evidence: Routing Proof (connectivity)
 
+```
+call_id:    call_9211c02b745b7a60a4c2c00ead8
+to_number:  +41445520919
+route:      Peoplefone → Line 1 → Twilio Entry +41445053019 → SIP flowsight-retell-ch → Retell entry-3019
+result:     Agent answers (voice Susi). Routing PASS.
+case_id:    — (call was connectivity test, no full intake → no call_analyzed event → no case)
+```
+
+### Evidence: DB Seed (verified)
+
+```
+seed_run:   2026-02-25 via seed_tenant_number.mjs
++41445057420 → 48cae49e-... (active=true) — Twilio original (legacy)
++41445053019 → 48cae49e-... (active=true) — Twilio Entry (Peoplefone forward target)
++41445520919 → 48cae49e-... (active=true) — Peoplefone brand (front door)
+all_resolve: PASS (3/3)
+```
+
+### Evidence: E2E Proof Call (pending)
+
+> **Next:** Founder makes one full intake call via +41 44 552 09 19, completes all questions → records:
 ```
 call_id:    <retell_call_id from Vercel logs>
 case_id:    <case UUID from Supabase>
-to_number:  <which number Retell saw — +41445053019 or +41445520919>
 timestamp:  <ISO>
 email_sent: true/false
-route:      Peoplefone → Twilio Entry → SIP flowsight-retell-ch → Retell entry-3019
 ```
 
 ## 6. Customer-Facing Number Policy
