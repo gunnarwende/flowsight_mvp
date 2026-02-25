@@ -77,9 +77,19 @@
 25) FlowSight GmbH Marketing Website (Welle 22) ✓ — 32c9398
     - Homepage, Pricing, Legal pages
 
+26) Foundations E1–E3 + Notification Router C1+C2 (Welle 23) ✓ — c4ba94d, 7b9154c, d163054, e783bf3
+    - E1: Secrets policy consolidated (Vercel SSOT, incident playbook, compliance modes)
+    - E2: Device loss runbook (10-step, priority-ordered)
+    - E3: Monitoring rename (monitoring_w9.md → monitoring.md), incident triage populated
+    - C1: Notification Router (src/web/src/lib/notify/) — WhatsApp via Twilio REST, throttle, templates
+    - C2: Wired into webhook + cases API (CASE_CREATE_FAILED, EMAIL_DISPATCH_FAILED)
+    - NOTFALL_CASE alerts: DISABLED (WhatsApp = system RED only, not business events)
+    - CLAUDE.md: WhatsApp scope amendment + Vercel SSOT for secrets
+    - Evidence: Proof alert received (FK error → WhatsApp RED), build clean (21 routes)
+
 ## Next
 - **All go-live critical closed.** System in production. Voice pipeline proven E2E.
-- **Foundations (Strang E+C):** Security policies, monitoring consolidation, Notification Router (WhatsApp Founder-only alerts)
+- **Foundations done:** Security policies, monitoring, WhatsApp Founder-only alerts — all shipped.
 - **Control Plane (Strang A):** Minimal entitlements (modules jsonb on tenants), industry packs
 - **Delivery (Strang B, P1):** Peoplefone Front Door (Brand-Nummer → Twilio → Retell)
 - **Product (Strang D):** Ops Daily Driver polish, Reviews productization
@@ -217,3 +227,11 @@
   - W22: FlowSight GmbH marketing website (homepage, pricing, legal).
   - Gates: build clean, voice regression green, P0 call→case→email pipeline proven.
   - Next: Foundations (Security + Monitoring + WhatsApp Alerts) → Control Plane → Delivery.
+- 2026-02-25 | Head Ops | WELLE 23 (Foundations E+C):
+  - E1-E3: Secrets policy (Vercel SSOT, incident playbook), device loss runbook, monitoring rename, incident triage.
+  - C1-C2: Notification Router + WhatsApp channel (Twilio REST, zero deps). Wired into webhook + cases API.
+  - WhatsApp scope: system RED only (CASE_CREATE_FAILED, EMAIL_DISPATCH_FAILED). NOTFALL_CASE disabled.
+  - CLAUDE.md amended: WhatsApp Founder-only Ops Alerts + Vercel SSOT.
+  - Evidence: Proof alert delivered (FK error trigger), Twilio message SID confirmed, build clean (21 routes).
+  - Commits: c4ba94d, 7b9154c, d163054, e783bf3.
+  - Next: C3 Morning Report → Control Plane (A) → Delivery (B).

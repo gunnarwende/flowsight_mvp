@@ -126,6 +126,36 @@ After creating alerts, verify they work:
 | Email (ICS Invite) | `resend` | `failed` | 1 JSON line per invocation |
 | Wizard (POST /api/cases) | `cases_api` | `failed` | Via resend.ts (delegated) |
 
+---
+
+## Alert Channel: WhatsApp Founder-only (Welle 23)
+
+**Scope:** System RED incidents only (something broke). NOT business events (customer Notfall).
+
+| Code | Trigger | Routes |
+|------|---------|--------|
+| `CASE_CREATE_FAILED` | DB insert error or unexpected exception | `/api/retell/webhook`, `/api/cases` |
+| `EMAIL_DISPATCH_FAILED` | Resend returns false (API error/exception) | `/api/retell/webhook`, `/api/cases` |
+
+**Disabled (by design):**
+- `NOTFALL_CASE` — removed. Customer urgency is a business event, not a system incident.
+
+**Throttle:** Same code + ref max 1x per 15 minutes (in-memory, resets on cold start).
+
+**Env Vars:**
+- `FOUNDER_WHATSAPP_ENABLED` — must be `"true"` to send (safe default: anything else = skip)
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` — Twilio credentials
+- `TWILIO_WHATSAPP_FROM` — Sandbox or production WhatsApp sender
+- `FOUNDER_WHATSAPP_TO` — Founder's WhatsApp number
+
+**Message Format:** `🔴 INCIDENT <CODE> | refs | → ops_link`
+
+**Log Evidence:** `wa_sent: true, wa_sid: "SM..."` in webhook logDecision (1-log rule preserved).
+
+**Proof Script:** `bash scripts/_ops/proof_wa_alert.sh [target_url]` — triggers FK error → RED alert.
+
+---
+
 ## Not Monitored (by design, not P0)
 
 - Ops PATCH /api/ops/cases/[id] — internal tool, has Sentry.captureException but no alert

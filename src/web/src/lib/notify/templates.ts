@@ -33,23 +33,6 @@ export function formatIncident(
 }
 
 /**
- * RED Notfall — emergency case created successfully
- * Format: 🔴 NOTFALL | tenant:<slug> | case:<id> | → link
- */
-export function formatNotfall(
-  tenantSlug?: string,
-  refs?: Record<string, string>,
-  opsLink?: string,
-): string {
-  const parts = ["🔴 NOTFALL"];
-  if (tenantSlug) parts.push(`tenant:${tenantSlug}`);
-  const r = formatRefs(refs);
-  if (r) parts.push(r);
-  if (opsLink) parts.push(`→ ${opsLink}`);
-  return parts.join(" | ");
-}
-
-/**
  * DAILY Summary
  * Format: 📊 DAILY DD.MM | 🔴red:<n> 🟡yellow:<n> | top:<codes> | → link
  */

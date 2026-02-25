@@ -2,7 +2,7 @@ import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
 import { shouldSend } from "./throttle";
-import { formatIncident, formatNotfall } from "./templates";
+import { formatIncident } from "./templates";
 import { sendWhatsApp } from "./channels/whatsapp";
 import type { NotifyPayload, NotifyResult } from "./types";
 
@@ -33,11 +33,8 @@ export async function notify(payload: NotifyPayload): Promise<NotifyResult> {
     return { sent: false, channel: "whatsapp", reason: "throttled" };
   }
 
-  // Format message based on code
-  const message =
-    code === "NOTFALL_CASE"
-      ? formatNotfall(tenantSlug, refs, opsLink)
-      : formatIncident(code, tenantSlug, refs, opsLink);
+  // Format message — all RED alerts use incident format
+  const message = formatIncident(code, tenantSlug, refs, opsLink);
 
   // Send (best effort)
   try {
