@@ -11,7 +11,7 @@
 | 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder decides retention periods | DONE ✓ | docs/compliance/data_processing.md (as-built, retention TBD) |
 | 3 | Onboarding Template Refresh | CC | none | DONE ✓ | docs/runbooks/onboarding_customer_full.md (~55 min voice, ~25 min wizard-only) |
 | 4 | Voice Post-Deploy Smoke Script | CC | none | DONE ✓ | scripts/_ops/smoke_voice.mjs — {"pass":true} verified |
-| 5 | Release Evidence Standard | CC | none | pending | — |
+| 5 | Release Evidence Standard | CC | none | DONE ✓ | docs/runbooks/release_checklist.md |
 | 6 | Ops Daily Driver Quick Fixes | CC + Founder | Founder provides top 3 pain points | pending | — |
 
 ## NEXT (after NOW is closed, no overlap)
@@ -38,13 +38,36 @@
 
 These are Founder-owned tasks that run in parallel. CC does not implement these but tracks them here for SSOT.
 
+### Security & Access
+
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| F1 | Cost thresholds + upgrade triggers | pending | Document: Vercel Hobby limits, Twilio/Retell per-minute rates, Supabase plan, Resend quota. Define upgrade triggers (e.g., >100 calls/month → Retell Pro). |
-| F2 | Email deliverability gate per customer | pending | SPF/DKIM check + inbox test as onboarding step. Add to onboarding runbook after CC refreshes it (Deliverable #3). |
-| F3 | Supabase backup awareness | pending | Document: current plan, backup interval, restore steps. Add 5-line section to docs/runbooks/90-incident-triage.md. |
+| F6 | Account security / 2FA audit | pending | Enable 2FA + verify recovery codes for: Vercel, Supabase, Twilio, Retell, Resend, Sentry, Peoplefone, GitHub. Document who has access (Founder-only vs CC read-only). |
+
+### Compliance & Privacy
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F7 | Data protection statements | pending | Customer disclosure/consent copy for Voice ("Dieses Gespräch wird nicht aufgezeichnet") + Wizard (privacy checkbox). Collect DPA links from each subprocessor (see docs/compliance/data_processing.md). No legal novel — just "ready to show" pack. |
+| F2 | Retention periods decision | pending | Decide case + attachment retention (see TBD items in docs/compliance/data_processing.md). CC updates doc when decided. |
+
+### Infrastructure & Billing
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F1 | Cost thresholds + upgrade triggers | pending | Document: Vercel Hobby limits, Twilio/Retell per-minute, Supabase plan, Resend quota. Define upgrade triggers (e.g., >100 calls/month). |
+| F10 | Peoplefone/Twilio billing guard | pending | Set spend caps / credit alerts in Twilio Console + Peoplefone Portal. Prevent "suddenly dead" from exhausted credit. |
+| F3 | Supabase backup awareness | pending | Document: current plan, backup interval, restore steps. Add 5-line section to 90-incident-triage.md. |
 | F4 | WhatsApp Sandbox → Prod evaluation | pending | Trigger: when Ops Alerts need SLA or sandbox expires. Evaluate Twilio WhatsApp Business API costs. |
-| F5 | Peoplefone E2E regression call | pending | Call +41 44 505 30 19 directly (Twilio Entry, no Peoplefone hop) to verify regression. |
+
+### Per-Customer Setup Gates
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F8 | Domain/DNS + email setup (Dörfler) | pending | Resend domain verified? DKIM/SPF/DMARC clean? Inbox test passed? (Follows deliverability gate in onboarding Step 3b.) |
+| F9 | Google Business review link (Dörfler) | pending | Verify GOOGLE_REVIEW_URL is correct + review page is live. Test one review request via ops. |
+| F11 | Customer go-live sign-off (Dörfler) | pending | Per-module checklist: Voice (test call PASS), Wizard (smoke PASS), Ops (login + workflow PASS), Reviews (send + receive PASS). Formal "live" declaration. |
+| F5 | Peoplefone regression call | pending | Call +41 44 505 30 19 directly (Twilio Entry, no Peoplefone hop) to verify direct path still works. |
 
 ## Completed (this sprint)
 
