@@ -39,6 +39,12 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - TWILIO_PHONE_NUMBER -> gekaufte CH Nummer (E.164)
 - TWILIO_SIP_TRUNK_NAME -> SIP Trunk Name für Retell-Routing
 
+## Peoplefone (Brand-Nummer, optional)
+- Keine Env Vars nötig — Peoplefone-Routing ist Portal-seitig (Forward auf Twilio-Nummer)
+- Brand-Nummer wird in tenant_numbers (Supabase) geseeded, nicht als Env Var
+- Portal-Zugang: my.peoplefone.ch (Credentials in Bitwarden)
+- Siehe: docs/runbooks/peoplefone_front_door.md
+
 ## App / Routing
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)

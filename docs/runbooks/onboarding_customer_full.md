@@ -64,6 +64,17 @@ Kurzfassung:
 
 > **SKIP wenn Voice nicht gebraucht wird.**
 
+## 5b. Peoplefone: Brand-Nummer → Twilio Forward (optional)
+
+Wenn der Kunde eine eigene Brand-Nummer über Peoplefone hat:
+
+1. Peoplefone Portal → Nummer → Routing → Unconditional Forward → Twilio-Nummer (E.164)
+2. `tenant_numbers` Eintrag für die Peoplefone-Nummer erstellen (siehe SQL in Schritt 1b)
+3. Test-Anruf über die Brand-Nummer → Retell antwortet
+
+> **Siehe auch:** `docs/runbooks/peoplefone_front_door.md` (detaillierter Runbook).
+> **SKIP wenn keine Peoplefone-Nummer vorhanden.**
+
 ## 6. MAIL_REPLY_TO prüfen
 
 - Vercel Env: `MAIL_REPLY_TO` = Email-Adresse wohin Case-Notifications gehen sollen
@@ -100,6 +111,8 @@ Kurzfassung:
 - [ ] Vercel Env Vars gesetzt
 - [ ] Retell Agent konfiguriert (wenn Voice)
 - [ ] Twilio Nummer + SIP Trunk (wenn Voice)
+- [ ] Peoplefone Forward konfiguriert (wenn Brand-Nummer)
+- [ ] tenant_numbers für beide Nummern geseeded (wenn Peoplefone)
 - [ ] GOOGLE_REVIEW_URL gesetzt (wenn Review)
 - [ ] Wizard Smoke Test bestanden
 - [ ] Voice Smoke Test bestanden (wenn Voice)
