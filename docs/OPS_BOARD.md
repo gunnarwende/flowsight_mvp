@@ -7,7 +7,7 @@
 
 | # | Deliverable | Owner | Blocker | Status | Evidence |
 |---|-------------|-------|---------|--------|----------|
-| 1 | Test data cleanup + Morning Report fix | CC + Founder (SQL) | Founder runs archive SQL | code_shipped (bb88b9f) | docs/runbooks/archive_test_data.md |
+| 1 | Test data cleanup + Morning Report fix | CC + Founder (SQL) | — | DONE ✓ | Before: RED(20/17). After: YELLOW(2/0). Verified by Founder. |
 | 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder confirms retention periods | pending | — |
 | 3 | Onboarding Template Refresh | CC | none | pending | — |
 | 4 | Voice Post-Deploy Smoke Script | CC | none | pending | — |
