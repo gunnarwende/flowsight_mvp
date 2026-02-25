@@ -118,7 +118,7 @@ If Peoplefone forwarding causes problems:
 - [x] **Test call (Peoplefone):** Call +41 44 552 09 19 → Retell agent "Dörfler AG Intake (DE)" answers (voice Susi)
 - [x] **WhatsApp Ops Alerts:** Twilio Sandbox live, proof PASS, comms policy committed
 - [x] **DB seed:** 3 numbers active (seed script run 2026-02-25, all PASS)
-- [ ] **E2E proof call:** Full intake via brand number → case created + email sent (pending — routing proof below was connectivity-only)
+- [x] **E2E proof call:** Full intake via brand number → case 255136a3 created (voice, Leck, notfall, 8942). PASS ✓
 - [ ] **Regression:** Call +41 44 505 30 19 directly (Twilio Entry) → still works without Peoplefone hop
 
 ### Evidence: Routing Proof (connectivity)
@@ -141,15 +141,14 @@ seed_run:   2026-02-25 via seed_tenant_number.mjs
 all_resolve: PASS (3/3)
 ```
 
-### Evidence: E2E Proof Call (pending)
+### Evidence: E2E Proof Call (PASS ✓)
 
-> **Next:** Founder makes one full intake call via +41 44 552 09 19, completes all questions → records:
+```json
+{"case_id":"255136a3-c842-49d8-9362-e6a3e7b00389","created_at":"2026-02-25T11:46:36.185319+00:00","source":"voice","status":"new","urgency":"notfall","category":"Leck","plz":"8942","city":"Oberrington","retell_call_id":"call_b2feefb1160bf8cb4d1ccb870e0"}
 ```
-call_id:    <retell_call_id from Vercel logs>
-case_id:    <case UUID from Supabase>
-timestamp:  <ISO>
-email_sent: true/false
-```
+
+Route: Peoplefone +41445520919 → Line 1 → Twilio Entry → SIP → Retell → call_analyzed → webhook → case created.
+Webhook log: `_tag:retell_webhook`, `decision:created` (confirmed by case existence + event=call_analyzed in raw_payload).
 
 ## 6. Customer-Facing Number Policy
 
