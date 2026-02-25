@@ -114,7 +114,8 @@
     - Founder TODO: run migration + archive SQL (docs/runbooks/archive_test_data.md)
     - #2 Compliance Doc Pack: docs/compliance/data_processing.md (7 subprocessors, retention as-built, 5-step deletion)
     - #3 Onboarding Refresh: [F]/[CC] owner tags, modules step, deliverability gate, ~55 min timed checklist
-    - #4-#6: see docs/OPS_BOARD.md
+    - #4 Voice Smoke Script: scripts/_ops/smoke_voice.mjs — 4 checks, single JSON, pass/fail, evidence {"pass":true}
+    - #5-#6: see docs/OPS_BOARD.md
 
 ## Next
 - **Autopilot OS Sprint (6 deliverables):** see docs/OPS_BOARD.md for full board
