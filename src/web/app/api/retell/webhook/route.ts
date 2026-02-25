@@ -4,6 +4,7 @@ import { Retell } from "retell-sdk";
 import { resolveTenant } from "@/src/lib/tenants/resolveTenant";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification } from "@/src/lib/email/resend";
+import { notify } from "@/src/lib/notify/router";
 
 // ---------------------------------------------------------------------------
 // Retell webhook payload types (from retell-sdk analysis)
@@ -346,6 +347,11 @@ export async function POST(req: Request) {
           error_code: "DB_INSERT_ERROR",
         },
       });
+      const wa = await notify({
+        severity: "RED",
+        code: "CASE_CREATE_FAILED",
+        refs: { call_id: retellCallId },
+      });
       logDecision({
         decision: "insert_error",
         event,
@@ -353,6 +359,8 @@ export async function POST(req: Request) {
         tenant_id: tenantId,
         error_code: error.code,
         error_message: error.message,
+        wa_sent: wa.sent,
+        wa_sid: wa.messageSid,
       });
       return new NextResponse(null, { status: 204 });
     }
@@ -375,6 +383,32 @@ export async function POST(req: Request) {
       contactPhone: callerPhone ?? undefined,
     });
 
+    // Notify: notfall case → immediate WhatsApp, email failure → RED alert
+    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+    const opsLink = `${baseUrl}/ops/cases/${caseId}`;
+    let waSent = false;
+    let waSid: string | undefined;
+
+    if (urgencyRaw === "notfall") {
+      const wa = await notify({
+        severity: "RED",
+        code: "NOTFALL_CASE",
+        refs: { case_id: caseId, call_id: retellCallId },
+        opsLink,
+      });
+      waSent = wa.sent;
+      waSid = wa.messageSid;
+    } else if (!emailSent) {
+      const wa = await notify({
+        severity: "RED",
+        code: "EMAIL_DISPATCH_FAILED",
+        refs: { case_id: caseId, call_id: retellCallId },
+        opsLink,
+      });
+      waSent = wa.sent;
+      waSid = wa.messageSid;
+    }
+
     logDecision({
       decision: "created",
       event,
@@ -383,6 +417,7 @@ export async function POST(req: Request) {
       case_id: caseId,
       email_attempted: true,
       email_sent: !!emailSent,
+      ...(waSent && { wa_sent: true, wa_sid: waSid }),
     });
 
     return new NextResponse(null, { status: 204 });
@@ -399,11 +434,18 @@ export async function POST(req: Request) {
         error_code: "UNEXPECTED",
       },
     });
+    const wa = await notify({
+      severity: "RED",
+      code: "CASE_CREATE_FAILED",
+      refs: { call_id: retellCallId },
+    });
     logDecision({
       decision: "unexpected_error",
       event,
       call_id: retellCallId,
       tenant_id: tenantId,
+      wa_sent: wa.sent,
+      wa_sid: wa.messageSid,
     });
     return new NextResponse(null, { status: 204 });
   }

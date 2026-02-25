@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification, sendReporterConfirmation } from "@/src/lib/email/resend";
+import { notify } from "@/src/lib/notify/router";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -208,6 +209,7 @@ export async function POST(request: NextRequest) {
       Sentry.captureException(error, {
         tags: { _tag: "cases_api", area: "api", feature: "cases", tenant_id: tenantId, stage: "db", error_code: "DB_INSERT_ERROR", decision: "failed" },
       });
+      await notify({ severity: "RED", code: "CASE_CREATE_FAILED", refs: { source: data.source } });
       return NextResponse.json(
         { error: "Failed to create case." },
         { status: 500 }
@@ -232,7 +234,7 @@ export async function POST(request: NextRequest) {
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
     // resend.ts owns the single console.log: _tag:"resend", decision, case_id, etc.
-    await sendCaseNotification({
+    const emailSent = await sendCaseNotification({
       caseId: row.id,
       tenantId,
       source: data.source,
@@ -246,11 +248,22 @@ export async function POST(request: NextRequest) {
       reporterEmailSent,
     });
 
+    // Notify: notfall → immediate WhatsApp, email failure → RED alert
+    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+    const opsLink = `${baseUrl}/ops/cases/${row.id}`;
+
+    if (data.urgency === "notfall") {
+      await notify({ severity: "RED", code: "NOTFALL_CASE", refs: { case_id: row.id }, opsLink });
+    } else if (!emailSent) {
+      await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink });
+    }
+
     return NextResponse.json(row, { status: 201 });
   } catch (err) {
     Sentry.captureException(err, {
       tags: { _tag: "cases_api", area: "api", feature: "cases", stage: "db", error_code: "UNEXPECTED", decision: "failed" },
     });
+    await notify({ severity: "RED", code: "CASE_CREATE_FAILED", refs: { source: data.source } });
     return NextResponse.json(
       { error: "Internal server error." },
       { status: 500 }
