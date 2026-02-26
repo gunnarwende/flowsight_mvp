@@ -25,6 +25,12 @@ export default function MarketingLayout({
               Funktionen
             </Link>
             <Link
+              href="/#referenz"
+              className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              Referenz
+            </Link>
+            <Link
               href="/pricing"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
@@ -87,6 +93,14 @@ export default function MarketingLayout({
                     className="transition-colors hover:text-gold-400"
                   >
                     Funktionen
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/#referenz"
+                    className="transition-colors hover:text-gold-400"
+                  >
+                    Referenz
                   </Link>
                 </li>
                 <li>

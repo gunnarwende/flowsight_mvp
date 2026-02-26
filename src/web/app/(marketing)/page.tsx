@@ -74,6 +74,22 @@ function CameraIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
+function GlobeIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A9 9 0 0 1 3 12c0-1.47.353-2.856.978-4.082" />
+    </svg>
+  );
+}
+
+function StarFilledIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
 /* ── Page ────────────────────────────────────────────────── */
 
 export default function HomePage() {
@@ -92,13 +108,21 @@ export default function HomePage() {
               <span className="text-gold-400">zum Auftrag.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy-200">
-              FlowSight nimmt Schadensmeldungen entgegen — per Telefon
-              oder Online-Formular — und liefert Ihnen alles strukturiert
-              ins Dashboard. 24/7, auch nachts und am Wochenende.
+              Website, Telefonassistent und Ops-Dashboard — alles aus einer Hand.
+              FlowSight nimmt Schadensmeldungen entgegen, erstellt strukturierte Fälle
+              und liefert Ihnen alles ins Dashboard. 24/7, auch nachts und am Wochenende.
             </p>
 
             {/* Proof indicators */}
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-navy-200">
+              <span className="flex items-center gap-2">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
+                Bereits im Einsatz
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
+                Inkl. Website
+              </span>
               <span className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
                 24/7 erreichbar
@@ -106,10 +130,6 @@ export default function HomePage() {
               <span className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
                 4 Sprachen
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
-                Keine Aufnahmen
               </span>
             </div>
 
@@ -152,16 +172,16 @@ export default function HomePage() {
           <div className="mt-16 grid gap-6 lg:grid-cols-3">
             {[
               {
+                problem: "Ihre Website stammt aus 2010 und schreckt Kunden ab.",
+                solution: "Moderne Website in Ihrem Look — in einer Woche live.",
+              },
+              {
                 problem: "Anrufe gehen abends und am Wochenende verloren.",
                 solution: "24/7 erreichbar — der Voice Agent nimmt jeden Anruf an.",
               },
               {
                 problem: "Zettelwirtschaft statt strukturierter Dokumentation.",
                 solution: "Jede Meldung als Fall mit Ort, Kategorie und Dringlichkeit.",
-              },
-              {
-                problem: "Zufriedene Kunden hinterlassen keine Bewertungen.",
-                solution: "Automatische Google-Review-Anfrage nach erledigtem Auftrag.",
               },
             ].map((item) => (
               <div
@@ -313,6 +333,11 @@ export default function HomePage() {
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
+                icon: <GlobeIcon className="h-5 w-5" />,
+                title: "Moderne Website",
+                desc: "Professionelle Website in Ihrem Firmenlook — mobil-optimiert, SEO-ready, inkl. Online-Schadenmelde-Formular.",
+              },
+              {
                 icon: <PhoneIcon className="h-5 w-5" />,
                 title: "Voice Agent",
                 desc: "24/7 Anrufannahme — mehrsprachig. Versteht Schweizerdeutsch, Hochdeutsch, Englisch und Französisch.",
@@ -320,7 +345,7 @@ export default function HomePage() {
               {
                 icon: <ChatIcon className="h-5 w-5" />,
                 title: "Online-Meldeformular",
-                desc: "Branded Formular auf Ihrer Website. Kunden melden Schäden rund um die Uhr — ohne Anruf.",
+                desc: "Branded Wizard auf Ihrer Website. Kunden melden Schäden rund um die Uhr — ohne Anruf.",
               },
               {
                 icon: <ClockIcon className="h-5 w-5" />,
@@ -331,11 +356,6 @@ export default function HomePage() {
                 icon: <CalendarIcon className="h-5 w-5" />,
                 title: "Terminplanung",
                 desc: "Termin direkt aus dem Fall setzen. Der Melder erhält eine ICS-Einladung per E-Mail.",
-              },
-              {
-                icon: <StarIcon className="h-5 w-5" />,
-                title: "Google-Reviews",
-                desc: "Per Knopfdruck eine Review-Anfrage an den Kunden senden — nach erledigtem Auftrag.",
               },
               {
                 icon: <ShieldIcon className="h-5 w-5" />,
@@ -403,8 +423,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 7. Pricing teaser ────────────────────────────── */}
-      <section className="bg-navy-50 py-24 lg:py-32">
+      {/* ── 6.5 Referenz — Dörfler AG ────────────────────── */}
+      <section id="referenz" className="scroll-mt-20 bg-navy-50 py-24 lg:py-32">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-gold-500">
+              Bereits im Einsatz
+            </p>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
+              Dörfler AG — Sanitär &amp; Heizung seit 1926.
+            </h2>
+            <p className="mt-4 text-lg text-navy-400">
+              Traditionsunternehmen in Oberrieden, Zürich. Website, Wizard und Dashboard
+              sind live.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-navy-200 bg-white p-8 shadow-sm">
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-lg font-semibold text-navy-900">
+                  Dörfler AG
+                </h3>
+                <p className="mt-1 text-sm text-navy-400">
+                  Sanitär &amp; Heizung &middot; Oberrieden ZH
+                </p>
+
+                {/* Google Rating */}
+                <div className="mt-4 flex items-center gap-2 justify-center sm:justify-start">
+                  <div className="flex text-gold-500">
+                    <StarFilledIcon className="h-4 w-4" />
+                    <StarFilledIcon className="h-4 w-4" />
+                    <StarFilledIcon className="h-4 w-4" />
+                    <StarFilledIcon className="h-4 w-4" />
+                    <StarFilledIcon className="h-4 w-4 opacity-60" />
+                  </div>
+                  <span className="text-sm font-medium text-navy-900">4.7</span>
+                  <span className="text-sm text-navy-400">auf Google</span>
+                </div>
+
+                <p className="mt-4 text-sm leading-relaxed text-navy-900/70 italic">
+                  &laquo;Überzeugen Sie sich selbst — unsere Website ist live.&raquo;
+                </p>
+
+                <Link
+                  href="/kunden/doerfler-ag"
+                  className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gold-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+                >
+                  Website ansehen
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. Pricing teaser — 3 Tiers ──────────────────── */}
+      <section className="bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
@@ -415,27 +493,105 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-16 max-w-lg rounded-2xl border border-navy-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-            <div className="p-8">
-              <p className="text-sm font-semibold uppercase tracking-wider text-gold-500">
-                FlowSight Pilot
+          <div className="mx-auto mt-16 grid max-w-5xl gap-6 lg:grid-cols-3">
+            {/* Starter */}
+            <div className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md">
+              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
+                Starter
               </p>
               <p className="mt-4">
-                <span className="text-4xl font-bold text-navy-900">
-                  ab CHF 299
-                </span>
-                <span className="ml-2 text-base text-navy-400">/ Monat</span>
+                <span className="text-3xl font-bold text-navy-900">ab CHF 99</span>
+                <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
               <p className="mt-2 text-sm text-navy-900/70">
-                Voice + Wizard + Ops Dashboard + E-Mail-Benachrichtigungen
+                Website + Wizard
               </p>
-              <p className="mt-1 text-sm text-navy-400">
-                Einrichtung: Gemeinsam in der Pilotphase.
-              </p>
-
+              <ul className="mt-6 space-y-3">
+                {[
+                  "Moderne Website im Firmenlook",
+                  "Mobil-optimiert & SEO-ready",
+                  "Online-Schadenmelde-Formular",
+                  "E-Mail-Benachrichtigung",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
               <a
                 href="#demo"
-                className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+                className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
+              >
+                Demo vereinbaren
+              </a>
+            </div>
+
+            {/* Professional — highlighted */}
+            <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
+                Beliebt
+              </span>
+              <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
+                Professional
+              </p>
+              <p className="mt-4">
+                <span className="text-3xl font-bold text-navy-900">ab CHF 249</span>
+                <span className="ml-1 text-base text-navy-400">/ Monat</span>
+              </p>
+              <p className="mt-2 text-sm text-navy-900/70">
+                + Voice + Ops Dashboard
+              </p>
+              <ul className="mt-6 space-y-3">
+                {[
+                  "Alles aus Starter, plus:",
+                  "KI-Telefonassistent (24/7, mehrsprachig)",
+                  "Schweizer Telefonnummer inklusive",
+                  "Ops-Dashboard mit Fall-Übersicht",
+                  "Terminplanung mit ICS-Einladung",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#demo"
+                className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+              >
+                Demo vereinbaren
+              </a>
+            </div>
+
+            {/* Premium */}
+            <div className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md">
+              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
+                Premium
+              </p>
+              <p className="mt-4">
+                <span className="text-3xl font-bold text-navy-900">ab CHF 349</span>
+                <span className="ml-1 text-base text-navy-400">/ Monat</span>
+              </p>
+              <p className="mt-2 text-sm text-navy-900/70">
+                + Reviews + Morning Report
+              </p>
+              <ul className="mt-6 space-y-3">
+                {[
+                  "Alles aus Professional, plus:",
+                  "Google-Review-Anfragen per Knopfdruck",
+                  "Täglicher Statusbericht (Morning Report)",
+                  "Prioritäts-Support",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#demo"
+                className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
               >
                 Demo vereinbaren
               </a>
@@ -454,7 +610,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 8. FAQ ───────────────────────────────────────── */}
-      <section className="bg-warm-white py-24 lg:py-32">
+      <section className="bg-navy-50 py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
             Häufige Fragen
@@ -463,8 +619,12 @@ export default function HomePage() {
           <div className="mt-12 divide-y divide-navy-200/60">
             {[
               {
+                q: "Bekomme ich auch eine Website?",
+                a: "Ja — im Starter-Paket ist eine moderne, mobil-optimierte Website im Firmenlook enthalten. In einer Woche live.",
+              },
+              {
                 q: "Brauche ich technisches Wissen?",
-                a: "Nein. Wir richten alles für Sie ein — Telefonnummer, Voice Agent, Dashboard, E-Mail-Vorlagen. Sie brauchen nur einen Browser.",
+                a: "Nein. Wir richten alles für Sie ein — Website, Telefonnummer, Voice Agent, Dashboard, E-Mail-Vorlagen. Sie brauchen nur einen Browser.",
               },
               {
                 q: "Funktioniert das mit meiner bestehenden Nummer?",
@@ -484,7 +644,7 @@ export default function HomePage() {
               },
               {
                 q: "Wie schnell bin ich einsatzbereit?",
-                a: "In der Regel innerhalb einer Woche. Wir übernehmen die komplette Einrichtung — persönlich und in Ihrem Tempo.",
+                a: "Website in einer Woche. Voice Agent und Dashboard ebenfalls — wir übernehmen die komplette Einrichtung, persönlich und in Ihrem Tempo.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-6">
