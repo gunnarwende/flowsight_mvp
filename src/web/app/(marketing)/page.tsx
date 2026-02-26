@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/src/lib/marketing/constants";
-import { DashboardMockup } from "@/src/components/DashboardMockup";
+import { DashboardMockup, CaseDetailMockup } from "@/src/components/DashboardMockup";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
@@ -74,30 +74,6 @@ function CameraIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-/* ── Placeholder image for photo sections ─────────────── */
-
-function ImagePlaceholder({
-  label,
-  aspect = "aspect-[4/3]",
-  className = "",
-}: {
-  label: string;
-  aspect?: string;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-center rounded-2xl bg-gradient-to-br from-navy-100 to-navy-50 ${aspect} ${className}`}
-      aria-hidden="true"
-    >
-      <div className="text-center">
-        <CameraIcon className="mx-auto h-8 w-8 text-navy-300" />
-        <p className="mt-2 text-xs font-medium text-navy-400">{label}</p>
-      </div>
-    </div>
-  );
-}
-
 /* ── Page ────────────────────────────────────────────────── */
 
 export default function HomePage() {
@@ -122,7 +98,7 @@ export default function HomePage() {
             </p>
 
             {/* Proof indicators */}
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-navy-300">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-navy-200">
               <span className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
                 24/7 erreichbar
@@ -231,11 +207,7 @@ export default function HomePage() {
 
           <div className="mt-16 grid items-center gap-12 lg:grid-cols-2">
             {/* Placeholder for real screenshot */}
-            <ImagePlaceholder
-              label="Screenshot: Ops-Dashboard"
-              aspect="aspect-[16/10]"
-              className="shadow-lg"
-            />
+            <CaseDetailMockup className="shadow-lg" />
 
             <div className="space-y-8">
               {[
@@ -304,7 +276,7 @@ export default function HomePage() {
               {
                 step: "3",
                 title: "Sie übernehmen",
-                desc: "Termin planen, Fotos anhängen, Fall abschliessen, Google-Review anfragen. Alles im Dashboard.",
+                desc: "Termin planen, Fotos anhängen, Fall abschliessen — und per Knopfdruck eine 5-Sterne-Review-Anfrage senden. Alles im Dashboard.",
               },
             ].map((item) => (
               <div
@@ -343,7 +315,7 @@ export default function HomePage() {
               {
                 icon: <PhoneIcon className="h-5 w-5" />,
                 title: "Voice Agent",
-                desc: "24/7 Anrufannahme auf Hochdeutsch. Versteht Schweizerdeutsch, wechselt auf Englisch oder Französisch.",
+                desc: "24/7 Anrufannahme — mehrsprachig. Versteht Schweizerdeutsch, Hochdeutsch, Englisch und Französisch.",
               },
               {
                 icon: <ChatIcon className="h-5 w-5" />,
@@ -410,8 +382,8 @@ export default function HomePage() {
                 desc: "Keine Gesprächsaufnahmen. Daten auf Servern in der EU (Frankfurt). DSGVO-konform.",
               },
               {
-                title: "Hochdeutsch & mehr",
-                desc: "Der Voice Agent spricht Hochdeutsch, versteht Schweizerdeutsch und wechselt bei Bedarf auf Englisch oder Französisch.",
+                title: "Mehrsprachig",
+                desc: "Hochdeutsch, Schweizerdeutsch, Englisch, Französisch — der Voice Agent versteht Ihre Kunden, egal welche Sprache.",
               },
               {
                 title: "Persönliches Onboarding",

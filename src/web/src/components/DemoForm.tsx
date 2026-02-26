@@ -38,7 +38,7 @@ export function DemoForm() {
         <h3 className="mt-5 text-xl font-semibold text-white">
           Vielen Dank!
         </h3>
-        <p className="mt-2 text-base text-navy-300">
+        <p className="mt-2 text-base text-navy-200">
           Wir melden uns innerhalb von 24 Stunden bei Ihnen.
         </p>
       </div>
@@ -54,7 +54,7 @@ export function DemoForm() {
         <div>
           <label
             htmlFor="demo-name"
-            className="mb-1.5 block text-sm font-medium text-navy-300"
+            className="mb-1.5 block text-sm font-medium text-navy-200"
           >
             Name
           </label>
@@ -70,7 +70,7 @@ export function DemoForm() {
         <div>
           <label
             htmlFor="demo-company"
-            className="mb-1.5 block text-sm font-medium text-navy-300"
+            className="mb-1.5 block text-sm font-medium text-navy-200"
           >
             Firma
           </label>
@@ -86,7 +86,7 @@ export function DemoForm() {
         <div>
           <label
             htmlFor="demo-phone"
-            className="mb-1.5 block text-sm font-medium text-navy-300"
+            className="mb-1.5 block text-sm font-medium text-navy-200"
           >
             Telefon
           </label>

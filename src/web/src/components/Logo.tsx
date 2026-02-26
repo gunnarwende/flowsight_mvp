@@ -42,7 +42,7 @@ export function Logo({
       >
         FlowSight
       </text>
-      <circle cx="223" cy="8" r="5" fill={dotColor} />
+      <circle cx="220" cy="31" r="4" fill={dotColor} />
     </svg>
   );
 }

@@ -100,7 +100,7 @@ export default function PricingPage() {
             </h2>
             <div className="mt-10 grid gap-x-12 gap-y-4 sm:grid-cols-2">
               {[
-                "Voice Agent — 24/7 Anrufannahme auf Hochdeutsch",
+                "Voice Agent — 24/7 Anrufannahme, mehrsprachig",
                 "Online-Meldeformular mit Kunden-Branding",
                 "Ops-Dashboard mit Fall-Übersicht",
                 "E-Mail-Benachrichtigung bei jeder Meldung",

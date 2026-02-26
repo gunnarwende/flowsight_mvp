@@ -31,6 +31,12 @@ export default function MarketingLayout({
               Preise
             </Link>
             <a
+              href="#demo"
+              className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              Kontakt
+            </a>
+            <a
               href={`tel:${SITE.phoneRaw}`}
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
