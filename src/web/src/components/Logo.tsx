@@ -1,11 +1,12 @@
 /**
  * FlowSight Logo — Signal Dot wordmark.
  *
+ * Rendered as HTML (not SVG) so the dot automatically follows
+ * the text regardless of font metrics or browser rendering.
+ *
  * Two variants:
  *   "on-dark"  → Gold text + gold dot (for navy backgrounds)
  *   "on-light" → Navy text + gold dot (for white/light backgrounds)
- *
- * Uses the page's Geist font via CSS variable.
  */
 export function Logo({
   variant = "on-light",
@@ -16,34 +17,25 @@ export function Logo({
   className?: string;
   height?: number;
 }) {
-  const textColor = variant === "on-dark" ? "#d4a843" : "#1a2744";
-  const dotColor = "#d4a843";
-
-  // viewBox aspect ratio: 240:44 ≈ 5.45:1
-  const width = Math.round(height * (240 / 44));
+  const textClass =
+    variant === "on-dark" ? "text-gold-500" : "text-navy-900";
+  const fontSize = Math.round(height * 0.72);
+  const dotSize = Math.max(5, Math.round(height * 0.22));
 
   return (
-    <svg
-      viewBox="0 0 240 44"
-      width={width}
-      height={height}
-      className={className}
+    <span
+      className={`inline-flex items-end whitespace-nowrap font-semibold tracking-tight ${textClass} ${className}`}
+      style={{ fontSize, lineHeight: `${height}px`, letterSpacing: "-0.5px" }}
       role="img"
       aria-label="FlowSight"
     >
-      <text
-        x="0"
-        y="32"
-        fontFamily="var(--font-geist-sans), system-ui, sans-serif"
-        fontSize="36"
-        fontWeight="600"
-        fill={textColor}
-        letterSpacing="-0.5"
-      >
-        FlowSight
-      </text>
-      <circle cx="214" cy="31" r="4" fill={dotColor} />
-    </svg>
+      FlowSight
+      <span
+        className="mb-[3px] ml-[2px] inline-block shrink-0 rounded-full bg-gold-500"
+        style={{ width: dotSize, height: dotSize }}
+        aria-hidden="true"
+      />
+    </span>
   );
 }
 
