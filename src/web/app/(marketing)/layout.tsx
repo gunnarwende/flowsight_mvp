@@ -12,9 +12,9 @@ export default function MarketingLayout({
       {/* ── Navigation ─────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 border-b border-navy-200 bg-warm-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 lg:px-8">
-          <Link href="/" aria-label="FlowSight Home">
+          <a href="/" aria-label="FlowSight Home">
             <Logo variant="on-light" height={26} />
-          </Link>
+          </a>
 
           {/* Desktop links */}
           <div className="hidden items-center gap-8 md:flex">
