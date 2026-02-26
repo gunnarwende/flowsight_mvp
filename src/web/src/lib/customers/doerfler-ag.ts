@@ -178,13 +178,19 @@ export const doerflerAg: CustomerSite = {
     },
   ],
 
-  // Real Google data: 4.7 stars, 3 Berichte — no fabricated quotes
+  // Real Google data: 4.7 stars, 3 reviews — only 1 text retrievable
   reviews: {
     averageRating: 4.7,
     totalReviews: 3,
     googleUrl:
       "https://www.google.com/maps/place/D%C3%B6rfler+AG/@47.2754,8.5834,17z",
-    highlights: [],
+    highlights: [
+      {
+        author: "Michael W.",
+        rating: 5,
+        text: "Die Gebrüder Dörfler kann ich nur empfehlen. Flexibel, freundlich und professionell — so einen Ansprechpartner wünscht man sich am Wohnort!",
+      },
+    ],
   },
 
   serviceArea: {
@@ -237,8 +243,8 @@ export const doerflerAg: CustomerSite = {
   ],
 
   brandPartners: [
-    { name: "KWC", url: "https://www.kwc.ch" },
-    { name: "Similor", url: "https://www.similorkugler.ch" },
+    { name: "KWC", url: "https://www.kwc.com" },
+    { name: "Similor", url: "https://www.similor.ch" },
     { name: "Elco", url: "https://www.elco.ch" },
     { name: "Zehnder", url: "https://www.zehnder-systems.ch" },
     { name: "Soltop", url: "https://www.soltop.ch" },
@@ -253,7 +259,6 @@ export const doerflerAg: CustomerSite = {
     { year: 1988, title: "Neubau Werkstatt", description: "Umzug an die Hubstrasse 30 — die heutige Adresse — nach 18 Jahren am alten Standort." },
     { year: 2002, title: "Sanitärmeister", description: "Ramon Dörfler schliesst die Sanitärmeisterprüfung erfolgreich ab." },
     { year: 2004, title: "Dörfler AG", description: "Umwandlung in eine AG. Ramon und Luzian Dörfler übernehmen den Betrieb in dritter Generation." },
-    { year: 2024, title: "Digitalisierung", description: "Einführung digitaler Auftragsabwicklung und moderner Kundenkommunikation — bereit für die nächsten 100 Jahre." },
   ],
 
   careers: [
