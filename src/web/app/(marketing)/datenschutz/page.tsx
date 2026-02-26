@@ -7,19 +7,19 @@ export const metadata: Metadata = {
 
 export default function DatenschutzPage() {
   return (
-    <section className="bg-white py-24 lg:py-32">
+    <section className="bg-warm-white py-24 lg:py-32">
       <div className="mx-auto max-w-3xl px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
           Datenschutzerklärung
         </h1>
-        <p className="mt-4 text-sm text-slate-500">
+        <p className="mt-4 text-sm text-navy-400">
           Stand: Februar 2026
         </p>
 
-        <div className="mt-12 space-y-10 text-base leading-relaxed text-slate-700">
+        <div className="mt-12 space-y-10 text-base leading-relaxed text-navy-900/80">
           {/* 1. Verantwortlich */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               1. Verantwortliche Stelle
             </h2>
             <div className="mt-3 space-y-1">
@@ -32,7 +32,7 @@ export default function DatenschutzPage() {
                 E-Mail:{" "}
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-gold-500 hover:text-gold-400"
                 >
                   {SITE.email}
                 </a>
@@ -42,7 +42,7 @@ export default function DatenschutzPage() {
 
           {/* 2. Erhobene Daten */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               2. Welche Daten wir erheben
             </h2>
             <p className="mt-3">
@@ -71,7 +71,7 @@ export default function DatenschutzPage() {
 
           {/* 3. Zweck */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               3. Zweck der Datenverarbeitung
             </h2>
             <ul className="mt-3 list-disc space-y-2 pl-6">
@@ -85,7 +85,7 @@ export default function DatenschutzPage() {
 
           {/* 4. Drittanbieter */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               4. Eingesetzte Drittanbieter
             </h2>
             <p className="mt-3">
@@ -95,13 +95,13 @@ export default function DatenschutzPage() {
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <tr className="border-b border-navy-200 text-xs font-semibold uppercase tracking-wider text-navy-400">
                     <th className="pb-3 pr-4">Anbieter</th>
                     <th className="pb-3 pr-4">Zweck</th>
                     <th className="pb-3">Standort</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-navy-100">
                   <tr>
                     <td className="py-3 pr-4 font-medium">Supabase</td>
                     <td className="py-3 pr-4">Datenbank, Authentifizierung</td>
@@ -143,7 +143,7 @@ export default function DatenschutzPage() {
 
           {/* 5. Speicherdauer */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               5. Speicherdauer
             </h2>
             <p className="mt-3">
@@ -155,7 +155,7 @@ export default function DatenschutzPage() {
 
           {/* 6. Rechte */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               6. Ihre Rechte
             </h2>
             <p className="mt-3">
@@ -164,7 +164,7 @@ export default function DatenschutzPage() {
               Bitte kontaktieren Sie uns unter{" "}
               <a
                 href={`mailto:${SITE.email}`}
-                className="text-blue-600 hover:underline"
+                className="text-gold-500 hover:text-gold-400"
               >
                 {SITE.email}
               </a>
@@ -174,7 +174,7 @@ export default function DatenschutzPage() {
 
           {/* 7. Keine Aufnahmen */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               7. Telefongespräche
             </h2>
             <p className="mt-3">

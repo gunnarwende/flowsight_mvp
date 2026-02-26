@@ -7,20 +7,19 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <section className="bg-white py-24 lg:py-32">
+    <section className="bg-warm-white py-24 lg:py-32">
       <div className="mx-auto max-w-3xl px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
           Impressum
         </h1>
 
-        <div className="mt-12 space-y-10 text-base leading-relaxed text-slate-700">
+        <div className="mt-12 space-y-10 text-base leading-relaxed text-navy-900/80">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               Angaben gemäss Art. 3 UWG / Art. 5 DSG
             </h2>
             <div className="mt-4 space-y-1">
               <p className="font-semibold">{SITE.legalName}</p>
-              {/* TODO: Founder fills in real address */}
               <p>{SITE.address.street}</p>
               <p>
                 {SITE.address.zip} {SITE.address.city}
@@ -30,21 +29,20 @@ export default function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               UID-Nummer
             </h2>
-            {/* TODO: Founder fills in real UID */}
             <p className="mt-2">{SITE.uid}</p>
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">Kontakt</h2>
+            <h2 className="text-lg font-semibold text-navy-900">Kontakt</h2>
             <div className="mt-2 space-y-1">
               <p>
                 E-Mail:{" "}
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-gold-500 hover:text-gold-400"
                 >
                   {SITE.email}
                 </a>
@@ -54,15 +52,14 @@ export default function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               Verantwortlich für den Inhalt
             </h2>
-            {/* TODO: Founder fills in name */}
             <p className="mt-2">{SITE.legalName}</p>
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               Haftungsausschluss
             </h2>
             <p className="mt-2">
@@ -74,7 +71,7 @@ export default function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-navy-900">
               Urheberrecht
             </h2>
             <p className="mt-2">

@@ -14,16 +14,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FlowSight — 24/7 Intake für Sanitär & Heizung",
+    default: "FlowSight — Jeder Anruf wird zum Auftrag",
     template: "%s — FlowSight",
   },
   description:
-    "FlowSight nimmt Schadensmeldungen per Telefon und Web entgegen — rund um die Uhr. Jede Meldung wird zum strukturierten Fall in Ihrem Dashboard.",
+    "Das Leitsystem für Schweizer Sanitär- und Heizungsbetriebe. Voice-Intake, Einsatzplanung und Ops Dashboard — kein Anruf geht verloren.",
   metadataBase: new URL("https://flowsight.ch"),
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "de_CH",
     siteName: "FlowSight",
+  },
+  other: {
+    "theme-color": "#1a2744",
   },
 };
 

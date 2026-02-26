@@ -4,11 +4,12 @@
 export const SITE = {
   name: "FlowSight",
   legalName: "FlowSight GmbH",
-  tagline: "24/7 Intake für Sanitär & Heizung",
+  tagline: "Jeder Anruf wird zum Auftrag",
+  subtitle: "Das Leitsystem für Schweizer Sanitär- und Heizungsbetriebe.",
   phone: "+41 …", // TODO: Founder
   phoneRaw: "+41000000000", // TODO: Founder (for tel: links)
   email: "info@flowsight.ch",
-  calendlyUrl: "https://calendly.com/flowsight", // TODO: Founder
+  demoUrl: "#demo", // TODO: replace with real demo form/route
   url: "https://flowsight.ch",
   address: {
     street: "Musterstrasse 1", // TODO: Founder

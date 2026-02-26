@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE } from "@/src/lib/marketing/constants";
 
 export const metadata: Metadata = {
-  title: "FlowSight — 24/7 Intake für Sanitär & Heizung",
+  title: "FlowSight — Jeder Anruf wird zum Auftrag",
 };
 
 /* ── Inline SVG icons (no deps) ─────────────────────────── */
@@ -47,34 +47,50 @@ function ShieldIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
+/* ── Signal Dot indicator ────────────────────────────────── */
+
+function ProofDot() {
+  return (
+    <span className="inline-block h-2 w-2 rounded-full bg-gold-500" aria-hidden="true" />
+  );
+}
+
 /* ── Page ────────────────────────────────────────────────── */
 
 export default function HomePage() {
   return (
     <>
       {/* ── 1. Hero ──────────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-slate-900 to-slate-800">
+      <section className="bg-gradient-to-br from-navy-900 to-navy-950">
         <div className="mx-auto max-w-6xl px-6 py-24 text-center sm:py-32 lg:px-8 lg:py-40">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
+          <p className="text-sm font-semibold uppercase tracking-widest text-gold-400">
             Für Sanitär- &amp; Heizungsbetriebe in der Schweiz
           </p>
           <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Kein Anruf geht verloren.
+            Jeder Anruf wird zum Auftrag.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-300 sm:text-xl">
-            FlowSight nimmt Schadensmeldungen per Telefon und Web entgegen
-            — rund um die Uhr. Jede Meldung wird zum Ticket in Ihrem Büro.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-navy-200 sm:text-xl">
+            {SITE.subtitle} Voice-Intake, Einsatzplanung und Ops Dashboard
+            — kein Anruf geht verloren, auch nachts und am Wochenende.
           </p>
+
+          {/* Proof indicators */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-navy-300">
+            <span className="flex items-center gap-2"><ProofDot /> 24/7 erreichbar</span>
+            <span className="flex items-center gap-2"><ProofDot /> 4 Sprachen</span>
+            <span className="flex items-center gap-2"><ProofDot /> Keine Aufnahmen</span>
+          </div>
+
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
-              href={SITE.calendlyUrl}
-              className="w-full rounded-lg bg-blue-600 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-blue-700 sm:w-auto"
+              href={SITE.demoUrl}
+              className="w-full rounded-lg bg-gold-500 px-8 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-gold-400 sm:w-auto"
             >
-              Demo buchen
+              Demo vereinbaren
             </a>
             <a
               href={`tel:${SITE.phoneRaw}`}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gold-500/30 px-8 py-3.5 text-base font-semibold text-gold-300 transition-colors hover:bg-gold-500/10 sm:w-auto"
             >
               <PhoneIcon className="h-4 w-4" />
               {SITE.phone}
@@ -84,12 +100,12 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. Problem → Outcome ─────────────────────────── */}
-      <section className="bg-white py-24 lg:py-32">
+      <section className="bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
             Das Problem kennen Sie.
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-slate-500">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-navy-400">
             Und so löst FlowSight es.
           </p>
 
@@ -102,20 +118,20 @@ export default function HomePage() {
                 "Kunden hinterlassen keine Google-Bewertungen.",
               ].map((text) => (
                 <div key={text} className="flex gap-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-500">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-status-error/10 text-status-error">
                     <XIcon className="h-4 w-4" />
                   </div>
-                  <p className="text-base leading-relaxed text-slate-700">{text}</p>
+                  <p className="text-base leading-relaxed text-navy-900/80">{text}</p>
                 </div>
               ))}
             </div>
 
             {/* Arrow */}
             <div className="hidden items-center lg:flex">
-              <ArrowRightIcon className="h-8 w-8 text-slate-300" />
+              <ArrowRightIcon className="h-8 w-8 text-navy-200" />
             </div>
             <div className="flex justify-center lg:hidden">
-              <svg className="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <svg className="h-8 w-8 text-navy-200" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0 6.75-6.75M12 19.5l-6.75-6.75" />
               </svg>
             </div>
@@ -128,10 +144,10 @@ export default function HomePage() {
                 "Automatische Review-Anfrage nach erledigtem Auftrag.",
               ].map((text) => (
                 <div key={text} className="flex gap-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-500">
                     <CheckIcon className="h-4 w-4" />
                   </div>
-                  <p className="text-base leading-relaxed text-slate-700">{text}</p>
+                  <p className="text-base leading-relaxed text-navy-900/80">{text}</p>
                 </div>
               ))}
             </div>
@@ -140,12 +156,12 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. How it works ──────────────────────────────── */}
-      <section id="funktionen" className="scroll-mt-20 bg-slate-50 py-24 lg:py-32">
+      <section id="funktionen" className="scroll-mt-20 bg-navy-50 py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
             So funktioniert&apos;s
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-slate-500">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-navy-400">
             Drei Schritte — vom Anruf bis zur Google-Bewertung.
           </p>
 
@@ -169,15 +185,15 @@ export default function HomePage() {
             ].map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
+                className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500 text-sm font-bold text-navy-950">
                   {item.step}
                 </div>
-                <h3 className="mt-5 text-xl font-semibold text-slate-900">
+                <h3 className="mt-5 text-xl font-semibold text-navy-900">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-base leading-relaxed text-slate-600">
+                <p className="mt-3 text-base leading-relaxed text-navy-900/70">
                   {item.desc}
                 </p>
               </div>
@@ -187,11 +203,11 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. Trust / Swiss ─────────────────────────────── */}
-      <section className="bg-white py-24 lg:py-32">
+      <section className="bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <ShieldIcon className="mx-auto h-10 w-10 text-blue-600" />
-            <h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <ShieldIcon className="mx-auto h-10 w-10 text-gold-500" />
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
               Entwickelt für die Schweiz.
             </h2>
           </div>
@@ -207,15 +223,15 @@ export default function HomePage() {
                 desc: "Der Voice Agent spricht Hochdeutsch, versteht Schweizerdeutsch und wechselt bei Bedarf auf Englisch oder Französisch.",
               },
               {
-                title: "Einrichtung in einem Tag",
-                desc: "Telefonnummer, Voice Agent, Dashboard — an einem Tag betriebsbereit. Kein technisches Wissen nötig.",
+                title: "Persönliches Onboarding",
+                desc: "Telefonnummer, Voice Agent, Dashboard — gemeinsam eingerichtet. Kein technisches Wissen nötig.",
               },
             ].map((item) => (
               <div key={item.title} className="text-center">
-                <h3 className="text-lg font-semibold text-slate-900">
+                <h3 className="text-lg font-semibold text-navy-900">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-base leading-relaxed text-slate-600">
+                <p className="mt-3 text-base leading-relaxed text-navy-900/70">
                   {item.desc}
                 </p>
               </div>
@@ -225,57 +241,42 @@ export default function HomePage() {
       </section>
 
       {/* ── 5. Pricing teaser ────────────────────────────── */}
-      <section className="bg-slate-50 py-24 lg:py-32">
+      <section className="bg-navy-50 py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
             Einfache Preise.
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-slate-500">
-            Keine versteckten Kosten. Keine Mindestlaufzeit.
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-navy-400">
+            Keine versteckten Kosten. Keine Bindung. Monatlich kündbar.
           </p>
 
-          <div className="mx-auto mt-16 max-w-3xl rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="grid divide-y divide-slate-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {[
-                {
-                  label: "Einrichtung",
-                  price: "CHF XXX",
-                  note: "einmalig",
-                  desc: "Konfiguration, Telefonnummer, Voice Agent, Dashboard",
-                },
-                {
-                  label: "Monatlich",
-                  price: "CHF XXX",
-                  note: "/ Monat",
-                  desc: "Dashboard, E-Mail-Benachrichtigungen, Web-Meldungen",
-                },
-                {
-                  label: "Voice-Minuten",
-                  price: "CHF X.XX",
-                  note: "/ Minute",
-                  desc: "Nur bei Nutzung. Keine Grundgebühr für Voice.",
-                },
-              ].map((tier) => (
-                <div key={tier.label} className="p-8 text-center">
-                  <p className="text-sm font-semibold uppercase tracking-wider text-slate-500">
-                    {tier.label}
-                  </p>
-                  <p className="mt-4 text-3xl font-bold text-slate-900">
-                    {tier.price}
-                  </p>
-                  <p className="text-sm text-slate-500">{tier.note}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                    {tier.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div className="mx-auto mt-16 max-w-lg rounded-2xl border border-navy-200 bg-white p-8 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gold-500">
+              FlowSight Pilot
+            </p>
+            <p className="mt-4">
+              <span className="text-4xl font-bold text-navy-900">ab CHF 299</span>
+              <span className="ml-2 text-base text-navy-400">/ Monat</span>
+            </p>
+            <p className="mt-2 text-sm text-navy-900/70">
+              Voice + Wizard + Ops Dashboard + E-Mail
+            </p>
+            <p className="mt-1 text-sm text-navy-400">
+              Einrichtung: Gemeinsam in der Pilotphase.
+            </p>
+
+            <a
+              href={SITE.demoUrl}
+              className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-base font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+            >
+              Demo vereinbaren
+            </a>
           </div>
 
           <p className="mt-8 text-center">
             <a
               href="/pricing"
-              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+              className="text-sm font-semibold text-gold-500 hover:text-gold-400"
             >
               Alle Details zu den Preisen &rarr;
             </a>
@@ -284,13 +285,13 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. FAQ ───────────────────────────────────────── */}
-      <section className="bg-white py-24 lg:py-32">
+      <section className="bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
             Häufige Fragen
           </h2>
 
-          <div className="mt-12 divide-y divide-slate-200">
+          <div className="mt-12 divide-y divide-navy-200">
             {[
               {
                 q: "Brauche ich technisches Wissen?",
@@ -314,10 +315,10 @@ export default function HomePage() {
               },
             ].map((item) => (
               <details key={item.q} className="group py-6">
-                <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-slate-900">
+                <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-navy-900">
                   {item.q}
                   <svg
-                    className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-open:rotate-45"
+                    className="h-5 w-5 shrink-0 text-navy-400 transition-transform group-open:rotate-45"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={2}
@@ -326,7 +327,7 @@ export default function HomePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
                 </summary>
-                <p className="mt-4 text-base leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-navy-900/70">
                   {item.a}
                 </p>
               </details>
@@ -336,25 +337,25 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. Final CTA ─────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-slate-900 to-slate-800 py-24 lg:py-32">
+      <section className="bg-gradient-to-br from-navy-900 to-navy-950 py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 text-center lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Bereit für weniger Admin und mehr Aufträge?
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-slate-300">
+          <p className="mt-6 text-lg leading-relaxed text-navy-200">
             In 30 Minuten zeigen wir Ihnen, wie FlowSight Ihren Alltag
             vereinfacht — persönlich und unverbindlich.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
-              href={SITE.calendlyUrl}
-              className="w-full rounded-lg bg-blue-600 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-blue-700 sm:w-auto"
+              href={SITE.demoUrl}
+              className="w-full rounded-lg bg-gold-500 px-8 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-gold-400 sm:w-auto"
             >
-              Demo buchen
+              Demo vereinbaren
             </a>
             <a
               href={`tel:${SITE.phoneRaw}`}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gold-500/30 px-8 py-3.5 text-base font-semibold text-gold-300 transition-colors hover:bg-gold-500/10 sm:w-auto"
             >
               <PhoneIcon className="h-4 w-4" />
               {SITE.phone}

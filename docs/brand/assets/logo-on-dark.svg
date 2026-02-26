@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 44" role="img" aria-label="FlowSight">
+  <!-- Gold wordmark on dark/navy backgrounds -->
+  <!-- Requires Geist or system sans-serif font -->
+  <text
+    x="0" y="32"
+    font-family="Geist, Inter, system-ui, -apple-system, sans-serif"
+    font-size="36"
+    font-weight="600"
+    fill="#c8965a"
+    letter-spacing="-0.5"
+  >FlowSight</text>
+  <!-- Signal Dot — the brand mark -->
+  <circle cx="223" cy="8" r="5" fill="#c8965a"/>
+</svg>
