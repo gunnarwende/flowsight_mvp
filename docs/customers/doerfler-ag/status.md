@@ -77,3 +77,20 @@
 - **Services:** Expandable with description + horizontal scrollable gallery + lightbox
 - **Commits:** fa6586e → 702d572 → 61d4f00 → 92fb55c → 5aaae1d → 3a30ae9
 - **Lessons Learned:** docs/customers/lessons-learned.md (intake checklist, golden rules, time estimates)
+
+### 2026-02-26 | CC | FlowSight Sales Voice Agent shipped
+- **Shipped:** Sales Voice Agent "Lisa" auf 044 552 09 19
+- **Webhook:** /api/retell/sales (separate Pipeline, kein Supabase-Insert)
+- **Flow:** call_analyzed → Lead-E-Mail an Founder via Resend
+- **Dual-Agent:** DE (Lisa/Susi voice) + INTL (Juniper voice), bidirektionaler Transfer
+- **KI-Disclosure:** "Guten Tag, hier ist Lisa — ich bin die digitale Assistentin von FlowSight."
+- **Knowledge Base:** FlowSight Produkt, 3 Pakete, Pricing, FAQ — alles im Prompt
+- **Testanruf:** PASS — Demo gebucht, Lead-E-Mail angekommen
+- **Commits:** 84fdf1b (feat), 321f074 (greeting fix)
+- **Docs:** docs/agents/sales_agent.md, docs/runbooks/retell_agent_config.md (Section 6)
+
+### 2026-02-26 | CC | SSOT Konsolidierung
+- **Merged:** open_tasks.md → OPS_BOARD.md (einziger Task-Tracker)
+- **Archiviert:** docs/archive/open_tasks_v1.md
+- **Updated:** STATUS.md, OPS_BOARD.md, doerfler-ag/status.md
+- **Regel:** Alle offenen Tasks leben nur noch im OPS_BOARD.md

@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-26
+**Datum:** 2026-02-26 (EOD — SSOT konsolidiert)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -31,6 +31,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
 | **Marketing Website** | LIVE ✅ | FlowSight GmbH (homepage, pricing, legal, demo booking) |
 | **Demo Booking** | LIVE ✅ | /api/demo → E-Mail an Founder (Resend) |
+| **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19, DE/INTL dual-agent, Lead-E-Mail an Founder, KI-Disclosure |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox, wizard CTA) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
@@ -45,15 +46,14 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **40h Go-Live Sprint** läuft — CC Block 1+2+3 DONE, Block 4-7 offen
-- **Go-Live Blocker:** Keiner mehr. F9 (Google Review Link) ist NICHT Go-Live-kritisch — wird nachgerüstet.
-- **Founder P0:** F10 DONE, F5 PASS, F2 PASS. F11 PARTIAL (Founder Blocks B-F offen).
-- **Founder P1:** F6 DONE, F1 DONE, F3 DOCUMENTED
-- **Founder P2:** F12, F4, F7 — parked (trigger-based)
-- **CC:** Block 4 (Ops Screenshot), Block 6 (Voice Smoke), Block 7 (E2E Evidence) next. Block 5 wartet auf Founder Mobile QA.
-- **Customer Website Template:** Shipped. Neuer Kunde = 1 Config-Datei + 1 Registry-Zeile.
+- **40h Go-Live Sprint** — CC Blocks alle DONE (10/10). Founder Blocks A-G offen.
+- **Sales Voice Agent** shipped — "Lisa", KI-Disclosure, DE/INTL, Lead-E-Mail funktioniert.
+- **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
+- **Nächster Schritt Founder:** E2E Go-Live Checklist (6 Tests, ~4h) → Go/No-Go Entscheid.
+- **Nächster Schritt CC:** N2 (E-Mail-First Workflow) ist unblocked.
+- **SSOT konsolidiert:** `open_tasks.md` → Archiv. OPS_BOARD.md = einziger Task-Tracker.
 
-Vollständiger Execution-Plan + Sprint-Tracking: `docs/OPS_BOARD.md`
+Vollständiger Execution-Plan + alle offenen Tasks: `docs/OPS_BOARD.md`
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -103,7 +103,8 @@ Wer FlowSight verstehen will, liest diese Dateien in dieser Reihenfolge:
 
 | Dokument | Inhalt |
 |----------|--------|
-| `docs/archive/wave_log.md` | Chronologische Wave-History (W1-W26) |
+| `docs/archive/wave_log.md` | Chronologische Wave-History (W1-W29) |
+| `docs/archive/open_tasks_v1.md` | Ursprüngliche Task-Liste (merged in OPS_BOARD.md) |
 | `docs/archive/north_star_v1.md` | Ursprünglicher Launch-Plan (Phase 1, abgeschlossen) |
 
 ## Hobby-Plan Constraints

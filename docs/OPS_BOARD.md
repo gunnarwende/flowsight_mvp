@@ -1,97 +1,88 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-25 (EOD P0 update)
+**Updated:** 2026-02-26 (EOD — Sales Voice Agent shipped, open_tasks.md merged)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
+**Einziger Task-Tracker.** Alle offenen Tasks leben hier. Kein zweites Dokument.
 
-## NOW (Week 1-2, in flight)
+---
 
-| # | Deliverable | Owner | Blocker | Status | Evidence |
-|---|-------------|-------|---------|--------|----------|
-| 1 | Test data cleanup + Morning Report fix | CC + Founder (SQL) | — | DONE ✓ | Before: RED(20/17). After: YELLOW(2/0). Verified by Founder. |
-| 2 | Compliance Doc Pack (subprocessors + retention) | CC | Founder decides retention periods | DONE ✓ | docs/compliance/data_processing.md (as-built, retention TBD) |
-| 3 | Onboarding Template Refresh | CC | none | DONE ✓ | docs/runbooks/onboarding_customer_full.md (~55 min voice, ~25 min wizard-only) |
-| 4 | Voice Post-Deploy Smoke Script | CC | none | DONE ✓ | scripts/_ops/smoke_voice.mjs — {"pass":true} verified |
-| 5 | Release Evidence Standard | CC | none | DONE ✓ | docs/runbooks/release_checklist.md |
-| 6 | Ops Daily Driver Quick Fixes | CC + Founder | — | DEFERRED | Trigger: ≥5 active customers or same friction observed 3× |
+## NOW — Go-Live Sprint (Dörfler AG)
 
-## NEXT (after NOW is closed, no overlap)
+### CC Blocks (alle DONE)
 
-| # | Deliverable | Owner | Trigger |
-|---|-------------|-------|---------|
-| N1 | **FlowSight Voice Agent** — Sales/Demo-Agent auf 044 552 09 19 | CC + Founder | Marketing-Website finalisiert ✅ |
-| N2 | **E-Mail-First Workflow (Option B)** — reichhaltigere E-Mails mit Deep-Links, Aktions-Buttons | CC | Voice Agent live |
-| N3 | **Kalender-Sync (Option A)** — Google/Outlook CalDAV Integration, FlowSight-Termine im bestehenden Kalender | CC | E-Mail-First shipped + Kundenfeedback |
-| N4 | **Morning Report (Cron)** — tägliche Zusammenfassung per E-Mail (offene Fälle, Termine, Überfällige) | CC | Vercel Pro upgrade (enables cron jobs) |
-| N5 | Ops-light UI (reviews-only mode) | CC | Reviews-only customer signs |
-| N6 | CH PLZ validation (voice + wizard) | CC | Misrecognition rate data from production calls |
-| N7 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA (sandbox expires or volume grows) |
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 1 | DemoForm Backend — `/api/demo` → E-Mail | **DONE** ✅ | POST → Resend email, commit 9fa311f |
+| 2 | Dörfler AG Website — High-End Rebuild (12 Sektionen) | **DONE** ✅ | /kunden/doerfler-ag live |
+| 3 | SSOT Update — STATUS + OPS_BOARD + Customer File | **DONE** ✅ | This update |
+| 4 | Ops Dashboard Screenshot | **DEFERRED** | Founder-Task wenn gewünscht |
+| 5 | Mobile QA — Samsung S23 (Android) | **DONE** ✅ | Demo erstellt, E-Mail kam rein |
+| 6 | Voice Smoke — Regressions-Check | **DONE** ✅ | {"pass":true} |
+| 7 | End-to-End Evidence — alle 12 Flows | **DONE** ✅ | docs/evidence/e2e_evidence.md |
+| 8 | FlowSight Sales Voice Agent | **DONE** ✅ | /api/retell/sales live, Lisa greeting, Lead-E-Mail an Founder, commit 84fdf1b + 321f074 |
+| 9 | Business Briefing (ChatGPT) | **DONE** ✅ | docs/business_briefing.md |
+| 10 | Pricing-Seite (3 Pakete) | **DONE** ✅ | /pricing live (shipped mit Marketing Website) |
+
+### Founder Blocks — Go-Live (P0)
+
+| # | Task | Aufwand | Status | Details |
+|---|------|---------|--------|---------|
+| A | **E2E Go-Live Checklist** durcharbeiten | ~4h | OFFEN | 6 Tests in `docs/evidence/founder_go_live_checklist.md`. Pro Test: Screenshot ablegen. Am Ende: Go/No-Go unterschreiben. |
+| B | **LinkedIn Profil** (persönlich) erstellen | ~1.5h | OFFEN | Titel: "Gründer FlowSight GmbH — Digitale Auftragsabwicklung für Sanitär- & Heizungsbetriebe". Info-Text mit ChatGPT (nutze `docs/business_briefing.md`). |
+| C | **Google Business Profil** erstellen | ~30min | OFFEN | "FlowSight GmbH", Kategorie "Softwareunternehmen", Servicegebiet Kanton ZH, Tel +41 44 505 74 20. **Verifizierung dauert 1-2 Wochen — JETZT starten.** |
+| D | Dörfler Input — Logo, fehlende Texte | — | PARTIAL | Brand Color + Google Reviews geliefert. Logo noch offen. |
+| E | Mobile QA — iPhone (flowsight.ch + /doerfler-ag) | ~30min | OFFEN | |
+| F | **Go/No-Go Entscheid** | — | OFFEN | Blocked by: A (Checklist) |
+| G | **Kommunikation an Dörfler** | — | OFFEN | Blocked by: F (Go/No-Go) |
+
+### Founder Backlog — Dörfler-spezifisch
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F10 | Peoplefone/Twilio billing guard | **DONE** ✅ | Twilio triggers $10/$25. Peoplefone auto top-up. |
+| F5 | Voice Regression Call Gate | **PASS** ✅ | E2E verified: call → case → email |
+| F2 | Email Deliverability Gate | **PASS** ✅ | SPF/DKIM/DMARC all pass |
+| F9 | Google Business Review Link (Dörfler) | **BLOCKED** ⏳ | Nicht Go-Live-kritisch. Nachrüsten wenn Link da. |
+| F11 | Customer Go-Live Sign-off | **PARTIAL** ⏳ | 3/4 Module PASS. Reviews blocked by F9. |
+
+---
+
+## NEXT — Produkt-Weiterentwicklung (nach Go-Live)
+
+Trigger-basiert. Kein Overlap mit NOW.
+
+| # | Deliverable | Owner | Trigger | Status |
+|---|-------------|-------|---------|--------|
+| N1 | FlowSight Sales Voice Agent | CC + Founder | Marketing-Website finalisiert | **DONE** ✅ |
+| N2 | **E-Mail-First Workflow** — reichhaltigere E-Mails mit Deep-Links, Aktions-Buttons | CC | Voice Agent live ✅ → **jetzt auslösbar** | OFFEN |
+| N3 | **Kalender-Sync** — Google/Outlook CalDAV Integration | CC | E-Mail-First shipped + Kundenfeedback | OFFEN |
+| N4 | **Morning Report (Cron)** — tägliche Zusammenfassung per E-Mail | CC | Vercel Pro upgrade (enables cron jobs) | OFFEN |
+| N5 | **Cal.com Integration** — Demo-Button → Cal.com Buchungsseite | F + CC | Go-Live done. F ~30min (Account), CC ~1h (Integration). Free Tier reicht. 1 Event: "Demo 30min". | OFFEN |
+| N6 | **Pitch-Deck** (PDF, 5-8 Slides) | CC + F | Go-Live done. Problem → Lösung → Screenshot → Module → Pricing → Kontakt. CC ~2h, F ~1h Review. | OFFEN |
+| N7 | Ops-light UI (reviews-only mode) | CC | Reviews-only customer signs | OFFEN |
+| N8 | CH PLZ validation (voice + wizard) | CC | Misrecognition data from production | OFFEN |
+| N9 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA | OFFEN |
+
+---
 
 ## LATER (parked, explicit triggers)
 
 | # | Deliverable | Owner | Trigger |
 |---|-------------|-------|---------|
 | L1 | Offboarding runbook | CC | Customer #2 onboards |
-| L2 | Billing/Plan SOP | Founder | Customer #3 or pricing page drives inbound |
-| L3 | Failure drills (telephony) | CC | First real incident (becomes the drill) |
-| L4 | Sales/GTM system | Founder | Repeatable sales motion needed |
-| L5 | Founder Agent v1 (Retell) | CC + Founder | Strang D stable, separate plan |
-| L6 | Founder Ops Inbox | CC + Founder | Strang D stable, separate plan |
-| L7 | PLZ readback voice quality | CC + Founder | Observed: digit-by-digit cadence unnatural ("acht … neun … vier … zwei"), hard to understand. Retell prompt tuning (Founder publishes via Dashboard). |
+| L2 | Verträge / AGB Vorlage | Founder (+ Anwalt) | Spätestens vor Kunde #2. SaaS-Vertrag CH-Recht, 2-3 Seiten. |
+| L3 | Failure drills (telephony) | CC | First real incident |
+| L4 | Erste Betriebe kontaktieren (Sales/GTM) | Founder | Go-Live + Pitch-Deck + Cal.com ready. Lead-Liste in Google Sheet. Einstieg: "Ich habe mir Ihre Website angeschaut..." |
+| L5 | LinkedIn Unternehmensseite (FlowSight GmbH) | Founder | Nach persönlichem LinkedIn-Profil. Logo + Beschreibung aus Business Briefing. 1 Post/Woche. |
+| L6 | Bitwarden komplett einrichten | Founder | ~4h. Alle Zugänge (Vercel, Supabase, Retell, Twilio, Peoplefone, Resend, Sentry, GitHub). Master-PW + 2FA + Emergency Kit. |
+| L7 | Founder Agent v1 (Retell) | CC + Founder | Strang D stable |
+| L8 | Founder Ops Inbox | CC + Founder | Strang D stable |
+| L9 | PLZ readback voice quality | CC + Founder | Digit-by-digit cadence unnatural. Retell prompt tuning. |
+| L10 | Retention decisions | Founder | Decide case + attachment retention periods (docs/compliance/data_processing.md) |
+| L11 | WhatsApp Sandbox → Prod evaluation | Founder | When Ops Alerts need SLA or sandbox expires |
+| L12 | Data protection statements | Founder | Voice disclosure + Wizard privacy checkbox + DPA links from subprocessors |
 
-## Founder Backlog (on-the-business, parallel, CC not blocked)
-
-These are Founder-owned tasks that run in parallel. CC does not implement these but tracks them here for SSOT.
-
-> **F8 merged into F2** (same scope: email deliverability). 11 items, no scope lost.
-
-### P0 — Go-Live Critical (Dörfler)
-
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| F10 | Peoplefone/Twilio billing guard | **DONE** ✅ | Twilio: usage triggers $10/$25. Peoplefone: auto top-up <CHF 20 → +CHF 50 + auto-renew. |
-| F5 | Voice Regression Call Gate | **PASS** ✅ | E2E: call_cb50d6fd… → case 9d89cf6b → email received. Full path verified. |
-| F2 | Email Deliverability Gate (Dörfler) | **PASS** ✅ | flowsight.ch verified in Resend. DMARC p=none. Inbox test: SPF=pass, DKIM=pass, DMARC=pass. |
-| F9 | Google Business review link (Dörfler) | **BLOCKED** ⏳ | No customer Google Business Profile access / no official review link yet. |
-| F11 | Customer go-live sign-off (Dörfler) | **PARTIAL** ⏳ | Voice: PASS. Wizard: PASS (case 5fb36e99). Ops: READY. Reviews: blocked by F9. |
-
-### P1 — Week 2
-
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| F6 | Account security / 2FA audit | **DONE** ✅ | docs/runbooks/access_matrix.md. 6/8 services 2FA enabled. Gaps: Retell + Peoplefone (no 2FA available). |
-| F1 | Cost thresholds + upgrade triggers | **DONE** ✅ | docs/runbooks/cost_triggers.md. 6 vendors, trigger + action per vendor. |
-| F3 | Supabase backup awareness | **DOCUMENTED** ⚠️ | Free plan = no backups. Risk accepted. Upgrade trigger defined. docs/runbooks/backup_awareness.md + section in incident-triage. |
-
-### P2 — Trigger-based (park)
-
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| F12 | Retention decisions | pending | Decide case + attachment retention periods (see TBD items in docs/compliance/data_processing.md). CC updates doc + implements enforcement when decided. |
-| F4 | WhatsApp Sandbox → Prod evaluation | pending | Trigger: when Ops Alerts need SLA or sandbox expires. Evaluate Twilio WhatsApp Business API costs. |
-| F7 | Data protection statements | pending | Customer disclosure/consent copy for Voice ("Dieses Gespräch wird nicht aufgezeichnet") + Wizard (privacy checkbox). Collect DPA links from each subprocessor (see docs/compliance/data_processing.md). No legal novel — just "ready to show" pack. |
-
-## 40h Go-Live Sprint (2026-02-26)
-
-### CC Blocks
-| # | Task | Status | Evidence |
-|---|------|--------|----------|
-| 1 | DemoForm Backend — `/api/demo` → E-Mail an Founder | **DONE** ✅ | POST → Resend email, commit 9fa311f |
-| 2 | Dörfler AG Website — High-End Rebuild (12 Sektionen, Template, Lightbox) | **DONE** ✅ | /kunden/doerfler-ag live, commits fa6586e → 5aaae1d |
-| 3 | SSOT Update — STATUS + OPS_BOARD + Customer File | **DONE** ✅ | This update |
-| 4 | Ops Dashboard Screenshot — HTML-Mockups bleiben (auth required for real) | **DEFERRED** | Founder-Task wenn gewünscht |
-| 5 | Mobile QA — Samsung S23 (Android) | **DONE** ✅ | Demo erstellt, E-Mail kam rein (Founder verified) |
-| 6 | Voice Smoke — Regressions-Check | **DONE** ✅ | {"pass":true, health:ok, webhook:ok, numbers:3} |
-| 7 | End-to-End Evidence — alle 12 Flows dokumentiert | **DONE** ✅ | docs/evidence/e2e_evidence.md |
-
-### Founder Blocks
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| A | F9: Google Review Link (oder Entscheid: ohne Reviews launchen) | OFFEN | F9 ist NICHT Go-Live-kritisch — nachrüsten wenn Link da |
-| B | F11: E2E Dry Run — als Kunde anrufen, Wizard, Ops-Flow | OFFEN | |
-| C | Mobile QA — flowsight.ch + /doerfler-ag auf iPhone | OFFEN | |
-| D | Dörfler Input — Logo, Farbe, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert |
-| E | Go/No-Go Entscheid | OFFEN | |
-| F | Kommunikation an Dörfler | OFFEN | |
+---
 
 ## Completed (this sprint)
 
@@ -104,3 +95,28 @@ These are Founder-owned tasks that run in parallel. CC does not implement these 
 | — | DemoForm Backend | CC | 2026-02-26 | /api/demo → Resend email |
 | — | Customer Website Template + Dörfler AG | CC | 2026-02-26 | /kunden/doerfler-ag (12 sections, SSG, lightbox) |
 | — | Lessons Learned Doc | CC | 2026-02-26 | docs/customers/lessons-learned.md |
+| — | Business Briefing (ChatGPT) | CC | 2026-02-26 | docs/business_briefing.md |
+| — | Pricing-Seite (3 Pakete) | CC | 2026-02-26 | /pricing live |
+| — | FlowSight Sales Voice Agent | CC | 2026-02-26 | /api/retell/sales, retell/flowsight_sales_*.json, Lisa greeting, commit 84fdf1b |
+| — | SSOT Konsolidierung | CC | 2026-02-26 | open_tasks.md → archive, OPS_BOARD = einziger Tracker |
+
+---
+
+## NOW (Infrastructure — closed)
+
+| # | Deliverable | Owner | Status | Evidence |
+|---|-------------|-------|--------|----------|
+| 1 | Test data cleanup + Morning Report fix | CC + Founder | DONE ✓ | Before: RED(20/17). After: YELLOW(2/0). |
+| 2 | Compliance Doc Pack | CC | DONE ✓ | docs/compliance/data_processing.md |
+| 3 | Onboarding Template Refresh | CC | DONE ✓ | docs/runbooks/onboarding_customer_full.md |
+| 4 | Voice Post-Deploy Smoke Script | CC | DONE ✓ | scripts/_ops/smoke_voice.mjs |
+| 5 | Release Evidence Standard | CC | DONE ✓ | docs/runbooks/release_checklist.md |
+| 6 | Ops Daily Driver Quick Fixes | CC + Founder | DEFERRED | Trigger: ≥5 active customers |
+
+## Founder Backlog — P1 (Week 2, closed)
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F6 | Account security / 2FA audit | **DONE** ✅ | docs/runbooks/access_matrix.md |
+| F1 | Cost thresholds + upgrade triggers | **DONE** ✅ | docs/runbooks/cost_triggers.md |
+| F3 | Supabase backup awareness | **DOCUMENTED** ⚠️ | Free plan = no backups. Risk accepted. |
