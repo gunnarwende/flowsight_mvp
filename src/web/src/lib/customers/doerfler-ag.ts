@@ -178,7 +178,7 @@ export const doerflerAg: CustomerSite = {
     },
   ],
 
-  // Real Google data: 4.7 stars, 3 reviews — only 1 text retrievable
+  // Real Google data: 4.7 stars, 3 reviews (Erik 4★ ohne Text)
   reviews: {
     averageRating: 4.7,
     totalReviews: 3,
@@ -186,9 +186,16 @@ export const doerflerAg: CustomerSite = {
       "https://www.google.com/maps/place/D%C3%B6rfler+AG/@47.2754,8.5834,17z",
     highlights: [
       {
-        author: "Michael W.",
+        author: "Martin B.",
         rating: 5,
-        text: "Die Gebrüder Dörfler kann ich nur empfehlen. Flexibel, freundlich und professionell — so einen Ansprechpartner wünscht man sich am Wohnort!",
+        text: "Kompetenter Sanitär-Handwerke bei extrem gutem Service. Hat das Problem schnell lokalisiert, behoben und den Arbeitsplatz wieder sauber verlassen. Danke!",
+        date: "vor 2 Jahren",
+      },
+      {
+        author: "Markus Widmer",
+        rating: 5,
+        text: "Top Zusammenarbeit, motiviertes und sehr erfahrenes Team. Lösungsorientiert und sehr gute Qualität.",
+        date: "vor 2 Jahren",
       },
     ],
   },
