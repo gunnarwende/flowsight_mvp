@@ -16,8 +16,8 @@ export function Logo({
   className?: string;
   height?: number;
 }) {
-  const textColor = variant === "on-dark" ? "#c8965a" : "#1a2744";
-  const dotColor = "#c8965a";
+  const textColor = variant === "on-dark" ? "#d4a843" : "#1a2744";
+  const dotColor = "#d4a843";
 
   // viewBox aspect ratio: 240:44 ≈ 5.45:1
   const width = Math.round(height * (240 / 44));
@@ -65,7 +65,7 @@ export function SignalDot({
       className={className}
       aria-hidden="true"
     >
-      <circle cx="16" cy="16" r="14" fill="#c8965a" />
+      <circle cx="16" cy="16" r="14" fill="#d4a843" />
     </svg>
   );
 }

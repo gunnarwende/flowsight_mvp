@@ -38,7 +38,7 @@ export default function MarketingLayout({
             </a>
             <a
               href={SITE.demoUrl}
-              className="rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+              className="rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-md hover:shadow-gold-500/15"
             >
               Demo vereinbaren
             </a>
@@ -47,7 +47,7 @@ export default function MarketingLayout({
           {/* Mobile CTA only */}
           <a
             href={SITE.demoUrl}
-            className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400 md:hidden"
+            className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 md:hidden"
           >
             Demo vereinbaren
           </a>

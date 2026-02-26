@@ -16,12 +16,12 @@
   --navy-100: #e2e8f0;
   --navy-50: #f0f3f7;
 
-  /* Gold palette */
-  --gold-600: #9c7340;
-  --gold-500: #c8965a;
-  --gold-400: #d4a96e;
-  --gold-300: #e0be8a;
-  --gold-100: #f5eadb;
+  /* Gold palette — warm luminous gold, not brownish */
+  --gold-600: #a38429;
+  --gold-500: #d4a843;
+  --gold-400: #e2bb55;
+  --gold-300: #edce72;
+  --gold-100: #faf0d0;
 
   /* Neutrals */
   --warm-white: #faf8f5;
@@ -35,6 +35,10 @@
   /* Semantic (page defaults) */
   --background: var(--warm-white);
   --foreground: var(--text-primary);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 @theme inline {

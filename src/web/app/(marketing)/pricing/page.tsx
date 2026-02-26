@@ -2,8 +2,16 @@ import type { Metadata } from "next";
 import { SITE } from "@/src/lib/marketing/constants";
 
 export const metadata: Metadata = {
-  title: "Preise",
+  title: "Preise — FlowSight",
 };
+
+function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+    </svg>
+  );
+}
 
 export default function PricingPage() {
   return (
@@ -52,15 +60,13 @@ export default function PricingPage() {
                   <p className="text-sm font-medium uppercase tracking-wider text-navy-400">
                     Voice-Minuten
                   </p>
-                  <p className="mt-1 text-3xl font-bold text-navy-900">
-                    CHF X.XX
-                    <span className="text-base font-normal text-navy-400">
-                      {" "}/ Minute
-                    </span>
+                  <p className="mt-1 text-lg font-semibold text-navy-900">
+                    Abrechnung nach Verbrauch
                   </p>
                   <p className="mt-1 text-sm text-navy-900/70">
-                    Nur bei Nutzung. Ein typischer Intake-Call dauert 2–4
-                    Minuten.
+                    Nur bei Nutzung — keine Grundgebühr. Ein typischer
+                    Intake-Call dauert 2–4 Minuten. Der genaue Minutenpreis
+                    wird im persönlichen Gespräch besprochen.
                   </p>
                 </div>
 
@@ -70,16 +76,17 @@ export default function PricingPage() {
                   <p className="text-sm font-medium uppercase tracking-wider text-navy-400">
                     Einrichtung
                   </p>
-                  <p className="mt-1 text-base text-navy-900/70">
+                  <p className="mt-1 text-sm text-navy-900/70">
                     Gemeinsam in der Pilotphase. Konfiguration, Telefonnummer,
                     Voice Agent, Dashboard-Zugang — persönlich eingerichtet.
+                    Keine Setup-Kosten.
                   </p>
                 </div>
               </div>
 
               <a
-                href={SITE.demoUrl}
-                className="mt-10 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-base font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+                href="#demo"
+                className="mt-10 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
                 Demo vereinbaren
               </a>
@@ -91,7 +98,7 @@ export default function PricingPage() {
             <h2 className="text-center text-2xl font-bold text-navy-900">
               Alles inklusive
             </h2>
-            <div className="mt-10 grid gap-x-12 gap-y-6 sm:grid-cols-2">
+            <div className="mt-10 grid gap-x-12 gap-y-4 sm:grid-cols-2">
               {[
                 "Voice Agent — 24/7 Anrufannahme auf Hochdeutsch",
                 "Online-Meldeformular mit Kunden-Branding",
@@ -104,21 +111,9 @@ export default function PricingPage() {
                 "Schweizer Telefonnummer inklusive",
                 "Persönliches Onboarding",
               ].map((item) => (
-                <div key={item} className="flex gap-3">
-                  <svg
-                    className="h-5 w-5 shrink-0 text-gold-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m4.5 12.75 6 6 9-13.5"
-                    />
-                  </svg>
-                  <span className="text-base text-navy-900/80">{item}</span>
+                <div key={item} className="flex gap-3 py-1">
+                  <CheckIcon className="h-5 w-5 shrink-0 text-gold-500" />
+                  <span className="text-sm text-navy-900/80">{item}</span>
                 </div>
               ))}
             </div>
@@ -136,10 +131,10 @@ export default function PricingPage() {
             Wir beraten Sie persönlich und unverbindlich.
           </p>
           <a
-            href={SITE.demoUrl}
-            className="mt-8 inline-block rounded-lg bg-gold-500 px-8 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+            href={`mailto:${SITE.email}`}
+            className="mt-8 inline-block rounded-lg bg-gold-500 px-8 py-3.5 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
           >
-            Gespräch vereinbaren
+            Kontakt aufnehmen
           </a>
         </div>
       </section>

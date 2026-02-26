@@ -42,7 +42,7 @@ export default function ImpressumPage() {
                 E-Mail:{" "}
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="text-gold-500 hover:text-gold-400"
+                  className="text-gold-600 hover:text-gold-500"
                 >
                   {SITE.email}
                 </a>

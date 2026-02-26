@@ -32,7 +32,7 @@ export default function DatenschutzPage() {
                 E-Mail:{" "}
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="text-gold-500 hover:text-gold-400"
+                  className="text-gold-600 hover:text-gold-500"
                 >
                   {SITE.email}
                 </a>
@@ -164,7 +164,7 @@ export default function DatenschutzPage() {
               Bitte kontaktieren Sie uns unter{" "}
               <a
                 href={`mailto:${SITE.email}`}
-                className="text-gold-500 hover:text-gold-400"
+                className="text-gold-600 hover:text-gold-500"
               >
                 {SITE.email}
               </a>
