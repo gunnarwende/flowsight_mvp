@@ -18,10 +18,13 @@
 
 | # | Deliverable | Owner | Trigger |
 |---|-------------|-------|---------|
-| N1 | Ops-light UI (reviews-only mode) | CC | Reviews-only customer signs |
-| N2 | CH PLZ validation (voice + wizard) | CC | Misrecognition rate data from production calls |
-| N3 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA (sandbox expires or volume grows) |
-| N4 | Automated morning report (cron) | CC | Vercel Pro upgrade (enables cron jobs) |
+| N1 | **FlowSight Voice Agent** — Sales/Demo-Agent auf 044 552 09 19 | CC + Founder | Marketing-Website finalisiert ✅ |
+| N2 | **E-Mail-First Workflow (Option B)** — reichhaltigere E-Mails mit Deep-Links, Aktions-Buttons | CC | Voice Agent live |
+| N3 | **Kalender-Sync (Option A)** — Google/Outlook CalDAV Integration, FlowSight-Termine im bestehenden Kalender | CC | E-Mail-First shipped + Kundenfeedback |
+| N4 | **Morning Report (Cron)** — tägliche Zusammenfassung per E-Mail (offene Fälle, Termine, Überfällige) | CC | Vercel Pro upgrade (enables cron jobs) |
+| N5 | Ops-light UI (reviews-only mode) | CC | Reviews-only customer signs |
+| N6 | CH PLZ validation (voice + wizard) | CC | Misrecognition rate data from production calls |
+| N7 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA (sandbox expires or volume grows) |
 
 ## LATER (parked, explicit triggers)
 

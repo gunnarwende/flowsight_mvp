@@ -351,3 +351,133 @@ export async function sendReviewRequest(
     return false;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Sales lead notification (Sales Voice Agent)
+// ---------------------------------------------------------------------------
+
+interface SalesLeadPayload {
+  callerName?: string;
+  companyName?: string;
+  fromNumber?: string;
+  interestLevel: string;
+  demoRequested: string;
+  callSummary: string;
+  retellCallId: string;
+}
+
+/**
+ * Send a sales lead notification email to the founder.
+ * Triggered by the Sales Voice Agent webhook after a call on 044 552 09 19.
+ *
+ * Owns its own console.log (runs in a separate invocation via the sales webhook).
+ * Errors are captured to Sentry but never thrown.
+ */
+export async function sendSalesLeadNotification(
+  payload: SalesLeadPayload
+): Promise<boolean> {
+  const fromEnvValue = process.env.MAIL_FROM;
+  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
+  const to = process.env.MAIL_REPLY_TO;
+  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
+
+  const base: Record<string, unknown> = {
+    _tag: "resend",
+    email_type: "sales_lead",
+    area: "sales",
+    retell_call_id: payload.retellCallId,
+    recipient_env: "MAIL_REPLY_TO",
+    recipient_present: !!to,
+    from_env: fromEnvValue ? "MAIL_FROM" : "default",
+    from_domain: from.split("@")[1] ?? "unknown",
+  };
+
+  if (!process.env.RESEND_API_KEY) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_RESEND_API_KEY" }));
+    return false;
+  }
+
+  if (!to) {
+    Sentry.captureMessage("MAIL_REPLY_TO not configured — skipping sales lead email", {
+      level: "warning",
+      tags: { _tag: "resend", area: "sales", provider: "resend", email_type: "sales_lead", decision: "skipped", error_code: "NO_REPLY_TO" },
+    });
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_MAIL_REPLY_TO" }));
+    return false;
+  }
+
+  const companyLabel = payload.companyName || "Unbekannt";
+
+  try {
+    const { data, error } = await getResend().emails.send({
+      from,
+      to,
+      subject: `${subjectPrefix} Neuer Lead — ${companyLabel} (${payload.interestLevel})`,
+      text: [
+        `Neuer Anruf auf 044 552 09 19`,
+        ``,
+        `Name:           ${payload.callerName || "nicht angegeben"}`,
+        `Firma:          ${payload.companyName || "nicht angegeben"}`,
+        `Telefon:        ${payload.fromNumber || "nicht angegeben"}`,
+        `Interesse:      ${payload.interestLevel}`,
+        `Demo gewünscht: ${payload.demoRequested}`,
+        ``,
+        `Zusammenfassung:`,
+        payload.callSummary,
+        ``,
+        `---`,
+        `Retell Call ID: ${payload.retellCallId}`,
+      ].join("\n"),
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: {
+          _tag: "resend",
+          area: "sales",
+          provider: "resend",
+          email_type: "sales_lead",
+          decision: "failed",
+          stage: "email",
+          error_code: "RESEND_API_ERROR",
+        },
+      });
+      const apiErr = error as Record<string, unknown>;
+      console.log(JSON.stringify({
+        ...base,
+        decision: "failed",
+        reason: "resend_api_error",
+        error_code: apiErr.name ?? null,
+        error_message: typeof apiErr.message === "string" ? apiErr.message : null,
+      }));
+      return false;
+    }
+
+    console.log(JSON.stringify({
+      ...base,
+      decision: "sent",
+      provider_message_id: data?.id ?? null,
+    }));
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: {
+        _tag: "resend",
+        area: "sales",
+        provider: "resend",
+        email_type: "sales_lead",
+        decision: "failed",
+        stage: "email",
+        error_code: "RESEND_EXCEPTION",
+      },
+    });
+    console.log(JSON.stringify({
+      ...base,
+      decision: "failed",
+      reason: "exception",
+      error_code: err instanceof Error ? err.name : "unknown",
+      error_message: err instanceof Error ? err.message : "unknown",
+    }));
+    return false;
+  }
+}

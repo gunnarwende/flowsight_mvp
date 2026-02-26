@@ -115,3 +115,49 @@ Currently free-text. Recommended values for sanitär:
 - Boiler
 - Rohrbruch
 - Sanitär allgemein
+
+---
+
+## 6. Sales Voice Agent (FlowSight Business Number)
+
+### Overview
+
+Separate agent pair for FlowSight's own business number (044 552 09 19). Answers product questions and books demos. **NOT** for customer intake — uses a different webhook and different post-call analysis schema.
+
+### Agent Pair
+
+| Agent | ID | Role |
+|-------|----|------|
+| FlowSight Sales DE | TBD (after Retell import) | German sales + language gate |
+| FlowSight Sales INTL | TBD (after Retell import) | Multilingual sales (EN/FR/IT) |
+
+### Webhook
+
+- **URL:** `https://flowsight-mvp.vercel.app/api/retell/sales`
+- **Events:** `call_analyzed` only (others are skipped)
+- **Action:** Sends lead email to founder (no DB insert)
+
+### Post-Call Analysis Schema (Sales)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `caller_name` | string | NO | Name of the caller |
+| `company_name` | string | NO | Company/business name |
+| `interest_level` | string | YES | "hoch" / "mittel" / "niedrig" |
+| `demo_requested` | string | YES | "ja" / "nein" |
+| `call_summary` | string | YES | 2-3 sentence summary (German) |
+
+### Templates (Agent-as-File)
+
+- **DE:** `retell/flowsight_sales_de.json`
+- **INTL:** `retell/flowsight_sales_intl.json`
+
+### Setup Steps (Founder)
+
+1. Import `flowsight_sales_de.json` in Retell Dashboard → create DE agent
+2. Import `flowsight_sales_intl.json` → create INTL agent
+3. In DE agent: set `{{intl_agent_id}}` to the INTL agent ID
+4. Set webhook URL on both agents: `https://flowsight-mvp.vercel.app/api/retell/sales`
+5. Configure Twilio routing: 044 552 09 19 → Retell Sales DE agent
+6. Publish both agents from Dashboard
+7. Make a test call → verify lead email arrives

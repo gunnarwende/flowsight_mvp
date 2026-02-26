@@ -1,0 +1,264 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "agent_name": "FlowSight Sales INTL",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 1,
+    "conversation_flow_id": ""
+  },
+  "webhook_url": "https://flowsight-mvp.vercel.app/api/retell/sales",
+  "language": "en-US",
+  "data_storage_setting": "everything_except_pii",
+  "opt_in_signed_url": false,
+  "post_call_analysis_data": [
+    {
+      "type": "string",
+      "name": "caller_name",
+      "description": "Full name of the caller. Return empty string if not provided.",
+      "required": false
+    },
+    {
+      "type": "string",
+      "name": "company_name",
+      "description": "Company/business name of the caller. Return empty string if not provided.",
+      "required": false
+    },
+    {
+      "type": "string",
+      "name": "interest_level",
+      "description": "Interest level of the caller. Return exactly one of: \"hoch\", \"mittel\", \"niedrig\". Always use German values regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "demo_requested",
+      "description": "Whether the caller wants a demo. Return exactly one of: \"ja\", \"nein\". Always use German values regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "call_summary",
+      "description": "2-3 sentence summary of the call in German. Include what the caller asked about and the outcome. Always write in German regardless of call language.",
+      "required": true
+    }
+  ],
+  "version": 1,
+  "is_published": false,
+  "version_title": "FlowSight Sales INTL",
+  "post_call_analysis_model": "gpt-4.1-mini",
+  "pii_config": {
+    "mode": "post_call",
+    "categories": []
+  },
+  "analysis_successful_prompt": "Evaluate whether the agent had a successful call. The caller was transferred from the German sales agent. A successful call means the agent answered FlowSight questions and/or collected demo booking information.",
+  "analysis_summary_prompt": "Write a 2-3 sentence summary of the call. Note the language used and whether a demo was requested.",
+  "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
+  "voice_id": "custom_voice_cf152ba48ccbac0370ecebcd88",
+  "max_call_duration_ms": 420000,
+  "interruption_sensitivity": 1,
+  "allow_user_dtmf": true,
+  "user_dtmf_options": {},
+  "conversationFlow": {
+    "conversation_flow_id": "",
+    "version": 1,
+    "global_prompt": "You are the phone consultant for FlowSight. You answer questions about FlowSight and help interested callers book a demo.\n\nCONTEXT\n- The caller was transferred from the German-speaking sales agent because they spoke English, French, or Italian.\n- The full conversation history carries over. Check what was already said before asking again.\n\nSTYLE\n- Speak naturally and warmly — like a knowledgeable consultant, not a robot.\n- Short sentences. No lists. Never ask multiple questions at once.\n- Positive micro-reactions: \"Great question!\", \"Absolutely.\", \"I'm glad you asked.\" — before your next answer.\n- Maximum 7 questions per call.\n- When the caller speaks: STOP talking immediately. Wait until they finish.\n\nLANGUAGE (STICKY MODE)\n- Detect the caller's language from the conversation history or their first sentence.\n- Supported: English, French, Italian.\n- Once you identify the language, STAY in that language for the ENTIRE call.\n- NEVER switch to German during the conversation.\n- Post-call analysis values must ALWAYS be in German — regardless of conversation language.\n\nKNOWLEDGE BASE — FLOWSIGHT PRODUCT\nFlowSight is a digital solution for plumbing and heating businesses in Switzerland. We offer:\n\n1. **Professional Website** with integrated damage reporting wizard\n   - Customers report damage directly online (24/7)\n   - Automatic categorization and urgency assessment\n   - Mobile-optimized, fast, modern\n\n2. **AI Phone Assistant (Voice Agent)**\n   - Answers calls 24/7, 4 languages (DE/Swiss-DE/EN/FR)\n   - Captures damage reports in structured format\n   - Routes cases directly into the system\n\n3. **Ops Dashboard** for the business\n   - All cases at a glance\n   - Status tracking, scheduling, email dispatch\n   - Real-time notifications\n\nPACKAGES & PRICING\n- **Starter** (from CHF 99/month): Website + Wizard\n- **Professional** (from CHF 249/month): + Voice Agent + Dashboard\n- **Premium** (from CHF 349/month): + Google Reviews + Morning Report\n- Voice minutes: pay-per-use, no base charge for minutes\n- Monthly cancellation, no lock-in\n- Setup: Together in one week, no setup costs during pilot phase\n\nKEY FACTS\n- Swiss company, based in Oberrieden ZH\n- GDPR-compliant, EU servers\n- No call recordings\n- 24/7 reachable via Voice Agent\n- Currently in pilot phase with first customers\n\nGOAL\nYour main goal is to book a demo. If the caller is interested:\n1. Ask for their name\n2. Ask for their company name\n3. Ask if they want to be called back on a different number (the current number is automatically captured)\n4. Confirm: \"Thank you! We will contact you within 24 hours to schedule a demo.\"\n\nTOPIC\n- Only FlowSight-related topics. Politely decline other requests.\n- Never mention recording.\n- Never badmouth competitors.\n- Never make promises outside the product scope.\n\nPRIVACY\n- No personal data in the summary (except name and company the caller provides).\n\nGERMAN DETECTION — TRANSFER BACK TO DE AGENT\nAt EVERY turn, check if the caller is speaking German:\n- If the caller says 'Deutsch', 'auf Deutsch', 'Ich spreche Deutsch', or consistently responds in fluent German sentences:\n=> IMMEDIATELY call tool 'swap_to_de_agent'. Do NOT announce the transfer. Just call the tool.\n- If the caller's first message after transfer is clearly German (not just a single word):\n=> Ask ONCE in English: 'Do you prefer German?' If yes => call 'swap_to_de_agent'.\n- Maximum 1 transfer per call. After transfer you are no longer part of the conversation.",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You were transferred from the German sales agent. Check the conversation history to understand what language the caller speaks and what they already asked. Greet them warmly in their language (English, French, or Italian) and let them know you are here to help with FlowSight questions."
+        },
+        "always_edge": {
+          "destination_node_id": "node-sales",
+          "id": "always-edge-welcome",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Always"
+          }
+        },
+        "name": "Welcome Node",
+        "edges": [],
+        "start_speaker": "agent",
+        "id": "start-node",
+        "type": "conversation",
+        "display_position": {
+          "x": 232,
+          "y": 24
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You are continuing a sales conversation about FlowSight. The caller was transferred from the German agent.\n\nCHECK CONVERSATION HISTORY FIRST\n- Review what the caller already asked the German agent.\n- Do NOT repeat information that was already given.\n\nWORKFLOW\n1. Let the caller explain what they're interested in. Listen.\n2. Answer questions from the knowledge base. Be specific about pricing and features.\n3. If the caller shows interest: offer a demo.\n4. For the demo, collect:\n   - Name (if not already provided)\n   - Company name\n   - Whether they want a callback on a different number\n5. Summarize and confirm.\n\nIMPORTANT\n- Never ask two questions in one sentence.\n- If the caller just wants quick info: give it and optionally offer a demo.\n- If the caller is not interested: thank them and say goodbye.\n- Set demo_booked=true when name and company have been collected.\n- Set out_of_scope=true when the request has nothing to do with FlowSight.\n\nLANGUAGE (STICKY)\n- Stay in the caller's language for ALL turns.\n- Post-call analysis values always in German.\n\nGERMAN DETECTION (PRIORITY 1 — CHECK EVERY MESSAGE)\nIf the caller speaks German (keywords: 'Deutsch', 'auf Deutsch bitte', 'Ich spreche Deutsch', or fluent German sentences):\n=> IMMEDIATELY call tool 'swap_to_de_agent'. Do NOT announce the transfer.\nIf the caller's message is ambiguous (could be German): ask ONCE 'Do you prefer German?' If yes => call 'swap_to_de_agent'.\nYou MUST actually CALL the tool — saying 'I'll transfer you' is NOT enough."
+        },
+        "name": "Sales Conversation Node",
+        "edges": [],
+        "id": "node-sales",
+        "type": "conversation",
+        "display_position": {
+          "x": 623,
+          "y": 310
+        },
+        "tools": [
+          {
+            "type": "agent_swap",
+            "agent_id": "agent_d7dfe45ab444e1370e836c3e0f",
+            "name": "swap_to_de_agent",
+            "description": "Transfer the caller back to the German sales agent. Call this tool when the caller clearly speaks German (e.g., 'Ich spreche Deutsch', 'auf Deutsch bitte', or consistently responds in fluent German). Maximum 1 transfer per call.",
+            "post_call_analysis_setting": "only_destination_agent"
+          }
+        ],
+        "skip_response_edge": {
+          "destination_node_id": "node-logic-split",
+          "id": "skip-response-edge-sales",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "name": "Logic Split Node",
+        "edges": [
+          {
+            "destination_node_id": "node-out-of-scope",
+            "id": "edge-out-of-scope",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "out_of_scope is true (the caller's request has nothing to do with FlowSight)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing-demo",
+            "id": "edge-demo-booked",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "demo_booked is true (caller provided name and company for a demo)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing-info",
+            "id": "edge-info-only",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller only wanted information and is ready to end the call (no demo booking)"
+            }
+          }
+        ],
+        "id": "node-logic-split",
+        "else_edge": {
+          "destination_node_id": "node-sales",
+          "id": "edge-logic-else",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Else"
+          }
+        },
+        "type": "branch",
+        "display_position": {
+          "x": 989,
+          "y": 704
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the caller IN THEIR LANGUAGE: Thank you for your interest in FlowSight! We will contact you within 24 hours to schedule a demo. Have a great day!"
+        },
+        "name": "Closing Demo Node",
+        "edges": [],
+        "id": "node-closing-demo",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 696
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-closing-demo",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the caller IN THEIR LANGUAGE: Thank you for your call! If you have questions later or want a demo, feel free to call us again. Have a great day!"
+        },
+        "name": "Closing Info Node",
+        "edges": [],
+        "id": "node-closing-info",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 896
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-closing-info",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the caller IN THEIR LANGUAGE: Thank you for your call, but this isn't something we handle. We specialize in digital solutions for plumbing and heating businesses. Feel free to call back if you have questions about that."
+        },
+        "name": "Out-of-scope Closing",
+        "edges": [],
+        "id": "node-out-of-scope",
+        "type": "conversation",
+        "display_position": {
+          "x": 943,
+          "y": 1044
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-oos",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "name": "End Call",
+        "id": "end-call-node",
+        "type": "end",
+        "display_position": {
+          "x": 1766,
+          "y": 1116
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "End the call politely IN THE CALLER'S LANGUAGE. Goodbye / Au revoir / Arrivederci."
+        }
+      }
+    ],
+    "start_node_id": "start-node",
+    "start_speaker": "agent",
+    "model_choice": {
+      "type": "cascading",
+      "model": "gpt-4.1"
+    },
+    "tool_call_strict_mode": true,
+    "knowledge_base_ids": [],
+    "kb_config": {
+      "top_k": 3,
+      "filter_score": 0.6
+    },
+    "begin_tag_display_position": {
+      "x": 46,
+      "y": -43
+    },
+    "is_published": false,
+    "flex_mode": true,
+    "is_transfer_cf": true
+  }
+}
