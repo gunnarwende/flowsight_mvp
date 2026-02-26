@@ -82,14 +82,6 @@ function GlobeIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-function StarFilledIcon({ className = "h-5 w-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
-    </svg>
-  );
-}
-
 /* ── Page ────────────────────────────────────────────────── */
 
 export default function HomePage() {
@@ -115,10 +107,6 @@ export default function HomePage() {
 
             {/* Proof indicators */}
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-navy-200">
-              <span className="flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
-                Bereits im Einsatz
-              </span>
               <span className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
                 Inkl. Website
@@ -419,64 +407,6 @@ export default function HomePage() {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6.5 Referenz — Dörfler AG ────────────────────── */}
-      <section id="referenz" className="scroll-mt-20 bg-navy-50 py-24 lg:py-32">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-gold-500">
-              Bereits im Einsatz
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Dörfler AG — Sanitär &amp; Heizung seit 1926.
-            </h2>
-            <p className="mt-4 text-lg text-navy-400">
-              Traditionsunternehmen in Oberrieden, Zürich. Website, Wizard und Dashboard
-              sind live.
-            </p>
-          </div>
-
-          <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-navy-200 bg-white p-8 shadow-sm">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-lg font-semibold text-navy-900">
-                  Dörfler AG
-                </h3>
-                <p className="mt-1 text-sm text-navy-400">
-                  Sanitär &amp; Heizung &middot; Oberrieden ZH
-                </p>
-
-                {/* Google Rating */}
-                <div className="mt-4 flex items-center gap-2 justify-center sm:justify-start">
-                  <div className="flex text-gold-500">
-                    <StarFilledIcon className="h-4 w-4" />
-                    <StarFilledIcon className="h-4 w-4" />
-                    <StarFilledIcon className="h-4 w-4" />
-                    <StarFilledIcon className="h-4 w-4" />
-                    <StarFilledIcon className="h-4 w-4 opacity-60" />
-                  </div>
-                  <span className="text-sm font-medium text-navy-900">4.7</span>
-                  <span className="text-sm text-navy-400">auf Google</span>
-                </div>
-
-                <p className="mt-4 text-sm leading-relaxed text-navy-900/70 italic">
-                  &laquo;Überzeugen Sie sich selbst — unsere Website ist live.&raquo;
-                </p>
-
-                <Link
-                  href="/kunden/doerfler-ag"
-                  className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gold-500 px-6 py-3 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
-                >
-                  Website ansehen
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </section>
