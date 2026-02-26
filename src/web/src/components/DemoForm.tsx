@@ -10,9 +10,29 @@ export function DemoForm() {
     e.preventDefault();
     setLoading(true);
 
-    // TODO: POST to /api/demo → create case in flowsight tenant + notify founder
-    // For now: client-side success only.
-    await new Promise((r) => setTimeout(r, 600));
+    try {
+      const form = new FormData(e.currentTarget);
+      const res = await fetch("/api/demo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.get("name"),
+          company: form.get("company"),
+          phone: form.get("phone"),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        alert(data?.error ?? "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      alert("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+      setLoading(false);
+      return;
+    }
 
     setSubmitted(true);
   }
