@@ -17,5 +17,5 @@ export const SITE = {
     city: "Oberrieden",
     country: "Schweiz",
   },
-  uid: "CHE-XXX.XXX.XXX", // TODO: Founder — nachschlagen auf zefix.ch
+  uid: "CHE-259.353.850",
 } as const;

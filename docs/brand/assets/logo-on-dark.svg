@@ -6,9 +6,9 @@
     font-family="Geist, Inter, system-ui, -apple-system, sans-serif"
     font-size="36"
     font-weight="600"
-    fill="#c8965a"
+    fill="#d4a843"
     letter-spacing="-0.5"
   >FlowSight</text>
-  <!-- Signal Dot — the brand mark -->
-  <circle cx="223" cy="8" r="5" fill="#c8965a"/>
+  <!-- Signal Dot — flush after "t", baseline-aligned -->
+  <circle cx="214" cy="31" r="4" fill="#d4a843"/>
 </svg>
