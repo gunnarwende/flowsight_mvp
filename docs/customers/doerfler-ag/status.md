@@ -19,9 +19,10 @@
 - Legacy: +41 44 505 74 20
 
 ## Links
-- Prod: https://flowsight-mvp.vercel.app/doerfler-ag
-- Wizard: https://flowsight-mvp.vercel.app/doerfler-ag/meldung
-- Ops: https://flowsight-mvp.vercel.app/ops/login
+- Prod: https://flowsight.ch/doerfler-ag
+- Wizard: https://flowsight.ch/doerfler-ag/meldung
+- Customer Website: https://flowsight.ch/kunden/doerfler-ag
+- Ops: https://flowsight.ch/ops/login
 
 ## Updates
 
@@ -63,5 +64,16 @@
 - **Ops Dashboard:** READY — login, cases, workflow verified.
 - **Email Deliverability:** PASS — flowsight.ch SPF/DKIM/DMARC all pass. Inbox confirmed.
 - **Billing Guards:** DONE — Twilio triggers + Peoplefone auto top-up.
-- **Reviews:** BLOCKED — awaiting Google Business Profile access (F9).
-- **Go-Live Sign-off (F11):** 3/4 modules PASS. Sole blocker: F9.
+- **Reviews:** BLOCKED — awaiting Google Business Profile access (F9). NOT Go-Live critical.
+- **Go-Live Sign-off (F11):** 3/4 modules PASS. F9 deferred — reviews nachgerüstet wenn Link da.
+
+### 2026-02-26 | CC | Customer Website High-End Rebuild
+- **Shipped:** /kunden/doerfler-ag — SSG template with 12 sections
+- **Template:** types.ts schema, registry.ts pattern, page.tsx (12 sections), ImageGallery.tsx (lightbox)
+- **Brand:** #2b6cb0 (professional blue from old site), kirschrot #c41e3a for Notfall
+- **Content:** All verified from doerflerag.ch (no fabricated data). 2 real Google Reviews (Martin B. 5★, Markus Widmer 5★).
+- **Images:** 67 curated from 297 crawled (Puppeteer). Quality limited (old site thumbnails).
+- **Wizard integrated:** Nav + Hero CTA + Contact banner → /doerfler-ag/meldung
+- **Services:** Expandable with description + horizontal scrollable gallery + lightbox
+- **Commits:** fa6586e → 702d572 → 61d4f00 → 92fb55c → 5aaae1d → 3a30ae9
+- **Lessons Learned:** docs/customers/lessons-learned.md (intake checklist, golden rules, time estimates)

@@ -67,6 +67,29 @@ These are Founder-owned tasks that run in parallel. CC does not implement these 
 | F4 | WhatsApp Sandbox → Prod evaluation | pending | Trigger: when Ops Alerts need SLA or sandbox expires. Evaluate Twilio WhatsApp Business API costs. |
 | F7 | Data protection statements | pending | Customer disclosure/consent copy for Voice ("Dieses Gespräch wird nicht aufgezeichnet") + Wizard (privacy checkbox). Collect DPA links from each subprocessor (see docs/compliance/data_processing.md). No legal novel — just "ready to show" pack. |
 
+## 40h Go-Live Sprint (2026-02-26)
+
+### CC Blocks
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 1 | DemoForm Backend — `/api/demo` → E-Mail an Founder | **DONE** ✅ | POST → Resend email, commit 9fa311f |
+| 2 | Dörfler AG Website — High-End Rebuild (12 Sektionen, Template, Lightbox) | **DONE** ✅ | /kunden/doerfler-ag live, commits fa6586e → 5aaae1d |
+| 3 | SSOT Update — STATUS + OPS_BOARD + Customer File | **DONE** ✅ | This update |
+| 4 | Ops Dashboard Screenshot — echten (redacted) Screenshot, Mockup ersetzen | OFFEN | |
+| 5 | Mobile-Fixes — Feedback aus Founder iPhone-Test einarbeiten | OFFEN | Wartet auf Founder Block C |
+| 6 | Voice Smoke — Regressions-Call, PLZ-Qualität prüfen | OFFEN | |
+| 7 | End-to-End Evidence — kompletter Flow dokumentiert | OFFEN | |
+
+### Founder Blocks
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| A | F9: Google Review Link (oder Entscheid: ohne Reviews launchen) | OFFEN | F9 ist NICHT Go-Live-kritisch — nachrüsten wenn Link da |
+| B | F11: E2E Dry Run — als Kunde anrufen, Wizard, Ops-Flow | OFFEN | |
+| C | Mobile QA — flowsight.ch + /doerfler-ag auf iPhone | OFFEN | |
+| D | Dörfler Input — Logo, Farbe, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert |
+| E | Go/No-Go Entscheid | OFFEN | |
+| F | Kommunikation an Dörfler | OFFEN | |
+
 ## Completed (this sprint)
 
 | # | Deliverable | Owner | Closed | Evidence |
@@ -75,3 +98,6 @@ These are Founder-owned tasks that run in parallel. CC does not implement these 
 | — | Strang C: WhatsApp + Morning Report | CC | 2026-02-25 | Welle 23-24 |
 | — | Strang A: Entitlements | CC + Founder | 2026-02-25 | Welle 24 + migration applied |
 | — | Strang B: Peoplefone Front Door | CC + Founder | 2026-02-25 | Welle 25 (case 255136a3) |
+| — | DemoForm Backend | CC | 2026-02-26 | /api/demo → Resend email |
+| — | Customer Website Template + Dörfler AG | CC | 2026-02-26 | /kunden/doerfler-ag (12 sections, SSG, lightbox) |
+| — | Lessons Learned Doc | CC | 2026-02-26 | docs/customers/lessons-learned.md |

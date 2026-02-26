@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-25
+**Datum:** 2026-02-26
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -29,7 +29,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Email Notifications** | LIVE ✅ | Ops notification + reporter confirmation + review request |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell (E2E verified) |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
-| **Marketing Website** | LIVE ✅ | FlowSight GmbH (homepage, pricing, legal) |
+| **Marketing Website** | LIVE ✅ | FlowSight GmbH (homepage, pricing, legal, demo booking) |
+| **Demo Booking** | LIVE ✅ | /api/demo → E-Mail an Founder (Resend) |
+| **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox, wizard CTA) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
 
@@ -43,13 +45,15 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **Go-Live Blocker:** F9 (Google Business review link) → blockiert F11 Reviews Sign-off
-- **Founder P0:** F10 DONE, F5 PASS, F2 PASS, F9 BLOCKED, F11 PARTIAL
+- **40h Go-Live Sprint** läuft — CC Block 1+2+3 DONE, Block 4-7 offen
+- **Go-Live Blocker:** Keiner mehr. F9 (Google Review Link) ist NICHT Go-Live-kritisch — wird nachgerüstet.
+- **Founder P0:** F10 DONE, F5 PASS, F2 PASS. F11 PARTIAL (Founder Blocks B-F offen).
 - **Founder P1:** F6 DONE, F1 DONE, F3 DOCUMENTED
 - **Founder P2:** F12, F4, F7 — parked (trigger-based)
-- **CC:** nicht blockiert. Nächster CC-Task erst nach Go-Live (Strang D: Ops polish).
+- **CC:** Block 4 (Ops Screenshot), Block 6 (Voice Smoke), Block 7 (E2E Evidence) next. Block 5 wartet auf Founder Mobile QA.
+- **Customer Website Template:** Shipped. Neuer Kunde = 1 Config-Datei + 1 Registry-Zeile.
 
-Vollständiger Execution-Plan: `docs/OPS_BOARD.md`
+Vollständiger Execution-Plan + Sprint-Tracking: `docs/OPS_BOARD.md`
 
 ## Fixe Entscheidungen (No Drift)
 
