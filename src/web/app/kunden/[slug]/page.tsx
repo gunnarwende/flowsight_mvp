@@ -238,7 +238,7 @@ function ReviewsSection({
         </div>
 
         {reviews.highlights.length > 0 && (
-          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+          <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-6 sm:flex-row sm:justify-center">
             {reviews.highlights.map((r, i) => (
               <div key={i} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-6">
                 <div className="mb-3 flex gap-0.5">
