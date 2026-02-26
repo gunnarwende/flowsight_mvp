@@ -93,6 +93,10 @@ After configuring:
 
 If you see `decision: "missing_fields"` in Vercel logs, check which fields are in `missing_fields[]` and adjust the Retell agent prompt/schema.
 
+### PLZ Readback Quality Gate
+
+PLZ confirmation must be fluent and intelligible — spoken as a connected number (e.g., "acht-neun-vier-zwei"), not with stuttering pauses between digits. If readback is unnatural, adjust the agent prompt's PLZ confirmation instruction. See also: acceptance checklist point #18 in `voice_multilingual_acceptance.md`.
+
 ## Allowed urgency values
 
 The webhook handler **only** accepts these exact strings (lowercase):

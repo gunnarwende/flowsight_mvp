@@ -63,8 +63,14 @@
 
 Update STATUS.md Recent Updates with incident summary.
 
+## Supabase Backup Note
+
+Free plan = **no automatic backups**. See [backup_awareness.md](backup_awareness.md) for risk assessment + upgrade triggers. For critical data recovery pre-Pro: manual CSV export via Supabase Dashboard.
+
 ## Cross-References
 - Secret incidents: [99-secrets-policy.md](99-secrets-policy.md)
 - Voice debugging: [voice_debug.md](voice_debug.md)
 - Monitoring alerts: [monitoring.md](monitoring.md)
 - Device loss: [98-device-loss.md](98-device-loss.md)
+- Backup awareness: [backup_awareness.md](backup_awareness.md)
+- Cost triggers: [cost_triggers.md](cost_triggers.md)

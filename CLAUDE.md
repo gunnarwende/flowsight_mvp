@@ -10,14 +10,14 @@
 - Voice: intake-only, max 7 questions, sanitär-spezifisch, Recording OFF
 
 ## SSOT Paths
-- Company status: docs/STATUS.md
+- Company status + document map: docs/STATUS.md
+- Roadmap + execution: docs/OPS_BOARD.md
 - Customer files: docs/customers/<slug>/status.md
 - Contracts: docs/architecture/contracts/
 - Runbooks: docs/runbooks/
-- Agent briefs: docs/agents/
+- Compliance: docs/compliance/
 - Env var registry: docs/architecture/env_vars.md
-- Brand/design: docs/brand/style_dna.md
-- QA gates: docs/qa/high_end_gates.md
+- Archive (wave log, north star v1): docs/archive/
 
 ## Conventions
 - Library code: src/web/src/lib/*

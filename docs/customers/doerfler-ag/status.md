@@ -5,15 +5,23 @@
 - Notrufnummer: vorhanden
 
 ## Status
-- Setup: pending
-- Website/Wizard: pending
-- Voice: pending
-- Case-System: pending
-- Analytics: pending
+- Setup: DONE (tenant 48cae49e, modules: all true)
+- Website/Wizard: LIVE (wizard smoke PASS — case 5fb36e99)
+- Voice: LIVE (E2E PASS — call_cb50d6fd → case 9d89cf6b → email)
+- Ops Dashboard: LIVE (login + workflow verified)
+- Reviews: BLOCKED (F9 — no Google Business Profile link)
+- Email Deliverability: PASS (SPF/DKIM/DMARC all pass, inbox confirmed)
+- Analytics: pending (Sentry alerts configured, morning report operational)
+
+## Phone Numbers
+- Brand: +41 44 552 09 19 (Peoplefone, active)
+- Twilio Entry: +41 44 505 30 19 (SIP → Retell)
+- Legacy: +41 44 505 74 20
 
 ## Links
-- Vercel Preview: -
-- Prod: -
+- Prod: https://flowsight-mvp.vercel.app/doerfler-ag
+- Wizard: https://flowsight-mvp.vercel.app/doerfler-ag/meldung
+- Ops: https://flowsight-mvp.vercel.app/ops/login
 
 ## Updates
 
@@ -48,3 +56,12 @@
 - **Evidence:** web_demo_evidence.md — 25/32 QA gate items passed, 7 deferred (wizard, case creation).
 - **Assumptions:** Palette, slogan, service area — all labeled in footer for founder review.
 - **Next:** Deploy to Vercel preview → share with founder → confirm assumptions → Phase B.
+
+### 2026-02-25 | Head Ops + Founder | Go-Live Gate Progress
+- **Voice E2E:** PASS — Brand door (Peoplefone → Twilio → Retell) live. Proof: call_cb50d6fd → case 9d89cf6b → email.
+- **Wizard E2E:** PASS — submit → case 5fb36e99 → notification emails (ops + reporter).
+- **Ops Dashboard:** READY — login, cases, workflow verified.
+- **Email Deliverability:** PASS — flowsight.ch SPF/DKIM/DMARC all pass. Inbox confirmed.
+- **Billing Guards:** DONE — Twilio triggers + Peoplefone auto top-up.
+- **Reviews:** BLOCKED — awaiting Google Business Profile access (F9).
+- **Go-Live Sign-off (F11):** 3/4 modules PASS. Sole blocker: F9.

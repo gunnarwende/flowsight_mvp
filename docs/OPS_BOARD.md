@@ -1,6 +1,6 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-25
+**Updated:** 2026-02-25 (EOD P0 update)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
 
 ## NOW (Week 1-2, in flight)
@@ -33,41 +33,39 @@
 | L4 | Sales/GTM system | Founder | Repeatable sales motion needed |
 | L5 | Founder Agent v1 (Retell) | CC + Founder | Strang D stable, separate plan |
 | L6 | Founder Ops Inbox | CC + Founder | Strang D stable, separate plan |
+| L7 | PLZ readback voice quality | CC + Founder | Observed: digit-by-digit cadence unnatural ("acht … neun … vier … zwei"), hard to understand. Retell prompt tuning (Founder publishes via Dashboard). |
 
 ## Founder Backlog (on-the-business, parallel, CC not blocked)
 
 These are Founder-owned tasks that run in parallel. CC does not implement these but tracks them here for SSOT.
 
-### Security & Access
+> **F8 merged into F2** (same scope: email deliverability). 11 items, no scope lost.
+
+### P0 — Go-Live Critical (Dörfler)
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| F6 | Account security / 2FA audit | pending | Enable 2FA + verify recovery codes for: Vercel, Supabase, Twilio, Retell, Resend, Sentry, Peoplefone, GitHub. Document who has access (Founder-only vs CC read-only). |
+| F10 | Peoplefone/Twilio billing guard | **DONE** ✅ | Twilio: usage triggers $10/$25. Peoplefone: auto top-up <CHF 20 → +CHF 50 + auto-renew. |
+| F5 | Voice Regression Call Gate | **PASS** ✅ | E2E: call_cb50d6fd… → case 9d89cf6b → email received. Full path verified. |
+| F2 | Email Deliverability Gate (Dörfler) | **PASS** ✅ | flowsight.ch verified in Resend. DMARC p=none. Inbox test: SPF=pass, DKIM=pass, DMARC=pass. |
+| F9 | Google Business review link (Dörfler) | **BLOCKED** ⏳ | No customer Google Business Profile access / no official review link yet. |
+| F11 | Customer go-live sign-off (Dörfler) | **PARTIAL** ⏳ | Voice: PASS. Wizard: PASS (case 5fb36e99). Ops: READY. Reviews: blocked by F9. |
 
-### Compliance & Privacy
-
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| F7 | Data protection statements | pending | Customer disclosure/consent copy for Voice ("Dieses Gespräch wird nicht aufgezeichnet") + Wizard (privacy checkbox). Collect DPA links from each subprocessor (see docs/compliance/data_processing.md). No legal novel — just "ready to show" pack. |
-| F2 | Retention periods decision | pending | Decide case + attachment retention (see TBD items in docs/compliance/data_processing.md). CC updates doc when decided. |
-
-### Infrastructure & Billing
+### P1 — Week 2
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| F1 | Cost thresholds + upgrade triggers | pending | Document: Vercel Hobby limits, Twilio/Retell per-minute, Supabase plan, Resend quota. Define upgrade triggers (e.g., >100 calls/month). |
-| F10 | Peoplefone/Twilio billing guard | pending | Set spend caps / credit alerts in Twilio Console + Peoplefone Portal. Prevent "suddenly dead" from exhausted credit. |
-| F3 | Supabase backup awareness | pending | Document: current plan, backup interval, restore steps. Add 5-line section to 90-incident-triage.md. |
+| F6 | Account security / 2FA audit | **DONE** ✅ | docs/runbooks/access_matrix.md. 6/8 services 2FA enabled. Gaps: Retell + Peoplefone (no 2FA available). |
+| F1 | Cost thresholds + upgrade triggers | **DONE** ✅ | docs/runbooks/cost_triggers.md. 6 vendors, trigger + action per vendor. |
+| F3 | Supabase backup awareness | **DOCUMENTED** ⚠️ | Free plan = no backups. Risk accepted. Upgrade trigger defined. docs/runbooks/backup_awareness.md + section in incident-triage. |
+
+### P2 — Trigger-based (park)
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| F12 | Retention decisions | pending | Decide case + attachment retention periods (see TBD items in docs/compliance/data_processing.md). CC updates doc + implements enforcement when decided. |
 | F4 | WhatsApp Sandbox → Prod evaluation | pending | Trigger: when Ops Alerts need SLA or sandbox expires. Evaluate Twilio WhatsApp Business API costs. |
-
-### Per-Customer Setup Gates
-
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| F8 | Domain/DNS + email setup (Dörfler) | pending | Resend domain verified? DKIM/SPF/DMARC clean? Inbox test passed? (Follows deliverability gate in onboarding Step 3b.) |
-| F9 | Google Business review link (Dörfler) | pending | Verify GOOGLE_REVIEW_URL is correct + review page is live. Test one review request via ops. |
-| F11 | Customer go-live sign-off (Dörfler) | pending | Per-module checklist: Voice (test call PASS), Wizard (smoke PASS), Ops (login + workflow PASS), Reviews (send + receive PASS). Formal "live" declaration. |
-| F5 | Peoplefone regression call | pending | Call +41 44 505 30 19 directly (Twilio Entry, no Peoplefone hop) to verify direct path still works. |
+| F7 | Data protection statements | pending | Customer disclosure/consent copy for Voice ("Dieses Gespräch wird nicht aufgezeichnet") + Wizard (privacy checkbox). Collect DPA links from each subprocessor (see docs/compliance/data_processing.md). No legal novel — just "ready to show" pack. |
 
 ## Completed (this sprint)
 

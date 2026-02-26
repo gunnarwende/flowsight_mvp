@@ -23,6 +23,7 @@
 15. [ ] **Back-transfer DE:** on INTL agent, say "Deutsch bitte" → verify transfer back to DE agent (swap_to_de_agent fires, caller hears Susi's voice)
 16. [ ] **Natural latency:** typical response lag < ~2s after user turn (no 6–10s waits); `responsiveness: 0.9` on both agents
 17. [ ] **Back-transfer continuity:** switching to German does NOT restart intake; DE agent continues with preserved context (no full re-greeting)
+18. [ ] **PLZ readback fluency:** PLZ confirmation is spoken as a fluent number (e.g., "acht-neun-vier-zwei"), not stuttered with long pauses; caller can understand without prior knowledge of the PLZ
 
 ## Evidence Archive
 
