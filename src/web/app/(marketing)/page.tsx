@@ -45,21 +45,6 @@ function ShieldIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-function ClockIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-    </svg>
-  );
-}
-
-function ChatIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
-    </svg>
-  );
-}
 
 function CalendarIcon({ className = "h-6 w-6" }: { className?: string }) {
   return (
@@ -85,13 +70,6 @@ function CameraIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-function GlobeIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A9 9 0 0 1 3 12c0-1.47.353-2.856.978-4.082" />
-    </svg>
-  );
-}
 
 /* ── Page ────────────────────────────────────────────────── */
 
@@ -265,114 +243,91 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. How it works ──────────────────────────────── */}
+      {/* ── 4. Prozessflow — "So funktioniert FlowSight." ── */}
       <section id="funktionen" className="scroll-mt-20 bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              So funktioniert&apos;s
+              So funktioniert FlowSight.
             </h2>
             <p className="mt-4 text-lg text-navy-400">
-              Drei Schritte — vom Anruf bis zur Google-Bewertung.
+              Von der Meldung bis zur 5-Sterne-Bewertung — in vier Schritten.
             </p>
           </div>
 
-          <div className="relative mt-16 grid gap-8 sm:grid-cols-3">
-            {/* Connecting line (desktop) */}
-            <div className="absolute left-0 right-0 top-[2.75rem] hidden h-px bg-gradient-to-r from-transparent via-navy-200 to-transparent sm:block" aria-hidden="true" />
+          <div className="relative mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Connecting line — desktop horizontal */}
+            <div className="absolute left-[12.5%] right-[12.5%] top-[3.5rem] hidden h-0.5 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-300 lg:block" aria-hidden="true" />
 
             {[
               {
                 step: "1",
                 title: "Meldung geht ein",
-                desc: "Per Anruf an Ihren Voice Agent oder über das Online-Meldeformular auf Ihrer Website.",
+                desc: "Per Anruf an Ihren KI-Telefonassistenten oder über das Online-Formular auf Ihrer Website — 24/7, auch nachts und am Wochenende.",
+                icon: (
+                  <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                    <circle cx="20" cy="4" r="3.5" fill="currentColor" strokeWidth={0} opacity={0.3} />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747" strokeWidth={0} />
+                  </svg>
+                ),
               },
               {
                 step: "2",
                 title: "Fall wird erstellt",
-                desc: "PLZ, Ort, Kategorie, Dringlichkeit — alles strukturiert. Sie erhalten eine E-Mail, der Melder eine Bestätigung.",
+                desc: "PLZ, Ort, Kategorie, Dringlichkeit — alles strukturiert. Sie erhalten eine E-Mail, der Melder eine Bestätigung. Automatisch.",
+                icon: (
+                  <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                  </svg>
+                ),
               },
               {
                 step: "3",
                 title: "Sie übernehmen",
-                desc: "Termin planen, Fotos anhängen, Fall abschliessen — und per Knopfdruck eine 5-Sterne-Review-Anfrage senden. Alles im Dashboard.",
+                desc: "Termin planen, Fotos anhängen, Fall abschliessen — alles im Ops-Dashboard. Kein Zettel, kein Chaos.",
+                icon: (
+                  <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m9 14.25 2.25 2.25L15 12" />
+                  </svg>
+                ),
               },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="relative rounded-2xl border border-navy-200/60 bg-white p-8 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="relative z-10 flex h-11 w-11 items-center justify-center rounded-full bg-gold-500 text-sm font-bold text-navy-950 shadow-sm">
-                  {item.step}
-                </div>
-                <h3 className="mt-5 text-lg font-semibold text-navy-900">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-navy-900/70">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              {
+                step: "4",
+                title: "5-Sterne-Bewertung",
+                desc: "Per Knopfdruck eine Google-Review-Anfrage an den Kunden senden. Mehr Bewertungen, mehr Aufträge.",
+                icon: (
+                  <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                  </svg>
+                ),
+              },
+            ].map((item, idx) => (
+              <div key={item.step} className="relative flex flex-col items-center text-center">
+                {/* Mobile connecting arrow (between items) */}
+                {idx > 0 && (
+                  <div className="mb-4 flex h-8 items-center text-gold-400 lg:hidden" aria-hidden="true">
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                  </div>
+                )}
 
-      {/* ── 5. Features grid ─────────────────────────────── */}
-      <section className="bg-navy-50 py-24 lg:py-32">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Was FlowSight kann.
-            </h2>
-            <p className="mt-4 text-lg text-navy-400">
-              Alles, was Ihr Betrieb braucht — in einem System.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                icon: <GlobeIcon className="h-5 w-5" />,
-                title: "Moderne Website",
-                desc: "Professionelle Website in Ihrem Firmenlook — mobil-optimiert, SEO-ready, inkl. Online-Schadenmelde-Formular.",
-              },
-              {
-                icon: <PhoneIcon className="h-5 w-5" />,
-                title: "Voice Agent",
-                desc: "24/7 Anrufannahme — mehrsprachig. Versteht Schweizerdeutsch, Hochdeutsch, Englisch und Französisch.",
-              },
-              {
-                icon: <ChatIcon className="h-5 w-5" />,
-                title: "Online-Meldeformular",
-                desc: "Branded Wizard auf Ihrer Website. Kunden melden Schäden rund um die Uhr — ohne Anruf.",
-              },
-              {
-                icon: <ClockIcon className="h-5 w-5" />,
-                title: "Ops-Dashboard",
-                desc: "Alle Fälle auf einen Blick. Status, Termine, Anhänge — strukturiert und sofort einsatzbereit.",
-              },
-              {
-                icon: <CalendarIcon className="h-5 w-5" />,
-                title: "Terminplanung",
-                desc: "Termin direkt aus dem Fall setzen. Der Melder erhält eine ICS-Einladung per E-Mail.",
-              },
-              {
-                icon: <ShieldIcon className="h-5 w-5" />,
-                title: "Datenschutz",
-                desc: "Keine Gesprächsaufnahmen. Daten auf EU-Servern. DSGVO-konform. Schweizer Hosting.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-navy-200/60 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
+                {/* Icon circle */}
+                <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-navy-50 text-gold-500 ring-4 ring-warm-white">
                   {item.icon}
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-navy-900">
+
+                {/* Step number */}
+                <span className="mt-4 flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-xs font-bold text-navy-950">
+                  {item.step}
+                </span>
+
+                <h3 className="mt-3 text-lg font-semibold text-navy-900">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
+                <p className="mt-2 max-w-xs text-sm leading-relaxed text-navy-900/70">
                   {item.desc}
                 </p>
               </div>
@@ -460,12 +415,12 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#demo"
+              <Link
+                href="/demo"
                 className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
               >
                 Demo vereinbaren
-              </a>
+              </Link>
             </div>
 
             {/* Professional — highlighted */}
@@ -497,12 +452,12 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#demo"
+              <Link
+                href="/demo"
                 className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
                 Demo vereinbaren
-              </a>
+              </Link>
             </div>
 
             {/* Premium */}
@@ -530,16 +485,20 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#demo"
+              <Link
+                href="/demo"
                 className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
               >
                 Demo vereinbaren
-              </a>
+              </Link>
             </div>
           </div>
 
-          <p className="mt-8 text-center">
+          <p className="mt-8 text-center text-sm font-medium italic text-navy-900/60">
+            Setup kostenfrei · Erster Monat gratis · 30-Tage-Versprechen
+          </p>
+
+          <p className="mt-4 text-center">
             <Link
               href="/pricing"
               className="text-sm font-semibold text-gold-600 transition-colors hover:text-gold-500"
@@ -547,6 +506,30 @@ export default function HomePage() {
               Alle Details zu den Preisen &rarr;
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* ── 7b. No-Brainer-Offer ─────────────────────────── */}
+      <section className="bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32">
+        <div className="mx-auto max-w-3xl px-6 text-center lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Testen Sie FlowSight — ohne Risiko.
+          </h2>
+          <p className="mt-4 text-xl font-semibold text-gold-400">
+            Setup kostenfrei. Erster Monat gratis.
+          </p>
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-navy-200">
+            Unser Versprechen: Wenn Sie nach 30&nbsp;Tagen nicht mindestens
+            10&nbsp;Fälle strukturiert in Ihrem Dashboard haben und Ihre erste
+            5-Sterne-Google-Bewertung erhalten haben — ist der gesamte erste
+            Monat für Sie kostenfrei.
+          </p>
+          <Link
+            href="/demo"
+            className="mt-10 inline-block rounded-lg bg-gold-500 px-10 py-4 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+          >
+            Demo vereinbaren
+          </Link>
         </div>
       </section>
 

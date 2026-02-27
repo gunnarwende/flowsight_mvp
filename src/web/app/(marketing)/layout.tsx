@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/src/lib/marketing/constants";
 import { Logo } from "@/src/components/Logo";
+import { MobileNav } from "@/src/components/MobileNav";
 
 export default function MarketingLayout({
   children,
@@ -12,18 +13,19 @@ export default function MarketingLayout({
       {/* ── Navigation ─────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 border-b border-navy-200 bg-warm-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 lg:px-8">
-          <a href="/" aria-label="FlowSight Home">
+          <Link href="/" aria-label="FlowSight Home">
             <Logo variant="on-light" height={26} />
-          </a>
+          </Link>
 
           {/* Desktop links */}
           <div className="hidden items-center gap-8 md:flex">
-            <Link
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- native <a> for hash-scroll on same page */}
+            <a
               href="/#funktionen"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
               Funktionen
-            </Link>
+            </a>
             <Link
               href="/pricing"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
@@ -50,13 +52,16 @@ export default function MarketingLayout({
             </a>
           </div>
 
-          {/* Mobile CTA only */}
-          <a
-            href={SITE.demoUrl}
-            className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 md:hidden"
-          >
-            Demo vereinbaren
-          </a>
+          {/* Mobile: Hamburger + CTA */}
+          <div className="flex items-center gap-2 md:hidden">
+            <a
+              href={SITE.demoUrl}
+              className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400"
+            >
+              Demo vereinbaren
+            </a>
+            <MobileNav />
+          </div>
         </div>
       </nav>
 
@@ -82,12 +87,13 @@ export default function MarketingLayout({
               </p>
               <ul className="mt-4 space-y-3 text-sm">
                 <li>
-                  <Link
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- native <a> for hash-scroll */}
+                  <a
                     href="/#funktionen"
                     className="transition-colors hover:text-gold-400"
                   >
                     Funktionen
-                  </Link>
+                  </a>
                 </li>
                 <li>
                   <Link

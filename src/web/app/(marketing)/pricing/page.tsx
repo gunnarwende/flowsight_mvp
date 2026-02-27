@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE } from "@/src/lib/marketing/constants";
+import Link from "next/link";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
@@ -119,8 +119,8 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <a
-                  href="#demo"
+                <Link
+                  href="/demo"
                   className={`mt-8 block w-full rounded-lg py-3.5 text-center text-sm font-semibold transition-all ${
                     tier.highlighted
                       ? "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
@@ -128,7 +128,7 @@ export default function PricingPage() {
                   }`}
                 >
                   Demo vereinbaren
-                </a>
+                </Link>
               </div>
             ))}
           </div>
