@@ -1,6 +1,6 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-27 (W1–W4 GBP Website-Optimierung shipped)
+**Updated:** 2026-02-27 (OPS Dashboard Redesign + Website 4-Step Flow shipped)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier. Kein zweites Dokument.
 
@@ -75,6 +75,8 @@ Trigger-basiert. Kein Overlap mit NOW.
 | N9 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA | OFFEN |
 | N10 | **Voice Agent E-Mail Zusammenfassung → Deutsch** — Retell Custom Analysis Prompt → deutsche Ausgabe | CC | Kundenfeedback | OFFEN |
 | N11 | **Adress-Autocomplete** — Swiss Post API oder Google Places (braucht API-Key + Kosten) | CC | Post-MVP, Kundenfeedback | OFFEN |
+| N12 | **OPS Fall-Detail UX: Aktionen ohne Speichern-Zwang** — "Termin senden" und "Review anfragen" erfordern aktuell Speichern→Schliessen→Erneut Öffnen. Aktionen sollen direkt ausführbar sein (z.B. als Standalone-Buttons ausserhalb des Bearbeitungsmodus, oder Form bleibt nach Speichern offen). | CC | E2E-Test Founder 2026-02-27 | BUG |
+| N13 | **OPS Fall-Detail: Kachelhöhe Kontakt ↔ Falldetails angleichen** — Sidebar-Karte "Kontakt" ist nicht auf gleicher Höhe wie Main-Karte "Falldetails". Visuell unruhig. | CC | E2E-Test Founder 2026-02-27 | BUG |
 
 ---
 
@@ -115,6 +117,9 @@ Trigger-basiert. Kein Overlap mit NOW.
 | — | Google Business Profil (Setup + Bilder) | Founder + CC | 2026-02-27 | GBP live, 7 Bilder (docs/brand/gbp/), Service-Area, Call CTA, Booking Link |
 | — | LinkedIn Profil (persönlich) | Founder | 2026-02-27 | linkedin.com/in/gunnar-wende |
 | — | Website-Optimierung GBP (W1–W4) | CC | 2026-02-27 | SEO metadata, Footer Kontakt, /demo Booking Page, KI- keyword. Commit 2bd7094 + 1467eef. |
+| — | OPS Dashboard Redesign (Light Theme, Sidebar, Timeline, Manual Cases) | CC | 2026-02-27 | Route Groups (auth/dashboard), OpsShell, CaseTimeline, CreateCaseModal, CaseListClient, seq_number (FS-XXXX), case_events, reporter_name, 3 SQL migrations. Commits d97b90d + 2373a27. |
+| — | OPS Dashboard Polish (Dropdowns, E-Mail IDs, Farben, Alignment) | CC | 2026-02-27 | Filter-Dropdowns statt Chips, FS-XXXX in E-Mails, bg-slate-100, KPI-Akzente, Notizen immer sichtbar, Edit-Button prominent. Commit 2373a27. |
+| — | Website 4-Step Process Flow + MobileNav + No-Brainer-Offer | CC | 2026-02-27 | "So funktioniert FlowSight" (4 Schritte), MobileNav Hamburger, Risk-free Offer Section, Link→/demo. Commit 440ad97. |
 
 ---
 

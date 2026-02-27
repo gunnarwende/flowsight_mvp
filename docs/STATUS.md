@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-27 (W1–W4 GBP Website-Optimierung shipped)
+**Datum:** 2026-02-27 (OPS Dashboard Redesign + Website Polish shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -25,7 +25,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ digit-by-digit, Language Gate |
-| **Ops Dashboard** | LIVE ✅ | /ops — cases, scheduling, ICS invite, attachments, reviews |
+| **Ops Dashboard** | LIVE ✅ | /ops — Light Theme, Sidebar, seq_number (FS-XXXX), Timeline (case_events), Manual Cases, KPI-Cards, CSV-Export, Dropdown-Filter, Google Maps Links |
 | **Email Notifications** | LIVE ✅ | Ops notification + reporter confirmation + review request |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell (E2E verified) |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
@@ -47,12 +47,15 @@ Details: `docs/customers/doerfler-ag/status.md`
 ## Aktueller Stand
 
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
-- **Website-Optimierung GBP (W1–W4)** shipped ✅ — SEO metadata (Sanitär & Heizung Keywords, OG + Twitter Cards), Footer Kontakt-Spalte, /demo Booking-Page (tel: + MS Bookings), Hero "KI-Telefonassistent".
+- **OPS Dashboard Redesign** shipped ✅ — Light Theme, Sidebar (OpsShell), seq_number FS-XXXX, case_events Timeline, Manual Cases (CreateCaseModal), KPI-Cards, CSV-Export, Dropdown-Filter, Google Maps Links. 3 SQL Migrations (reporter_name, seq_number, case_events). Route Groups (auth)/(dashboard). E-Mails zeigen FS-XXXX statt UUID.
+- **Website Polish** shipped ✅ — "So funktioniert FlowSight" (4 Schritte statt 3), MobileNav Hamburger, "No-Brainer-Offer" Section (30-Tage-Versprechen), Link→/demo Navigation.
+- **2 bekannte Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe Kontakt↔Falldetails). Tracked in OPS_BOARD.md.
+- **Website-Optimierung GBP (W1–W4)** shipped ✅ — SEO metadata, Footer Kontakt-Spalte, /demo Booking-Page, Hero "KI-Telefonassistent".
 - **Google Business Profil** live ✅ — Service-Area Business (Zürichsee linkes Ufer), CTA = Call (Lisa), Booking-Link aktiv (MS Bookings), 7 GBP-Bilder.
 - **LinkedIn Profil** erstellt ✅ — Gunnar Wende, Gründer FlowSight GmbH.
 - **Sales Voice Agent** shipped — "Lisa", KI-Disclosure, DE/INTL, Lead-E-Mail funktioniert.
 - **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
-- **Nächster Schritt CC:** Kein offener CC-Block. Bereit für NEXT-Phase (trigger-basiert nach Go-Live).
+- **Nächster Schritt CC:** 2 Bugs (N12, N13) fixen. Danach bereit für NEXT-Phase (trigger-basiert nach Go-Live).
 - **Nächster Schritt Founder:** E2E Go-Live Checklist (6 Tests, ~4h) → Go/No-Go Entscheid.
 - **SSOT konsolidiert:** `open_tasks.md` → Archiv. OPS_BOARD.md = einziger Task-Tracker.
 
