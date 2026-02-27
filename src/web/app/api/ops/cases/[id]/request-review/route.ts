@@ -91,6 +91,13 @@ export async function POST(
     return NextResponse.json({ error: "email_send_failed" }, { status: 502 });
   }
 
+  // review_requested event (fire-and-forget)
+  await supabase.from("case_events").insert({
+    case_id: id,
+    event_type: "review_requested",
+    title: "Review-Anfrage an Kunden gesendet",
+  }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+
   // ── Set review_sent_at ────────────────────────────────────────────────
   const { error: updateError } = await supabase
     .from("cases")

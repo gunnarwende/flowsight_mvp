@@ -212,6 +212,15 @@ export async function POST(
       });
     }
 
+    // invite_sent event (fire-and-forget)
+    const svc = getServiceClient();
+    await svc.from("case_events").insert({
+      case_id: id,
+      event_type: "invite_sent",
+      title: "Termineinladung gesendet",
+      metadata: { provider_message_id: data?.id ?? null },
+    }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+
     return respond(200, { ok: true }, {
       decision: "sent",
       scheduled_at_present: true,

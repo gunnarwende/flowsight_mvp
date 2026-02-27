@@ -9,6 +9,14 @@ import { getAuthClient } from "@/src/lib/supabase/server-auth";
 
 const VALID_STATUSES = ["new", "contacted", "scheduled", "done", "archived"] as const;
 
+const STATUS_LABELS: Record<string, string> = {
+  new: "Neu",
+  contacted: "Kontaktiert",
+  scheduled: "Geplant",
+  done: "Erledigt",
+  archived: "Archiviert",
+};
+
 const OPS_UPDATABLE_FIELDS = [
   "status",
   "assignee_text",
@@ -17,6 +25,7 @@ const OPS_UPDATABLE_FIELDS = [
   "contact_email",
   "street",
   "house_number",
+  "reporter_name",
 ] as const;
 
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
@@ -50,17 +59,16 @@ export async function GET(
 
   try {
     const supabase = getServiceClient();
-    const { data: row, error } = await supabase
-      .from("cases")
-      .select("*")
-      .eq("id", id)
-      .single();
+    const [{ data: row, error }, { data: events }] = await Promise.all([
+      supabase.from("cases").select("*").eq("id", id).single(),
+      supabase.from("case_events").select("*").eq("case_id", id).order("created_at"),
+    ]);
 
     if (error || !row) {
       return NextResponse.json({ error: "Case not found." }, { status: 404 });
     }
 
-    return NextResponse.json(row);
+    return NextResponse.json({ ...row, events: events ?? [] });
   } catch (err) {
     Sentry.captureException(err, {
       tags: { area: "api", feature: "ops_cases" },
@@ -128,12 +136,20 @@ export async function PATCH(
 
   try {
     const supabase = getServiceClient();
+
+    // Read old status before update (for status_changed event)
+    let oldStatus: string | undefined;
+    if ("status" in update) {
+      const { data: old } = await supabase.from("cases").select("status").eq("id", id).single();
+      oldStatus = old?.status;
+    }
+
     const { data: row, error } = await supabase
       .from("cases")
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, assignee_text, scheduled_at, internal_notes, contact_email, street, house_number, updated_at"
+        "id, status, assignee_text, scheduled_at, internal_notes, contact_email, street, house_number, reporter_name, updated_at"
       )
       .single();
 
@@ -145,6 +161,27 @@ export async function PATCH(
         { error: "Case not found or update failed." },
         { status: 404 }
       );
+    }
+
+    // Insert events (fire-and-forget, errors → Sentry)
+    if ("status" in update && oldStatus && oldStatus !== update.status) {
+      const newStatus = update.status as string;
+      await supabase.from("case_events").insert({
+        case_id: id,
+        event_type: "status_changed",
+        title: `Status geändert: ${STATUS_LABELS[oldStatus] ?? oldStatus} → ${STATUS_LABELS[newStatus] ?? newStatus}`,
+        metadata: { from: oldStatus, to: newStatus, user_id: user.id },
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
+
+    const nonStatusFields = Object.keys(update).filter((f) => f !== "status");
+    if (nonStatusFields.length > 0) {
+      await supabase.from("case_events").insert({
+        case_id: id,
+        event_type: "fields_updated",
+        title: `Felder aktualisiert: ${nonStatusFields.join(", ")}`,
+        metadata: { fields: nonStatusFields, user_id: user.id },
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
     // Structured log — no PII

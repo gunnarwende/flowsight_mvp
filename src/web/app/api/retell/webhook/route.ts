@@ -380,6 +380,14 @@ export async function POST(req: Request) {
     Sentry.setTag("case_id", caseId);
     Sentry.setTag("decision", "created");
 
+    // case_created event (fire-and-forget, errors → Sentry)
+    await supabase.from("case_events").insert({
+      case_id: caseId,
+      event_type: "case_created",
+      title: "Fall erstellt via Voice Agent",
+      metadata: { source: "voice", retell_call_id: retellCallId },
+    }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
     const emailSent = await sendCaseNotification({
@@ -393,6 +401,15 @@ export async function POST(req: Request) {
       description: description!,
       contactPhone: callerPhone ?? undefined,
     });
+
+    // Email event (fire-and-forget)
+    if (emailSent) {
+      await supabase.from("case_events").insert({
+        case_id: caseId,
+        event_type: "email_notification_sent",
+        title: "Benachrichtigung an Betrieb gesendet",
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
 
     // Notify: system failures only (email dispatch fail → RED alert)
     let waSent = false;

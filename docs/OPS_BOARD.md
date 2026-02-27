@@ -73,6 +73,8 @@ Trigger-basiert. Kein Overlap mit NOW.
 | N7 | Ops-light UI (reviews-only mode) | CC | Reviews-only customer signs | OFFEN |
 | N8 | CH PLZ validation (voice + wizard) | CC | Misrecognition data from production | OFFEN |
 | N9 | WhatsApp Sandbox → Production | Founder | Ops Alerts need SLA | OFFEN |
+| N10 | **Voice Agent E-Mail Zusammenfassung → Deutsch** — Retell Custom Analysis Prompt → deutsche Ausgabe | CC | Kundenfeedback | OFFEN |
+| N11 | **Adress-Autocomplete** — Swiss Post API oder Google Places (braucht API-Key + Kosten) | CC | Post-MVP, Kundenfeedback | OFFEN |
 
 ---
 

@@ -9,7 +9,7 @@ import { hasModule } from "@/src/lib/tenants/hasModule";
 // Validation helpers (aligned with case_contract.md)
 // ---------------------------------------------------------------------------
 
-const VALID_SOURCES = ["wizard", "voice"] as const;
+const VALID_SOURCES = ["wizard", "voice", "manual"] as const;
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
 
 type CaseSource = (typeof VALID_SOURCES)[number];
@@ -18,6 +18,7 @@ type CaseUrgency = (typeof VALID_URGENCIES)[number];
 interface CaseBody {
   tenant_id?: string;
   source: CaseSource;
+  reporter_name?: string;
   contact_phone?: string;
   contact_email?: string;
   street?: string;
@@ -97,7 +98,7 @@ function validateBody(
     }
   }
 
-  // street + house_number: required for wizard, optional for voice
+  // street + house_number: required for wizard, optional for voice + manual
   if (b.source === "wizard") {
     if (typeof b.street !== "string" || (b.street as string).trim().length === 0) {
       missing.push("street");
@@ -130,6 +131,7 @@ function validateBody(
     data: {
       tenant_id: typeof b.tenant_id === "string" ? b.tenant_id : undefined,
       source: b.source as CaseSource,
+      reporter_name: typeof b.reporter_name === "string" && b.reporter_name.trim() ? b.reporter_name.trim() : undefined,
       contact_phone: hasPhone ? (b.contact_phone as string) : undefined,
       contact_email: hasEmail ? (b.contact_email as string) : undefined,
       street: typeof b.street === "string" && b.street.trim() ? b.street.trim() : undefined,
@@ -195,6 +197,7 @@ export async function POST(request: NextRequest) {
     const insertPayload: Record<string, unknown> = {
       tenant_id: tenantId,
       source: data.source,
+      reporter_name: data.reporter_name ?? null,
       contact_phone: data.contact_phone ?? null,
       contact_email: data.contact_email ?? null,
       plz: data.plz,
@@ -229,6 +232,15 @@ export async function POST(request: NextRequest) {
     Sentry.setTag("tenant_id", tenantId);
     Sentry.setTag("case_id", row.id);
 
+    // case_created event (fire-and-forget, errors → Sentry)
+    const SOURCE_LABELS: Record<string, string> = { wizard: "Website-Formular", voice: "Voice Agent", manual: "Manuell erfasst" };
+    await supabase.from("case_events").insert({
+      case_id: row.id,
+      event_type: "case_created",
+      title: `Fall erstellt via ${SOURCE_LABELS[data.source] ?? data.source}`,
+      metadata: { source: data.source },
+    }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+
     // Reporter confirmation (no log — result merged into notification log below)
     let reporterEmailSent: boolean | undefined;
     if (data.contact_email) {
@@ -256,6 +268,22 @@ export async function POST(request: NextRequest) {
       contactEmail: data.contact_email,
       reporterEmailSent,
     });
+
+    // Email events (fire-and-forget)
+    if (emailSent) {
+      await supabase.from("case_events").insert({
+        case_id: row.id,
+        event_type: "email_notification_sent",
+        title: "Benachrichtigung an Betrieb gesendet",
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
+    if (reporterEmailSent) {
+      await supabase.from("case_events").insert({
+        case_id: row.id,
+        event_type: "reporter_confirmation_sent",
+        title: "Bestätigung an Melder gesendet",
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
 
     // Notify: system failures only (email dispatch fail → RED alert)
     if (!emailSent) {

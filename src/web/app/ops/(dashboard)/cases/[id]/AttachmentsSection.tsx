@@ -24,7 +24,7 @@ const MAX_FILES_PER_UPLOAD = 5;
 const ACCEPT = "image/*,.pdf";
 
 function formatBytes(bytes: number | null): string {
-  if (bytes === null || bytes === 0) return "—";
+  if (bytes === null || bytes === 0) return "\u2014";
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -58,7 +58,7 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
       const data = await res.json();
       setAttachments(data.attachments ?? []);
     } catch {
-      // silent — list will show empty
+      // silent
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,6 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // Validate
     if (files.length > MAX_FILES_PER_UPLOAD) {
       setError(`Max ${MAX_FILES_PER_UPLOAD} Dateien gleichzeitig.`);
       e.target.value = "";
@@ -92,7 +91,6 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
 
     try {
       for (const file of Array.from(files)) {
-        // Step 1: Request signed upload URL
         const urlRes = await fetch(`/api/ops/cases/${caseId}/attachments`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -111,7 +109,6 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
 
         const { upload_url, storage_path } = await urlRes.json();
 
-        // Step 2: PUT file directly to Supabase Storage
         const putRes = await fetch(upload_url, {
           method: "PUT",
           headers: { "Content-Type": file.type },
@@ -122,7 +119,6 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
           throw new Error(`Upload fehlgeschlagen für "${file.name}" (${putRes.status})`);
         }
 
-        // Step 3: Confirm upload in DB
         const confirmRes = await fetch(`/api/ops/cases/${caseId}/attachments`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -141,7 +137,6 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
         }
       }
 
-      // Refresh list
       await fetchAttachments();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload fehlgeschlagen.");
@@ -152,13 +147,13 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
   }
 
   return (
-    <section className="bg-slate-900 border border-slate-800 rounded-lg p-5">
-      <h2 className="text-lg font-semibold mb-4">Anhänge</h2>
+    <section className="bg-white border border-gray-200 rounded-xl p-5">
+      <h2 className="text-base font-semibold text-gray-900 mb-4">Anhänge</h2>
 
       {/* Upload */}
       <div className="mb-4">
         <label
-          className={`inline-flex items-center gap-2 rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 hover:border-blue-500 hover:text-white ${uploading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          className={`inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${uploading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} transition-colors`}
         >
           {uploading ? "Hochladen\u2026" : "Dateien hochladen"}
           <input
@@ -170,30 +165,28 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
             className="hidden"
           />
         </label>
-        <span className="text-slate-500 text-xs ml-3">
+        <span className="text-gray-400 text-xs ml-3">
           Bilder / PDF, max 10 MB, max 5 Dateien
         </span>
       </div>
 
-      {error && (
-        <p className="text-red-400 text-sm mb-3">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
 
       {/* List */}
       {loading ? (
-        <p className="text-slate-500 text-sm">Laden…</p>
+        <p className="text-gray-400 text-sm">Laden...</p>
       ) : attachments.length === 0 ? (
-        <p className="text-slate-500 text-sm">Keine Anhänge.</p>
+        <p className="text-gray-400 text-sm">Keine Anhänge.</p>
       ) : (
         <ul className="space-y-2">
           {attachments.map((a) => (
             <li
               key={a.id}
-              className="flex items-center justify-between bg-slate-800/50 rounded px-3 py-2 text-sm"
+              className="flex items-center justify-between bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm"
             >
               <div className="min-w-0">
-                <p className="text-slate-200 truncate">{a.file_name}</p>
-                <p className="text-slate-500 text-xs">
+                <p className="text-gray-900 truncate">{a.file_name}</p>
+                <p className="text-gray-400 text-xs">
                   {formatBytes(a.size_bytes)} · {formatDate(a.created_at)}
                 </p>
               </div>
@@ -202,7 +195,7 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
                   href={a.download_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-xs font-medium ml-3 shrink-0"
+                  className="text-amber-600 hover:text-amber-700 text-xs font-medium ml-3 shrink-0"
                 >
                   Download
                 </a>

@@ -4,11 +4,11 @@ Diese Datei definiert die SSOT-Form des Case-Objekts. Alle Producer (Wizard/Voic
 
 ## Required Fields
 - tenant_id (uuid)
-- source ("wizard" | "voice")
+- source ("wizard" | "voice" | "manual")
 - created_at (timestamp)
 - contact_phone OR contact_email (mindestens eins)
-- street (string) — required for wizard, optional for voice
-- house_number (string) — required for wizard, optional for voice
+- street (string) — required for wizard, optional for voice + manual
+- house_number (string) — required for wizard, optional for voice + manual
 - plz (string)
 - city (string)
 - category (string)
@@ -28,17 +28,21 @@ The POST /api/cases endpoint accepts these shorthand aliases. They are normalize
 Canonical fields always take priority — if both `phone` and `contact_phone` are sent, `contact_phone` wins.
 
 ## Optional Fields (Producer)
+- reporter_name (text, nullable) — extracted by voice agent, optional for wizard + manual, editable by ops
 - photo_url (string URL)
 - raw_payload (json) — optional, nur für Debugging (sparsam)
 
+## System-managed Fields (read-only)
+- seq_number (integer) — auto-assigned per tenant via DB trigger. Display: `FS-0001`, `FS-0002`, etc.
+
 ## Address Fields — Source-dependent Validation
 
-| Field | Wizard | Voice | Ops |
-|-------|--------|-------|-----|
-| street | required | best-effort (extract if mentioned) | editable |
-| house_number | required | best-effort (extract if mentioned) | editable |
-| plz | required | required | read-only |
-| city | required | required | read-only |
+| Field | Wizard | Voice | Manual | Ops |
+|-------|--------|-------|--------|-----|
+| street | required | best-effort | optional | editable |
+| house_number | required | best-effort | optional | editable |
+| plz | required | required | required | read-only |
+| city | required | required | required | read-only |
 
 DB columns are nullable (old rows + voice cases without address). Application-layer validation enforces requirements per source.
 
@@ -53,6 +57,29 @@ They are not part of the case creation contract; they exist for workflow managem
 - internal_notes (text, nullable) — private notes, never exposed to customers
 - updated_at (timestamptz, auto) — auto-updated on every row change via DB trigger
 - review_sent_at (timestamptz, nullable) — set when review request email is sent
+
+## Case Events (Audit Log / Timeline)
+
+Table: `case_events` — append-only log of case lifecycle events.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | uuid | Primary key |
+| case_id | uuid | FK → cases(id) ON DELETE CASCADE |
+| event_type | text | See below |
+| title | text | Human-readable event description (German) |
+| detail | text | Optional additional detail |
+| metadata | jsonb | Structured data (source, user_id, etc.) |
+| created_at | timestamptz | Auto-set |
+
+Event types:
+- `case_created` — Case inserted (via wizard, voice, or manual)
+- `status_changed` — Status updated by ops (metadata: from, to, user_id)
+- `email_notification_sent` — Notification email sent to business
+- `reporter_confirmation_sent` — Confirmation email sent to reporter
+- `invite_sent` — Calendar invite sent
+- `review_requested` — Review request email sent
+- `fields_updated` — Ops fields updated (metadata: fields, user_id)
 
 ## Ops-editable Producer Fields (W10+)
 
