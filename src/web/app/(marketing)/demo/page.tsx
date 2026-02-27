@@ -102,7 +102,7 @@ export default function DemoPage() {
         </div>
 
         <p className="mt-4 text-center text-sm text-navy-400">
-          {SITE.phone} · Mo–Fr 8–18 Uhr — oder jederzeit per Online-Buchung
+          {SITE.phone} · Mo–Fr 07:30–17:00 — oder jederzeit per Online-Buchung
         </p>
 
         {/* FAQ */}
