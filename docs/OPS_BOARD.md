@@ -1,6 +1,6 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-26 (EOD — Sales Voice Agent shipped, open_tasks.md merged)
+**Updated:** 2026-02-27 (W1–W4 GBP Website-Optimierung shipped)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier. Kein zweites Dokument.
 
@@ -28,8 +28,8 @@
 | # | Task | Aufwand | Status | Details |
 |---|------|---------|--------|---------|
 | A | **E2E Go-Live Checklist** durcharbeiten | ~4h | OFFEN | 6 Tests in `docs/evidence/founder_go_live_checklist.md`. Pro Test: Screenshot ablegen. Am Ende: Go/No-Go unterschreiben. |
-| B | **LinkedIn Profil** (persönlich) erstellen | ~1.5h | OFFEN | Titel: "Gründer FlowSight GmbH — Digitale Auftragsabwicklung für Sanitär- & Heizungsbetriebe". Info-Text mit ChatGPT (nutze `docs/business_briefing.md`). |
-| C | **Google Business Profil** erstellen | ~30min | OFFEN | "FlowSight GmbH", Kategorie "Softwareunternehmen", Servicegebiet Kanton ZH, Tel +41 44 505 74 20. **Verifizierung dauert 1-2 Wochen — JETZT starten.** |
+| B | **LinkedIn Profil** (persönlich) erstellen | ~1.5h | **DONE** ✅ | linkedin.com/in/gunnar-wende — Gründer FlowSight GmbH |
+| C | **Google Business Profil** erstellen + Bilder | ~2h | **DONE** ✅ | GBP live: Service-Area Business (Zürichsee links), CTA=Call (Lisa 044 552 09 19), Booking-Link (MS Bookings), 7 Bilder (Logo hell/dunkel, Banner, KI-Voice, Dashboard, Fall-Detail, Review Engine). Assets: `docs/brand/gbp/` + `docs/customers/_flowsight/images/GBP/` |
 | D | Dörfler Input — Logo, fehlende Texte | — | PARTIAL | Brand Color + Google Reviews geliefert. Logo noch offen. |
 | E | Mobile QA — iPhone (flowsight.ch + /doerfler-ag) | ~30min | OFFEN | |
 | F | **Go/No-Go Entscheid** | — | OFFEN | Blocked by: A (Checklist) |
@@ -44,6 +44,17 @@
 | F2 | Email Deliverability Gate | **PASS** ✅ | SPF/DKIM/DMARC all pass |
 | F9 | Google Business Review Link (Dörfler) | **BLOCKED** ⏳ | Nicht Go-Live-kritisch. Nachrüsten wenn Link da. |
 | F11 | Customer Go-Live Sign-off | **PARTIAL** ⏳ | 3/4 Module PASS. Reviews blocked by F9. |
+
+### CC Blocks — Website-Optimierung für GBP (P0) — ALL DONE ✅
+
+Trigger: GBP live → Google zeigte falschen Snippet (Banking/IT statt Sanitär). Gefixt.
+
+| # | Task | Owner | Status | Details |
+|---|------|-------|--------|---------|
+| W1 | **SEO / Snippet Fix** — Title, Meta Description, OG-Tags | CC | **DONE** ✅ | Root + Homepage metadata, OG + Twitter Cards, canonical. Commit 2bd7094. |
+| W2 | **Impressum / Kontakt** — Company Identity & Trust | CC | **DONE** ✅ | Footer Kontakt-Spalte (Tel, Email, LinkedIn), Impressum: Gunnar Wende Geschäftsführer. Commit 2bd7094. |
+| W3 | **Demo/Termin Booking Page** — /demo mit Call + Book CTAs | CC | **DONE** ✅ | /demo live: "Jetzt anrufen" (tel:) + "Online-Termin buchen" (MS Bookings). Nav + Footer aktualisiert. Commit 2bd7094. |
+| W4 | **Keyword Reinforcement** — Above-the-fold Check | CC | **DONE** ✅ | Hero: "KI-Telefonassistent". Commit 2bd7094. |
 
 ---
 
@@ -99,6 +110,9 @@ Trigger-basiert. Kein Overlap mit NOW.
 | — | Pricing-Seite (3 Pakete) | CC | 2026-02-26 | /pricing live |
 | — | FlowSight Sales Voice Agent | CC | 2026-02-26 | /api/retell/sales, retell/flowsight_sales_*.json, Lisa greeting, commit 84fdf1b |
 | — | SSOT Konsolidierung | CC | 2026-02-26 | open_tasks.md → archive, OPS_BOARD = einziger Tracker |
+| — | Google Business Profil (Setup + Bilder) | Founder + CC | 2026-02-27 | GBP live, 7 Bilder (docs/brand/gbp/), Service-Area, Call CTA, Booking Link |
+| — | LinkedIn Profil (persönlich) | Founder | 2026-02-27 | linkedin.com/in/gunnar-wende |
+| — | Website-Optimierung GBP (W1–W4) | CC | 2026-02-27 | SEO metadata, Footer Kontakt, /demo Booking Page, KI- keyword. Commit 2bd7094 + 1467eef. |
 
 ---
 

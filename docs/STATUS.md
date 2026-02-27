@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-26 (EOD — SSOT konsolidiert)
+**Datum:** 2026-02-27 (W1–W4 GBP Website-Optimierung shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -46,11 +46,14 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **40h Go-Live Sprint** — CC Blocks alle DONE (10/10). Founder Blocks A-G offen.
+- **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
+- **Website-Optimierung GBP (W1–W4)** shipped ✅ — SEO metadata (Sanitär & Heizung Keywords, OG + Twitter Cards), Footer Kontakt-Spalte, /demo Booking-Page (tel: + MS Bookings), Hero "KI-Telefonassistent".
+- **Google Business Profil** live ✅ — Service-Area Business (Zürichsee linkes Ufer), CTA = Call (Lisa), Booking-Link aktiv (MS Bookings), 7 GBP-Bilder.
+- **LinkedIn Profil** erstellt ✅ — Gunnar Wende, Gründer FlowSight GmbH.
 - **Sales Voice Agent** shipped — "Lisa", KI-Disclosure, DE/INTL, Lead-E-Mail funktioniert.
 - **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
+- **Nächster Schritt CC:** Kein offener CC-Block. Bereit für NEXT-Phase (trigger-basiert nach Go-Live).
 - **Nächster Schritt Founder:** E2E Go-Live Checklist (6 Tests, ~4h) → Go/No-Go Entscheid.
-- **Nächster Schritt CC:** N2 (E-Mail-First Workflow) ist unblocked.
 - **SSOT konsolidiert:** `open_tasks.md` → Archiv. OPS_BOARD.md = einziger Task-Tracker.
 
 Vollständiger Execution-Plan + alle offenen Tasks: `docs/OPS_BOARD.md`
