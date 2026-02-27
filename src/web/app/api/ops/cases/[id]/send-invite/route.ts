@@ -61,7 +61,6 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const shortId = id.slice(0, 8);
 
   // Base log fields — single log line per invocation
   const base: Record<string, unknown> = {
@@ -98,7 +97,7 @@ export async function POST(
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, scheduled_at, category, city")
+    .select("id, seq_number, scheduled_at, category, city")
     .eq("id", id)
     .single();
 
@@ -144,6 +143,9 @@ export async function POST(
   }
 
   // ── Build ICS ─────────────────────────────────────────────────────────
+  const caseLabel = row.seq_number != null
+    ? `FS-${String(row.seq_number).padStart(4, "0")}`
+    : id.slice(0, 8);
   const dtStart = new Date(row.scheduled_at);
   const dtEnd = new Date(dtStart.getTime() + 60 * 60 * 1000); // +60 min
 
@@ -161,7 +163,7 @@ export async function POST(
     uid: `${id}@flowsight.ch`,
     dtStart,
     dtEnd,
-    summary: `FlowSight Termin – Fall ${shortId}`,
+    summary: `FlowSight Termin – Fall ${caseLabel}`,
     description: `Fall öffnen: ${opsLink}`,
     url: opsLink,
     organizerEmail,
@@ -178,11 +180,11 @@ export async function POST(
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject: `Termin – FlowSight Fall ${shortId}`,
+      subject: `Termin – FlowSight Fall ${caseLabel}`,
       text: [
         `FlowSight Termin`,
         `──────────────────────`,
-        `Fall:    ${shortId}`,
+        `Fall:    ${caseLabel}`,
         `Termin:  ${dtStart.toLocaleDateString("de-CH", { timeZone: "Europe/Zurich", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}`,
         ``,
         `Fall öffnen: ${opsLink}`,

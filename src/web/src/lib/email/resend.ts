@@ -16,6 +16,7 @@ function getResend(): Resend {
 
 interface CaseEmailPayload {
   caseId: string;
+  seqNumber?: number | null;
   tenantId: string;
   source: string;
   category: string;
@@ -27,6 +28,12 @@ interface CaseEmailPayload {
   contactEmail?: string;
   /** Injected by caller — result of sendReporterConfirmation (no extra log). */
   reporterEmailSent?: boolean;
+}
+
+/** Format case ID for display: FS-0029 if seq_number available, else UUID fragment. */
+function formatCaseLabel(caseId: string, seqNumber?: number | null): string {
+  if (seqNumber != null) return `FS-${String(seqNumber).padStart(4, "0")}`;
+  return caseId.slice(0, 8);
 }
 
 /**
@@ -95,11 +102,11 @@ export async function sendCaseNotification(
     const { data, error } = await getResend().emails.send({
       from,
       to,
-      subject: `${subjectPrefix} ${urgencyLabel} – ${payload.category} (${payload.city})`,
+      subject: `${subjectPrefix} ${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber)} – ${payload.category} (${payload.city})`,
       text: [
-        `Neuer Case erstellt`,
+        `Neuer Fall erstellt`,
         `──────────────────────`,
-        `ID:        ${payload.caseId.slice(0, 8)}`,
+        `Fall-Nr:   ${formatCaseLabel(payload.caseId, payload.seqNumber)}`,
         `Quelle:    ${payload.source}`,
         `Kategorie: ${payload.category}`,
         `Dringend:  ${payload.urgency}`,
@@ -178,6 +185,7 @@ export async function sendCaseNotification(
 
 interface ReporterConfirmationPayload {
   caseId: string;
+  seqNumber?: number | null;
   tenantId: string;
   contactEmail: string;
   category: string;
@@ -211,7 +219,7 @@ export async function sendReporterConfirmation(
         `Vielen Dank für Ihre Meldung (${payload.category}).`,
         `Wir haben Ihre Anfrage erhalten und melden uns schnellstmöglich bei Ihnen.`,
         ``,
-        `Referenz: ${payload.caseId.slice(0, 8)}`,
+        `Referenz: ${formatCaseLabel(payload.caseId, payload.seqNumber)}`,
         ``,
         `Freundliche Grüsse`,
         `Ihr Service-Team`,

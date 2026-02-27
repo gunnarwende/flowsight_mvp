@@ -127,9 +127,9 @@ export function OpsShell({
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-56 bg-white border-r border-gray-200">
+      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-56 bg-slate-50 border-r border-slate-200">
         {sidebarContent}
       </aside>
 

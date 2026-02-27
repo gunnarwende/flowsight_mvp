@@ -241,7 +241,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   return (
     <div className="space-y-6">
       {/* Case info + description */}
-      <section className="bg-white border border-gray-200 rounded-xl p-5">
+      <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold text-gray-900">Falldetails</h2>
           <div className="flex items-center gap-2">
@@ -249,14 +249,18 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
               <button
                 onClick={handleQuickDone}
                 disabled={saveState === "saving"}
-                className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
+                className="rounded-lg border border-emerald-300 bg-emerald-50 px-3.5 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
               >
                 Als erledigt markieren
               </button>
             )}
             <button
               onClick={() => setEditing(!editing)}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+                editing
+                  ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                  : "bg-slate-800 text-white hover:bg-slate-700"
+              }`}
             >
               {editing ? "Abbrechen" : "Bearbeiten"}
             </button>
@@ -309,7 +313,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
 
       {/* Editable fields — only shown in edit mode */}
       {editing && (
-        <section className="bg-white border border-gray-200 rounded-xl p-5">
+        <section className="bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-sm">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Bearbeiten</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

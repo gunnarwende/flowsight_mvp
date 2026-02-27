@@ -7,13 +7,28 @@ import type { CaseRow, KpiData } from "@/src/components/ops/CaseListClient";
 // Constants
 // ---------------------------------------------------------------------------
 
-const STATUS_LABELS: Record<string, string> = {
-  new: "Neu",
-  contacted: "Kontaktiert",
-  scheduled: "Geplant",
-  done: "Erledigt",
-  archived: "Archiviert",
-};
+const STATUS_OPTIONS = [
+  { value: "", label: "Alle Status" },
+  { value: "new", label: "Neu" },
+  { value: "contacted", label: "Kontaktiert" },
+  { value: "scheduled", label: "Geplant" },
+  { value: "done", label: "Erledigt" },
+  { value: "archived", label: "Archiviert" },
+];
+
+const URGENCY_OPTIONS = [
+  { value: "", label: "Alle Dringlichkeiten" },
+  { value: "notfall", label: "Notfall" },
+  { value: "dringend", label: "Dringend" },
+  { value: "normal", label: "Normal" },
+];
+
+const SOURCE_OPTIONS = [
+  { value: "", label: "Alle Quellen" },
+  { value: "voice", label: "Anruf" },
+  { value: "wizard", label: "Website" },
+  { value: "manual", label: "Manuell" },
+];
 
 // ---------------------------------------------------------------------------
 // Page (Server Component)
@@ -27,10 +42,10 @@ export default async function OpsCasesPage({
   const params = await searchParams;
 
   // Filters from URL
-  const filterStatus = params.status;
-  const filterUrgency = params.urgency;
+  const filterStatus = params.status ?? "";
+  const filterUrgency = params.urgency ?? "";
+  const filterSource = params.source ?? "";
   const filterCategory = params.category;
-  const filterSource = params.source;
   const filterAssigned = params.assigned;
   const showAll = params.show === "all";
 
@@ -42,7 +57,7 @@ export default async function OpsCasesPage({
     .select("id, status, created_at, updated_at")
     .limit(1000);
 
-  // Filtered list query (new columns: seq_number, reporter_name, description, street, house_number)
+  // Filtered list query
   let listQuery = supabase
     .from("cases")
     .select(
@@ -101,60 +116,98 @@ export default async function OpsCasesPage({
 
   const rows = (cases ?? []) as CaseRow[];
 
+  // Build filter URL helper
+  function filterHref(key: string, value: string): string {
+    const p = new URLSearchParams();
+    if (key === "status" && value) p.set("status", value);
+    else if (filterStatus) p.set("status", filterStatus);
+    if (key === "urgency" && value) p.set("urgency", value);
+    else if (filterUrgency) p.set("urgency", filterUrgency);
+    if (key === "source" && value) p.set("source", value);
+    else if (filterSource) p.set("source", filterSource);
+    if (key === "show" && value) p.set("show", value);
+    else if (showAll && key !== "show") p.set("show", "all");
+    const qs = p.toString();
+    return `/ops/cases${qs ? `?${qs}` : ""}`;
+  }
+
+  const hasActiveFilters = !!(filterStatus || filterUrgency || filterSource);
+
   return (
     <>
       {/* Page header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Fälle</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
-          Übersicht aller eingehenden Aufträge
-        </p>
+      <div className="flex items-end justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Fälle</h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Übersicht aller eingehenden Aufträge
+          </p>
+        </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        <FilterChip
-          label="Offen"
-          active={!filterStatus && !showAll}
-          href="/ops/cases"
-        />
-        <FilterChip
-          label="Alle"
-          active={showAll && !filterStatus}
-          href="/ops/cases?show=all"
-        />
-        <Divider />
-        {(["new", "contacted", "scheduled", "done", "archived"] as const).map((s) => (
-          <FilterChip
-            key={s}
-            label={STATUS_LABELS[s]}
-            active={filterStatus === s}
-            href={`/ops/cases?status=${s}`}
+      {/* Filters row — dropdowns */}
+      <div className="bg-white border border-gray-200 rounded-xl p-3 mb-5">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* View toggle */}
+          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+            <Link
+              href="/ops/cases"
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                !showAll && !filterStatus
+                  ? "bg-slate-700 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Offen
+            </Link>
+            <Link
+              href="/ops/cases?show=all"
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                showAll && !filterStatus
+                  ? "bg-slate-700 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Alle
+            </Link>
+          </div>
+
+          <span className="border-l border-gray-200 h-6 inline-block" />
+
+          {/* Status dropdown */}
+          <FilterSelect
+            options={STATUS_OPTIONS}
+            value={filterStatus}
+            paramKey="status"
+            filterHref={filterHref}
           />
-        ))}
-        <Divider />
-        {(["notfall", "dringend", "normal"] as const).map((u) => (
-          <FilterChip
-            key={u}
-            label={u.charAt(0).toUpperCase() + u.slice(1)}
-            active={filterUrgency === u}
-            href={`/ops/cases?urgency=${u}`}
+
+          {/* Urgency dropdown */}
+          <FilterSelect
+            options={URGENCY_OPTIONS}
+            value={filterUrgency}
+            paramKey="urgency"
+            filterHref={filterHref}
           />
-        ))}
-        <Divider />
-        {(["wizard", "voice", "manual"] as const).map((src) => (
-          <FilterChip
-            key={src}
-            label={src === "wizard" ? "Website" : src === "voice" ? "Anruf" : "Manuell"}
-            active={filterSource === src}
-            href={`/ops/cases?source=${src}`}
+
+          {/* Source dropdown */}
+          <FilterSelect
+            options={SOURCE_OPTIONS}
+            value={filterSource}
+            paramKey="source"
+            filterHref={filterHref}
           />
-        ))}
-        <FilterChip
-          label="Zugewiesen"
-          active={filterAssigned === "yes"}
-          href="/ops/cases?assigned=yes"
-        />
+
+          {/* Reset */}
+          {hasActiveFilters && (
+            <Link
+              href="/ops/cases"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors ml-1"
+            >
+              Filter zurücksetzen
+            </Link>
+          )}
+        </div>
       </div>
 
       <CaseListClient rows={rows} kpi={kpi} />
@@ -163,32 +216,54 @@ export default async function OpsCasesPage({
 }
 
 // ---------------------------------------------------------------------------
-// Sub-components
+// Filter dropdown (renders as styled links to preserve SSR)
 // ---------------------------------------------------------------------------
 
-function FilterChip({
-  label,
-  active,
-  href,
+function FilterSelect({
+  options,
+  value,
+  paramKey,
+  filterHref,
 }: {
-  label: string;
-  active: boolean;
-  href: string;
+  options: { value: string; label: string }[];
+  value: string;
+  paramKey: string;
+  filterHref: (key: string, value: string) => string;
 }) {
-  return (
-    <Link
-      href={href}
-      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-        active
-          ? "bg-amber-500 text-white"
-          : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-      }`}
-    >
-      {label}
-    </Link>
-  );
-}
+  const current = options.find((o) => o.value === value);
+  const isActive = !!value;
 
-function Divider() {
-  return <span className="border-l border-gray-200 mx-1 h-5 inline-block" />;
+  return (
+    <div className="relative group">
+      <button
+        className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+          isActive
+            ? "border-slate-600 bg-slate-700 text-white"
+            : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+        }`}
+      >
+        {current?.label ?? options[0].label}
+        <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+      <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block group-focus-within:block">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[160px]">
+          {options.map((opt) => (
+            <Link
+              key={opt.value}
+              href={filterHref(paramKey, opt.value)}
+              className={`block px-3 py-1.5 text-xs transition-colors ${
+                opt.value === value
+                  ? "bg-slate-50 text-slate-900 font-medium"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              }`}
+            >
+              {opt.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

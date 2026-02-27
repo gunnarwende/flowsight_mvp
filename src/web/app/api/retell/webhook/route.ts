@@ -341,7 +341,7 @@ export async function POST(req: Request) {
     const { data: row, error } = await supabase
       .from("cases")
       .insert(insertPayload)
-      .select("id")
+      .select("id, seq_number")
       .single();
 
     if (error) {
@@ -392,6 +392,7 @@ export async function POST(req: Request) {
     // before the Resend API call + console.log complete (msgLen=0 bug).
     const emailSent = await sendCaseNotification({
       caseId,
+      seqNumber: row.seq_number,
       tenantId,
       source: "voice",
       category: category!,

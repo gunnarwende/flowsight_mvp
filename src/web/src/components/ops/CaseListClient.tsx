@@ -145,27 +145,27 @@ export function CaseListClient({
     <>
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <KpiCard label="Total Fälle" value={kpi.total} color="text-gray-900" />
-        <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-600" />
-        <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-600" />
-        <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-600" />
+        <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" />
+        <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" />
+        <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" />
+        <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" />
       </div>
 
       {/* Action buttons */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-gray-500 text-sm">
+        <p className="text-slate-500 text-sm font-medium">
           {rows.length} {rows.length === 1 ? "Fall" : "Fälle"}
         </p>
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportCsv(rows)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors"
           >
             Exportieren
           </button>
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-600 transition-colors"
+            className="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-medium text-white hover:bg-slate-700 shadow-sm transition-colors"
           >
             + Neuer Fall
           </button>
@@ -180,10 +180,10 @@ export function CaseListClient({
       ) : (
         <>
           {/* Desktop */}
-          <div className="hidden lg:block overflow-x-auto bg-white rounded-xl border border-gray-200">
+          <div className="hidden lg:block overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
+                <tr className="text-left text-slate-500 text-xs uppercase tracking-wide border-b border-gray-200 bg-slate-50/80">
                   <th className="px-4 py-3 font-medium">Fall-ID</th>
                   <th className="px-4 py-3 font-medium">Kunde</th>
                   <th className="px-4 py-3 font-medium">Adresse</th>
@@ -299,13 +299,15 @@ function KpiCard({
   label,
   value,
   color,
+  accent,
 }: {
   label: string;
   value: number;
   color: string;
+  accent: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-4 py-3">
+    <div className={`bg-white border border-gray-200 border-l-4 ${accent} rounded-xl px-4 py-3`}>
       <p className="text-gray-500 text-xs font-medium mb-1">{label}</p>
       <p className={`text-2xl font-bold ${color}`}>{value}</p>
     </div>

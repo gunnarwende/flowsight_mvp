@@ -214,7 +214,7 @@ export async function POST(request: NextRequest) {
     const { data: row, error } = await supabase
       .from("cases")
       .insert(insertPayload)
-      .select("id, tenant_id, source, urgency, category, city, created_at")
+      .select("id, seq_number, tenant_id, source, urgency, category, city, created_at")
       .single();
 
     if (error) {
@@ -246,6 +246,7 @@ export async function POST(request: NextRequest) {
     if (data.contact_email) {
       reporterEmailSent = await sendReporterConfirmation({
         caseId: row.id,
+        seqNumber: row.seq_number,
         tenantId,
         contactEmail: data.contact_email,
         category: data.category,
@@ -257,6 +258,7 @@ export async function POST(request: NextRequest) {
     // resend.ts owns the single console.log: _tag:"resend", decision, case_id, etc.
     const emailSent = await sendCaseNotification({
       caseId: row.id,
+      seqNumber: row.seq_number,
       tenantId,
       source: data.source,
       category: data.category,
