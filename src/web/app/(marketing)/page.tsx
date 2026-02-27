@@ -6,6 +6,17 @@ import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
   title: "FlowSight — Jeder Anruf wird zum Auftrag",
+  description:
+    "KI-Telefonassistent, Ops-Dashboard und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google Reviews. Raum Zürich.",
+  openGraph: {
+    title: "FlowSight — Jeder Anruf wird zum Auftrag",
+    description:
+      "KI-Telefonassistent, Ops-Dashboard und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google Reviews. Raum Zürich.",
+    url: "https://flowsight.ch",
+  },
+  alternates: {
+    canonical: "https://flowsight.ch",
+  },
 };
 
 /* ── Inline SVG icons (no deps) ─────────────────────────── */
@@ -100,7 +111,7 @@ export default function HomePage() {
               <span className="text-gold-400">zum Auftrag.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy-200">
-              Website, Telefonassistent und Ops-Dashboard — alles aus einer Hand.
+              Website, KI-Telefonassistent und Ops-Dashboard — alles aus einer Hand.
               FlowSight nimmt Schadensmeldungen entgegen, erstellt strukturierte Fälle
               und liefert Ihnen alles ins Dashboard. 24/7, auch nachts und am Wochenende.
             </p>
@@ -122,12 +133,12 @@ export default function HomePage() {
             </div>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="#demo"
+              <Link
+                href="/demo"
                 className="rounded-lg bg-gold-500 px-8 py-3.5 text-center text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
                 Demo vereinbaren
-              </a>
+              </Link>
               <a
                 href={`tel:${SITE.phoneRaw}`}
                 className="flex items-center justify-center gap-2 rounded-lg border border-white/10 px-8 py-3.5 text-base font-semibold text-navy-200 transition-colors hover:bg-white/5"

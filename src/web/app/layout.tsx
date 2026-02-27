@@ -14,11 +14,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FlowSight — Jeder Anruf wird zum Auftrag",
+    default:
+      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
     template: "%s — FlowSight",
   },
   description:
-    "Das Leitsystem für Schweizer Sanitär- und Heizungsbetriebe. Voice-Intake, Einsatzplanung und Ops Dashboard — kein Anruf geht verloren.",
+    "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
   metadataBase: new URL("https://flowsight.ch"),
   icons: {
     icon: "/favicon.svg",
@@ -27,6 +28,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_CH",
     siteName: "FlowSight",
+    title:
+      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
+    description:
+      "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
+    url: "https://flowsight.ch",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
+    description:
+      "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
   },
   other: {
     "theme-color": "#1a2744",

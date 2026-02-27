@@ -48,6 +48,16 @@ export default function ImpressumPage() {
                 </a>
               </p>
               <p>Telefon: {SITE.phone}</p>
+              <p>
+                <a
+                  href={SITE.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-600 hover:text-gold-500"
+                >
+                  LinkedIn — {SITE.founderName}
+                </a>
+              </p>
             </div>
           </div>
 
@@ -55,7 +65,9 @@ export default function ImpressumPage() {
             <h2 className="text-lg font-semibold text-navy-900">
               Verantwortlich für den Inhalt
             </h2>
-            <p className="mt-2">{SITE.legalName}</p>
+            <p className="mt-2">
+              {SITE.founderName}, Geschäftsführer
+            </p>
           </div>
 
           <div>
