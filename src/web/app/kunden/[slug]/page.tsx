@@ -109,7 +109,7 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
       <div className="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
         <div className="max-w-3xl">
           {foundedYear && (
-            <div className="mb-6 inline-block rounded-full px-4 py-1.5 text-sm font-medium" style={{ backgroundColor: `${accent}22`, color: accent }}>
+            <div className="mb-6 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90">
               Seit {foundedYear} in {c.contact.address.city}
             </div>
           )}
@@ -126,11 +126,11 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
         </div>
         <div className="mt-16 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4">
           {yearsActive && (
-            <div><p className="text-3xl font-bold" style={{ color: accent }}>{yearsActive}+</p><p className="mt-1 text-sm text-gray-400">Jahre Erfahrung</p></div>
+            <div><p className="text-3xl font-bold text-white">{yearsActive}+</p><p className="mt-1 text-sm text-gray-400">Jahre Erfahrung</p></div>
           )}
-          <div><p className="text-3xl font-bold" style={{ color: accent }}>{c.services.length}</p><p className="mt-1 text-sm text-gray-400">Fachbereiche</p></div>
-          <div><p className="text-3xl font-bold" style={{ color: accent }}>{c.serviceArea.gemeinden.length}+</p><p className="mt-1 text-sm text-gray-400">Gemeinden</p></div>
-          <div><p className="text-3xl font-bold" style={{ color: accent }}>3. Gen.</p><p className="mt-1 text-sm text-gray-400">Familienbetrieb</p></div>
+          <div><p className="text-3xl font-bold text-white">{c.services.length}</p><p className="mt-1 text-sm text-gray-400">Fachbereiche</p></div>
+          <div><p className="text-3xl font-bold text-white">{c.serviceArea.gemeinden.length}+</p><p className="mt-1 text-sm text-gray-400">Gemeinden</p></div>
+          <div><p className="text-3xl font-bold text-white">3. Gen.</p><p className="mt-1 text-sm text-gray-400">Familienbetrieb</p></div>
         </div>
       </div>
     </section>
@@ -260,7 +260,7 @@ function ReviewsSection({
 
         {reviews.googleUrl && (
           <div className="mt-8 text-center">
-            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: accent }}>
+            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors">
               Alle Bewertungen auf Google ansehen →
             </a>
           </div>
@@ -279,7 +279,7 @@ function ServiceAreaSection({ area, companyName, accent }: { area: CustomerSite[
           <div className="grid lg:grid-cols-2">
             <div className="p-10 lg:p-14">
               <h2 className="text-3xl font-bold sm:text-4xl">Ihr lokaler Partner</h2>
-              <p className="mt-2 text-lg" style={{ color: accent }}>{companyName} — {area.region}</p>
+              <p className="mt-2 text-lg text-gray-300">{companyName} — {area.region}</p>
               {area.radiusDescription && <p className="mt-4 leading-relaxed text-gray-300">{area.radiusDescription}</p>}
               <div className="mt-8">
                 <p className="mb-3 text-sm font-medium uppercase tracking-wider text-gray-400">Wir sind vor Ort in</p>
@@ -412,7 +412,7 @@ function CareersSection({ careers, companyName, contact, accent }: { careers: No
               <summary className="flex cursor-pointer items-center justify-between p-6 [&::-webkit-details-marker]:hidden">
                 <div>
                   <h3 className="text-lg font-semibold">{job.title}</h3>
-                  <span className="mt-1 inline-block rounded-full px-3 py-0.5 text-xs font-medium" style={{ backgroundColor: `${accent}22`, color: accent }}>
+                  <span className="mt-1 inline-block rounded-full bg-white/10 px-3 py-0.5 text-xs font-medium text-white/70">
                     {job.type === "fulltime" ? "Vollzeit" : job.type === "apprentice" ? "Lehrstelle" : "Teilzeit"}
                   </span>
                 </div>

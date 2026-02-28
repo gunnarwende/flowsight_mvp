@@ -11,7 +11,7 @@
 ### Browser-Tabs vorbereiten (in Reihenfolge)
 
 1. **Tab 1:** `flowsight.ch` (FlowSight Marketing-Website)
-2. **Tab 2:** `flowsight.ch/kunden/brunner-haustechnik` (Kunden-Website)
+2. **Tab 2:** `flowsight.ch/brunner-haustechnik` (Kunden-Website — High-End Demo)
 3. **Tab 3:** `flowsight.ch/brunner-haustechnik/meldung` (Wizard)
 4. **Tab 4:** `flowsight.ch/ops/cases?tenant=brunner-haustechnik` (Dashboard, eingeloggt)
 5. **Tab 5:** E-Mail-Postfach (für eingehende Notifications)
@@ -33,7 +33,7 @@
 > "Stellen Sie sich vor, Sie sind die Brunner Haustechnik AG in Thalwil. So sieht Ihre Website bei FlowSight aus."
 
 **Zeigen:**
-- Tab 2: `/kunden/brunner-haustechnik`
+- Tab 2: `/brunner-haustechnik`
 - Scrolle durch: Hero → Services → Notdienst-Banner → Reviews → Team → Einzugsgebiet
 - **Highlight:** "Alles automatisch generiert aus Ihren Daten. Wir richten das für Sie ein."
 

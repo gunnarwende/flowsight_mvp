@@ -77,6 +77,7 @@ Trigger-basiert. Kein Overlap mit NOW.
 | N11 | **Adress-Autocomplete** — Swiss Post API oder Google Places (braucht API-Key + Kosten) | CC | Post-MVP, Kundenfeedback | OFFEN |
 | N12 | **OPS Fall-Detail UX: Aktionen ohne Speichern-Zwang** — "Termin senden" und "Review anfragen" erfordern aktuell Speichern→Schliessen→Erneut Öffnen. Aktionen sollen direkt ausführbar sein (z.B. als Standalone-Buttons ausserhalb des Bearbeitungsmodus, oder Form bleibt nach Speichern offen). | CC | E2E-Test Founder 2026-02-27 | BUG |
 | N13 | **OPS Fall-Detail: Kachelhöhe Kontakt ↔ Falldetails angleichen** — Sidebar-Karte "Kontakt" ist nicht auf gleicher Höhe wie Main-Karte "Falldetails". Visuell unruhig. | CC | E2E-Test Founder 2026-02-27 | BUG |
+| N14 | **OPS Timeline: Nächster ausstehender Schritt** — Nach den erledigten Events (Fall erstellt, Benachrichtigung gesendet, etc.) soll in der Timeline der nächste erwartete Schritt angezeigt werden (z.B. "Nächster Schritt: Kunden kontaktieren"). Status-basiert: new→kontaktieren, contacted→Termin vereinbaren, scheduled→Einsatz durchführen. | CC | Demo-Strang Review 2026-02-28 | OFFEN |
 
 ---
 

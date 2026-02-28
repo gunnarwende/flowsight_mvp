@@ -38,7 +38,7 @@ export const brunnerHaustechnik: CustomerSite = {
     enabled: true,
     phone: "044 720 31 42",
     phoneRaw: "+41447203142",
-    label: "24h Notdienst — 365 Tage",
+    label: "24h Notdienst",
     description:
       "Rohrbruch? Heizung ausgefallen? Wir sind innert 60 Minuten vor Ort — rund um die Uhr.",
   },
@@ -95,27 +95,27 @@ export const brunnerHaustechnik: CustomerSite = {
 
   reviews: {
     averageRating: 4.8,
-    totalReviews: 28,
+    totalReviews: 52,
     googleUrl:
       "https://www.google.com/maps/place/Thalwil",
     highlights: [
       {
         author: "Claudia M.",
         rating: 5,
-        text: "Schneller, unkomplizierter Service. Der Monteur war pünktlich, freundlich und hat das Problem in 30 Minuten behoben. Sehr empfehlenswert!",
-        date: "vor 3 Monaten",
+        text: "Rohrbruch in der Küche — innert einer Stunde war jemand da. Schnelle, professionelle Hilfe. Absolut empfehlenswert!",
+        date: "vor 2 Wochen",
       },
       {
         author: "Peter Keller",
         rating: 5,
         text: "Brunner hat unsere gesamte Heizung ersetzt. Tolle Beratung, faire Preise und eine saubere Baustelle. Wir sind begeistert.",
-        date: "vor 5 Monaten",
+        date: "vor 1 Monat",
       },
       {
         author: "Sandra W.",
         rating: 5,
         text: "Rohrbruch am Sonntagabend — innert 45 Minuten war jemand da. Das nenne ich Notdienst! Danke an das ganze Team.",
-        date: "vor 1 Monat",
+        date: "vor 2 Monaten",
       },
     ],
   },
