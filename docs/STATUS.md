@@ -54,8 +54,8 @@ Details: `docs/customers/doerfler-ag/status.md`
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
 - **2 bekannte Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe Kontakt↔Falldetails). Tracked in OPS_BOARD.md.
 - **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
-- **Nächster Schritt CC:** 2 Bugs (N12, N13) fixen. Danach bereit für NEXT-Phase (trigger-basiert nach Go-Live).
-- **Nächster Schritt Founder:** E2E Go-Live Checklist (6 Tests, ~4h) → Go/No-Go Entscheid.
+- **Nächster Schritt CC:** 2 Bugs (N12, N13) fixen. N15 (Terminerinnerung 24h) getrackt. Danach bereit für NEXT-Phase.
+- **Nächster Schritt Founder:** E2E Go-Live Checklist am Sonntag 01.03. Ab Montag 02.03: Aktive Kundenakquise — 5 Prospects/Woche, Demo-Website pro Prospect bauen → E-Mail → Anruf. Tracker: `docs/sales/pipeline.md`.
 - **SSOT konsolidiert:** `open_tasks.md` → Archiv. OPS_BOARD.md = einziger Task-Tracker.
 
 Vollständiger Execution-Plan + alle offenen Tasks: `docs/OPS_BOARD.md`

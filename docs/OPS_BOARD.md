@@ -78,6 +78,22 @@ Trigger-basiert. Kein Overlap mit NOW.
 | N12 | **OPS Fall-Detail UX: Aktionen ohne Speichern-Zwang** — "Termin senden" und "Review anfragen" erfordern aktuell Speichern→Schliessen→Erneut Öffnen. Aktionen sollen direkt ausführbar sein (z.B. als Standalone-Buttons ausserhalb des Bearbeitungsmodus, oder Form bleibt nach Speichern offen). | CC | E2E-Test Founder 2026-02-27 | BUG |
 | N13 | **OPS Fall-Detail: Kachelhöhe Kontakt ↔ Falldetails angleichen** — Sidebar-Karte "Kontakt" ist nicht auf gleicher Höhe wie Main-Karte "Falldetails". Visuell unruhig. | CC | E2E-Test Founder 2026-02-27 | BUG |
 | N14 | **OPS Timeline: Nächster ausstehender Schritt** — Nach den erledigten Events (Fall erstellt, Benachrichtigung gesendet, etc.) soll in der Timeline der nächste erwartete Schritt angezeigt werden (z.B. "Nächster Schritt: Kunden kontaktieren"). Status-basiert: new→kontaktieren, contacted→Termin vereinbaren, scheduled→Einsatz durchführen. | CC | Demo-Strang Review 2026-02-28 | OFFEN |
+| N15 | **Terminerinnerung 24h vorher** — Automatische E-Mail/SMS an den Melder 24h vor geplantem Termin. Ziel: Leerfahrten vermeiden. Voraussetzung: Termin-Datum im Case (scheduled_at Feld). Trigger: Cron-Job (Vercel Pro) oder Supabase pg_cron. Inhalt: "Zur Erinnerung: Morgen kommt [Firma] zu Ihnen. Termin: [Datum/Zeit]. Falls Sie absagen müssen: [Tel]." | CC | Post-Go-Live, Kundenfeedback | OFFEN |
+
+---
+
+## SALES — Aktive Kundenakquise (ab 2026-03-01)
+
+**Tracker:** `docs/sales/pipeline.md`
+**Rhythmus:** Täglich 4-5h, 5 neue Prospects/Woche
+**Methode:** Demo-Website für Prospect bauen → E-Mail → Anruf nach 2 Tagen
+
+| # | Task | Owner | Status |
+|---|------|-------|--------|
+| S1 | Sales Pipeline Tracker eingerichtet | CC | **DONE** ✅ |
+| S2 | Erste 5 Prospects identifizieren + Demo-Websites bauen | Founder + CC | OFFEN — Start 2026-03-01 |
+| S3 | E-Mail-Vorlage + Anruf-Skript ready | CC | **DONE** ✅ |
+| S4 | Wöchentliche Pipeline-Review (jeden Freitag) | Founder | OFFEN |
 
 ---
 

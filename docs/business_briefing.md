@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist dein Kontext-Dokument für ChatGPT, externe Tools und Partner.
 > Copy-paste den gesamten Inhalt als System-Prompt oder ersten Message.
-> Letzte Aktualisierung: 2026-02-26
+> Letzte Aktualisierung: 2026-02-28
 
 ---
 
@@ -16,8 +16,8 @@ FlowSight ist ein SaaS-Produkt für Schweizer Sanitär- und Heizungsbetriebe. Wi
 ## Wer ist der Zielkunde?
 
 **Primäre Persona: Inhaber eines Sanitär-/Heizungsbetriebs**
-- 1-15 Mitarbeiter
-- Standort: Deutschschweiz (Fokus: Kanton Zürich, Zimmerberg, Zürichsee)
+- 3-30 Mitarbeiter
+- Standort: Deutschschweiz (Fokus: Kanton Zürich, linkes Zürichseeufer)
 - Alter: 35-60 Jahre
 - Website: veraltet (oft von 2005-2015, nicht mobil-optimiert)
 - Digitalisierungsgrad: gering bis mittel
@@ -67,6 +67,14 @@ Alle Module sind technisch fertig und deployed:
 - Live-Website: flowsight.ch/kunden/doerfler-ag
 - Voice Agent aktiv: +41 44 552 09 19
 
+**Demo-Showcase:** Brunner Haustechnik AG (fiktiv, für Sales-Demos)
+- High-End Demo-Website: flowsight.ch/brunner-haustechnik
+- 10 Seed Cases im Ops Dashboard
+- Wizard: flowsight.ch/brunner-haustechnik/meldung
+
+**FlowSight Sales Agent:** "Lisa" — KI-Assistentin auf +41 44 552 09 19
+- Nimmt Anrufe entgegen, qualifiziert Leads, sendet E-Mail an Gründer
+
 ## Wettbewerb und Positionierung
 
 **Direkte Konkurrenz:** Kaum vorhanden. Es gibt keine SaaS-Lösung in der Schweiz die Website + Voice + Ops + Reviews als Paket für Sanitärbetriebe anbietet.
@@ -101,15 +109,17 @@ Alle Module sind technisch fertig und deployed:
 
 ## Aktuelle Prioritäten
 
-1. Go-Live Testing (E2E Checklist) abschliessen
-2. LinkedIn Profil + Google Business Profil erstellen
-3. FlowSight Voice Agent bauen (eigene Geschäftsnummer)
-4. Pricing finalisieren
-5. Erste Sanitärbetriebe im Raum Zürich kontaktieren
+1. ~~Go-Live Testing~~ → Founder E2E Checklist (6 Tests, letzte Schritte)
+2. ~~LinkedIn Profil~~ ✅ linkedin.com/in/gunnar-wende
+3. ~~Google Business Profil~~ ✅ GBP live mit 7 Bildern
+4. ~~FlowSight Sales Voice Agent~~ ✅ "Lisa" auf 044 552 09 19
+5. **Aktive Kundenakquise ab 01.03.2026** — Demo-Website pro Prospect bauen → E-Mail → Anruf. Ziel: 5 Prospects/Woche, erster zahlender Kunde innert 6 Wochen.
 
 ## Links
 
 - **Website:** flowsight.ch
 - **Referenz-Website:** flowsight.ch/kunden/doerfler-ag
+- **Demo-Showcase:** flowsight.ch/brunner-haustechnik
 - **Pricing:** flowsight.ch/pricing
-- **Geschäftsnummer:** +41 44 505 74 20
+- **Geschäftsnummer (Lisa):** +41 44 552 09 19
+- **LinkedIn:** linkedin.com/in/gunnar-wende
