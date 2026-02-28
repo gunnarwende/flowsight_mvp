@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-28 (Demo-Strang Brunner Haustechnik AG shipped)
+**Datum:** 2026-02-28 (Demo-Strang v2 High-End Showcase shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -35,7 +35,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox, wizard CTA) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
-| **Demo-Strang** | LIVE ✅ | Brunner Haustechnik AG (fiktiv), 10 Seed Cases, Wizard tenant routing, Dashboard tenant filter, Runbook |
+| **Demo-Strang** | LIVE ✅ | Brunner Haustechnik AG (fiktiv), High-End Custom Page (10 Sections, Unsplash, Lightbox), 10 Seed Cases, Wizard tenant routing, Dashboard tenant filter, Runbook |
 
 ## Kunden
 
@@ -48,7 +48,7 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **Demo-Strang Brunner Haustechnik AG** shipped ✅ — Fiktiver Demo-Tenant (Thalwil) für 15-Min-Remote-Demos. Kunden-Website, Wizard mit tenant_slug Routing, Dashboard mit ?tenant= Filter, 10 Seed Cases mit realistischer Timeline, Demo-Runbook. Commit f0bb1f2.
+- **Demo-Strang v2 High-End Showcase** shipped ✅ — Custom Demo Page `/brunner-haustechnik` mit 10 ICP-optimierten Sections (Hero, Services+Lightbox, Notfall, Google Reviews 4.8★/52, Process, Team, Map, Karriere, Kontakt). Unsplash-Bilder, Kontrast-Fix im Template. Commit b5cdc76.
 - **Supabase Migration Tracking** gefixt ✅ — Alle 10 Migrations jetzt in `supabase_migrations.schema_migrations` registriert. `supabase db push` funktioniert jetzt sauber.
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
 - **2 bekannte Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe Kontakt↔Falldetails). Tracked in OPS_BOARD.md.

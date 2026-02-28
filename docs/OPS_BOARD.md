@@ -123,6 +123,7 @@ Trigger-basiert. Kein Overlap mit NOW.
 | — | OPS Dashboard Polish (Dropdowns, E-Mail IDs, Farben, Alignment) | CC | 2026-02-27 | Filter-Dropdowns statt Chips, FS-XXXX in E-Mails, bg-slate-100, KPI-Akzente, Notizen immer sichtbar, Edit-Button prominent. Commit 2373a27. |
 | — | Website 4-Step Process Flow + MobileNav + No-Brainer-Offer | CC | 2026-02-27 | "So funktioniert FlowSight" (4 Schritte), MobileNav Hamburger, Risk-free Offer Section, Link→/demo. Commit 440ad97. |
 | — | Demo-Strang: Brunner Haustechnik AG | CC | 2026-02-28 | Fiktiver Demo-Tenant + 10 Seed Cases + Wizard tenant_slug routing + Dashboard ?tenant= Filter + Demo-Runbook. |
+| — | Demo-Strang v2: High-End Showcase | CC | 2026-02-28 | Custom page /brunner-haustechnik (10 ICP-Sections, Unsplash, Lightbox, Google Reviews 4.8★/52, Team-Porträts, Map). Kontrast-Fix Template. Commit b5cdc76. |
 
 ---
 
