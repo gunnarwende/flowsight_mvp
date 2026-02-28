@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-28 (Demo-Strang v3 — Kachel-Layout, neue Bilder, Team-Gruppenfoto)
+**Datum:** 2026-02-28 (Demo-Strang v4 — 6-Service Card Grid, lokale Bilder, Team Split-Layout)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -48,7 +48,7 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **Demo-Strang v3 Redesign** shipped ✅ — Komplett-Redesign nach Founder-Feedback: Hero=Luxus-Bad (statt Baustelle), Leistungen=Kachel-Grid (statt Akkordeon), Sanitär=High-End-Bäder (Freistehende Wanne, Walk-in, Designer-Vanity), Heizung=Technikräume+Wärmepumpen, Boiler=Industrieboiler+Techniker, Team=1 Gruppenfoto+8 Namensschilder (statt 3 Einzelporträts), Nav=Telefon-Button. Commit a35231f.
+- **Demo-Strang v4** shipped ✅ — Leistungen=2×3 Card Grid (6 Services inkl. Spengler), Clean Cards (Icon+Titel+Text+Referenz-Thumbnails, kein Hintergrundbild), 30 lokale Bilder (Founder-kuratiert, kein Unsplash), Team=Split-Layout (KI-Gruppenfoto + 8 Namensschilder nebeneinander). Commit 5fe13a8.
 - **Demo-Strang v2 Polish** shipped ✅ — BrunnerWizardForm (light theme, Brunner-Branding, mobile-first). Commit 0a4fe76.
 - **Demo-Strang v2 High-End Showcase** shipped ✅ — Custom Demo Page `/brunner-haustechnik` mit 10 ICP-optimierten Sections (Hero, Services+Lightbox, Notfall, Google Reviews 4.8★/52, Process, Team, Map, Karriere, Kontakt). Kontrast-Fix Template. Commit b5cdc76.
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.

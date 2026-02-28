@@ -1,6 +1,6 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-28 (Demo-Strang v3 — Kachel-Layout, neue Bilder, Team)
+**Updated:** 2026-02-28 (Demo-Strang v4 — 6-Service Card Grid, lokale Bilder, Team Split-Layout)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier. Kein zweites Dokument.
 
@@ -126,6 +126,7 @@ Trigger-basiert. Kein Overlap mit NOW.
 | — | Demo-Strang v2: High-End Showcase | CC | 2026-02-28 | Custom page /brunner-haustechnik (10 ICP-Sections, Unsplash, Lightbox, Google Reviews 4.8★/52, Team-Porträts, Map). Kontrast-Fix Template. Commit b5cdc76. |
 | — | Demo-Strang v2 Polish: Images, Wizard, CTA | CC | 2026-02-28 | BrunnerWizardForm (light theme, branded, mobile-first). Commit 0a4fe76. |
 | — | Demo-Strang v3: Kachel-Layout, Neue Bilder, Team | CC | 2026-02-28 | Hero=Luxus-Bad, Leistungen=Kachel-Grid, Sanitär/Heizung/Boiler High-End-Bilder, Team=Gruppenfoto+8 Namensschilder, Nav=Tel-Button. Commit a35231f. |
+| — | Demo-Strang v4: 6-Service Card Grid, Lokale Bilder, Team Split | CC | 2026-02-28 | Leistungen=2×3 Grid (6 Services inkl. Spengler), Clean Cards (Icon+Titel+Text+Referenzen), 30 lokale Bilder (Founder-kuratiert), Team=Split-Layout (KI-Foto+Namensschilder). Commit 5fe13a8. |
 
 ---
 
