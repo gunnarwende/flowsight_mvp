@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WizardForm from "@/app/wizard/WizardForm";
+import BrunnerWizardForm from "./BrunnerWizardForm";
 
 export const metadata: Metadata = {
   title: "Schadensmeldung — Brunner Haustechnik AG",
@@ -26,5 +26,5 @@ export default async function MeldungPage({
     ? params.category
     : undefined;
 
-  return <WizardForm initialCategory={category} tenantSlug="brunner-haustechnik" />;
+  return <BrunnerWizardForm initialCategory={category} />;
 }

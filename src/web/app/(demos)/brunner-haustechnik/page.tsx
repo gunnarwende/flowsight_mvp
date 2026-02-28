@@ -16,43 +16,43 @@ export const metadata: Metadata = {
 const U = (id: string, w = 800) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-const HERO_IMG = U("1585704032915-9f4cb67e55c3", 1920); // plumber working
+const HERO_IMG = U("1504307651254-35680f356dfd", 1920); // construction worker at work
 
 const SERVICE_IMAGES: Record<string, { src: string; alt: string }[]> = {
   "Sanitär": [
     { src: U("1552321554-5fefe8c9ef14"), alt: "Moderne Badezimmer-Renovation" },
-    { src: U("1584622650111-993a426fbf0a"), alt: "Waschbecken-Installation" },
-    { src: U("1507089947017-82a3470e0b8b"), alt: "Professionelle Duschkabine" },
-    { src: U("1620626011761-996317b8d101"), alt: "Armaturen-Montage" },
-    { src: U("1600585154526-990dced4db0d"), alt: "WC-Renovation" },
+    { src: U("1606457425221-125c3fd1f901"), alt: "Waschbecken mit Armatur" },
+    { src: U("1613849925362-38fb4c16ff36"), alt: "Duschkopf auf weissen Fliesen" },
+    { src: U("1631215750638-bdde5f616128"), alt: "Badewanne mit Brause" },
+    { src: U("1609946860441-a51ffcf22208"), alt: "Badezimmer-Renovation komplett" },
   ],
   "Heizung": [
-    { src: U("1585771724684-38269d6639fd"), alt: "Modernes Heizsystem" },
-    { src: U("1558618666-fcd25c85f82e"), alt: "Thermostat-Einstellung" },
-    { src: U("1513694203232-719a280e022f"), alt: "Heizungsraum mit Technik" },
-    { src: U("1497366754035-f200968a6e72"), alt: "Wärmepumpe aussen" },
-    { src: U("1631545806609-05d3b6c1d0e0"), alt: "Fussbodenheizung Verlegung" },
+    { src: U("1711037868819-0ece7012330a"), alt: "Heizkörper am Fenster" },
+    { src: U("1554325500-2fdcc112e791"), alt: "Weisser Radiator" },
+    { src: U("1574334292321-4844f63aefef"), alt: "Heizungsrohre" },
+    { src: U("1585771724684-38269d6639fd"), alt: "Heizungstechnik" },
+    { src: U("1497366754035-f200968a6e72"), alt: "Heizungsanlage" },
   ],
   "Boiler & Warmwasser": [
-    { src: U("1504328345606-18bbc8c9d7d1"), alt: "Boiler-Installation" },
-    { src: U("1621905252507-b35492cc74b4"), alt: "Warmwasserspeicher" },
-    { src: U("1581092160562-40aa08e78837"), alt: "Technische Wartung" },
+    { src: U("1601914697928-0b536e76d048"), alt: "Warmwasserboiler" },
+    { src: U("1623986854909-279d5d194123"), alt: "Wasseraufbereitungsanlage" },
     { src: U("1574269909862-7e1d70bb8078"), alt: "Rohrleitungen Technikraum" },
-    { src: U("1590479773265-7464e5d48118"), alt: "Monteur bei Arbeit" },
+    { src: U("1669295359803-5ec64b4c45d1"), alt: "Wasserleitung" },
+    { src: U("1566446896748-6075a87760c1"), alt: "Duschbrause verchromt" },
   ],
   "Leitungsbau": [
-    { src: U("1504307651254-35680f356dfd"), alt: "Rohrverlegung auf Baustelle" },
-    { src: U("1581092918056-0c4c3acd3789"), alt: "Kupferrohre und Anschlüsse" },
-    { src: U("1513467535987-fd81bc7d62f8"), alt: "Professionelle Installation" },
-    { src: U("1565008447742-97f6f38c985c"), alt: "Schweissarbeiten Rohre" },
+    { src: U("1710781944947-7cd4a381499f"), alt: "Rohre und Fittings" },
+    { src: U("1652785723146-ca1a6daf5ecc"), alt: "Rohrverbindungen" },
+    { src: U("1649956739904-9b5e3618c626"), alt: "Rohrinstallation an Wand" },
+    { src: U("1538474705339-e87de81450e8"), alt: "Metallrohre" },
     { src: U("1541123603104-512919d6a96c"), alt: "Baustelle Leitungsbau" },
   ],
   "Reparaturservice": [
-    { src: U("1621905251189-08b02e8588fd"), alt: "Werkzeugkasten Monteur" },
-    { src: U("1607472586893-edb57bdc0e39"), alt: "Reparatur unter Spüle" },
-    { src: U("1585704032915-9f4cb67e55c3"), alt: "Monteur bei der Arbeit" },
+    { src: U("1530124566582-a618bc2615dc"), alt: "Werkzeugkasten Monteur" },
+    { src: U("1581783898377-1c85bf937427"), alt: "Schraubenschlüssel" },
     { src: U("1572981779307-38b8cabb2407"), alt: "Rohrzange und Werkzeuge" },
-    { src: U("1558618666-fcd25c85f82e"), alt: "Notfall-Einsatz" },
+    { src: U("1607472586893-edb57bdc0e39"), alt: "Reparaturarbeiten" },
+    { src: U("1581092918056-0c4c3acd3789"), alt: "Professionelle Werkzeuge" },
   ],
 };
 
@@ -67,17 +67,17 @@ const TEAM = [
   {
     name: "Thomas Brunner",
     role: "Inhaber / Sanitärmeister",
-    img: U("1560250097-0b93528c311a"), // professional male portrait
+    img: U("1705579612477-20866d78deeb"), // worker with hard hat and safety vest
   },
   {
     name: "Marco Steiner",
     role: "Projektleiter Heizung",
-    img: U("1507003211169-0a1dd7228f2d"), // friendly male portrait
+    img: U("1646324554833-f0b6a479fa5d"), // worker with hard hat on site
   },
   {
     name: "Luca Berger",
     role: "Sanitärmonteur",
-    img: U("1500648767791-00dcc994a43e"), // young professional
+    img: U("1630683924997-fe27050a0416"), // worker in safety vest
   },
 ];
 
@@ -202,8 +202,8 @@ export default function BrunnerHaustechnikDemo() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
                   href={wizardUrl}
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all hover:brightness-110"
-                  style={{ backgroundColor: theme.accentHex }}
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-white font-semibold text-lg transition-all hover:bg-gray-100"
+                  style={{ color: theme.primaryHex }}
                 >
                   Schaden online melden
                 </a>
