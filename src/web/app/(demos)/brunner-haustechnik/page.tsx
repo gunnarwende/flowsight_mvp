@@ -11,61 +11,66 @@ export const metadata: Metadata = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Stock images (Unsplash, license-free)                             */
+/*  Images — local (user-provided) + hero (Unsplash)                  */
 /* ------------------------------------------------------------------ */
-const U = (id: string, w = 800) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
-const P = (id: string, w = 800) =>
-  `https://plus.unsplash.com/premium_photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+const HERO_IMG =
+  "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1920&q=80";
 
-const HERO_IMG = U("1584622650111-993a426fbf0a", 1920); // modern bathroom, clean luxury
+const D = (n: string) => `/images/demo/${n}`;
 
 const SERVICE_IMAGES: Record<string, { src: string; alt: string }[]> = {
-  "Sanitär": [
-    { src: U("1753605788101-04d1e653e74a"), alt: "Luxus-Badezimmer mit freistehender Badewanne" },
-    { src: U("1721274502909-49d729a2b418"), alt: "Moderne Walk-in-Dusche mit Glaswand" },
-    { src: U("1754522711595-84428937b07a"), alt: "Designer-Waschtisch mit Aufsatzwaschbecken" },
-    { src: U("1760546120487-ccb54df9838c"), alt: "Komplett-Renovation Badezimmer" },
-    { src: U("1723642610226-e4ab4626cbc2"), alt: "Walk-in-Dusche, rahmenlos, weiss" },
+  Sanitär: [
+    { src: D("01.avif"), alt: "Modernes Badezimmer mit freistehender Badewanne" },
+    { src: D("02.avif"), alt: "High-End Badezimmer-Renovation" },
+    { src: D("03.avif"), alt: "Designer-Badezimmer mit Walk-in-Dusche" },
+    { src: D("04.jpg"), alt: "Luxus-Badezimmer mit Doppelwaschbecken" },
+    { src: D("05.jpg"), alt: "Moderne Badgestaltung mit Naturstein" },
   ],
-  "Heizung": [
-    { src: U("1650551182956-47efa0f90b64"), alt: "Heizungsraum mit Rohren und Manometern" },
-    { src: U("1650551182991-b07558247564"), alt: "Technikraum mit Rohrleitungen und Ventilen" },
-    { src: P("1715620329644-36b9f5b9fca3"), alt: "Moderne Wärmepumpe am Gebäude" },
-    { src: U("1637345158353-40607a208d46"), alt: "Industrielle Rohrleitungen im Technikraum" },
-    { src: P("1683121030225-5844f529662d"), alt: "Fussbodenheizung Verlegung" },
+  Heizung: [
+    { src: D("06.webp"), alt: "Moderner Flachheizkörper" },
+    { src: D("07.jpg"), alt: "Heizungsanlage mit Rohrsystem" },
+    { src: D("08.jpg"), alt: "Technikraum mit Wärmepumpe" },
+    { src: D("09.webp"), alt: "Moderne Heizungssteuerung" },
+    { src: D("10.jpg"), alt: "Heizungsinstallation" },
+  ],
+  Spengler: [
+    { src: D("11.jpg"), alt: "Kupferverarbeitung Spengler" },
+    { src: D("12.jpg"), alt: "Blecharbeiten und Dachrinne" },
+    { src: D("13.webp"), alt: "Spengler-Facharbeit" },
+    { src: D("14.jpg"), alt: "Dachrinnen-Montage" },
+    { src: D("15.jpeg"), alt: "Präzisions-Spenglerarbeit" },
   ],
   "Boiler & Warmwasser": [
-    { src: U("1594233078955-e1f73a02ebb2"), alt: "Warmwasserboiler an der Wand" },
-    { src: P("1682142889998-af3a27d618ca"), alt: "Zwei Techniker prüfen Boiler-Anlage" },
-    { src: U("1646124839366-67161db62d80"), alt: "Technikraum mit Rohrsystem" },
-    { src: P("1764691213233-236ae6855972"), alt: "Boiler-System im Keller" },
-    { src: U("1757573538081-c469f75cdd7a"), alt: "Industrielle Rohrleitungen" },
+    { src: D("16.jpg"), alt: "Boiler-Installation und Wartung" },
+    { src: D("17.jpg"), alt: "Warmwasserspeicher" },
+    { src: D("18.jpg"), alt: "Boiler-Technik" },
+    { src: D("19.webp"), alt: "Moderne Warmwasseranlage" },
+    { src: D("20.jpg"), alt: "Boiler-Anschluss" },
   ],
-  "Leitungsbau": [
-    { src: U("1710781944947-7cd4a381499f"), alt: "Rohre und Fittings" },
-    { src: U("1652785723146-ca1a6daf5ecc"), alt: "Rohrverbindungen" },
-    { src: U("1649956739904-9b5e3618c626"), alt: "Rohrinstallation an Wand" },
-    { src: U("1538474705339-e87de81450e8"), alt: "Metallrohre" },
-    { src: U("1541123603104-512919d6a96c"), alt: "Baustelle Leitungsbau" },
+  Leitungsbau: [
+    { src: D("21.jpeg"), alt: "Rohrleitungen Installation" },
+    { src: D("22.avif"), alt: "Kupferrohre Verlegung" },
+    { src: D("23.png"), alt: "Leitungssystem Neubau" },
+    { src: D("24.jpeg"), alt: "Rohrverbindungen" },
+    { src: D("25.jpg"), alt: "Leitungsbau Baustelle" },
   ],
-  "Reparaturservice": [
-    { src: U("1530124566582-a618bc2615dc"), alt: "Werkzeugkasten Monteur" },
-    { src: U("1581783898377-1c85bf937427"), alt: "Schraubenschlüssel" },
-    { src: U("1572981779307-38b8cabb2407"), alt: "Rohrzange und Werkzeuge" },
-    { src: U("1607472586893-edb57bdc0e39"), alt: "Reparaturarbeiten" },
-    { src: U("1581092918056-0c4c3acd3789"), alt: "Professionelle Werkzeuge" },
+  Reparaturservice: [
+    { src: D("26.webp"), alt: "Reparatur Sanitärinstallation" },
+    { src: D("27.jpg"), alt: "Monteur bei Reparaturarbeiten" },
+    { src: D("28.jpg"), alt: "Fachgerechte Reparatur" },
+    { src: D("29.png"), alt: "Sanitär-Reparatur" },
+    { src: D("30.webp"), alt: "Schnelle Reparatur vor Ort" },
   ],
 };
 
 const SERVICE_CATEGORY_MAP: Record<string, string> = {
-  "Sanitär": "Sanitär allgemein",
-  "Heizung": "Heizung",
+  Sanitär: "Sanitär allgemein",
+  Heizung: "Heizung",
   "Boiler & Warmwasser": "Boiler",
-  "Reparaturservice": "Sanitär allgemein",
+  Reparaturservice: "Sanitär allgemein",
 };
 
-const TEAM_IMG = U("1653280662710-1cac52cde6d7", 1200); // construction workers group
+const TEAM_IMG = D("31.jpg");
 const TEAM_MEMBERS = [
   { name: "Thomas Brunner", role: "Inhaber / Sanitärmeister" },
   { name: "Marco Steiner", role: "Projektleiter Heizung" },
@@ -227,68 +232,64 @@ export default function BrunnerHaustechnikDemo() {
           </div>
         </section>
 
-        {/* ============ 3. LEISTUNGEN (Card Grid) ============ */}
+        {/* ============ 3. LEISTUNGEN (2×3 Card Grid — Clean, no bg images) ============ */}
         <section id="leistungen" className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4" style={{ color: theme.primaryHex }}>
               Unsere Leistungen
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-14 max-w-2xl">
-              {theme.teamSize} — ein Team. Fünf Fachbereiche. Alles aus einer Hand.
+              {theme.teamSize} — ein Team. Sechs Fachbereiche. Alles aus einer Hand.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {theme.services.map((svc) => {
                 const images = SERVICE_IMAGES[svc.name] ?? [];
-                const heroImg = images[0];
-                const thumbs = images.slice(1);
                 const cat = SERVICE_CATEGORY_MAP[svc.name];
                 const href = cat
                   ? `/brunner-haustechnik/meldung?category=${encodeURIComponent(cat)}`
                   : wizardUrl;
                 return (
-                  <div key={svc.name} className="group rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all">
-                    {/* Card hero image */}
-                    {heroImg && (
-                      <div className="relative h-52 sm:h-56 bg-gray-100 overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={heroImg.src}
-                          alt={heroImg.alt}
-                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                        <div className="absolute bottom-0 left-0 p-5">
-                          <div className="flex items-center gap-2.5">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm text-white">
-                              <ServiceIconSvg name={svc.name} />
-                            </div>
-                            <h3 className="text-xl font-bold text-white drop-shadow-lg">{svc.name}</h3>
-                          </div>
-                        </div>
+                  <div
+                    key={svc.name}
+                    className="group rounded-2xl border border-gray-200 bg-white p-6 hover:shadow-lg hover:border-gray-300 transition-all"
+                  >
+                    {/* Icon + Title */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                        style={{ backgroundColor: theme.lightBgHex, color: theme.accentHex }}
+                      >
+                        <ServiceIconSvg name={svc.name} />
+                      </div>
+                      <h3 className="text-lg font-bold" style={{ color: theme.primaryHex }}>
+                        {svc.name}
+                      </h3>
+                    </div>
+
+                    {/* Description (1–2 sentences) */}
+                    <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                      {svc.desc}
+                    </p>
+
+                    {/* Reference images */}
+                    {images.length > 0 && (
+                      <div className="mb-5">
+                        <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">
+                          Referenzen
+                        </p>
+                        <ServiceGallery images={images} />
                       </div>
                     )}
-                    {/* Card body */}
-                    <div className="p-5">
-                      <p className="text-sm text-gray-600 leading-relaxed mb-4">{svc.desc}</p>
 
-                      {/* Reference thumbnails */}
-                      {thumbs.length > 0 && (
-                        <div className="mb-4">
-                          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Referenzen</p>
-                          <ServiceGallery images={thumbs} />
-                        </div>
-                      )}
-
-                      <a
-                        href={href}
-                        className="inline-flex items-center gap-1 text-sm font-semibold transition-colors hover:underline"
-                        style={{ color: theme.accentHex }}
-                      >
-                        Jetzt melden &rarr;
-                      </a>
-                    </div>
+                    {/* CTA */}
+                    <a
+                      href={href}
+                      className="inline-flex items-center gap-1 text-sm font-semibold transition-colors hover:underline"
+                      style={{ color: theme.accentHex }}
+                    >
+                      Jetzt melden &rarr;
+                    </a>
                   </div>
                 );
               })}
@@ -458,33 +459,47 @@ export default function BrunnerHaustechnikDemo() {
           </div>
         </section>
 
-        {/* ============ 7. UNSER TEAM ============ */}
-        <section id="team" className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20 overflow-hidden">
-          {/* Background team photo */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${TEAM_IMG})` }}
-            role="img"
-            aria-label="Team Brunner Haustechnik"
-          />
-          <div className="absolute inset-0 bg-gray-900/75" />
+        {/* ============ 7. UNSER TEAM (Split Layout — Image + Names) ============ */}
+        <section id="team" className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-lg">
+              <div className="grid lg:grid-cols-2">
+                {/* Left: Names + Titles */}
+                <div className="order-2 lg:order-1 p-8 sm:p-10 lg:p-14 flex flex-col justify-center bg-white">
+                  <h2 className="text-3xl lg:text-4xl font-bold mb-3" style={{ color: theme.primaryHex }}>
+                    Unser Team
+                  </h2>
+                  <p className="text-lg text-gray-600 leading-relaxed mb-8">
+                    {theme.teamSize} mit Leidenschaft für Haustechnik.
+                    <br />
+                    Persönlich, kompetent und immer für Sie da.
+                  </p>
 
-          <div className="relative z-10 max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
-              Unser Team
-            </h2>
-            <p className="text-lg text-white/80 leading-relaxed mb-12 max-w-2xl mx-auto">
-              {theme.teamSize} mit Leidenschaft für Haustechnik.
-              Persönlich, kompetent und immer für Sie da.
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
-              {TEAM_MEMBERS.map((m) => (
-                <div key={m.name} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 p-3 sm:p-4">
-                  <p className="text-sm font-semibold text-white">{m.name}</p>
-                  <p className="text-xs text-white/60 mt-0.5">{m.role}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {TEAM_MEMBERS.map((m) => (
+                      <div
+                        key={m.name}
+                        className="rounded-xl border border-gray-100 bg-gray-50 p-3 sm:p-4 hover:border-gray-200 transition-colors"
+                      >
+                        <p className="text-sm font-semibold" style={{ color: theme.primaryHex }}>
+                          {m.name}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">{m.role}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+
+                {/* Right: Team photo */}
+                <div className="order-1 lg:order-2 relative min-h-[300px] sm:min-h-[400px] lg:min-h-0 bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={TEAM_IMG}
+                    alt="Team Brunner Haustechnik AG — 8 Mitarbeitende vor dem Firmenfahrzeug"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -724,6 +739,8 @@ function ServiceIconSvg({ name }: { name: string }) {
       return <svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>;
     case "Heizung":
       return <svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" /></svg>;
+    case "Spengler":
+      return <svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>;
     case "Boiler & Warmwasser":
       return <svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47m0 0a3.375 3.375 0 01-4.773 0L5 14.5m6.757 2.47a3.375 3.375 0 01-4.773 0" /></svg>;
     case "Leitungsbau":

@@ -39,15 +39,19 @@ export const theme = {
   services: [
     {
       name: "Sanitär",
-      desc: "Von der Armaturenmontage bis zur kompletten Badsanierung — wir decken das gesamte Sanitärspektrum ab.",
+      desc: "Von der Armaturenmontage bis zur kompletten Badsanierung — Ihr Bad in besten Händen.",
     },
     {
       name: "Heizung",
-      desc: "Wartung, Reparatur und Ersatz von Heizungsanlagen — modern, effizient, ökologisch.",
+      desc: "Wartung, Reparatur und Ersatz von Heizungsanlagen. Modern, effizient, ökologisch.",
+    },
+    {
+      name: "Spengler",
+      desc: "Dachrinnen, Blechverkleidungen und Flaschnerarbeiten — präzise Arbeit für Ihr Gebäude.",
     },
     {
       name: "Boiler & Warmwasser",
-      desc: "Installation, Wartung und Notfall-Reparatur von Boilern und Warmwasserspeichern.",
+      desc: "Installation, Wartung und Notfall-Reparatur von Boilern und Warmwassersystemen.",
     },
     {
       name: "Leitungsbau",
@@ -55,7 +59,7 @@ export const theme = {
     },
     {
       name: "Reparaturservice",
-      desc: "Schnelle Hilfe bei allen Defekten — tropfende Hähne, verstopfte Abflüsse, defekte Spülkästen.",
+      desc: "Schnelle Hilfe bei Defekten — tropfende Hähne, verstopfte Abflüsse, defekte Spülkästen.",
     },
   ],
 
