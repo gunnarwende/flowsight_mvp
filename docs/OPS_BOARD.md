@@ -1,6 +1,6 @@
 # OPS Board — Autopilot OS Roadmap (SSOT)
 
-**Updated:** 2026-02-27 (OPS Dashboard Redesign + Website 4-Step Flow shipped)
+**Updated:** 2026-02-28 (Demo-Strang Brunner Haustechnik AG shipped)
 **Rule:** CC updates this board with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier. Kein zweites Dokument.
 
@@ -96,6 +96,7 @@ Trigger-basiert. Kein Overlap mit NOW.
 | L10 | Retention decisions | Founder | Decide case + attachment retention periods (docs/compliance/data_processing.md) |
 | L11 | WhatsApp Sandbox → Prod evaluation | Founder | When Ops Alerts need SLA or sandbox expires |
 | L12 | Data protection statements | Founder | Voice disclosure + Wizard privacy checkbox + DPA links from subprocessors |
+| L13 | **Demo-Video aufnehmen** — Demo-Strang als Video aufnehmen, für LinkedIn + flowsight.ch/demo | Founder + CC | Go-Live done + Demo-Strang shipped |
 
 ---
 
@@ -120,6 +121,7 @@ Trigger-basiert. Kein Overlap mit NOW.
 | — | OPS Dashboard Redesign (Light Theme, Sidebar, Timeline, Manual Cases) | CC | 2026-02-27 | Route Groups (auth/dashboard), OpsShell, CaseTimeline, CreateCaseModal, CaseListClient, seq_number (FS-XXXX), case_events, reporter_name, 3 SQL migrations. Commits d97b90d + 2373a27. |
 | — | OPS Dashboard Polish (Dropdowns, E-Mail IDs, Farben, Alignment) | CC | 2026-02-27 | Filter-Dropdowns statt Chips, FS-XXXX in E-Mails, bg-slate-100, KPI-Akzente, Notizen immer sichtbar, Edit-Button prominent. Commit 2373a27. |
 | — | Website 4-Step Process Flow + MobileNav + No-Brainer-Offer | CC | 2026-02-27 | "So funktioniert FlowSight" (4 Schritte), MobileNav Hamburger, Risk-free Offer Section, Link→/demo. Commit 440ad97. |
+| — | Demo-Strang: Brunner Haustechnik AG | CC | 2026-02-28 | Fiktiver Demo-Tenant + 10 Seed Cases + Wizard tenant_slug routing + Dashboard ?tenant= Filter + Demo-Runbook. |
 
 ---
 

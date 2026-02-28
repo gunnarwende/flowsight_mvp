@@ -47,15 +47,32 @@ export default async function OpsCasesPage({
   const filterSource = params.source ?? "";
   const filterCategory = params.category;
   const filterAssigned = params.assigned;
+  const filterTenantSlug = params.tenant;
   const showAll = params.show === "all";
 
   const supabase = getServiceClient();
 
+  // Resolve tenant slug → tenant_id + name for filtered view
+  let filterTenantId: string | undefined;
+  let filterTenantName: string | undefined;
+  if (filterTenantSlug) {
+    const { data: t } = await supabase
+      .from("tenants")
+      .select("id, name")
+      .eq("slug", filterTenantSlug)
+      .single();
+    if (t) {
+      filterTenantId = t.id;
+      filterTenantName = t.name;
+    }
+  }
+
   // Stats query (lightweight, all cases, for KPI tiles)
-  const statsQuery = supabase
+  let statsQuery = supabase
     .from("cases")
     .select("id, status, created_at, updated_at")
     .limit(1000);
+  if (filterTenantId) statsQuery = statsQuery.eq("tenant_id", filterTenantId);
 
   // Filtered list query
   let listQuery = supabase
@@ -65,6 +82,7 @@ export default async function OpsCasesPage({
     )
     .order("created_at", { ascending: false })
     .limit(200);
+  if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
   // Default: open cases (exclude done + archived), unless showAll or explicit status filter
   if (filterStatus) {
@@ -119,6 +137,7 @@ export default async function OpsCasesPage({
   // Build filter URL helper
   function filterHref(key: string, value: string): string {
     const p = new URLSearchParams();
+    if (filterTenantSlug) p.set("tenant", filterTenantSlug);
     if (key === "status" && value) p.set("status", value);
     else if (filterStatus) p.set("status", filterStatus);
     if (key === "urgency" && value) p.set("urgency", value);
@@ -140,7 +159,9 @@ export default async function OpsCasesPage({
         <div>
           <h1 className="text-xl font-bold text-gray-900">Fälle</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            Übersicht aller eingehenden Aufträge
+            {filterTenantName
+              ? `Tenant: ${filterTenantName}`
+              : "Übersicht aller eingehenden Aufträge"}
           </p>
         </div>
       </div>
@@ -151,7 +172,7 @@ export default async function OpsCasesPage({
           {/* View toggle */}
           <div className="flex rounded-lg border border-gray-200 overflow-hidden">
             <Link
-              href="/ops/cases"
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}` : "/ops/cases"}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 !showAll && !filterStatus
                   ? "bg-slate-700 text-white"
@@ -161,7 +182,7 @@ export default async function OpsCasesPage({
               Offen
             </Link>
             <Link
-              href="/ops/cases?show=all"
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}&show=all` : "/ops/cases?show=all"}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 showAll && !filterStatus
                   ? "bg-slate-700 text-white"
@@ -201,7 +222,7 @@ export default async function OpsCasesPage({
           {/* Reset */}
           {hasActiveFilters && (
             <Link
-              href="/ops/cases"
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}` : "/ops/cases"}
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors ml-1"
             >
               Filter zurücksetzen

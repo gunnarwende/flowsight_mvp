@@ -1,5 +1,6 @@
 import type { CustomerSite } from "./types";
 import { doerflerAg } from "./doerfler-ag";
+import { brunnerHaustechnik } from "./brunner-haustechnik";
 
 /**
  * Customer registry — add new customers here.
@@ -7,6 +8,7 @@ import { doerflerAg } from "./doerfler-ag";
  */
 const customers: Record<string, CustomerSite> = {
   "doerfler-ag": doerflerAg,
+  "brunner-haustechnik": brunnerHaustechnik,
 };
 
 export function getCustomer(slug: string): CustomerSite | undefined {

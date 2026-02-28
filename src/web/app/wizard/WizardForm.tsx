@@ -175,7 +175,7 @@ function Card({
 // Main
 // ---------------------------------------------------------------------------
 
-export default function WizardForm({ initialCategory }: { initialCategory?: string }) {
+export default function WizardForm({ initialCategory, tenantSlug }: { initialCategory?: string; tenantSlug?: string }) {
   const [step, setStep] = useState(1);
   const [pageState, setPageState] = useState<PageState>({ status: "form" });
 
@@ -219,6 +219,7 @@ export default function WizardForm({ initialCategory }: { initialCategory?: stri
     };
     if (contactPhone.trim()) body.contact_phone = contactPhone.trim();
     if (contactEmail.trim()) body.contact_email = contactEmail.trim();
+    if (tenantSlug) body.tenant_slug = tenantSlug;
 
     try {
       const res = await fetch("/api/cases", {

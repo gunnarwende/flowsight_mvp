@@ -17,6 +17,7 @@ type CaseUrgency = (typeof VALID_URGENCIES)[number];
 
 interface CaseBody {
   tenant_id?: string;
+  tenant_slug?: string;
   source: CaseSource;
   reporter_name?: string;
   contact_phone?: string;
@@ -130,6 +131,7 @@ function validateBody(
     ok: true,
     data: {
       tenant_id: typeof b.tenant_id === "string" ? b.tenant_id : undefined,
+      tenant_slug: typeof b.tenant_slug === "string" ? b.tenant_slug : undefined,
       source: b.source as CaseSource,
       reporter_name: typeof b.reporter_name === "string" && b.reporter_name.trim() ? b.reporter_name.trim() : undefined,
       contact_phone: hasPhone ? (b.contact_phone as string) : undefined,
@@ -172,8 +174,14 @@ export async function POST(request: NextRequest) {
 
   const data = validation.data;
 
-  // Resolve tenant_id: body > FALLBACK_TENANT_ID
-  const tenantId = data.tenant_id ?? process.env.FALLBACK_TENANT_ID;
+  // Resolve tenant_id: body.tenant_id > tenant_slug lookup > FALLBACK_TENANT_ID
+  let tenantId = data.tenant_id;
+  if (!tenantId && data.tenant_slug) {
+    const supabase = getServiceClient();
+    const { data: t } = await supabase.from("tenants").select("id").eq("slug", data.tenant_slug).single();
+    if (t) tenantId = t.id;
+  }
+  tenantId = tenantId ?? process.env.FALLBACK_TENANT_ID;
   if (!tenantId) {
     return NextResponse.json(
       { error: "tenant_id not provided and FALLBACK_TENANT_ID not configured." },
