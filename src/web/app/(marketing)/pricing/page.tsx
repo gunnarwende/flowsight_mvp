@@ -161,7 +161,7 @@ export default function PricingPage() {
                 Gemeinsam in einer Woche
               </p>
               <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Website, Telefonnummer, Voice Agent, Dashboard-Zugang —
+                Website, Telefonnummer, Telefonassistent, Dashboard-Zugang —
                 persönlich eingerichtet. Keine Setup-Kosten in der Pilotphase.
               </p>
             </div>
@@ -188,7 +188,7 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "In der Pilotphase: nichts. Wir richten alles gemeinsam ein — Website, Voice Agent und Dashboard.",
+                a: "In der Pilotphase: nichts. Wir richten alles gemeinsam ein — Website, Telefonassistent und Dashboard.",
               },
               {
                 q: "Wie werden Voice-Minuten abgerechnet?",

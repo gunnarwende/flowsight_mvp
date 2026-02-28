@@ -178,7 +178,7 @@ export default function DatenschutzPage() {
               7. Telefongespräche
             </h2>
             <p className="mt-3">
-              Telefongespräche mit dem Voice Agent werden{" "}
+              Telefongespräche mit dem Telefonassistent werden{" "}
               <strong>nicht aufgezeichnet</strong>. Es werden ausschliesslich
               die vom Anrufer mitgeteilten Sachinformationen (Ort, Kategorie,
               Dringlichkeit, Problembeschreibung) in strukturierter Form

@@ -115,11 +115,11 @@ export default function DemoPage() {
             {[
               {
                 q: "Brauche ich eine neue Telefonnummer?",
-                a: "Nein. Wir richten eine Rufumleitung auf Ihre bestehende Nummer ein — der Voice Agent nimmt nur an, wenn Sie nicht erreichbar sind.",
+                a: "Nein. Wir richten eine Rufumleitung auf Ihre bestehende Nummer ein — der Telefonassistent nimmt nur an, wenn Sie nicht erreichbar sind.",
               },
               {
                 q: "Wie schnell ist das Setup?",
-                a: "Unter 48 Stunden. Wir richten Website, Voice Agent und Dashboard komplett für Sie ein — persönlich und in Ihrem Tempo.",
+                a: "Unter 48 Stunden. Wir richten Website, Telefonassistent und Dashboard komplett für Sie ein — persönlich und in Ihrem Tempo.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-6">
