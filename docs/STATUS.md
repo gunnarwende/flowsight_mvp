@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-27 (OPS Dashboard Redesign + Website Polish shipped)
+**Datum:** 2026-02-28 (Demo-Strang Brunner Haustechnik AG shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -35,25 +35,23 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox, wizard CTA) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
+| **Demo-Strang** | LIVE ✅ | Brunner Haustechnik AG (fiktiv), 10 Seed Cases, Wizard tenant routing, Dashboard tenant filter, Runbook |
 
 ## Kunden
 
 | Kunde | Slug | Module | Go-Live |
 |-------|------|--------|---------|
 | Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 Module PASS, Reviews blocked (F9) |
+| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews | DEMO — fiktiver Showroom-Tenant mit 10 Seed Cases |
 
 Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
+- **Demo-Strang Brunner Haustechnik AG** shipped ✅ — Fiktiver Demo-Tenant (Thalwil) für 15-Min-Remote-Demos. Kunden-Website, Wizard mit tenant_slug Routing, Dashboard mit ?tenant= Filter, 10 Seed Cases mit realistischer Timeline, Demo-Runbook. Commit f0bb1f2.
+- **Supabase Migration Tracking** gefixt ✅ — Alle 10 Migrations jetzt in `supabase_migrations.schema_migrations` registriert. `supabase db push` funktioniert jetzt sauber.
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
-- **OPS Dashboard Redesign** shipped ✅ — Light Theme, Sidebar (OpsShell), seq_number FS-XXXX, case_events Timeline, Manual Cases (CreateCaseModal), KPI-Cards, CSV-Export, Dropdown-Filter, Google Maps Links. 3 SQL Migrations (reporter_name, seq_number, case_events). Route Groups (auth)/(dashboard). E-Mails zeigen FS-XXXX statt UUID.
-- **Website Polish** shipped ✅ — "So funktioniert FlowSight" (4 Schritte statt 3), MobileNav Hamburger, "No-Brainer-Offer" Section (30-Tage-Versprechen), Link→/demo Navigation.
 - **2 bekannte Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe Kontakt↔Falldetails). Tracked in OPS_BOARD.md.
-- **Website-Optimierung GBP (W1–W4)** shipped ✅ — SEO metadata, Footer Kontakt-Spalte, /demo Booking-Page, Hero "KI-Telefonassistent".
-- **Google Business Profil** live ✅ — Service-Area Business (Zürichsee linkes Ufer), CTA = Call (Lisa), Booking-Link aktiv (MS Bookings), 7 GBP-Bilder.
-- **LinkedIn Profil** erstellt ✅ — Gunnar Wende, Gründer FlowSight GmbH.
-- **Sales Voice Agent** shipped — "Lisa", KI-Disclosure, DE/INTL, Lead-E-Mail funktioniert.
 - **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
 - **Nächster Schritt CC:** 2 Bugs (N12, N13) fixen. Danach bereit für NEXT-Phase (trigger-basiert nach Go-Live).
 - **Nächster Schritt Founder:** E2E Go-Live Checklist (6 Tests, ~4h) → Go/No-Go Entscheid.
@@ -104,6 +102,7 @@ Wer FlowSight verstehen will, liest diese Dateien in dieser Reihenfolge:
 | `docs/runbooks/99-secrets-policy.md` | Secrets-Handling, Rotation, Incident Playbook | CC |
 | `docs/runbooks/retell_agent_config.md` | Voice Agent Setup, Dual-Agent, Publish-Prozess | CC |
 | `docs/runbooks/peoplefone_front_door.md` | Telefon-Routing (Peoplefone → Twilio → Retell) | CC |
+| `docs/runbooks/demo_script.md` | 15-Min Demo-Skript (Brunner Haustechnik AG) | CC + Founder |
 
 ### Tier 4 — Archiv (Audit Trail)
 
