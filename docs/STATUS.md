@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-02-28 (Demo-Strang v2 High-End Showcase shipped)
+**Datum:** 2026-02-28 (Demo-Strang v2 Polish — Bilder, Wizard, CTA)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -48,8 +48,8 @@ Details: `docs/customers/doerfler-ag/status.md`
 
 ## Aktueller Stand
 
-- **Demo-Strang v2 High-End Showcase** shipped ✅ — Custom Demo Page `/brunner-haustechnik` mit 10 ICP-optimierten Sections (Hero, Services+Lightbox, Notfall, Google Reviews 4.8★/52, Process, Team, Map, Karriere, Kontakt). Unsplash-Bilder, Kontrast-Fix im Template. Commit b5cdc76.
-- **Supabase Migration Tracking** gefixt ✅ — Alle 10 Migrations jetzt in `supabase_migrations.schema_migrations` registriert. `supabase db push` funktioniert jetzt sauber.
+- **Demo-Strang v2 Polish** shipped ✅ — Alle 25+ Service-Bilder durch verifizierte Unsplash-URLs ersetzt (keine 404s mehr). Team-Fotos: Arbeiter in Schutzkleidung/Helm. Hero-CTA weiss auf Overlay (max. Kontrast). Neuer **BrunnerWizardForm** (light theme, Brunner-Branding, Step-Indicator, Kategorie-Icons, Review-Summary, mobile-first). Commit 0a4fe76.
+- **Demo-Strang v2 High-End Showcase** shipped ✅ — Custom Demo Page `/brunner-haustechnik` mit 10 ICP-optimierten Sections (Hero, Services+Lightbox, Notfall, Google Reviews 4.8★/52, Process, Team, Map, Karriere, Kontakt). Kontrast-Fix Template. Commit b5cdc76.
 - **40h Go-Live Sprint** — CC Blocks alle DONE (10/10 + W1–W4). Founder Blocks A-G teilweise erledigt.
 - **2 bekannte Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe Kontakt↔Falldetails). Tracked in OPS_BOARD.md.
 - **Go-Live Blocker:** Keiner. F9 (Google Review Link) ist NICHT Go-Live-kritisch.
