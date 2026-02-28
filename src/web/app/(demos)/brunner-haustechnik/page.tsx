@@ -15,30 +15,32 @@ export const metadata: Metadata = {
 /* ------------------------------------------------------------------ */
 const U = (id: string, w = 800) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+const P = (id: string, w = 800) =>
+  `https://plus.unsplash.com/premium_photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-const HERO_IMG = U("1504307651254-35680f356dfd", 1920); // construction worker at work
+const HERO_IMG = U("1584622650111-993a426fbf0a", 1920); // modern bathroom, clean luxury
 
 const SERVICE_IMAGES: Record<string, { src: string; alt: string }[]> = {
   "Sanitär": [
-    { src: U("1552321554-5fefe8c9ef14"), alt: "Moderne Badezimmer-Renovation" },
-    { src: U("1606457425221-125c3fd1f901"), alt: "Waschbecken mit Armatur" },
-    { src: U("1613849925362-38fb4c16ff36"), alt: "Duschkopf auf weissen Fliesen" },
-    { src: U("1631215750638-bdde5f616128"), alt: "Badewanne mit Brause" },
-    { src: U("1609946860441-a51ffcf22208"), alt: "Badezimmer-Renovation komplett" },
+    { src: U("1753605788101-04d1e653e74a"), alt: "Luxus-Badezimmer mit freistehender Badewanne" },
+    { src: U("1721274502909-49d729a2b418"), alt: "Moderne Walk-in-Dusche mit Glaswand" },
+    { src: U("1754522711595-84428937b07a"), alt: "Designer-Waschtisch mit Aufsatzwaschbecken" },
+    { src: U("1760546120487-ccb54df9838c"), alt: "Komplett-Renovation Badezimmer" },
+    { src: U("1723642610226-e4ab4626cbc2"), alt: "Walk-in-Dusche, rahmenlos, weiss" },
   ],
   "Heizung": [
-    { src: U("1711037868819-0ece7012330a"), alt: "Heizkörper am Fenster" },
-    { src: U("1554325500-2fdcc112e791"), alt: "Weisser Radiator" },
-    { src: U("1574334292321-4844f63aefef"), alt: "Heizungsrohre" },
-    { src: U("1585771724684-38269d6639fd"), alt: "Heizungstechnik" },
-    { src: U("1497366754035-f200968a6e72"), alt: "Heizungsanlage" },
+    { src: U("1650551182956-47efa0f90b64"), alt: "Heizungsraum mit Rohren und Manometern" },
+    { src: U("1650551182991-b07558247564"), alt: "Technikraum mit Rohrleitungen und Ventilen" },
+    { src: P("1715620329644-36b9f5b9fca3"), alt: "Moderne Wärmepumpe am Gebäude" },
+    { src: U("1637345158353-40607a208d46"), alt: "Industrielle Rohrleitungen im Technikraum" },
+    { src: P("1683121030225-5844f529662d"), alt: "Fussbodenheizung Verlegung" },
   ],
   "Boiler & Warmwasser": [
-    { src: U("1601914697928-0b536e76d048"), alt: "Warmwasserboiler" },
-    { src: U("1623986854909-279d5d194123"), alt: "Wasseraufbereitungsanlage" },
-    { src: U("1574269909862-7e1d70bb8078"), alt: "Rohrleitungen Technikraum" },
-    { src: U("1669295359803-5ec64b4c45d1"), alt: "Wasserleitung" },
-    { src: U("1566446896748-6075a87760c1"), alt: "Duschbrause verchromt" },
+    { src: U("1594233078955-e1f73a02ebb2"), alt: "Warmwasserboiler an der Wand" },
+    { src: P("1682142889998-af3a27d618ca"), alt: "Zwei Techniker prüfen Boiler-Anlage" },
+    { src: U("1646124839366-67161db62d80"), alt: "Technikraum mit Rohrsystem" },
+    { src: P("1764691213233-236ae6855972"), alt: "Boiler-System im Keller" },
+    { src: U("1757573538081-c469f75cdd7a"), alt: "Industrielle Rohrleitungen" },
   ],
   "Leitungsbau": [
     { src: U("1710781944947-7cd4a381499f"), alt: "Rohre und Fittings" },
@@ -63,22 +65,16 @@ const SERVICE_CATEGORY_MAP: Record<string, string> = {
   "Reparaturservice": "Sanitär allgemein",
 };
 
-const TEAM = [
-  {
-    name: "Thomas Brunner",
-    role: "Inhaber / Sanitärmeister",
-    img: U("1705579612477-20866d78deeb"), // worker with hard hat and safety vest
-  },
-  {
-    name: "Marco Steiner",
-    role: "Projektleiter Heizung",
-    img: U("1646324554833-f0b6a479fa5d"), // worker with hard hat on site
-  },
-  {
-    name: "Luca Berger",
-    role: "Sanitärmonteur",
-    img: U("1630683924997-fe27050a0416"), // worker in safety vest
-  },
+const TEAM_IMG = U("1653280662710-1cac52cde6d7", 1200); // construction workers group
+const TEAM_MEMBERS = [
+  { name: "Thomas Brunner", role: "Inhaber / Sanitärmeister" },
+  { name: "Marco Steiner", role: "Projektleiter Heizung" },
+  { name: "Luca Berger", role: "Sanitärmonteur" },
+  { name: "Nina Keller", role: "Servicetechnikerin" },
+  { name: "David Meier", role: "Sanitärmonteur" },
+  { name: "Sarah Brunner", role: "Administration" },
+  { name: "Yusuf Acar", role: "Lernender 3. Lehrjahr" },
+  { name: "Tim Widmer", role: "Heizungsmonteur" },
 ];
 
 const REVIEWS = [
@@ -154,7 +150,7 @@ export default function BrunnerHaustechnikDemo() {
             <a href="#bewertungen" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Bewertungen</a>
             <a href="#team" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Team</a>
             <a href="#kontakt" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Kontakt</a>
-            <a href={theme.phoneHref} className="hidden lg:flex items-center gap-1.5 text-sm font-semibold" style={{ color: theme.primaryHex }}>
+            <a href={theme.phoneHref} className="hidden lg:flex items-center gap-1.5 text-sm font-semibold rounded-lg border-2 px-3 py-1.5 transition-colors hover:bg-gray-50" style={{ borderColor: theme.primaryHex, color: theme.primaryHex }}>
               <PhoneIcon className="w-4 h-4" />
               {theme.phone}
             </a>
@@ -231,7 +227,7 @@ export default function BrunnerHaustechnikDemo() {
           </div>
         </section>
 
-        {/* ============ 3. LEISTUNGEN (5 Services + Gallery) ============ */}
+        {/* ============ 3. LEISTUNGEN (Card Grid) ============ */}
         <section id="leistungen" className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4" style={{ color: theme.primaryHex }}>
@@ -241,60 +237,59 @@ export default function BrunnerHaustechnikDemo() {
               {theme.teamSize} — ein Team. Fünf Fachbereiche. Alles aus einer Hand.
             </p>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {theme.services.map((svc) => {
                 const images = SERVICE_IMAGES[svc.name] ?? [];
+                const heroImg = images[0];
+                const thumbs = images.slice(1);
                 const cat = SERVICE_CATEGORY_MAP[svc.name];
                 const href = cat
                   ? `/brunner-haustechnik/meldung?category=${encodeURIComponent(cat)}`
                   : wizardUrl;
                 return (
-                  <details key={svc.name} className="group rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-md">
-                    <summary className="flex cursor-pointer items-center gap-4 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundColor: theme.accentHex }}>
-                        <ServiceIconSvg name={svc.name} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold" style={{ color: theme.primaryHex }}>{svc.name}</h3>
-                        <p className="mt-0.5 text-sm text-gray-600 line-clamp-1">{svc.desc}</p>
-                      </div>
-                      {/* Preview thumbnails (desktop) */}
-                      {images.length > 0 && (
-                        <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
-                          {images.slice(0, 2).map((img, i) => (
-                            <div key={i} className="h-10 w-10 overflow-hidden rounded-lg bg-gray-100">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={img.src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                  <div key={svc.name} className="group rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all">
+                    {/* Card hero image */}
+                    {heroImg && (
+                      <div className="relative h-52 sm:h-56 bg-gray-100 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={heroImg.src}
+                          alt={heroImg.alt}
+                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                        <div className="absolute bottom-0 left-0 p-5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm text-white">
+                              <ServiceIconSvg name={svc.name} />
                             </div>
-                          ))}
-                          {images.length > 2 && (
-                            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-xs font-medium text-gray-500">
-                              +{images.length - 2}
-                            </span>
-                          )}
+                            <h3 className="text-xl font-bold text-white drop-shadow-lg">{svc.name}</h3>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {/* Card body */}
+                    <div className="p-5">
+                      <p className="text-sm text-gray-600 leading-relaxed mb-4">{svc.desc}</p>
+
+                      {/* Reference thumbnails */}
+                      {thumbs.length > 0 && (
+                        <div className="mb-4">
+                          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Referenzen</p>
+                          <ServiceGallery images={thumbs} />
                         </div>
                       )}
-                      <svg className="h-5 w-5 shrink-0 text-gray-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </summary>
-                    <div className="border-t border-gray-100 px-5 sm:px-6 pb-6 pt-4">
-                      <p className="mb-5 max-w-3xl leading-relaxed text-gray-600">{svc.desc}</p>
-                      {images.length > 0 && (
-                        <div>
-                          <p className="mb-3 text-sm font-medium text-gray-500">Referenzbilder — klicken zum Vergrössern</p>
-                          <ServiceGallery images={images} />
-                        </div>
-                      )}
+
                       <a
                         href={href}
-                        className="mt-5 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:underline"
+                        className="inline-flex items-center gap-1 text-sm font-semibold transition-colors hover:underline"
                         style={{ color: theme.accentHex }}
                       >
                         Jetzt melden &rarr;
                       </a>
                     </div>
-                  </details>
+                  </div>
                 );
               })}
             </div>
@@ -464,27 +459,30 @@ export default function BrunnerHaustechnikDemo() {
         </section>
 
         {/* ============ 7. UNSER TEAM ============ */}
-        <section id="team" className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4" style={{ color: theme.primaryHex }}>
-                Unser Team
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed mb-14 max-w-2xl mx-auto">
-                {theme.teamSize} mit Leidenschaft für Haustechnik.
-                Persönlich, kompetent und immer für Sie da.
-              </p>
-            </div>
+        <section id="team" className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 scroll-mt-20 overflow-hidden">
+          {/* Background team photo */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${TEAM_IMG})` }}
+            role="img"
+            aria-label="Team Brunner Haustechnik"
+          />
+          <div className="absolute inset-0 bg-gray-900/75" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {TEAM.map((m) => (
-                <div key={m.name} className="text-center">
-                  <div className="mx-auto h-40 w-40 overflow-hidden rounded-2xl bg-gray-200 mb-5">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={m.img} alt={m.name} className="h-full w-full object-cover" loading="lazy" />
-                  </div>
-                  <h3 className="text-lg font-semibold">{m.name}</h3>
-                  <p className="text-sm font-medium" style={{ color: theme.accentHex }}>{m.role}</p>
+          <div className="relative z-10 max-w-6xl mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
+              Unser Team
+            </h2>
+            <p className="text-lg text-white/80 leading-relaxed mb-12 max-w-2xl mx-auto">
+              {theme.teamSize} mit Leidenschaft für Haustechnik.
+              Persönlich, kompetent und immer für Sie da.
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
+              {TEAM_MEMBERS.map((m) => (
+                <div key={m.name} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 p-3 sm:p-4">
+                  <p className="text-sm font-semibold text-white">{m.name}</p>
+                  <p className="text-xs text-white/60 mt-0.5">{m.role}</p>
                 </div>
               ))}
             </div>
