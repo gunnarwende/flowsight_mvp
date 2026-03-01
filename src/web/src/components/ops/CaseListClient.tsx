@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 
 // ---------------------------------------------------------------------------
@@ -135,11 +136,41 @@ function exportCsv(rows: CaseRow[]) {
 export function CaseListClient({
   rows,
   kpi,
+  currentPage,
+  totalPages,
+  totalCount,
+  searchQuery,
 }: {
   rows: CaseRow[];
   kpi: KpiData;
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  searchQuery: string;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [search, setSearch] = useState(searchQuery);
+  const router = useRouter();
+  const params = useSearchParams();
+
+  // Sync search input with URL when navigating back/forward
+  useEffect(() => { setSearch(searchQuery); }, [searchQuery]);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const p = new URLSearchParams(params.toString());
+    if (search.trim()) p.set("q", search.trim());
+    else p.delete("q");
+    p.delete("page");
+    router.push(`/ops/cases?${p.toString()}`);
+  }
+
+  function goToPage(page: number) {
+    const p = new URLSearchParams(params.toString());
+    if (page > 1) p.set("page", String(page));
+    else p.delete("page");
+    router.push(`/ops/cases?${p.toString()}`);
+  }
 
   return (
     <>
@@ -151,11 +182,47 @@ export function CaseListClient({
         <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" />
       </div>
 
-      {/* Action buttons */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-slate-500 text-sm font-medium">
-          {rows.length} {rows.length === 1 ? "Fall" : "Fälle"}
-        </p>
+      {/* Action bar */}
+      <div className="flex items-center justify-between mb-4 gap-3">
+        <div className="flex items-center gap-3">
+          <form onSubmit={handleSearch} className="flex items-center gap-2">
+            <div className="relative">
+              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Name, Adresse, Kategorie…"
+                className="rounded-lg border border-gray-300 bg-white pl-8 pr-3 py-2 text-xs text-gray-700 placeholder:text-gray-400 w-52 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
+              />
+            </div>
+            {search !== searchQuery && (
+              <button type="submit" className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-medium text-white hover:bg-slate-600 transition-colors">
+                Suchen
+              </button>
+            )}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  const p = new URLSearchParams(params.toString());
+                  p.delete("q");
+                  p.delete("page");
+                  router.push(`/ops/cases?${p.toString()}`);
+                }}
+                className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                &times;
+              </button>
+            )}
+          </form>
+          <p className="text-slate-500 text-sm font-medium hidden sm:block">
+            {totalCount} {totalCount === 1 ? "Fall" : "Fälle"}
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportCsv(rows)}
@@ -198,7 +265,11 @@ export function CaseListClient({
                 {rows.map((c) => (
                   <tr
                     key={c.id}
-                    className="border-b border-gray-50 transition-colors hover:bg-gray-50 group"
+                    onClick={(e) => {
+                      if ((e.target as HTMLElement).closest("a, button")) return;
+                      router.push(`/ops/cases/${c.id}`);
+                    }}
+                    className="border-b border-gray-50 transition-colors hover:bg-gray-50 cursor-pointer group"
                   >
                     <td className="px-4 py-3">
                       <Link
@@ -284,6 +355,29 @@ export function CaseListClient({
             ))}
           </div>
         </>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-4 py-3">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage <= 1}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            &larr; Zurück
+          </button>
+          <span className="text-xs text-gray-500">
+            Seite {currentPage} von {totalPages}
+          </span>
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Weiter &rarr;
+          </button>
+        </div>
       )}
 
       <CreateCaseModal open={modalOpen} onClose={() => setModalOpen(false)} />

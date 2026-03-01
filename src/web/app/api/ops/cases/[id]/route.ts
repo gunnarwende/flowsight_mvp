@@ -17,12 +17,20 @@ const STATUS_LABELS: Record<string, string> = {
   archived: "Archiviert",
 };
 
+const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
+
 const OPS_UPDATABLE_FIELDS = [
   "status",
+  "urgency",
+  "category",
+  "plz",
+  "city",
+  "description",
   "assignee_text",
   "scheduled_at",
   "internal_notes",
   "contact_email",
+  "contact_phone",
   "street",
   "house_number",
   "reporter_name",
@@ -134,6 +142,20 @@ export async function PATCH(
     );
   }
 
+  // Validate urgency value
+  if (
+    "urgency" in update &&
+    !VALID_URGENCIES.includes(update.urgency as (typeof VALID_URGENCIES)[number])
+  ) {
+    return NextResponse.json(
+      {
+        error: `Invalid urgency. Allowed: ${VALID_URGENCIES.join(", ")}`,
+        allowed_values: { urgency: VALID_URGENCIES },
+      },
+      { status: 400 }
+    );
+  }
+
   try {
     const supabase = getServiceClient();
 
@@ -149,7 +171,7 @@ export async function PATCH(
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, assignee_text, scheduled_at, internal_notes, contact_email, street, house_number, reporter_name, updated_at"
+        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
       )
       .single();
 

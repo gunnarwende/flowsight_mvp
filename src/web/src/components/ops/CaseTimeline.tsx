@@ -9,14 +9,11 @@ export interface CaseEvent {
   created_at: string;
 }
 
-const DOT_COLORS: Record<string, string> = {
-  case_created: "bg-amber-500",
-  status_changed: "bg-violet-500",
-  email_notification_sent: "bg-green-500",
-  reporter_confirmation_sent: "bg-green-400",
-  invite_sent: "bg-amber-400",
-  review_requested: "bg-emerald-500",
-  fields_updated: "bg-gray-400",
+/** Status → next expected action hint (German). */
+const NEXT_STEP: Record<string, string> = {
+  new: "Kunden kontaktieren",
+  contacted: "Termin vereinbaren",
+  scheduled: "Einsatz durchführen",
 };
 
 function formatEventDate(iso: string): string {
@@ -30,44 +27,54 @@ function formatEventDate(iso: string): string {
   });
 }
 
-export function CaseTimeline({ events }: { events: CaseEvent[] }) {
-  if (events.length === 0) {
+export function CaseTimeline({ events, status }: { events: CaseEvent[]; status?: string }) {
+  const nextStep = status ? NEXT_STEP[status] : undefined;
+
+  if (events.length === 0 && !nextStep) {
     return (
-      <p className="text-gray-400 text-sm py-4">Noch keine Einträge.</p>
+      <p className="text-gray-400 text-sm py-2">Noch keine Einträge.</p>
     );
   }
 
   return (
     <div className="relative">
       {/* Connecting line */}
-      <div className="absolute left-[9px] top-3 bottom-3 w-px bg-gray-200" />
+      <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gray-200" />
 
-      <ul className="space-y-4">
-        {events.map((event, i) => {
-          const dotColor = DOT_COLORS[event.event_type] ?? "bg-gray-300";
-          const isLast = i === events.length - 1;
-          return (
-            <li key={event.id} className="relative flex gap-3">
-              {/* Dot */}
-              <div className="relative z-10 flex-shrink-0 mt-1">
-                <div className={`w-[18px] h-[18px] rounded-full border-2 border-white ${dotColor}`} />
-              </div>
+      <ul className="space-y-3">
+        {events.map((event) => (
+          <li key={event.id} className="relative flex gap-2.5">
+            {/* Dot — uniform gray for all past events */}
+            <div className="relative z-10 flex-shrink-0 mt-1.5">
+              <div className="w-[14px] h-[14px] rounded-full border-2 border-white bg-slate-400" />
+            </div>
 
-              {/* Content */}
-              <div className={`flex-1 ${isLast ? "" : "pb-1"}`}>
-                <p className="text-sm text-gray-900 font-medium leading-snug">
-                  {event.title}
-                </p>
-                {event.detail && (
-                  <p className="text-xs text-gray-500 mt-0.5">{event.detail}</p>
-                )}
-                <p className="text-xs text-gray-400 mt-1">
-                  {formatEventDate(event.created_at)}
-                </p>
-              </div>
-            </li>
-          );
-        })}
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-gray-700 leading-snug truncate">
+                {event.title}
+              </p>
+              <p className="text-[11px] text-gray-400">
+                {formatEventDate(event.created_at)}
+              </p>
+            </div>
+          </li>
+        ))}
+
+        {/* Next expected step — amber dashed hint */}
+        {nextStep && (
+          <li className="relative flex gap-2.5">
+            <div className="relative z-10 flex-shrink-0 mt-1.5">
+              <div className="w-[14px] h-[14px] rounded-full border-2 border-dashed border-amber-400 bg-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-amber-600 font-medium leading-snug">
+                {nextStep}
+              </p>
+              <p className="text-[11px] text-gray-400">Nächster Schritt</p>
+            </div>
+          </li>
+        )}
       </ul>
     </div>
   );

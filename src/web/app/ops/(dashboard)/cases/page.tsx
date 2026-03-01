@@ -49,6 +49,9 @@ export default async function OpsCasesPage({
   const filterAssigned = params.assigned;
   const filterTenantSlug = params.tenant;
   const showAll = params.show === "all";
+  const filterQuery = params.q ?? "";
+  const currentPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+  const PAGE_SIZE = 15;
 
   const supabase = getServiceClient();
 
@@ -78,10 +81,10 @@ export default async function OpsCasesPage({
   let listQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name"
+      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name",
+      { count: "exact" }
     )
-    .order("created_at", { ascending: false })
-    .limit(200);
+    .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
   // Default: open cases (exclude done + archived), unless showAll or explicit status filter
@@ -98,7 +101,20 @@ export default async function OpsCasesPage({
   if (filterSource) listQuery = listQuery.eq("source", filterSource);
   if (filterAssigned === "yes") listQuery = listQuery.not("assignee_text", "is", null);
 
-  const [{ data: allCases }, { data: cases, error }] = await Promise.all([
+  // Text search
+  if (filterQuery) {
+    const q = `%${filterQuery}%`;
+    listQuery = listQuery.or(
+      `reporter_name.ilike.${q},city.ilike.${q},category.ilike.${q},street.ilike.${q},description.ilike.${q},plz.ilike.${q}`
+    );
+  }
+
+  // Pagination
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  listQuery = listQuery.range(from, to);
+
+  const [{ data: allCases }, { data: cases, error, count }] = await Promise.all([
     statsQuery,
     listQuery,
   ]);
@@ -133,19 +149,22 @@ export default async function OpsCasesPage({
   }
 
   const rows = (cases ?? []) as CaseRow[];
+  const totalCount = count ?? rows.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-  // Build filter URL helper
+  // Build filter URL helper — changing any filter resets to page 1
   function filterHref(key: string, value: string): string {
     const p = new URLSearchParams();
     if (filterTenantSlug) p.set("tenant", filterTenantSlug);
-    if (key === "status" && value) p.set("status", value);
+    if (key === "status") { if (value) p.set("status", value); }
     else if (filterStatus) p.set("status", filterStatus);
-    if (key === "urgency" && value) p.set("urgency", value);
+    if (key === "urgency") { if (value) p.set("urgency", value); }
     else if (filterUrgency) p.set("urgency", filterUrgency);
-    if (key === "source" && value) p.set("source", value);
+    if (key === "source") { if (value) p.set("source", value); }
     else if (filterSource) p.set("source", filterSource);
-    if (key === "show" && value) p.set("show", value);
-    else if (showAll && key !== "show") p.set("show", "all");
+    if (key === "show") { if (value) p.set("show", value); }
+    else if (showAll) p.set("show", "all");
+    if (filterQuery) p.set("q", filterQuery);
     const qs = p.toString();
     return `/ops/cases${qs ? `?${qs}` : ""}`;
   }
@@ -231,7 +250,14 @@ export default async function OpsCasesPage({
         </div>
       </div>
 
-      <CaseListClient rows={rows} kpi={kpi} />
+      <CaseListClient
+        rows={rows}
+        kpi={kpi}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        searchQuery={filterQuery}
+      />
     </>
   );
 }
