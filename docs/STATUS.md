@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-01 (N2 shipped)
+**Datum:** 2026-03-01 (N17+N18+N19 shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -25,7 +25,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ digit-by-digit, Language Gate |
-| **Ops Dashboard** | LIVE ✅ | /ops — Light Theme, Sidebar, FS-XXXX, Timeline, Manual Cases, KPI-Cards, CSV-Export |
+| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (all-editable, compact 2-col), Case List (search, pagination, clickable rows), KPI-Cards, CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
@@ -46,11 +46,11 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 ## Aktueller Stand
 
 - **12 Module LIVE.** Alles deployed und funktional.
-- **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 3 Blocker.**
-- **BLOCKER:** N19 (Mobile Login), N20 (Voice PLZ Readback), N21 (Retell 188 Telefonnummer)
-- **Go-Live kritisch:** N17 (Case Detail Redesign — 5 UX-Bugs), N18 (Case List UX — 5 UX-Bugs)
-- **Nächster Schritt Founder:** 02.03. 04:00–12:00 Sales (Prospect-Websites + E-Mails). N21 bei Retell Support melden.
-- **Nächster Schritt CC:** Blocker N19 + N20 fixen, dann N17 + N18.
+- **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 7 Workstreams.**
+- **Erledigt:** N17 (Case Detail Redesign ✅), N18 (Case List UX ✅), N19 (Mobile Auth ✅), N21 (Retell 188 ✅)
+- **BLOCKER:** N20 (Voice PLZ Readback) — einziger verbleibender Blocker
+- **Nächster Schritt Founder:** 02.03. Sales-Block, dann E2E Re-Test (N17/N18/N19 verifizieren).
+- **Nächster Schritt CC:** N20 (Voice PLZ) fixen.
 
 ## Fixe Entscheidungen (No Drift)
 

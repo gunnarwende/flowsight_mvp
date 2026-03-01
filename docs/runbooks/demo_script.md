@@ -18,7 +18,7 @@
 
 ### Checkliste
 
-- [ ] Telefon bereit (für Lisa-Anruf): **044 552 09 19**
+- [ ] Telefon bereit (für Brunner-Anruf): **044 505 48 18**
 - [ ] E-Mail-Postfach offen (Founder-Adresse)
 - [ ] Dashboard zeigt Brunner-Cases (10 Seed Cases sichtbar)
 - [ ] Screen-Share bereit, Notifications stumm
@@ -55,21 +55,37 @@
 
 **Wow-Moment:** Echtzeit E-Mail-Benachrichtigung innert Sekunden.
 
-### Min 3–5: Lisa anrufen (LIVE!)
+### Min 3–5: Brunner Voice Agent anrufen (LIVE!)
 
-> "Jetzt zeige ich Ihnen den zweiten Kanal. Die meisten Kunden rufen an — und da nimmt Lisa ab."
+> "Jetzt zeige ich Ihnen den zweiten Kanal. Die meisten Kunden rufen an — und da nimmt Ihr persönlicher Assistent ab."
 
-**Aktion:**
-- Telefon nehmen, **044 552 09 19** anrufen (Lautsprecher an)
-- Lisa meldet sich: "Guten Tag, hier ist Lisa — ich bin die digitale Assistentin von FlowSight."
-- Beispiel-Fall durchspielen (Heizung ausgefallen, Kilchberg)
+**Aktion — Intake-Demo:**
+- Telefon nehmen, **044 505 48 18** anrufen (Lautsprecher an)
+- Lisa meldet sich: "Guten Tag, hier ist Lisa — die digitale Assistentin der Brunner Haustechnik AG. Wie kann ich Ihnen helfen?"
+- Beispiel-Fall durchspielen: "Ich habe einen Rohrbruch im Keller, es tropft von der Decke!"
+- Agent sammelt Details natürlich (PLZ, Dringlichkeit, Beschreibung)
 - Auflegen
 
-> "Lisa nimmt 24/7 ab. Kein Anruf geht mehr verloren. Das ist der Gänsehaut-Moment."
+> "Lisa nimmt 24/7 ab. Kein Anruf geht mehr verloren. Und das Ticket ist schon im System."
 
-**Wow-Moment:** Live-Telefonat mit KI-Assistentin.
+**Wow-Moment:** Live-Telefonat mit Lisa — Fall erscheint sofort im Dashboard.
 
-### Min 5–8: Dashboard zeigen
+### Min 5–6: Info-Anruf zeigen (optional, aber starker Effekt)
+
+> "Und das Beste: Der Agent beantwortet auch die lästigen Alltagsfragen."
+
+**Aktion — Info-Demo:**
+- Nochmal **044 505 48 18** anrufen
+- Frage: "Haben Sie heute noch offen?" → Agent antwortet mit Öffnungszeiten
+- Frage: "Was kostet ungefähr eine Rohrreinigung?" → Agent gibt Richtwert
+- Frage: "Kommen Sie auch nach Wädenswil?" → Agent bestätigt Einzugsgebiet
+- Bedanken → Agent verabschiedet sich
+
+> "Diese Anrufe kennen Sie — sie stören Ihren Arbeitsfluss und bringen kein Geld. Lisa übernimmt das."
+
+**Wow-Moment:** Lisa beantwortet Alltagsfragen kompetent und freundlich — KEIN Ticket erstellt.
+
+### Min 6–8: Dashboard zeigen
 
 > "Und wo landen diese Fälle? In Ihrem Dashboard."
 

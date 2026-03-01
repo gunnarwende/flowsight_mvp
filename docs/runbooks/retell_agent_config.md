@@ -57,11 +57,17 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 
 ### Agent Prompt (Agent-as-File)
 
-SSOT files:
+**Dörfler AG (Intake):**
 - **DE:** `retell/exports/doerfler_agent.json`
 - **INTL:** `retell/exports/doerfler_agent_intl.json`
-- **Deploy:** `node scripts/retell_deploy.mjs deploy --mode debug`
-- **Verify:** `node scripts/retell_deploy.mjs verify`
+
+**Brunner Haustechnik AG (Demo Intake):**
+- **DE:** `retell/exports/brunner_agent.json`
+- **INTL:** `retell/exports/brunner_agent_intl.json`
+- **Setup Guide:** `docs/runbooks/brunner_voice_setup.md`
+
+**Deploy:** `node scripts/retell_deploy.mjs deploy --mode debug`
+**Verify:** `node scripts/retell_deploy.mjs verify`
 
 ## 4. Publishing (CRITICAL — Founder-only until proven stable)
 

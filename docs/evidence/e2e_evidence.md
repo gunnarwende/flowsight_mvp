@@ -152,3 +152,11 @@ Caller → Peoplefone +41 44 552 09 19
 | Reviews (F9) | DEFERRED (not Go-Live critical) |
 
 **Verdict:** Ready for Go-Live. F9 (Google Review Link) wird nachgerüstet.
+
+---
+
+## Screenshots (Founder Run)
+
+Screenshots liegen in docs/evidence/screenshots/ und werden in der Founder Go-Live Checklist als  
+„siehe Screenshot 01, 02“ (Evidence) bzw. „siehe BUG_01“ (Bugs) referenziert.
+

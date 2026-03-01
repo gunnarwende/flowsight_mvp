@@ -71,11 +71,12 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **Flow:** Anruf → Peoplefone (Schweizer Nummer) → Twilio SIP → Retell Agent → Webhook → Supabase → E-Mail
 - **Dual-Agent:** Deutsch (Stimme "Susi") + International/Englisch (Stimme "Juniper")
 - **Language Gate:** Erkennt automatisch ob Deutsch oder andere Sprache
-- **7 Fragen:** Begrüssung → Kategorie → PLZ (Ziffer für Ziffer) → Dringlichkeit → Name → Telefon → Beschreibung
-- **Output:** Fall in Supabase + Ops-E-Mail mit Zusammenfassung + Melder-Bestätigungs-E-Mail
+- **Zwei Modi (automatische Erkennung):**
+  - **Intake-Modus:** Schadensmeldung aufnehmen (max 7 Fragen: Kategorie, PLZ, Adresse, Dringlichkeit, Beschreibung) → Fall in Supabase + E-Mails
+  - **Info-Modus:** Allgemeine Fragen beantworten (Öffnungszeiten, Preise, Einzugsgebiet, Team, Bewerbungen, Beratung) → kein Ticket, nur freundliche Auskunft
 - **Recording: OFF** (Datenschutz)
-- **KI-Disclosure:** "Ich bin die digitale Assistentin von [Firma]"
 - **24/7 erreichbar**, keine verpassten Anrufe
+- **Template-System:** Agent-Configs als JSON-Schablone für schnelle Kunden-Onboardings (~20 Min)
 
 ### 3.4 Ops Dashboard
 - Web-App unter /ops (Login via Supabase Auth)
@@ -197,6 +198,10 @@ NACH ERLEDIGUNG:
 - High-End Custom Demo Page (10 Sections, 30 kuratierte Bilder, KI-Teamfoto)
 - 10 Seed Cases im Ops Dashboard (FS-0001 bis FS-0010)
 - Eigener Wizard mit Brunner-Branding
+- Eigener Voice Agent (DE + INTL) auf **+41 44 505 48 18** mit zwei Modi:
+  - **Intake-Modus:** Schadensmeldungen aufnehmen → Ticket im Dashboard
+  - **Info-Modus:** Alltagsfragen beantworten (Öffnungszeiten, Preise, Einzugsgebiet, "Chef sprechen", Bewerbungen, etc.) → kein Ticket
+- Agent-Configs = Schablone für alle künftigen Kunden (`retell/templates/README.md`)
 
 ---
 
