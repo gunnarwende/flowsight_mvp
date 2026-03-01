@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-01 (N2 E-Mail-First Workflow shipped)
+**Updated:** 2026-03-01 (E2E Test — 17 Findings, 3 Blocker)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -9,10 +9,11 @@
 ## Snapshot
 
 - **Produkt:** 12 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang)
-- **Kunden:** Dörfler AG (Go-Live PARTIAL, 3/4 Module PASS), Brunner HT (Demo-Tenant)
-- **Blocker:** Keiner. F9 (Google Review Link Dörfler) ist NICHT Go-Live-kritisch.
-- **Bugs:** 0 (N12, N13 fixed)
-- **Phase:** Go-Live Dörfler → dann aktive Kundenakquise ab 02.03.
+- **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant)
+- **BLOCKER:** 3 — N19 (Mobile Login), N20 (Voice PLZ), N21 (Retell 188 Telefonnummer)
+- **Go-Live kritisch:** N17 (Case Detail Redesign), N18 (Case List UX)
+- **Bugs gesamt:** 17 Findings aus Founder E2E Test (01.03.) → 7 Workstreams
+- **Phase:** Sales morgen 04:00–12:00 (Prospect-Websites + E-Mails). Danach Blocker fixen.
 
 ---
 
@@ -20,36 +21,53 @@
 
 | # | Task | Status | Details |
 |---|------|--------|---------|
-| A | **E2E Go-Live Checklist** | OFFEN | 8 Tests in `docs/evidence/founder_go_live_checklist.md`. ~4h. |
+| A | **E2E Go-Live Checklist** | **DONE** ✅ | Durchgeführt 01.03. — 17 Findings. PDF: `docs/evidence/Getestet wurde jetzt sehr spezifisch.pdf` |
 | D | Dörfler Input — Logo, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert. Logo offen. |
-| E | Mobile QA — iPhone | OFFEN | flowsight.ch + /doerfler-ag, ~30min |
-| F | **Go/No-Go Entscheid** | OFFEN | Blocked by: A |
+| E | Mobile QA — iPhone | BLOCKED | Blocked by N19 (Mobile Login funktioniert nicht). |
+| F | **Go/No-Go Entscheid** | OFFEN | Blocked by: N17, N18, N19, N20, N21 |
 | G | **Kommunikation an Dörfler** | OFFEN | Blocked by: F |
 | F9 | Google Review Link (Dörfler) | BLOCKED | Nachrüsten wenn Link da. Nicht Go-Live-kritisch. |
 | F11 | Customer Go-Live Sign-off | PARTIAL | 3/4 PASS. Reviews blocked by F9. |
+| N21 | **Retell 188 Telefonnummer-Bug** | **BLOCKER** | Retell fügt "188" in Brunner-Nr ein. Founder muss Retell Support kontaktieren. Siehe Bug 15. |
+| N25 | **MS Bookings UX** (Bug 17) | OFFEN | Kumpel-Feedback: Button sagt nur "Termin", Kalender-Add fehlt. Founder prüft MS Bookings Config. |
 
 ---
 
 ## OFFEN — Produkt-Backlog
 
-Trigger-basiert. Kein Overlap mit Go-Live.
+### BLOCKER (vor Go-Live)
+
+| # | Deliverable | Bugs | Owner | Status |
+|---|-------------|------|-------|--------|
+| N19 | **Mobile Auth Fix** — Magic Link "ungültig/abgelaufen" auf Mobile (Samsung). Login unmöglich. Supabase Auth Config prüfen. | 5 | CC | **BLOCKER** |
+| N20 | **Voice PLZ Overhaul** — PLZ-Readback kaputt (kündigt langsames Vorlesen an, liefert Unsinn). Neuer Ansatz nötig, nicht nochmal am Prompt schrauben. Subsumiert N8 + L9. | 4 | CC | **BLOCKER** |
+
+### Go-Live kritisch
+
+| # | Deliverable | Bugs | Owner | Status |
+|---|-------------|------|-------|--------|
+| N17 | **OPS Case Detail Redesign** — Kompletter Rebuild. (1) Edit bleibt offen nach Save, Termin/Review ohne Umweg. (2) Timeline: weniger Farben, "Nächster Schritt" sichtbar. (3) Cards aligned, max 4, kein Scroll. (4) Notizen speichern + anzeigen. (5) Alle Felder editierbar (inkl. Kategorie, Urgency, PLZ, City, Beschreibung). (6) Info-Card synct mit Edits. Subsumiert N12/N13/N14. | 1,2,3,13,14 | CC | OFFEN |
+| N18 | **OPS Case List UX** — (1) Header: Tenant-Name statt "FlowSight". (2) Ganze Zeile klickbar. (3) Filter-Reset: andere Filter beibehalten. (4) Pagination (default 10, Seiten-Navigation). (5) Textfilter (Name, Adresse). | 7,8,9,10,11 | CC | OFFEN |
+
+### Backlog (trigger-basiert)
 
 | # | Deliverable | Owner | Trigger | Status |
 |---|-------------|-------|---------|--------|
-| N2 | **E-Mail-First Workflow** — HTML Ops-Notification (Navy/Gold, Urgency-Header, CTA) + HTML Reporter-Bestätigung + Adresse/Melder-Felder | CC | Voice Agent live ✅ | **DONE** ✅ |
+| N2 | **E-Mail-First Workflow** — HTML Ops-Notification + Reporter-Bestätigung | CC | Voice Agent live ✅ | **DONE** ✅ |
 | N3 | **Kalender-Sync** — Google/Outlook CalDAV | CC | E-Mail-First shipped + Kundenfeedback | OFFEN |
 | N4 | **Morning Report (Cron)** — tägliche Zusammenfassung per E-Mail | CC | Vercel Pro upgrade | OFFEN |
-| N5 | **MS Bookings Integration** — Demo-Buchungsseite, direkter Terminlink nach Form-Submit | F + CC | Go-Live done | **DONE** ✅ |
-| N6 | **Pitch-Deck** (HTML → PDF, 7 Slides) — `docs/sales/pitch_deck.html` | CC + F | Go-Live done | **DONE** ✅ |
+| N5 | **MS Bookings Integration** | F + CC | Go-Live done | **DONE** ✅ |
+| N6 | **Pitch-Deck** (HTML → PDF, 7 Slides) | CC + F | Go-Live done | **DONE** ✅ |
 | N7 | Ops-light UI (reviews-only mode) | CC | Reviews-only Kunde signed | OFFEN |
-| N8 | CH PLZ validation (voice + wizard) | CC | Misrecognition data from prod | OFFEN |
-| N10 | **Voice E-Mail → Deutsch** — Removed English call_summary fallback | CC | Kundenfeedback | **DONE** ✅ |
+| N10 | **Voice E-Mail → Deutsch** | CC | Kundenfeedback | **DONE** ✅ |
 | N11 | **Adress-Autocomplete** — Swiss Post API / Google Places | CC | Post-MVP | OFFEN |
-| N12 | **BUG: Aktionen ohne Speichern-Zwang** — Auto-save bei Aktion, Buttons immer sichtbar | CC | E2E-Test 2026-02-27 | **DONE** ✅ |
-| N13 | **BUG: Kachelhöhe Kontakt ↔ Falldetails** — Grid alignment fix | CC | E2E-Test 2026-02-27 | **DONE** ✅ |
-| N14 | **OPS Timeline: Nächster Schritt** — Dashed hint: new→kontaktieren, contacted→Termin, scheduled→Einsatz | CC | Demo-Strang Review | **DONE** ✅ |
-| N15 | **Terminerinnerung 24h vorher** — E-Mail/SMS an Melder, Leerfahrten vermeiden. Braucht scheduled_at + Cron. | CC | Post-Go-Live | OFFEN |
-| N16 | **Kunden-Historie** — Erkennung wiederkehrender Kontakte (z.B. Formular + Anruf 1h später = selber Fall?). Review-Anfrage-History (schon mal gesendet?). reporter_email/phone als Matching-Key. | CC | Post-Go-Live, Kundenfeedback | OFFEN |
+| N12 | **BUG: Aktionen ohne Speichern-Zwang** | CC | E2E 2026-02-27 | **DONE** ✅ (subsumiert in N17) |
+| N13 | **BUG: Kachelhöhe** | CC | E2E 2026-02-27 | **DONE** ✅ (subsumiert in N17) |
+| N14 | **OPS Timeline: Nächster Schritt** | CC | Demo-Strang Review | **DONE** ✅ (subsumiert in N17) |
+| N15 | **Terminerinnerung 24h vorher** | CC | Post-Go-Live | OFFEN |
+| N16 | **Kunden-Historie** | CC | Post-Go-Live, Kundenfeedback | OFFEN |
+| N22 | **Tenant Brand Color → OPS** — Kunden-Hauptfarbe als Akzent im OPS Dashboard (Buttons, Cards). Roter Faden Website → OPS. | CC | Demo-relevant | OFFEN |
+| N23 | **Analytics Dashboard** — Separate Seite mit KPIs + 2 Diagrammen (Fallvolumen, Bearbeitungszeiten). Neben bestehenden KPI-Cards. | CC | Post-Go-Live | OFFEN |
 
 ---
 
@@ -79,11 +97,11 @@ Trigger-basiert. Kein Overlap mit Go-Live.
 | L6 | Bitwarden komplett einrichten | Founder | ~4h. Alle Zugänge. |
 | L7 | Founder Agent v1 (Retell) | CC + Founder | Strang D stable |
 | L8 | Founder Ops Inbox | CC + Founder | Strang D stable |
-| L9 | PLZ readback voice quality | CC + Founder | Retell prompt tuning |
 | L10 | Retention decisions | Founder | Case + attachment retention periods |
 | L11 | WhatsApp Sandbox → Prod | Founder | Ops Alerts need SLA |
 | L12 | Data protection statements | Founder | Voice disclosure + Wizard checkbox + DPA |
 | L13 | **Demo-Video aufnehmen** | Founder + CC | Go-Live + Demo-Strang shipped |
+| N24 | **Mobile App / PWA** — Fälle auf Handy verfolgen, Routen planen, Kunden anrufen, Kalender-Sync. Killer-Feature für Handwerker auf der Baustelle. (Bug 6) | CC | Erste zahlende Kunden + Feedback |
 
 ---
 

@@ -46,11 +46,11 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 ## Aktueller Stand
 
 - **12 Module LIVE.** Alles deployed und funktional.
-- **Bugs:** 0 (N12, N13 fixed)
-- **Zuletzt shipped:** N2 E-Mail-First Workflow (HTML Ops + Reporter E-Mails)
-- **Go-Live Blocker:** Keiner. Founder muss E2E Checklist durcharbeiten.
-- **Nächster Schritt Founder:** E2E Test. Ab Montag 02.03: Aktive Kundenakquise (5 Prospects/Woche).
-- **Nächster Schritt CC:** Prospect-Websites bauen.
+- **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 3 Blocker.**
+- **BLOCKER:** N19 (Mobile Login), N20 (Voice PLZ Readback), N21 (Retell 188 Telefonnummer)
+- **Go-Live kritisch:** N17 (Case Detail Redesign — 5 UX-Bugs), N18 (Case List UX — 5 UX-Bugs)
+- **Nächster Schritt Founder:** 02.03. 04:00–12:00 Sales (Prospect-Websites + E-Mails). N21 bei Retell Support melden.
+- **Nächster Schritt CC:** Blocker N19 + N20 fixen, dann N17 + N18.
 
 ## Fixe Entscheidungen (No Drift)
 
