@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-01
+**Datum:** 2026-03-01 (N2 shipped)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -26,7 +26,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ digit-by-digit, Language Gate |
 | **Ops Dashboard** | LIVE ✅ | /ops — Light Theme, Sidebar, FS-XXXX, Timeline, Manual Cases, KPI-Cards, CSV-Export |
-| **Email Notifications** | LIVE ✅ | Ops + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
+| **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
 | **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, legal, demo booking) |
@@ -34,22 +34,23 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
-| **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto) |
+| **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto, Voice Agent Intake+Info) |
 
 ## Kunden
 
 | Kunde | Slug | Module | Go-Live |
 |-------|------|--------|---------|
 | Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 PASS, Reviews blocked (F9) |
-| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews | DEMO — fiktiver Showroom-Tenant |
+| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews | DEMO — fiktiver Showroom-Tenant, Voice +41 44 505 48 18 |
 
 ## Aktueller Stand
 
 - **12 Module LIVE.** Alles deployed und funktional.
-- **2 Bugs:** N12 (Aktionen ohne Speichern-Zwang), N13 (Kachelhöhe).
+- **Bugs:** 0 (N12, N13 fixed)
+- **Zuletzt shipped:** N2 E-Mail-First Workflow (HTML Ops + Reporter E-Mails)
 - **Go-Live Blocker:** Keiner. Founder muss E2E Checklist durcharbeiten.
-- **Nächster Schritt Founder:** E2E Test heute (01.03). Ab Montag 02.03: Aktive Kundenakquise (5 Prospects/Woche).
-- **Nächster Schritt CC:** 2 Bugs fixen. Prospect-Websites bauen.
+- **Nächster Schritt Founder:** E2E Test. Ab Montag 02.03: Aktive Kundenakquise (5 Prospects/Woche).
+- **Nächster Schritt CC:** Prospect-Websites bauen.
 
 ## Fixe Entscheidungen (No Drift)
 

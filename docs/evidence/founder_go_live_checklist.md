@@ -25,6 +25,8 @@
 | 1.3 | PLZ eingeben: z.B. **8942** | Agent wiederholt Ziffern einzeln: "acht, neun, vier, zwei" |
 | 1.4 | Gespräch abschliessen | Agent verabschiedet sich, Anruf endet sauber |
 | 1.5 | E-Mail checken | Ops-Notification E-Mail erhalten (Betreff mit Dringlichkeit) |
+| 1.6 | **HTML E-Mail prüfen (N2)** | Navy/Gold Design, Urgency-Header (rot bei Notfall), Datentabelle, Beschreibungsbox, goldener "Fall im Dashboard öffnen" Button |
+| 1.7 | CTA-Button klicken | Link öffnet den Fall im Ops Dashboard (/ops/cases/{id}) |
 
 **Ergebnis:**
 - [ ] PASS / FAIL
@@ -46,7 +48,9 @@
 | 2.3 | Schritt 2: PLZ, Beschreibung, Kontaktdaten eingeben | Validierung OK |
 | 2.4 | Schritt 3: Absenden | Bestätigungsmeldung erscheint |
 | 2.5 | E-Mail checken (Ops) | Ops-Notification E-Mail erhalten |
-| 2.6 | E-Mail checken (Reporter) | Bestätigungs-E-Mail an eingegebene Adresse |
+| 2.6 | **Ops-E-Mail HTML prüfen (N2)** | Navy/Gold Design, Datentabelle mit Quelle "Website-Formular", Adresse + Melder-Name sichtbar, goldener CTA-Button |
+| 2.7 | E-Mail checken (Reporter) | Bestätigungs-E-Mail an eingegebene Adresse |
+| 2.8 | **Reporter-E-Mail HTML prüfen (N2)** | Weisses Design mit Navy-Akzent, Referenz-Nr (FS-XXXX) + Kategorie in Box, "Freundliche Grüsse / Ihr Service-Team" |
 
 **Ergebnis:**
 - [ ] PASS / FAIL
@@ -137,11 +141,59 @@
 |---------|--------|-------------|
 | 6.1 | Ruf **+41 44 552 09 19** an | Agent meldet sich |
 | 6.2 | Sage: "Rohrbruch, es ist dringend, Wasser überall" | Agent erkennt Notfall, fragt nach Adresse/PLZ |
-| 6.3 | Nach Anruf: E-Mail prüfen | Ops-Notification mit Dringlichkeit "Notfall" / rotes Label |
+| 6.3 | Nach Anruf: E-Mail prüfen | Ops-Notification mit **rotem Urgency-Header** "NOTFALL", Beschreibung + PLZ in Datentabelle |
+| 6.4 | **CTA-Button klicken** | Link öffnet den Notfall-Case direkt im Dashboard |
 
 **Ergebnis:**
 - [ ] PASS / FAIL
 - Screenshot: `screenshots/17_notfall_email.png`
+- Notizen: _________________________________
+
+---
+
+## Test 7: Demo-Strang — Brunner Haustechnik AG
+
+**Was:** Prüfe den kompletten Demo-Showcase (dein Sales-Tool für Prospect-Gespräche).
+
+| Schritt | Aktion | Zielzustand |
+|---------|--------|-------------|
+| 7.1 | Öffne **flowsight.ch/brunner-haustechnik** | High-End Demo-Page lädt (Hero, 6 Leistungs-Cards, Team-Foto) |
+| 7.2 | Leistungen: alle 6 Kacheln prüfen | Sanitär, Heizung, Spengler, Boiler, Leitungsbau, Reparatur — je Icon, Text, Referenz-Bilder |
+| 7.3 | Referenz-Bilder klicken | Lightbox öffnet sich, Prev/Next, alle Bilder laden |
+| 7.4 | Team-Section | Split-Layout: Links 8 Namen, rechts KI-Gruppenfoto |
+| 7.5 | Google Bewertungen | 4.8 Sterne, 52 Bewertungen, 5 Review-Karten |
+| 7.6 | "Schaden melden" klicken | Brunner Wizard öffnet sich (/brunner-haustechnik/meldung) |
+| 7.7 | Wizard durchfüllen + absenden | Fall wird erstellt, Bestätigung erscheint |
+| 7.8 | Ops Dashboard: **flowsight.ch/ops/cases?tenant=brunner-haustechnik** | Nur Brunner-Fälle sichtbar (10 Seed + dein neuer Fall) |
+| 7.9 | Voice Intake: **044 505 48 18** anrufen, Schaden melden (PLZ 8800, Rohrbruch) | Lisa meldet sich: "Guten Tag, hier ist Lisa — die digitale Assistentin der Brunner Haustechnik AG." Nimmt Schaden auf, Fall im Dashboard sichtbar |
+| 7.10 | Voice Info: Nochmal anrufen, frage: "Haben Sie heute offen?" + "Was kostet eine Rohrreinigung?" | Lisa beantwortet korrekt (Öffnungszeiten, Richtwert ab CHF 180), KEIN Ticket erstellt |
+| 7.11 | Mobile Check (Samsung S23) | Alle Sections responsive, Bilder laden |
+
+**Ergebnis:**
+- [ ] PASS / FAIL
+- Screenshot: `screenshots/18_demo_hero.png`
+- Screenshot: `screenshots/19_demo_leistungen.png`
+- Screenshot: `screenshots/20_demo_wizard.png`
+- Screenshot: `screenshots/21_demo_ops_filter.png`
+- Screenshot: `screenshots/22_demo_voice.png`
+- Notizen: _________________________________
+
+---
+
+## Test 8: Sales Voice Agent "Lisa"
+
+**Was:** Ruf die FlowSight-Nummer an und teste den Sales-Agent.
+
+| Schritt | Aktion | Zielzustand |
+|---------|--------|-------------|
+| 8.1 | Wähle **+41 44 552 09 19** | Lisa meldet sich: "Guten Tag, hier ist Lisa — ich bin die digitale Assistentin von FlowSight." |
+| 8.2 | Sage: "Ich bin Inhaber eines Sanitärbetriebs und interessiere mich für Ihre Lösung" | Lisa stellt Qualifikations-Fragen (Firmenname, Ort, Website, was interessiert) |
+| 8.3 | Gespräch abschliessen | Lisa verabschiedet sich |
+| 8.4 | E-Mail checken | Sales-Lead-E-Mail erhalten (Zusammenfassung des Gesprächs) |
+
+**Ergebnis:**
+- [ ] PASS / FAIL
+- Screenshot: `screenshots/23_lisa_email.png`
 - Notizen: _________________________________
 
 ---
@@ -152,16 +204,18 @@
 
 | Test | Ergebnis |
 |------|----------|
-| 1. Voice Anruf | ☐ PASS / ☐ FAIL |
-| 2. Wizard | ☐ PASS / ☐ FAIL |
+| 1. Voice Anruf (Dörfler) | ☐ PASS / ☐ FAIL |
+| 2. Wizard (Dörfler) | ☐ PASS / ☐ FAIL |
 | 3. Ops Dashboard | ☐ PASS / ☐ FAIL |
-| 4. Kunden-Website | ☐ PASS / ☐ FAIL |
-| 5. Marketing + Demo | ☐ PASS / ☐ FAIL |
+| 4. Kunden-Website (Dörfler) | ☐ PASS / ☐ FAIL |
+| 5. Marketing + Demo Booking | ☐ PASS / ☐ FAIL |
 | 6. Notfall-Szenario | ☐ PASS / ☐ FAIL |
+| 7. Demo-Strang (Brunner) | ☐ PASS / ☐ FAIL |
+| 8. Sales Voice Agent (Lisa) | ☐ PASS / ☐ FAIL |
 
 ### Entscheid
 
-- [ ] **GO** — Alle Tests PASS. Bereit für Kundengespräche.
+- [ ] **GO** — Alle 8 Tests PASS. Bereit für Kundenakquise ab Montag.
 - [ ] **NO-GO** — Blocker gefunden (siehe Notizen oben). CC fixt vor nächstem Versuch.
 
 **Datum:** _______________
