@@ -276,6 +276,9 @@ export async function POST(request: NextRequest) {
       description: data.description,
       contactPhone: data.contact_phone,
       contactEmail: data.contact_email,
+      reporterName: data.reporter_name ?? undefined,
+      street: data.street ?? undefined,
+      houseNumber: data.house_number ?? undefined,
       reporterEmailSent,
     });
 

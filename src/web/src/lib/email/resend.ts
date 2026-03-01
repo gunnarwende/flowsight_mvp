@@ -26,6 +26,9 @@ interface CaseEmailPayload {
   description: string;
   contactPhone?: string;
   contactEmail?: string;
+  reporterName?: string;
+  street?: string;
+  houseNumber?: string;
   /** Injected by caller — result of sendReporterConfirmation (no extra log). */
   reporterEmailSent?: boolean;
 }
@@ -34,6 +37,162 @@ interface CaseEmailPayload {
 function formatCaseLabel(caseId: string, seqNumber?: number | null): string {
   if (seqNumber != null) return `FS-${String(seqNumber).padStart(4, "0")}`;
   return caseId.slice(0, 8);
+}
+
+// ---------------------------------------------------------------------------
+// Source labels (shared)
+// ---------------------------------------------------------------------------
+
+const SOURCE_LABELS: Record<string, string> = {
+  voice: "Voice Agent",
+  wizard: "Website-Formular",
+  manual: "Manuell erfasst",
+};
+
+// ---------------------------------------------------------------------------
+// HTML email builders
+// ---------------------------------------------------------------------------
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string {
+  const label = formatCaseLabel(p.caseId, p.seqNumber);
+  const sourceLabel = SOURCE_LABELS[p.source] ?? p.source;
+
+  // Urgency styling
+  const urgencyConfig: Record<string, { bg: string; text: string }> = {
+    notfall: { bg: "#dc2626", text: "NOTFALL" },
+    dringend: { bg: "#d97706", text: "Dringend" },
+    normal: { bg: "#475569", text: "Neuer Fall" },
+  };
+  const urg = urgencyConfig[p.urgency] ?? urgencyConfig.normal;
+
+  // Address line
+  const addressParts: string[] = [];
+  if (p.street) {
+    addressParts.push(p.street + (p.houseNumber ? ` ${p.houseNumber}` : ""));
+  }
+
+  // Data rows
+  const rows: [string, string][] = [
+    ["Quelle", sourceLabel],
+    ["Kategorie", p.category],
+    ["Dringlichkeit", p.urgency.charAt(0).toUpperCase() + p.urgency.slice(1)],
+    ["PLZ / Ort", `${p.plz} ${p.city}`],
+  ];
+  if (addressParts.length > 0) rows.push(["Adresse", addressParts[0]]);
+  if (p.reporterName) rows.push(["Melder", p.reporterName]);
+  if (p.contactPhone) rows.push(["Telefon", p.contactPhone]);
+  if (p.contactEmail) rows.push(["E-Mail", p.contactEmail]);
+
+  const dataRowsHtml = rows
+    .map(
+      ([k, v]) =>
+        `<tr><td style="padding:6px 12px 6px 0;color:#94a3b8;font-size:14px;white-space:nowrap;vertical-align:top">${escapeHtml(k)}</td><td style="padding:6px 0;color:#e2e8f0;font-size:14px">${escapeHtml(v)}</td></tr>`
+    )
+    .join("");
+
+  return `<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#0b1120;border-radius:8px;overflow:hidden">
+<!-- Gold accent bar -->
+<tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
+<!-- Logo -->
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<!-- Urgency header -->
+<tr><td style="padding:0 24px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${urg.bg};border-radius:6px">
+  <tr>
+    <td style="padding:14px 16px;color:#ffffff;font-size:16px;font-weight:700">${escapeHtml(urg.text)}</td>
+    <td style="padding:14px 16px;color:#ffffff;font-size:16px;font-weight:700;text-align:right">${escapeHtml(label)}</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="padding:0 16px 14px;color:rgba(255,255,255,0.9);font-size:14px">${escapeHtml(p.category)} &mdash; ${escapeHtml(p.plz)} ${escapeHtml(p.city)}</td>
+  </tr>
+  </table>
+</td></tr>
+<!-- Data table -->
+<tr><td style="padding:20px 24px 0">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  ${dataRowsHtml}
+  </table>
+</td></tr>
+<!-- Description -->
+<tr><td style="padding:20px 24px 0">
+  <div style="color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Beschreibung</div>
+  <div style="background:#1e293b;border-radius:6px;padding:14px 16px;color:#e2e8f0;font-size:14px;line-height:1.5;white-space:pre-wrap">${escapeHtml(p.description)}</div>
+</td></tr>
+<!-- CTA button -->
+<tr><td style="padding:24px 24px 8px" align="center">
+  <a href="${escapeHtml(deepLink)}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:12px 32px;border-radius:6px">Fall im Dashboard &ouml;ffnen</a>
+</td></tr>
+<!-- Footer -->
+<tr><td style="padding:20px 24px;border-top:1px solid #1e293b;margin-top:16px">
+  <div style="color:#64748b;font-size:12px;text-align:center">FlowSight GmbH &middot; flowsight.ch</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function buildReporterConfirmationHtml(
+  label: string,
+  category: string,
+): string {
+  return `<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden">
+<!-- Brand accent bar -->
+<tr><td style="height:4px;background:#0b1120;font-size:0;line-height:0">&nbsp;</td></tr>
+<!-- Heading -->
+<tr><td style="padding:32px 32px 0;color:#0f172a;font-size:20px;font-weight:700">Ihre Meldung wurde erfasst.</td></tr>
+<!-- Body -->
+<tr><td style="padding:20px 32px 0;color:#334155;font-size:15px;line-height:1.6">
+Guten Tag<br><br>
+Vielen Dank f&uuml;r Ihre Meldung. Wir haben Ihre Anfrage erhalten und melden uns schnellstm&ouml;glich bei Ihnen.
+</td></tr>
+<!-- Reference -->
+<tr><td style="padding:20px 32px 0">
+  <table role="presentation" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:6px;width:100%">
+  <tr>
+    <td style="padding:12px 16px;color:#64748b;font-size:14px">Referenz</td>
+    <td style="padding:12px 16px;color:#0f172a;font-size:14px;font-weight:600;text-align:right">${escapeHtml(label)}</td>
+  </tr>
+  <tr>
+    <td style="padding:0 16px 12px;color:#64748b;font-size:14px">Kategorie</td>
+    <td style="padding:0 16px 12px;color:#0f172a;font-size:14px;text-align:right">${escapeHtml(category)}</td>
+  </tr>
+  </table>
+</td></tr>
+<!-- Sign-off -->
+<tr><td style="padding:24px 32px 0;color:#334155;font-size:15px;line-height:1.6">
+Freundliche Gr&uuml;sse<br>Ihr Service-Team
+</td></tr>
+<!-- Footer -->
+<tr><td style="padding:24px 32px;border-top:1px solid #e2e8f0;margin-top:24px">
+  <div style="color:#94a3b8;font-size:12px;text-align:center">Diese E-Mail wurde automatisch erstellt.</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 }
 
 /**
@@ -99,18 +258,28 @@ export async function sendCaseNotification(
     if (payload.contactPhone) contactLines.push(`Telefon:   ${payload.contactPhone}`);
     if (payload.contactEmail) contactLines.push(`E-Mail:    ${payload.contactEmail}`);
 
+    const addressLine =
+      payload.street
+        ? `Adresse:   ${payload.street}${payload.houseNumber ? ` ${payload.houseNumber}` : ""}`
+        : undefined;
+
+    const sourceLabel = SOURCE_LABELS[payload.source] ?? payload.source;
+
     const { data, error } = await getResend().emails.send({
       from,
       to,
       subject: `${subjectPrefix} ${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber)} – ${payload.category} (${payload.city})`,
+      html: buildOpsNotificationHtml(payload, deepLink),
       text: [
         `Neuer Fall erstellt`,
         `──────────────────────`,
         `Fall-Nr:   ${formatCaseLabel(payload.caseId, payload.seqNumber)}`,
-        `Quelle:    ${payload.source}`,
+        `Quelle:    ${sourceLabel}`,
         `Kategorie: ${payload.category}`,
         `Dringend:  ${payload.urgency}`,
         `PLZ/Ort:   ${payload.plz} ${payload.city}`,
+        ...(addressLine ? [addressLine] : []),
+        ...(payload.reporterName ? [`Melder:    ${payload.reporterName}`] : []),
         ...(contactLines.length > 0 ? contactLines : []),
         `──────────────────────`,
         `Beschreibung:`,
@@ -209,17 +378,20 @@ export async function sendReporterConfirmation(
   const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
   try {
+    const caseLabel = formatCaseLabel(payload.caseId, payload.seqNumber);
+
     const { error } = await getResend().emails.send({
       from,
       to: payload.contactEmail,
       subject: `${subjectPrefix} Ihre Meldung wurde erfasst`,
+      html: buildReporterConfirmationHtml(caseLabel, payload.category),
       text: [
         `Guten Tag`,
         ``,
         `Vielen Dank für Ihre Meldung (${payload.category}).`,
         `Wir haben Ihre Anfrage erhalten und melden uns schnellstmöglich bei Ihnen.`,
         ``,
-        `Referenz: ${formatCaseLabel(payload.caseId, payload.seqNumber)}`,
+        `Referenz: ${caseLabel}`,
         ``,
         `Freundliche Grüsse`,
         `Ihr Service-Team`,

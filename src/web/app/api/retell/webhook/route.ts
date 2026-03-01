@@ -228,9 +228,11 @@ export async function POST(req: Request) {
   const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
   const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
   const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
+  // Priority: custom extracted field (German) → transcript (raw conversation)
+  // NOTE: call_analysis.call_summary is SKIPPED — Retell generates it in English
+  // regardless of agent language, which produces English text in German emails.
   const description =
     nonEmptyStr(extractedData.description ?? extractedData.beschreibung) ??
-    nonEmptyStr(call?.call_analysis?.call_summary) ??
     nonEmptyStr(call?.transcript);
 
   // ── Strict validation — NO SILENT DEFAULTS ─────────────────────────
@@ -401,6 +403,8 @@ export async function POST(req: Request) {
       plz: plz!,
       description: description!,
       contactPhone: callerPhone ?? undefined,
+      street: street ?? undefined,
+      houseNumber: houseNumber ?? undefined,
     });
 
     // Email event (fire-and-forget)
