@@ -428,9 +428,20 @@ export async function POST(req: Request) {
     // ── Post-call SMS ─────────────────────────────────────────────
     let smsSent = false;
     let smsSid: string | undefined;
-    if (callerPhone) {
+    let smsSkipReason: string | undefined;
+    if (!callerPhone) {
+      smsSkipReason = "no_caller_phone";
+    } else {
       const smsConfig = await getTenantSmsConfig(tenantId);
-      if (smsConfig) {
+      if (!smsConfig) {
+        smsSkipReason = "no_sms_config";
+        Sentry.addBreadcrumb({
+          category: "sms",
+          level: "info",
+          message: "SMS skipped — tenant has no sms config (modules.sms !== true or sms_sender_name missing)",
+          data: { tenant_id: tenantId, case_id: caseId },
+        });
+      } else {
         const smsResult = await sendPostCallSms({
           caseId,
           createdAt: row.created_at,
@@ -452,6 +463,7 @@ export async function POST(req: Request) {
             metadata: { sms_sid: smsResult.messageSid },
           }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
         } else {
+          smsSkipReason = `send_failed:${smsResult.reason}`;
           Sentry.captureMessage("post_call_sms_failed", {
             level: "warning",
             tags: {
@@ -492,7 +504,9 @@ export async function POST(req: Request) {
       case_id: caseId,
       email_attempted: true,
       email_sent: !!emailSent,
-      ...(smsSent && { sms_sent: true, sms_sid: smsSid }),
+      sms_sent: smsSent,
+      ...(smsSid && { sms_sid: smsSid }),
+      ...(smsSkipReason && { sms_skip: smsSkipReason }),
       ...(waSent && { wa_sent: true, wa_sid: waSid }),
     });
 
