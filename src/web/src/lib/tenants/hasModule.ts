@@ -7,7 +7,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
  * Each tenant has a `modules` jsonb column: { "voice": true, "ops": true, ... }
  * Missing key = disabled.
  */
-export type ModuleName = "website_wizard" | "ops" | "voice" | "reviews";
+export type ModuleName = "website_wizard" | "ops" | "voice" | "reviews" | "sms";
 
 /**
  * Check if a tenant has a specific module enabled.

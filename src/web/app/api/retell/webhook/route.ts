@@ -6,6 +6,8 @@ import { hasModule } from "@/src/lib/tenants/hasModule";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
+import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
+import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 
 // ---------------------------------------------------------------------------
 // Retell webhook payload types (from retell-sdk analysis)
@@ -350,7 +352,7 @@ export async function POST(req: Request) {
     const { data: row, error } = await supabase
       .from("cases")
       .insert(insertPayload)
-      .select("id, seq_number")
+      .select("id, seq_number, created_at")
       .single();
 
     if (error) {
@@ -423,6 +425,49 @@ export async function POST(req: Request) {
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
+    // ── Post-call SMS ─────────────────────────────────────────────
+    let smsSent = false;
+    let smsSid: string | undefined;
+    if (callerPhone) {
+      const smsConfig = await getTenantSmsConfig(tenantId);
+      if (smsConfig) {
+        const smsResult = await sendPostCallSms({
+          caseId,
+          createdAt: row.created_at,
+          callerPhone: callerPhone!,
+          smsSenderName: smsConfig.senderName,
+          plz: plz!,
+          city: city!,
+          category: category!,
+          street: street ?? undefined,
+          houseNumber: houseNumber ?? undefined,
+        });
+        smsSent = smsResult.sent;
+        smsSid = smsResult.messageSid;
+        if (smsResult.sent) {
+          await supabase.from("case_events").insert({
+            case_id: caseId,
+            event_type: "sms_verification_sent",
+            title: "SMS-Bestätigung an Melder gesendet",
+            metadata: { sms_sid: smsResult.messageSid },
+          }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+        } else {
+          Sentry.captureMessage("post_call_sms_failed", {
+            level: "warning",
+            tags: {
+              _tag: "sms",
+              area: "sms",
+              case_id: caseId,
+              tenant_id: tenantId,
+              decision: "sms_failed",
+              error_code: "SMS_SEND_FAILED",
+            },
+            extra: { reason: smsResult.reason },
+          });
+        }
+      }
+    }
+
     // Notify: system failures only (email dispatch fail → RED alert)
     let waSent = false;
     let waSid: string | undefined;
@@ -447,6 +492,7 @@ export async function POST(req: Request) {
       case_id: caseId,
       email_attempted: true,
       email_sent: !!emailSent,
+      ...(smsSent && { sms_sent: true, sms_sid: smsSid }),
       ...(waSent && { wa_sent: true, wa_sid: waSid }),
     });
 
