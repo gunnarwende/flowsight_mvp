@@ -13,7 +13,8 @@
 - **BLOCKER:** 0. Alle gelöst. ✅
 - **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅
 - **Bugs gesamt:** 17 Findings → 13 fixed, 4 Backlog (N22-N25)
-- **Phase:** Founder: Retell Re-Import + E2E Re-Test → Go/No-Go. CC: Backlog nach Go-Live.
+- **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup)
+- **Phase:** Founder: `retell_sync.mjs --prefix brunner` + E2E Re-Test → Go/No-Go. CC: Backlog nach Go-Live.
 
 ---
 
@@ -24,7 +25,7 @@
 | A | **E2E Go-Live Checklist** | **DONE** ✅ | Durchgeführt 01.03. — 17 Findings. PDF: `docs/evidence/Getestet wurde jetzt sehr spezifisch.pdf` |
 | D | Dörfler Input — Logo, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert. Logo offen. |
 | E | Mobile QA — iPhone | OFFEN | N19 fixed ✅ — Founder kann Mobile re-testen. |
-| F | **Go/No-Go Entscheid** | OFFEN | Keine Blocker mehr. Founder: Retell Re-Import + E2E Re-Test → Entscheid. |
+| F | **Go/No-Go Entscheid** | OFFEN | Keine Blocker mehr. Founder: `retell_sync.mjs --prefix brunner` + E2E Re-Test → Entscheid. |
 | G | **Kommunikation an Dörfler** | OFFEN | Blocked by: F |
 | F9 | Google Review Link (Dörfler) | BLOCKED | Nachrüsten wenn Link da. Nicht Go-Live-kritisch. |
 | F11 | Customer Go-Live Sign-off | PARTIAL | 3/4 PASS. Reviews blocked by F9. |
@@ -121,6 +122,7 @@
 | 2026-03-01 | **N18 Case List UX:** Clickable rows, text search (6 columns), server-side pagination (15/page), filterHref bug fix | CaseListClient.tsx, cases/page.tsx |
 | 2026-03-01 | **N19 Mobile Auth Fix:** /auth/confirm converted from server GET to client page with "Login bestätigen" button (prevents email prefetch consuming OTP) | ConfirmAuth.tsx, auth/confirm/page.tsx |
 | 2026-03-02 | **N20 Voice PLZ Overhaul:** City-only confirmation (no digit readback), normalizePlz() webhook safety net, DE+INTL agent configs updated | webhook/route.ts, brunner_agent*.json |
+| 2026-03-02 | **Retell Sync Script:** Automated agent deployment (create/update flows+agents, cross-link swap tools, publish). Idempotent, --dry-run support. | scripts/_ops/retell_sync.mjs |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 

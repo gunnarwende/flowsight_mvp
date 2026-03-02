@@ -24,7 +24,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Modul | Status | Evidence |
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
-| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ digit-by-digit, Language Gate |
+| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ confirmation, Language Gate |
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (all-editable, compact 2-col), Case List (search, pagination, clickable rows), KPI-Cards, CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
@@ -49,7 +49,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 7 Workstreams.**
 - **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅ — alle Blocker gelöst
 - **BLOCKER:** Keine. Go-Live möglich nach Founder Re-Test + Retell Re-Import.
-- **Founder Action:** Retell Agent Re-Import (DE+INTL) mit neuer PLZ-Bestätigung. Dann E2E Re-Test.
+- **Founder Action:** `retell_sync.mjs --prefix brunner` ausführen (automatisierter Import). Dann E2E Re-Test.
+- **Ops Tooling:** `scripts/_ops/retell_sync.mjs` (Retell API Sync), `scripts/_ops/onboard_tenant.mjs` (Tenant Setup)
 - **Nächster Schritt CC:** Backlog (N22-N25) nach Go-Live.
 
 ## Fixe Entscheidungen (No Drift)
