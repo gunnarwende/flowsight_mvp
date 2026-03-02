@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-02 (N20 shipped — ALLE BLOCKER GELÖST)
+**Updated:** 2026-03-02 (Remote-CTO Loop Day-1: CI + Telegram + Docs)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -8,13 +8,25 @@
 
 ## Snapshot
 
-- **Produkt:** 12 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang)
-- **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant)
+- **Produkt:** 13 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, **SMS Channel**)
+- **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant + SMS live)
 - **BLOCKER:** 0. Alle gelöst. ✅
-- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅
-- **Bugs gesamt:** 17 Findings → 13 fixed, 4 Backlog (N22-N25)
+- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅
+- **Bugs gesamt:** 20 Findings → 14 fixed, 11 Backlog (N22-N32)
 - **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup)
-- **Phase:** Founder: `retell_sync.mjs --prefix brunner` + E2E Re-Test → Go/No-Go. CC: Backlog nach Go-Live.
+- **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
+- **Vercel Region:** Frankfurt (fra1)
+- **Phase:** Remote-CTO Loop Day-1 live. Founder: Activate "Require status checks" in Ruleset (checks: `lint`, `build`).
+
+### How to Operate (Founder via Handy)
+
+```
+1. CC erstellt Feature-Branch + PR
+2. Telegram "FlowSight Ops": ✅/❌ CI Status + Preview-Link + PR-Link
+3. Founder: GitHub Mobile App → PR reviewen → Approve + Merge
+4. Telegram: 🚀 Shipped → Vercel deployt Prod (~90s)
+5. Done. Kein Terminal nötig.
+```
 
 ---
 
@@ -69,6 +81,13 @@
 | N16 | **Kunden-Historie** | CC | Post-Go-Live, Kundenfeedback | OFFEN |
 | N22 | **Tenant Brand Color → OPS** — Kunden-Hauptfarbe als Akzent im OPS Dashboard (Buttons, Cards). Roter Faden Website → OPS. | CC | Demo-relevant | OFFEN |
 | N23 | **Analytics Dashboard** — Separate Seite mit KPIs + 2 Diagrammen (Fallvolumen, Bearbeitungszeiten). Neben bestehenden KPI-Cards. | CC | Post-Go-Live | OFFEN |
+| N26 | **SMS Channel** — Post-call SMS with correction link + photo upload. Twilio alphanumeric sender (BrunnerHT). HMAC-secured public pages `/verify/[caseId]`. Webhook SMS logging. | CC | Voice Agent live ✅ | **DONE** ✅ |
+| N27 | **Case Detail UX v2** — Description full-width (3x breiter). Feldgruppen: Status/Dringlichkeit/Kategorie → Adresse (PLZ/Ort/Strasse/Nr) → Melder (Tel/E-Mail/Zuständig). Termin links (nur 8/11/15 Uhr), Notizen rechts. "Termin senden" Button prominent. Bottom: nur Speichern, Erledigt, Review. | CC | Founder Feedback 02.03. | OFFEN |
+| N28 | **KPI Dashboard Cards** — Case List: 4 KPI-Cards oben (Total, Neu heute, In Bearbeitung, Erledigt). Klick auf Card = Filter. | CC | Founder Feedback 02.03. | OFFEN |
+| N29 | **PLZ/Ort Smart Verification** — Voice Agent + Webhook: PLZ gegen Tenant-Einzugsgebiet prüfen. Service-Area als Datenbank pro Tenant. Falsche PLZ → Rückfrage oder Warnung. | CC | Post-Go-Live, Kundenfeedback | OFFEN |
+| N30 | **BUG: SMS Link zu lang / nicht high-end** — Post-Call SMS enthält volle Verify-URL (~120 Zeichen). Sieht auf dem Handy unprofessionell aus. Lösung: Short-Link (z.B. eigene Redirect-Route `/v/[shortId]`, oder externer Shortener). Demo-Feedback Peter 02.03. Evidence: `docs/customers/demo/Feedback DEMO/SMS.png` | CC | Demo-Feedback 02.03. | OFFEN |
+| N32 | **BUG: OPS Dashboard Mobile Login scheitert** — Founder wollte in Demo das Dashboard am Handy öffnen (/ops). E-Mail-Adresse eingegeben (gunnar.wende@flowsight.ch), Magic Link erhalten, bestätigt → Fehlermeldung: "Kein gültiger Login-Link. Bitte erneut anfordern." N19-Fix (Client-Side Confirm Button) greift nicht auf Mobile oder Link ist abgelaufen/prefetched. Reproduktion: Handy → /ops → Login → Magic Link → bestätigen → Fehler. Demo-kritisch (Dashboard am Handy zeigen = Wow-Effekt für Handwerker). | CC | Demo-Feedback 02.03. | OFFEN |
+| N31 | **BUG: Voice Agent wiederholt Closing nach Verabschiedung** — Lisa sagt sauber "Schönen Tag", aber wenn User danach noch etwas sagt (Hintergrundgeräusch, "Blick auf", etc.), wiederholt Agent den kompletten Closing-Text nochmal. Node Transition springt zurück in Closing-State. Retell Agent Config: End-Node muss terminieren statt loopen. Betrifft alle 4 Agents (Brunner DE/INTL, Dörfler DE/INTL). Evidence: `docs/customers/demo/Feedback DEMO/Gespräch.png`, Call ID: `call_3e83647c7d45330fcf4efbb59a5` | CC + Founder | Demo-Feedback 02.03. | OFFEN |
 
 ---
 
@@ -123,6 +142,9 @@
 | 2026-03-01 | **N19 Mobile Auth Fix:** /auth/confirm converted from server GET to client page with "Login bestätigen" button (prevents email prefetch consuming OTP) | ConfirmAuth.tsx, auth/confirm/page.tsx |
 | 2026-03-02 | **N20 Voice PLZ Overhaul:** City-only confirmation (no digit readback), normalizePlz() webhook safety net, DE+INTL agent configs updated | webhook/route.ts, brunner_agent*.json |
 | 2026-03-02 | **Retell Sync Script:** Automated agent deployment (create/update flows+agents, cross-link swap tools, publish). Idempotent, --dry-run support. | scripts/_ops/retell_sync.mjs |
+| 2026-03-02 | **N26 SMS Channel:** Post-call SMS (Twilio alphanumeric), HMAC-secured verify page, address correction API, photo upload (signed URLs → Supabase Storage), CorrectionForm (mobile-first). Webhook SMS logging (sms_sent/sms_skip). | sendSms.ts, postCallSms.ts, verifySmsToken.ts, /verify/[caseId], /api/verify/[caseId] |
+| 2026-03-02 | **Voice Agent v3:** SMS+photo mention in closing text, no repeat after goodbye, Dörfler PLZ city-only fix, Dörfler voice_id fix (ElevenLabs→Retell). All 4 agents synced via retell_sync.mjs. | brunner_agent*.json, doerfler_agent*.json |
+| 2026-03-02 | **Vercel Region → Frankfurt (fra1):** Bessere Latenz zu CH-Usern + Supabase (auch Frankfurt). | Vercel Dashboard |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 
