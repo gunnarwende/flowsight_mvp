@@ -61,6 +61,13 @@ function nonEmptyStr(v: unknown): string | undefined {
   return undefined;
 }
 
+/** Extract exactly 4 consecutive digits from any PLZ format (e.g. "PLZ 8800", "8800 Thalwil", "acht-acht-null-null"). */
+function normalizePlz(v: unknown): string | undefined {
+  if (typeof v !== "string") return undefined;
+  const match = v.match(/\d{4}/);
+  return match ? match[0] : undefined;
+}
+
 /** Structured log line for Vercel Function Logs (no PII, machine-parseable). */
 function logDecision(fields: Record<string, unknown>) {
   console.log(JSON.stringify({ _tag: "retell_webhook", ...fields }));
@@ -222,7 +229,7 @@ export async function POST(req: Request) {
   const calledNumber = nonEmptyStr(call?.to_number);
 
   // Structured fields — read from whichever path had data
-  const plz = nonEmptyStr(extractedData.plz ?? extractedData.postal_code ?? extractedData.zip);
+  const plz = normalizePlz(extractedData.plz) ?? normalizePlz(extractedData.postal_code) ?? normalizePlz(extractedData.zip);
   const city = nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt);
   const street = nonEmptyStr(extractedData.street ?? extractedData.strasse);
   const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
