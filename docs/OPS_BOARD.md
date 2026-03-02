@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-01 (N17+N18+N19 shipped — 1 Blocker remaining)
+**Updated:** 2026-03-02 (N20 shipped — ALLE BLOCKER GELÖST)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -10,10 +10,10 @@
 
 - **Produkt:** 12 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang)
 - **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant)
-- **BLOCKER:** 1 — N20 (Voice PLZ). N19 ✅ N21 ✅ fixed.
-- **Shipped today:** N17 (Case Detail Redesign ✅), N18 (Case List UX ✅), N19 (Mobile Auth ✅)
-- **Bugs gesamt:** 17 Findings → 12 fixed (N17×5, N18×4, N19×1, N21×1, N5×1), 5 remaining (N20×1, N22-N25)
-- **Phase:** Sales 02.03. 04:00–12:00. Danach N20 fixen + Founder E2E Re-Test.
+- **BLOCKER:** 0. Alle gelöst. ✅
+- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅
+- **Bugs gesamt:** 17 Findings → 13 fixed, 4 Backlog (N22-N25)
+- **Phase:** Founder: Retell Re-Import + E2E Re-Test → Go/No-Go. CC: Backlog nach Go-Live.
 
 ---
 
@@ -24,7 +24,7 @@
 | A | **E2E Go-Live Checklist** | **DONE** ✅ | Durchgeführt 01.03. — 17 Findings. PDF: `docs/evidence/Getestet wurde jetzt sehr spezifisch.pdf` |
 | D | Dörfler Input — Logo, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert. Logo offen. |
 | E | Mobile QA — iPhone | OFFEN | N19 fixed ✅ — Founder kann Mobile re-testen. |
-| F | **Go/No-Go Entscheid** | OFFEN | Blocked by: N20 |
+| F | **Go/No-Go Entscheid** | OFFEN | Keine Blocker mehr. Founder: Retell Re-Import + E2E Re-Test → Entscheid. |
 | G | **Kommunikation an Dörfler** | OFFEN | Blocked by: F |
 | F9 | Google Review Link (Dörfler) | BLOCKED | Nachrüsten wenn Link da. Nicht Go-Live-kritisch. |
 | F11 | Customer Go-Live Sign-off | PARTIAL | 3/4 PASS. Reviews blocked by F9. |
@@ -40,7 +40,7 @@
 | # | Deliverable | Bugs | Owner | Status |
 |---|-------------|------|-------|--------|
 | N19 | **Mobile Auth Fix** — Magic Link "ungültig/abgelaufen" auf Mobile. Converted /auth/confirm to client-side page with button (prevents email client prefetch). | 5 | CC | **DONE** ✅ |
-| N20 | **Voice PLZ Overhaul** — PLZ-Readback kaputt (kündigt langsames Vorlesen an, liefert Unsinn). Neuer Ansatz nötig, nicht nochmal am Prompt schrauben. Subsumiert N8 + L9. | 4 | CC | **BLOCKER** |
+| N20 | **Voice PLZ Overhaul** — City-only confirmation (no digit readback). TTS garbled digits → new approach: confirm only city name. normalizePlz() in webhook as safety net. Founder must re-import agents. | 4 | CC | **DONE** ✅ |
 
 ### Go-Live kritisch
 
@@ -120,6 +120,7 @@
 | 2026-03-01 | **N17 Case Detail Redesign:** No edit toggle, all fields editable, compact 2-col layout, contact/timeline sidebar, simplified timeline (gray dots, amber next-step), API extended (urgency/category/plz/city/description) | CaseDetailForm.tsx, page.tsx, CaseTimeline.tsx, route.ts |
 | 2026-03-01 | **N18 Case List UX:** Clickable rows, text search (6 columns), server-side pagination (15/page), filterHref bug fix | CaseListClient.tsx, cases/page.tsx |
 | 2026-03-01 | **N19 Mobile Auth Fix:** /auth/confirm converted from server GET to client page with "Login bestätigen" button (prevents email prefetch consuming OTP) | ConfirmAuth.tsx, auth/confirm/page.tsx |
+| 2026-03-02 | **N20 Voice PLZ Overhaul:** City-only confirmation (no digit readback), normalizePlz() webhook safety net, DE+INTL agent configs updated | webhook/route.ts, brunner_agent*.json |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 

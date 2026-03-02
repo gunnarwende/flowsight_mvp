@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-01 (N17+N18+N19 shipped)
+**Datum:** 2026-03-02 (N20 shipped — alle Blocker gelöst)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -47,10 +47,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 - **12 Module LIVE.** Alles deployed und funktional.
 - **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 7 Workstreams.**
-- **Erledigt:** N17 (Case Detail Redesign ✅), N18 (Case List UX ✅), N19 (Mobile Auth ✅), N21 (Retell 188 ✅)
-- **BLOCKER:** N20 (Voice PLZ Readback) — einziger verbleibender Blocker
-- **Nächster Schritt Founder:** 02.03. Sales-Block, dann E2E Re-Test (N17/N18/N19 verifizieren).
-- **Nächster Schritt CC:** N20 (Voice PLZ) fixen.
+- **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅ — alle Blocker gelöst
+- **BLOCKER:** Keine. Go-Live möglich nach Founder Re-Test + Retell Re-Import.
+- **Founder Action:** Retell Agent Re-Import (DE+INTL) mit neuer PLZ-Bestätigung. Dann E2E Re-Test.
+- **Nächster Schritt CC:** Backlog (N22-N25) nach Go-Live.
 
 ## Fixe Entscheidungen (No Drift)
 
