@@ -66,8 +66,8 @@ Add these fields **exactly as named** (the webhook handler accepts both EN and D
 - **INTL:** `retell/exports/brunner_agent_intl.json`
 - **Setup Guide:** `docs/runbooks/brunner_voice_setup.md`
 
-**Deploy:** `node scripts/retell_deploy.mjs deploy --mode debug`
-**Verify:** `node scripts/retell_deploy.mjs verify`
+**Deploy:** `node scripts/_ops/retell_sync.mjs --prefix <slug>`
+**Verify:** `node scripts/_ops/verify_voice_pipeline.mjs`
 
 ## 4. Publishing (CRITICAL — Founder-only until proven stable)
 
@@ -83,7 +83,7 @@ The Retell API `publish-agent` endpoint updates the draft but does NOT reliably 
 
 **How to verify:** After a call, check `agent_version` in the raw call JSON (via Spur 1). If it matches the Dashboard version → publish succeeded. If it shows an old version → re-publish from Dashboard.
 
-**Deploy script (`scripts/retell_deploy.mjs`)** updates drafts and calls `publish-agent` as a best-effort. But treat Dashboard Publish as SSOT.
+**Deploy script (`scripts/_ops/retell_sync.mjs`)** updates drafts and calls `publish-agent` as a best-effort. But treat Dashboard Publish as SSOT.
 
 ## 5. Verification
 

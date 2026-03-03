@@ -10,9 +10,8 @@ retell/
     doerfler_agent.json          # Ready-to-import DE instance for Dörfler AG
     doerfler_agent_intl.json     # Ready-to-import INTL instance for Dörfler AG
   README.md                      # This file
-scripts/
-  gen_retell_agents.mjs          # Generator (produces all JSON files)
-  patch_retell_agent_ids.mjs     # Patcher (wires DE→INTL agent_id before import)
+scripts/_ops/
+  retell_sync.mjs                # Automated agent deployment (create/update/publish)
 docs/customers/<slug>/voice.md   # Per-customer voice config
 ```
 
@@ -60,9 +59,8 @@ Each customer gets TWO agents:
 
 1. Copy `docs/customers/doerfler-ag/voice.md` to `docs/customers/<new-slug>/voice.md`
 2. Fill in customer-specific values
-3. Add customer config in `scripts/gen_retell_agents.mjs` (follow Dörfler pattern)
-4. Run: `node scripts/gen_retell_agents.mjs`
-5. Import in Retell (see below)
+3. Run: `node scripts/_ops/retell_sync.mjs --prefix <slug>` (creates/updates agents in Retell)
+4. Import in Retell if needed (see below)
 
 ## Import & Wiring (per customer)
 
@@ -81,14 +79,11 @@ Each customer gets TWO agents:
 3. Set `agent_id` to the INTL agent_id from step 1
 4. Save + Publish
 
-**Fallback (CLI patcher):**
+**Fallback (retell_sync.mjs):**
 ```bash
-node scripts/patch_retell_agent_ids.mjs \
-  --in  retell/exports/<slug>_agent.json \
-  --out retell/exports/<slug>_agent_patched.json \
-  --intl <INTL_AGENT_ID>
+node scripts/_ops/retell_sync.mjs --prefix <slug>
 ```
-Import the `_patched.json` file. Do NOT commit it.
+Script handles cross-linking DE↔INTL agent IDs automatically.
 
 ### 3. Configure
 - Assign phone number to **DE agent** (INTL agent has no phone number)

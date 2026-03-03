@@ -99,4 +99,4 @@ node -e "console.log(process.env.SUPABASE_SERVICE_ROLE_KEY)"
 | `recording_enabled` | `true` | `false` |
 | Retell deploy flag | `--mode debug` | `--mode live --confirm` |
 
-Enforced by `retell_deploy.mjs`. If `recording_url` appears in webhook payload during Live mode → Sentry WARNING.
+Enforced by `retell_sync.mjs`. If `recording_url` appears in webhook payload during Live mode → Sentry WARNING.
