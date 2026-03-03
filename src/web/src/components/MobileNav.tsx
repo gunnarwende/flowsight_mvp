@@ -13,7 +13,7 @@ export function MobileNav() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Menü schliessen" : "Menü öffnen"}
-        className="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-navy-900 transition-colors hover:bg-navy-100"
+        className="relative z-[110] flex h-10 w-10 items-center justify-center rounded-lg text-navy-900 transition-colors hover:bg-navy-100"
       >
         <svg
           className="h-6 w-6 transition-transform duration-200"
@@ -32,7 +32,7 @@ export function MobileNav() {
 
       {/* Fullscreen overlay */}
       {open && (
-        <div className="fixed inset-0 z-40 flex flex-col bg-navy-950">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-navy-950">
           {/* Close area — top right */}
           <div className="flex justify-end px-6 py-4">
             <button
