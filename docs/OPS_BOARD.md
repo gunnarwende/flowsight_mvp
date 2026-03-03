@@ -16,7 +16,7 @@
 - **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Remote-CTO Loop Day-2. CoreBot live — Founder erfasst Tasks vom Handy als GitHub Issues.
+- **Phase:** Repo-Cleanup abgeschlossen. Kundenakquise-Phase. CoreBot live.
 
 ### How to Operate (Founder via Handy)
 

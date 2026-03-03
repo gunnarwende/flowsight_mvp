@@ -77,12 +77,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
-| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup |
+| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
 | `docs/briefings/` | Ad-hoc Inputs, Transkripte, Kontext-Dokumente |
-| `docs/decisions/` | Decision Records (DEC-xxx) |
-| `docs/templates/` | TICKET, DECISION, RESEARCH Templates |
 | `.github/workflows/` | CI (lint+build) + Telegram Notifications |
-| `docs/archive/` | Wave Log, alte Dokumente |
+| `docs/archive/` | Wave Log, alte Dokumente, Agent-Framework, Templates, Architecture Audits |
 
 ## Hobby-Plan Constraints
 
