@@ -40,11 +40,11 @@ function classifyDomain(text: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Structured log (one line per invocation — Vercel Hobby limit)
+// Structured log — multiple lines OK for debugging, consolidate later
 // ---------------------------------------------------------------------------
 
-function logDecision(fields: Record<string, unknown>) {
-  console.log(JSON.stringify({ _tag: "telegram_webhook", ...fields }));
+function log(fields: Record<string, unknown>) {
+  console.log(JSON.stringify({ _tag: "corebot", ...fields }));
 }
 
 // ---------------------------------------------------------------------------
@@ -77,45 +77,47 @@ async function createGitHubIssue(
       },
     );
     if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      return { ok: false, reason: `github_${res.status}: ${text.slice(0, 200)}` };
+      const errBody = await res.text().catch(() => "");
+      const reason = `github_${res.status}: ${errBody.slice(0, 300)}`;
+      log({ step: "github_create", ok: false, status: res.status, body: errBody.slice(0, 300) });
+      return { ok: false, reason };
     }
     const data = (await res.json()) as GitHubIssue;
+    log({ step: "github_create", ok: true, issue_number: data.number });
     return { ok: true, issue: data };
-  } catch {
-    return { ok: false, reason: "fetch_exception" };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    log({ step: "github_create", ok: false, error: msg });
+    return { ok: false, reason: `fetch_exception: ${msg}` };
   }
 }
 
 interface GitHubStatusInfo {
   openIssues: number;
-  inProgressCount: number;
   lastShipped: string;
 }
 
-async function fetchGitHubStatus(token: string): Promise<GitHubStatusInfo> {
-  const defaults: GitHubStatusInfo = { openIssues: 0, inProgressCount: 0, lastShipped: "n/a" };
+async function fetchGitHubStatus(token: string | undefined): Promise<GitHubStatusInfo> {
+  const defaults: GitHubStatusInfo = { openIssues: 0, lastShipped: "n/a" };
+  if (!token) return defaults;
   try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    };
+
     // Open issues count
     const issuesRes = await fetch(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?state=open&per_page=1`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      },
+      { headers },
     );
-    // GitHub returns total in Link header or we parse the array
-    // Simplest: read the total_count from search API
-    const openCountHeader = issuesRes.headers.get("link");
     let openCount = 0;
     if (issuesRes.ok) {
       const openArr = (await issuesRes.json()) as unknown[];
-      // If there's a "last" page in link header, parse it; otherwise count = array length
-      if (openCountHeader) {
-        const lastMatch = openCountHeader.match(/page=(\d+)>; rel="last"/);
+      const linkHeader = issuesRes.headers.get("link");
+      if (linkHeader) {
+        const lastMatch = linkHeader.match(/page=(\d+)>; rel="last"/);
         if (lastMatch) openCount = parseInt(lastMatch[1], 10);
         else openCount = openArr.length;
       } else {
@@ -126,13 +128,7 @@ async function fetchGitHubStatus(token: string): Promise<GitHubStatusInfo> {
     // Last merged PR
     const prsRes = await fetch(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls?state=closed&sort=updated&direction=desc&per_page=1`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      },
+      { headers },
     );
     let lastShipped = "n/a";
     if (prsRes.ok) {
@@ -144,7 +140,7 @@ async function fetchGitHubStatus(token: string): Promise<GitHubStatusInfo> {
       }
     }
 
-    return { openIssues: openCount, inProgressCount: 0, lastShipped };
+    return { openIssues: openCount, lastShipped };
   } catch {
     return defaults;
   }
@@ -160,14 +156,21 @@ function timeSince(isoDate: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Telegram API helper (native fetch)
+// Telegram API helper (native fetch, NO parse_mode — plain text only)
+// MarkdownV1 silently rejects messages with unescaped special chars.
 // ---------------------------------------------------------------------------
+
+interface TgSendResult {
+  ok: boolean;
+  status: number;
+  body: string;
+}
 
 async function sendTelegramMessage(
   botToken: string,
   chatId: number,
   text: string,
-): Promise<boolean> {
+): Promise<TgSendResult> {
   try {
     const res = await fetch(
       `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -177,14 +180,17 @@ async function sendTelegramMessage(
         body: JSON.stringify({
           chat_id: chatId,
           text,
-          parse_mode: "Markdown",
           disable_web_page_preview: true,
         }),
       },
     );
-    return res.ok;
-  } catch {
-    return false;
+    const resBody = await res.text().catch(() => "");
+    log({ step: "sendMessage", ok: res.ok, status: res.status, chat_id: chatId, body: resBody.slice(0, 300) });
+    return { ok: res.ok, status: res.status, body: resBody.slice(0, 300) };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    log({ step: "sendMessage", ok: false, status: 0, chat_id: chatId, error: msg });
+    return { ok: false, status: 0, body: msg };
   }
 }
 
@@ -226,32 +232,40 @@ export function GET() {
 export async function POST(req: Request) {
   Sentry.setTag("area", "corebot");
   Sentry.setTag("_tag", "telegram_webhook");
-  Sentry.setTag("endpoint", "/api/telegram/webhook");
 
   // ── Env var validation ─────────────────────────────────────────────
+  // botToken + sharedSecret + allowedUserId are required for all paths.
+  // githubToken is only required for issue creation (not /status fallback).
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const sharedSecret = process.env.TELEGRAM_SHARED_SECRET;
   const allowedUserId = process.env.TELEGRAM_ALLOWED_USER_ID;
   const githubToken = process.env.GITHUB_ISSUES_TOKEN;
 
-  if (!botToken || !sharedSecret || !allowedUserId || !githubToken) {
-    Sentry.captureMessage("CoreBot missing env vars", {
-      level: "error",
-      tags: { stage: "init", decision: "misconfigured", error_code: "MISSING_ENV" },
-    });
-    logDecision({ decision: "misconfigured", reason: "missing_env" });
+  const envPresent = {
+    botToken: !!botToken,
+    sharedSecret: !!sharedSecret,
+    allowedUserId: !!allowedUserId,
+    githubToken: !!githubToken,
+  };
+
+  if (!botToken || !sharedSecret || !allowedUserId) {
+    log({ step: "env_check", decision: "misconfigured", envPresent });
     return NextResponse.json({ error: "server_misconfigured" }, { status: 500 });
   }
 
   // ── Verify shared secret ──────────────────────────────────────────
   const secretHeader = req.headers.get("x-telegram-bot-api-secret-token");
-  if (secretHeader !== sharedSecret) {
-    Sentry.captureMessage("CoreBot invalid secret header", {
-      level: "warning",
-      tags: { stage: "verify", decision: "unauthorized", error_code: "INVALID_SECRET" },
+  const secretMatch = secretHeader === sharedSecret;
+  if (!secretMatch) {
+    log({
+      step: "secret_check",
+      decision: "unauthorized",
+      header_present: !!secretHeader,
+      header_len: secretHeader?.length ?? 0,
+      expected_len: sharedSecret.length,
+      header_prefix: secretHeader?.slice(0, 4) ?? "",
+      expected_prefix: sharedSecret.slice(0, 4),
     });
-    logDecision({ decision: "unauthorized", reason: "invalid_secret" });
-    // Return 200 to prevent Telegram retries
     return new NextResponse("ok", { status: 200 });
   }
 
@@ -260,59 +274,77 @@ export async function POST(req: Request) {
   try {
     update = (await req.json()) as TelegramUpdate;
   } catch {
-    logDecision({ decision: "ignored", reason: "invalid_json" });
+    log({ step: "parse", decision: "invalid_json" });
     return new NextResponse("ok", { status: 200 });
   }
 
   const message = update.message;
   const text = message?.text?.trim();
+  const fromId = message?.from?.id;
+  const chatId = message?.chat?.id;
+
+  // Log every incoming update for debugging
+  log({
+    step: "incoming",
+    update_id: update.update_id,
+    from_id: fromId,
+    chat_id: chatId,
+    text: text?.slice(0, 80),
+    has_message: !!message,
+  });
 
   // Skip non-text updates (photos, stickers, edits, etc.)
   if (!message || !text) {
-    logDecision({ decision: "ignored", reason: "no_text_message" });
+    log({ step: "filter", decision: "no_text_message" });
     return new NextResponse("ok", { status: 200 });
   }
 
   // ── Auth: user whitelist ──────────────────────────────────────────
-  const fromId = message.from?.id;
-  if (!fromId || String(fromId) !== allowedUserId) {
-    Sentry.addBreadcrumb({
-      category: "corebot",
-      level: "info",
-      message: "unauthorized_user",
-      data: { from_id: fromId },
+  const userMatch = !!fromId && String(fromId) === allowedUserId;
+  if (!userMatch) {
+    log({
+      step: "auth",
+      decision: "wrong_user",
+      from_id: fromId,
+      allowed: allowedUserId,
     });
-    logDecision({ decision: "unauthorized", reason: "wrong_user", from_id: fromId });
     return new NextResponse("ok", { status: 200 });
   }
 
   // ── Dedupe: update_id monotonically increases ─────────────────────
   if (update.update_id <= lastUpdateId) {
-    logDecision({ decision: "dedupe", update_id: update.update_id });
+    log({ step: "dedupe", decision: "skip", update_id: update.update_id, last: lastUpdateId });
     return new NextResponse("ok", { status: 200 });
   }
   lastUpdateId = update.update_id;
 
-  const chatId = message.chat?.id ?? fromId;
+  const replyTo = chatId ?? fromId;
 
-  // ── /status command ───────────────────────────────────────────────
+  // ── /status command (works even without GITHUB_ISSUES_TOKEN) ──────
   if (text.startsWith("/status")) {
-    Sentry.setTag("decision", "status_command");
     try {
       const status = await fetchGitHubStatus(githubToken);
-      const statusText = [
-        "📊 *FlowSight Status*",
+      const lines = [
+        "FlowSight Status",
         `Open: ${status.openIssues}`,
         `Last shipped: ${status.lastShipped}`,
-        `→ [Issues](https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues)`,
-      ].join("\n");
-      await sendTelegramMessage(botToken, chatId, statusText);
+        !githubToken ? "(GitHub token missing — counts may be 0)" : "",
+        `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues`,
+      ].filter(Boolean);
+      const result = await sendTelegramMessage(botToken, replyTo, lines.join("\n"));
+      log({ step: "status_cmd", ack_ok: result.ok, ack_status: result.status });
     } catch (err) {
-      Sentry.captureException(err, {
-        tags: { stage: "status_cmd", decision: "error", error_code: "STATUS_FAILED" },
-      });
+      const msg = err instanceof Error ? err.message : "unknown";
+      log({ step: "status_cmd", error: msg });
+      Sentry.captureException(err);
     }
-    logDecision({ decision: "status_command" });
+    return new NextResponse("ok", { status: 200 });
+  }
+
+  // ── Issue creation requires GITHUB_ISSUES_TOKEN ───────────────────
+  if (!githubToken) {
+    const result = await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured — cannot create issues.");
+    log({ step: "issue_create", decision: "no_github_token", ack_ok: result.ok });
     return new NextResponse("ok", { status: 200 });
   }
 
@@ -339,34 +371,28 @@ export async function POST(req: Request) {
   const labels = [typeLabel, domainLabel];
 
   // ── Create Issue ──────────────────────────────────────────────────
-  const result = await createGitHubIssue(githubToken, title, body, labels);
+  const ghResult = await createGitHubIssue(githubToken, title, body, labels);
 
-  if (!result.ok) {
+  if (!ghResult.ok) {
     Sentry.captureMessage("CoreBot GitHub issue creation failed", {
       level: "error",
-      tags: {
-        stage: "github",
-        decision: "issue_create_failed",
-        error_code: "GITHUB_CREATE_FAILED",
-      },
-      extra: { reason: result.reason },
+      tags: { stage: "github", decision: "issue_create_failed" },
+      extra: { reason: ghResult.reason },
     });
-    await sendTelegramMessage(botToken, chatId, `❌ Issue creation failed: ${result.reason.slice(0, 100)}`);
-    logDecision({ decision: "issue_create_failed", reason: result.reason.slice(0, 200) });
+    await sendTelegramMessage(botToken, replyTo, `Issue creation failed: ${ghResult.reason.slice(0, 100)}`);
     return new NextResponse("ok", { status: 200 });
   }
 
   // ── ACK back to Telegram ──────────────────────────────────────────
-  const ackText = `✅ #${result.issue.number} [${typeLabel}/${domainLabel.replace("domain/", "")}] — [View](${result.issue.html_url})`;
-  const ackSent = await sendTelegramMessage(botToken, chatId, ackText);
+  const ackText = `#${ghResult.issue.number} [${typeLabel}/${domainLabel.replace("domain/", "")}]\n${ghResult.issue.html_url}`;
+  const ack = await sendTelegramMessage(botToken, replyTo, ackText);
 
-  logDecision({
-    decision: "issue_created",
-    issue_number: result.issue.number,
+  log({
+    step: "done",
+    issue: ghResult.issue.number,
     type: typeLabel,
     domain: domainLabel,
-    ack_sent: ackSent,
-    message_id: message.message_id,
+    ack_ok: ack.ok,
   });
 
   return new NextResponse("ok", { status: 200 });
