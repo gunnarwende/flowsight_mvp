@@ -239,16 +239,7 @@
           "text": "Sage dem Anrufer auf Hochdeutsch sinngemäss: 'Vielen Dank, ich habe alles aufgenommen. Sie erhalten gleich eine SMS auf Ihr Handy — dort können Sie die erfassten Daten prüfen, bei Bedarf korrigieren und auch Fotos vom Schaden hochladen. Das hilft unserem Techniker, sich optimal vorzubereiten. Unser Team meldet sich so schnell wie möglich bei Ihnen. Ich wünsche Ihnen alles Gute — und keine Sorge, wir kümmern uns darum. Auf Wiederhören!' Keine erneute Zusammenfassung der Daten vorlesen. Keine Rückfragen. Sage NUR diesen Abschluss und NICHTS weiter danach. Wenn der Anrufer sich verabschiedet (Tschüss, Danke, Tschau, Auf Wiederhören), antworte NICHT nochmals — das Gespräch ist beendet."
         },
         "name": "Closing Intake",
-        "edges": [
-          {
-            "destination_node_id": "node-language-transfer",
-            "id": "edge-closing-intake-language-trigger",
-            "transition_condition": {
-              "type": "prompt",
-              "prompt": "The caller's latest message contains a non-German language keyword (english, englisch, français, francais, italiano, hello, bonjour, please, sorry, help, I have, I need, can you, do you speak, j'ai, buongiorno, per favore), is clearly not in German, or is garbled/nonsensical"
-            }
-          }
-        ],
+        "edges": [],
         "id": "node-closing-intake",
         "type": "conversation",
         "display_position": {
@@ -270,16 +261,7 @@
           "text": "Sage dem Anrufer auf Hochdeutsch: 'Sehr gerne, das freut mich. Falls Sie in Zukunft ein Anliegen haben — wir sind jederzeit für Sie da. Ich wünsche Ihnen einen schönen Tag. Auf Wiederhören!' Keine Rückfragen. Sage NUR diesen Abschluss und NICHTS weiter danach. Wenn der Anrufer sich verabschiedet (Tschüss, Danke, Tschau, Auf Wiederhören), antworte NICHT nochmals — das Gespräch ist beendet."
         },
         "name": "Closing Info",
-        "edges": [
-          {
-            "destination_node_id": "node-language-transfer",
-            "id": "edge-closing-info-language-trigger",
-            "transition_condition": {
-              "type": "prompt",
-              "prompt": "The caller's latest message contains a non-German language keyword"
-            }
-          }
-        ],
+        "edges": [],
         "id": "node-closing-info",
         "type": "conversation",
         "display_position": {
@@ -301,16 +283,7 @@
           "text": "Sage dem Anrufer auf Hochdeutsch: 'Vielen Dank für Ihren Anruf. Dafür sind wir leider nicht die richtigen Ansprechpartner. Bei Sanitär- oder Heizungsanliegen sind wir aber jederzeit gerne für Sie da. Ich wünsche Ihnen alles Gute. Auf Wiederhören!' Du sprichst ausschliesslich Deutsch."
         },
         "name": "Out-of-scope Closing",
-        "edges": [
-          {
-            "destination_node_id": "node-language-transfer",
-            "id": "edge-oos-language-trigger",
-            "transition_condition": {
-              "type": "prompt",
-              "prompt": "The caller's latest message contains a non-German language keyword (english, englisch, français, francais, italiano, hello, bonjour, please, sorry, help, I have, I need, can you, do you speak, j'ai, buongiorno, per favore), is clearly not in German, or is garbled/nonsensical"
-            }
-          }
-        ],
+        "edges": [],
         "id": "node-out-of-scope",
         "type": "conversation",
         "display_position": {

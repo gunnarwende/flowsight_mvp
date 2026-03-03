@@ -1,7 +1,7 @@
 import "server-only";
 
 import { sendSms, type SendSmsResult } from "./sendSms";
-import { generateVerifyToken } from "./verifySmsToken";
+import { generateShortVerifyToken } from "./verifySmsToken";
 
 export interface PostCallSmsPayload {
   caseId: string;
@@ -27,8 +27,8 @@ export async function sendPostCallSms(
     process.env.NEXT_PUBLIC_APP_URL ??
     "https://flowsight-mvp.vercel.app";
 
-  const token = generateVerifyToken(p.caseId, p.createdAt);
-  const correctionUrl = `${baseUrl}/verify/${p.caseId}?token=${token}`;
+  const shortToken = generateShortVerifyToken(p.caseId, p.createdAt);
+  const correctionUrl = `${baseUrl}/v/${p.caseId}?t=${shortToken}`;
 
   const hasStreet = p.street && p.street.length > 0;
 

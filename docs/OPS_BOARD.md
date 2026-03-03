@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-03 (CoreBot: Telegram → GitHub Issues)
+**Updated:** 2026-03-03 (Pipeline + Ops Sprint: N27/N28/N30/N31/N32 + Dashboard Showcase)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,12 +11,12 @@
 - **Produkt:** 14 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, **CoreBot**)
 - **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant + SMS live)
 - **BLOCKER:** 0. Alle gelöst. ✅
-- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅
-- **Bugs gesamt:** 20 Findings → 14 fixed, 11 Backlog (N22-N32)
-- **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup)
+- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅ N27 ✅ N28 ✅ N30 ✅ N31 ✅ N32 ✅
+- **Bugs gesamt:** 20 Findings → 19 fixed, 6 Backlog (N22/N23/N24/N29/N33)
+- **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup) + `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Remote-CTO Loop Day-2. CoreBot live — Founder erfasst Tasks vom Handy als GitHub Issues.
+- **Phase:** Repo-Cleanup abgeschlossen. Kundenakquise-Phase. CoreBot live. Prospect Pipeline ready.
 
 ### How to Operate (Founder via Handy)
 
@@ -82,12 +82,13 @@
 | N22 | **Tenant Brand Color → OPS** — Kunden-Hauptfarbe als Akzent im OPS Dashboard (Buttons, Cards). Roter Faden Website → OPS. | CC | Demo-relevant | OFFEN |
 | N23 | **Analytics Dashboard** — Separate Seite mit KPIs + 2 Diagrammen (Fallvolumen, Bearbeitungszeiten). Neben bestehenden KPI-Cards. | CC | Post-Go-Live | OFFEN |
 | N26 | **SMS Channel** — Post-call SMS with correction link + photo upload. Twilio alphanumeric sender (BrunnerHT). HMAC-secured public pages `/verify/[caseId]`. Webhook SMS logging. | CC | Voice Agent live ✅ | **DONE** ✅ |
-| N27 | **Case Detail UX v2** — Description full-width (3x breiter). Feldgruppen: Status/Dringlichkeit/Kategorie → Adresse (PLZ/Ort/Strasse/Nr) → Melder (Tel/E-Mail/Zuständig). Termin links (nur 8/11/15 Uhr), Notizen rechts. "Termin senden" Button prominent. Bottom: nur Speichern, Erledigt, Review. | CC | Founder Feedback 02.03. | OFFEN |
-| N28 | **KPI Dashboard Cards** — Case List: 4 KPI-Cards oben (Total, Neu heute, In Bearbeitung, Erledigt). Klick auf Card = Filter. | CC | Founder Feedback 02.03. | OFFEN |
+| N27 | **Case Detail UX v2** — Description full-width, Termin links (8/11/15 Uhr) + Notizen rechts, "Termin senden" prominent inline, Action bar: Speichern/Erledigt/Review. | CC | Founder Feedback 02.03. | **DONE** ✅ |
+| N28 | **KPI Dashboard Cards** — 4 KPI-Cards mit Click-to-filter (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done). | CC | Founder Feedback 02.03. | **DONE** ✅ |
 | N29 | **PLZ/Ort Smart Verification** — Voice Agent + Webhook: PLZ gegen Tenant-Einzugsgebiet prüfen. Service-Area als Datenbank pro Tenant. Falsche PLZ → Rückfrage oder Warnung. | CC | Post-Go-Live, Kundenfeedback | OFFEN |
-| N30 | **BUG: SMS Link zu lang / nicht high-end** — Post-Call SMS enthält volle Verify-URL (~120 Zeichen). Sieht auf dem Handy unprofessionell aus. Lösung: Short-Link (z.B. eigene Redirect-Route `/v/[shortId]`, oder externer Shortener). Demo-Feedback Peter 02.03. Evidence: `docs/customers/demo/Feedback DEMO/SMS.png` | CC | Demo-Feedback 02.03. | OFFEN |
-| N32 | **BUG: OPS Dashboard Mobile Login scheitert** — Founder wollte in Demo das Dashboard am Handy öffnen (/ops). E-Mail-Adresse eingegeben (gunnar.wende@flowsight.ch), Magic Link erhalten, bestätigt → Fehlermeldung: "Kein gültiger Login-Link. Bitte erneut anfordern." N19-Fix (Client-Side Confirm Button) greift nicht auf Mobile oder Link ist abgelaufen/prefetched. Reproduktion: Handy → /ops → Login → Magic Link → bestätigen → Fehler. Demo-kritisch (Dashboard am Handy zeigen = Wow-Effekt für Handwerker). | CC | Demo-Feedback 02.03. | OFFEN |
-| N31 | **BUG: Voice Agent wiederholt Closing nach Verabschiedung** — Lisa sagt sauber "Schönen Tag", aber wenn User danach noch etwas sagt (Hintergrundgeräusch, "Blick auf", etc.), wiederholt Agent den kompletten Closing-Text nochmal. Node Transition springt zurück in Closing-State. Retell Agent Config: End-Node muss terminieren statt loopen. Betrifft alle 4 Agents (Brunner DE/INTL, Dörfler DE/INTL). Evidence: `docs/customers/demo/Feedback DEMO/Gespräch.png`, Call ID: `call_3e83647c7d45330fcf4efbb59a5` | CC + Founder | Demo-Feedback 02.03. | OFFEN |
+| N30 | **BUG: SMS Link zu lang** — Short route `/v/[caseId]?t=<16hex>` (HMAC first 8 bytes). ~85 chars statt ~150. API accepts both full+short tokens. | CC | Demo-Feedback 02.03. | **DONE** ✅ |
+| N32 | **BUG: OPS Mobile Login** — Root cause: missing `middleware.ts` for Supabase session refresh. Created middleware matching `/ops/*` + `/auth/*`. | CC | Demo-Feedback 02.03. | **DONE** ✅ |
+| N31 | **BUG: Voice Closing repeat** — Closing nodes had language-trigger edges catching background noise → loop. Fix: emptied edges on all closing/out-of-scope nodes in all 4 agent JSONs. | CC + Founder | Demo-Feedback 02.03. | **DONE** ✅ |
+| N33 | **Demo-Booking SMS (Bestätigung + 24h Reminder)** — Prospect bucht Demo via Website → SMS 1: Sofort-Bestätigung (Datum, Uhrzeit, Kontakt). SMS 2: 24h-Reminder (freundlich, Verschieben möglich). Doppelter Nutzen: (1) Sales-Professionalisierung, (2) Showcase für Sanitär-Kunden ("Leerfahrten vermeiden — genau wie Sie es gerade erlebt haben"). **⚠️ SMS-Spam-Risiko:** Erste Tests zeigten SMS im Spam-Ordner. Vor Umsetzung Lösung finden (Twilio Branded Sender / 10DLC Registration / CH-spezifische Carrier-Regeln). | CC | Sales-Phase | OFFEN |
 
 ---
 
@@ -146,6 +147,13 @@
 | 2026-03-02 | **Voice Agent v3:** SMS+photo mention in closing text, no repeat after goodbye, Dörfler PLZ city-only fix, Dörfler voice_id fix (ElevenLabs→Retell). All 4 agents synced via retell_sync.mjs. | brunner_agent*.json, doerfler_agent*.json |
 | 2026-03-02 | **Vercel Region → Frankfurt (fra1):** Bessere Latenz zu CH-Usern + Supabase (auch Frankfurt). | Vercel Dashboard |
 | 2026-03-03 | **CoreBot (Telegram → GitHub Issues):** Single Vercel API route, auto-classification (type+domain labels), /status command, Telegram ACK, user whitelist, shared secret auth, dedupe. Runbook: `docs/runbooks/corebot_setup.md` | /api/telegram/webhook |
+| 2026-03-03 | **Prospect Pipeline:** Full-stack onboarding script. Quick mode (--url + --slug: Puppeteer crawl → auto-config) + Config mode (--config). Generates: website TS config + images + registry update + Supabase tenant + Voice agent JSONs (DE+INTL). ~15min/prospect vs ~70min manual. | scripts/_ops/prospect_pipeline.mjs |
+| 2026-03-03 | **N32 Mobile Login Fix:** Created missing Supabase auth middleware for session refresh. Root cause: server-auth.ts referenced middleware that didn't exist. | src/web/middleware.ts |
+| 2026-03-03 | **N31 Voice Closing Fix:** Removed language-trigger edges from closing/out-of-scope nodes in all 4 agent JSONs (brunner+doerfler, DE+INTL). Also fixed doerfler duplicate edges key. | retell/exports/*.json |
+| 2026-03-03 | **N30 SMS Short Link:** Short verify route `/v/[caseId]?t=<16hex>` using first 8 bytes of HMAC. URL ~85 chars (was ~150). API accepts both full and short tokens. | verifySmsToken.ts, postCallSms.ts, /v/[caseId] |
+| 2026-03-03 | **N28 KPI Cards Click-to-Filter:** 4 existing KPI cards now link to filtered views (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done). | CaseListClient.tsx |
+| 2026-03-03 | **N27 Case Detail UX v2:** Description full-width, Termin left (8/11/15h) + Notes right, "Termin senden" inline prominent, simplified action bar. | CaseDetailForm.tsx |
+| 2026-03-03 | **Dashboard Showcase:** Replaced single-case mockup in "Alles kommt zu Ihnen" section with full dashboard mockup (KPI cards + 10 realistic cases in table, sidebar hint, search bar). Full-width layout with features below. | DashboardMockup.tsx, (marketing)/page.tsx |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 

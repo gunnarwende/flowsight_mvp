@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { validateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { validateVerifyToken, validateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 /**
  * POST /api/verify/[caseId]
@@ -47,8 +47,13 @@ export async function POST(
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
-  // HMAC validation
-  if (!validateVerifyToken(caseId, caseRow.created_at, token)) {
+  // HMAC validation — accept full (64 hex) or short (16 hex) tokens
+  const isFullToken = token.length === 64;
+  const isValid = isFullToken
+    ? validateVerifyToken(caseId, caseRow.created_at, token)
+    : validateShortVerifyToken(caseId, caseRow.created_at, token);
+
+  if (!isValid) {
     return NextResponse.json({ error: "invalid_token" }, { status: 403 });
   }
 

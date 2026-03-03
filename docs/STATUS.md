@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-03 (CoreBot: Telegram → GitHub Issues)
+**Datum:** 2026-03-03 (Ops Sprint: N27-N32 + Prospect Pipeline + Dashboard Showcase)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -25,8 +25,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ confirmation, Language Gate, SMS+Photo mention in closing |
-| **SMS Channel** | LIVE ✅ | Post-call SMS with correction link + photo upload. Twilio alphanumeric sender. HMAC-secured public pages. |
-| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (all-editable, compact 2-col), Case List (search, pagination, clickable rows), KPI-Cards, CSV-Export, Timeline |
+| **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. Twilio alphanumeric sender. HMAC-secured. |
+| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2: full-width desc, inline Termin+Senden, 3 quick times), Case List (search, pagination, clickable rows, KPI click-to-filter), CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
@@ -51,11 +51,11 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Remote-CTO Loop Day-2:** CoreBot ergänzt CI + Telegram + Branch Protection. Founder kann jetzt Tasks vom Handy als GitHub Issues erfassen.
 - **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
 - **Demo-Feedback 02.03.:** Erste Demo mit Peter. Website/Wizard/Dashboard/Reviews top. Voice-Audio-Routing + SMS-UX + Mobile-Login als Bugs erfasst (N30-N32).
-- **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅, N26 (SMS) ✅ — alle Blocker gelöst
+- **Erledigt:** N17-N21 ✅, N26-N28 ✅, N30-N32 ✅ — 19/20 Bugs fixed
 - **BLOCKER:** Keine. Go-Live möglich.
 - **Vercel Region:** Frankfurt (fra1) — näher an Supabase + CH-Usern.
-- **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup)
-- **Nächster Schritt:** Founder aktiviert "Require status checks" im Ruleset (Checks: `lint`, `build`). CC: Backlog N27-N32.
+- **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup), `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding, ~15min/prospect)
+- **Nächster Schritt:** Kundenakquise starten. Pipeline: `node prospect_pipeline.mjs --url https://x.ch --slug x`
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -77,12 +77,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
-| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup |
+| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
 | `docs/briefings/` | Ad-hoc Inputs, Transkripte, Kontext-Dokumente |
-| `docs/decisions/` | Decision Records (DEC-xxx) |
-| `docs/templates/` | TICKET, DECISION, RESEARCH Templates |
 | `.github/workflows/` | CI (lint+build) + Telegram Notifications |
-| `docs/archive/` | Wave Log, alte Dokumente |
+| `docs/archive/` | Wave Log, alte Dokumente, Agent-Framework, Templates, Architecture Audits |
 
 ## Hobby-Plan Constraints
 

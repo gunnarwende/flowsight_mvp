@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowSight — Pitch Deck</title>
+<style>
+  /* ── Base ─────────────────────────────────────── */
+  :root {
+    --navy-900: #0b1120;
+    --navy-800: #131c33;
+    --navy-700: #1e2d4d;
+    --navy-200: #b8c4db;
+    --gold-500: #d4a853;
+    --gold-400: #e0be76;
+    --white: #ffffff;
+    --gray-100: #f3f4f6;
+    --gray-500: #6b7280;
+    --gray-900: #111827;
+    --teal-600: #0d9488;
+    --red-500: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide system ────────────────────────────── */
+  .slide {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 20px auto;
+    padding: 48px 56px;
+    background: var(--white);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    page-break-after: always;
+  }
+
+  .slide.dark {
+    background: var(--navy-900);
+    color: var(--white);
+  }
+
+  .slide.navy {
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-800));
+    color: var(--white);
+  }
+
+  /* ── Typography ──────────────────────────────── */
+  .slide-number {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-size: 11px;
+    color: var(--gray-500);
+    opacity: 0.5;
+  }
+
+  .dark .slide-number,
+  .navy .slide-number { color: var(--navy-200); }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    position: absolute;
+    top: 32px;
+    left: 56px;
+  }
+
+  .dark .logo,
+  .navy .logo { color: var(--gold-500); }
+
+  h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 22px;
+    line-height: 1.5;
+    opacity: 0.8;
+    margin-top: 16px;
+  }
+
+  .gold { color: var(--gold-500); }
+  .teal { color: var(--teal-600); }
+
+  /* ── Layout helpers ──────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .text-center { text-align: center; }
+  .mt-auto { margin-top: auto; }
+
+  /* ── Cards ───────────────────────────────────── */
+  .card {
+    background: var(--gray-100);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .dark .card,
+  .navy .card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .card-highlight {
+    border: 2px solid var(--gold-500);
+    position: relative;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--gold-500);
+    color: var(--navy-900);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ── Pain cards ──────────────────────────────── */
+  .pain-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  .solution-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+    background: rgba(212, 168, 83, 0.15);
+  }
+
+  /* ── Stats ───────────────────────────────────── */
+  .stat-number {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--gold-500);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-top: 6px;
+  }
+
+  /* ── Pricing ─────────────────────────────────── */
+  .price {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .price-suffix {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.6;
+  }
+
+  .feature-list {
+    list-style: none;
+    margin-top: 18px;
+    font-size: 14px;
+    line-height: 2;
+  }
+
+  .feature-list li::before {
+    content: "\2713";
+    color: var(--teal-600);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .navy .feature-list li::before {
+    color: var(--gold-400);
+  }
+
+  /* ── Step process ────────────────────────────── */
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gold-500);
+    color: var(--navy-900);
+    font-weight: 800;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  /* ── Divider ─────────────────────────────────── */
+  .divider {
+    width: 64px;
+    height: 3px;
+    background: var(--gold-500);
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  /* ── CTA Section ─────────────────────────────── */
+  .cta-box {
+    background: var(--gold-500);
+    color: var(--navy-900);
+    border-radius: 16px;
+    padding: 32px 48px;
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  .cta-box h3 {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+
+  .cta-box p {
+    font-size: 16px;
+    opacity: 0.8;
+  }
+
+  .contact-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* ── Print ───────────────────────────────────── */
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  @media print {
+    body { background: none; }
+    .slide {
+      box-shadow: none;
+      margin: 0;
+      width: 100%;
+      height: 100vh;
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+    .slide:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 1: Cover
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide navy">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="divider" style="background:var(--gold-500); width:48px;"></div>
+    <h1 style="font-size:56px;">Jeder Anruf<br>wird zum Auftrag.</h1>
+    <p class="subtitle" style="max-width:580px;">
+      Das Leitsystem fuer Schweizer Sanitaer- und Heizungsbetriebe.
+      Website, KI-Telefonassistent und Auftragsverwaltung &mdash; in einer Loesung.
+    </p>
+    <div style="margin-top:48px; display:flex; gap:32px; align-items:center;">
+      <div>
+        <div style="font-size:28px; font-weight:800; color:var(--gold-500);">FlowSight</div>
+        <div style="font-size:14px; opacity:0.5; margin-top:4px;">flowsight.ch</div>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">1 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 2: Problem
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="logo" style="color:var(--navy-900);">FlowSight</div>
+  <h2 style="margin-top:24px;">Das Problem: Verpasste Auftraege,<br>jeden Tag.</h2>
+
+  <div class="grid-4">
+    <div class="card">
+      <div class="pain-icon">&#128222;</div>
+      <h3>Kein Anruf-Management</h3>
+      <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+        Der Chef ist auf der Baustelle. Das Telefon klingelt &mdash; niemand hebt ab. Der Kunde ruft die Konkurrenz an.
+      </p>
+    </div>
+    <div class="card">
+      <div class="pain-icon">&#127760;</div>
+      <h3>Veraltete Website</h3>
+      <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+        Die Firmenwebsite ist von 2015. Kein Online-Formular, keine Bewertungen, nicht mobil-optimiert.
+      </p>
+    </div>
+    <div class="card">
+      <div class="pain-icon">&#128203;</div>
+      <h3>Zettelwirtschaft</h3>
+      <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+        Auftraege auf Post-its und im Kopf. Was dringend ist, geht unter. Kein Ueberblick.
+      </p>
+    </div>
+    <div class="card">
+      <div class="pain-icon">&#11088;</div>
+      <h3>Keine Google-Bewertungen</h3>
+      <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+        97% der Sanitaerbetriebe zeigen keine Bewertungen auf ihrer Website. Vertrauen bleibt auf der Strecke.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top:32px; text-align:center;">
+    <p style="font-size:16px; color:var(--gray-500); font-style:italic;">
+      &laquo;Ich verliere Auftraege, weil ich nicht ans Telefon gehen kann.&raquo; &mdash; Typischer Betriebsinhaber
+    </p>
+  </div>
+  <span class="slide-number">2 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 3: Solution Overview
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide navy">
+  <div class="logo">FlowSight</div>
+  <h2 style="margin-top:24px;">Die Loesung: Alles in einem System.</h2>
+
+  <div class="grid-4" style="margin-top:8px;">
+    <div style="text-align:center;">
+      <div class="step-number" style="margin:0 auto 12px;">1</div>
+      <h3 style="font-size:17px;">Professionelle Website</h3>
+      <p style="font-size:13px; opacity:0.7; margin-top:6px; line-height:1.5;">
+        Moderne, markenkonforme Website mit Leistungen, Team, Bewertungen und Schadenformular.
+      </p>
+    </div>
+    <div style="text-align:center;">
+      <div class="step-number" style="margin:0 auto 12px;">2</div>
+      <h3 style="font-size:17px;">KI-Telefonassistentin</h3>
+      <p style="font-size:13px; opacity:0.7; margin-top:6px; line-height:1.5;">
+        &laquo;Lisa&raquo; nimmt 24/7 ab. Schadensmeldungen, Oeffnungszeiten, Preisanfragen &mdash; kein Anruf geht verloren.
+      </p>
+    </div>
+    <div style="text-align:center;">
+      <div class="step-number" style="margin:0 auto 12px;">3</div>
+      <h3 style="font-size:17px;">Ops Dashboard</h3>
+      <p style="font-size:13px; opacity:0.7; margin-top:6px; line-height:1.5;">
+        Alle Faelle an einem Ort. Status, Termine, Zustaendigkeit, Fotos &mdash; nichts geht unter.
+      </p>
+    </div>
+    <div style="text-align:center;">
+      <div class="step-number" style="margin:0 auto 12px;">4</div>
+      <h3 style="font-size:17px;">Google Reviews</h3>
+      <p style="font-size:13px; opacity:0.7; margin-top:6px; line-height:1.5;">
+        Nach getaner Arbeit: Ein Klick, und der Kunde erhaelt den Link zur Google-Bewertung.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top:48px; display:flex; justify-content:center; gap:48px;">
+    <div class="text-center">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Erreichbar</div>
+    </div>
+    <div class="text-center">
+      <div class="stat-number">&lt;1 Woche</div>
+      <div class="stat-label">bis Live</div>
+    </div>
+    <div class="text-center">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Sprachen</div>
+    </div>
+    <div class="text-center">
+      <div class="stat-number">0</div>
+      <div class="stat-label">IT-Kenntnisse noetig</div>
+    </div>
+  </div>
+  <span class="slide-number">3 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 4: Voice Agent Deep-Dive
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="logo" style="color:var(--navy-900);">FlowSight</div>
+  <h2 style="margin-top:24px;">KI-Telefonassistentin &laquo;Lisa&raquo;</h2>
+
+  <div class="grid-2">
+    <div>
+      <div class="divider"></div>
+      <h3 style="font-size:18px; margin-bottom:16px;">Was Lisa kann</h3>
+      <ul class="feature-list" style="font-size:15px;">
+        <li>Schadensmeldungen professionell aufnehmen</li>
+        <li>PLZ, Dringlichkeit, Kategorie strukturiert erfassen</li>
+        <li>Oeffnungszeiten und Einzugsgebiet beantworten</li>
+        <li>Preisanfragen mit Richtwerten beantworten</li>
+        <li>Bewerbungs- und Lehrstellenanfragen weiterleiten</li>
+        <li>5 Sprachen: Deutsch, Englisch, Franzoesisch, Italienisch, Spanisch</li>
+        <li>Automatischer Sprachwechsel je nach Anrufer</li>
+      </ul>
+
+      <div style="margin-top:24px; padding:16px; background:var(--gray-100); border-radius:12px; font-size:14px; color:var(--gray-500);">
+        <strong style="color:var(--gray-900);">Datenschutz:</strong> Kein Recording, DSGVO-konform, EU-Hosting, Schweizer Telefonnummer.
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="background:var(--navy-900); color:var(--white); padding:32px;">
+        <p style="font-size:13px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Beispiel-Dialog</p>
+        <div style="font-size:14px; line-height:2.2;">
+          <p><strong style="color:var(--gold-400);">Lisa:</strong> &laquo;Guten Tag, hier ist Lisa &mdash; die digitale Assistentin der Brunner Haustechnik AG. Wie kann ich Ihnen helfen?&raquo;</p>
+          <p><strong style="color:var(--navy-200);">Kunde:</strong> &laquo;Ich habe einen Rohrbruch im Keller!&raquo;</p>
+          <p><strong style="color:var(--gold-400);">Lisa:</strong> &laquo;Oh je, das ist dringend. Koennten Sie mir bitte Ihre Postleitzahl nennen?&raquo;</p>
+          <p><strong style="color:var(--navy-200);">Kunde:</strong> &laquo;8800 Thalwil.&raquo;</p>
+          <p><strong style="color:var(--gold-400);">Lisa:</strong> &laquo;Acht, acht, null, null &mdash; Thalwil. Ich habe alles notiert. Die Brunner Haustechnik AG meldet sich bei Ihnen.&raquo;</p>
+        </div>
+        <p style="margin-top:16px; font-size:12px; opacity:0.4; text-align:right;">Fall sofort im Dashboard sichtbar</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">4 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 5: Pricing
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide navy">
+  <div class="logo">FlowSight</div>
+  <h2 style="margin-top:24px; text-align:center;">Transparente Preise. Kein Risiko.</h2>
+
+  <div class="grid-3" style="margin-top:8px;">
+    <!-- Starter -->
+    <div class="card" style="text-align:center; padding:32px 24px;">
+      <h3 style="font-size:14px; text-transform:uppercase; letter-spacing:1px; opacity:0.6; margin-bottom:16px;">Starter</h3>
+      <div class="price" style="color:var(--white);">CHF 99</div>
+      <div class="price-suffix">pro Monat</div>
+      <ul class="feature-list" style="text-align:left; margin-top:24px;">
+        <li>Professionelle Website</li>
+        <li>Online-Schadenformular</li>
+        <li>E-Mail-Benachrichtigungen</li>
+        <li>Persoenliches Onboarding</li>
+      </ul>
+    </div>
+
+    <!-- Professional -->
+    <div class="card card-highlight" style="text-align:center; padding:32px 24px;">
+      <div class="badge">Beliebteste Wahl</div>
+      <h3 style="font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--gold-400); margin-bottom:16px;">Professional</h3>
+      <div class="price" style="color:var(--gold-400);">CHF 249</div>
+      <div class="price-suffix">pro Monat</div>
+      <ul class="feature-list" style="text-align:left; margin-top:24px;">
+        <li>Alles aus Starter</li>
+        <li>KI-Telefonassistentin Lisa</li>
+        <li>Ops Dashboard</li>
+        <li>Terminbestaetigung per E-Mail</li>
+      </ul>
+    </div>
+
+    <!-- Premium -->
+    <div class="card" style="text-align:center; padding:32px 24px;">
+      <h3 style="font-size:14px; text-transform:uppercase; letter-spacing:1px; opacity:0.6; margin-bottom:16px;">Premium</h3>
+      <div class="price" style="color:var(--white);">CHF 349</div>
+      <div class="price-suffix">pro Monat</div>
+      <ul class="feature-list" style="text-align:left; margin-top:24px;">
+        <li>Alles aus Professional</li>
+        <li>Google Review Engine</li>
+        <li>Morgenreport (KPIs)</li>
+        <li>Priority Support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:36px; text-align:center; display:flex; justify-content:center; gap:48px; font-size:15px;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:var(--gold-400); font-size:18px;">&#10003;</span>
+      <span>Setup kostenfrei</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:var(--gold-400); font-size:18px;">&#10003;</span>
+      <span>Erster Monat gratis</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:var(--gold-400); font-size:18px;">&#10003;</span>
+      <span>30-Tage-Versprechen</span>
+    </div>
+  </div>
+  <span class="slide-number">5 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 6: Why FlowSight (Differentiators)
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="logo" style="color:var(--navy-900);">FlowSight</div>
+  <h2 style="margin-top:24px;">Warum FlowSight?</h2>
+
+  <div class="grid-2" style="gap:48px;">
+    <div>
+      <table style="width:100%; font-size:14px; border-collapse:collapse;">
+        <thead>
+          <tr style="text-align:left; border-bottom:2px solid var(--navy-900);">
+            <th style="padding:12px 0; font-weight:600;"></th>
+            <th style="padding:12px 16px; font-weight:700; color:var(--gold-500);">FlowSight</th>
+            <th style="padding:12px 16px; font-weight:600; color:var(--gray-500);">Webagentur</th>
+            <th style="padding:12px 16px; font-weight:600; color:var(--gray-500);">Eigenloesung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:10px 0;">Website</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">&#10003; Inklusive</td>
+            <td style="padding:10px 16px;">CHF 5&apos;000+</td>
+            <td style="padding:10px 16px;">Selbst bauen</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:10px 0;">KI-Telefon</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">&#10003; Inklusive</td>
+            <td style="padding:10px 16px; color:var(--red-500);">&#10007;</td>
+            <td style="padding:10px 16px; color:var(--red-500);">&#10007;</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:10px 0;">Auftragsverwaltung</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">&#10003; Inklusive</td>
+            <td style="padding:10px 16px; color:var(--red-500);">&#10007;</td>
+            <td style="padding:10px 16px;">Separates CRM</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:10px 0;">Review Engine</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">&#10003; Inklusive</td>
+            <td style="padding:10px 16px; color:var(--red-500);">&#10007;</td>
+            <td style="padding:10px 16px; color:var(--red-500);">&#10007;</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:10px 0;">Zeit bis Live</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">&lt;1 Woche</td>
+            <td style="padding:10px 16px;">6&ndash;12 Wochen</td>
+            <td style="padding:10px 16px;">Monate</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;">Kosten</td>
+            <td style="padding:10px 16px; color:var(--teal-600); font-weight:700;">ab CHF 99/Mt.</td>
+            <td style="padding:10px 16px;">CHF 10&apos;000+</td>
+            <td style="padding:10px 16px;">Unberechenbar</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="card">
+        <div class="solution-icon">&#127467;&#127469;</div>
+        <h3>100% Schweiz</h3>
+        <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+          Schweizer Telefonnummer, Deutschschweizer Sprachassistentin, Hosting in der EU, DSGVO-konform.
+        </p>
+      </div>
+      <div class="card">
+        <div class="solution-icon">&#9881;&#65039;</div>
+        <h3>Branchenspezifisch</h3>
+        <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+          Kein generisches CRM. Gebaut fuer Sanitaer- und Heizungsbetriebe &mdash; mit den richtigen Feldern und Workflows.
+        </p>
+      </div>
+      <div class="card">
+        <div class="solution-icon">&#128274;</div>
+        <h3>Kein Risiko</h3>
+        <p style="font-size:14px; color:var(--gray-500); line-height:1.5;">
+          30 Tage kostenlos testen. Wenn Sie nicht zufrieden sind, zahlen Sie nichts. Keine Vertragsbindung.
+        </p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">6 / 7</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SLIDE 7: CTA / Next Steps
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="slide navy" style="justify-content:center; text-align:center;">
+  <div class="logo">FlowSight</div>
+
+  <div style="max-width:640px; margin:0 auto;">
+    <h1 style="font-size:44px;">
+      Bereit fuer Ihren<br><span class="gold">digitalen Assistenten?</span>
+    </h1>
+    <p class="subtitle" style="margin-top:24px; font-size:18px;">
+      Wir richten alles fuer Sie ein. Sie muessen nichts tun &mdash; ausser ans Telefon gehen, wenn Lisa Ihnen einen Auftrag bringt.
+    </p>
+  </div>
+
+  <div class="cta-box" style="max-width:520px; margin:40px auto 0;">
+    <h3>Jetzt 15-Min-Demo buchen</h3>
+    <p>Kostenlos &middot; Unverbindlich &middot; Per Videocall</p>
+    <div class="contact-row">
+      <span>&#128222; 044 552 09 19</span>
+      <span>&#128231; info@flowsight.ch</span>
+    </div>
+    <div style="margin-top:12px; font-size:14px; opacity:0.7;">flowsight.ch/demo</div>
+  </div>
+
+  <div style="margin-top:48px; display:flex; justify-content:center; gap:40px; font-size:14px; opacity:0.5;">
+    <span>FlowSight GmbH</span>
+    <span>Eglistrasse 7, 8942 Oberrieden</span>
+    <span>CHE-259.353.850</span>
+  </div>
+  <span class="slide-number">7 / 7</span>
+</div>
+
+</body>
+</html>

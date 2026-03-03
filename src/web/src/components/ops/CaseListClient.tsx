@@ -176,10 +176,10 @@ export function CaseListClient({
     <>
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" />
-        <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" />
-        <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" />
-        <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" />
+        <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" href="/ops/cases?show=all" />
+        <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" href="/ops/cases?status=new" />
+        <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" href="/ops/cases" />
+        <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" href="/ops/cases?show=all&status=done" />
       </div>
 
       {/* Action bar */}
@@ -394,16 +394,25 @@ function KpiCard({
   value,
   color,
   accent,
+  href,
 }: {
   label: string;
   value: number;
   color: string;
   accent: string;
+  href?: string;
 }) {
-  return (
-    <div className={`bg-white border border-gray-200 border-l-4 ${accent} rounded-xl px-4 py-3`}>
+  const inner = (
+    <>
       <p className="text-gray-500 text-xs font-medium mb-1">{label}</p>
       <p className={`text-2xl font-bold ${color}`}>{value}</p>
-    </div>
+    </>
   );
+
+  const cls = `bg-white border border-gray-200 border-l-4 ${accent} rounded-xl px-4 py-3 ${href ? "cursor-pointer hover:bg-gray-50 transition-colors" : ""}`;
+
+  if (href) {
+    return <a href={href} className={cls}>{inner}</a>;
+  }
+  return <div className={cls}>{inner}</div>;
 }

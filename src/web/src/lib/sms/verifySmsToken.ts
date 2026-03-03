@@ -25,7 +25,7 @@ export function generateVerifyToken(caseId: string, createdAt: string): string {
   return computeHmac(caseId, createdAt).toString("hex");
 }
 
-/** Validate an HMAC token (timing-safe). Returns false if token is invalid or env missing. */
+/** Validate a full HMAC token (timing-safe). Returns false if token is invalid or env missing. */
 export function validateVerifyToken(
   caseId: string,
   createdAt: string,
@@ -34,6 +34,27 @@ export function validateVerifyToken(
   try {
     const expected = computeHmac(caseId, createdAt);
     const provided = Buffer.from(token, "hex");
+    if (expected.length !== provided.length) return false;
+    return timingSafeEqual(expected, provided);
+  } catch {
+    return false;
+  }
+}
+
+/** Generate a short (16 hex char) token for SMS links. First 8 bytes of HMAC = 64-bit security. */
+export function generateShortVerifyToken(caseId: string, createdAt: string): string {
+  return computeHmac(caseId, createdAt).subarray(0, 8).toString("hex");
+}
+
+/** Validate a short token (first 8 bytes, timing-safe). */
+export function validateShortVerifyToken(
+  caseId: string,
+  createdAt: string,
+  shortToken: string,
+): boolean {
+  try {
+    const expected = computeHmac(caseId, createdAt).subarray(0, 8);
+    const provided = Buffer.from(shortToken, "hex");
     if (expected.length !== provided.length) return false;
     return timingSafeEqual(expected, provided);
   } catch {

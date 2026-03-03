@@ -1,0 +1,16 @@
+{
+  "brunner": {
+    "de_agent_id": "agent_47deec4bdc891126de71dd42be",
+    "de_flow_id": "conversation_flow_e2c3a7cec528",
+    "intl_agent_id": "agent_01fad4217f8b0697f0c26c69d5",
+    "intl_flow_id": "conversation_flow_3c7d423226a9",
+    "last_synced": "2026-03-02T10:47:58.569Z"
+  },
+  "doerfler": {
+    "de_agent_id": "agent_d7dfe45ab444e1370e836c3e0f",
+    "de_flow_id": "conversation_flow_8170ad3c2ca9",
+    "intl_agent_id": "agent_fb4b956eec31db9c591880fdeb",
+    "intl_flow_id": "conversation_flow_608d542979bb",
+    "last_synced": "2026-03-02T10:48:52.759Z"
+  }
+}

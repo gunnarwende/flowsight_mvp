@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<!--
+  FlowSight GBP — Review Engine
+  Dimension: 1920 × 1080 px (16:9)
+
+  EXPORT: Chrome DevTools → Ctrl+Shift+P → "Capture full size screenshot"
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>FlowSight — Review Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f0f3f7;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 60px 100px;
+  }
+
+  /* Left side — description */
+  .left {
+    flex: 1;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .logo-text {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2744;
+    letter-spacing: -0.5px;
+  }
+  .logo-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #d4a843;
+    margin-bottom: 5px;
+  }
+
+  .left h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1a2744;
+    letter-spacing: -1.5px;
+    line-height: 1.15;
+  }
+  .left h1 span { color: #d4a843; }
+
+  .left p {
+    font-size: 20px;
+    color: #64645f;
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .step-number {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: #1a2744;
+    color: #d4a843;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a2744;
+    margin-bottom: 4px;
+  }
+  .step-content p {
+    font-size: 15px;
+    color: #64645f;
+    line-height: 1.5;
+  }
+
+  /* Right side — mockup cards */
+  .right {
+    width: 580px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* Email preview card */
+  .email-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .email-header {
+    background: #1a2744;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .email-header-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  .email-header-dot.red { background: #c45c4a; }
+  .email-header-dot.yellow { background: #d4a843; }
+  .email-header-dot.green { background: #4a9d6e; }
+  .email-header-title {
+    margin-left: 12px;
+    font-size: 14px;
+    color: #7b8fb3;
+  }
+
+  .email-body {
+    padding: 32px 28px;
+  }
+  .email-from {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .email-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4a843, #e2bb55);
+    display: flex; align-items: center; justify-content: center;
+    color: #1a2744; font-weight: 700; font-size: 16px;
+  }
+  .email-from-info { display: flex; flex-direction: column; gap: 2px; }
+  .email-from-name { font-size: 15px; font-weight: 600; color: #1a2744; }
+  .email-from-addr { font-size: 13px; color: #64645f; }
+  .email-subject {
+    font-size: 12px; font-weight: 600; color: #64645f;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .email-text {
+    font-size: 15px; color: #1a2744; line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .email-text strong { font-weight: 600; }
+
+  /* Stars */
+  .stars-section {
+    text-align: center;
+    padding: 24px;
+    background: #faf8f5;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .stars-label {
+    font-size: 14px; color: #64645f; margin-bottom: 12px; font-weight: 500;
+  }
+  .stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  .star {
+    width: 44px; height: 44px;
+    color: #d4a843;
+  }
+  .star.empty { color: #c4cfdf; }
+
+  .review-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: #d4a843;
+    color: #1a2744;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    font-family: inherit;
+    cursor: default;
+  }
+
+  /* Google review badge */
+  .google-badge {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .google-icon {
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+  }
+  .google-info { flex: 1; }
+  .google-info h4 {
+    font-size: 16px; font-weight: 600; color: #1a2744; margin-bottom: 4px;
+  }
+  .google-info p { font-size: 14px; color: #64645f; }
+  .google-stars {
+    display: flex; gap: 4px;
+  }
+  .google-star {
+    width: 20px; height: 20px; color: #d4a843;
+  }
+  .google-rating {
+    font-size: 28px; font-weight: 700; color: #1a2744; letter-spacing: -1px;
+  }
+</style>
+</head>
+<body>
+  <!-- Left -->
+  <div class="left">
+    <div class="logo-wrap">
+      <span class="logo-text">FlowSight</span>
+      <span class="logo-dot"></span>
+    </div>
+
+    <h1>Automatische<br><span>Google Reviews</span><br>nach jedem Einsatz</h1>
+
+    <p>Zufriedene Kunden bewerten Sie — automatisch und ohne Aufwand. FlowSight sendet nach Abschluss eine persönliche Review-Anfrage.</p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Fall abgeschlossen</h3>
+          <p>Markieren Sie einen Fall als erledigt im Dashboard.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Review-Anfrage wird gesendet</h3>
+          <p>Eine personalisierte E-Mail geht automatisch an den Kunden.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Kunde bewertet auf Google</h3>
+          <p>Ein Klick — direkt zur Google-Bewertung Ihres Betriebs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="right">
+    <!-- Email mockup -->
+    <div class="email-card">
+      <div class="email-header">
+        <span class="email-header-dot red"></span>
+        <span class="email-header-dot yellow"></span>
+        <span class="email-header-dot green"></span>
+        <span class="email-header-title">noreply@hauser-sanitaer.ch</span>
+      </div>
+      <div class="email-body">
+        <div class="email-from">
+          <div class="email-avatar">HS</div>
+          <div class="email-from-info">
+            <span class="email-from-name">Hauser Sanitär</span>
+            <span class="email-from-addr">noreply@hauser-sanitaer.ch</span>
+          </div>
+        </div>
+        <div class="email-subject">Betreff: Wie war unser Service?</div>
+        <div class="email-text">
+          Guten Tag <strong>Herr Meier</strong>,<br><br>
+          vielen Dank, dass Sie uns mit der Reparatur Ihres Rohrbruchs beauftragt haben. Wir hoffen, Sie sind zufrieden mit unserem Service.<br><br>
+          Würden Sie uns mit einer kurzen Google-Bewertung unterstützen? Das hilft uns, noch besser zu werden.
+        </div>
+
+        <div class="stars-section">
+          <div class="stars-label">Wie bewerten Sie unseren Service?</div>
+          <div class="stars">
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+
+        <button class="review-btn">Jetzt auf Google bewerten</button>
+      </div>
+    </div>
+
+    <!-- Google rating badge -->
+    <div class="google-badge">
+      <svg class="google-icon" viewBox="0 0 48 48">
+        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+      </svg>
+      <div class="google-info">
+        <h4>Hauser Sanitär</h4>
+        <p>Sanitär &amp; Heizung — Winterthur</p>
+        <div class="google-stars" style="margin-top:4px;">
+          <svg class="google-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="google-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="google-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="google-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="google-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+      </div>
+      <div class="google-rating">4.9</div>
+    </div>
+  </div>
+</body>
+</html>

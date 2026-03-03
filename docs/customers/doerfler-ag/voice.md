@@ -42,14 +42,11 @@ Two agents work together: the DE agent handles German calls, the INTL agent hand
 3. Set the `agent_id` field to the INTL agent_id from Step 1
 4. Save + Publish
 
-**Fallback (CLI patcher):** Pre-wire before import:
+**Fallback (retell_sync.mjs):**
 ```bash
-node scripts/patch_retell_agent_ids.mjs \
-  --in  retell/exports/doerfler_agent.json \
-  --out retell/exports/doerfler_agent_patched.json \
-  --intl <INTL_AGENT_ID>
+node scripts/_ops/retell_sync.mjs --prefix doerfler
 ```
-Then import `doerfler_agent_patched.json` (do NOT commit patched file).
+Script handles cross-linking DE↔INTL agent IDs automatically.
 
 ### Step 3: Configure
 1. Assign phone number (Twilio CH: +41 44 505 74 20) to the **DE agent**

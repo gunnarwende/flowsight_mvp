@@ -224,16 +224,6 @@
           "x": 1363,
           "y": 796
         },
-        "edges": [
-          {
-            "destination_node_id": "node-language-transfer",
-            "id": "edge-closing-language-trigger",
-            "transition_condition": {
-              "type": "prompt",
-              "prompt": "The caller's latest message contains a non-German language keyword (english, englisch, français, francais, italiano, hello, bonjour, please, sorry, help, I have, I need, can you, do you speak, j'ai, buongiorno, per favore), is clearly not in German, or is garbled/nonsensical"
-            }
-          }
-        ],
         "skip_response_edge": {
           "destination_node_id": "end-call-node",
           "id": "skip-response-edge-closing",
@@ -256,16 +246,6 @@
           "x": 943,
           "y": 944
         },
-        "edges": [
-          {
-            "destination_node_id": "node-language-transfer",
-            "id": "edge-oos-language-trigger",
-            "transition_condition": {
-              "type": "prompt",
-              "prompt": "The caller's latest message contains a non-German language keyword (english, englisch, français, francais, italiano, hello, bonjour, please, sorry, help, I have, I need, can you, do you speak, j'ai, buongiorno, per favore), is clearly not in German, or is garbled/nonsensical"
-            }
-          }
-        ],
         "skip_response_edge": {
           "destination_node_id": "end-call-node",
           "id": "skip-response-edge-oos",
