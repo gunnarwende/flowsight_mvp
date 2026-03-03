@@ -13,6 +13,8 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
+    outputs:
+      error_hint: ${{ steps.run.outputs.error_hint }}
     defaults:
       run:
         working-directory: src/web
@@ -27,11 +29,22 @@ jobs:
 
       - run: npm ci
 
-      - run: npx eslint . --max-warnings 0
+      - name: ESLint
+        id: run
+        run: |
+          npx eslint . --max-warnings 0 2>&1 | tee /tmp/lint.log || {
+            HINT=$(grep -E '(error|warning)' /tmp/lint.log | tail -3)
+            echo "error_hint<<HINT_EOF" >> "$GITHUB_OUTPUT"
+            echo "$HINT" >> "$GITHUB_OUTPUT"
+            echo "HINT_EOF" >> "$GITHUB_OUTPUT"
+            exit 1
+          }
 
   build:
     name: build
     runs-on: ubuntu-latest
+    outputs:
+      error_hint: ${{ steps.run.outputs.error_hint }}
     defaults:
       run:
         working-directory: src/web
@@ -46,10 +59,9 @@ jobs:
 
       - run: npm ci
 
-      - run: npx next build
+      - name: Next.js Build
+        id: run
         env:
-          # Placeholders — build needs these to compile, not to run.
-          # Real values live in Vercel Env (SSOT). Never leak here.
           NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
           NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder"
           SUPABASE_URL: "https://placeholder.supabase.co"
@@ -57,6 +69,14 @@ jobs:
           NEXT_PUBLIC_SENTRY_DSN: ""
           NEXT_PUBLIC_APP_URL: "https://preview.vercel.app"
           SENTRY_AUTH_TOKEN: ""
+        run: |
+          npx next build 2>&1 | tee /tmp/build.log || {
+            HINT=$(grep -E '(Error|error|Type |TS[0-9])' /tmp/build.log | tail -3)
+            echo "error_hint<<HINT_EOF" >> "$GITHUB_OUTPUT"
+            echo "$HINT" >> "$GITHUB_OUTPUT"
+            echo "HINT_EOF" >> "$GITHUB_OUTPUT"
+            exit 1
+          }
 
   notify:
     name: telegram-notify
@@ -70,6 +90,8 @@ jobs:
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           LINT: ${{ needs.lint.result }}
           BUILD: ${{ needs.build.result }}
+          LINT_HINT: ${{ needs.lint.outputs.error_hint }}
+          BUILD_HINT: ${{ needs.build.outputs.error_hint }}
           PR_NUM: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_URL: ${{ github.event.pull_request.html_url }}
@@ -79,12 +101,26 @@ jobs:
           if [ "$LINT" = "success" ] && [ "$BUILD" = "success" ]; then
             ICON="✅"
             STATUS="CI passed — ready for review"
+            ERROR_BLOCK=""
           else
             ICON="❌"
             PARTS=""
             [ "$LINT" != "success" ] && PARTS="lint ($LINT)"
             [ "$BUILD" != "success" ] && PARTS="${PARTS:+$PARTS, }build ($BUILD)"
             STATUS="CI failed: $PARTS"
+
+            # Collect error hints from failed jobs
+            ERROR_BLOCK=""
+            if [ -n "$LINT_HINT" ]; then
+              ERROR_BLOCK="${ERROR_BLOCK}
+          lint:
+          ${LINT_HINT}"
+            fi
+            if [ -n "$BUILD_HINT" ]; then
+              ERROR_BLOCK="${ERROR_BLOCK}
+          build:
+          ${BUILD_HINT}"
+            fi
           fi
 
           SAFE_BRANCH=$(echo "$PR_BRANCH" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
@@ -92,13 +128,13 @@ jobs:
 
           TEXT="${ICON} PR #${PR_NUM}: ${PR_TITLE}
           ${STATUS}
+          ${ERROR_BLOCK}
 
           Branch: ${PR_BRANCH}
           Author: ${PR_AUTHOR}
           Preview: ${PREVIEW}
           PR: ${PR_URL}"
 
-          # Post to Telegram — log HTTP status + body for debugging (token is masked by GitHub)
           HTTP_CODE=$(curl -sS -o /tmp/tg_response.txt -w "%{http_code}" \
             -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
