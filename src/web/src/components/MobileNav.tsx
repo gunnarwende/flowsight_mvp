@@ -32,7 +32,7 @@ export function MobileNav() {
 
       {/* Fullscreen overlay */}
       {open && (
-        <div className="fixed inset-0 z-40 flex flex-col bg-navy-950/95 backdrop-blur-sm">
+        <div className="fixed inset-0 z-40 flex flex-col bg-navy-950">
           {/* Close area — top right */}
           <div className="flex justify-end px-6 py-4">
             <button
