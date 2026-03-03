@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-02 (N20 shipped — alle Blocker gelöst)
+**Datum:** 2026-03-02 (Remote-CTO Loop Day-1: CI + Telegram + Branch Protection)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -24,7 +24,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Modul | Status | Evidence |
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
-| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ confirmation, Language Gate |
+| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ confirmation, Language Gate, SMS+Photo mention in closing |
+| **SMS Channel** | LIVE ✅ | Post-call SMS with correction link + photo upload. Twilio alphanumeric sender. HMAC-secured public pages. |
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (all-editable, compact 2-col), Case List (search, pagination, clickable rows), KPI-Cards, CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
@@ -41,17 +42,19 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Kunde | Slug | Module | Go-Live |
 |-------|------|--------|---------|
 | Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 PASS, Reviews blocked (F9) |
-| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews | DEMO — fiktiver Showroom-Tenant, Voice +41 44 505 48 18 |
+| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews, sms | DEMO — Showroom-Tenant, Voice +41 44 505 48 18, SMS "BrunnerHT" |
 
 ## Aktueller Stand
 
-- **12 Module LIVE.** Alles deployed und funktional.
-- **E2E Test:** Founder hat am 01.03. E2E durchgeführt → **17 Findings, 7 Workstreams.**
-- **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅ — alle Blocker gelöst
-- **BLOCKER:** Keine. Go-Live möglich nach Founder Re-Test + Retell Re-Import.
-- **Founder Action:** `retell_sync.mjs --prefix brunner` ausführen (automatisierter Import). Dann E2E Re-Test.
-- **Ops Tooling:** `scripts/_ops/retell_sync.mjs` (Retell API Sync), `scripts/_ops/onboard_tenant.mjs` (Tenant Setup)
-- **Nächster Schritt CC:** Backlog (N22-N25) nach Go-Live.
+- **13 Module LIVE.** SMS Channel als 13. Modul shipped.
+- **Remote-CTO Loop Day-1 LIVE:** GitHub Actions CI (lint + build) + Telegram Notifications + Branch Protection (PR required, 1 approval). Founder kann vom Handy aus approven/shippen via GitHub Mobile + Telegram Alerts.
+- **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
+- **Demo-Feedback 02.03.:** Erste Demo mit Peter. Website/Wizard/Dashboard/Reviews top. Voice-Audio-Routing + SMS-UX + Mobile-Login als Bugs erfasst (N30-N32).
+- **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅, N26 (SMS) ✅ — alle Blocker gelöst
+- **BLOCKER:** Keine. Go-Live möglich.
+- **Vercel Region:** Frankfurt (fra1) — näher an Supabase + CH-Usern.
+- **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup)
+- **Nächster Schritt:** Founder aktiviert "Require status checks" im Ruleset (Checks: `lint`, `build`). CC: Backlog N27-N32.
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -74,6 +77,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
 | `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script |
+| `docs/briefings/` | Ad-hoc Inputs, Transkripte, Kontext-Dokumente |
+| `docs/decisions/` | Decision Records (DEC-xxx) |
+| `docs/templates/` | TICKET, DECISION, RESEARCH Templates |
+| `.github/workflows/` | CI (lint+build) + Telegram Notifications |
 | `docs/archive/` | Wave Log, alte Dokumente |
 
 ## Hobby-Plan Constraints

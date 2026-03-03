@@ -47,8 +47,8 @@ export default async function CustomerPage({
       <Nav company={c} accent={accent} wizardUrl={wizardUrl} />
       <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} />
       <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />
-      {c.reviews && <ReviewsSection reviews={c.reviews} accent={accent} />}
-      <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} accent={accent} />
+      {c.reviews && <ReviewsSection reviews={c.reviews} />}
+      <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} />
       {c.team.length > 0 && <TeamSection team={c.team} companyName={c.companyName} accent={accent} />}
       {c.history && c.history.length > 0 && <HistorySection history={c.history} companyName={c.companyName} accent={accent} />}
       {(c.certifications || c.brandPartners) && <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} />}
@@ -217,10 +217,8 @@ function ServicesSection({
    Real data: star rating + review quotes.                          */
 function ReviewsSection({
   reviews,
-  accent,
 }: {
   reviews: NonNullable<CustomerSite["reviews"]>;
-  accent: string;
 }) {
   return (
     <section className="bg-gray-900 py-20 text-white">
@@ -271,7 +269,7 @@ function ReviewsSection({
 }
 
 /* ── Service Area ──────────────────────────────────────────────────── */
-function ServiceAreaSection({ area, companyName, accent }: { area: CustomerSite["serviceArea"]; companyName: string; accent: string }) {
+function ServiceAreaSection({ area, companyName }: { area: CustomerSite["serviceArea"]; companyName: string }) {
   return (
     <section className="py-20">
       <div className="mx-auto max-w-6xl px-6">
