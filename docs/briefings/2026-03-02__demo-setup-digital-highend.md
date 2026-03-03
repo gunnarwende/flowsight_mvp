@@ -1,10 +1,12 @@
 # Briefing: High-End Digital Demo Setup
 
-> **Datum:** 2026-03-02
+> **Datum:** 2026-03-02 (aktualisiert 2026-03-03)
 > **Von:** Claude Code (Head Ops)
 > **An:** ChatGPT (CTO) + Founder
 > **Anlass:** Erste Demo mit Peter (Brunner HT Rolle) — Voice-Audio-Problem bei Remote-Demo
 > **Ziel:** Reproduzierbares, professionelles Remote-Demo-Setup mit Wow-Effekt
+>
+> **Update 2026-03-03:** Dashboard-Section aktualisiert (KPI Click-to-Filter, Case Detail UX v2, Foto-Anhänge), SMS-Demo mit Short-Link, Preise korrigiert (99/249/349), Pocket Reference synchronisiert mit `demo_script.md`.
 
 ---
 
@@ -14,8 +16,11 @@
 - Website-Präsentation via Screen-Share (Teams) — top
 - Wizard live ausfüllen → E-Mail kam sofort an — Wow-Effekt
 - Dashboard: Fall öffnen, bearbeiten, Termin senden — flüssig
+- Dashboard: KPI-Kacheln mit Click-to-Filter (seit N28) — Wow-Effekt
+- Dashboard: Case Detail UX v2 mit Foto-Anhängen, ICS-Terminversand (seit N27) — flüssig
 - Google Review-Anfrage — funktioniert
 - MS Bookings Anbindung (Prospect bucht Demo-Termin) — funktioniert
+- SMS-Nachverfolgung mit HMAC-gesichertem Short-Link (seit N30) — funktioniert
 
 ### Was NICHT funktioniert hat
 - **Voice Agent Demo über Teams:** Founder musste Lisa (044 505 48 18) über Handy anrufen und das Handy an den Laptop-Lautsprecher halten. Prospect (Peter) hat akustisch nichts verstanden.
@@ -231,10 +236,18 @@ AUDIO-CHECK (KRITISCH — vor jedem Demo!):
 
 **Zeigen:**
 - Handy-Screen am Laptop (Screen-Mirror)
-- SMS von "BrunnerHT" zeigen: Korrektur-Link + Foto-Upload
-- Link antippen → Verify-Page zeigen → "Hier kann der Kunde seine Adresse korrigieren und ein Foto hochladen."
+- SMS von "BrunnerHT" zeigen: Bestätigungs-SMS mit Korrektur-Link (HMAC-gesicherter Short-Link)
+- Link antippen → Verify-Page zeigen → "Hier kann der Kunde seine Angaben prüfen, korrigieren und ein Foto hochladen — alles DSGVO-konform, mit Einmal-Link."
 
-**Wow-Moment:** Automatisierte SMS-Nachverfolgung, mobile-optimiert, HMAC-gesichert.
+**Wow-Moment:** Automatisierte SMS-Nachverfolgung — der Kunde fühlt sich betreut, der Betrieb hat bessere Daten.
+
+### Dashboard-Features hervorheben (Min 7-9)
+
+Seit den Updates N27/N28 hat das Dashboard neue Wow-Momente:
+- **KPI Click-to-Filter:** Klick auf "Heute neu" → Liste filtert sofort
+- **Case Detail:** Kontaktdaten, Timeline, Foto-Anhänge auf einen Blick
+- **ICS-Termin:** Datum + Uhrzeit wählen → Kunde bekommt Kalender-Einladung per E-Mail
+- **Foto-Anhänge:** Vom SMS-Link hochgeladene Fotos direkt im Fall sichtbar
 
 ---
 
@@ -328,11 +341,11 @@ DEMO (15 Min):
   1-3  Min: Wizard live ausfüllen → E-Mail Wow-Moment
   3-5  Min: Lisa anrufen VOM LAPTOP (Softphone/Dialer) → Fall erscheint im Dashboard
   5-6  Min: Info-Anruf (Öffnungszeiten, Preise) → kein Ticket
-  6-7  Min: SMS zeigen (Handy-Mirror) → Korrektur-Link + Foto
-  7-9  Min: Dashboard Tour (KPIs, Fall öffnen, Status ändern, Termin senden)
+  6-7  Min: SMS zeigen (Handy-Mirror) → Korrektur-Link + Foto-Upload
+  7-9  Min: Dashboard Tour (KPIs click-to-filter, Fall öffnen, Fotos, Termin mit ICS)
   9-10 Min: Review-Anfrage (Button + E-Mail)
   10-12 Min: Fragen beantworten
-  12-14 Min: Preise + 30-Tage-Versprechen
+  12-14 Min: Preise (99/249/349) + 30-Tage-Versprechen
   14-15 Min: Close → Onboarding-Termin vereinbaren
 
 NACH DER DEMO:
