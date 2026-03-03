@@ -18,6 +18,22 @@ supabase/.temp/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+debug.log
+*.bak_*
+
+# root-level package files (app lives in src/web/)
+/package.json
+/package-lock.json
+
+# binary assets in docs (PDFs, images, Office docs)
+docs/**/*.pdf
+docs/**/*.docx
+docs/customers/*/images/
+docs/customers/*/feedback/*.jpg
+docs/customers/*/feedback/*.png
+docs/customers/*/feedback/*.avif
+docs/customers/*/feedback/*.webp
+docs/customers/*/feedback/*.jpeg
 
 # Local agent artifacts
 .claude/
