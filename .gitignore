@@ -36,6 +36,9 @@ docs/customers/*/feedback/*.avif
 docs/customers/*/feedback/*.webp
 docs/customers/*/feedback/*.jpeg
 
+# Demo-kit binaries (MicroSIP etc.)
+demo-kit/microsip/
+
 # Local agent artifacts
 .claude/
 
