@@ -53,6 +53,12 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Review Engine (W12)
 - GOOGLE_REVIEW_URL -> Google Maps Review-URL des Kunden (single tenant, server-side)
 
+## CoreBot (Telegram → GitHub Issues)
+- GITHUB_ISSUES_TOKEN -> GitHub Fine-grained PAT (Issues RW, flowsight_mvp only)
+- TELEGRAM_SHARED_SECRET -> self-generated (webhook verification, shared with Telegram setWebhook)
+- TELEGRAM_BOT_TOKEN -> BotFather (already documented under Telegram CI)
+- TELEGRAM_ALLOWED_USER_ID -> Founder Telegram user ID (whitelist)
+
 ---
 
 ## How to sync env (no drift)

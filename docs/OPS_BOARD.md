@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-02 (Remote-CTO Loop Day-1: CI + Telegram + Docs)
+**Updated:** 2026-03-03 (CoreBot: Telegram → GitHub Issues)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -8,7 +8,7 @@
 
 ## Snapshot
 
-- **Produkt:** 13 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, **SMS Channel**)
+- **Produkt:** 14 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, **CoreBot**)
 - **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant + SMS live)
 - **BLOCKER:** 0. Alle gelöst. ✅
 - **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅
@@ -16,7 +16,7 @@
 - **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Remote-CTO Loop Day-1 live. Founder: Activate "Require status checks" in Ruleset (checks: `lint`, `build`).
+- **Phase:** Remote-CTO Loop Day-2. CoreBot live — Founder erfasst Tasks vom Handy als GitHub Issues.
 
 ### How to Operate (Founder via Handy)
 
@@ -145,6 +145,7 @@
 | 2026-03-02 | **N26 SMS Channel:** Post-call SMS (Twilio alphanumeric), HMAC-secured verify page, address correction API, photo upload (signed URLs → Supabase Storage), CorrectionForm (mobile-first). Webhook SMS logging (sms_sent/sms_skip). | sendSms.ts, postCallSms.ts, verifySmsToken.ts, /verify/[caseId], /api/verify/[caseId] |
 | 2026-03-02 | **Voice Agent v3:** SMS+photo mention in closing text, no repeat after goodbye, Dörfler PLZ city-only fix, Dörfler voice_id fix (ElevenLabs→Retell). All 4 agents synced via retell_sync.mjs. | brunner_agent*.json, doerfler_agent*.json |
 | 2026-03-02 | **Vercel Region → Frankfurt (fra1):** Bessere Latenz zu CH-Usern + Supabase (auch Frankfurt). | Vercel Dashboard |
+| 2026-03-03 | **CoreBot (Telegram → GitHub Issues):** Single Vercel API route, auto-classification (type+domain labels), /status command, Telegram ACK, user whitelist, shared secret auth, dedupe. Runbook: `docs/runbooks/corebot_setup.md` | /api/telegram/webhook |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 

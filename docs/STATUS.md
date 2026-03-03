@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-02 (Remote-CTO Loop Day-1: CI + Telegram + Branch Protection)
+**Datum:** 2026-03-03 (CoreBot: Telegram → GitHub Issues)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -35,6 +35,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
+| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status command, ACK) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto, Voice Agent Intake+Info) |
 
 ## Kunden
@@ -46,8 +47,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **13 Module LIVE.** SMS Channel als 13. Modul shipped.
-- **Remote-CTO Loop Day-1 LIVE:** GitHub Actions CI (lint + build) + Telegram Notifications + Branch Protection (PR required, 1 approval). Founder kann vom Handy aus approven/shippen via GitHub Mobile + Telegram Alerts.
+- **14 Module LIVE.** CoreBot als 14. Modul shipped (Telegram → GitHub Issues).
+- **Remote-CTO Loop Day-2:** CoreBot ergänzt CI + Telegram + Branch Protection. Founder kann jetzt Tasks vom Handy als GitHub Issues erfassen.
 - **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
 - **Demo-Feedback 02.03.:** Erste Demo mit Peter. Website/Wizard/Dashboard/Reviews top. Voice-Audio-Routing + SMS-UX + Mobile-Login als Bugs erfasst (N30-N32).
 - **Erledigt:** N17 ✅, N18 ✅, N19 ✅, N20 ✅, N21 ✅, N26 (SMS) ✅ — alle Blocker gelöst
@@ -76,7 +77,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
-| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script |
+| `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup |
 | `docs/briefings/` | Ad-hoc Inputs, Transkripte, Kontext-Dokumente |
 | `docs/decisions/` | Decision Records (DEC-xxx) |
 | `docs/templates/` | TICKET, DECISION, RESEARCH Templates |
