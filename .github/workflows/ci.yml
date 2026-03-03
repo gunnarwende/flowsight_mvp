@@ -87,7 +87,6 @@ jobs:
             STATUS="CI failed: $PARTS"
           fi
 
-          # Deterministic Vercel preview URL (branch-based)
           SAFE_BRANCH=$(echo "$PR_BRANCH" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
           PREVIEW="https://flowsight-mvp-git-${SAFE_BRANCH}-gunnarwende.vercel.app"
 
@@ -99,8 +98,16 @@ jobs:
           Preview: ${PREVIEW}
           PR: ${PR_URL}"
 
-          curl -sf -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+          # Post to Telegram — log HTTP status + body for debugging (token is masked by GitHub)
+          HTTP_CODE=$(curl -sS -o /tmp/tg_response.txt -w "%{http_code}" \
+            -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
             -d text="${TEXT}" \
-            -d disable_web_page_preview=true \
-            > /dev/null
+            -d disable_web_page_preview=true)
+
+          echo "Telegram HTTP status: ${HTTP_CODE}"
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "Telegram response:"
+            cat /tmp/tg_response.txt
+            exit 1
+          fi
