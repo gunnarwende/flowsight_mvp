@@ -180,7 +180,7 @@ export function DashboardShowcase({ className = "" }: { className?: string }) {
 
           <div className="flex-1 min-w-0">
             {/* KPI cards */}
-            <div className="grid grid-cols-4 gap-2 px-4 pt-4 pb-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-3 md:px-4 pt-3 md:pt-4 pb-2 md:pb-3">
               {[
                 { label: "Total Fälle", value: "47", color: "text-navy-900", accent: "border-l-slate-400" },
                 { label: "Neu heute", value: "2", color: "text-blue-700", accent: "border-l-blue-500" },
@@ -211,8 +211,8 @@ export function DashboardShowcase({ className = "" }: { className?: string }) {
               </div>
             </div>
 
-            {/* Table */}
-            <div className="mx-4 mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+            {/* Desktop table */}
+            <div className="mx-4 mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white hidden md:block">
               {/* Table header */}
               <div className="grid grid-cols-[60px_80px_80px_1fr_36px_52px_56px_40px] gap-0 border-b border-gray-200 bg-gray-50/80 px-3 py-1.5">
                 {["Fall-ID", "Kunde", "Adresse", "Problem", "Quelle", "Dringl.", "Status", "Datum"].map((h) => (
@@ -242,6 +242,35 @@ export function DashboardShowcase({ className = "" }: { className?: string }) {
                     {c.status}
                   </span>
                   <span className="text-[9px] text-gray-400">{c.date}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile cards */}
+            <div className="mx-3 mb-3 space-y-2 md:hidden">
+              {showcaseCases.map((c) => (
+                <div key={c.id} className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+                  <div className="flex items-start justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-medium text-amber-600">{c.id}</span>
+                      <span className="text-[10px] text-gray-500">{c.customer}</span>
+                    </div>
+                    <span className={`rounded-full px-1.5 py-0.5 text-[8px] font-semibold ${c.statusColor}`}>
+                      {c.status}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-gray-900 font-medium">
+                    {c.category} — {c.desc}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1 text-[9px] text-gray-400">
+                    <span className="inline-flex items-center gap-1">
+                      <span className={`w-1.5 h-1.5 rounded-full ${c.urgencyDot}`} />
+                      <span className="capitalize">{c.urgency}</span>
+                    </span>
+                    <span>{SOURCE_ICONS[c.source]}</span>
+                    <span>{c.address}</span>
+                    <span>{c.date}</span>
+                  </div>
                 </div>
               ))}
             </div>
