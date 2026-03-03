@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/src/lib/marketing/constants";
 import { HeroVisual } from "@/src/components/HeroVisual";
-import { CaseDetailMockup } from "@/src/components/DashboardMockup";
+import { DashboardShowcase } from "@/src/components/DashboardMockup";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
@@ -309,43 +309,44 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-16 grid items-center gap-12 lg:grid-cols-2">
-            {/* Placeholder for real screenshot */}
-            <CaseDetailMockup className="shadow-lg" />
+          {/* Full-width dashboard mockup */}
+          <div className="mt-16">
+            <DashboardShowcase className="shadow-2xl" />
+          </div>
 
-            <div className="space-y-8">
-              {[
-                {
-                  icon: <CalendarIcon className="h-5 w-5" />,
-                  title: "Terminplanung",
-                  desc: "Termin direkt aus dem Fall setzen — der Melder erhält eine ICS-Einladung per E-Mail.",
-                },
-                {
-                  icon: <CameraIcon className="h-5 w-5" />,
-                  title: "Foto-Dokumentation",
-                  desc: "Fotos zum Fall hochladen — direkt vom Handy auf der Baustelle.",
-                },
-                {
-                  icon: <StarIcon className="h-5 w-5" />,
-                  title: "Google-Reviews",
-                  desc: "Nach erledigtem Auftrag eine Review-Anfrage senden — per Knopfdruck.",
-                },
-              ].map((item) => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-navy-900">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-sm leading-relaxed text-navy-900/70">
-                      {item.desc}
-                    </p>
-                  </div>
+          {/* Feature highlights below */}
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            {[
+              {
+                icon: <CalendarIcon className="h-5 w-5" />,
+                title: "Terminplanung",
+                desc: "Termin direkt aus dem Fall setzen — der Melder erhält eine ICS-Einladung per E-Mail.",
+              },
+              {
+                icon: <CameraIcon className="h-5 w-5" />,
+                title: "Foto-Dokumentation",
+                desc: "Fotos zum Fall hochladen — direkt vom Handy auf der Baustelle.",
+              },
+              {
+                icon: <StarIcon className="h-5 w-5" />,
+                title: "Google-Reviews",
+                desc: "Nach erledigtem Auftrag eine Review-Anfrage senden — per Knopfdruck.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="flex gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
+                  {item.icon}
                 </div>
-              ))}
-            </div>
+                <div>
+                  <h3 className="text-base font-semibold text-navy-900">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-navy-900/70">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

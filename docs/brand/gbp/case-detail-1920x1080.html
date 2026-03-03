@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<!--
+  FlowSight GBP — Fall-Detailansicht
+  Dimension: 1920 × 1080 px (16:9)
+
+  EXPORT: Chrome DevTools → Ctrl+Shift+P → "Capture full size screenshot"
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>FlowSight — Fall Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f0f3f7;
+  }
+
+  /* Sidebar — same as dashboard list */
+  .sidebar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: #1a2744;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0;
+  }
+  .sidebar-logo {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding: 0 28px;
+    margin-bottom: 48px;
+  }
+  .sidebar-logo-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: #d4a843;
+    letter-spacing: -0.5px;
+  }
+  .sidebar-logo-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #d4a843;
+    margin-bottom: 4px;
+  }
+  .nav-item {
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #7b8fb3;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .nav-item.active {
+    background: rgba(212,168,67,0.1);
+    color: #d4a843;
+    border-left: 3px solid #d4a843;
+    padding-left: 25px;
+  }
+  .nav-item svg { width: 20px; height: 20px; }
+  .nav-user {
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #a3b4cc;
+    font-size: 14px;
+    border-top: 1px solid rgba(123,143,179,0.15);
+    margin-top: auto;
+  }
+  .nav-user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4a843, #e2bb55);
+    display: flex; align-items: center; justify-content: center;
+    color: #1a2744; font-weight: 600; font-size: 14px;
+  }
+
+  /* Main */
+  .main {
+    margin-left: 260px;
+    padding: 40px 48px;
+    height: 1080px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* Breadcrumb + header */
+  .breadcrumb {
+    font-size: 14px;
+    color: #64645f;
+  }
+  .breadcrumb a { color: #d4a843; text-decoration: none; font-weight: 500; }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 8px; }
+  .header h1 {
+    font-size: 28px; font-weight: 700; color: #1a2744; letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .case-id-badge {
+    font-size: 14px; font-weight: 600; color: #d4a843;
+    background: #faf0d0; padding: 4px 12px; border-radius: 8px;
+    font-family: monospace;
+  }
+  .header-sub {
+    font-size: 15px; color: #64645f;
+  }
+
+  .header-actions { display: flex; gap: 12px; }
+  .btn {
+    padding: 10px 20px; border-radius: 10px; font-size: 14px;
+    font-weight: 600; border: none; font-family: inherit; cursor: default;
+  }
+  .btn-primary { background: #d4a843; color: #1a2744; }
+  .btn-outline { background: white; color: #1a2744; border: 1px solid #c4cfdf; }
+  .btn-success { background: #4a9d6e; color: white; }
+
+  /* Content grid */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 28px;
+    flex: 1;
+  }
+
+  .card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    padding: 28px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 600; color: #1a2744;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid #f0f3f7;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-title svg { width: 20px; height: 20px; color: #d4a843; }
+
+  .field { margin-bottom: 18px; }
+  .field-label {
+    font-size: 12px; font-weight: 600; color: #64645f;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  .field-value { font-size: 15px; color: #1a2744; line-height: 1.5; }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 24px; font-size: 14px; font-weight: 600;
+  }
+  .status-pill.new { background: #faf0d0; color: #a38429; }
+  .status-pill .dot {
+    width: 10px; height: 10px; border-radius: 50%; background: currentColor;
+  }
+
+  .urgency-high { color: #c45c4a; font-weight: 600; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item {
+    display: flex; gap: 16px; padding: 16px 0;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-dot-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding-top: 4px;
+  }
+  .timeline-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  }
+  .timeline-dot.gold { background: #d4a843; }
+  .timeline-dot.blue { background: #3b82f6; }
+  .timeline-dot.gray { background: #c4cfdf; }
+
+  .timeline-content { flex: 1; }
+  .timeline-label {
+    font-size: 14px; font-weight: 600; color: #1a2744; margin-bottom: 2px;
+  }
+  .timeline-detail { font-size: 13px; color: #64645f; }
+  .timeline-time { font-size: 12px; color: #a3b4cc; margin-top: 4px; }
+
+  /* Right sidebar cards */
+  .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+  .contact-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .contact-row:last-child { border-bottom: none; }
+  .contact-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #f0f3f7; display: flex;
+    align-items: center; justify-content: center;
+  }
+  .contact-icon svg { width: 18px; height: 18px; color: #7b8fb3; }
+  .contact-label { font-size: 12px; color: #64645f; }
+  .contact-value { font-size: 14px; color: #1a2744; font-weight: 500; }
+
+  .note-box {
+    background: #faf8f5;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 14px;
+    color: #1a2744;
+    line-height: 1.6;
+    border-left: 3px solid #d4a843;
+  }
+  .note-meta {
+    font-size: 12px;
+    color: #64645f;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-text">FlowSight</span>
+      <span class="sidebar-logo-dot"></span>
+    </div>
+    <div class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Fälle
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Anrufe
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Reviews
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Einstellungen
+    </div>
+    <div class="nav-user">
+      <div class="nav-user-avatar">HS</div>
+      <div>
+        <div style="font-weight:600;font-size:14px;">Hauser Sanitär</div>
+        <div style="font-size:12px;color:#7b8fb3;">Winterthur</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="breadcrumb">
+      <a href="#">Fälle</a> &nbsp;/&nbsp; FS-2024-047
+    </div>
+
+    <div class="header">
+      <div class="header-left">
+        <h1>
+          Rohrbruch Küche — Wasser tropft
+          <span class="case-id-badge">FS-2024-047</span>
+        </h1>
+        <div class="header-sub">Erstellt am 27.02.2026 um 08:34 via Voice Agent (Lisa)</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline">Bearbeiten</button>
+        <button class="btn btn-success">Als erledigt markieren</button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <!-- Case Details -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Falldetails
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="field">
+              <div class="field-label">Status</div>
+              <div class="field-value">
+                <span class="status-pill new"><span class="dot"></span> Neu</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Dringlichkeit</div>
+              <div class="field-value urgency-high">Hoch — Wasserschaden aktiv</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Kategorie</div>
+              <div class="field-value">Sanitär — Rohrbruch</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Quelle</div>
+              <div class="field-value">Voice Agent (Lisa)</div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:8px;">
+            <div class="field-label">Beschreibung</div>
+            <div class="field-value">
+              Kunde meldet Wasseraustritt unter dem Spülbecken in der Küche. Tropft seit heute Morgen, wird zunehmend stärker. Boden bereits feucht. Haupthahn ist noch offen. Kunde bittet um schnellstmöglichen Einsatz.
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card" style="flex:1;">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Verlauf
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot-wrap"><div class="timeline-dot gold"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-label">Fall erstellt via Voice Agent</div>
+                <div class="timeline-detail">Lisa hat den Anruf entgegengenommen und alle relevanten Informationen strukturiert erfasst.</div>
+                <div class="timeline-time">27.02.2026, 08:34</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-wrap"><div class="timeline-dot gold"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-label">E-Mail-Benachrichtigung gesendet</div>
+                <div class="timeline-detail">Fallbenachrichtigung an info@hauser-sanitaer.ch zugestellt.</div>
+                <div class="timeline-time">27.02.2026, 08:34</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-wrap"><div class="timeline-dot blue"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-label">Kundenbestätigung gesendet</div>
+                <div class="timeline-detail">Bestätigungs-E-Mail an meier.thomas@bluewin.ch gesendet.</div>
+                <div class="timeline-time">27.02.2026, 08:35</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-wrap"><div class="timeline-dot gray"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-label">Warte auf Bearbeitung</div>
+                <div class="timeline-detail">Noch kein Techniker zugewiesen.</div>
+                <div class="timeline-time">Ausstehend</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div class="right-col">
+        <!-- Contact -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Kontakt
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div>
+              <div class="contact-label">Name</div>
+              <div class="contact-value">Thomas Meier</div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+            <div>
+              <div class="contact-label">Telefon</div>
+              <div class="contact-value">+41 44 720 XX XX</div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div>
+              <div class="contact-label">E-Mail</div>
+              <div class="contact-value">meier.thomas@bluewin.ch</div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div>
+              <div class="contact-label">Adresse</div>
+              <div class="contact-value">Seestrasse 42, 8942 Oberrieden</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Notizen
+          </div>
+          <div class="note-box">
+            Kunde klingt besorgt wegen möglichem Wasserschaden am Parkettboden. Bitte Einsatz priorisieren. Schlüssel liegt beim Nachbarn (Seestrasse 44) falls Kunde nicht zu Hause.
+            <div class="note-meta">Erfasst von Lisa (Voice Agent) — 27.02.2026, 08:34</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Schnellaktionen
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-primary" style="width:100%;text-align:center;">Techniker zuweisen</button>
+            <button class="btn btn-outline" style="width:100%;text-align:center;">Kunde anrufen</button>
+            <button class="btn btn-outline" style="width:100%;text-align:center;">Review anfordern</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

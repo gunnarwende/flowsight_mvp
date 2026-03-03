@@ -20,7 +20,7 @@ const URGENCIES = [
   { value: "normal", label: "Normal" },
 ] as const;
 
-const QUICK_TIMES = ["08:00", "10:00", "13:00", "16:00"] as const;
+const QUICK_TIMES = ["08:00", "11:00", "15:00"] as const;
 
 function toDatetimeLocal(iso: string): string {
   const d = new Date(iso);
@@ -316,41 +316,46 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         </div>
       </div>
 
-      {/* Row 4: Termin + Schnellwahl */}
+      {/* Row 4: Beschreibung full-width */}
       <div className="mb-3">
-        <label htmlFor="scheduled" className={lbl}>Termin</label>
-        <div className="flex items-center gap-3 flex-wrap">
-          <input id="scheduled" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className={`${inp} w-auto`} />
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-            {([0, 1] as const).map((d) => (
-              <button key={d} type="button" onClick={() => setQuickDay(d)}
-                className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-amber-500 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
-              >{d === 0 ? "Heute" : "Morgen"}</button>
-            ))}
-          </div>
-          <div className="flex gap-1">
-            {QUICK_TIMES.map((time) => (
-              <button key={time} type="button" onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
-                className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-colors"
-              >{time}</button>
-            ))}
-          </div>
-        </div>
+        <label htmlFor="description" className={lbl}>Beschreibung</label>
+        <textarea id="description" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className={inp} />
       </div>
 
-      {/* Row 5: Beschreibung + Notizen side by side */}
+      {/* Row 5: Termin (left) + Notizen (right) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div>
-          <label htmlFor="description" className={lbl}>Beschreibung</label>
-          <textarea id="description" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className={inp} />
+          <label htmlFor="scheduled" className={lbl}>Termin</label>
+          <input id="scheduled" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className={`${inp} mb-2`} />
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+              {([0, 1] as const).map((d) => (
+                <button key={d} type="button" onClick={() => setQuickDay(d)}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-amber-500 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                >{d === 0 ? "Heute" : "Morgen"}</button>
+              ))}
+            </div>
+            <div className="flex gap-1">
+              {QUICK_TIMES.map((time) => (
+                <button key={time} type="button" onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
+                  className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-colors"
+                >{time}</button>
+              ))}
+            </div>
+          </div>
+          {scheduledAt && (
+            <button onClick={handleSendInvite} disabled={!canSendInvite}
+              className="mt-2 w-full rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >{inviteState === "sending" ? "Sende\u2026" : inviteState === "sent" ? "Einladung gesendet \u2713" : "Termin senden"}</button>
+          )}
         </div>
         <div>
           <label htmlFor="notes" className={lbl}>Interne Notizen</label>
-          <textarea id="notes" rows={3} value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar..." className={inp} />
+          <textarea id="notes" rows={5} value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar..." className={inp} />
         </div>
       </div>
 
-      {/* Action bar — always visible */}
+      {/* Action bar — Speichern, Erledigt, Review */}
       <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
         <button
           onClick={performSave}
@@ -362,29 +367,23 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
 
         {status !== "done" && (
           <button onClick={handleQuickDone} disabled={saveState === "saving"}
-            className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
+            className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
           >Erledigt</button>
         )}
 
-        <button onClick={handleSendInvite} disabled={!canSendInvite}
-          title={!scheduledAt ? "Erst Termin setzen" : undefined}
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >{inviteState === "sending" ? "Sende\u2026" : "Termin senden"}</button>
-
         <button onClick={handleRequestReview} disabled={!canRequestReview}
           title={!contactEmail.trim() ? "Keine E-Mail" : reviewState === "sent" ? "Bereits gesendet" : undefined}
-          className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >{reviewState === "sending" ? "Sende\u2026" : reviewState === "sent" ? "Review gesendet" : "Review anfragen"}</button>
 
         {/* Feedback inline */}
-        {saveState === "saved" && <span className="text-emerald-600 text-xs">Gespeichert</span>}
-        {saveState === "error" && <span className="text-red-600 text-xs">{errorMsg}</span>}
-        {inviteState === "sent" && <span className="text-emerald-600 text-xs">Einladung gesendet</span>}
-        {inviteState === "error" && <span className="text-red-600 text-xs">{inviteMsg}</span>}
+        {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
+        {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
+        {inviteState === "error" && <span className="text-red-600 text-xs ml-2">{inviteMsg}</span>}
         {reviewState === "sent" && initialData.review_sent_at && (
-          <span className="text-emerald-600 text-xs">Review gesendet ({formatDate(initialData.review_sent_at)})</span>
+          <span className="text-emerald-600 text-xs ml-2">Review gesendet ({formatDate(initialData.review_sent_at)})</span>
         )}
-        {reviewState === "error" && <span className="text-red-600 text-xs">{reviewMsg}</span>}
+        {reviewState === "error" && <span className="text-red-600 text-xs ml-2">{reviewMsg}</span>}
       </div>
     </section>
   );
