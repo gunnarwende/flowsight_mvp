@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-03 (Ops Sprint: N27-N32 + Prospect Pipeline + Dashboard Showcase)
+**Datum:** 2026-03-04 (PR #23: Voice Tickets + Goodbye Fix + de-CH)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -35,7 +35,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
-| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status command, ACK) |
+| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status, ACK, **Voice→STT→Issue**) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto, Voice Agent Intake+Info) |
 
 ## Kunden
@@ -47,7 +47,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **14 Module LIVE.** CoreBot als 14. Modul shipped (Telegram → GitHub Issues).
+- **14 Module LIVE.** CoreBot now with Voice→STT→Issue (Whisper). Goodbye-loop fix live. de-CH orthography.
 - **Remote-CTO Loop Day-2:** CoreBot ergänzt CI + Telegram + Branch Protection. Founder kann jetzt Tasks vom Handy als GitHub Issues erfassen.
 - **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
 - **Demo-Feedback 02.03.:** Erste Demo mit Peter. Website/Wizard/Dashboard/Reviews top. Voice-Audio-Routing + SMS-UX + Mobile-Login als Bugs erfasst (N30-N32).
