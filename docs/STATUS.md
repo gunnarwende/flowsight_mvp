@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-04 (PR #23: Voice Tickets + Goodbye Fix + de-CH)
+**Datum:** 2026-03-04 (PR #29: P0 Demo Fix — SMS Token + PKCE Magic Link)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -35,7 +35,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox) |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
-| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status, ACK, **Voice→STT→Issue**) |
+| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status, ACK, **Voice→STT→Issue**, **Photo/Doc Attachments** via Supabase Storage) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto, Voice Agent Intake+Info) |
 
 ## Kunden
@@ -47,11 +47,11 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **14 Module LIVE.** CoreBot now with Voice→STT→Issue (Whisper). Goodbye-loop fix live. de-CH orthography.
-- **Remote-CTO Loop Day-2:** CoreBot ergänzt CI + Telegram + Branch Protection. Founder kann jetzt Tasks vom Handy als GitHub Issues erfassen.
+- **14 Module LIVE.** CoreBot now with Voice→STT→Issue + Photo/Doc Attachments (Supabase Storage cross-instance sessions).
+- **P0 Demo-Fixes (04.03.):** SMS Verify Token (Attachments-Route akzeptierte nur Full-Token, SMS sendet Short-Token) + PKCE Magic Link (flowType: implicit, cross-browser). PR #27 + #29.
 - **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
 - **Demo-Feedback 02.03.:** Erste Demo mit Peter. Website/Wizard/Dashboard/Reviews top. Voice-Audio-Routing + SMS-UX + Mobile-Login als Bugs erfasst (N30-N32).
-- **Erledigt:** N17-N21 ✅, N26-N28 ✅, N30-N32 ✅ — 19/20 Bugs fixed
+- **Erledigt:** N17-N21 ✅, N26-N28 ✅, N30-N32 ✅, Issue #28 ✅ — 20+ Bugs fixed
 - **BLOCKER:** Keine. Go-Live möglich.
 - **Vercel Region:** Frankfurt (fra1) — näher an Supabase + CH-Usern.
 - **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup), `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding, ~15min/prospect)
