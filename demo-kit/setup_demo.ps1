@@ -85,7 +85,8 @@ Write-Host ""
 Write-Host "  Kurzfassung (3 Schritte in Twilio Console):" -ForegroundColor White
 Write-Host "  1. SIP Domain erstellen: flowsight-demo.sip.twilio.com" -ForegroundColor White
 Write-Host "  2. Credential List: Username + Passwort anlegen" -ForegroundColor White
-Write-Host "  3. TwiML Bin: Voice URL auf Brunner-Nummer +41445054818" -ForegroundColor White
+Write-Host "  3. TwiML Bin: Voice URL auf Retell-Nummer +41445054818 (Backend)" -ForegroundColor White
+Write-Host "     Demo-Nummer (Website): +41445053019" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  Dann in MicroSIP:" -ForegroundColor White
 Write-Host "  Account > SIP Server: flowsight-demo.sip.twilio.com" -ForegroundColor White

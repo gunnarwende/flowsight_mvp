@@ -86,7 +86,7 @@
 
 ## Schritt 6: Testanruf
 
-1. In MicroSIP: eine beliebige Nummer eintippen (z.B. `+41445054818`)
+1. In MicroSIP: `+41445053019` eintippen (Brunner Demo-Nummer, wie auf Website)
 2. Anrufen → Lisa sollte sich melden
 3. Wenn Lisa antwortet: **Setup erfolgreich!**
 4. Weiter mit `AUDIO_PROOF.md` für den Teams-Audio-Test

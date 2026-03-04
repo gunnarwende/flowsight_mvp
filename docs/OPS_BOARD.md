@@ -154,6 +154,7 @@
 | 2026-03-03 | **N28 KPI Cards Click-to-Filter:** 4 existing KPI cards now link to filtered views (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done). | CaseListClient.tsx |
 | 2026-03-03 | **N27 Case Detail UX v2:** Description full-width, Termin left (8/11/15h) + Notes right, "Termin senden" inline prominent, simplified action bar. | CaseDetailForm.tsx |
 | 2026-03-03 | **Dashboard Showcase:** Replaced single-case mockup in "Alles kommt zu Ihnen" section with full dashboard mockup (KPI cards + 10 realistic cases in table, sidebar hint, search bar). Full-width layout with features below. | DashboardMockup.tsx, (marketing)/page.tsx |
+| 2026-03-03 | **Demo-Kit + SIP Fix:** Complete demo toolkit (MicroSIP setup, audio proof, reset SQL, cheat sheet, Twilio diagnose+fix scripts). Fixed SIP auth mismatch (Error 32202) + missing callerId (Error 13214). Created `/api/demo/sip-twiml` route. Verified: Call connected, Lisa answers, 0 errors. | demo-kit/*, src/web/app/api/demo/sip-twiml/route.ts |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 

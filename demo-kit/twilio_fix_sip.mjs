@@ -156,7 +156,7 @@ async function main() {
   console.log("  1. MicroSIP öffnen > Menu > Account bearbeiten");
   console.log("  2. Oben stehende Credentials eintragen");
   console.log("  3. Speichern → Status sollte 'Online/Registered' zeigen");
-  console.log("  4. Dial +41445054818 → Lisa sollte antworten");
+  console.log("  4. Dial +41445053019 → Lisa sollte antworten (Brunner Demo-Nummer)");
   console.log("");
 }
 

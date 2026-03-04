@@ -45,6 +45,9 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - Portal-Zugang: my.peoplefone.ch (Credentials in Bitwarden)
 - Siehe: docs/runbooks/peoplefone_front_door.md
 
+## SMS (Post-Call Verification)
+- SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
+
 ## App / Routing
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)

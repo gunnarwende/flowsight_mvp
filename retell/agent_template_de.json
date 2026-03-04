@@ -126,7 +126,7 @@
           "id": "skip-response-edge-intake",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "The user has responded to the agent's goodbye message with any acknowledgment, farewell, thanks, or any other response. Always skip — the conversation is over."
           }
         }
       },
@@ -183,7 +183,7 @@
           "id": "skip-response-edge-closing",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "The user has responded to the agent's goodbye message with any acknowledgment, farewell, thanks, or any other response. Always skip — the conversation is over."
           }
         }
       },
@@ -205,7 +205,7 @@
           "id": "skip-response-edge-oos",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "The user has responded to the agent's goodbye message with any acknowledgment, farewell, thanks, or any other response. Always skip — the conversation is over."
           }
         }
       },
