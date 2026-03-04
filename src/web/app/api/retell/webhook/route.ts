@@ -63,6 +63,11 @@ function nonEmptyStr(v: unknown): string | undefined {
   return undefined;
 }
 
+/** Swiss German: replace ß with ss (e.g. "Straße" → "Strasse"). */
+function deCH(v: string | undefined): string | undefined {
+  return v?.replace(/ß/g, "ss");
+}
+
 /** Extract exactly 4 consecutive digits from any PLZ format (e.g. "PLZ 8800", "8800 Thalwil", "acht-acht-null-null"). */
 function normalizePlz(v: unknown): string | undefined {
   if (typeof v !== "string") return undefined;
@@ -245,17 +250,18 @@ export async function POST(req: Request) {
 
   // Structured fields — read from whichever path had data
   const plz = normalizePlz(extractedData.plz) ?? normalizePlz(extractedData.postal_code) ?? normalizePlz(extractedData.zip);
-  const city = nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt);
-  const street = nonEmptyStr(extractedData.street ?? extractedData.strasse);
+  const city = deCH(nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt));
+  const street = deCH(nonEmptyStr(extractedData.street ?? extractedData.strasse));
   const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
   const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
   const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
   // Priority: custom extracted field (German) → transcript (raw conversation)
   // NOTE: call_analysis.call_summary is SKIPPED — Retell generates it in English
   // regardless of agent language, which produces English text in German emails.
-  const description =
+  const description = deCH(
     nonEmptyStr(extractedData.description ?? extractedData.beschreibung) ??
-    nonEmptyStr(call?.transcript);
+    nonEmptyStr(call?.transcript),
+  );
 
   // ── Strict validation — NO SILENT DEFAULTS ─────────────────────────
   const missing: string[] = [];

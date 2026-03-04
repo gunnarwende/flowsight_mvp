@@ -236,7 +236,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage GENAU EINMAL: 'Vielen Dank, ich habe alles aufgenommen. Sie erhalten gleich eine SMS — dort können Sie die Daten prüfen und Fotos hochladen. Unser Team meldet sich schnellstmöglich. Ich wünsche Ihnen alles Gute, auf Wiederhören!' KEINE Zusammenfassung der Daten. KEINE Rückfragen. Wenn der Anrufer danach antwortet (Tschüss, Danke, etc.): SCHWEIGE KOMPLETT. Sage NICHTS mehr. Das Gespräch ist beendet."
+          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
         },
         "name": "Closing Intake",
         "edges": [],
@@ -258,7 +258,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage GENAU EINMAL: 'Sehr gerne! Falls Sie ein Anliegen haben, wir sind jederzeit für Sie da. Schönen Tag noch, auf Wiederhören!' Wenn der Anrufer danach antwortet (Tschüss, Danke, etc.): SCHWEIGE KOMPLETT. Sage NICHTS mehr. Das Gespräch ist beendet."
+          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
         },
         "name": "Closing Info",
         "edges": [],
@@ -280,7 +280,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer auf Hochdeutsch: 'Vielen Dank für Ihren Anruf. Dafür sind wir leider nicht die richtigen Ansprechpartner. Bei Sanitär- oder Heizungsanliegen sind wir aber jederzeit gerne für Sie da. Ich wünsche Ihnen alles Gute. Auf Wiederhören!' Du sprichst ausschliesslich Deutsch."
+          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
         },
         "name": "Out-of-scope Closing",
         "edges": [],

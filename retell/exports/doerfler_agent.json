@@ -214,7 +214,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer auf Hochdeutsch sinngemäss: 'Vielen Dank, ich habe alles aufgenommen. Sie erhalten gleich eine SMS auf Ihr Handy — dort können Sie die erfassten Daten prüfen, bei Bedarf korrigieren und auch Fotos vom Schaden hochladen. Das hilft unserem Techniker, sich optimal vorzubereiten. Die Dörfler AG meldet sich bei Ihnen. Ich wünsche Ihnen alles Gute. Auf Wiederhören!' Keine erneute Zusammenfassung. Keine Rückfragen. Sage NUR diesen Abschluss und NICHTS weiter danach. Wenn der Anrufer sich verabschiedet (Tschüss, Danke, Tschau, Auf Wiederhören), antworte NICHT nochmals — das Gespräch ist beendet."
+          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
         },
         "name": "Closing Node",
         "edges": [],
@@ -236,7 +236,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer auf Hochdeutsch: Danke. Dafür sind wir nicht zuständig. Bei Sanitär- oder Heizungsanliegen helfe ich gerne. Du sprichst ausschliesslich Deutsch."
+          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
         },
         "name": "Out-of-scope Closing",
         "edges": [],
