@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-01
+> Letzte Aktualisierung: 2026-03-04
 
 ---
 
@@ -107,9 +107,24 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **Sales Lead:** Voice Agent Lead → E-Mail an Founder
 - Provider: Resend (Transaktional, SPF/DKIM/DMARC verifiziert)
 
-### 3.8 Entitlements
+### 3.8 SMS Channel
+- Post-call SMS mit Korrekturlink an Melder (Twilio alphanumeric sender, z.B. "BrunnerHT")
+- Kurzlink `/v/[caseId]?t=<16hex>` (~85 Zeichen), HMAC-gesichert
+- Foto-Upload via Verify-Seite (Supabase Storage)
+- Akzeptiert sowohl Full-Token (64-hex) als auch Short-Token (16-hex)
+
+### 3.9 CoreBot (Ops-Assistent)
+- Telegram Bot → GitHub Issues (automatische Klassifizierung: type + domain Labels)
+- **Voice→STT→Issue:** Sprachnachricht → OpenAI Whisper Transkription → GitHub Issue
+- **Photo/Doc Attachments:** Fotos + Dokumente an Tickets anhängen (Supabase Storage, inline in GitHub)
+- **/ticket Befehl:** Ticket ohne Sprachnachricht erstellen + Anhänge innerhalb 120s
+- **/status Befehl:** Übersicht offener GitHub Issues
+- Session-Persistenz: L1 In-Memory + L2 Supabase Storage (cross-instance, serverless-safe)
+- Limiten: max 5 Anhänge/Ticket, 25MB total, 120s Session-Fenster
+
+### 3.10 Entitlements
 - Per-Tenant Module Gating via hasModule() Funktion
-- Module: voice, wizard, ops, reviews, morning_report
+- Module: voice, wizard, ops, reviews, morning_report, sms
 - Konfiguration in Supabase tenants-Tabelle (modules JSONB Array)
 
 ---
@@ -185,7 +200,7 @@ NACH ERLEDIGUNG:
 | Kunde | Status | Module | URL |
 |-------|--------|--------|-----|
 | **Dörfler AG** (Oberrieden) | Go-Live PARTIAL (3/4 PASS) | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
-| **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews | flowsight.ch/brunner-haustechnik |
+| **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/brunner-haustechnik |
 
 ### Dörfler AG — Erster Referenzkunde
 - Sanitär/Heizung seit 1926, Oberrieden ZH
@@ -261,12 +276,10 @@ NACH ERLEDIGUNG:
 
 ## 10. Bekannte Limitationen & offene Punkte
 
-- **Kein Kalender-Sync** — Termine werden manuell im Dashboard eingetragen
+- **Kein Kalender-Sync** — Termine werden manuell im Dashboard eingetragen (N3)
 - **Review-Anfrage manuell** — kein Auto-Trigger nach Fall-Abschluss
 - **Terminerinnerung fehlt** — 24h-Reminder an Melder geplant (N15)
 - **Kunden-Historie fehlt** — kein Matching bei wiederholtem Kontakt (N16)
-- **Voice E-Mail auf Englisch** — Retell Analysis Output noch nicht auf Deutsch (N10)
-- **Aktionen im Dashboard umständlich** — Save→Close→Reopen nötig für Termin/Review (Bug N12)
 - **Vercel Hobby-Limits** — 1 Log pro Invocation, keine Cron-Jobs
 - **Supabase Free** — keine automatischen Backups
 
