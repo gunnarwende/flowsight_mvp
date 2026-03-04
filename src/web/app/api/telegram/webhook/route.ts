@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
+import { getServiceClient } from "@/src/lib/supabase/server";
 
 // ---------------------------------------------------------------------------
 // Telegram → GitHub Issue Bot ("CoreBot")
@@ -212,12 +213,31 @@ interface TelegramVoice {
   file_size?: number;
 }
 
+interface TelegramPhotoSize {
+  file_id: string;
+  file_unique_id: string;
+  width: number;
+  height: number;
+  file_size?: number;
+}
+
+interface TelegramDocument {
+  file_id: string;
+  file_unique_id: string;
+  file_name?: string;
+  mime_type?: string;
+  file_size?: number;
+}
+
 interface TelegramMessage {
   message_id: number;
   from?: TelegramUser;
   chat?: { id: number };
   text?: string;
+  caption?: string;
   voice?: TelegramVoice;
+  photo?: TelegramPhotoSize[];
+  document?: TelegramDocument;
   date?: number;
 }
 
@@ -307,6 +327,163 @@ function extractVoiceTitle(transcript: string | null): string {
 }
 
 // ---------------------------------------------------------------------------
+// Ticket sessions — voice / /ticket opens a 120s window for attachments
+// Persistence: L1 = in-memory Map, L2 = Supabase Storage (cross-instance)
+// ---------------------------------------------------------------------------
+
+interface TicketSession {
+  issueNumber: number;
+  issueUrl: string;
+  title: string;
+  attachmentCount: number;
+  totalBytes: number;
+  expiresAt: number;
+}
+
+// L1 cache — fast path when same serverless instance handles both requests
+const ticketSessions = new Map<number, TicketSession>();
+
+const SESSION_TTL_MS = 120_000;
+const MAX_ATTACHMENTS = 5;
+const MAX_TOTAL_BYTES = 25 * 1024 * 1024;
+const COREBOT_BUCKET = "corebot-files";
+
+async function getActiveSession(chatId: number): Promise<TicketSession | null> {
+  // L1: in-memory (same serverless instance)
+  const cached = ticketSessions.get(chatId);
+  if (cached) {
+    if (Date.now() <= cached.expiresAt) return cached;
+    ticketSessions.delete(chatId);
+  }
+
+  // L2: Supabase Storage (cross-instance persistence)
+  try {
+    const supabase = getServiceClient();
+    const { data, error } = await supabase.storage
+      .from(COREBOT_BUCKET)
+      .download(`_sessions/${chatId}.json`);
+    if (error || !data) return null;
+    const session = JSON.parse(await data.text()) as TicketSession;
+    if (Date.now() > session.expiresAt) return null;
+    ticketSessions.set(chatId, session); // warm L1
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+async function persistSession(chatId: number, session: TicketSession): Promise<void> {
+  ticketSessions.set(chatId, session);
+  try {
+    const supabase = getServiceClient();
+    await supabase.storage
+      .from(COREBOT_BUCKET)
+      .upload(`_sessions/${chatId}.json`, JSON.stringify(session), {
+        contentType: "application/json",
+        upsert: true,
+      });
+  } catch (err) {
+    log({ step: "session_persist", ok: false, chatId, error: err instanceof Error ? err.message : "unknown" });
+  }
+}
+
+async function startSession(
+  chatId: number,
+  issueNumber: number,
+  issueUrl: string,
+  title: string,
+): Promise<void> {
+  await persistSession(chatId, {
+    issueNumber,
+    issueUrl,
+    title,
+    attachmentCount: 0,
+    totalBytes: 0,
+    expiresAt: Date.now() + SESSION_TTL_MS,
+  });
+}
+
+function sanitizeFileName(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
+}
+
+function guessContentType(fileName: string): string {
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+  const map: Record<string, string> = {
+    jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png",
+    gif: "image/gif", webp: "image/webp", heic: "image/heic",
+    pdf: "application/pdf", mp4: "video/mp4", mov: "video/quicktime",
+  };
+  return map[ext] ?? "application/octet-stream";
+}
+
+async function addGitHubComment(
+  token: string,
+  issueNumber: number,
+  body: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues/${issueNumber}/comments`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        body: JSON.stringify({ body }),
+      },
+    );
+    log({ step: "github_comment", ok: res.ok, issue: issueNumber, status: res.status });
+    return res.ok;
+  } catch (err) {
+    log({ step: "github_comment", ok: false, issue: issueNumber, error: err instanceof Error ? err.message : "unknown" });
+    return false;
+  }
+}
+
+async function uploadToCoreBotStorage(
+  botToken: string,
+  fileId: string,
+  fileName: string,
+): Promise<{ url: string } | { error: string }> {
+  // Step 1: Download from Telegram
+  const buffer = await downloadTelegramFile(botToken, fileId);
+  if (!buffer) return { error: "telegram_download_failed" };
+
+  // Step 2: Upload to Supabase Storage
+  try {
+    const supabase = getServiceClient();
+    const uid = crypto.randomUUID().slice(0, 8);
+    const safeName = sanitizeFileName(fileName);
+    const storagePath = `corebot/${uid}-${safeName}`;
+    const contentType = guessContentType(safeName);
+
+    const { error } = await supabase.storage
+      .from(COREBOT_BUCKET)
+      .upload(storagePath, new Uint8Array(buffer), {
+        contentType,
+        upsert: false,
+      });
+
+    if (error) {
+      return { error: `storage_upload: ${error.message}` };
+    }
+
+    // Step 3: Get public URL
+    const { data: urlData } = supabase.storage
+      .from(COREBOT_BUCKET)
+      .getPublicUrl(storagePath);
+
+    return { url: urlData.publicUrl };
+  } catch (err) {
+    return { error: `storage_exception: ${err instanceof Error ? err.message : "unknown"}` };
+  }
+}
+
+// ---------------------------------------------------------------------------
 // GET /api/telegram/webhook — health check
 // ---------------------------------------------------------------------------
 
@@ -368,8 +545,10 @@ export async function POST(req: Request) {
   }
 
   const message = update.message;
-  const text = message?.text?.trim();
+  const text = (message?.text ?? message?.caption)?.trim();
   const voice = message?.voice;
+  const photo = message?.photo;
+  const document = message?.document;
   const fromId = message?.from?.id;
   const chatId = message?.chat?.id;
 
@@ -381,12 +560,14 @@ export async function POST(req: Request) {
     chat_id: chatId,
     text: text?.slice(0, 80),
     has_voice: !!voice,
+    has_photo: !!photo,
+    has_document: !!document,
     has_message: !!message,
   });
 
-  // Skip updates that are neither text nor voice
-  if (!message || (!text && !voice)) {
-    log({ step: "filter", decision: "no_text_or_voice" });
+  // Skip updates that have no actionable content
+  if (!message || (!text && !voice && !photo && !document)) {
+    log({ step: "filter", decision: "no_actionable_content" });
     return new NextResponse("ok", { status: 200 });
   }
 
@@ -495,7 +676,8 @@ export async function POST(req: Request) {
       return new NextResponse("ok", { status: 200 });
     }
 
-    const ackText = `ACK #${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}`;
+    await startSession(replyTo, ghResult.issue.number, ghResult.issue.html_url, title);
+    const ackText = `ACK #${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}\n(120s Fenster fuer Fotos/Dateien)`;
     await sendTelegramMessage(botToken, replyTo, ackText);
 
     log({
@@ -508,9 +690,113 @@ export async function POST(req: Request) {
     return new NextResponse("ok", { status: 200 });
   }
 
+  // ── Photo / Document attachment handling ─────────────────────────────
+  if (photo || document) {
+    try {
+      const session = await getActiveSession(replyTo);
+      if (!session) {
+        await sendTelegramMessage(
+          botToken,
+          replyTo,
+          "Kein aktives Ticket. Zuerst Voice oder /ticket senden.",
+        );
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      if (!githubToken) {
+        await sendTelegramMessage(botToken, replyTo, "attachment_failed: no GITHUB_ISSUES_TOKEN");
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      if (session.attachmentCount >= MAX_ATTACHMENTS) {
+        await sendTelegramMessage(
+          botToken,
+          replyTo,
+          `Max ${MAX_ATTACHMENTS} Anhaenge pro Ticket erreicht.`,
+        );
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      let fileId: string;
+      let fileName: string;
+      let fileSize: number;
+      let isImage = false;
+
+      if (photo && photo.length > 0) {
+        // Telegram sends multiple sizes — pick the largest
+        const largest = photo[photo.length - 1];
+        fileId = largest.file_id;
+        fileSize = largest.file_size ?? 0;
+        fileName = `photo_${message.message_id}.jpg`;
+        isImage = true;
+      } else if (document) {
+        fileId = document.file_id;
+        fileSize = document.file_size ?? 0;
+        fileName = document.file_name ?? `doc_${message.message_id}`;
+        isImage = document.mime_type?.startsWith("image/") ?? false;
+      } else {
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      if (session.totalBytes + fileSize > MAX_TOTAL_BYTES) {
+        await sendTelegramMessage(
+          botToken,
+          replyTo,
+          `Max ${MAX_TOTAL_BYTES / 1024 / 1024}MB pro Ticket erreicht.`,
+        );
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      const uploadResult = await uploadToCoreBotStorage(botToken, fileId, fileName);
+      if ("error" in uploadResult) {
+        log({ step: "attachment_failed", issue: session.issueNumber, error: uploadResult.error });
+        await sendTelegramMessage(botToken, replyTo, `attachment_failed: ${uploadResult.error}`);
+        return new NextResponse("ok", { status: 200 });
+      }
+
+      // Build comment — inline preview for images, link for docs
+      const caption = text ? `\n\n${text}` : "";
+      const commentBody = isImage
+        ? `![${fileName}](${uploadResult.url})${caption}`
+        : `[${fileName}](${uploadResult.url})${caption}`;
+
+      const commented = await addGitHubComment(githubToken, session.issueNumber, commentBody);
+
+      session.attachmentCount++;
+      session.totalBytes += fileSize;
+      session.expiresAt = Date.now() + SESSION_TTL_MS;
+      await persistSession(replyTo, session);
+
+      const remaining = MAX_ATTACHMENTS - session.attachmentCount;
+      const ack = commented
+        ? `Anhang #${session.attachmentCount} -> #${session.issueNumber} (noch ${remaining})`
+        : `Upload OK, GitHub-Kommentar fehlgeschlagen.`;
+      await sendTelegramMessage(botToken, replyTo, ack);
+
+      log({
+        step: "attachment",
+        issue: session.issueNumber,
+        fileName,
+        isImage,
+        count: session.attachmentCount,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown";
+      log({ step: "attachment_exception", error: msg });
+      Sentry.captureException(err);
+      await sendTelegramMessage(
+        botToken,
+        replyTo,
+        `attachment_failed: exception: ${msg.slice(0, 100)}`,
+      ).catch(() => {});
+    }
+
+    return new NextResponse("ok", { status: 200 });
+  }
+
   // ── Text message handling below ─────────────────────────────────────
 
-  // text is guaranteed non-empty here (voice path returned above)
+  // text is guaranteed non-empty here (voice + media paths returned above)
   if (!text) {
     return new NextResponse("ok", { status: 200 });
   }
@@ -534,6 +820,69 @@ export async function POST(req: Request) {
       Sentry.captureException(err);
     }
     return new NextResponse("ok", { status: 200 });
+  }
+
+  // ── /ticket command — create issue + open attachment window ────────
+  if (text.startsWith("/ticket")) {
+    if (!githubToken) {
+      await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured.");
+      return new NextResponse("ok", { status: 200 });
+    }
+
+    const ticketText = text.replace(/^\/ticket\s*/, "").trim();
+    const title = ticketText
+      ? ticketText.length > 80 ? ticketText.slice(0, 77) + "..." : ticketText
+      : `Ticket ${new Date().toISOString().slice(0, 16).replace("T", " ")}`;
+
+    const typeLabel = classifyType(ticketText);
+    const domainLabel = classifyDomain(ticketText);
+    const createdAt = new Date().toISOString();
+
+    const body = [
+      "<!-- corebot:ticket -->",
+      `source: telegram`,
+      `telegram_message_id: ${message.message_id}`,
+      `type: ${typeLabel.replace("type/", "")}`,
+      `domain: ${domainLabel.replace("domain/", "")}`,
+      `created_at: ${createdAt}`,
+      "",
+      "---",
+      "",
+      ticketText || "_Ticket mit Anhaengen (siehe Kommentare)_",
+    ].join("\n");
+
+    const labels = [typeLabel, domainLabel, "source/ticket"];
+    const ghResult = await createGitHubIssue(githubToken, title, body, labels);
+
+    if (!ghResult.ok) {
+      Sentry.captureMessage("CoreBot /ticket issue creation failed", {
+        level: "error",
+        tags: { stage: "github", decision: "ticket_cmd_failed" },
+        extra: { reason: ghResult.reason },
+      });
+      await sendTelegramMessage(botToken, replyTo, `Issue creation failed: ${ghResult.reason.slice(0, 100)}`);
+      return new NextResponse("ok", { status: 200 });
+    }
+
+    await startSession(replyTo, ghResult.issue.number, ghResult.issue.html_url, title);
+    const ackText = `#${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}\n(120s Fenster fuer Fotos/Dateien)`;
+    await sendTelegramMessage(botToken, replyTo, ackText);
+
+    log({ step: "done_ticket_cmd", issue: ghResult.issue.number });
+    return new NextResponse("ok", { status: 200 });
+  }
+
+  // ── In-session text → comment on existing issue ──────────────────
+  {
+    const session = await getActiveSession(replyTo);
+    if (session && githubToken) {
+      await addGitHubComment(githubToken, session.issueNumber, text);
+      session.expiresAt = Date.now() + SESSION_TTL_MS;
+      await persistSession(replyTo, session);
+      await sendTelegramMessage(botToken, replyTo, `Kommentar -> #${session.issueNumber}`);
+      log({ step: "session_text", issue: session.issueNumber });
+      return new NextResponse("ok", { status: 200 });
+    }
   }
 
   // ── Issue creation requires GITHUB_ISSUES_TOKEN ───────────────────
