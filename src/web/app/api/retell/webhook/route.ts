@@ -70,6 +70,19 @@ function normalizePlz(v: unknown): string | undefined {
   return match ? match[0] : undefined;
 }
 
+/**
+ * SIP demo calls arrive with from_number = Twilio number (+41445053019).
+ * If DEMO_SIP_CALLER_ID is set, redirect SMS to founder's personal phone.
+ */
+const TWILIO_SIP_NUMBER = "+41445053019";
+
+function resolveSmsTarget(callerPhone: string | undefined): string | undefined {
+  if (!callerPhone) return undefined;
+  const override = (process.env.DEMO_SIP_CALLER_ID ?? "").trim();
+  if (callerPhone === TWILIO_SIP_NUMBER && override.length > 0) return override;
+  return callerPhone;
+}
+
 /** Structured log line for Vercel Function Logs (no PII, machine-parseable). */
 function logDecision(fields: Record<string, unknown>) {
   console.log(JSON.stringify({ _tag: "retell_webhook", ...fields }));
@@ -426,10 +439,14 @@ export async function POST(req: Request) {
     }
 
     // ── Post-call SMS ─────────────────────────────────────────────
+    // SMS target override: SIP demo calls arrive with from_number = Twilio number.
+    // DEMO_SIP_CALLER_ID env var redirects SMS to founder's personal phone.
+    const smsTarget = resolveSmsTarget(callerPhone);
+
     let smsSent = false;
     let smsSid: string | undefined;
     let smsSkipReason: string | undefined;
-    if (!callerPhone) {
+    if (!smsTarget) {
       smsSkipReason = "no_caller_phone";
     } else {
       const smsConfig = await getTenantSmsConfig(tenantId);
@@ -445,7 +462,7 @@ export async function POST(req: Request) {
         const smsResult = await sendPostCallSms({
           caseId,
           createdAt: row.created_at,
-          callerPhone: callerPhone!,
+          callerPhone: smsTarget,
           smsSenderName: smsConfig.senderName,
           plz: plz!,
           city: city!,

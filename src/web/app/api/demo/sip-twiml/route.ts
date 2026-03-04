@@ -2,50 +2,33 @@
  * GET/POST /api/demo/sip-twiml — Returns TwiML for SIP-originated demo calls.
  *
  * Used as Voice URL on the Twilio SIP Domain "flowsight-demo.sip.twilio.com".
- * When MicroSIP makes an outbound call, Twilio hits this URL and connects
- * the call to the Brunner Voice Agent (Lisa).
+ * MicroSIP → SIP Domain → this route → TwiML → Dial Twilio number →
+ * Twilio number's own voice config routes to Retell.
  *
- * callerId controls what Retell sees as from_number → where the post-call SMS goes.
- * - DEMO_SIP_CALLER_ID (env): Founder's personal number → SMS lands on demo phone.
- *   Must be verified as Twilio Outgoing Caller ID.
- * - Fallback: Twilio number on our account (no SMS on personal phone).
+ * callerId = TWILIO_NUMBER (voice-safe, verified, always valid).
+ * Number   = TWILIO_NUMBER (routes through Twilio number config → Retell).
  *
- * Twilio Error 13214 = callerId missing or invalid. Guard: E.164 validation + fallback.
+ * SMS target override is handled in the webhook via DEMO_SIP_CALLER_ID,
+ * NOT here. This route never uses DEMO_SIP_CALLER_ID.
  */
 
-const BRUNNER_LISA = "+41445054818"; // Brunner Haustechnik Voice Agent (Retell)
-const TWILIO_FALLBACK = "+41445053019"; // Twilio number on our account (always valid)
+const TWILIO_NUMBER = "+41445053019"; // Verified Twilio number (website number)
 
-const E164_RE = /^\+[1-9]\d{6,14}$/;
-
-function resolveCallerId(): string {
-  const raw = (process.env.DEMO_SIP_CALLER_ID ?? "").trim();
-  if (raw.length > 0 && E164_RE.test(raw)) return raw;
-  return TWILIO_FALLBACK;
-}
-
-export async function GET() {
-  const callerId = resolveCallerId();
-  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+const TWIML = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${callerId}">
-    <Number>${BRUNNER_LISA}</Number>
+  <Dial callerId="${TWILIO_NUMBER}">
+    <Number>${TWILIO_NUMBER}</Number>
   </Dial>
 </Response>`;
-  return new Response(twiml, {
+
+export async function GET() {
+  return new Response(TWIML, {
     headers: { "Content-Type": "application/xml" },
   });
 }
 
 export async function POST() {
-  const callerId = resolveCallerId();
-  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Dial callerId="${callerId}">
-    <Number>${BRUNNER_LISA}</Number>
-  </Dial>
-</Response>`;
-  return new Response(twiml, {
+  return new Response(TWIML, {
     headers: { "Content-Type": "application/xml" },
   });
 }
