@@ -8,7 +8,8 @@ import * as Sentry from "@sentry/nextjs";
 // the message, creates a GitHub Issue, and ACKs back to Telegram.
 //
 // Env vars: TELEGRAM_BOT_TOKEN, TELEGRAM_SHARED_SECRET,
-//           TELEGRAM_ALLOWED_USER_ID, GITHUB_ISSUES_TOKEN
+//           TELEGRAM_ALLOWED_USER_ID, GITHUB_ISSUES_TOKEN,
+//           OPENAI_API_KEY (optional — required for voice transcription)
 // ---------------------------------------------------------------------------
 
 const GITHUB_OWNER = "gunnarwende";
@@ -204,17 +205,105 @@ interface TelegramUser {
   username?: string;
 }
 
+interface TelegramVoice {
+  file_id: string;
+  file_unique_id: string;
+  duration: number;
+  file_size?: number;
+}
+
 interface TelegramMessage {
   message_id: number;
   from?: TelegramUser;
   chat?: { id: number };
   text?: string;
+  voice?: TelegramVoice;
   date?: number;
 }
 
 interface TelegramUpdate {
   update_id: number;
   message?: TelegramMessage;
+}
+
+// ---------------------------------------------------------------------------
+// Voice message handling — download from Telegram + transcribe via Whisper
+// ---------------------------------------------------------------------------
+
+const MAX_VOICE_DURATION_SEC = 120;
+const MAX_VOICE_SIZE_BYTES = 10 * 1024 * 1024;
+
+async function downloadTelegramFile(
+  botToken: string,
+  fileId: string,
+): Promise<ArrayBuffer | null> {
+  try {
+    const getFileRes = await fetch(
+      `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`,
+    );
+    if (!getFileRes.ok) return null;
+    const fileData = (await getFileRes.json()) as {
+      ok: boolean;
+      result?: { file_path?: string };
+    };
+    if (!fileData.ok || !fileData.result?.file_path) return null;
+
+    const downloadRes = await fetch(
+      `https://api.telegram.org/file/bot${botToken}/${fileData.result.file_path}`,
+    );
+    if (!downloadRes.ok) return null;
+    return downloadRes.arrayBuffer();
+  } catch (err) {
+    log({ step: "tg_download", ok: false, error: err instanceof Error ? err.message : "unknown" });
+    return null;
+  }
+}
+
+async function transcribeAudio(
+  audioBuffer: ArrayBuffer,
+  apiKey: string,
+): Promise<string | null> {
+  try {
+    const formData = new FormData();
+    formData.append(
+      "file",
+      new Blob([audioBuffer], { type: "audio/ogg" }),
+      "voice.ogg",
+    );
+    formData.append("model", "whisper-1");
+    formData.append("language", "de");
+
+    const res = await fetch(
+      "https://api.openai.com/v1/audio/transcriptions",
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: formData,
+      },
+    );
+    if (!res.ok) {
+      log({ step: "whisper", ok: false, status: res.status });
+      return null;
+    }
+    const data = (await res.json()) as { text?: string };
+    return data.text?.trim() || null;
+  } catch (err) {
+    log({ step: "whisper", ok: false, error: err instanceof Error ? err.message : "unknown" });
+    return null;
+  }
+}
+
+function extractVoiceTitle(transcript: string | null): string {
+  if (transcript) {
+    const firstSentence = transcript.split(/[.!?\n]/)[0]?.trim();
+    if (firstSentence && firstSentence.length > 0) {
+      return firstSentence.length > 80
+        ? firstSentence.slice(0, 77) + "..."
+        : firstSentence;
+    }
+  }
+  const now = new Date();
+  return `Voice Ticket ${now.toISOString().slice(0, 16).replace("T", " ")}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -280,6 +369,7 @@ export async function POST(req: Request) {
 
   const message = update.message;
   const text = message?.text?.trim();
+  const voice = message?.voice;
   const fromId = message?.from?.id;
   const chatId = message?.chat?.id;
 
@@ -290,12 +380,13 @@ export async function POST(req: Request) {
     from_id: fromId,
     chat_id: chatId,
     text: text?.slice(0, 80),
+    has_voice: !!voice,
     has_message: !!message,
   });
 
-  // Skip non-text updates (photos, stickers, edits, etc.)
-  if (!message || !text) {
-    log({ step: "filter", decision: "no_text_message" });
+  // Skip updates that are neither text nor voice
+  if (!message || (!text && !voice)) {
+    log({ step: "filter", decision: "no_text_or_voice" });
     return new NextResponse("ok", { status: 200 });
   }
 
@@ -319,6 +410,110 @@ export async function POST(req: Request) {
   lastUpdateId = update.update_id;
 
   const replyTo = chatId ?? fromId;
+
+  // ── Voice message handling ──────────────────────────────────────────
+  if (voice) {
+    const duration = voice.duration;
+    const fileSize = voice.file_size ?? 0;
+
+    // Size / duration guard
+    if (duration > MAX_VOICE_DURATION_SEC) {
+      await sendTelegramMessage(botToken, replyTo, `Voice zu lang (${duration}s). Max ${MAX_VOICE_DURATION_SEC}s.`);
+      return new NextResponse("ok", { status: 200 });
+    }
+    if (fileSize > MAX_VOICE_SIZE_BYTES) {
+      await sendTelegramMessage(botToken, replyTo, `Voice zu gross (${Math.round(fileSize / 1024 / 1024)}MB). Max 10MB.`);
+      return new NextResponse("ok", { status: 200 });
+    }
+
+    if (!githubToken) {
+      await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured.");
+      return new NextResponse("ok", { status: 200 });
+    }
+
+    const openaiKey = process.env.OPENAI_API_KEY;
+    let transcript: string | null = null;
+    let transcriptionFailed = false;
+
+    if (openaiKey) {
+      const audioData = await downloadTelegramFile(botToken, voice.file_id);
+      if (audioData) {
+        transcript = await transcribeAudio(audioData, openaiKey);
+        if (!transcript) transcriptionFailed = true;
+      } else {
+        transcriptionFailed = true;
+      }
+    } else {
+      transcriptionFailed = true;
+      log({ step: "voice", decision: "no_openai_key" });
+    }
+
+    const title = extractVoiceTitle(transcript);
+    const classText = transcript ?? "";
+    const typeLabel = classifyType(classText);
+    const domainLabel = classifyDomain(classText);
+
+    const createdAt = new Date().toISOString();
+    const bodyParts = [
+      "<!-- corebot:voice -->",
+      `source: telegram`,
+      `telegram_message_id: ${message.message_id}`,
+      `telegram_voice_file_id: ${voice.file_id}`,
+      `voice_duration_sec: ${duration}`,
+      `type: ${typeLabel.replace("type/", "")}`,
+      `domain: ${domainLabel.replace("domain/", "")}`,
+      `created_at: ${createdAt}`,
+      transcriptionFailed ? `transcription: failed` : "",
+      "",
+      "---",
+      "",
+    ];
+
+    if (transcript) {
+      bodyParts.push(
+        ...transcript.split("\n").map((line) => `> ${line}`),
+        "",
+        `_Voice message (${duration}s)_`,
+      );
+    } else {
+      bodyParts.push(
+        `_transcription_failed — Voice message (${duration}s, file_id: ${voice.file_id})_`,
+        `_Please listen to the original voice message in Telegram._`,
+      );
+    }
+
+    const labels = [typeLabel, domainLabel, "source/voice"];
+    const ghResult = await createGitHubIssue(githubToken, title, bodyParts.filter(Boolean).join("\n"), labels);
+
+    if (!ghResult.ok) {
+      Sentry.captureMessage("CoreBot voice issue creation failed", {
+        level: "error",
+        tags: { stage: "github", decision: "voice_issue_failed" },
+        extra: { reason: ghResult.reason },
+      });
+      await sendTelegramMessage(botToken, replyTo, `Issue creation failed: ${ghResult.reason.slice(0, 100)}`);
+      return new NextResponse("ok", { status: 200 });
+    }
+
+    const ackText = `ACK #${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}`;
+    await sendTelegramMessage(botToken, replyTo, ackText);
+
+    log({
+      step: "done_voice",
+      issue: ghResult.issue.number,
+      transcript_ok: !!transcript,
+      duration,
+    });
+
+    return new NextResponse("ok", { status: 200 });
+  }
+
+  // ── Text message handling below ─────────────────────────────────────
+
+  // text is guaranteed non-empty here (voice path returned above)
+  if (!text) {
+    return new NextResponse("ok", { status: 200 });
+  }
 
   // ── /status command (works even without GITHUB_ISSUES_TOKEN) ──────
   if (text.startsWith("/status")) {

@@ -174,12 +174,12 @@
           "x": 1363,
           "y": 696
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-demo",
+          "id": "always-edge-closing-demo",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },
@@ -196,12 +196,12 @@
           "x": 1363,
           "y": 896
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-info",
+          "id": "always-edge-closing-info",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },
@@ -218,12 +218,12 @@
           "x": 943,
           "y": 1044
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-oos",
+          "id": "always-edge-oos",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },

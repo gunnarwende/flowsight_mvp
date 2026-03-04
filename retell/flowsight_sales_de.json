@@ -164,7 +164,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer sinngemäß auf Hochdeutsch: Vielen Dank für Ihr Interesse an FlowSight! Wir melden uns innerhalb von 24 Stunden bei Ihnen, um einen Demo-Termin zu vereinbaren. Ich wünsche Ihnen einen schönen Tag!"
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihr Interesse an FlowSight! Wir melden uns innerhalb von 24 Stunden bei Ihnen, um einen Demo-Termin zu vereinbaren. Ich wünsche Ihnen einen schönen Tag!"
         },
         "name": "Closing Demo Node",
         "edges": [],
@@ -174,19 +174,19 @@
           "x": 1363,
           "y": 696
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-demo",
+          "id": "always-edge-closing-demo",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer sinngemäß auf Hochdeutsch: Vielen Dank für Ihren Anruf! Wenn Sie später Fragen haben oder eine Demo möchten, rufen Sie uns gerne wieder an. Einen schönen Tag!"
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihren Anruf! Wenn Sie später Fragen haben oder eine Demo möchten, rufen Sie uns gerne wieder an. Einen schönen Tag!"
         },
         "name": "Closing Info Node",
         "edges": [],
@@ -196,12 +196,12 @@
           "x": 1363,
           "y": 896
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-info",
+          "id": "always-edge-closing-info",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },
@@ -218,12 +218,12 @@
           "x": 943,
           "y": 1044
         },
-        "skip_response_edge": {
+        "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-oos",
+          "id": "always-edge-oos",
           "transition_condition": {
             "type": "prompt",
-            "prompt": "Skip response"
+            "prompt": "Always"
           }
         }
       },

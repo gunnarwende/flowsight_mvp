@@ -38,7 +38,7 @@ export async function sendPostCallSms(
 
   const correctionCta = hasStreet
     ? `Stimmt alles? Haben Sie Fotos vom Schaden?`
-    : `Bitte ergaenzen Sie Ihre Adresse. Fotos vom Schaden helfen uns:`;
+    : `Bitte ergänzen Sie Ihre Adresse. Fotos vom Schaden helfen uns:`;
 
   const body = [
     `${p.smsSenderName}: Ihre Meldung (${p.category}) wurde aufgenommen.`,
@@ -48,7 +48,7 @@ export async function sendPostCallSms(
     correctionCta,
     correctionUrl,
     ``,
-    `Ihr Service-Team meldet sich schnellstmoeglich.`,
+    `Ihr Service-Team meldet sich schnellstmöglich.`,
   ].join("\n");
 
   return sendSms(p.callerPhone, body, p.smsSenderName);
