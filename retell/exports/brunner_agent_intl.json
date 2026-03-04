@@ -209,7 +209,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Tell the caller IN THEIR LANGUAGE the following (adapt naturally, do not read word by word): EN: 'Thank you, I've recorded everything. You'll receive an SMS shortly where you can verify the details, make corrections if needed, and upload photos of the damage — this helps our technician prepare. Our team will get back to you as soon as possible. Take care! Goodbye!' / FR: 'Merci, j'ai tout noté. Vous recevrez bientôt un SMS — vous pourrez y vérifier les données, les corriger si nécessaire et envoyer des photos du dégât. Notre équipe vous recontactera rapidement. Bonne journée ! Au revoir !' / IT: 'Grazie, ho registrato tutto. Riceverà presto un SMS — potrà verificare i dati, correggerli se necessario e caricare foto del danno. Il nostro team la ricontatterà al più presto. Buona giornata! Arrivederci!' No summary. No follow-up questions. Say ONLY this closing. If the caller says goodbye (thanks, bye, etc.), do NOT respond again — the call is over."
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
         },
         "name": "Closing Intake",
         "edges": [],
@@ -231,7 +231,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Tell the caller IN THEIR LANGUAGE: 'My pleasure! If you ever need anything in the future, we're always here for you. I wish you a wonderful day. Goodbye!' / 'Avec plaisir ! N'hésitez pas à nous rappeler. Bonne journée ! Au revoir !' / 'Con piacere! Non esiti a richiamarci. Buona giornata! Arrivederci!' No follow-up questions. Say ONLY this and NOTHING else. If the caller says goodbye, do NOT respond again — the call is over."
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
         },
         "name": "Closing Info",
         "edges": [],
@@ -253,7 +253,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Tell the caller IN THEIR LANGUAGE: 'Thank you, but this is not something we handle. We help with plumbing and heating. Goodbye!' No follow-up questions. Say ONLY this and NOTHING else."
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
         },
         "name": "Out-of-scope Closing",
         "edges": [],

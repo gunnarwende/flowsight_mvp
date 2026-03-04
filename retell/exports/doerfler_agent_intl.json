@@ -187,7 +187,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Tell the caller IN THEIR LANGUAGE (adapt naturally): EN: 'Thank you, I've recorded everything. You'll receive an SMS shortly where you can verify the details, make corrections if needed, and upload photos of the damage — this helps our technician prepare. Dörfler AG will get back to you soon. Take care! Goodbye!' / FR: 'Merci, j'ai tout noté. Vous recevrez bientôt un SMS — vous pourrez y vérifier les données, les corriger et envoyer des photos du dégât. Dörfler AG vous recontactera rapidement. Bonne journée ! Au revoir !' / IT: 'Grazie, ho registrato tutto. Riceverà presto un SMS — potrà verificare i dati, correggerli e caricare foto del danno. Dörfler AG la ricontatterà presto. Buona giornata! Arrivederci!' No summary. No follow-up questions. Say ONLY this closing. If the caller says goodbye, do NOT respond again — the call is over."
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
         },
         "name": "Closing Node",
         "edges": [],
@@ -209,7 +209,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Tell the caller IN THEIR LANGUAGE: 'Thank you, but this is not something we handle. We help with plumbing and heating. Goodbye!' No follow-up questions. Say ONLY this and NOTHING else."
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
         },
         "name": "Out-of-scope Closing",
         "edges": [],
