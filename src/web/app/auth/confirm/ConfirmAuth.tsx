@@ -45,7 +45,15 @@ export function ConfirmAuth() {
       } else if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         success = !error;
-        if (error) setErrorMsg(error.message);
+        if (error) {
+          // PKCE verifier missing = link opened in different browser (in-app, etc.)
+          const isPkce = error.message?.toLowerCase().includes("code verifier");
+          setErrorMsg(
+            isPkce
+              ? "Link wurde in einem anderen Browser ge\u00f6ffnet. Bitte im selben Browser \u00f6ffnen, in dem der Login angefordert wurde \u2014 oder neuen Link anfordern."
+              : error.message,
+          );
+        }
       }
 
       if (success) {
