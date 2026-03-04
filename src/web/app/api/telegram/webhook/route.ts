@@ -279,10 +279,15 @@ async function downloadTelegramFile(
   }
 }
 
+type TranscribeOk = { ok: true; text: string };
+type TranscribeFail = { ok: false; error: string; errorCategory: "auth" | "quota" | "timeout" | "format" | "network" | "empty" | "unknown" };
+
+const WHISPER_TIMEOUT_MS = 30_000;
+
 async function transcribeAudio(
   audioBuffer: ArrayBuffer,
   apiKey: string,
-): Promise<string | null> {
+): Promise<TranscribeOk | TranscribeFail> {
   try {
     const formData = new FormData();
     formData.append(
@@ -293,23 +298,47 @@ async function transcribeAudio(
     formData.append("model", "whisper-1");
     formData.append("language", "de");
 
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), WHISPER_TIMEOUT_MS);
+
     const res = await fetch(
       "https://api.openai.com/v1/audio/transcriptions",
       {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}` },
         body: formData,
+        signal: controller.signal,
       },
     );
+    clearTimeout(timer);
+
     if (!res.ok) {
-      log({ step: "whisper", ok: false, status: res.status });
-      return null;
+      const errBody = await res.text().catch(() => "");
+      const category =
+        res.status === 401 ? "auth" as const
+        : res.status === 429 ? "quota" as const
+        : res.status === 400 ? "format" as const
+        : "unknown" as const;
+      log({ step: "whisper", ok: false, status: res.status, category, body: errBody.slice(0, 300) });
+      return { ok: false, error: `whisper_${res.status}: ${errBody.slice(0, 150)}`, errorCategory: category };
     }
+
     const data = (await res.json()) as { text?: string };
-    return data.text?.trim() || null;
+    const text = data.text?.trim();
+    if (!text) {
+      log({ step: "whisper", ok: false, reason: "empty_text" });
+      return { ok: false, error: "whisper: empty transcript", errorCategory: "empty" };
+    }
+    return { ok: true, text };
   } catch (err) {
-    log({ step: "whisper", ok: false, error: err instanceof Error ? err.message : "unknown" });
-    return null;
+    const msg = err instanceof Error ? err.message : "unknown";
+    const isTimeout = msg.includes("abort");
+    log({ step: "whisper", ok: false, error: msg, isTimeout });
+    return {
+      ok: false,
+      error: `whisper_exception: ${msg.slice(0, 150)}`,
+      errorCategory: isTimeout ? "timeout" : "network",
+    };
   }
 }
 
@@ -614,19 +643,39 @@ export async function POST(req: Request) {
 
     const openaiKey = process.env.OPENAI_API_KEY;
     let transcript: string | null = null;
-    let transcriptionFailed = false;
+    let transcriptionError: string | null = null;
+    let transcriptionCategory: string | null = null;
+    let audioData: ArrayBuffer | null = null;
 
     if (openaiKey) {
-      const audioData = await downloadTelegramFile(botToken, voice.file_id);
+      log({ step: "voice_stt", key_len: openaiKey.length, key_prefix: openaiKey.slice(0, 7) });
+      audioData = await downloadTelegramFile(botToken, voice.file_id);
       if (audioData) {
-        transcript = await transcribeAudio(audioData, openaiKey);
-        if (!transcript) transcriptionFailed = true;
+        log({ step: "voice_stt", download_ok: true, bytes: audioData.byteLength });
+        const sttResult = await transcribeAudio(audioData, openaiKey);
+        if (sttResult.ok) {
+          transcript = sttResult.text;
+        } else {
+          transcriptionError = sttResult.error;
+          transcriptionCategory = sttResult.errorCategory;
+        }
       } else {
-        transcriptionFailed = true;
+        transcriptionError = "telegram_download_failed";
+        transcriptionCategory = "network";
       }
     } else {
-      transcriptionFailed = true;
-      log({ step: "voice", decision: "no_openai_key" });
+      transcriptionError = "no_openai_key";
+      transcriptionCategory = "auth";
+      log({ step: "voice_stt", decision: "no_openai_key" });
+    }
+
+    // Fallback: upload voice file to corebot-files when transcription fails
+    let voiceFileUrl: string | null = null;
+    if (!transcript && audioData) {
+      const uploadResult = await uploadToCoreBotStorage(
+        botToken, voice.file_id, `voice_${message.message_id}.ogg`,
+      );
+      if ("url" in uploadResult) voiceFileUrl = uploadResult.url;
     }
 
     const title = extractVoiceTitle(transcript);
@@ -644,7 +693,8 @@ export async function POST(req: Request) {
       `type: ${typeLabel.replace("type/", "")}`,
       `domain: ${domainLabel.replace("domain/", "")}`,
       `created_at: ${createdAt}`,
-      transcriptionFailed ? `transcription: failed` : "",
+      transcriptionError ? `transcription: failed` : "",
+      transcriptionError ? `transcription_error: ${transcriptionCategory}` : "",
       "",
       "---",
       "",
@@ -658,9 +708,13 @@ export async function POST(req: Request) {
       );
     } else {
       bodyParts.push(
-        `_transcription_failed — Voice message (${duration}s, file_id: ${voice.file_id})_`,
-        `_Please listen to the original voice message in Telegram._`,
+        `_transcription_failed (${transcriptionCategory}) — Voice message (${duration}s)_`,
       );
+      if (voiceFileUrl) {
+        bodyParts.push(``, `[Voice anhören (${duration}s)](${voiceFileUrl})`);
+      } else {
+        bodyParts.push(`_file_id: ${voice.file_id}_`);
+      }
     }
 
     const labels = [typeLabel, domainLabel, "source/voice"];
@@ -677,13 +731,16 @@ export async function POST(req: Request) {
     }
 
     await startSession(replyTo, ghResult.issue.number, ghResult.issue.html_url, title);
-    const ackText = `ACK #${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}\n(120s Fenster fuer Fotos/Dateien)`;
+    const sttNote = transcriptionError ? `\nSTT: ${transcriptionCategory} (${transcriptionError.slice(0, 80)})` : "";
+    const ackText = `ACK #${ghResult.issue.number} ${title}\n${ghResult.issue.html_url}\n(120s Fenster fuer Fotos/Dateien)${sttNote}`;
     await sendTelegramMessage(botToken, replyTo, ackText);
 
     log({
       step: "done_voice",
       issue: ghResult.issue.number,
       transcript_ok: !!transcript,
+      transcription_error: transcriptionError,
+      transcription_category: transcriptionCategory,
       duration,
     });
 
