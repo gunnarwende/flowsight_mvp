@@ -48,6 +48,9 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
 
+## Demo (SIP/MicroSIP)
+- DEMO_SIP_CALLER_ID -> Founder-Handynummer E.164 (z.B. +41791234567). Muss als Twilio Outgoing Caller ID verifiziert sein. Retell sieht diese Nummer als from_number → SMS landet auf dem Demo-Handy.
+
 ## App / Routing
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
