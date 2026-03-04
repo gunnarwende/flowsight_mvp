@@ -2,22 +2,25 @@
  * GET/POST /api/demo/sip-twiml — Returns TwiML for SIP-originated demo calls.
  *
  * Used as Voice URL on the Twilio SIP Domain "flowsight-demo.sip.twilio.com".
- * MicroSIP → SIP Domain → this route → TwiML → Dial Twilio number →
- * Twilio number's own voice config routes to Retell.
+ * MicroSIP → SIP Domain → this route → TwiML → Dial Brunner Retell agent.
  *
- * callerId = TWILIO_NUMBER (voice-safe, verified, always valid).
- * Number   = TWILIO_NUMBER (routes through Twilio number config → Retell).
+ * callerId = TWILIO_NUMBER (voice-safe, verified on our account).
+ * Number   = BRUNNER_RETELL (Retell phone number assigned to Brunner Lisa).
  *
- * SMS target override is handled in the webhook via DEMO_SIP_CALLER_ID,
- * NOT here. This route never uses DEMO_SIP_CALLER_ID.
+ * These are two DIFFERENT numbers:
+ * - +41445053019 = Twilio number (callerId, also Dörfler entry point — NOT Brunner)
+ * - +41445054818 = Retell number (Brunner Haustechnik Lisa DE agent)
+ *
+ * SMS target override is handled in the webhook via DEMO_SIP_CALLER_ID.
  */
 
-const TWILIO_NUMBER = "+41445053019"; // Verified Twilio number (website number)
+const CALLER_ID = "+41445053019"; // Twilio number on our account (voice-safe)
+const BRUNNER_RETELL = "+41445054818"; // Brunner Haustechnik Voice Agent (Retell)
 
 const TWIML = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${TWILIO_NUMBER}">
-    <Number>${TWILIO_NUMBER}</Number>
+  <Dial callerId="${CALLER_ID}">
+    <Number>${BRUNNER_RETELL}</Number>
   </Dial>
 </Response>`;
 
