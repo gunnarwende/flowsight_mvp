@@ -80,6 +80,23 @@
 
 ---
 
-## Brunner-Nummer: `044 505 48 18`
+## So starte ich den Demo-Call (5 Schritte)
+
+```
+1. MicroSIP öffnen → Status "Online" prüfen
+2. +41445053019 eintippen → Anrufen (Brunner Demo-Nummer, wie auf Website)
+3. Lisa meldet sich → "Hallo, hier ist [Name], ich habe einen Rohrbruch im Keller"
+4. PLZ + Ort nennen! z.B. "Ich bin in 8800 Thalwil"
+5. Nach 2–3 Min auflegen → Dashboard zeigen: neuer Fall erscheint
+```
+
+**MicroSIP Credentials (falls Neueinrichtung nötig):**
+- SIP Server: `flowsight-demo.sip.twilio.com`
+- Username: `flowsight-demo`
+- Domain: `flowsight-demo.sip.twilio.com`
+
+---
+
+## Brunner-Nummer (Demo): `044 505 30 19`
 
 ## FlowSight Sales: `044 552 09 19`

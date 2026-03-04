@@ -55,6 +55,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **BLOCKER:** Keine. Go-Live möglich.
 - **Vercel Region:** Frankfurt (fra1) — näher an Supabase + CH-Usern.
 - **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup), `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding, ~15min/prospect)
+- **Demo-Kit:** `demo-kit/` — Komplett-Toolkit (SIP-Setup, Audio-Proof, Reset-SQL, Cheat Sheet, Twilio-Diagnose+Fix Scripts)
+- **SIP Call Chain:** Twilio SIP → `/api/demo/sip-twiml` (callerId) → Retell Lisa. MicroSIP credentials: `flowsight-demo`. Verified: Call SID `CAfffc69b90813874e976ba5481258f4db` status `in-progress` (clean, 0 errors).
 - **Nächster Schritt:** Kundenakquise starten. Pipeline: `node prospect_pipeline.mjs --url https://x.ch --slug x`
 
 ## Fixe Entscheidungen (No Drift)

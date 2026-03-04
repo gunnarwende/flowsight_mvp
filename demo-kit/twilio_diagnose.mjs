@@ -426,7 +426,7 @@ async function summary() {
   if (fixed > 0) {
     console.log("\n  Next steps:");
     console.log("  1. Open MicroSIP → it should show 'Registered'");
-    console.log("  2. Dial +41445054818 → Lisa should answer");
+    console.log("  2. Dial +41445053019 → Lisa should answer (Brunner demo number)");
     console.log("  3. Run Audio Proof: demo-kit/AUDIO_PROOF.md");
   }
 

@@ -19,7 +19,7 @@
 ### Test 1: MicroSIP → Lisa (Grundfunktion)
 
 1. MicroSIP öffnen
-2. `+41445054818` eintippen → Anrufen
+2. `+41445053019` eintippen → Anrufen (Brunner Demo-Nummer, wie auf Website)
 3. Lisa meldet sich?
 
 | Ergebnis | Aktion |
@@ -45,7 +45,7 @@
 2. **Screen-Share starten:**
    - "Teilen" klicken → **"Gesamter Bildschirm"** wählen (NICHT "Fenster"!)
    - **Checkbox "Computersound einschliessen" AKTIVIEREN** (unten links)
-3. MicroSIP: `+41445054818` anrufen
+3. MicroSIP: `+41445053019` anrufen
 4. Kontrollperson fragen: **"Hörst du Lisa?"**
 
 | Ergebnis | Aktion |
@@ -96,11 +96,13 @@ MicroSIP zeigt "Registration failed"
   └─ Firewall? → UDP 5060 + RTP Ports 10000-20000 freigeben
 ```
 
-### B: "403 Forbidden"
+### B: "403 Forbidden" / "Ablehnen"
 ```
 Anruf wird abgelehnt
   ├─ Credential List mit SIP Domain verknüpft? → Twilio Console prüfen
-  └─ TwiML Bin als Voice URL gesetzt? → SIP Domain > Voice Configuration
+  ├─ Voice URL korrekt? → Muss sein: https://flowsight-mvp.vercel.app/api/demo/sip-twiml
+  ├─ callerId fehlt? → Error 13214 = TwiML braucht callerId Attribut auf <Dial>
+  └─ Fix: node --env-file=src/web/.env.local demo-kit/twilio_diagnose.mjs --fix
 ```
 
 ### C: Kein Klingeln
