@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { validateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { validateVerifyToken, validateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -36,8 +36,12 @@ async function validateHmac(
     .single();
 
   if (error || !row) return { valid: false, caseExists: false };
+  // Accept both full (64 hex) and short (16 hex) tokens — SMS sends short tokens
+  const isFullToken = token.length === 64;
   return {
-    valid: validateVerifyToken(caseId, row.created_at, token),
+    valid: isFullToken
+      ? validateVerifyToken(caseId, row.created_at, token)
+      : validateShortVerifyToken(caseId, row.created_at, token),
     caseExists: true,
   };
 }
