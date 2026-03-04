@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-03 (Pipeline + Ops Sprint: N27/N28/N30/N31/N32 + Dashboard Showcase)
+**Updated:** 2026-03-04 (PR #23: Voice Tickets + Goodbye Fix + de-CH)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -8,10 +8,10 @@
 
 ## Snapshot
 
-- **Produkt:** 14 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, **CoreBot**)
+- **Produkt:** 14 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, **CoreBot** incl. Voice→STT)
 - **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant + SMS live)
 - **BLOCKER:** 0. Alle gelöst. ✅
-- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅ N27 ✅ N28 ✅ N30 ✅ N31 ✅ N32 ✅
+- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅ N27 ✅ N28 ✅ N30 ✅ N31 ✅ N32 ✅ PR#23 ✅
 - **Bugs gesamt:** 20 Findings → 19 fixed, 6 Backlog (N22/N23/N24/N29/N33)
 - **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup) + `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
