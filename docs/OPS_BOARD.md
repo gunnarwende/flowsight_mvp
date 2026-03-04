@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-04 (PR #23: Voice Tickets + Goodbye Fix + de-CH)
+**Updated:** 2026-03-04 (PR #29: P0 Demo Fix — SMS Token + PKCE Magic Link)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,8 +11,8 @@
 - **Produkt:** 14 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, **CoreBot** incl. Voice→STT)
 - **Kunden:** Dörfler AG (Go-Live PARTIAL), Brunner HT (Demo-Tenant + SMS live)
 - **BLOCKER:** 0. Alle gelöst. ✅
-- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅ N27 ✅ N28 ✅ N30 ✅ N31 ✅ N32 ✅ PR#23 ✅
-- **Bugs gesamt:** 20 Findings → 19 fixed, 6 Backlog (N22/N23/N24/N29/N33)
+- **Shipped:** N17 ✅ N18 ✅ N19 ✅ N20 ✅ N21 ✅ N26 ✅ N27 ✅ N28 ✅ N30 ✅ N31 ✅ N32 ✅ PR#23 ✅ PR#27 ✅ PR#29 ✅
+- **Bugs gesamt:** 20+ Findings → alle Demo-kritischen fixed, 6 Backlog (N22/N23/N24/N29/N33)
 - **Ops Tooling:** `retell_sync.mjs` (API-Sync) + `onboard_tenant.mjs` (Tenant-Setup) + `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required, 1 approval.
 - **Vercel Region:** Frankfurt (fra1)
@@ -155,6 +155,8 @@
 | 2026-03-03 | **N27 Case Detail UX v2:** Description full-width, Termin left (8/11/15h) + Notes right, "Termin senden" inline prominent, simplified action bar. | CaseDetailForm.tsx |
 | 2026-03-03 | **Dashboard Showcase:** Replaced single-case mockup in "Alles kommt zu Ihnen" section with full dashboard mockup (KPI cards + 10 realistic cases in table, sidebar hint, search bar). Full-width layout with features below. | DashboardMockup.tsx, (marketing)/page.tsx |
 | 2026-03-03 | **Demo-Kit + SIP Fix:** Complete demo toolkit (MicroSIP setup, audio proof, reset SQL, cheat sheet, Twilio diagnose+fix scripts). Fixed SIP auth mismatch (Error 32202) + missing callerId (Error 13214). Created `/api/demo/sip-twiml` route. Verified: Call connected, Lisa answers, 0 errors. | demo-kit/*, src/web/app/api/demo/sip-twiml/route.ts |
+| 2026-03-04 | **CoreBot Attachments (PR #27):** Photo/Document support in Telegram → GitHub Issue flow. Session persistence via Supabase Storage (L1 in-memory + L2 cross-instance). /ticket command, 5 attachments/ticket, 25MB limit, inline images in GitHub comments. | /api/telegram/webhook |
+| 2026-03-04 | **P0 Demo Fix (PR #29, Closes #28):** (1) SMS verify attachments route accepted only full 64-hex tokens, but SMS sends short 16-hex → "Invalid token". Fix: accept both. (2) PKCE magic link fails cross-browser (in-app browser). Fix: flowType: implicit → token_hash (no stored verifier needed). | attachments/route.ts, browser.ts, ConfirmAuth.tsx |
 
 **Erledigte Founder Blocks:** B (LinkedIn ✅), C (GBP ✅), F2 (Email Deliverability ✅), F5 (Voice Regression ✅), F6 (2FA Audit ✅), F10 (Billing Guard ✅)
 
