@@ -10,7 +10,6 @@ import { sendSms } from "@/src/lib/sms/sendSms";
  */
 
 const PAUL_PHONE = process.env.BIGBEN_OWNER_PHONE ?? "";
-const FOUNDER_PHONE = process.env.FOUNDER_PHONE ?? "";
 
 export async function POST(req: Request) {
   const base = { _tag: "bigben_reservation", stage: "api" };
@@ -70,11 +69,6 @@ export async function POST(req: Request) {
     if (PAUL_PHONE) {
       await sendSms(PAUL_PHONE, ownerSms, "BigBenPub");
     }
-    // Also notify founder
-    if (FOUNDER_PHONE) {
-      await sendSms(FOUNDER_PHONE, ownerSms, "BigBenPub");
-    }
-
     console.log(
       JSON.stringify({
         ...base,
