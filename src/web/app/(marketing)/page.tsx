@@ -8,11 +8,11 @@ import { DemoForm } from "@/src/components/DemoForm";
 export const metadata: Metadata = {
   title: "FlowSight — Jeder Anruf wird zum Auftrag",
   description:
-    "KI-Telefonassistent, Ops-Dashboard und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google Reviews. Raum Zürich.",
+    "Telefonassistentin, Fallübersicht und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google-Bewertungen. Raum Zürich.",
   openGraph: {
     title: "FlowSight — Jeder Anruf wird zum Auftrag",
     description:
-      "KI-Telefonassistent, Ops-Dashboard und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google Reviews. Raum Zürich.",
+      "Telefonassistentin, Fallübersicht und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google-Bewertungen. Raum Zürich.",
     url: "https://flowsight.ch",
   },
   alternates: {
@@ -90,9 +90,9 @@ export default function HomePage() {
               <span className="text-gold-400">zum Auftrag.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy-200">
-              Website, KI-Telefonassistent und Ops-Dashboard — alles aus einer Hand.
+              Website, Telefonassistentin und Fallübersicht — alles aus einer Hand.
               FlowSight nimmt Schadensmeldungen entgegen, erstellt strukturierte Fälle
-              und liefert Ihnen alles ins Dashboard. 24/7, auch nachts und am Wochenende.
+              und liefert Ihnen alles auf einen Blick. 24/7, auch nachts und am Wochenende.
             </p>
 
             {/* Proof indicators */}
@@ -155,7 +155,7 @@ export default function HomePage() {
               },
               {
                 problem: "Anrufe gehen abends und am Wochenende verloren.",
-                solution: "24/7 erreichbar — der Telefonassistent nimmt jeden Anruf an.",
+                solution: "24/7 erreichbar — die Telefonassistentin nimmt jeden Anruf an.",
               },
               {
                 problem: "Zettelwirtschaft statt strukturierter Dokumentation.",
@@ -224,7 +224,7 @@ export default function HomePage() {
                 {
                   step: "1",
                   title: "Meldung geht ein",
-                  desc: "Per Anruf an Ihren KI-Telefonassistenten oder über das Online-Formular auf Ihrer Website — 24/7, auch nachts und am Wochenende.",
+                  desc: "Per Anruf an Ihre Telefonassistentin oder über das Online-Formular auf Ihrer Website — 24/7, auch nachts und am Wochenende.",
                   icon: (
                     <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
@@ -245,7 +245,7 @@ export default function HomePage() {
                 {
                   step: "3",
                   title: "Sie übernehmen",
-                  desc: "Termin planen, Fotos anhängen, Fall abschliessen — alles im Ops-Dashboard. Kein Zettel, kein Chaos.",
+                  desc: "Termin planen, Fotos anhängen, Fall abschliessen — alles in der Fallübersicht. Kein Zettel, kein Chaos.",
                   icon: (
                     <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
@@ -305,7 +305,7 @@ export default function HomePage() {
               Alles kommt zu Ihnen.
             </h2>
             <p className="mt-4 text-lg text-navy-400">
-              Kein neues System lernen. Fälle kommen automatisch rein — Sie entscheiden, was wann erledigt wird.
+              Kein neues System lernen. Meldungen kommen automatisch rein — Sie entscheiden, was wann erledigt wird.
             </p>
           </div>
 
@@ -372,11 +372,11 @@ export default function HomePage() {
               },
               {
                 title: "Mehrsprachig",
-                desc: "Hochdeutsch, Schweizerdeutsch, Englisch, Französisch und Italienisch — der Telefonassistent versteht Ihre Kunden, egal welche Sprache.",
+                desc: "Hochdeutsch, Schweizerdeutsch, Englisch, Französisch und Italienisch — die Telefonassistentin versteht Ihre Kunden, egal welche Sprache.",
               },
               {
                 title: "Persönliches Onboarding",
-                desc: "Telefonnummer, Telefonassistent, Dashboard — wir richten alles gemeinsam ein. Kein technisches Wissen nötig.",
+                desc: "Telefonnummer, Telefonassistentin, Fallübersicht — wir richten alles gemeinsam ein. Kein technisches Wissen nötig.",
               },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl border border-navy-200/40 bg-navy-50/50 p-8 text-center">
@@ -411,20 +411,19 @@ export default function HomePage() {
                 Starter
               </p>
               <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">ab CHF 99</span>
+                <span className="text-3xl font-bold text-navy-900">CHF 199</span>
                 <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
               <p className="mt-2 text-sm text-navy-900/70">
-                Website + Wizard
+                Website + Online-Schadenmeldung
               </p>
               <ul className="mt-6 space-y-3">
                 {[
-                  "Moderne Website im Firmenlook",
-                  "Mobil-optimiert & SEO-ready",
-                  "Online-Schadenmelde-Formular",
-                  "E-Mail-Benachrichtigung",
-                  "Bestätigungs-E-Mail an Melder",
-                  "Persönliches Onboarding",
+                  "Moderne Website im Firmenlook (mobiloptimiert)",
+                  "Online-Schadenmeldung in 3 Schritten",
+                  "Betriebsinfo per E-Mail bei neuer Meldung",
+                  "Kunden-SMS: Bestätigung + Foto-Upload-Link",
+                  "Persönliches Onboarding & Setup inklusive",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
@@ -440,29 +439,28 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Professional — highlighted */}
+            {/* Alltag — highlighted */}
             <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
                 Beliebt
               </span>
               <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
-                Professional
+                Alltag
               </p>
               <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">ab CHF 249</span>
+                <span className="text-3xl font-bold text-navy-900">CHF 299</span>
                 <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
               <p className="mt-2 text-sm text-navy-900/70">
-                Website + Telefonassistent + Dashboard
+                Telefonassistentin + Fallübersicht
               </p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Alles aus Starter, plus:",
-                  "KI-Telefonassistent (24/7, mehrsprachig)",
-                  "Schweizer Telefonnummer inklusive",
-                  "Ops-Dashboard mit Fall-Übersicht",
-                  "Terminplanung mit ICS-Einladung",
-                  "Foto-Anhänge pro Fall",
+                  "Digitale Telefonassistentin (24/7, nach Wunsch konfigurierbar)",
+                  "Fallübersicht: alle Meldungen an einem Ort",
+                  "Bestätigungs-SMS + Foto-Upload (weniger Rückfragen)",
+                  "Mehrsprachig (DE/EN/FR/IT)",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
@@ -478,24 +476,25 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Premium */}
+            {/* Wachstum */}
             <div className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md">
               <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Premium
+                Wachstum
               </p>
               <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">ab CHF 349</span>
+                <span className="text-3xl font-bold text-navy-900">CHF 399</span>
                 <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
               <p className="mt-2 text-sm text-navy-900/70">
-                + Reviews + Morning Report
+                Alltag + Bewertungen & Priorität
               </p>
               <ul className="mt-6 space-y-3">
                 {[
-                  "Alles aus Professional, plus:",
-                  "Google-Review-Anfragen per Knopfdruck",
-                  "Täglicher Statusbericht (Morning Report)",
-                  "Prioritäts-Support",
+                  "Alles aus Alltag, plus:",
+                  "Google-Bewertungen gezielt anfragen",
+                  "Prioritäts-Support (schnellere Reaktion)",
+                  "Bewertungen zum richtigen Zeitpunkt auslösen",
+                  "Stärkeres Google-Profil — mehr Anfragen aus der Region",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
@@ -564,7 +563,7 @@ export default function HomePage() {
               },
               {
                 q: "Brauche ich technisches Wissen?",
-                a: "Nein. Wir richten alles für Sie ein — Website, Telefonnummer, Telefonassistent, Dashboard, E-Mail-Vorlagen. Sie brauchen nur einen Browser.",
+                a: "Nein. Wir richten alles für Sie ein — Website, Telefonnummer, Telefonassistentin, Fallübersicht. Sie brauchen nur einen Browser.",
               },
               {
                 q: "Funktioniert das mit meiner bestehenden Nummer?",
@@ -572,11 +571,11 @@ export default function HomePage() {
               },
               {
                 q: "Was passiert bei einem Notfall?",
-                a: "Der Telefonassistent erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine E-Mail mit allen Details.",
+                a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine E-Mail mit allen Details.",
               },
               {
-                q: "Können mehrere Mitarbeiter das Dashboard nutzen?",
-                a: "Ja. Sie können beliebig viele Benutzer anlegen. Jeder sieht die gleichen Fälle und kann Termine planen, Fotos anhängen und Reviews anfragen.",
+                q: "Können mehrere Mitarbeiter die Fallübersicht nutzen?",
+                a: "Ja. Sie können beliebig viele Benutzer anlegen. Jeder sieht die gleichen Fälle und kann Termine planen, Fotos anhängen und Bewertungen anfragen.",
               },
               {
                 q: "Wie sicher sind meine Daten?",
@@ -584,11 +583,11 @@ export default function HomePage() {
               },
               {
                 q: "Wie schnell bin ich einsatzbereit?",
-                a: "Website in einer Woche. Telefonassistent und Dashboard ebenfalls — wir übernehmen die komplette Einrichtung, persönlich und in Ihrem Tempo.",
+                a: "Website in einer Woche. Telefonassistentin und Fallübersicht ebenfalls — wir übernehmen die komplette Einrichtung, persönlich und in Ihrem Tempo.",
               },
               {
                 q: "Kann ich FlowSight risikofrei testen?",
-                a: "Ja. Setup ist kostenfrei, der erste Monat gratis. Unser 30-Tage-Versprechen: Wenn Sie nicht mindestens 10 Fälle strukturiert im Dashboard haben und Ihre erste 5-Sterne-Bewertung erhalten haben — zahlen Sie nichts.",
+                a: "Ja. Setup ist kostenfrei, der erste Monat gratis. Unser 30-Tage-Versprechen: Wenn Sie nicht mindestens 10 Fälle strukturiert in der Fallübersicht haben und Ihre erste 5-Sterne-Bewertung erhalten haben — zahlen Sie nichts.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-6">
