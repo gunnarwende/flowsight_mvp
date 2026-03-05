@@ -78,7 +78,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
             <polygon points="64,12 80,20 64,28" fill="currentColor" />
           </svg>
           <span className="mt-1 text-[10px] font-medium tracking-wide text-gold-400/70">
-            KI verarbeitet…
+            wird erfasst…
           </span>
         </div>
         {/* Mobile: vertical arrow */}
@@ -88,7 +88,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
             <polygon points="12,34 20,48 28,34" fill="currentColor" />
           </svg>
           <span className="mt-1 text-[10px] font-medium tracking-wide text-gold-400/70">
-            KI verarbeitet…
+            wird erfasst…
           </span>
         </div>
 

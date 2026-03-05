@@ -4,7 +4,7 @@ import { SITE } from "@/src/lib/marketing/constants";
 export const metadata: Metadata = {
   title: "Demo buchen",
   description:
-    "Buchen Sie eine 15-minütige FlowSight-Demo: KI-Telefonassistent, Ops-Dashboard und Website für Sanitär- & Heizungsbetriebe.",
+    "Buchen Sie eine 15-minütige FlowSight-Demo: Telefonassistentin, Fallübersicht und Website für Sanitär- & Heizungsbetriebe.",
 };
 
 function PhoneIcon({ className = "h-6 w-6" }: { className?: string }) {
@@ -51,7 +51,7 @@ export default function DemoPage() {
           {[
             {
               icon: <PhoneIcon className="h-5 w-5" />,
-              title: "KI Voice 24/7",
+              title: "Telefonassistentin 24/7",
               desc: "Anrufe annehmen — auch nachts und am Wochenende.",
             },
             {
@@ -61,8 +61,8 @@ export default function DemoPage() {
             },
             {
               icon: <StarIcon className="h-5 w-5" />,
-              title: "Google Reviews",
-              desc: "5-Sterne-Anfragen per Knopfdruck nach dem Einsatz.",
+              title: "Google-Bewertungen",
+              desc: "Bewertungen gezielt anfragen — nach erledigtem Einsatz.",
             },
           ].map((item) => (
             <div

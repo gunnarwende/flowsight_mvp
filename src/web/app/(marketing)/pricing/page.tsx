@@ -17,42 +17,41 @@ function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
 const TIERS = [
   {
     name: "Starter",
-    price: "ab CHF 99",
-    subtitle: "Website + Wizard",
+    price: "CHF 199",
+    subtitle: "Website + Online-Schadenmeldung",
     highlighted: false,
     features: [
-      "Moderne Website im Firmenlook",
-      "Mobil-optimiert & SEO-ready",
-      "Online-Schadenmelde-Formular (Wizard)",
-      "E-Mail-Benachrichtigung bei Meldung",
-      "Bestätigungs-E-Mail an Melder",
-      "Persönliches Onboarding",
+      "Moderne Website im Firmenlook (mobiloptimiert)",
+      "Online-Schadenmeldung in 3 Schritten",
+      "Betriebsinfo per E-Mail bei neuer Meldung",
+      "Kunden-SMS: Bestätigung + Foto-Upload-Link",
+      "Persönliches Onboarding & Setup inklusive",
     ],
   },
   {
-    name: "Professional",
-    price: "ab CHF 249",
-    subtitle: "Website + Voice + Dashboard",
+    name: "Alltag",
+    price: "CHF 299",
+    subtitle: "Telefonassistentin + Fallübersicht",
     highlighted: true,
     features: [
       "Alles aus Starter, plus:",
-      "KI-Telefonassistent (24/7, mehrsprachig)",
-      "Schweizer Telefonnummer inklusive",
-      "Ops-Dashboard mit Fall-Übersicht",
-      "Terminplanung mit ICS-Einladung",
-      "Foto-Anhänge pro Fall",
+      "Digitale Telefonassistentin (24/7, nach Wunsch konfigurierbar)",
+      "Fallübersicht: alle Meldungen an einem Ort",
+      "Bestätigungs-SMS + Foto-Upload (weniger Rückfragen)",
+      "Mehrsprachig (DE/EN/FR/IT)",
     ],
   },
   {
-    name: "Premium",
-    price: "ab CHF 349",
-    subtitle: "Das Komplettpaket",
+    name: "Wachstum",
+    price: "CHF 399",
+    subtitle: "Alltag + Bewertungen & Priorität",
     highlighted: false,
     features: [
-      "Alles aus Professional, plus:",
-      "Google-Review-Anfragen per Knopfdruck",
-      "Täglicher Statusbericht (Morning Report)",
-      "Prioritäts-Support",
+      "Alles aus Alltag, plus:",
+      "Google-Bewertungen gezielt anfragen",
+      "Prioritäts-Support (schnellere Reaktion)",
+      "Bewertungen zum richtigen Zeitpunkt auslösen",
+      "Stärkeres Google-Profil — mehr Anfragen aus der Region",
     ],
   },
 ] as const;
@@ -141,15 +140,15 @@ export default function PricingPage() {
           <div className="grid gap-8 sm:grid-cols-2">
             <div className="rounded-2xl border border-navy-200/60 bg-white p-8">
               <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Voice-Minuten
+                Telefonminuten
               </p>
               <p className="mt-3 text-lg font-semibold text-navy-900">
                 Abrechnung nach Verbrauch
               </p>
               <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Nur bei Nutzung — keine Grundgebühr. Ein typischer Intake-Call
-                dauert 2–4 Minuten. Der genaue Minutenpreis wird im persönlichen
-                Gespräch besprochen.
+                Nur bei Nutzung — keine Grundgebühr. Ein typisches Gespräch
+                dauert 2–4 Minuten. Den genauen Minutenpreis besprechen wir
+                persönlich.
               </p>
             </div>
 
@@ -161,7 +160,7 @@ export default function PricingPage() {
                 Gemeinsam in einer Woche
               </p>
               <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Website, Telefonnummer, Telefonassistent, Dashboard-Zugang —
+                Website, Telefonnummer, Telefonassistentin, Fallübersicht —
                 persönlich eingerichtet. Keine Setup-Kosten in der Pilotphase.
               </p>
             </div>
@@ -188,11 +187,11 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "In der Pilotphase: nichts. Wir richten alles gemeinsam ein — Website, Telefonassistent und Dashboard.",
+                a: "In der Pilotphase: nichts. Wir richten alles gemeinsam ein — Website, Telefonassistentin und Fallübersicht.",
               },
               {
-                q: "Wie werden Voice-Minuten abgerechnet?",
-                a: "Nur bei Nutzung. Ein typischer Intake-Call dauert 2–4 Minuten. Den genauen Minutenpreis besprechen wir persönlich.",
+                q: "Wie werden Telefonminuten abgerechnet?",
+                a: "Nur bei Nutzung. Ein typisches Gespräch dauert 2–4 Minuten. Den genauen Minutenpreis besprechen wir persönlich.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-5">
