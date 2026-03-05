@@ -288,14 +288,14 @@ export function BigBenContent() {
       </section>
 
       {/* ── GUINNESS BANNER ─────────────────────────────────────── */}
-      <section className="border-b border-[#e8e0d5] bg-[#c0392b] py-5">
+      <section className="border-b border-[#e8e0d5] bg-gradient-to-r from-[#1a1210] via-[#2c1e14] to-[#1a1210] py-5">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-2 px-6 sm:flex-row sm:gap-4">
           <span className="text-3xl">🍺</span>
-          <p className="text-center font-serif text-xl font-bold text-white sm:text-2xl">
+          <p className="text-center font-serif text-xl font-bold text-amber-100 sm:text-2xl">
             {s.guinness}
           </p>
-          <span className="hidden text-white/30 sm:inline">—</span>
-          <p className="text-center text-sm text-white/80">{s.guinnessDesc}</p>
+          <span className="hidden text-amber-100/30 sm:inline">—</span>
+          <p className="text-center text-sm text-amber-100/70">{s.guinnessDesc}</p>
         </div>
       </section>
 
@@ -510,16 +510,14 @@ export function BigBenContent() {
 
           <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {[
-              { src: "outside.png", alt: "Big Ben Pub entrance at night" },
               { src: "outside2.png", alt: "Terrace seating" },
               { src: "inside.png", alt: "Live music evening" },
               { src: "bar.png", alt: "The bar" },
-              { src: "guinness.png", alt: "Perfect Guinness pour" },
               { src: "guinness2.png", alt: "Guinness at the bar" },
               { src: "foot.png", alt: "Chicken Wings & Nachos" },
               { src: "food_nachos.png", alt: "Loaded Nachos on the terrace" },
-              { src: "drinks.png", alt: "Craft beer selection" },
               { src: "drinks2.png", alt: "Cocktails at the bar" },
+              { src: "darts.jpg", alt: "Darts at Big Ben Pub" },
             ].map((img) => (
               <div key={img.src} className="group relative aspect-square overflow-hidden rounded-xl shadow-sm">
                 <Image
