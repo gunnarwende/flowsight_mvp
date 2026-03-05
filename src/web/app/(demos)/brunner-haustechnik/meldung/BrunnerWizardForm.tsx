@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, useRef, type FormEvent, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Theme (matches demo page)
@@ -43,7 +43,16 @@ interface ApiSuccess {
   category: string;
   city: string;
   created_at: string;
+  verify_token: string;
 }
+
+interface PendingFile {
+  file: File;
+  preview: string;
+}
+
+const MAX_PHOTOS = 5;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 interface ApiError {
   error: string;
@@ -305,6 +314,9 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
             </div>
           </div>
 
+          {/* Photo upload */}
+          <PhotoUpload caseId={pageState.data.id} token={pageState.data.verify_token} />
+
           <div className="mt-6 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600">
             <p className="font-semibold" style={{ color: BRAND.primary }}>Nächster Schritt</p>
             <p className="mt-1">Wir melden uns schnellstmöglich bei Ihnen.</p>
@@ -527,6 +539,128 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
         )}
       </form>
     </Shell>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Photo Upload (on success screen)
+// ---------------------------------------------------------------------------
+
+function PhotoUpload({ caseId, token }: { caseId: string; token: string }) {
+  const [files, setFiles] = useState<PendingFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+  const [error, setError] = useState("");
+  const [progress, setProgress] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = e.target.files;
+    if (!selected || selected.length === 0) return;
+
+    const remaining = MAX_PHOTOS - files.length;
+    if (remaining <= 0) { setError(`Max ${MAX_PHOTOS} Fotos.`); e.target.value = ""; return; }
+
+    const next: PendingFile[] = [];
+    for (const f of Array.from(selected).slice(0, remaining)) {
+      if (f.size > MAX_FILE_SIZE) { setError(`"${f.name}" ist zu gross (max 10 MB).`); e.target.value = ""; return; }
+      next.push({ file: f, preview: URL.createObjectURL(f) });
+    }
+    setError("");
+    setFiles((prev) => [...prev, ...next]);
+    e.target.value = "";
+  }
+
+  function removeFile(idx: number) {
+    setFiles((prev) => { const c = [...prev]; URL.revokeObjectURL(c[idx].preview); c.splice(idx, 1); return c; });
+  }
+
+  async function uploadAll() {
+    setUploading(true); setError("");
+    try {
+      for (let i = 0; i < files.length; i++) {
+        setProgress(`Foto ${i + 1}/${files.length}...`);
+        const pf = files[i];
+
+        const urlRes = await fetch(`/api/verify/${caseId}/attachments`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, action: "request-upload", file_name: pf.file.name, mime_type: pf.file.type, size_bytes: pf.file.size }),
+        });
+        if (!urlRes.ok) throw new Error("Upload-URL fehlgeschlagen.");
+        const { upload_url, storage_path } = await urlRes.json();
+
+        const putRes = await fetch(upload_url, { method: "PUT", headers: { "Content-Type": pf.file.type }, body: pf.file });
+        if (!putRes.ok) throw new Error(`Upload fehlgeschlagen: "${pf.file.name}"`);
+
+        const confirmRes = await fetch(`/api/verify/${caseId}/attachments`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, action: "confirm", storage_path, file_name: pf.file.name, mime_type: pf.file.type, size_bytes: pf.file.size }),
+        });
+        if (!confirmRes.ok) throw new Error("Bestätigung fehlgeschlagen.");
+      }
+      setUploaded(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Fehler beim Hochladen.");
+    } finally {
+      setUploading(false); setProgress("");
+    }
+  }
+
+  if (uploaded) {
+    return (
+      <div className="mx-auto mt-6 max-w-sm rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        {files.length} {files.length === 1 ? "Foto" : "Fotos"} hochgeladen — danke!
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-white p-5 text-left">
+      <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>Fotos vom Schaden (optional)</p>
+      <p className="mt-1 text-xs text-gray-400">Fotos helfen dem Techniker, sich vorzubereiten.</p>
+
+      {files.length > 0 && (
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {files.map((pf, i) => (
+            <div key={i} className="group relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={pf.preview} alt={pf.file.name} className="h-20 w-full rounded-lg object-cover" />
+              <button type="button" onClick={() => removeFile(i)} disabled={uploading}
+                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow"
+              >X</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {files.length < MAX_PHOTOS && !uploading && (
+        <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-teal-500 hover:text-teal-700">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+          </svg>
+          Foto hinzufügen
+          <input ref={inputRef} type="file" accept="image/*" capture="environment" multiple onChange={handleSelect} className="hidden" />
+        </label>
+      )}
+
+      {files.length > 0 && !uploading && (
+        <button type="button" onClick={uploadAll}
+          className="mt-3 w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110"
+          style={{ backgroundColor: BRAND.accent }}
+        >
+          {files.length} {files.length === 1 ? "Foto" : "Fotos"} hochladen
+        </button>
+      )}
+
+      {progress && (
+        <div className="mt-2 flex items-center gap-2 text-xs text-teal-700">
+          <Spinner /> {progress}
+        </div>
+      )}
+
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+    </div>
   );
 }
 
