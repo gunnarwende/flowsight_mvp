@@ -24,13 +24,12 @@ const FLOWSIGHT_SALES_RETELL = "+41445053019";
 // Numbers that should route to FlowSight Sales (Lisa von FlowSight)
 const SALES_NUMBERS = new Set(["+41445520919", "+41445053019", "41445520919", "41445053019"]);
 
-function extractDialedNumber(request: NextRequest): string | null {
-  const url = new URL(request.url);
-  // Twilio sends the dialed SIP URI as "To" parameter
-  const to = url.searchParams.get("To") || "";
-  // Extract number from sip:+41445520919@flowsight-demo.sip.twilio.com
-  const match = to.match(/sip:\+?(\d+)@/);
-  return match ? match[1] : null;
+function extractDialedNumber(to: string): string | null {
+  // "To" value is either a SIP URI (sip:+41445520919@…) or an E.164 number
+  const sipMatch = to.match(/sip:\+?(\d+)@/);
+  if (sipMatch) return sipMatch[1];
+  const numMatch = to.match(/\+?(\d+)/);
+  return numMatch ? numMatch[1] : null;
 }
 
 function buildTwiml(target: string): string {
@@ -42,9 +41,22 @@ function buildTwiml(target: string): string {
 </Response>`;
 }
 
-function routeCall(request: NextRequest): Response {
-  const dialed = extractDialedNumber(request);
+async function routeCall(request: NextRequest): Promise<Response> {
+  // Twilio sends params as URL query (GET) or form body (POST)
+  let to = new URL(request.url).searchParams.get("To") || "";
+  if (!to) {
+    try {
+      const form = await request.formData();
+      to = (form.get("To") as string) || "";
+    } catch {
+      // no body — fall through to default
+    }
+  }
+
+  const dialed = extractDialedNumber(to);
   const target = dialed && SALES_NUMBERS.has(dialed) ? FLOWSIGHT_SALES_RETELL : BRUNNER_RETELL;
+
+  console.log(JSON.stringify({ _tag: "sip_twiml", to, dialed, target }));
 
   return new Response(buildTwiml(target), {
     headers: { "Content-Type": "application/xml" },
