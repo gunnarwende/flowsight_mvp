@@ -8,6 +8,7 @@
 - Deploy: Vercel, Root Directory = src/web
 - Secrets: Vercel Env = SSOT (runtime). Local .env.local via temp-dir pull sync only. Never commit to repo.
 - Voice: intake-only, max 7 questions, sanitär-spezifisch, Recording OFF
+- Retell: EVERY agent change MUST end with publish. Unpublished agents cause silent routing failures. Use retell_sync.mjs (auto-publishes) or manually publish in Dashboard after JSON import. Verify: is_published=true via API.
 
 ## SSOT Paths
 - Company status + document map: docs/STATUS.md
