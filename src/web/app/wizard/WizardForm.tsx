@@ -117,26 +117,34 @@ function Spinner() {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function StepIndicator({ current, total }: { current: number; total: number }) {
+function StepIndicator({ current, total, onStepClick }: { current: number; total: number; onStepClick?: (step: number) => void }) {
   return (
     <div className="mb-8 flex items-center justify-center gap-2">
       {Array.from({ length: total }, (_, i) => {
         const step = i + 1;
         const done = step < current;
         const active = step === current;
+        const canClick = done && onStepClick;
         return (
           <div key={step} className="flex items-center gap-2">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all ${
-                active
-                  ? "bg-white text-slate-900 shadow-lg shadow-white/20"
-                  : done
-                    ? "bg-emerald-500/80 text-white"
-                    : "bg-white/10 text-white/40"
-              }`}
+            <button
+              type="button"
+              disabled={!canClick}
+              onClick={() => canClick && onStepClick(step)}
+              className={canClick ? "cursor-pointer" : "cursor-default"}
             >
-              {done ? <IconCheck /> : step}
-            </div>
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all ${
+                  active
+                    ? "bg-white text-slate-900 shadow-lg shadow-white/20"
+                    : done
+                      ? "bg-emerald-500/80 text-white"
+                      : "bg-white/10 text-white/40"
+                }`}
+              >
+                {done ? <IconCheck /> : step}
+              </div>
+            </button>
             {step < total && (
               <div className={`h-px w-8 ${done ? "bg-emerald-500/60" : "bg-white/10"}`} />
             )}
@@ -316,7 +324,7 @@ export default function WizardForm({ initialCategory, tenantSlug }: { initialCat
         Beschreiben Sie Ihr Anliegen in 3 kurzen Schritten.
       </p>
 
-      <StepIndicator current={step} total={3} />
+      <StepIndicator current={step} total={3} onStepClick={(s) => setStep(s)} />
 
       <form onSubmit={handleSubmit}>
         {/* ── Step 1: Problem ──────────────────────────────────── */}
