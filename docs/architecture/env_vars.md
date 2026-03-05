@@ -47,6 +47,7 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
+- SMS_ALLOWED_NUMBERS -> (optional) Komma-separierte E.164 Whitelist. Wenn gesetzt, gehen SMS nur an diese Nummern. Leer/fehlend = senden an alle. Testphase: nur Founder-Handy.
 
 ## Demo (SIP/MicroSIP)
 - DEMO_SIP_CALLER_ID -> Founder-Handynummer E.164 (z.B. +41791234567). Muss als Twilio Outgoing Caller ID verifiziert sein. Retell sieht diese Nummer als from_number → SMS landet auf dem Demo-Handy.

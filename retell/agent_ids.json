@@ -4,13 +4,21 @@
     "de_flow_id": "conversation_flow_e2c3a7cec528",
     "intl_agent_id": "agent_01fad4217f8b0697f0c26c69d5",
     "intl_flow_id": "conversation_flow_3c7d423226a9",
-    "last_synced": "2026-03-04T15:20:13.479Z"
+    "last_synced": "2026-03-05T13:57:28.821Z"
   },
   "doerfler": {
     "de_agent_id": "agent_d7dfe45ab444e1370e836c3e0f",
     "de_flow_id": "conversation_flow_8170ad3c2ca9",
     "intl_agent_id": "agent_fb4b956eec31db9c591880fdeb",
     "intl_flow_id": "conversation_flow_608d542979bb",
-    "last_synced": "2026-03-04T15:20:16.344Z"
+    "last_synced": "2026-03-05T13:57:31.514Z"
+  },
+  "flowsight_sales": {
+    "de_agent_id": "agent_6515d8d1f23072ce61db806901",
+    "de_flow_id": "conversation_flow_1f30bf247bf3",
+    "intl_agent_id": "agent_e03666c402209716fb2c5b41d6",
+    "intl_flow_id": null,
+    "last_synced": "2026-03-05T16:00:00.000Z",
+    "note": "Sales agents — phone +41445053019. Must be published after any change."
   }
 }
