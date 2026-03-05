@@ -54,14 +54,14 @@ export function ReservationForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-[#222] bg-[#161616] p-10 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#c0392b]/10">
-          <svg className="h-8 w-8 text-[#c0392b]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+      <div className="rounded-2xl border border-[#e8e0d5] bg-white p-10 text-center shadow-sm">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+          <svg className="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
           </svg>
         </div>
-        <h3 className="mt-5 font-serif text-2xl font-bold">Table reserved!</h3>
-        <p className="mt-2 text-sm text-[#f0ede6]/50">
+        <h3 className="mt-5 font-serif text-2xl font-bold text-[#1a1a1a]">Table reserved!</h3>
+        <p className="mt-2 text-sm text-[#888]">
           You&apos;ll receive an SMS confirmation shortly.
           <br />
           We look forward to seeing you!
@@ -71,11 +71,11 @@ export function ReservationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl border border-[#222] bg-[#161616] p-8">
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-[#e8e0d5] bg-white p-8 shadow-sm">
       <div className="grid gap-5 sm:grid-cols-2">
         {/* Name */}
         <div className="sm:col-span-2">
-          <label htmlFor="res-name" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-name" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Name
           </label>
           <input
@@ -84,13 +84,13 @@ export function ReservationForm() {
             type="text"
             required
             placeholder="John Smith"
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] placeholder:text-[#f0ede6]/25 focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] placeholder:text-[#ccc] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           />
         </div>
 
         {/* Phone */}
         <div className="sm:col-span-2">
-          <label htmlFor="res-phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Phone (for SMS confirmation)
           </label>
           <input
@@ -99,13 +99,13 @@ export function ReservationForm() {
             type="tel"
             required
             placeholder="+41 79 ..."
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] placeholder:text-[#f0ede6]/25 focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] placeholder:text-[#ccc] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           />
         </div>
 
         {/* Date */}
         <div>
-          <label htmlFor="res-date" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-date" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Date
           </label>
           <input
@@ -114,20 +114,20 @@ export function ReservationForm() {
             type="date"
             required
             min={minDate}
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b] [color-scheme:dark]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           />
         </div>
 
         {/* Time */}
         <div>
-          <label htmlFor="res-time" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-time" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Time
           </label>
           <select
             id="res-time"
             name="time"
             required
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           >
             <option value="">Select a time</option>
             {TIME_SLOTS.map((t) => (
@@ -138,14 +138,14 @@ export function ReservationForm() {
 
         {/* Guests */}
         <div>
-          <label htmlFor="res-guests" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-guests" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Guests
           </label>
           <select
             id="res-guests"
             name="guests"
             required
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           >
             <option value="">How many?</option>
             {PARTY_SIZES.map((n) => (
@@ -157,7 +157,7 @@ export function ReservationForm() {
 
         {/* Note */}
         <div>
-          <label htmlFor="res-note" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
+          <label htmlFor="res-note" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#999]">
             Special requests
           </label>
           <input
@@ -165,7 +165,7 @@ export function ReservationForm() {
             name="note"
             type="text"
             placeholder="e.g. birthday, outdoor seating"
-            className="w-full rounded-lg border border-[#222] bg-[#111] px-4 py-3 text-sm text-[#f0ede6] placeholder:text-[#f0ede6]/25 focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
+            className="w-full rounded-lg border border-[#e0d9d0] bg-[#faf7f2] px-4 py-3 text-sm text-[#1a1a1a] placeholder:text-[#ccc] focus:border-[#c0392b] focus:outline-none focus:ring-1 focus:ring-[#c0392b]"
           />
         </div>
       </div>
@@ -173,12 +173,12 @@ export function ReservationForm() {
       <button
         type="submit"
         disabled={loading}
-        className="mt-6 w-full rounded-lg bg-[#c0392b] py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] disabled:opacity-50"
+        className="mt-6 w-full rounded-lg bg-[#c0392b] py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] hover:shadow-lg disabled:opacity-50"
       >
         {loading ? "Reserving..." : "Reserve Table"}
       </button>
 
-      <p className="mt-3 text-center text-xs text-[#f0ede6]/25">
+      <p className="mt-3 text-center text-xs text-[#ccc]">
         You&apos;ll receive an SMS confirmation. No spam, no newsletter.
       </p>
     </form>

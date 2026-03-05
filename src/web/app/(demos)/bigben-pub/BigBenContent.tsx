@@ -23,24 +23,25 @@ const t = {
       "Whether it's Premier League Saturday, Quiz Night, live music from talented local acts, or just a quiet midweek pint — there's always a reason to stop by.",
     guinness: "Best Guinness on the Lake",
     guinnessDesc: "Ask anyone in Oberrieden. It's not even close.",
-    whatsOnLabel: "What's On",
-    whatsOnTitle: "There's always something happening.",
-    evKaraoke: "Karaoke Night",
-    evKaraokeD: "Grab the mic and show what you've got. All genres welcome.",
-    evQuiz: "Quiz Night",
-    evQuizD: "Teams of up to 6. Prizes for the winners. No phones allowed.",
-    evMusic: "Live Music",
-    evMusicD: "Local and international acts. From acoustic to full bands.",
-    evSport: "Live Sport",
-    evSportD: "Premier League, Rugby, Champions League — every matchday.",
-    evDarts: "Darts",
-    evDartsD: "Two boards, open play. Dart league coming autumn 2026.",
-    evPrivate: "Private Events",
-    evPrivateD: "Birthday, work do, celebration? Talk to Paul about booking.",
-    evTerrace: "Terrace",
-    evTerraceD: "Open year-round. Perfect for a sunny afternoon pint.",
-    evHappy: "Happy Hour",
-    evHappyD: "Ask at the bar for today's specials.",
+    eventsLabel: "What's On",
+    eventsTitle: "There's always something happening.",
+    evKaraokeTitle: "Karaoke Night",
+    evKaraokeWhen: "Every Friday",
+    evKaraokeDesc: "Grab the mic and show what you've got. All genres, all levels — the crowd decides who's the star.",
+    evQuizTitle: "Quiz Night",
+    evQuizWhen: "Every Wednesday",
+    evQuizDesc: "Teams of up to 6. General knowledge, music rounds, picture rounds. Prizes for the winners. No phones!",
+    evMusicTitle: "Live Music",
+    evMusicWhen: "Every Saturday",
+    evMusicDesc: "From Irish folk to rock covers — talented local and international acts on our small but mighty stage.",
+    evSportTitle: "Live Sport",
+    evSportDesc: "Premier League, Champions League, Rugby — every matchday on the big screens.",
+    evDartsTitle: "Darts",
+    evDartsDesc: "Two boards, open play. Dart league coming autumn 2026.",
+    evPrivateTitle: "Private Events",
+    evPrivateDesc: "Birthdays, celebrations — talk to Paul.",
+    evTerraceTitle: "Terrace",
+    evTerraceDesc: "Open year-round for sunny pints.",
     menuLabel: "Food & Drinks",
     menuTitle: "Proper pub grub & a great pour.",
     pubBites: "Pub Bites",
@@ -49,12 +50,14 @@ const t = {
     fromBarNote: "Wide selection on tap and by the bottle",
     onTap: "On Tap",
     bottlesMore: "Bottles & More",
+    reviewsLabel: "Reviews",
+    reviewsTitle: "What our guests say.",
+    reviewsOnGoogle: "on Google",
     galleryLabel: "Gallery",
     galleryTitle: "See for yourself.",
     reserveLabel: "Reservations",
     reserveTitle: "Book your table.",
-    reserveDesc:
-      "Pick a date, time and party size — we'll confirm your reservation by SMS.",
+    reserveDesc: "Pick a date, time and party size — we'll confirm your reservation by SMS.",
     hoursLabel: "Opening Hours",
     hoursTitle: "When to find us.",
     monday: "Monday",
@@ -82,24 +85,25 @@ const t = {
       "Ob Premier League am Samstag, Quiz Night, Live-Musik von talentierten lokalen Acts oder einfach ein ruhiges Feierabendbier — es gibt immer einen Grund vorbeizuschauen.",
     guinness: "Bestes Guinness der Region",
     guinnessDesc: "Fragt jeden in Oberrieden. Ohne Konkurrenz.",
-    whatsOnLabel: "Programm",
-    whatsOnTitle: "Bei uns ist immer etwas los.",
-    evKaraoke: "Karaoke Night",
-    evKaraokeD: "Schnapp dir das Mikro. Alle Genres willkommen.",
-    evQuiz: "Quiz Night",
-    evQuizD: "Teams bis 6 Personen. Preise für die Gewinner. Keine Handys.",
-    evMusic: "Live-Musik",
-    evMusicD: "Lokale und internationale Acts. Von Akustik bis Full Band.",
-    evSport: "Live-Sport",
-    evSportD: "Premier League, Rugby, Champions League — jeden Spieltag.",
-    evDarts: "Darts",
-    evDartsD: "Zwei Boards, offenes Spiel. Dart-Liga ab Herbst 2026.",
-    evPrivate: "Private Events",
-    evPrivateD: "Geburtstag, Firmenfeier? Sprich mit Paul über eine Buchung.",
-    evTerrace: "Terrasse",
-    evTerraceD: "Ganzjährig offen. Perfekt für ein Nachmittagsbier.",
-    evHappy: "Happy Hour",
-    evHappyD: "Frag an der Bar nach den heutigen Specials.",
+    eventsLabel: "Programm",
+    eventsTitle: "Bei uns ist immer etwas los.",
+    evKaraokeTitle: "Karaoke Night",
+    evKaraokeWhen: "Jeden Freitag",
+    evKaraokeDesc: "Schnapp dir das Mikro und zeig was du drauf hast. Alle Genres, alle Levels — das Publikum entscheidet.",
+    evQuizTitle: "Quiz Night",
+    evQuizWhen: "Jeden Mittwoch",
+    evQuizDesc: "Teams bis 6 Personen. Allgemeinwissen, Musik- und Bilderrunden. Preise für die Gewinner. Keine Handys!",
+    evMusicTitle: "Live-Musik",
+    evMusicWhen: "Jeden Samstag",
+    evMusicDesc: "Von Irish Folk bis Rock-Covers — talentierte lokale und internationale Acts auf unserer kleinen, aber feinen Bühne.",
+    evSportTitle: "Live-Sport",
+    evSportDesc: "Premier League, Champions League, Rugby — jeden Spieltag auf den grossen Screens.",
+    evDartsTitle: "Darts",
+    evDartsDesc: "Zwei Boards, offenes Spiel. Dart-Liga ab Herbst 2026.",
+    evPrivateTitle: "Private Events",
+    evPrivateDesc: "Geburtstag, Firmenfeier — sprich mit Paul.",
+    evTerraceTitle: "Terrasse",
+    evTerraceDesc: "Ganzjährig offen für sonnige Biere.",
     menuLabel: "Essen & Trinken",
     menuTitle: "Ehrliches Pub Food & ein perfekter Zapf.",
     pubBites: "Pub Bites",
@@ -108,12 +112,14 @@ const t = {
     fromBarNote: "Grosse Auswahl vom Fass und aus der Flasche",
     onTap: "Vom Fass",
     bottlesMore: "Flaschen & mehr",
+    reviewsLabel: "Bewertungen",
+    reviewsTitle: "Was unsere Gäste sagen.",
+    reviewsOnGoogle: "auf Google",
     galleryLabel: "Galerie",
     galleryTitle: "Überzeug dich selbst.",
     reserveLabel: "Reservierung",
     reserveTitle: "Reservier deinen Tisch.",
-    reserveDesc:
-      "Wähle Datum, Uhrzeit und Personenzahl — wir bestätigen per SMS.",
+    reserveDesc: "Wähle Datum, Uhrzeit und Personenzahl — wir bestätigen per SMS.",
     hoursLabel: "Öffnungszeiten",
     hoursTitle: "Wann du uns findest.",
     monday: "Montag",
@@ -130,74 +136,65 @@ const t = {
 
 type Lang = keyof typeof t;
 
-/* ── SVG Icons ───────────────────────────────────────────────────── */
-function IcMic() {
+/* ── Reviews data ────────────────────────────────────────────────── */
+const REVIEWS = [
+  {
+    name: "Alexandra Keusch",
+    text: "Always love coming to Big Ben pub! We often end up here on a Sunday afternoon for a Guinness and the live Irish music. Highly recommend!",
+    initial: "A",
+    color: "bg-[#c0392b]",
+  },
+  {
+    name: "Victor Lupu",
+    badge: "Local Guide",
+    text: "Everything about this pub is fantastic, cozy atmosphere, great food and amazing service. The bartender was very polite and friendly. Definitely a 10/10!",
+    initial: "V",
+    color: "bg-emerald-600",
+  },
+  {
+    name: "Nina Vuckovic",
+    text: "Great atmosphere with proper live Irish Music. The beer is great too. Super friendly owner. Can recommend 10/10!",
+    initial: "N",
+    color: "bg-amber-600",
+  },
+  {
+    name: "David H",
+    text: "If you want to catch up with friends, and meet some new ones, swap life stories, then good place to be and have a great pint.",
+    initial: "D",
+    color: "bg-blue-600",
+  },
+  {
+    name: "Nicola Sidler",
+    text: "Best Pub around! Great staff and friendly customers — highly recommendable!",
+    initial: "N",
+    color: "bg-purple-600",
+  },
+  {
+    name: "Jason Schupp",
+    badge: "Local Guide",
+    text: "Big Ben Pub offers up a warm and familiar atmosphere. Awesome spicy homemade chicken wings. Enjoyed it so much we came back a second night. Great place to unwind.",
+    initial: "J",
+    color: "bg-orange-600",
+  },
+];
+
+/* ── Stars ────────────────────────────────────────────────────────── */
+function Stars({ count = 5 }: { count?: number }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 1.5a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0v-6a3 3 0 0 0-3-3Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5a7.5 7.5 0 0 1-15 0M12 18v4.5m-3 0h6" />
-    </svg>
+    <div className="flex gap-0.5">
+      {Array.from({ length: count }).map((_, i) => (
+        <svg key={i} viewBox="0 0 20 20" className="h-4 w-4 text-amber-400" fill="currentColor">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      ))}
+    </div>
   );
 }
-function IcBrain() {
+
+/* ── Instagram icon ──────────────────────────────────────────────── */
+function IcInstagram({ className = "h-5 w-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3a3.75 3.75 0 0 0-3 6 3.75 3.75 0 0 0 .75 7.5H9m5.25-13.5a3.75 3.75 0 0 1 3 6 3.75 3.75 0 0 1-.75 7.5H15M9 16.5v4.5m6-4.5v4.5m-6 0h6" />
-    </svg>
-  );
-}
-function IcMusic() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="m9 19.5 3-1.5 3 1.5v-15l-3 1.5-3-1.5v15Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5 3 7.5v12l6-3M15 4.5l6 3v12l-6-3" />
-    </svg>
-  );
-}
-function IcSport() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <rect x="2" y="4" width="20" height="16" rx="2" />
-      <path strokeLinecap="round" d="M12 4v16M7 9l5 3-5 3" />
-    </svg>
-  );
-}
-function IcDarts() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-      <path strokeLinecap="round" d="M12 2v4m0 12v4M2 12h4m12 0h4" />
-    </svg>
-  );
-}
-function IcParty() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.25v-3m0 0L9 2.25m3 3 3-3M4.5 19.5h15M6 15.75l-1.5 3.75h15L18 15.75M6 15.75h12M6 15.75a6 6 0 0 1 12 0" />
-    </svg>
-  );
-}
-function IcSun() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <circle cx="12" cy="12" r="4" />
-      <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41" />
-    </svg>
-  );
-}
-function IcBeer() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 3h10v14a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V3ZM15 7h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2" />
-      <path strokeLinecap="round" d="M8 7v5m3-5v5" />
-    </svg>
-  );
-}
-function IcInstagram() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-5 w-5">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className}>
       <rect x="2" y="2" width="20" height="20" rx="5" />
       <circle cx="12" cy="12" r="5" />
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
@@ -211,45 +208,64 @@ export function BigBenContent() {
   const s = t[lang];
 
   return (
-    <div className="bg-[#111] text-[#f0ede6]">
+    <div className="bg-[#faf7f2] text-[#1a1a1a]">
       {/* ── Top Bar ─────────────────────────────────────────────── */}
-      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#111]/90 px-5 py-3 backdrop-blur-md">
+      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#faf7f2]/90 px-5 py-3 shadow-sm backdrop-blur-md">
         <a
           href="https://www.instagram.com/bigbenpubzh/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-[#f0ede6]/70 transition-colors hover:text-[#c0392b]"
+          className="flex items-center gap-2.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 px-4 py-1.5 text-sm font-semibold text-white transition-transform hover:scale-105"
         >
-          <IcInstagram />
-          <span className="hidden sm:inline">@bigbenpubzh</span>
+          <IcInstagram className="h-4 w-4" />
+          <span>@bigbenpubzh</span>
         </a>
-        <span className="font-serif text-sm font-bold tracking-wider">BIG BEN PUB</span>
+        <span className="font-serif text-sm font-bold tracking-wider text-[#1a1a1a]">BIG BEN PUB</span>
         <button
           onClick={() => setLang(lang === "en" ? "de" : "en")}
-          className="rounded-full border border-[#333] px-3 py-1 text-xs font-bold tracking-wider transition-colors hover:border-[#c0392b] hover:text-[#c0392b]"
+          className="flex items-center gap-2 rounded-full border border-[#ddd] bg-white px-3.5 py-1.5 text-xs font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
         >
-          {lang === "en" ? "DE" : "EN"}
+          <span className="inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-[3px] shadow-sm">
+            {lang === "en" ? (
+              /* DE flag */
+              <svg viewBox="0 0 5 3" className="h-full w-full">
+                <rect width="5" height="1" fill="#000" />
+                <rect y="1" width="5" height="1" fill="#D00" />
+                <rect y="2" width="5" height="1" fill="#FFCE00" />
+              </svg>
+            ) : (
+              /* GB flag simplified */
+              <svg viewBox="0 0 60 30" className="h-full w-full">
+                <rect width="60" height="30" fill="#012169" />
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" strokeWidth="3" />
+                <path d="M30,0 V30 M0,15 H60" stroke="#fff" strokeWidth="10" />
+                <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" strokeWidth="6" />
+              </svg>
+            )}
+          </span>
+          {lang === "en" ? "Deutsch" : "English"}
         </button>
       </div>
 
       {/* ── HERO ────────────────────────────────────────────────── */}
-      <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
+      <section className="relative h-[85vh] min-h-[600px] overflow-hidden">
         <Image
           src={IMG("inside.png")}
           alt="Big Ben Pub — Live music evening"
           fill
-          className="object-cover brightness-[0.35]"
+          className="object-cover brightness-[0.4]"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-[#111]/20 to-transparent" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1210]/80 via-transparent to-transparent" />
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
           <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#c0392b]">
             {s.estLine}
           </p>
           <h1 className="mt-4 font-serif text-6xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
             Big Ben Pub
           </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-[#f0ede6]/70">
+          <p className="mt-5 max-w-md text-base leading-relaxed text-white/80">
             {s.heroSub}
             <br />
             {s.heroSub2}
@@ -257,13 +273,13 @@ export function BigBenContent() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
               href="#reserve"
-              className="rounded bg-[#c0392b] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] hover:shadow-lg hover:shadow-[#c0392b]/25"
+              className="rounded-lg bg-[#c0392b] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] hover:shadow-lg hover:shadow-[#c0392b]/25"
             >
               {s.bookTable}
             </a>
             <a
               href="#menu"
-              className="rounded border border-white/20 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-white/40 hover:text-white"
+              className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/60 hover:bg-white/10"
             >
               {s.seeMenu}
             </a>
@@ -272,14 +288,14 @@ export function BigBenContent() {
       </section>
 
       {/* ── GUINNESS BANNER ─────────────────────────────────────── */}
-      <section className="border-y border-[#222] bg-[#0d0d0d] py-6">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-2 px-6 sm:flex-row sm:gap-6">
-          <IcBeer />
-          <p className="text-center font-serif text-xl font-bold tracking-wide sm:text-2xl">
+      <section className="border-b border-[#e8e0d5] bg-[#c0392b] py-5">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-2 px-6 sm:flex-row sm:gap-4">
+          <span className="text-3xl">🍺</span>
+          <p className="text-center font-serif text-xl font-bold text-white sm:text-2xl">
             {s.guinness}
           </p>
-          <span className="hidden text-[#f0ede6]/30 sm:inline">|</span>
-          <p className="text-center text-sm text-[#f0ede6]/50">{s.guinnessDesc}</p>
+          <span className="hidden text-white/30 sm:inline">—</span>
+          <p className="text-center text-sm text-white/80">{s.guinnessDesc}</p>
         </div>
       </section>
 
@@ -291,15 +307,15 @@ export function BigBenContent() {
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
                 {s.aboutLabel}
               </p>
-              <h2 className="mt-3 font-serif text-4xl font-bold leading-tight">
+              <h2 className="mt-3 font-serif text-4xl font-bold leading-tight text-[#1a1a1a]">
                 {s.aboutH1}
                 <br />
                 {s.aboutH2}
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-[#f0ede6]/60">
+              <p className="mt-6 text-base leading-relaxed text-[#555]">
                 {s.aboutP1}
               </p>
-              <p className="mt-4 text-base leading-relaxed text-[#f0ede6]/60">
+              <p className="mt-4 text-base leading-relaxed text-[#555]">
                 {s.aboutP2}
               </p>
               <div className="mt-10 grid grid-cols-3 gap-6">
@@ -308,7 +324,7 @@ export function BigBenContent() {
                 <Stat value="40+" label="Seats" />
               </div>
             </div>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl">
               <Image
                 src={IMG("bar.png")}
                 alt="The Big Ben Pub bar"
@@ -320,28 +336,47 @@ export function BigBenContent() {
         </div>
       </section>
 
-      {/* ── WHAT'S ON ───────────────────────────────────────────── */}
-      <section className="bg-[#161616] py-24">
+      {/* ── EVENTS ──────────────────────────────────────────────── */}
+      <section className="bg-[#f0ebe3] py-24">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
-            {s.whatsOnLabel}
+            {s.eventsLabel}
           </p>
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
-            {s.whatsOnTitle}
+            {s.eventsTitle}
           </h2>
 
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <EventCard icon={<IcMic />} title={s.evKaraoke} desc={s.evKaraokeD} />
-            <EventCard icon={<IcBrain />} title={s.evQuiz} desc={s.evQuizD} />
-            <EventCard icon={<IcMusic />} title={s.evMusic} desc={s.evMusicD} />
-            <EventCard icon={<IcSport />} title={s.evSport} desc={s.evSportD} />
+          {/* 3 main events — big, with dates */}
+          <div className="mt-14 grid gap-6 lg:grid-cols-3">
+            <BigEventCard
+              emoji="🎤"
+              title={s.evKaraokeTitle}
+              when={s.evKaraokeWhen}
+              desc={s.evKaraokeDesc}
+              accent="from-purple-500 to-pink-500"
+            />
+            <BigEventCard
+              emoji="🧠"
+              title={s.evQuizTitle}
+              when={s.evQuizWhen}
+              desc={s.evQuizDesc}
+              accent="from-blue-500 to-cyan-500"
+            />
+            <BigEventCard
+              emoji="🎵"
+              title={s.evMusicTitle}
+              when={s.evMusicWhen}
+              desc={s.evMusicDesc}
+              accent="from-amber-500 to-orange-500"
+            />
           </div>
 
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <EventCard icon={<IcDarts />} title={s.evDarts} desc={s.evDartsD} />
-            <EventCard icon={<IcParty />} title={s.evPrivate} desc={s.evPrivateD} />
-            <EventCard icon={<IcSun />} title={s.evTerrace} desc={s.evTerraceD} />
-            <EventCard icon={<IcBeer />} title={s.evHappy} desc={s.evHappyD} />
+          {/* Secondary features — compact row */}
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <MiniFeature emoji="⚽" title={s.evSportTitle} desc={s.evSportDesc} />
+            <MiniFeature emoji="🎯" title={s.evDartsTitle} desc={s.evDartsDesc} />
+            <MiniFeature emoji="🎂" title={s.evPrivateTitle} desc={s.evPrivateDesc} />
+            <MiniFeature emoji="☀️" title={s.evTerraceTitle} desc={s.evTerraceDesc} />
           </div>
         </div>
       </section>
@@ -358,9 +393,9 @@ export function BigBenContent() {
 
           <div className="mt-14 grid gap-8 lg:grid-cols-2">
             {/* Food */}
-            <div className="rounded-2xl border border-[#222] bg-[#161616] p-8">
+            <div className="rounded-2xl border border-[#e8e0d5] bg-white p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#c0392b]">{s.pubBites}</h3>
-              <p className="mt-1 text-sm text-[#f0ede6]/40">{s.pubBitesNote}</p>
+              <p className="mt-1 text-sm text-[#999]">{s.pubBitesNote}</p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Chicken Wings (classic & spicy)",
@@ -372,8 +407,8 @@ export function BigBenContent() {
                   "Toasted Sandwiches",
                   "Chips & Dips",
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm text-[#f0ede6]/70">
-                    <span className="h-1 w-1 shrink-0 rounded-full bg-[#c0392b]" />
+                  <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
                     {item}
                   </li>
                 ))}
@@ -381,29 +416,23 @@ export function BigBenContent() {
             </div>
 
             {/* Drinks */}
-            <div className="rounded-2xl border border-[#222] bg-[#161616] p-8">
+            <div className="rounded-2xl border border-[#e8e0d5] bg-white p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#c0392b]">{s.fromBar}</h3>
-              <p className="mt-1 text-sm text-[#f0ede6]/40">{s.fromBarNote}</p>
+              <p className="mt-1 text-sm text-[#999]">{s.fromBarNote}</p>
               <div className="mt-6 space-y-6">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
-                    {s.onTap}
-                  </p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#999]">{s.onTap}</p>
                   <ul className="mt-2 space-y-2">
-                    {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map(
-                      (item) => (
-                        <li key={item} className="flex items-center gap-3 text-sm text-[#f0ede6]/70">
-                          <span className="h-1 w-1 shrink-0 rounded-full bg-[#c0392b]" />
-                          {item}
-                        </li>
-                      ),
-                    )}
+                    {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
+                        {item}
+                      </li>
+                    ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#f0ede6]/40">
-                    {s.bottlesMore}
-                  </p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#999]">{s.bottlesMore}</p>
                   <ul className="mt-2 space-y-2">
                     {[
                       "Craft Beers (rotating selection)",
@@ -412,8 +441,8 @@ export function BigBenContent() {
                       "Spirits & Whisky",
                       "Soft Drinks & Coffee",
                     ].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-[#f0ede6]/70">
-                        <span className="h-1 w-1 shrink-0 rounded-full bg-[#c0392b]" />
+                      <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
                         {item}
                       </li>
                     ))}
@@ -425,8 +454,52 @@ export function BigBenContent() {
         </div>
       </section>
 
+      {/* ── REVIEWS ─────────────────────────────────────────────── */}
+      <section className="bg-[#f0ebe3] py-24">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+            {s.reviewsLabel}
+          </p>
+          <h2 className="mt-3 text-center font-serif text-4xl font-bold">
+            {s.reviewsTitle}
+          </h2>
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <Stars />
+            <span className="text-sm font-semibold text-[#1a1a1a]">4.7</span>
+            <span className="text-sm text-[#888]">— 186+ Reviews {s.reviewsOnGoogle}</span>
+          </div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {REVIEWS.map((r) => (
+              <div
+                key={r.name}
+                className="rounded-2xl border border-[#e8e0d5] bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <Stars />
+                <p className="mt-4 text-sm leading-relaxed text-[#444]">
+                  &ldquo;{r.text}&rdquo;
+                </p>
+                <div className="mt-5 flex items-center gap-3">
+                  <div
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white ${r.color}`}
+                  >
+                    {r.initial}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{r.name}</p>
+                    {r.badge && (
+                      <p className="text-xs text-[#999]">{r.badge}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── GALLERY ─────────────────────────────────────────────── */}
-      <section className="bg-[#161616] py-24">
+      <section className="py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
             {s.galleryLabel}
@@ -448,14 +521,14 @@ export function BigBenContent() {
               { src: "drinks.png", alt: "Craft beer selection" },
               { src: "drinks2.png", alt: "Cocktails at the bar" },
             ].map((img) => (
-              <div key={img.src} className="group relative aspect-square overflow-hidden rounded-xl">
+              <div key={img.src} className="group relative aspect-square overflow-hidden rounded-xl shadow-sm">
                 <Image
                   src={IMG(img.src)}
                   alt={img.alt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
               </div>
             ))}
           </div>
@@ -463,7 +536,7 @@ export function BigBenContent() {
       </section>
 
       {/* ── RESERVE ─────────────────────────────────────────────── */}
-      <section id="reserve" className="scroll-mt-16 py-24">
+      <section id="reserve" className="scroll-mt-16 bg-[#f0ebe3] py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
             {s.reserveLabel}
@@ -471,7 +544,7 @@ export function BigBenContent() {
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
             {s.reserveTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#f0ede6]/50">
+          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#888]">
             {s.reserveDesc}
           </p>
 
@@ -482,7 +555,7 @@ export function BigBenContent() {
       </section>
 
       {/* ── HOURS & LOCATION ────────────────────────────────────── */}
-      <section className="bg-[#161616] py-24">
+      <section className="py-24">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="grid gap-14 lg:grid-cols-2">
             {/* Hours */}
@@ -501,14 +574,14 @@ export function BigBenContent() {
                 <HoursRow day={s.sunday} hours="16:00 – 22:00" />
               </div>
 
-              <div className="mt-10 space-y-2 text-sm text-[#f0ede6]/50">
-                <p>Alte Landstrasse 20, 8942 Oberrieden</p>
+              <div className="mt-10 space-y-2 text-sm text-[#888]">
+                <p className="font-medium text-[#1a1a1a]">Alte Landstrasse 20, 8942 Oberrieden</p>
                 <p>044 722 20 62</p>
                 <a
                   href="https://www.instagram.com/bigbenpubzh/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#c0392b] transition-colors hover:text-[#e74c3c]"
+                  className="inline-flex items-center gap-2 font-medium text-[#c0392b] transition-colors hover:text-[#e74c3c]"
                 >
                   <IcInstagram />
                   {s.followUs}
@@ -517,7 +590,7 @@ export function BigBenContent() {
             </div>
 
             {/* Map */}
-            <div className="overflow-hidden rounded-2xl">
+            <div className="overflow-hidden rounded-2xl shadow-lg">
               <iframe
                 title="Big Ben Pub Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2706.8!2d8.5835!3d47.2727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479aa9a6e3e3e3e3%3A0x0!2sBig+Ben+Pub+Oberrieden!5e0!3m2!1sde!2sch!4v1"
@@ -534,22 +607,21 @@ export function BigBenContent() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
-      <footer className="border-t border-[#222] py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#f0ede6]/30">
-          <div className="flex items-center gap-4">
-            <a
-              href="https://www.instagram.com/bigbenpubzh/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors hover:text-[#c0392b]"
-            >
-              <IcInstagram />
-            </a>
-          </div>
+      <footer className="border-t border-[#e8e0d5] bg-[#f0ebe3] py-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#999]">
+          <a
+            href="https://www.instagram.com/bigbenpubzh/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-[#c0392b] transition-colors hover:text-[#e74c3c]"
+          >
+            <IcInstagram />
+            <span className="text-sm font-medium">@bigbenpubzh</span>
+          </a>
           <p>Big Ben Pub &middot; Alte Landstrasse 20 &middot; 8942 Oberrieden</p>
           <p>
             Website by{" "}
-            <a href="https://flowsight.ch" className="text-[#c0392b] hover:underline">
+            <a href="https://flowsight.ch" className="font-medium text-[#c0392b] hover:underline">
               FlowSight
             </a>
           </p>
@@ -564,36 +636,52 @@ function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
       <p className="text-3xl font-bold text-[#c0392b]">{value}</p>
-      <p className="mt-1 text-xs text-[#f0ede6]/40">{label}</p>
+      <p className="mt-1 text-xs font-medium text-[#999]">{label}</p>
     </div>
   );
 }
 
-function EventCard({
-  icon,
+function BigEventCard({
+  emoji,
   title,
+  when,
   desc,
+  accent,
 }: {
-  icon: React.ReactNode;
+  emoji: string;
   title: string;
+  when: string;
   desc: string;
+  accent: string;
 }) {
   return (
-    <div className="group rounded-xl border border-[#222] bg-[#111] p-6 transition-all duration-300 hover:border-[#c0392b]/40 hover:bg-[#1a1a1a]">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#c0392b]/10 text-[#c0392b] transition-colors group-hover:bg-[#c0392b]/20">
-        {icon}
-      </div>
-      <p className="mt-4 text-sm font-bold">{title}</p>
-      <p className="mt-1.5 text-xs leading-relaxed text-[#f0ede6]/50">{desc}</p>
+    <div className="group relative overflow-hidden rounded-2xl border border-[#e8e0d5] bg-white p-7 shadow-sm transition-all hover:shadow-lg">
+      <div className={`absolute left-0 top-0 h-1 w-full bg-gradient-to-r ${accent}`} />
+      <div className="text-4xl">{emoji}</div>
+      <h3 className="mt-4 font-serif text-xl font-bold">{title}</h3>
+      <p className={`mt-1 inline-block rounded-full bg-gradient-to-r ${accent} px-3 py-0.5 text-xs font-bold text-white`}>
+        {when}
+      </p>
+      <p className="mt-3 text-sm leading-relaxed text-[#666]">{desc}</p>
+    </div>
+  );
+}
+
+function MiniFeature({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
+  return (
+    <div className="rounded-xl border border-[#e8e0d5] bg-white p-5 shadow-sm">
+      <span className="text-2xl">{emoji}</span>
+      <p className="mt-2 text-sm font-bold">{title}</p>
+      <p className="mt-1 text-xs leading-relaxed text-[#888]">{desc}</p>
     </div>
   );
 }
 
 function HoursRow({ day, hours, closed }: { day: string; hours: string; closed?: boolean }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#222] pb-3">
+    <div className="flex items-center justify-between border-b border-[#e8e0d5] pb-3">
       <span className="text-sm font-medium">{day}</span>
-      <span className={`text-sm ${closed ? "text-[#f0ede6]/25" : "text-[#f0ede6]/60"}`}>
+      <span className={`text-sm ${closed ? "text-[#ccc]" : "text-[#666]"}`}>
         {hours}
       </span>
     </div>
