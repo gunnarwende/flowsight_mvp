@@ -124,7 +124,7 @@ export default async function HandoutPage({
 
             {/* Ticket */}
             <div className="flex flex-col items-center">
-              <FlowNode icon="ticket" label="Fall" highlighted />
+              <FlowNode icon="ticket" label="Fall" />
               <p className="mt-2 max-w-[120px] text-center text-[10px] leading-tight text-navy-300">
                 Strukturierter Fall mit SMS-Bestätigung + Foto-Upload
               </p>
