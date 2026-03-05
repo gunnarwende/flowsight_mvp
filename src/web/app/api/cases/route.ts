@@ -6,6 +6,7 @@ import { notify } from "@/src/lib/notify/router";
 import { hasModule } from "@/src/lib/tenants/hasModule";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
+import { generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -339,7 +340,9 @@ export async function POST(request: NextRequest) {
       await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${baseUrl}/ops/cases/${row.id}` });
     }
 
-    return NextResponse.json(row, { status: 201 });
+    // Include verify token for photo uploads on the success screen
+    const verifyToken = generateShortVerifyToken(row.id, row.created_at);
+    return NextResponse.json({ ...row, verify_token: verifyToken }, { status: 201 });
   } catch (err) {
     Sentry.captureException(err, {
       tags: { _tag: "cases_api", area: "api", feature: "cases", stage: "db", error_code: "UNEXPECTED", decision: "failed" },
