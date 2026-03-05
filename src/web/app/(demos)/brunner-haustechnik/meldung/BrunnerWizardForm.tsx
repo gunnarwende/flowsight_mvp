@@ -125,7 +125,7 @@ function Spinner() {
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
-function StepIndicator({ current, total }: { current: number; total: number }) {
+function StepIndicator({ current, total, onStepClick }: { current: number; total: number; onStepClick?: (step: number) => void }) {
   const labels = ["Problem", "Adresse", "Kontakt"];
   return (
     <div className="mb-8 flex items-center justify-center gap-1 sm:gap-2">
@@ -133,9 +133,15 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
         const step = i + 1;
         const done = step < current;
         const active = step === current;
+        const canClick = done && onStepClick;
         return (
           <div key={step} className="flex items-center gap-1 sm:gap-2">
-            <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              disabled={!canClick}
+              onClick={() => canClick && onStepClick(step)}
+              className={`flex items-center gap-1.5 ${canClick ? "cursor-pointer" : "cursor-default"}`}
+            >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all ${
                   active
@@ -148,10 +154,10 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
               >
                 {done ? <IconCheck /> : step}
               </div>
-              <span className={`hidden text-xs font-medium sm:block ${active ? "text-gray-900" : "text-gray-400"}`}>
+              <span className={`hidden text-xs font-medium sm:block ${active ? "text-gray-900" : done ? "text-emerald-600" : "text-gray-400"}`}>
                 {labels[i]}
               </span>
-            </div>
+            </button>
             {step < total && (
               <div className={`h-px w-6 sm:w-10 ${done ? "bg-emerald-500" : "bg-gray-200"}`} />
             )}
@@ -339,7 +345,7 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
         </p>
       </div>
 
-      <StepIndicator current={step} total={3} />
+      <StepIndicator current={step} total={3} onStepClick={(s) => setStep(s)} />
 
       <form onSubmit={handleSubmit}>
         {/* ── Step 1: Problem ──────────────────────────────────── */}

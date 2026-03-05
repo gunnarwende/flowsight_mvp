@@ -4,6 +4,8 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { sendCaseNotification, sendReporterConfirmation } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
 import { hasModule } from "@/src/lib/tenants/hasModule";
+import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
+import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -296,6 +298,39 @@ export async function POST(request: NextRequest) {
         event_type: "reporter_confirmation_sent",
         title: "Bestätigung an Melder gesendet",
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
+
+    // SMS confirmation to reporter (wizard + voice share the same SMS logic)
+    if (data.contact_phone) {
+      const smsConfig = await getTenantSmsConfig(tenantId);
+      if (smsConfig) {
+        const smsResult = await sendPostCallSms({
+          caseId: row.id,
+          createdAt: row.created_at,
+          callerPhone: data.contact_phone,
+          smsSenderName: smsConfig.senderName,
+          plz: data.plz,
+          city: data.city,
+          category: data.category,
+          street: data.street,
+          houseNumber: data.house_number,
+        });
+        if (smsResult.sent) {
+          await supabase.from("case_events").insert({
+            case_id: row.id,
+            event_type: "sms_sent",
+            title: "Bestätigungs-SMS an Melder gesendet",
+            metadata: { to: data.contact_phone, message_sid: smsResult.messageSid },
+          }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+        }
+        console.log(JSON.stringify({
+          _tag: "cases_api",
+          category: "sms",
+          level: "info",
+          message: smsResult.sent ? "SMS sent" : `SMS skipped: ${smsResult.reason}`,
+          data: { case_id: row.id, source: data.source, sent: smsResult.sent },
+        }));
+      }
     }
 
     // Notify: system failures only (email dispatch fail → RED alert)
