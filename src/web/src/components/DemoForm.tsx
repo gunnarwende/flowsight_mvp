@@ -60,7 +60,7 @@ export function DemoForm() {
           Vielen Dank!
         </h3>
         <p className="mt-2 text-base text-navy-200">
-          Buchen Sie direkt Ihren 15-Minuten-Termin:
+          Buchen Sie direkt Ihren 20-Minuten-Termin:
         </p>
         <a
           href={SITE.bookingUrl}

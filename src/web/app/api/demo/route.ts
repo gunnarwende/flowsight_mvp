@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import * as Sentry from "@sentry/nextjs";
+import { sendSms } from "@/src/lib/sms/sendSms";
+import { SITE } from "@/src/lib/marketing/constants";
 
 /**
  * POST /api/demo — Demo request from flowsight.ch marketing form.
@@ -76,8 +78,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true }); // User sees success, we get Sentry alert
     }
 
+    // ── SMS confirmation to prospect ──────────────────────────────────
+    const smsBody = [
+      `Guten Tag ${name},`,
+      ``,
+      `vielen Dank für Ihr Interesse an FlowSight — der KI-Telefonassistentin für Schweizer Handwerksbetriebe.`,
+      ``,
+      `Buchen Sie jetzt Ihre persönliche 20-Minuten-Demo:`,
+      SITE.bookingUrl,
+      ``,
+      `Wir freuen uns auf Sie!`,
+      `Ihr FlowSight-Team`,
+    ].join("\n");
+
+    const smsResult = await sendSms(phone, smsBody, "FlowSight");
     console.log(
-      JSON.stringify({ ...base, decision: "sent", company })
+      JSON.stringify({
+        ...base,
+        decision: "sent",
+        company,
+        sms: smsResult.sent ? "sent" : smsResult.reason,
+      })
     );
     return NextResponse.json({ ok: true });
   } catch (err) {
