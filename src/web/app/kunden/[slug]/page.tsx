@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCustomer, getAllCustomerSlugs } from "@/src/lib/customers/registry";
 import { ImageGallery } from "./ImageGallery";
+import { ServiceDescription } from "./ServiceDescription";
 import type { Metadata } from "next";
 import type {
   CustomerSite,
@@ -73,7 +74,7 @@ export default async function CustomerPage({
       <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />
       {c.reviews && <ReviewsSection reviews={c.reviews} accent={accent} />}
       <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />
-      {c.team.length > 0 && <TeamSection team={c.team} companyName={c.companyName} accent={accent} />}
+      {c.team.length > 1 && <TeamSection team={c.team} companyName={c.companyName} accent={accent} />}
       {shouldShowHistory(c.history) && <HistorySection history={c.history!} companyName={c.companyName} accent={accent} />}
       {(c.certifications || c.brandPartners) && <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} />}
       {c.careers && c.careers.length > 0 && <CareersSection careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} />}
@@ -97,7 +98,7 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
         </a>
         <div className="hidden items-center gap-6 md:flex">
           <a href="#leistungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Leistungen</a>
-          <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>
+          {c.team.length > 1 && <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>}
           <a href="#kontakt" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Kontakt</a>
           <a href={wizardUrl} className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
             Schaden melden
@@ -177,7 +178,9 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
   );
 }
 
-/* ── Services — Card Layout with Images ──────────────────────────── */
+/* ── Services — Card Layout ───────────────────────────────────────
+   Icon → Name → Summary → Separator → Description (expandable) →
+   Reference images (always visible, with arrow navigation).        */
 function ServicesSection({
   services,
   gallery,
@@ -201,52 +204,33 @@ function ServicesSection({
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => {
             const imgs = galleryMap.get(s.slug) ?? [];
-            const coverImg = imgs[0];
             return (
-              <div key={s.slug} className="group overflow-hidden rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-lg">
-                {/* Cover image */}
-                {coverImg ? (
-                  <div className="relative h-48 overflow-hidden bg-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={coverImg.src} alt={coverImg.alt ?? s.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                    {imgs.length > 1 && (
-                      <span className="absolute bottom-2 right-2 rounded-full bg-black/50 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                        +{imgs.length - 1} Fotos
-                      </span>
-                    )}
+              <div key={s.slug} className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-lg">
+                {/* Icon header */}
+                <div className="flex items-center justify-center pt-8 pb-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
+                    <ServiceIconSvg icon={s.icon} />
                   </div>
-                ) : (
-                  <div className="flex h-32 items-center justify-center" style={{ backgroundColor: `${accent}10` }}>
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
-                      <ServiceIconSvg icon={s.icon} />
-                    </div>
-                  </div>
-                )}
+                </div>
                 {/* Content */}
-                <div className="p-5">
-                  <div className="flex items-start gap-3">
-                    {coverImg && (
-                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white" style={{ backgroundColor: accent }}>
-                        <ServiceIconSvg icon={s.icon} size="sm" />
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="text-lg font-semibold">{s.name}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-gray-600">{s.summary}</p>
-                    </div>
-                  </div>
+                <div className="px-5 pb-6">
+                  <h3 className="text-center text-lg font-semibold">{s.name}</h3>
+                  <p className="mt-2 text-center text-sm leading-relaxed text-gray-600">{s.summary}</p>
+
+                  {/* Separator + Description */}
                   {s.description && (
-                    <p className="mt-4 text-sm leading-relaxed text-gray-500">{s.description}</p>
+                    <>
+                      <div className="my-4 border-t border-gray-100" />
+                      <ServiceDescription text={s.description} accent={accent} />
+                    </>
                   )}
-                  {imgs.length > 1 && (
-                    <details className="mt-4">
-                      <summary className="cursor-pointer text-sm font-medium transition-colors hover:underline" style={{ color: accent }}>
-                        Referenzbilder ansehen
-                      </summary>
-                      <div className="mt-3">
-                        <ImageGallery images={imgs} height={160} />
-                      </div>
-                    </details>
+
+                  {/* Reference images — always visible */}
+                  {imgs.length > 0 && (
+                    <div className="mt-4">
+                      <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Referenzbilder</p>
+                      <ImageGallery images={imgs} height={140} />
+                    </div>
                   )}
                 </div>
               </div>
@@ -305,22 +289,12 @@ function ReviewsSection({
                   ))}
                 </div>
                 <p className="text-sm leading-relaxed text-gray-700">&ldquo;{r.text}&rdquo;</p>
-                <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
-                  <span className="font-medium text-gray-500">{r.author}</span>
-                  {r.date && <span>{r.date}</span>}
-                </div>
+                <p className="mt-4 text-xs font-medium text-gray-500">{r.author}</p>
               </div>
             ))}
           </div>
         )}
 
-        {reviews.googleUrl && (
-          <div className="mt-8 text-center">
-            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:underline" style={{ color: accent }}>
-              Alle Bewertungen ansehen &rarr;
-            </a>
-          </div>
-        )}
       </div>
     </section>
   );
