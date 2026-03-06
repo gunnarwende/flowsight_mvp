@@ -42,6 +42,17 @@ export async function generateMetadata({
   };
 }
 
+// ── Helpers ───────────────────────────────────────────────────────
+const SHOW_RATING_THRESHOLD = 4.0;
+const SHOW_HISTORY_MIN_ENTRIES = 2;
+const SHOW_HISTORY_MIN_YEARS = 20;
+
+function shouldShowHistory(history?: CustomerSite["history"]): boolean {
+  if (!history || history.length < SHOW_HISTORY_MIN_ENTRIES) return false;
+  const years = new Date().getFullYear() - history[0].year;
+  return years >= SHOW_HISTORY_MIN_YEARS;
+}
+
 // ── Page ──────────────────────────────────────────────────────────
 export default async function CustomerPage({
   params,
@@ -53,7 +64,6 @@ export default async function CustomerPage({
   if (!c) notFound();
 
   const accent = c.brandColor ?? "#2b6cb0";
-  // Wizard URL — linked throughout the page
   const wizardUrl = `/${c.slug}/meldung`;
 
   return (
@@ -61,10 +71,10 @@ export default async function CustomerPage({
       <Nav company={c} accent={accent} wizardUrl={wizardUrl} />
       <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} />
       <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />
-      {c.reviews && <ReviewsSection reviews={c.reviews} />}
-      <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} />
+      {c.reviews && <ReviewsSection reviews={c.reviews} accent={accent} />}
+      <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />
       {c.team.length > 0 && <TeamSection team={c.team} companyName={c.companyName} accent={accent} />}
-      {c.history && c.history.length > 0 && <HistorySection history={c.history} companyName={c.companyName} accent={accent} />}
+      {shouldShowHistory(c.history) && <HistorySection history={c.history!} companyName={c.companyName} accent={accent} />}
       {(c.certifications || c.brandPartners) && <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} />}
       {c.careers && c.careers.length > 0 && <CareersSection careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} />}
       <ContactSection company={c} accent={accent} wizardUrl={wizardUrl} />
@@ -116,46 +126,58 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
 function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
   const foundedYear = c.history?.[0]?.year;
   const yearsActive = foundedYear ? new Date().getFullYear() - foundedYear : null;
+  // Use first gallery image as hero background if available
+  const heroImg = c.gallery?.[0]?.images?.[0]?.src;
 
   return (
-    <section className="relative overflow-hidden bg-gray-900 text-white">
-      <div className="absolute inset-0 opacity-30" style={{ background: `linear-gradient(135deg, ${accent} 0%, transparent 60%)` }} />
-      <div className="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
-        <div className="max-w-3xl">
+    <section className="relative overflow-hidden text-white" style={{ minHeight: "70vh" }}>
+      {heroImg ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={heroImg} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/70 to-gray-900/40" />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gray-900" />
+          <div className="absolute inset-0 opacity-20" style={{ background: `linear-gradient(135deg, ${accent} 0%, transparent 60%)` }} />
+        </>
+      )}
+      <div className="relative mx-auto flex min-h-[70vh] max-w-6xl items-center px-6 py-20">
+        <div className="max-w-2xl">
           {foundedYear && (
-            <div className="mb-6 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90">
+            <div className="mb-6 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur-sm">
               Seit {foundedYear} in {c.contact.address.city}
             </div>
           )}
-          <h1 className="text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">{c.companyName}</h1>
-          <p className="mt-5 text-xl text-gray-300 sm:text-2xl">{c.tagline}</p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">{c.companyName}</h1>
+          <p className="mt-4 text-lg text-white/80 sm:text-xl">{c.tagline}</p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
               Schaden online melden
             </a>
-            <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/20 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10">
+            <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
               Anrufen: {c.contact.phone}
             </a>
           </div>
-        </div>
-        <div className="mt-16 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4">
-          {yearsActive && (
-            <div><p className="text-3xl font-bold text-white">{yearsActive}+</p><p className="mt-1 text-sm text-gray-400">Jahre Erfahrung</p></div>
-          )}
-          <div><p className="text-3xl font-bold text-white">{c.services.length}</p><p className="mt-1 text-sm text-gray-400">Fachbereiche</p></div>
-          <div><p className="text-3xl font-bold text-white">{c.serviceArea.gemeinden.length}+</p><p className="mt-1 text-sm text-gray-400">Gemeinden</p></div>
-          {c.reviews && (
-            <div><p className="text-3xl font-bold text-white">{c.reviews.averageRating}★</p><p className="mt-1 text-sm text-gray-400">{c.reviews.totalReviews} Bewertungen</p></div>
-          )}
+          {/* Stats row */}
+          <div className="mt-12 flex flex-wrap gap-8 border-t border-white/15 pt-6">
+            {yearsActive && yearsActive >= 5 && (
+              <div><p className="text-2xl font-bold">{yearsActive}+</p><p className="text-xs text-white/60">Jahre Erfahrung</p></div>
+            )}
+            <div><p className="text-2xl font-bold">{c.services.length}</p><p className="text-xs text-white/60">Fachbereiche</p></div>
+            <div><p className="text-2xl font-bold">{c.serviceArea.gemeinden.length}+</p><p className="text-xs text-white/60">Gemeinden</p></div>
+            {c.reviews && c.reviews.averageRating >= SHOW_RATING_THRESHOLD && (
+              <div><p className="text-2xl font-bold">{c.reviews.averageRating}&#9733;</p><p className="text-xs text-white/60">{c.reviews.totalReviews} Bewertungen</p></div>
+            )}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ── Services + Integrated Gallery ─────────────────────────────────
-   Click service → expand with description + scrollable gallery.
-   Gallery merged here — no separate Referenzen section.            */
+/* ── Services — Card Layout with Images ──────────────────────────── */
 function ServicesSection({
   services,
   gallery,
@@ -167,60 +189,67 @@ function ServicesSection({
   companyName: string;
   accent: string;
 }) {
-  // Merge gallery images into services by slug
   const galleryMap = new Map(gallery.map((g) => [g.slug, g.images]));
 
   return (
-    <section id="leistungen" className="bg-gray-50 py-20">
+    <section id="leistungen" className="py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Unsere Leistungen</h2>
           <p className="mt-3 text-lg text-gray-600">Kompetenz aus einer Hand — von {companyName}</p>
         </div>
-        <div className="mt-14 space-y-4">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => {
             const imgs = galleryMap.get(s.slug) ?? [];
+            const coverImg = imgs[0];
             return (
-              <details key={s.slug} className="group rounded-2xl border border-gray-200 bg-white">
-                <summary className="flex cursor-pointer items-center gap-4 p-6 [&::-webkit-details-marker]:hidden">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
-                    <ServiceIconSvg icon={s.icon} />
+              <div key={s.slug} className="group overflow-hidden rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-lg">
+                {/* Cover image */}
+                {coverImg ? (
+                  <div className="relative h-48 overflow-hidden bg-gray-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={coverImg.src} alt={coverImg.alt ?? s.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                    {imgs.length > 1 && (
+                      <span className="absolute bottom-2 right-2 rounded-full bg-black/50 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+                        +{imgs.length - 1} Fotos
+                      </span>
+                    )}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold">{s.name}</h3>
-                    <p className="mt-0.5 text-sm text-gray-600">{s.summary}</p>
-                  </div>
-                  {imgs.length > 0 && (
-                    <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
-                      {imgs.slice(0, 2).map((img, i) => (
-                        <div key={i} className="h-10 w-10 overflow-hidden rounded-lg">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={img.src} alt="" className="h-full w-full object-cover" />
-                        </div>
-                      ))}
-                      {imgs.length > 2 && (
-                        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-xs font-medium text-gray-500">
-                          +{imgs.length - 2}
-                        </span>
-                      )}
+                ) : (
+                  <div className="flex h-32 items-center justify-center" style={{ backgroundColor: `${accent}10` }}>
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
+                      <ServiceIconSvg icon={s.icon} />
                     </div>
-                  )}
-                  <svg className="h-5 w-5 shrink-0 text-gray-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </summary>
-                <div className="border-t border-gray-100 px-6 pb-6 pt-4">
-                  {s.description && (
-                    <p className="mb-5 max-w-3xl leading-relaxed text-gray-600">{s.description}</p>
-                  )}
-                  {imgs.length > 0 && (
+                  </div>
+                )}
+                {/* Content */}
+                <div className="p-5">
+                  <div className="flex items-start gap-3">
+                    {coverImg && (
+                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white" style={{ backgroundColor: accent }}>
+                        <ServiceIconSvg icon={s.icon} size="sm" />
+                      </div>
+                    )}
                     <div>
-                      <p className="mb-3 text-sm font-medium text-gray-500">Referenzbilder — klicken zum Vergrössern</p>
-                      <ImageGallery images={imgs} height={180} />
+                      <h3 className="text-lg font-semibold">{s.name}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-gray-600">{s.summary}</p>
                     </div>
+                  </div>
+                  {s.description && (
+                    <p className="mt-4 text-sm leading-relaxed text-gray-500">{s.description}</p>
+                  )}
+                  {imgs.length > 1 && (
+                    <details className="mt-4">
+                      <summary className="cursor-pointer text-sm font-medium transition-colors hover:underline" style={{ color: accent }}>
+                        Referenzbilder ansehen
+                      </summary>
+                      <div className="mt-3">
+                        <ImageGallery images={imgs} height={160} />
+                      </div>
+                    </details>
                   )}
                 </div>
-              </details>
+              </div>
             );
           })}
         </div>
@@ -230,31 +259,44 @@ function ServicesSection({
 }
 
 /* ── Reviews ───────────────────────────────────────────────────────
-   Real data: star rating + review quotes.                          */
+   Rating < 4.0 → don't show score, only show positive quotes.      */
 function ReviewsSection({
   reviews,
+  accent,
 }: {
   reviews: NonNullable<CustomerSite["reviews"]>;
+  accent: string;
 }) {
+  const showScore = reviews.averageRating >= SHOW_RATING_THRESHOLD;
   return (
-    <section className="bg-gray-900 py-20 text-white">
+    <section className="border-y border-gray-100 bg-gray-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
-          <div className="mb-3 flex items-center justify-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <svg key={i} className={`h-7 w-7 ${i < Math.round(reviews.averageRating) ? "text-amber-400" : "text-gray-600"}`} fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-          </div>
-          <p className="text-2xl font-bold">{reviews.averageRating} von 5 Sternen</p>
-          <p className="mt-1 text-sm text-gray-400">Basierend auf {reviews.totalReviews} Google-Bewertungen</p>
+          {showScore && (
+            <>
+              <div className="mb-3 flex items-center justify-center gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <svg key={i} className={`h-7 w-7 ${i < Math.round(reviews.averageRating) ? "text-amber-400" : "text-gray-300"}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-2xl font-bold text-gray-900">{reviews.averageRating} von 5 Sternen</p>
+              <p className="mt-1 text-sm text-gray-500">Basierend auf {reviews.totalReviews} Bewertungen</p>
+            </>
+          )}
+          {!showScore && (
+            <>
+              <h2 className="text-2xl font-bold text-gray-900">Was unsere Kunden sagen</h2>
+              <p className="mt-1 text-sm text-gray-500">{reviews.totalReviews} Bewertungen</p>
+            </>
+          )}
         </div>
 
         {reviews.highlights.length > 0 && (
-          <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-6 sm:flex-row sm:justify-center">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {reviews.highlights.map((r, i) => (
-              <div key={i} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-6">
+              <div key={i} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-3 flex gap-0.5">
                   {Array.from({ length: r.rating }).map((_, j) => (
                     <svg key={j} className="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -262,9 +304,9 @@ function ReviewsSection({
                     </svg>
                   ))}
                 </div>
-                <p className="text-sm leading-relaxed text-gray-200">&ldquo;{r.text}&rdquo;</p>
+                <p className="text-sm leading-relaxed text-gray-700">&ldquo;{r.text}&rdquo;</p>
                 <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
-                  <span className="font-medium">{r.author}</span>
+                  <span className="font-medium text-gray-500">{r.author}</span>
                   {r.date && <span>{r.date}</span>}
                 </div>
               </div>
@@ -274,8 +316,8 @@ function ReviewsSection({
 
         {reviews.googleUrl && (
           <div className="mt-8 text-center">
-            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors">
-              Alle Bewertungen auf Google ansehen →
+            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:underline" style={{ color: accent }}>
+              Alle Bewertungen ansehen &rarr;
             </a>
           </div>
         )}
@@ -285,27 +327,37 @@ function ReviewsSection({
 }
 
 /* ── Service Area ──────────────────────────────────────────────────── */
-function ServiceAreaSection({ area, companyName }: { area: CustomerSite["serviceArea"]; companyName: string }) {
+function ServiceAreaSection({ area, companyName, mapUrl }: { area: CustomerSite["serviceArea"]; companyName: string; mapUrl?: string }) {
   return (
     <section className="py-20">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="overflow-hidden rounded-2xl bg-gray-900 text-white">
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
           <div className="grid lg:grid-cols-2">
             <div className="p-10 lg:p-14">
               <h2 className="text-3xl font-bold sm:text-4xl">Ihr lokaler Partner</h2>
-              <p className="mt-2 text-lg text-gray-300">{companyName} — {area.region}</p>
-              {area.radiusDescription && <p className="mt-4 leading-relaxed text-gray-300">{area.radiusDescription}</p>}
+              <p className="mt-2 text-lg text-gray-600">{companyName} — {area.region}</p>
+              {area.radiusDescription && <p className="mt-4 leading-relaxed text-gray-500">{area.radiusDescription}</p>}
               <div className="mt-8">
                 <p className="mb-3 text-sm font-medium uppercase tracking-wider text-gray-400">Wir sind vor Ort in</p>
-                <p className="leading-relaxed text-gray-300">{area.gemeinden.join(" · ")}</p>
+                <div className="flex flex-wrap gap-2">
+                  {area.gemeinden.map((g) => (
+                    <span key={g} className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm text-gray-700">{g}</span>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="flex items-center justify-center bg-gray-800/50 p-10">
-              <div className="text-center">
-                <p className="text-6xl">📍</p>
-                <p className="mt-4 text-lg font-semibold">{area.region}</p>
-                <p className="mt-1 text-sm text-gray-400">{area.gemeinden.length} Gemeinden</p>
-              </div>
+            <div className="min-h-[300px] bg-gray-100 lg:min-h-0">
+              {mapUrl ? (
+                <iframe src={mapUrl} className="h-full w-full border-0" allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Standort" />
+              ) : (
+                <div className="flex h-full items-center justify-center text-gray-400">
+                  <div className="text-center">
+                    <p className="text-5xl">&#128205;</p>
+                    <p className="mt-3 text-lg font-semibold text-gray-600">{area.region}</p>
+                    <p className="text-sm">{area.gemeinden.length} Gemeinden</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -316,16 +368,22 @@ function ServiceAreaSection({ area, companyName }: { area: CustomerSite["service
 
 /* ── Team ────────────────────────────────────────────────────────── */
 function TeamSection({ team, companyName, accent }: { team: CustomerSite["team"]; companyName: string; accent: string }) {
+  // Dynamic grid: center cards based on team size
+  const gridCls = team.length === 1 ? "flex justify-center"
+    : team.length === 2 ? "grid max-w-2xl grid-cols-2 gap-8"
+    : team.length <= 3 ? "grid max-w-4xl grid-cols-3 gap-8"
+    : "grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4";
+
   return (
-    <section id="team" className="bg-gray-50 py-20">
+    <section id="team" className="border-t border-gray-100 bg-gray-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Unser Team</h2>
           <p className="mt-3 text-lg text-gray-600">Die Menschen hinter {companyName}</p>
         </div>
-        <div className="mx-auto mt-14 grid max-w-4xl gap-8 sm:grid-cols-3">
+        <div className={`mx-auto mt-14 ${gridCls}`}>
           {team.map((m) => (
-            <div key={m.name} className="rounded-2xl border border-gray-200 bg-white p-6 text-center">
+            <div key={m.name} className="w-full max-w-xs rounded-2xl border border-gray-200 bg-white p-6 text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full text-xl font-bold text-white" style={{ backgroundColor: accent }}>
                 {m.name.split(" ").map((n) => n[0]).join("")}
               </div>
@@ -370,11 +428,11 @@ function HistorySection({ history, companyName, accent }: { history: NonNullable
 /* ── Trust ────────────────────────────────────────────────────────── */
 function TrustSection({ certifications, partners, accent }: { certifications?: CustomerSite["certifications"]; partners?: CustomerSite["brandPartners"]; accent: string }) {
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="border-t border-gray-100 bg-gray-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">Qualität, der Sie vertrauen können</h2>
-          <p className="mt-3 text-lg text-gray-600">Zertifiziert und im Verbund mit führenden Marken</p>
+          <h2 className="text-3xl font-bold sm:text-4xl">Qualit&auml;t, der Sie vertrauen k&ouml;nnen</h2>
+          <p className="mt-3 text-lg text-gray-600">Zertifiziert und im Verbund mit f&uuml;hrenden Marken</p>
         </div>
         {certifications && certifications.length > 0 && (
           <div className="mx-auto mt-12 flex max-w-2xl flex-wrap justify-center gap-6">
@@ -414,7 +472,7 @@ function TrustSection({ certifications, partners, accent }: { certifications?: C
 /* ── Careers ──────────────────────────────────────────────────────── */
 function CareersSection({ careers, companyName, contact, accent }: { careers: NonNullable<CustomerSite["careers"]>; companyName: string; contact: CustomerSite["contact"]; accent: string }) {
   return (
-    <section className="bg-gray-900 py-20 text-white">
+    <section className="border-t border-gray-200 bg-gray-900 py-20 text-white">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Karriere bei {companyName}</h2>
@@ -441,7 +499,7 @@ function CareersSection({ careers, companyName, contact, accent }: { careers: No
                     <p className="mb-2 mt-4 text-sm font-semibold text-gray-200">Anforderungen:</p>
                     <ul className="space-y-1.5">
                       {job.requirements.map((r, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-300"><span style={{ color: accent }}>•</span>{r}</li>
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-300"><span style={{ color: accent }}>&#8226;</span>{r}</li>
                       ))}
                     </ul>
                   </>
@@ -471,14 +529,16 @@ function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSi
     <section id="kontakt" className="py-20">
       <div className="mx-auto max-w-6xl px-6">
         {/* Wizard CTA */}
-        <div className="mb-12 rounded-2xl p-8 text-center text-white" style={{ backgroundColor: accent }}>
-          <h2 className="text-2xl font-bold sm:text-3xl">Schaden melden — schnell und unkompliziert</h2>
-          <p className="mx-auto mt-3 max-w-xl text-white/80">
-            Nutzen Sie unseren digitalen Assistenten, um Ihren Schaden direkt zu erfassen. Wir melden uns umgehend bei Ihnen.
-          </p>
-          <a href={wizardUrl} className="mt-6 inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-opacity hover:opacity-90" style={{ color: accent }}>
-            Jetzt Schaden melden →
-          </a>
+        <div className="mb-12 overflow-hidden rounded-2xl" style={{ backgroundColor: accent }}>
+          <div className="p-8 text-center text-white sm:p-12">
+            <h2 className="text-2xl font-bold sm:text-3xl">Schaden melden — schnell und unkompliziert</h2>
+            <p className="mx-auto mt-3 max-w-xl text-white/80">
+              Nutzen Sie unseren digitalen Assistenten, um Ihren Schaden direkt zu erfassen. Wir melden uns umgehend bei Ihnen.
+            </p>
+            <a href={wizardUrl} className="mt-6 inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-opacity hover:opacity-90" style={{ color: accent }}>
+              Jetzt Schaden melden &rarr;
+            </a>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
@@ -492,6 +552,9 @@ function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSi
               </ContactRow>
               <ContactRow icon="phone" accent={accent}>
                 <a href={`tel:${c.contact.phoneRaw}`} className="font-semibold hover:underline" style={{ color: accent }}>{c.contact.phone}</a>
+                {c.emergency?.enabled && (
+                  <p className="text-sm text-gray-500">Notfall: <a href={`tel:${c.emergency.phoneRaw}`} className="font-medium text-[#c41e3a]">{c.emergency.phone}</a></p>
+                )}
               </ContactRow>
               {c.contact.email && (
                 <ContactRow icon="mail" accent={accent}>
@@ -500,7 +563,7 @@ function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSi
               )}
               {c.contact.openingHours && (
                 <ContactRow icon="clock" accent={accent}>
-                  <p className="font-semibold">Öffnungszeiten</p>
+                  <p className="font-semibold">&Ouml;ffnungszeiten</p>
                   {c.contact.openingHours.map((h, i) => (<p key={i} className="text-sm text-gray-600">{h}</p>))}
                 </ContactRow>
               )}
@@ -511,7 +574,7 @@ function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSi
               <iframe src={c.contact.mapEmbedUrl} className="h-full min-h-[350px] w-full border-0" allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Standort ${c.companyName}`} />
             ) : (
               <div className="flex h-full min-h-[350px] items-center justify-center bg-gray-100 text-gray-500">
-                <div className="text-center"><p className="text-4xl">📍</p><p className="mt-2 font-medium">{c.contact.address.street}</p><p>{c.contact.address.zip} {c.contact.address.city}</p></div>
+                <div className="text-center"><p className="text-4xl">&#128205;</p><p className="mt-2 font-medium">{c.contact.address.street}</p><p>{c.contact.address.zip} {c.contact.address.city}</p></div>
               </div>
             )}
           </div>
@@ -555,7 +618,7 @@ function Footer({ company: c }: { company: CustomerSite }) {
           <div className="flex items-center gap-4">
             <a href={`/kunden/${c.slug}/impressum`} className="hover:text-gray-600">Impressum</a>
             <a href={`/kunden/${c.slug}/datenschutz`} className="hover:text-gray-600">Datenschutz</a>
-            <span className="text-gray-300">·</span>
+            <span className="text-gray-300">&middot;</span>
             <span>Website powered by <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">FlowSight</a></span>
           </div>
         </div>
@@ -568,8 +631,8 @@ function Footer({ company: c }: { company: CustomerSite }) {
 // SERVICE ICONS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function ServiceIconSvg({ icon }: { icon?: ServiceIcon }) {
-  const cls = "h-6 w-6";
+function ServiceIconSvg({ icon, size = "md" }: { icon?: ServiceIcon; size?: "sm" | "md" }) {
+  const cls = size === "sm" ? "h-4 w-4" : "h-6 w-6";
   switch (icon) {
     case "bath": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>);
     case "flame": case "heating": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" /></svg>);
