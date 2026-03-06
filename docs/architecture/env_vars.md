@@ -52,6 +52,9 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Demo (SIP/MicroSIP)
 - DEMO_SIP_CALLER_ID -> Founder-Handynummer E.164 (z.B. +41791234567). Muss als Twilio Outgoing Caller ID verifiziert sein. Retell sieht diese Nummer als from_number → SMS landet auf dem Demo-Handy.
 
+## Scout (Prospect Discovery)
+- GOOGLE_SCOUT_KEY -> Google Cloud Console (Places API New). Used by scripts/_ops/scout.mjs for prospect discovery. $200/month free credit.
+
 ## App / Routing
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
