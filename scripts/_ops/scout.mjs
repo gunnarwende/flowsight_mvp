@@ -18,6 +18,9 @@
  *   # Custom query (override defaults)
  *   node scripts/_ops/scout.mjs --gemeinde Horgen --queries "Sanitär,Heizung,Badumbau"
  *
+ *   # Export styled XLSX for founder review (no API key needed)
+ *   node scripts/_ops/scout.mjs --export-xlsx
+ *
  * Env: GOOGLE_SCOUT_KEY (Vercel SSOT + .env.local)
  *
  * Scoring model — "Digital Gap" (see docs below for reasoning):
@@ -33,10 +36,12 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createRequire } from "module";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RAW_CSV = path.resolve(__dirname, "../../docs/sales/scout_raw.csv");
 const PIPELINE_CSV = path.resolve(__dirname, "../../docs/sales/pipeline.csv");
+const COVERAGE_CSV = path.resolve(__dirname, "../../docs/sales/scout_coverage.csv");
 
 // ── Env ─────────────────────────────────────────────────────────────
 // Load .env.local if present (check multiple locations)
@@ -59,12 +64,13 @@ function getArg(name) {
   return i !== -1 && args[i + 1] ? args[i + 1] : null;
 }
 const dryRun = args.includes("--dry-run");
+const exportXlsx = args.includes("--export-xlsx");
 const gemeinde = getArg("gemeinde");
 const region = getArg("region");
 const customQueries = getArg("queries");
 const apiKey = getArg("api-key") || process.env.GOOGLE_SCOUT_KEY || "";
 
-if (!apiKey) {
+if (!apiKey && !exportXlsx) {
   console.error(`
   GOOGLE_SCOUT_KEY not set.
 
@@ -80,12 +86,13 @@ if (!apiKey) {
   process.exit(1);
 }
 
-if (!gemeinde && !region) {
+if (!gemeinde && !region && !exportXlsx) {
   console.error(`
   Usage:
     node scripts/_ops/scout.mjs --gemeinde Thalwil
     node scripts/_ops/scout.mjs --region zuerichsee-links
     node scripts/_ops/scout.mjs --gemeinde Horgen --dry-run
+    node scripts/_ops/scout.mjs --export-xlsx
 
   Available regions:
     zuerichsee-links    Thalwil → Horgen (10 Gemeinden)
@@ -121,6 +128,15 @@ const DEFAULT_QUERIES = [
   "Sanitär Heizung",
 ];
 
+// ── Name normalization (for fuzzy dedup) ─────────────────────────────
+function normalizeName(name) {
+  return name.toLowerCase()
+    .replace(/\b(gmbh|ag|sa|inc|ltd|co)\b/g, "")
+    .replace(/[.,\-&()/]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // ── Load existing IDs to skip duplicates ────────────────────────────
 function loadExistingPlaceIds() {
   const ids = new Set();
@@ -128,21 +144,27 @@ function loadExistingPlaceIds() {
 
   for (const csvPath of [RAW_CSV, PIPELINE_CSV]) {
     if (!fs.existsSync(csvPath)) continue;
-    const csv = fs.readFileSync(csvPath, "utf-8");
+    const csv = stripBOM(fs.readFileSync(csvPath, "utf-8"));
     for (const line of csv.split("\n").slice(1)) {
       if (!line.trim()) continue;
-      // Parse first field (place_id or firma) for dedup
       const fields = parseCSVLine(line);
-      const id = fields[0]?.trim();
-      const name = (csvPath === RAW_CSV ? fields[1] : fields[0])?.trim().toLowerCase();
-      if (id) ids.add(id);
-      if (name) names.add(name);
+      if (csvPath === RAW_CSV) {
+        // Layout: firma=0, place_id=17
+        const name = fields[0]?.trim();
+        const id = fields[17]?.trim();
+        if (id) ids.add(id);
+        if (name) names.add(normalizeName(name));
+      } else {
+        // pipeline.csv: firma=0
+        const name = fields[0]?.trim();
+        if (name) names.add(normalizeName(name));
+      }
     }
   }
   return { ids, names };
 }
 
-// Simple CSV line parser (handles quoted fields)
+// CSV line parser (semicolon-delimited, handles quoted fields)
 function parseCSVLine(line) {
   const fields = [];
   let current = "";
@@ -150,7 +172,7 @@ function parseCSVLine(line) {
   for (const ch of line) {
     if (ch === '"') {
       inQuotes = !inQuotes;
-    } else if (ch === "," && !inQuotes) {
+    } else if (ch === ";" && !inQuotes) {
       fields.push(current);
       current = "";
     } else {
@@ -326,20 +348,26 @@ function scorePlace(place) {
   return { score, tier, localTrust, digitalGap, contactable, penalty, reasons };
 }
 
-// ── CSV helpers ─────────────────────────────────────────────────────
+// ── CSV helpers (semicolon-delimited, UTF-8 BOM for Excel) ──────────
+const BOM = "\uFEFF";
+
 function csvEscape(val) {
   const s = String(val ?? "");
-  if (s.includes(",") || s.includes('"') || s.includes("\n") || s.includes(";")) {
+  if (s.includes(";") || s.includes('"') || s.includes("\n")) {
     return `"${s.replace(/"/g, '""')}"`;
   }
   return s;
 }
 
-const RAW_HEADER = "place_id,firma,ort,adresse,telefon,website,google_rating,google_reviews,maps_url,score,tier,trust,gap,reasons,query,discovered";
+function stripBOM(text) {
+  return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+}
+
+const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;google_rating;google_reviews;reasons;score;ort;adresse;telefon;maps_url;query;discovered;place_id";
 
 function ensureRawCSV() {
   if (!fs.existsSync(RAW_CSV)) {
-    fs.writeFileSync(RAW_CSV, RAW_HEADER + "\n");
+    fs.writeFileSync(RAW_CSV, BOM + RAW_HEADER + "\n", "utf-8");
   }
 }
 
@@ -354,6 +382,253 @@ function extractOrt(address) {
     return plzOrt.replace(/^\d{4}\s*/, "").trim();
   }
   return "";
+}
+
+// ── Coverage tracking ────────────────────────────────────────────────
+const COVERAGE_HEADER = "gemeinde;last_scouted_at;run_source;queries_run;results_found";
+
+function loadCoverage() {
+  if (!fs.existsSync(COVERAGE_CSV)) return new Map();
+  const rows = new Map();
+  const lines = stripBOM(fs.readFileSync(COVERAGE_CSV, "utf-8")).split("\n").slice(1);
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const fields = parseCSVLine(line);
+    rows.set(fields[0]?.trim(), {
+      gemeinde: fields[0]?.trim(),
+      last_scouted_at: fields[1]?.trim(),
+      run_source: fields[2]?.trim(),
+      queries_run: fields[3]?.trim(),
+      results_found: fields[4]?.trim(),
+    });
+  }
+  return rows;
+}
+
+function writeCoverage(rows) {
+  const lines = [COVERAGE_HEADER];
+  for (const row of rows.values()) {
+    lines.push([
+      csvEscape(row.gemeinde),
+      row.last_scouted_at,
+      csvEscape(row.run_source),
+      row.queries_run,
+      row.results_found,
+    ].join(";"));
+  }
+  fs.writeFileSync(COVERAGE_CSV, BOM + lines.join("\n") + "\n", "utf-8");
+}
+
+function updateCoverage(targetedGemeinden, queriesPerGem, resultsPerGem, runSource) {
+  const rows = loadCoverage();
+  const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  for (const gem of targetedGemeinden) {
+    rows.set(gem, {
+      gemeinde: gem,
+      last_scouted_at: now,
+      run_source: runSource,
+      queries_run: String(queriesPerGem),
+      results_found: String(resultsPerGem.get(gem) || 0),
+    });
+  }
+  writeCoverage(rows);
+}
+
+// ── XLSX Export ─────────────────────────────────────────────────────
+const XLSX_OUT = path.resolve(__dirname, "../../docs/sales/scout_review.xlsx");
+
+async function exportToXlsx() {
+  // exceljs lives in src/web/node_modules (dev dep of the Next.js app)
+  const require = createRequire(path.resolve(__dirname, "../../src/web/package.json"));
+  const ExcelJS = require("exceljs");
+  const wb = new ExcelJS.Workbook();
+
+  // ── Shared design tokens ──
+  const DESIGN = {
+    headerFont: { bold: true, size: 11, color: { argb: "FFFFFFFF" } },
+    headerAlign: { vertical: "middle", horizontal: "center", wrapText: true },
+    headerHeight: 28,
+    headerColor: "FF1E293B", // slate-800 — same across all sheets
+    border: {
+      top: { style: "thin", color: { argb: "FFE2E8F0" } },
+      bottom: { style: "thin", color: { argb: "FFE2E8F0" } },
+      left: { style: "thin", color: { argb: "FFE2E8F0" } },
+      right: { style: "thin", color: { argb: "FFE2E8F0" } },
+    },
+    link: { color: { argb: "FF2563EB" }, underline: true },
+    review: {
+      yes:   { font: { bold: true, color: { argb: "FF16A34A" } }, fill: "FFF0FDF4" },
+      no:    { font: { bold: true, color: { argb: "FFDC2626" } }, fill: "FFFEF2F2" },
+      maybe: { font: { bold: true, color: { argb: "FFD97706" } }, fill: "FFFFFBEB" },
+    },
+    tier: {
+      HOT:  { font: { bold: true, color: { argb: "FFDC2626" } }, row: "FFFEF3F2" },
+      WARM: { font: { bold: true, color: { argb: "FFD97706" } }, row: "FFFFFBEB" },
+      COLD: { font: { color: { argb: "FF94A3B8" } }, row: "FFF1F5F9" },
+    },
+    status: {
+      OFFEN:       { font: { color: { argb: "FF6B7280" } }, fill: "FFF9FAFB" },
+      KONTAKTIERT: { font: { bold: true, color: { argb: "FF2563EB" } }, fill: "FFEFF6FF" },
+      DEMO:        { font: { bold: true, color: { argb: "FF7C3AED" } }, fill: "FFF5F3FF" },
+      GEWONNEN:    { font: { bold: true, color: { argb: "FF16A34A" } }, fill: "FFF0FDF4" },
+      VERLOREN:    { font: { color: { argb: "FF94A3B8" } }, fill: "FFF1F5F9" },
+    },
+  };
+
+  // ── Shared helpers ──
+  function styleHeader(ws, headers, rowCount) {
+    const hRow = ws.getRow(1);
+    hRow.font = DESIGN.headerFont;
+    hRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: DESIGN.headerColor } };
+    hRow.alignment = DESIGN.headerAlign;
+    hRow.height = DESIGN.headerHeight;
+    ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: rowCount, column: headers.length } };
+  }
+
+  function styleBorders(ws, rowCount, colCount) {
+    for (let r = 1; r <= rowCount; r++) {
+      const row = ws.getRow(r);
+      for (let c = 1; c <= colCount; c++) {
+        row.getCell(c).border = DESIGN.border;
+      }
+    }
+  }
+
+  function styleLinks(ws, colIdx, rowCount) {
+    if (colIdx < 0) return;
+    for (let r = 2; r <= rowCount; r++) {
+      const cell = ws.getRow(r).getCell(colIdx + 1);
+      const url = String(cell.value || "").trim();
+      if (url && url.startsWith("http")) {
+        cell.value = { text: url, hyperlink: url };
+        cell.font = { ...cell.font, ...DESIGN.link };
+      }
+    }
+  }
+
+  // ── Sheet 1: Scout Raw ──
+  if (fs.existsSync(RAW_CSV)) {
+    const ws = wb.addWorksheet("Scout Raw");
+    const rawLines = stripBOM(fs.readFileSync(RAW_CSV, "utf-8")).split("\n").filter((l) => l.trim());
+    const headers = rawLines[0].split(";");
+    for (const line of rawLines) ws.addRow(line === rawLines[0] ? headers : parseCSVLine(line));
+
+    const lastRow = rawLines.length;
+    styleHeader(ws, headers, lastRow);
+
+    // Column widths
+    const colWidths = {
+      firma: 30, website: 35, notiz: 28, manual_review: 14, tier: 7, trust: 7, gap: 6,
+      google_rating: 8, google_reviews: 9, reasons: 45, score: 7, ort: 18,
+      adresse: 30, telefon: 16, maps_url: 20, query: 22, discovered: 12, place_id: 20,
+    };
+    headers.forEach((h, i) => { ws.getColumn(i + 1).width = colWidths[h] || 15; });
+
+    // Freeze firma + website + notiz + manual_review (4 cols) + header
+    ws.views = [{ state: "frozen", xSplit: 4, ySplit: 1 }];
+
+    // Row styling
+    const tierCol = headers.indexOf("tier");
+    const reviewCol = headers.indexOf("manual_review");
+    const notizCol = headers.indexOf("notiz");
+    const reasonsCol = headers.indexOf("reasons");
+
+    for (let r = 2; r <= lastRow; r++) {
+      const row = ws.getRow(r);
+
+      // Tier row tinting
+      const tierVal = row.getCell(tierCol + 1).value;
+      const tierStyle = DESIGN.tier[tierVal];
+      if (tierStyle) {
+        for (let c = 1; c <= headers.length; c++) {
+          row.getCell(c).fill = { type: "pattern", pattern: "solid", fgColor: { argb: tierStyle.row } };
+        }
+        row.getCell(tierCol + 1).font = tierStyle.font;
+      }
+
+      // manual_review coloring
+      const rv = String(row.getCell(reviewCol + 1).value || "").trim().toLowerCase();
+      const reviewStyle = DESIGN.review[rv];
+      if (reviewStyle) {
+        row.getCell(reviewCol + 1).font = reviewStyle.font;
+        row.getCell(reviewCol + 1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: reviewStyle.fill } };
+      }
+
+      // Wrap notiz + reasons
+      if (notizCol >= 0) row.getCell(notizCol + 1).alignment = { wrapText: true, vertical: "top" };
+      if (reasonsCol >= 0) row.getCell(reasonsCol + 1).alignment = { wrapText: true, vertical: "top" };
+    }
+
+    styleLinks(ws, headers.indexOf("website"), lastRow);
+    styleBorders(ws, lastRow, headers.length);
+  }
+
+  // ── Sheet 2: Pipeline ──
+  if (fs.existsSync(PIPELINE_CSV)) {
+    const ws = wb.addWorksheet("Pipeline");
+    const pipeLines = stripBOM(fs.readFileSync(PIPELINE_CSV, "utf-8")).split("\n").filter((l) => l.trim());
+    const headers = pipeLines[0].split(";");
+    for (const line of pipeLines) ws.addRow(line === pipeLines[0] ? headers : parseCSVLine(line));
+
+    const lastRow = pipeLines.length;
+    styleHeader(ws, headers, lastRow);
+
+    // Column widths
+    const colWidths = {
+      firma: 30, ort: 16, website: 30, kontakt: 20, telefon: 16, email: 24,
+      status: 14, notizen: 35, demo_url: 28, email_gesendet: 14, anruf_1: 12,
+      google_rating: 8, google_reviews: 9, score: 7,
+    };
+    headers.forEach((h, i) => { ws.getColumn(i + 1).width = colWidths[h] || 15; });
+
+    // Freeze firma + ort + website (3 cols) + header
+    ws.views = [{ state: "frozen", xSplit: 3, ySplit: 1 }];
+
+    // Status coloring + links + notizen wrapping
+    const statusCol = headers.indexOf("status");
+    const notizenCol = headers.indexOf("notizen");
+
+    for (let r = 2; r <= lastRow; r++) {
+      const row = ws.getRow(r);
+      const sv = String(row.getCell(statusCol + 1).value || "").trim().toUpperCase();
+      const statusStyle = DESIGN.status[sv];
+      if (statusStyle) {
+        row.getCell(statusCol + 1).font = statusStyle.font;
+        row.getCell(statusCol + 1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: statusStyle.fill } };
+      }
+      if (notizenCol >= 0) row.getCell(notizenCol + 1).alignment = { wrapText: true, vertical: "top" };
+    }
+
+    styleLinks(ws, headers.indexOf("website"), lastRow);
+    styleLinks(ws, headers.indexOf("demo_url"), lastRow);
+    styleBorders(ws, lastRow, headers.length);
+  }
+
+  // ── Sheet 3: Coverage ──
+  if (fs.existsSync(COVERAGE_CSV)) {
+    const ws = wb.addWorksheet("Coverage");
+    const covLines = stripBOM(fs.readFileSync(COVERAGE_CSV, "utf-8")).split("\n").filter((l) => l.trim());
+    const headers = covLines[0].split(";");
+    for (const line of covLines) ws.addRow(line === covLines[0] ? headers : parseCSVLine(line));
+
+    const lastRow = covLines.length;
+    styleHeader(ws, headers, lastRow);
+
+    const colWidths = { gemeinde: 24, last_scouted_at: 22, run_source: 24, queries_run: 12, results_found: 14 };
+    headers.forEach((h, i) => { ws.getColumn(i + 1).width = colWidths[h] || 15; });
+
+    // Freeze gemeinde + header
+    ws.views = [{ state: "frozen", xSplit: 1, ySplit: 1 }];
+
+    styleBorders(ws, lastRow, headers.length);
+  }
+
+  await wb.xlsx.writeFile(XLSX_OUT);
+  const rawCount = wb.getWorksheet("Scout Raw")?.rowCount - 1 || 0;
+  const pipeCount = wb.getWorksheet("Pipeline")?.rowCount - 1 || 0;
+  const covCount = wb.getWorksheet("Coverage")?.rowCount - 1 || 0;
+  console.log(`\n  ✅ Exported to ${path.relative(process.cwd(), XLSX_OUT)}`);
+  console.log(`  Scout Raw: ${rawCount} rows | Pipeline: ${pipeCount} rows | Coverage: ${covCount} rows\n`);
 }
 
 // ── Main ────────────────────────────────────────────────────────────
@@ -373,10 +648,13 @@ async function main() {
 
   const { ids: existingIds, names: existingNames } = loadExistingPlaceIds();
   const allResults = new Map(); // place_id → result object (dedupe across queries)
+  const runNames = new Set(); // normalized names seen in this run (catches same company, different place_id)
+  const resultsPerGem = new Map(); // gemeinde → count (for coverage tracking)
   let apiCalls = 0;
 
   for (const gem of gemeinden) {
     console.log(`  --- ${gem} ---`);
+    let gemCount = 0;
 
     for (const q of queries) {
       const textQuery = `${q} ${gem}`;
@@ -393,9 +671,12 @@ async function main() {
         // Skip if already found in this run
         if (allResults.has(placeId)) continue;
 
-        // Name-based dedupe fallback
+        // Name-based dedupe (normalized: strips GmbH/AG, punctuation, whitespace)
         const name = p.displayName?.text || "";
-        if (existingNames.has(name.toLowerCase())) continue;
+        const norm = normalizeName(name);
+        if (existingNames.has(norm)) continue;
+        if (runNames.has(norm)) continue;
+        runNames.add(norm);
 
         const address = p.formattedAddress || "";
         const ort = extractOrt(address);
@@ -421,11 +702,14 @@ async function main() {
           reasons,
           query: textQuery,
         });
+        gemCount++;
       }
 
       // Small delay to be nice to the API
       await new Promise((r) => setTimeout(r, 200));
     }
+
+    resultsPerGem.set(gem, gemCount);
   }
 
   // Sort by score descending
@@ -437,7 +721,12 @@ async function main() {
   console.log("=".repeat(90));
 
   if (results.length === 0) {
-    console.log("\n  No new prospects found. All already known or no results.\n");
+    console.log("\n  No new prospects found. All already known or no results.");
+    if (!dryRun) {
+      const runSource = region ? `region:${region}` : gemeinden[0];
+      updateCoverage(gemeinden, queries.length, resultsPerGem, runSource);
+      console.log(`  ✅ Coverage updated for ${gemeinden.length} Gemeinde(n) in scout_coverage.csv\n`);
+    }
     return;
   }
 
@@ -483,27 +772,34 @@ async function main() {
   const today = new Date().toISOString().split("T")[0];
   const lines = results.map((r) =>
     [
-      csvEscape(r.placeId),
       csvEscape(r.name),
-      csvEscape(r.ort),
-      csvEscape(r.address),
-      csvEscape(r.phone),
       csvEscape(r.website),
-      r.rating || "",
-      r.reviews || "",
-      csvEscape(r.mapsUrl),
-      r.score,
+      "",  // notiz — blank, filled by founder
+      "",  // manual_review — blank, filled by founder
       r.tier,
       r.localTrust,
       r.digitalGap,
+      r.rating || "",
+      r.reviews || "",
       csvEscape(r.reasons.join("; ")),
+      r.score,
+      csvEscape(r.ort),
+      csvEscape(r.address),
+      csvEscape(r.phone),
+      csvEscape(r.mapsUrl),
       csvEscape(r.query),
       today,
-    ].join(",")
+      csvEscape(r.placeId),
+    ].join(";")
   );
 
   fs.appendFileSync(RAW_CSV, lines.join("\n") + "\n");
   console.log(`\n  ✅ ${results.length} entries written to scout_raw.csv`);
+
+  // ── Update coverage tracker ──────────────────────────────────────
+  const runSource = region ? `region:${region}` : gemeinden[0];
+  updateCoverage(gemeinden, queries.length, resultsPerGem, runSource);
+  console.log(`  ✅ Coverage updated for ${gemeinden.length} Gemeinde(n) in scout_coverage.csv`);
 
   // Show next steps for HOT
   if (tiers.HOT.length > 0) {
@@ -515,7 +811,8 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+const run = exportXlsx ? exportToXlsx : main;
+run().catch((err) => {
   console.error("Fatal:", err);
   process.exit(1);
 });
