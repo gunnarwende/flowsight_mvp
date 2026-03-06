@@ -29,6 +29,7 @@ debug.log
 # binary assets in docs (PDFs, images, Office docs)
 docs/**/*.pdf
 docs/**/*.docx
+docs/**/*.xlsx
 docs/customers/*/images/
 docs/customers/*/feedback/*.jpg
 docs/customers/*/feedback/*.png

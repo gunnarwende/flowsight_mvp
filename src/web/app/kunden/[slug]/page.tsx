@@ -144,7 +144,9 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
           )}
           <div><p className="text-3xl font-bold text-white">{c.services.length}</p><p className="mt-1 text-sm text-gray-400">Fachbereiche</p></div>
           <div><p className="text-3xl font-bold text-white">{c.serviceArea.gemeinden.length}+</p><p className="mt-1 text-sm text-gray-400">Gemeinden</p></div>
-          <div><p className="text-3xl font-bold text-white">3. Gen.</p><p className="mt-1 text-sm text-gray-400">Familienbetrieb</p></div>
+          {c.reviews && (
+            <div><p className="text-3xl font-bold text-white">{c.reviews.averageRating}★</p><p className="mt-1 text-sm text-gray-400">{c.reviews.totalReviews} Bewertungen</p></div>
+          )}
         </div>
       </div>
     </section>
