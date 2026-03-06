@@ -210,22 +210,26 @@ export function BigBenContent() {
   return (
     <div className="bg-[#faf7f2] text-[#1a1a1a]">
       {/* ── Top Bar ─────────────────────────────────────────────── */}
-      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#faf7f2]/90 px-5 py-3 shadow-sm backdrop-blur-md">
+      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#faf7f2]/90 px-4 py-2.5 shadow-sm backdrop-blur-md">
         <a
           href="https://www.instagram.com/bigbenpubzh/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 px-4 py-1.5 text-sm font-semibold text-white transition-transform hover:scale-105"
+          className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 px-2.5 py-1 text-xs font-semibold text-white transition-transform hover:scale-105"
         >
-          <IcInstagram className="h-4 w-4" />
-          <span>@bigbenpubzh</span>
+          <IcInstagram className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">@bigbenpubzh</span>
         </a>
-        <span className="font-serif text-sm font-bold tracking-wider text-[#1a1a1a]">BIG BEN PUB</span>
+        <span className="font-serif text-xs font-bold tracking-wider text-[#1a1a1a]">
+          BIG BEN
+          <br />
+          PUB
+        </span>
         <button
           onClick={() => setLang(lang === "en" ? "de" : "en")}
-          className="flex items-center gap-2 rounded-full border border-[#ddd] bg-white px-3.5 py-1.5 text-xs font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
+          className="flex items-center gap-1.5 rounded-full border border-[#ddd] bg-white px-2.5 py-1 text-[10px] font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
         >
-          <span className="inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-[3px] shadow-sm">
+          <span className="inline-flex h-4 w-5 items-center justify-center overflow-hidden rounded-[2px] shadow-sm">
             {lang === "en" ? (
               /* DE flag */
               <svg viewBox="0 0 5 3" className="h-full w-full">
