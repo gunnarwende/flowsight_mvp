@@ -21,10 +21,24 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = getCustomer(slug);
   if (!c) return {};
+  const title = `${c.companyName} — ${c.tagline}`;
   return {
-    title: `${c.companyName} — ${c.tagline}`,
+    title,
     description: c.metaDescription,
     keywords: c.seoKeywords,
+    openGraph: {
+      title,
+      description: c.metaDescription,
+      url: `https://flowsight.ch/kunden/${slug}`,
+      siteName: c.companyName,
+      locale: "de_CH",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: c.metaDescription,
+    },
   };
 }
 
