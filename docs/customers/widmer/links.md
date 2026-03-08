@@ -1,4 +1,4 @@
-# Widmer H. & Co. AG — Links
+# Widmer & Co. AG — Links
 
 - **Website:** https://flowsight.ch/kunden/widmer-sanitaer
 - **Links-Seite:** https://flowsight.ch/kunden/widmer-sanitaer/links

@@ -35,12 +35,18 @@
 | 2 | **Bilder** | Nur die Bilder aus dem jeweiligen Ordner. Keine generischen Platzhalter. |
 | 3 | **Hero** | Immer das Bild aus `titelbild/`. Founder entscheidet. |
 | 4 | **Reviews** | NUR wenn `reviews/`-Ordner existiert. Screenshots → Struct extrahieren. Sonst: `highlights: []` |
+| 4b | **Reviews < 5** | "Basierend auf X Bewertungen" wird NICHT angezeigt wenn `totalReviews < 5`. Template-Regel. |
 | 5 | **Brand Color** | Aus alter Website extrahieren. Falls sehr veraltet (>15 Jahre Design) → modernisieren, Founder fragen. |
 | 6 | **Gründungsjahr** | Nur anzeigen wenn Betrieb >20 Jahre alt. |
 | 7 | **History** | Nur wenn >20 Jahre UND alte Website hat Meilensteine/Text. Wenn nichts → History-Section weglassen. |
 | 8 | **Team** | NUR verifizierte Personen (auf alter Website auffindbar). Minimum 2 für Section-Anzeige. |
 | 9 | **Text** | Alte Website als Basis + High-End Creative Writing. Keine 1:1-Kopie, kein Erfinden von Fakten. |
 | 10 | **Wizard** | Immer aktiv. Kategorien aus `services[]` ableiten. |
+| 11 | **Notfall/Notdienst** | NUR wenn alte Website explizit Notdienst/Notfall anbietet. Sonst: `emergency` weglassen → Nav zeigt "Anrufen"-Button statt "Notfall". |
+| 12 | **Firmenname** | EXAKT wie auf alter Website/Impressum. Kein Buchstabe dazu, keiner weg. |
+| 13 | **Stellenanzeigen** | Wenn alte Website Jobs ausschreibt → `careers[]` übernehmen. |
+| 14 | **Partner/Verbände** | Wenn alte Website Partner/Verbände zeigt → `brandPartners[]` + `certifications[]` übernehmen. URLs prüfen! Tote Links → entfernen. |
+| 15 | **Partner-URLs** | JEDE URL muss vor Commit geprüft werden (HTTP 200). Tote URLs = nicht aufnehmen. |
 
 ### Pflicht-Output pro Kunde (IMMER):
 - `docs/customers/<slug>/links.md` — Website-URL, Links-Seite, Wizard-URL
