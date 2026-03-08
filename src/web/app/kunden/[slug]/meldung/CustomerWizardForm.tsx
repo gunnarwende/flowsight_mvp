@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, useRef, type FormEvent, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -25,10 +25,13 @@ interface Props {
 }
 
 const URGENCIES = [
-  { value: "notfall", label: "Notfall", hint: "Sofort \u2014 Wasser l\u00e4uft, Gefahr", color: "red" as const },
-  { value: "dringend", label: "Dringend", hint: "Heute/morgen \u2014 funktioniert nicht", color: "amber" as const },
+  { value: "notfall", label: "Notfall", hint: "Sofort — Wasser läuft, Gefahr", color: "red" as const },
+  { value: "dringend", label: "Dringend", hint: "Heute/morgen — funktioniert nicht", color: "amber" as const },
   { value: "normal", label: "Normal", hint: "Kann eingeplant werden", color: "blue" as const },
 ];
+
+const MAX_PHOTOS = 5;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 interface ApiSuccess {
   id: string;
@@ -38,11 +41,18 @@ interface ApiSuccess {
   category: string;
   city: string;
   created_at: string;
+  verify_token?: string;
 }
 
 interface ApiError {
   error: string;
   missing_fields?: string[];
+}
+
+interface UploadedFile {
+  name: string;
+  status: "uploading" | "done" | "error";
+  progress?: number;
 }
 
 type PageState =
@@ -78,6 +88,10 @@ export function CustomerWizardForm({
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [description, setDescription] = useState("");
+
+  // Photo upload state
+  const [uploads, setUploads] = useState<UploadedFile[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Validation
   const step1Valid = category !== "" && urgency !== "";
@@ -134,6 +148,76 @@ export function CustomerWizardForm({
     }
   }
 
+  // ── Photo upload ─────────────────────────────────────────────────
+  async function uploadPhoto(file: File, caseId: string, token: string) {
+    const idx = uploads.length;
+    setUploads((prev) => [...prev, { name: file.name, status: "uploading" }]);
+
+    try {
+      // Step 1: Get presigned URL
+      const reqRes = await fetch(`/api/verify/${caseId}/attachments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "request-upload",
+          token,
+          file_name: file.name,
+          mime_type: file.type,
+          size_bytes: file.size,
+        }),
+      });
+      if (!reqRes.ok) throw new Error("Upload-URL fehlgeschlagen");
+      const { upload_url, storage_path } = await reqRes.json();
+
+      // Step 2: Upload to signed URL
+      const putRes = await fetch(upload_url, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!putRes.ok) throw new Error("Upload fehlgeschlagen");
+
+      // Step 3: Confirm
+      await fetch(`/api/verify/${caseId}/attachments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "confirm",
+          token,
+          storage_path,
+          file_name: file.name,
+          mime_type: file.type,
+          size_bytes: file.size,
+        }),
+      });
+
+      setUploads((prev) =>
+        prev.map((u, i) => (i === idx ? { ...u, status: "done" } : u))
+      );
+    } catch {
+      setUploads((prev) =>
+        prev.map((u, i) => (i === idx ? { ...u, status: "error" } : u))
+      );
+    }
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    if (pageState.status !== "success" || !pageState.data.verify_token) return;
+    const files = e.target.files;
+    if (!files) return;
+
+    const remaining = MAX_PHOTOS - uploads.length;
+    const toUpload = Array.from(files).slice(0, remaining);
+
+    for (const file of toUpload) {
+      if (file.size > MAX_FILE_SIZE) continue;
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) continue;
+      uploadPhoto(file, pageState.data.id, pageState.data.verify_token);
+    }
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  }
+
   function reset() {
     setStep(1);
     setPageState({ status: "form" });
@@ -146,13 +230,15 @@ export function CustomerWizardForm({
     setContactPhone("");
     setContactEmail("");
     setDescription("");
+    setUploads([]);
   }
 
   // ── Success ────────────────────────────────────────────────────────
   if (pageState.status === "success") {
     const urgLabel = URGENCIES.find((u) => u.value === urgency)?.label ?? urgency;
+    const canUpload = !!pageState.data.verify_token && uploads.length < MAX_PHOTOS;
     return (
-      <Shell accent={accent}>
+      <Shell>
         <TopBar companyName={companyName} phone={phone} phoneRaw={phoneRaw} accent={accent} backUrl={backUrl} />
         <div className="mx-auto max-w-xl px-4 py-12 text-center">
           <div
@@ -164,7 +250,7 @@ export function CustomerWizardForm({
             </svg>
           </div>
           <h1 className="mb-1 text-2xl font-semibold text-gray-900">Meldung aufgenommen</h1>
-          <p className="text-gray-500">Vielen Dank \u2014 wir k\u00fcmmern uns darum.</p>
+          <p className="text-gray-500">{"Vielen Dank \u2014 wir kümmern uns darum."}</p>
 
           <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm">
             <Row label="Fall-Nr." value={pageState.data.id.slice(0, 8) + "\u2026"} />
@@ -173,12 +259,69 @@ export function CustomerWizardForm({
             <Row label="Ort" value={`${plz} ${city}`} />
           </div>
 
+          {/* Photo upload section */}
+          {pageState.data.verify_token && (
+            <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-white p-5 text-left">
+              <p className="mb-1 text-sm font-semibold text-gray-900">Fotos vom Schaden</p>
+              <p className="mb-4 text-xs text-gray-400">
+                {"Bis zu 5 Fotos hochladen \u2014 hilft uns bei der Einschätzung."}
+              </p>
+
+              {/* Upload list */}
+              {uploads.length > 0 && (
+                <div className="mb-3 space-y-2">
+                  {uploads.map((u, i) => (
+                    <div key={i} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm">
+                      {u.status === "uploading" && <Spinner />}
+                      {u.status === "done" && (
+                        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l5 5L20 7" />
+                        </svg>
+                      )}
+                      {u.status === "error" && (
+                        <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      )}
+                      <span className="truncate text-gray-600">{u.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload button */}
+              {canUpload && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileSelect}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                    </svg>
+                    Foto hinzuf&uuml;gen ({MAX_PHOTOS - uploads.length} verbleibend)
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="mt-6 rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-500">
-            <p className="font-medium text-gray-700">N\u00e4chster Schritt</p>
-            <p className="mt-1">Wir melden uns schnellstm\u00f6glich bei Ihnen.</p>
+            <p className="font-medium text-gray-700">{"Nächster Schritt"}</p>
+            <p className="mt-1">{"Wir melden uns schnellstmöglich bei Ihnen."}</p>
             {urgency === "notfall" && emergency?.enabled && (
               <p className="mt-2 text-sm">
-                F\u00fcr sofortige Hilfe:{" "}
+                {"Für sofortige Hilfe: "}
                 <a href={`tel:${emergency.phoneRaw}`} className="font-semibold underline" style={{ color: accent }}>
                   {emergency.phone}
                 </a>
@@ -189,9 +332,9 @@ export function CustomerWizardForm({
           <div className="mt-6 flex justify-center gap-3">
             <a
               href={backUrl}
-              className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+              className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
             >
-              Zur\u00fcck zur Website
+              {"Zurück zur Website"}
             </a>
             <button
               type="button"
@@ -211,7 +354,7 @@ export function CustomerWizardForm({
   const stepLabels = ["Problem", "Adresse", "Kontakt"];
 
   return (
-    <Shell accent={accent}>
+    <Shell>
       <TopBar companyName={companyName} phone={phone} phoneRaw={phoneRaw} accent={accent} backUrl={backUrl} />
 
       <div className="mx-auto max-w-xl px-4 py-8 sm:py-12">
@@ -291,26 +434,26 @@ export function CustomerWizardForm({
             <div className="space-y-5">
               <div>
                 <StepLabel>Einsatzort</StepLabel>
-                <p className="mb-4 text-xs text-gray-400">Adresse, PLZ und Ort werden f\u00fcr die Einsatzplanung ben\u00f6tigt.</p>
+                <p className="mb-4 text-xs text-gray-400">{"Adresse, PLZ und Ort werden für die Einsatzplanung benötigt."}</p>
                 <div className="space-y-3">
                   <div className="grid grid-cols-3 gap-3">
                     <div className="col-span-2">
                       <FieldLabel htmlFor="street">Strasse</FieldLabel>
-                      <Input id="street" type="text" required value={street} onChange={setStreet} placeholder="Bahnhofstrasse" accent={accent} />
+                      <Input id="street" type="text" required value={street} onChange={setStreet} placeholder="Bahnhofstrasse" />
                     </div>
                     <div>
                       <FieldLabel htmlFor="house_number">Nr.</FieldLabel>
-                      <Input id="house_number" type="text" required value={houseNumber} onChange={setHouseNumber} placeholder="12a" accent={accent} />
+                      <Input id="house_number" type="text" required value={houseNumber} onChange={setHouseNumber} placeholder="12a" />
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div>
                       <FieldLabel htmlFor="plz">PLZ</FieldLabel>
-                      <Input id="plz" type="text" required value={plz} onChange={setPlz} placeholder="8000" maxLength={5} accent={accent} />
+                      <Input id="plz" type="text" required value={plz} onChange={setPlz} placeholder="8000" maxLength={5} />
                     </div>
                     <div className="col-span-2">
                       <FieldLabel htmlFor="city">Ort</FieldLabel>
-                      <Input id="city" type="text" required value={city} onChange={setCity} placeholder="Z\u00fcrich" accent={accent} />
+                      <Input id="city" type="text" required value={city} onChange={setCity} placeholder={"Zürich"} />
                     </div>
                   </div>
                 </div>
@@ -328,11 +471,11 @@ export function CustomerWizardForm({
                 <div className="space-y-3">
                   <div>
                     <FieldLabel htmlFor="phone">Telefon</FieldLabel>
-                    <Input id="phone" type="tel" value={contactPhone} onChange={setContactPhone} placeholder="+41 79 123 45 67" accent={accent} />
+                    <Input id="phone" type="tel" value={contactPhone} onChange={setContactPhone} placeholder="+41 79 123 45 67" />
                   </div>
                   <div>
                     <FieldLabel htmlFor="email">E-Mail</FieldLabel>
-                    <Input id="email" type="email" value={contactEmail} onChange={setContactEmail} placeholder="name@beispiel.ch" accent={accent} />
+                    <Input id="email" type="email" value={contactEmail} onChange={setContactEmail} placeholder="name@beispiel.ch" />
                   </div>
                 </div>
               </div>
@@ -345,7 +488,7 @@ export function CustomerWizardForm({
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Beschreiben Sie das Problem kurz\u2026"
+                  placeholder={"Beschreiben Sie das Problem kurz\u2026"}
                   className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                 />
               </div>
@@ -382,9 +525,9 @@ export function CustomerWizardForm({
                   <button
                     type="button"
                     onClick={goBack}
-                    className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+                    className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
                   >
-                    Zur\u00fcck
+                    {"Zurück"}
                   </button>
                   <button
                     type="submit"
@@ -394,7 +537,7 @@ export function CustomerWizardForm({
                   >
                     {pageState.status === "submitting" ? (
                       <>
-                        <Spinner /> Wird gesendet\u2026
+                        <Spinner /> {"Wird gesendet\u2026"}
                       </>
                     ) : (
                       "Meldung absenden"
@@ -403,11 +546,11 @@ export function CustomerWizardForm({
                 </div>
 
                 <div className="space-y-1 text-center text-xs text-gray-400">
-                  <p>{companyName} meldet sich schnellstm\u00f6glich.</p>
-                  <p>Keine Aufzeichnung \u00b7 Daten nur zur Bearbeitung Ihres Anliegens</p>
+                  <p>{companyName} meldet sich schnellstmöglich.</p>
+                  <p>Keine Aufzeichnung · Daten nur zur Bearbeitung Ihres Anliegens</p>
                   {urgency === "notfall" && emergency?.enabled && (
                     <p className="font-medium" style={{ color: accent }}>
-                      Notfall? Direkt anrufen:{" "}
+                      {"Notfall? Direkt anrufen: "}
                       <a href={`tel:${emergency.phoneRaw}`} className="underline">{emergency.phone}</a>
                     </p>
                   )}
@@ -425,12 +568,12 @@ export function CustomerWizardForm({
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function Shell({ accent, children }: { accent: string; children: ReactNode }) {
+function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {children}
       <footer className="border-t border-gray-200 bg-white py-4 text-center text-xs text-gray-400">
-        Website powered by{" "}
+        {"Website powered by "}
         <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">FlowSight</a>
       </footer>
     </div>
@@ -459,17 +602,9 @@ function TopBar({ companyName, phone, phoneRaw, accent, backUrl }: { companyName
 }
 
 function StepIndicator({
-  current,
-  total,
-  labels,
-  accent,
-  onStepClick,
+  current, total, labels, accent, onStepClick,
 }: {
-  current: number;
-  total: number;
-  labels: string[];
-  accent: string;
-  onStepClick?: (step: number) => void;
+  current: number; total: number; labels: string[]; accent: string; onStepClick?: (step: number) => void;
 }) {
   return (
     <div className="mb-8 flex items-center justify-center gap-2">
@@ -488,11 +623,7 @@ function StepIndicator({
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all ${
-                  active
-                    ? "text-white shadow-md"
-                    : done
-                      ? "text-white"
-                      : "bg-gray-200 text-gray-400"
+                  active ? "text-white shadow-md" : done ? "text-white" : "bg-gray-200 text-gray-400"
                 }`}
                 style={active || done ? { backgroundColor: accent } : undefined}
               >
@@ -500,9 +631,7 @@ function StepIndicator({
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
                     <path d="M5 12l5 5L20 7" />
                   </svg>
-                ) : (
-                  s
-                )}
+                ) : s}
               </div>
               <span className={`mt-1 text-[10px] font-medium ${active ? "text-gray-700" : "text-gray-400"}`}>
                 {labels[i]}
@@ -518,25 +647,13 @@ function StepIndicator({
   );
 }
 
-function CategoryCard({
-  selected,
-  onClick,
-  accent,
-  children,
-}: {
-  selected: boolean;
-  onClick: () => void;
-  accent: string;
-  children: ReactNode;
-}) {
+function CategoryCard({ selected, onClick, accent, children }: { selected: boolean; onClick: () => void; accent: string; children: ReactNode }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`rounded-xl border px-4 py-3 text-left transition-all ${
-        selected
-          ? "shadow-sm"
-          : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+        selected ? "shadow-sm" : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
       }`}
       style={selected ? { borderColor: accent, backgroundColor: accent + "08" } : undefined}
     >
@@ -572,73 +689,34 @@ function StepLabel({ children }: { children: ReactNode }) {
 }
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: ReactNode }) {
-  return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-gray-700">
-      {children}
-    </label>
-  );
+  return <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-gray-700">{children}</label>;
 }
 
-function Input({
-  id,
-  type,
-  required,
-  value,
-  onChange,
-  placeholder,
-  maxLength,
-  accent,
-}: {
-  id: string;
-  type: string;
-  required?: boolean;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  maxLength?: number;
-  accent: string;
+function Input({ id, type, required, value, onChange, placeholder, maxLength }: {
+  id: string; type: string; required?: boolean; value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number;
 }) {
   return (
     <input
-      id={id}
-      type={type}
-      required={required}
-      value={value}
+      id={id} type={type} required={required} value={value}
       onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      maxLength={maxLength}
+      placeholder={placeholder} maxLength={maxLength}
       className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
     />
   );
 }
 
-function NavButtons({
-  accent,
-  onBack,
-  onNext,
-  nextDisabled,
-}: {
-  accent: string;
-  onBack?: () => void;
-  onNext?: () => void;
-  nextDisabled?: boolean;
-}) {
+function NavButtons({ accent, onBack, onNext, nextDisabled }: { accent: string; onBack?: () => void; onNext?: () => void; nextDisabled?: boolean }) {
   return (
     <div className="flex gap-3 pt-2">
       {onBack && (
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+        <button type="button" onClick={onBack}
+          className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
         >
-          Zur\u00fcck
+          {"Zurück"}
         </button>
       )}
       {onNext && (
-        <button
-          type="button"
-          onClick={onNext}
-          disabled={nextDisabled}
+        <button type="button" onClick={onNext} disabled={nextDisabled}
           className="flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
           style={{ backgroundColor: accent }}
         >
