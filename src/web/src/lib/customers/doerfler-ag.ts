@@ -59,11 +59,20 @@ export const doerflerAg: CustomerSite = {
       summary:
         "Von der kleinen Reparatur bis zur kompletten Badsanierung — wir kümmern uns um Ihre gesamte Sanitärinstallation.",
       description:
-        "Ob tropfender Wasserhahn, defekte Spülkasten-Mechanik oder die komplette Renovation eines Mehrfamilienhauses — unser Sanitärteam löst jedes Problem. Wir arbeiten mit führenden Marken wie KWC, Similor und Geberit.",
+        "Ob tropfender Wasserhahn, defekte Spülkasten-Mechanik oder die komplette Renovation eines Mehrfamilienhauses — unser Sanitärteam löst jedes Problem. Wir arbeiten mit führenden Marken wie KWC, Similor und Geberit und betreuen jedes Projekt persönlich von der Beratung bis zur Endabnahme.",
+      bullets: [
+        "Komplette Badsanierungen inkl. Trockenbau & Plattenleger-Koordination",
+        "Neuinstallationen für Einfamilien- und Mehrfamilienhäuser",
+        "Spülkasten-Reparaturen, Armaturen-Ersatz, Dichtungen",
+        "Rohrbruch-Sofortreparatur — auch an Wochenenden",
+        "Beratung zu hochwertigen Armaturen (KWC, Similor, Geberit)",
+      ],
       images: [
-        `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_000_b91dca3afef8.png`,
-        `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_001_d256776eaf57.jpg`,
-        `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_002_cf19e9fe8063.jpg`,
+        `${IMG}/sanitaer/01.avif`,
+        `${IMG}/sanitaer/02.avif`,
+        `${IMG}/sanitaer/03.avif`,
+        `${IMG}/sanitaer/04.jpg`,
+        `${IMG}/sanitaer/05.jpg`,
       ],
     },
     {
@@ -73,10 +82,20 @@ export const doerflerAg: CustomerSite = {
       summary:
         "Wartung, Reparatur und Ersatz von Heizungsanlagen — ökologisch und effizient.",
       description:
-        "Ihre Heizung ist in die Jahre gekommen? Wir beraten Sie zu modernen, ökologisch optimalen Lösungen — abgestimmt auf Ihr Gebäude und Ihre Bedürfnisse. Von der Wärmepumpe bis zum Gaskessel-Ersatz.",
+        "Ihre Heizung ist in die Jahre gekommen? Wir beraten Sie zu modernen, ökologisch optimalen Lösungen — abgestimmt auf Ihr Gebäude und Ihre Bedürfnisse. Von der Wärmepumpe über Fussbodenheizung bis zum Gaskessel-Ersatz: Wir planen, installieren und warten Ihre Heizungsanlage.",
+      bullets: [
+        "Heizkörper- und Fussbodenheizung — Einbau & Wartung",
+        "Wärmepumpen-Beratung und Installation",
+        "Heizungsersatz: Gas, Öl, Wärmepumpe, Pellet",
+        "Jährliche Wartung und Funktionskontrollen",
+        "Notfall-Service bei Heizungsausfall",
+      ],
       images: [
-        `${IMG}/heizung/doerflerag-fotogalerie-heizung-htm_000_ee84ed2e6d29.jpg`,
-        `${IMG}/heizung/doerflerag-fotogalerie-heizung-htm_001_8138bc592c13.jpg`,
+        `${IMG}/heizung/01.webp`,
+        `${IMG}/heizung/02.jpg`,
+        `${IMG}/heizung/03.jpg`,
+        `${IMG}/heizung/04.webp`,
+        `${IMG}/heizung/05.jpg`,
       ],
     },
     {
@@ -86,10 +105,20 @@ export const doerflerAg: CustomerSite = {
       summary:
         "Dacheindeckungen, Blechverarbeitung und Dachrinnen — für ein wasserdichtes Dach.",
       description:
-        "Wir verarbeiten verschiedenste Blecharten zu massgeschneiderten Dachlösungen. Stehfalz, Dachrinnen, Blechverkleidungen — alles aus einer Hand.",
+        "Wir verarbeiten verschiedenste Blecharten zu massgeschneiderten Dachlösungen. Stehfalz, Dachrinnen, Blechverkleidungen, Kaminabdeckungen — alles aus einer Hand. Ob Neubau, Sanierung oder Reparatur: Unser Spenglerteam arbeitet präzise und wetterfest.",
+      bullets: [
+        "Stehfalz- und Metalldach-Eindeckungen",
+        "Dachrinnen, Fallrohre & Schneefangsysteme",
+        "Kaminabdeckungen & Dachdurchführungen",
+        "Fassadenverkleidungen aus Blech",
+        "Reparaturen und Abdichtungen am Dach",
+      ],
       images: [
-        `${IMG}/spenglerei/doerflerag-fotogalerie-spenglerei-htm_000_664a3fa4859b.jpg`,
-        `${IMG}/spenglerei/doerflerag-fotogalerie-spenglerei-htm_001_82318ccbda7e.jpg`,
+        `${IMG}/spenglerei/11.jpg`,
+        `${IMG}/spenglerei/12.jpg`,
+        `${IMG}/spenglerei/13.webp`,
+        `${IMG}/spenglerei/14.jpg`,
+        `${IMG}/spenglerei/15.jpeg`,
       ],
     },
     {
@@ -99,23 +128,20 @@ export const doerflerAg: CustomerSite = {
       summary:
         "Solaranlagen für Warmwasser und Strom — nachhaltig und zukunftssicher.",
       description:
-        "Nutzen Sie die Kraft der Sonne. Wir planen und installieren Solaranlagen, die zu Ihrem Gebäude passen — für Warmwasser, Heizungsunterstützung oder Stromerzeugung.",
-      images: [
-        `${IMG}/solar/doerflerag-fotogalerie-solar-htm_000_c5bebd2be34d.jpg`,
-        `${IMG}/solar/doerflerag-fotogalerie-solar-htm_001_8905a55a614e.jpg`,
+        "Nutzen Sie die Kraft der Sonne. Wir planen und installieren Solaranlagen, die zu Ihrem Gebäude passen — für Warmwasser, Heizungsunterstützung oder Stromerzeugung. Von der Erstberatung über die Montage bis zur Inbetriebnahme betreuen wir Ihr Projekt komplett.",
+      bullets: [
+        "Solarthermie für Warmwasser & Heizungsunterstützung",
+        "Photovoltaik-Anlagen zur Stromerzeugung",
+        "Planung, Montage und Inbetriebnahme",
+        "Kombination mit bestehender Heizungsanlage",
+        "Beratung zu Förderbeiträgen und Wirtschaftlichkeit",
       ],
-    },
-    {
-      name: "Leitungsbau",
-      slug: "leitungsbau",
-      icon: "pipe",
-      summary:
-        "Verlegung neuer Hauptwasserleitungen für öffentliche und private Netze.",
-      description:
-        "Professioneller Leitungsbau für Gemeinden und private Auftraggeber. Wir verlegen neue Hauptwasserleitungen zuverlässig und termingerecht.",
       images: [
-        `${IMG}/leitungsbau/doerflerag-fotogalerie-leitungsbau-htm_000_d2dcf98eba78.jpg`,
-        `${IMG}/leitungsbau/doerflerag-fotogalerie-leitungsbau-htm_001_9b0d5e1f4d13.jpg`,
+        `${IMG}/solar/01.png`,
+        `${IMG}/solar/02.png`,
+        `${IMG}/solar/03.png`,
+        `${IMG}/solar/04.png`,
+        `${IMG}/solar/05.png`,
       ],
     },
     {
@@ -124,6 +150,21 @@ export const doerflerAg: CustomerSite = {
       icon: "tool",
       summary:
         "Fachgerechte Installation von Blitzschutzanlagen für Ihr Gebäude.",
+      description:
+        "Blitzschutz schützt Ihr Gebäude, Ihre Elektroinstallationen und Ihre Familie. Wir installieren normgerechte Blitzschutzanlagen — vom Auffangsystem auf dem Dach über die Ableitungen bis zur Erdung. Regelmässige Prüfungen sichern die dauerhafte Funktion.",
+      bullets: [
+        "Äusserer Blitzschutz: Auffangstangen, Fangseile, Ableitung",
+        "Erdungsanlagen nach SN-Norm",
+        "Blitzschutzprüfung und Revisionen",
+        "Nachrüstung bestehender Gebäude",
+        "Beratung zu Überspannungsschutz",
+      ],
+      images: [
+        `${IMG}/blitzschutz/01.png`,
+        `${IMG}/blitzschutz/02.png`,
+        `${IMG}/blitzschutz/03.png`,
+        `${IMG}/blitzschutz/04.png`,
+      ],
     },
     {
       name: "Reparaturservice",
@@ -132,51 +173,88 @@ export const doerflerAg: CustomerSite = {
       summary:
         "Schnelle Hilfe bei Defekten — von der Armatur bis zum Boiler.",
       description:
-        "Etwas kaputt? Wir reparieren schnell und unkompliziert. Egal ob tropfender Hahn, verstopfter Abfluss oder defekter Boiler — rufen Sie uns einfach an.",
+        "Etwas kaputt? Wir reparieren schnell und unkompliziert. Egal ob tropfender Hahn, verstopfter Abfluss oder defekter Boiler — rufen Sie uns einfach an. Auch an Sonn- und Feiertagen sind wir über unsere Telefonnummer erreichbar.",
+      bullets: [
+        "Armaturenreparatur und -ersatz",
+        "Verstopfungen lösen (Abfluss, WC, Leitung)",
+        "Boiler-Reparatur und Entkalkung",
+        "Ventile, Dichtungen, Filterpatronen",
+        "Notfall-Reparaturen — auch am Wochenende",
+      ],
+      images: [
+        `${IMG}/reparatur/01.png`,
+        `${IMG}/reparatur/02.png`,
+        `${IMG}/reparatur/03.png`,
+        `${IMG}/reparatur/04.png`,
+        `${IMG}/reparatur/05.png`,
+      ],
     },
   ],
 
-  // Only the sharpest, highest-quality images per category
   gallery: [
     {
       name: "Sanitär",
       slug: "sanitaer",
       images: [
-        { src: `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_000_b91dca3afef8.png`, alt: "Sanitärinstallation — Waschbecken und Armaturen" },
-        { src: `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_001_d256776eaf57.jpg`, alt: "Badezimmer Renovation" },
-        { src: `${IMG}/sanitaer/doerflerag-fotogalerie-sanitaer-htm_002_cf19e9fe8063.jpg`, alt: "Sanitäranlagen Neubau" },
+        { src: `${IMG}/sanitaer/01.avif`, alt: "Moderne Sanitärinstallation" },
+        { src: `${IMG}/sanitaer/02.avif`, alt: "Badsanierung — Qualitätsarbeit" },
+        { src: `${IMG}/sanitaer/03.avif`, alt: "Badezimmer Renovation" },
+        { src: `${IMG}/sanitaer/04.jpg`, alt: "Sanitäranlagen Neubau" },
+        { src: `${IMG}/sanitaer/05.jpg`, alt: "Armaturen und Installationen" },
       ],
     },
     {
       name: "Heizung",
       slug: "heizung",
       images: [
-        { src: `${IMG}/heizung/doerflerag-fotogalerie-heizung-htm_000_ee84ed2e6d29.jpg`, alt: "Heizungsanlage — Verteiler und Regelung" },
-        { src: `${IMG}/heizung/doerflerag-fotogalerie-heizung-htm_001_8138bc592c13.jpg`, alt: "Heizungsinstallation" },
+        { src: `${IMG}/heizung/01.webp`, alt: "Heizungsanlage — moderne Installation" },
+        { src: `${IMG}/heizung/02.jpg`, alt: "Heizungsverteiler und Regelung" },
+        { src: `${IMG}/heizung/03.jpg`, alt: "Heizungsinstallation Neubau" },
+        { src: `${IMG}/heizung/04.webp`, alt: "Wärmepumpe" },
+        { src: `${IMG}/heizung/05.jpg`, alt: "Heizungswartung" },
       ],
     },
     {
       name: "Spenglerei",
       slug: "spenglerei",
       images: [
-        { src: `${IMG}/spenglerei/doerflerag-fotogalerie-spenglerei-htm_000_664a3fa4859b.jpg`, alt: "Dacharbeiten — Spenglerei" },
-        { src: `${IMG}/spenglerei/doerflerag-fotogalerie-spenglerei-htm_001_82318ccbda7e.jpg`, alt: "Fassadenverkleidung" },
+        { src: `${IMG}/spenglerei/11.jpg`, alt: "Dacharbeiten — Spenglerei" },
+        { src: `${IMG}/spenglerei/12.jpg`, alt: "Dachrinne und Fallrohr" },
+        { src: `${IMG}/spenglerei/13.webp`, alt: "Metalldach-Detailarbeit" },
+        { src: `${IMG}/spenglerei/14.jpg`, alt: "Kaminabdeckung" },
+        { src: `${IMG}/spenglerei/15.jpeg`, alt: "Dachabschluss mit Blech" },
       ],
     },
     {
       name: "Solartechnik",
       slug: "solar",
       images: [
-        { src: `${IMG}/solar/doerflerag-fotogalerie-solar-htm_000_c5bebd2be34d.jpg`, alt: "Solaranlage auf Dach" },
-        { src: `${IMG}/solar/doerflerag-fotogalerie-solar-htm_001_8905a55a614e.jpg`, alt: "Solartechnik Installation" },
+        { src: `${IMG}/solar/01.png`, alt: "Solaranlage auf Dach" },
+        { src: `${IMG}/solar/02.png`, alt: "Solartechnik Installation" },
+        { src: `${IMG}/solar/03.png`, alt: "Photovoltaik-Anlage" },
+        { src: `${IMG}/solar/04.png`, alt: "Solarpanel Montage" },
+        { src: `${IMG}/solar/05.png`, alt: "Solaranlage Komplettsystem" },
       ],
     },
     {
-      name: "Leitungsbau",
-      slug: "leitungsbau",
+      name: "Blitzschutz",
+      slug: "blitzschutz",
       images: [
-        { src: `${IMG}/leitungsbau/doerflerag-fotogalerie-leitungsbau-htm_000_d2dcf98eba78.jpg`, alt: "Leitungsbau — Hauptwasserleitung" },
-        { src: `${IMG}/leitungsbau/doerflerag-fotogalerie-leitungsbau-htm_001_9b0d5e1f4d13.jpg`, alt: "Wasserleitung Verlegung" },
+        { src: `${IMG}/blitzschutz/01.png`, alt: "Blitzschutzanlage auf Dach" },
+        { src: `${IMG}/blitzschutz/02.png`, alt: "Blitzableiter Installation" },
+        { src: `${IMG}/blitzschutz/03.png`, alt: "Erdungsanlage" },
+        { src: `${IMG}/blitzschutz/04.png`, alt: "Blitzschutz-Revision" },
+      ],
+    },
+    {
+      name: "Reparaturservice",
+      slug: "reparatur",
+      images: [
+        { src: `${IMG}/reparatur/01.png`, alt: "Sanitär-Reparatur" },
+        { src: `${IMG}/reparatur/02.png`, alt: "Armaturenwechsel" },
+        { src: `${IMG}/reparatur/03.png`, alt: "Rohrreparatur" },
+        { src: `${IMG}/reparatur/04.png`, alt: "Boiler-Wartung" },
+        { src: `${IMG}/reparatur/05.png`, alt: "Notfall-Reparatur" },
       ],
     },
   ],
@@ -234,11 +312,6 @@ export const doerflerAg: CustomerSite = {
       role: "Geschäftsleitung / Spenglerei",
       bio: "Dritte Generation. Im Betrieb seit 2001. Verantwortlich für Spenglerei und Blitzschutz.",
     },
-    {
-      name: "Unser Fachteam",
-      role: "Sanitärinstallateure & Lernende",
-      bio: "Erfahrene Fachkräfte und motivierte Lernende — seit 2007 kontinuierlich gewachsen. Gemeinsam meistern wir jedes Projekt.",
-    },
   ],
 
   certifications: [
@@ -264,39 +337,15 @@ export const doerflerAg: CustomerSite = {
 
   history: [
     { year: 1926, title: "Gründung", description: "Emil Dörfler gründet eine kleine Spenglerei und Sanitärfirma an der Dörflistrasse 14 in Oberrieden." },
-    { year: 1960, title: "Meisterdiplom", description: "Emil Dörfler junior erhält das Installateur-Meisterdiplom." },
-    { year: 1970, title: "Übergabe", description: "Der Betrieb geht von Vater auf Sohn über." },
-    { year: 1988, title: "Neubau Werkstatt", description: "Umzug an die Hubstrasse 30 — die heutige Adresse — nach 18 Jahren am alten Standort." },
-    { year: 2002, title: "Sanitärmeister", description: "Ramon Dörfler schliesst die Sanitärmeisterprüfung erfolgreich ab." },
-    { year: 2004, title: "Dörfler AG", description: "Umwandlung in eine AG. Ramon und Luzian Dörfler übernehmen den Betrieb in dritter Generation." },
-  ],
-
-  careers: [
-    {
-      title: "Sanitärinstallateur/in EFZ",
-      type: "fulltime",
-      description:
-        "Zur Verstärkung unseres Teams suchen wir eine/n erfahrene/n Sanitärinstallateur/in. Du arbeitest eigenverantwortlich auf Baustellen in der Region Zürich Süd und betreust Projekte von der Badsanierung bis zur Neuinstallation.",
-      requirements: [
-        "Abgeschlossene Lehre als Sanitärinstallateur/in EFZ",
-        "Mindestens 2 Jahre Berufserfahrung",
-        "Führerschein Kat. B",
-        "Teamfähig, zuverlässig und kundenorientiert",
-        "Gute Deutschkenntnisse",
-      ],
-    },
-    {
-      title: "Lernende/r Sanitärinstallateur/in",
-      type: "apprentice",
-      description:
-        "Starte deine Karriere bei einem traditionsreichen Familienbetrieb. Bei uns lernst du das Sanitärhandwerk von Grund auf — begleitet von erfahrenen Berufsleuten, die dich fördern und fordern.",
-      requirements: [
-        "Abgeschlossene Sekundarschule (Sek A oder B)",
-        "Handwerkliches Geschick und räumliches Vorstellungsvermögen",
-        "Freude am Umgang mit Menschen",
-        "Bereitschaft, bei Wind und Wetter zu arbeiten",
-        "Schnupperlehre absolviert (gerne bei uns)",
-      ],
-    },
+    { year: 1960, title: "Meisterdiplom", description: "Emil Dörfler junior erhält das Diplom der höheren Fachprüfung als Spengler." },
+    { year: 1964, title: "Sanitärmeister", description: "Emil Dörfler junior schliesst die Sanitärmeisterprüfung ab und bereitet die Betriebsübernahme vor." },
+    { year: 1970, title: "Übergabe", description: "Der Betrieb geht von Vater auf Sohn über — Emil junior führt die Firma weiter." },
+    { year: 1988, title: "Neubau Werkstatt", description: "Umzug an die Hubstrasse 30 — die heutige Adresse — nach über 60 Jahren am alten Standort." },
+    { year: 1996, title: "Lehrabschluss Ramon", description: "Ramon Dörfler schliesst seine Lehre als Sanitärinstallateur erfolgreich ab." },
+    { year: 1999, title: "Ramon im Betrieb", description: "Ramon tritt in den Familienbetrieb ein und unterstützt seinen Vater." },
+    { year: 2001, title: "Luzian im Betrieb", description: "Luzian Dörfler schliesst seine Ausbildung ab und tritt ebenfalls in die Firma ein." },
+    { year: 2002, title: "Sanitärmeister Ramon", description: "Ramon Dörfler schliesst die Sanitärmeisterprüfung erfolgreich ab." },
+    { year: 2004, title: "Dörfler AG", description: "Umwandlung in eine AG per 1. April. Ramon und Luzian Dörfler übernehmen den Betrieb in dritter Generation." },
+    { year: 2007, title: "Wachstum", description: "Einstellung eines zusätzlichen Sanitärinstallateurs — die Auftragslage wächst stetig." },
   ],
 };

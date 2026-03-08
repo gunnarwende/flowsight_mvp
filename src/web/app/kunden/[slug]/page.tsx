@@ -262,9 +262,9 @@ function ReviewsSection({
         </div>
 
         {reviews.highlights.length > 0 && (
-          <div className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={`mx-auto mt-12 max-w-5xl ${reviews.highlights.length <= 2 ? "flex flex-col items-center gap-6 sm:flex-row sm:justify-center" : "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"}`}>
             {reviews.highlights.map((r, i) => (
-              <div key={i} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <div key={i} className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${reviews.highlights.length <= 2 ? "w-full max-w-md" : ""}`}>
                 <div className="mb-3 flex gap-0.5">
                   {Array.from({ length: r.rating }).map((_, j) => (
                     <svg key={j} className="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -430,19 +430,19 @@ function TrustSection({ certifications, partners, accent }: { certifications?: C
 /* ── Careers ──────────────────────────────────────────────────────── */
 function CareersSection({ careers, companyName, contact, accent }: { careers: NonNullable<CustomerSite["careers"]>; companyName: string; contact: CustomerSite["contact"]; accent: string }) {
   return (
-    <section className="border-t border-gray-200 bg-gray-900 py-20 text-white">
+    <section className="border-t border-gray-100 bg-gradient-to-b from-gray-50 to-white py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">Karriere bei {companyName}</h2>
-          <p className="mt-3 text-lg text-gray-400">Werde Teil unseres Teams</p>
+          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Karriere bei {companyName}</h2>
+          <p className="mt-3 text-lg text-gray-600">Werde Teil unseres Teams</p>
         </div>
         <div className="mx-auto mt-12 grid max-w-3xl gap-6">
           {careers.map((job) => (
-            <details key={job.title} className="group rounded-2xl border border-gray-700 bg-gray-800/50">
+            <details key={job.title} className="group rounded-2xl border border-gray-200 bg-white shadow-sm">
               <summary className="flex cursor-pointer items-center justify-between p-6 [&::-webkit-details-marker]:hidden">
                 <div>
-                  <h3 className="text-lg font-semibold">{job.title}</h3>
-                  <span className="mt-1 inline-block rounded-full bg-white/10 px-3 py-0.5 text-xs font-medium text-white/70">
+                  <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
+                  <span className="mt-1 inline-block rounded-full bg-gray-100 px-3 py-0.5 text-xs font-medium text-gray-600">
                     {job.type === "fulltime" ? "Vollzeit" : job.type === "apprentice" ? "Lehrstelle" : "Teilzeit"}
                   </span>
                 </div>
@@ -450,14 +450,14 @@ function CareersSection({ careers, companyName, contact, accent }: { careers: No
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
               </summary>
-              <div className="border-t border-gray-700 px-6 pb-6 pt-4">
-                <p className="text-sm leading-relaxed text-gray-300">{job.description}</p>
+              <div className="border-t border-gray-100 px-6 pb-6 pt-4">
+                <p className="text-sm leading-relaxed text-gray-700">{job.description}</p>
                 {job.requirements && (
                   <>
-                    <p className="mb-2 mt-4 text-sm font-semibold text-gray-200">Anforderungen:</p>
+                    <p className="mb-2 mt-4 text-sm font-semibold text-gray-900">Anforderungen:</p>
                     <ul className="space-y-1.5">
                       {job.requirements.map((r, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-300"><span style={{ color: accent }}>&#8226;</span>{r}</li>
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700"><span style={{ color: accent }}>&#8226;</span>{r}</li>
                       ))}
                     </ul>
                   </>
@@ -468,7 +468,7 @@ function CareersSection({ careers, companyName, contact, accent }: { careers: No
                       Jetzt bewerben
                     </a>
                   )}
-                  <a href={`tel:${contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-lg border border-gray-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-700">
+                  <a href={`tel:${contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50">
                     Fragen? {contact.phone}
                   </a>
                 </div>

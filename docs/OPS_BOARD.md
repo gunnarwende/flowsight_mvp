@@ -47,7 +47,7 @@
 
 | # | Task | Status | Details |
 |---|------|--------|---------|
-| D | Dörfler Input — Logo, fehlende Texte | PARTIAL | Brand Color + Google Reviews geliefert. Logo offen. |
+| D | Dörfler Input — fehlende Texte | DONE | Brand Color + Google Reviews geliefert. Kein Logo vorhanden (entfällt). |
 | E | Mobile QA — iPhone | OFFEN | Founder kann Mobile re-testen. |
 | F | **Go/No-Go Entscheid** | OFFEN | Keine Blocker. Founder: Entscheid. |
 | G | **Kommunikation an Dörfler** | OFFEN | Blocked by: F |
