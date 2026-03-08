@@ -11,7 +11,7 @@ export const SITE = {
   email: "info@flowsight.ch",
   demoUrl: "/demo",
   url: "https://flowsight.ch",
-  linkedin: "https://www.linkedin.com/in/gunnar-wende/",
+  linkedin: "https://www.linkedin.com/company/flowsight-gmbh",
   bookingUrl: "https://outlook.office.com/bookwithme/user/6657e1a6e17b4fcd80d90d45c4af61e6@flowsight.ch?anonymous&ismsaljsauthenabled&ep=plink",
   founderName: "Gunnar Wende",
   founderEmail: "gunnar.wende@flowsight.ch",

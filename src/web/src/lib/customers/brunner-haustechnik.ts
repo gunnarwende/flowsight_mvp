@@ -16,6 +16,9 @@ export const brunnerHaustechnik: CustomerSite = {
     "Brunner Haustechnik AG",
   ],
 
+  voicePhone: "044 505 48 18",
+  voicePhoneRaw: "+41445054818",
+
   contact: {
     phone: "044 720 31 42",
     phoneRaw: "+41447203142",
