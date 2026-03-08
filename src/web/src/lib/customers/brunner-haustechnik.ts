@@ -301,46 +301,14 @@ export const brunnerHaustechnik: CustomerSite = {
   teamPhoto: `${IMG}/team.jpg`,
 
   team: [
-    {
-      name: "Thomas Brunner",
-      role: "Inhaber / Sanitärmeister",
-      bio: "Gründer und Geschäftsführer. Leitet den Betrieb mit über 20 Jahren Erfahrung.",
-    },
-    {
-      name: "Marco Steiner",
-      role: "Projektleiter Heizung",
-      bio: "Spezialist für Wärmepumpen und energieeffiziente Heizsysteme.",
-    },
-    {
-      name: "Sandra Keller",
-      role: "Büro / Administration",
-      bio: "Organisiert Termine, Offerten und den gesamten Kundenkontakt.",
-    },
-    {
-      name: "Luca Berger",
-      role: "Sanitärmonteur",
-      bio: "Zuständig für Badsanierungen, Neuinstallationen und Reparaturen.",
-    },
-    {
-      name: "Dominik Huber",
-      role: "Spengler / Dachmonteur",
-      bio: "Verantwortlich für Dachrinnen, Blecharbeiten und Blitzschutz.",
-    },
-    {
-      name: "Petra Meier",
-      role: "Projektleiterin Sanitär",
-      bio: "Plant und koordiniert Sanitärprojekte von der Offerte bis zur Abnahme.",
-    },
-    {
-      name: "Nico Weber",
-      role: "Lernender 3. Lehrjahr",
-      bio: "Angehender Sanitärinstallateur EFZ — motiviert und zuverlässig.",
-    },
-    {
-      name: "Jonas Frei",
-      role: "Servicemonteur",
-      bio: "Erster Ansprechpartner bei Notfällen und schnellen Reparaturen.",
-    },
+    { name: "Thomas Brunner", role: "Inhaber / Sanitärmeister" },
+    { name: "Marco Steiner", role: "Projektleiter Heizung" },
+    { name: "Sandra Keller", role: "Administration" },
+    { name: "Luca Berger", role: "Sanitärmonteur" },
+    { name: "Dominik Huber", role: "Spengler / Dachmonteur" },
+    { name: "Petra Meier", role: "Projektleiterin Sanitär" },
+    { name: "Nico Weber", role: "Lernender 3. Lehrjahr" },
+    { name: "Jonas Frei", role: "Servicemonteur" },
   ],
 
   certifications: [
