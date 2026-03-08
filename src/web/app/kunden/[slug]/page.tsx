@@ -73,7 +73,7 @@ export default async function CustomerPage({
       <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />
       {c.reviews && <ReviewsSection reviews={c.reviews} accent={accent} />}
       <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />
-      {c.team.length > 1 && <TeamSection team={c.team} companyName={c.companyName} accent={accent} />}
+      {c.team.length > 1 && <TeamSection team={c.team} teamPhoto={c.teamPhoto} companyName={c.companyName} accent={accent} />}
       {shouldShowHistory(c.history) && <HistorySection history={c.history!} companyName={c.companyName} accent={accent} />}
       {(c.certifications || c.brandPartners) && <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} />}
       {c.careers && c.careers.length > 0 && <CareersSection careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} />}
@@ -325,8 +325,42 @@ function ServiceAreaSection({ area, companyName, mapUrl }: { area: CustomerSite[
 }
 
 /* ── Team ────────────────────────────────────────────────────────── */
-function TeamSection({ team, companyName, accent }: { team: CustomerSite["team"]; companyName: string; accent: string }) {
-  // Dynamic grid: center cards based on team size
+function TeamSection({ team, teamPhoto, companyName, accent }: { team: CustomerSite["team"]; teamPhoto?: string; companyName: string; accent: string }) {
+  // Two-column layout when team photo is available and team is large
+  if (teamPhoto && team.length > 4) {
+    return (
+      <section id="team" className="border-t border-gray-100 bg-gray-50 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold sm:text-4xl">Unser Team</h2>
+            <p className="mt-3 text-lg text-gray-600">Die Menschen hinter {companyName}</p>
+          </div>
+          <div className="mt-14 grid items-start gap-10 lg:grid-cols-2">
+            {/* Left: team members grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {team.map((m) => (
+                <div key={m.name} className="rounded-xl border border-gray-200 bg-white px-4 py-5 text-center shadow-sm transition-shadow hover:shadow-md">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: accent }}>
+                    {m.name.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <h3 className="mt-3 text-sm font-semibold text-gray-900">{m.name}</h3>
+                  <p className="text-xs font-medium" style={{ color: accent }}>{m.role}</p>
+                  {m.bio && <p className="mt-1.5 text-xs leading-relaxed text-gray-500">{m.bio}</p>}
+                </div>
+              ))}
+            </div>
+            {/* Right: team photo */}
+            <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={teamPhoto} alt={`Team ${companyName}`} className="h-full w-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Default: card grid (no photo)
   const gridCls = team.length === 1 ? "flex justify-center"
     : team.length === 2 ? "grid max-w-2xl grid-cols-2 gap-8"
     : team.length <= 3 ? "grid max-w-4xl grid-cols-3 gap-8"

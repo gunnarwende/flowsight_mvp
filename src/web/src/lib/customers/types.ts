@@ -30,6 +30,8 @@ export interface CustomerSite {
   reviews?: ReviewsConfig;
   serviceArea: ServiceAreaConfig;
   team: TeamMember[];
+  /** Full team group photo */
+  teamPhoto?: string;
   certifications?: Certification[];
   brandPartners?: BrandPartner[];
   history?: HistoryEntry[];
