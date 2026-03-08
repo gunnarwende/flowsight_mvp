@@ -672,6 +672,22 @@ function CategoryCard({ selected, onClick, accent, children }: { selected: boole
 function CategoryIcon({ iconKey }: { iconKey: string }) {
   const cls = "h-7 w-7";
   switch (iconKey) {
+    /* ── Problem-specific icons ──────────────────────── */
+    case "drain": // Verstopfung — funnel/drain
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1.5M12 21v-1.5M9.75 4.5l.75 3h3l.75-3M7.5 9h9l-1.5 6H9L7.5 9zM10.5 15v3a1.5 1.5 0 003 0v-3" /></svg>);
+    case "drop": // Leck / Wasserschaden — water drop
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3.75c0 0-6.75 7.5-6.75 11.25a6.75 6.75 0 0013.5 0C18.75 11.25 12 3.75 12 3.75z" /><path strokeLinecap="round" strokeLinejoin="round" d="M14.25 16.5a2.25 2.25 0 01-2.25 2.25" /></svg>);
+    case "burst": // Rohrbruch — exploding pipe
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h4.5m7.5 0h4.5M11.25 12l-2.25-3m0 6l2.25-3m1.5 0l2.25-3m0 6l-2.25-3" /></svg>);
+    case "thermo": // Kein Warmwasser — thermometer
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9V3.75M12 9a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zM12 16.5V21M9 3.75h6" /></svg>);
+    case "bolt": // Blitzschutz — lightning bolt
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>);
+    case "pipe": // Leitungsschaden — pipes
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h6m0 0v6m0-6l3 3M21 18h-6m0 0v-6m0 6l-3-3M3 18h4.5M21 6h-4.5" /></svg>);
+    case "clipboard": // Allgemein — clipboard (distinct from wrench!)
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" /></svg>);
+    /* ── Service icons (kept for compatibility) ──────── */
     case "bath":
       return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>);
     case "wrench":
