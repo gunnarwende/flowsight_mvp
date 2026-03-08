@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-04
+> Letzte Aktualisierung: 2026-03-08
 
 ---
 
@@ -15,7 +15,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 
 **Firma:** FlowSight GmbH (Schweizer GmbH)
 **Gründer:** Gunnar Wende, Solo-Founder, Zürich
-**LinkedIn:** linkedin.com/in/gunnar-wende
+**LinkedIn:** linkedin.com/company/flowsight-gmbh
 **Website:** flowsight.ch
 **Geschäftsnummer:** +41 44 552 09 19 (KI-Assistentin "Lisa")
 
@@ -38,7 +38,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - "Seit 19xx" ist der #1 Trust-Signal
 - Schnelle Reaktionszeit und Sauberkeit sind die meistgenannten Review-Themen
 
-**Spätere Branchen-Erweiterung:** Elektriker, Friseur, Pub (ab Phase 3, 15+ Kunden)
+**Spätere Branchen-Erweiterung:** Elektriker, Gastronomie (BigBen Pub = erste Demo), Friseur (ab Phase 3, 15+ Kunden)
 
 **Typische Kunden-Aussagen:**
 - "Ich bin den ganzen Tag auf der Baustelle, kann nicht ans Telefon."
@@ -52,31 +52,40 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 
 ### 3.1 Moderne Website
 - High-End Website im Firmenlook, mobil-optimiert, SEO
-- Template-System: 12 Sektionen (Hero, Leistungen, Notdienst, Bewertungen, Team, Einzugsgebiet, Karriere, Kontakt, etc.)
+- Template-System: 12 Sektionen (Hero, Leistungen mit Detail-Overlays, Notdienst, Bewertungen, Team, Einzugsgebiet, Karriere, Kontakt, etc.)
+- **ServiceDetailOverlay:** Klick auf Service → Overlay mit Beschreibung, Bullet Points, Bilder-Galerie
+- **Bild-Galerie:** Horizontal-Scroll + Lightbox (z-[200]), per Service
 - Pro Kunde konfigurierbar via Config-Datei (Farben, Texte, Bilder, Services)
 - SSG (Static Site Generation) für maximale Performance
+- **Customer Links Page:** /kunden/[slug]/links — alle URLs auf einen Blick (noindex)
 - URL: flowsight.ch/kunden/[firmen-slug]
-- **Erstellungszeit: ~20 Minuten pro Kunde**
+- **6 Kunden-Websites live** (inkl. Demo-Tenant und BigBen Pub)
+- **Erstellungszeit: ~20 Minuten pro Kunde** (standardisierter 10-Regeln Intake-Prozess)
 
 ### 3.2 Schadenmelde-Wizard
 - 3-Schritt Online-Formular auf der Kunden-Website
-- Schritt 1: Kategorie wählen (Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein)
+- **Branded pro Kunde** — Farben, Logo, Kategorien aus `services[]` abgeleitet
+- Schritt 1: Kategorie wählen (dynamisch aus Kunden-Services)
 - Schritt 2: Kontaktdaten (Name, Telefon, E-Mail, Adresse mit PLZ)
 - Schritt 3: Beschreibung + optionale Fotos (Supabase Storage)
+- **Photo Upload auf Success-Screen** (nach Fallanlage)
+- **reporter_name** als Pflichtfeld (Wizard, Voice, Verify, E-Mail)
 - Ergebnis: Fall wird in Supabase erstellt, Ops-E-Mail + Melder-Bestätigung gesendet
 - Mobil-optimiert, branded im Kunden-Look
 
 ### 3.3 KI-Telefonassistent (Voice Agent)
 - **Technologie:** Retell AI (Conversational Voice AI)
 - **Flow:** Anruf → Peoplefone (Schweizer Nummer) → Twilio SIP → Retell Agent → Webhook → Supabase → E-Mail
-- **Dual-Agent:** Deutsch (Stimme "Susi") + International/Englisch (Stimme "Juniper")
+- **Dual-Agent:** Deutsch (Stimme "Susi") + International/Englisch (Stimme custom)
 - **Language Gate:** Erkennt automatisch ob Deutsch oder andere Sprache
 - **Zwei Modi (automatische Erkennung):**
-  - **Intake-Modus:** Schadensmeldung aufnehmen (max 7 Fragen: Kategorie, PLZ, Adresse, Dringlichkeit, Beschreibung) → Fall in Supabase + E-Mails
-  - **Info-Modus:** Allgemeine Fragen beantworten (Öffnungszeiten, Preise, Einzugsgebiet, Team, Bewerbungen, Beratung) → kein Ticket, nur freundliche Auskunft
+  - **Intake-Modus:** Schadensmeldung aufnehmen (max 7 Fragen: Name, Kategorie, PLZ/Ort, Adresse, Dringlichkeit, Beschreibung) → Fall in Supabase + E-Mails
+  - **Info-Modus:** Allgemeine Fragen beantworten (Öffnungszeiten, Preise, Einzugsgebiet, Team, Bewerbungen, Beratung) → kein Ticket
+- **Dynamic SIP Routing** (Twilio → richtiger Agent per Nummer)
+- **Deterministic Closing:** Farewell no-repeat, end_call tool, ß→ss in Analyse
 - **Recording: OFF** (Datenschutz)
 - **24/7 erreichbar**, keine verpassten Anrufe
-- **Template-System:** Agent-Configs als JSON-Schablone für schnelle Kunden-Onboardings (~20 Min)
+- **Template-System:** Agent-Configs als JSON-Schablone (~20 Min pro Kunde)
 
 ### 3.4 Ops Dashboard
 - Web-App unter /ops (Login via Supabase Auth)
@@ -84,7 +93,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **Filter:** Status, Quelle, Kategorie, Zeitraum, Tenant
 - **Fall-Detailansicht:** Kontaktdaten, Fallbeschreibung, Fotos, Timeline (case_events), Notizen
 - **Aktionen:** Status ändern, Termin senden (E-Mail an Melder), Review anfragen, manueller Fall erstellen
-- **KPI-Cards:** Offene Fälle, Neue heute, Ø Reaktionszeit
+- **KPI-Cards:** Click-to-Filter (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done)
 - **CSV-Export** für Buchhaltung/Reporting
 - **Light Theme**, Sidebar-Navigation, responsive
 
@@ -92,7 +101,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - Nach erledigtem Fall: Button "Review anfragen" im Ops Dashboard
 - Sendet E-Mail an Melder mit direktem Link zur Google-Bewertungsseite
 - Tracking: review_sent_at Timestamp pro Fall
-- Google Review URL pro Tenant konfigurierbar (GOOGLE_REVIEW_URL in Entitlements)
+- Google Review URL pro Tenant konfigurierbar
 
 ### 3.6 Morning Report
 - Täglicher Statusbericht: 10 KPIs, Severity-Ampel (GREEN/YELLOW/RED)
@@ -100,44 +109,52 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - Nur System-Alerts, keine Kundendaten (PII)
 
 ### 3.7 E-Mail-Notifications
-- **Ops Notification:** Neuer Fall → E-Mail an Betrieb (Zusammenfassung, Link zum Dashboard)
-- **Melder-Bestätigung:** "Wir haben Ihre Meldung erhalten" → E-Mail an den Kunden des Betriebs
+- **Ops Notification:** Neuer Fall → E-Mail an Betrieb
+- **Melder-Bestätigung:** "Wir haben Ihre Meldung erhalten" → E-Mail an Endkunden
 - **Review-Anfrage:** "Wie war unser Service?" → E-Mail mit Google-Review-Link
 - **Demo-Anfrage:** /demo Formular → E-Mail an Founder
 - **Sales Lead:** Voice Agent Lead → E-Mail an Founder
-- Provider: Resend (Transaktional, SPF/DKIM/DMARC verifiziert)
+- Provider: Resend (SPF/DKIM/DMARC verifiziert)
 
 ### 3.8 SMS Channel
-- Post-call SMS mit Korrekturlink an Melder (Twilio alphanumeric sender, z.B. "BrunnerHT")
+- Post-call SMS mit Korrekturlink an Melder (Twilio alphanumeric sender)
 - Kurzlink `/v/[caseId]?t=<16hex>` (~85 Zeichen), HMAC-gesichert
 - Foto-Upload via Verify-Seite (Supabase Storage)
 - Akzeptiert sowohl Full-Token (64-hex) als auch Short-Token (16-hex)
 
 ### 3.9 CoreBot (Ops-Assistent)
-- Telegram Bot → GitHub Issues (automatische Klassifizierung: type + domain Labels)
-- **Voice→STT→Issue:** Sprachnachricht → OpenAI Whisper Transkription → GitHub Issue
-- **Photo/Doc Attachments:** Fotos + Dokumente an Tickets anhängen (Supabase Storage, inline in GitHub)
-- **/ticket Befehl:** Ticket ohne Sprachnachricht erstellen + Anhänge innerhalb 120s
-- **/status Befehl:** Übersicht offener GitHub Issues
-- Session-Persistenz: L1 In-Memory + L2 Supabase Storage (cross-instance, serverless-safe)
-- Limiten: max 5 Anhänge/Ticket, 25MB total, 120s Session-Fenster
+- Telegram Bot → GitHub Issues (automatische Klassifizierung)
+- **Voice→STT→Issue:** Sprachnachricht → OpenAI Whisper → GitHub Issue
+- **Photo/Doc Attachments:** Fotos + Dokumente an Tickets (Supabase Storage)
+- **/ticket** und **/status** Befehle
+- Session-Persistenz: L1 In-Memory + L2 Supabase Storage
 
 ### 3.10 Entitlements
-- Per-Tenant Module Gating via hasModule() Funktion
+- Per-Tenant Module Gating via hasModule()
 - Module: voice, wizard, ops, reviews, morning_report, sms
-- Konfiguration in Supabase tenants-Tabelle (modules JSONB Array)
+- Konfiguration in Supabase tenants-Tabelle
+
+### 3.11 Sales Voice Agent "Lisa"
+- Auf Geschäftsnummer +41 44 552 09 19
+- DE + INTL (auto language swap)
+- Beantwortet Fragen zu FlowSight, sammelt Demo-Anfragen
+- **Pricing aktuell:** Starter CHF 199, Alltag CHF 299, Wachstum CHF 399
 
 ---
 
 ## 4. Pakete & Pricing
 
-| Paket | Inhalt | Preis (indikativ) |
-|-------|--------|-------------------|
-| **Starter** | Website + Wizard | ab CHF 99/Monat + Setup |
-| **Professional** | + Voice Agent + Ops Dashboard | ab CHF 249/Monat + Setup |
-| **Premium** | + Reviews + Morning Report | ab CHF 349/Monat + Setup |
+| Paket | Inhalt | Preis |
+|-------|--------|-------|
+| **Starter** | Moderne Website + Online-Schadensmeldung + E-Mail-Benachrichtigung + Kunden-SMS + Persönliches Onboarding | CHF 199/Monat |
+| **Alltag** | + Digitaler Telefonassistent (24/7) + Fallübersicht + Bestätigungs-SMS + Foto-Upload + Mehrsprachig | CHF 299/Monat |
+| **Wachstum** | + Google Review-Anfragen + Priority Support + Stärkeres Google-Profil | CHF 399/Monat |
 
-Live auf flowsight.ch/pricing. Preise werden vor Launch finalisiert.
+- Telefonminuten: pay-per-use, keine Grundgebühr. Typischer Anruf: 2-4 Minuten.
+- Monatlich kündbar, kein Lock-in.
+- Setup in einer Woche, persönliches Onboarding. Keine Setup-Kosten während Pilotphase.
+
+Live auf flowsight.ch/pricing.
 
 ---
 
@@ -147,7 +164,7 @@ Live auf flowsight.ch/pricing. Preise werden vor Launch finalisiert.
 
 | Layer | Technologie | Plan |
 |-------|------------|------|
-| Frontend + API | Next.js App Router (Vercel) | Hobby (Free) |
+| Frontend + API | Next.js App Router (Vercel Frankfurt) | Hobby (Free) |
 | Datenbank | Supabase (PostgreSQL + Storage + Auth) | Free |
 | Voice | Retell AI → Twilio SIP → Peoplefone | Pay-as-you-go |
 | Email | Resend | Free (100/Tag) |
@@ -169,12 +186,12 @@ VERARBEITUNG:
 OUTPUT:
   → Ops E-Mail an Betrieb (Resend)
   → Bestätigungs-E-Mail an Melder (Resend)
+  → SMS mit Korrekturlink (Twilio, wenn Voice)
   → case_events Eintrag ("Benachrichtigung gesendet")
 
 NACH ERLEDIGUNG:
   → Status → "resolved" (im Dashboard)
   → Optional: Review-Anfrage per E-Mail
-  → Optional: Terminerinnerung (geplant)
 ```
 
 ### Multi-Tenancy
@@ -190,7 +207,7 @@ NACH ERLEDIGUNG:
 - Voice: Intake-only, max 7 Fragen, branchenspezifisch, Recording OFF
 - Output: E-Mail für Kunden. WhatsApp nur Founder-Ops-Alerts (kein PII)
 - SSOT: Supabase = Daten, Vercel Env = Secrets
-- Deploy: Vercel, Root Directory = src/web
+- Deploy: Vercel Frankfurt (fra1), Root Directory = src/web
 - Keine Secrets im Repo
 
 ---
@@ -200,23 +217,33 @@ NACH ERLEDIGUNG:
 | Kunde | Status | Module | URL |
 |-------|--------|--------|-----|
 | **Dörfler AG** (Oberrieden) | Go-Live PARTIAL (3/4 PASS) | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
-| **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/brunner-haustechnik |
+| **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
+| **Walter Leuthold** (Oberrieden) | Website LIVE | wizard | flowsight.ch/kunden/walter-leuthold |
+| **Orlandini Sanitär** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/orlandini |
+| **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
+| **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
 
 ### Dörfler AG — Erster Referenzkunde
 - Sanitär/Heizung seit 1926, Oberrieden ZH
 - 3/4 Module getestet und bestanden
 - Reviews noch blockiert (Google Review Link fehlt, nicht Go-Live-kritisch)
-- Founder muss noch E2E Checklist durcharbeiten → Go/No-Go Entscheid
+- Founder muss Go/No-Go Entscheid treffen
 
 ### Brunner Haustechnik AG — Demo-Tenant
 - Fiktiver Betrieb für Sales-Demos (Thalwil ZH)
-- High-End Custom Demo Page (10 Sections, 30 kuratierte Bilder, KI-Teamfoto)
-- 10 Seed Cases im Ops Dashboard (FS-0001 bis FS-0010)
-- Eigener Wizard mit Brunner-Branding
-- Eigener Voice Agent (DE + INTL) auf **+41 44 505 48 18** mit zwei Modi:
-  - **Intake-Modus:** Schadensmeldungen aufnehmen → Ticket im Dashboard
-  - **Info-Modus:** Alltagsfragen beantworten (Öffnungszeiten, Preise, Einzugsgebiet, "Chef sprechen", Bewerbungen, etc.) → kein Ticket
-- Agent-Configs = Schablone für alle künftigen Kunden (`retell/templates/README.md`)
+- Voice Agent (DE + INTL) auf **+41 44 505 48 18**
+- 10 Seed Cases im Ops Dashboard
+- Agent-Configs = Schablone für alle künftigen Kunden
+
+### Walter Leuthold, Orlandini, Widmer — Prospect-Websites
+- High-End Websites mit ServiceDetailOverlay, Galleries, realen Google Reviews
+- Template v3: Standardisierter 10-Regeln Intake-Prozess
+- Jeder Kunde hat `docs/customers/<slug>/links.md` mit allen URLs
+
+### BigBen Pub — Gastronomie-Demo
+- Custom Demo für Pub/Gastronomie (Reservierungen, Events, Galerie)
+- Zeigt Template-Flexibilität über Sanitär hinaus
+- Prospect Paul zeigt sich interessiert (#79/#80)
 
 ---
 
@@ -224,22 +251,21 @@ NACH ERLEDIGUNG:
 
 **Methode:** Demo-Website für Prospect bauen → E-Mail → Anruf nach 2 Tagen
 
+**Tooling:**
+- `scout.mjs` — ICP Scoring, Multi-Query, Municipality Scouting
+- `prospect_pipeline.mjs` — Full-Stack Prospect Onboarding (~15min)
+- Sales Voice Agent "Lisa" auf +41 44 552 09 19
+
 **Ablauf pro Prospect (~30 Min):**
-1. Google Maps → Sanitärbetrieb finden (3-30 MA, Raum Zürichsee, schlechte/keine Website)
+1. Google Maps → Betrieb finden (3-30 MA, Raum Zürichsee, schlechte/keine Website)
 2. Website + Google Reviews analysieren
-3. Demo-Website für den Betrieb erstellen (Template-Config, 20 Min)
+3. Demo-Website erstellen (Template-Config, 20 Min)
 4. E-Mail: "Ich habe einen Entwurf für Ihre Website erstellt: [Link]"
 5. Anruf nach 2 Tagen: "Haben Sie die Website gesehen?"
 6. Demo zeigen → Module besprechen → Abschluss
 
 **Ziel:** 5 Prospects/Woche, 1 Neukunde alle 3-6 Wochen
 **Tracker:** docs/sales/pipeline.md
-
-**Warum das funktioniert:**
-- Kein kalter Pitch, sondern ein Geschenk (fertige Website)
-- Prospect sieht seinen eigenen Namen auf einer professionellen Seite
-- Einstieg in Gespräch über Voice Agent, Dashboard, Reviews
-- Daten sind öffentlich (Google Maps, eigene Website)
 
 ---
 
@@ -256,7 +282,7 @@ NACH ERLEDIGUNG:
 - Branchenspezifisch, nicht generisch
 - All-in-one statt 5 verschiedene Tools
 - In einer Woche live, kein IT-Projekt
-- Ab CHF 99/Monat statt CHF 10'000 einmalig
+- Ab CHF 199/Monat statt CHF 10'000 einmalig
 - Schweizer Nummer, Schweizer Hosting, Deutsch
 
 ---
@@ -267,7 +293,7 @@ NACH ERLEDIGUNG:
 |-------|--------|-----------|-------|
 | 1 | 1-5 | 0-6 Monate | Dörfler live, erste Akquise, manuell |
 | 2 | 5-15 | 6-18 Monate | Website-Content → Supabase, einfaches Admin-UI |
-| 3 | 15-30 | 18-30 Monate | Branchen-Templates (Elektriker), Teilzeit-Hilfe |
+| 3 | 15-30 | 18-30 Monate | Branchen-Templates (Elektriker, Gastro), Teilzeit-Hilfe |
 | 4 | 30-100 | 30-48 Monate | Auto-Provisioning, Self-Service, Mitarbeiter |
 
 **Entscheidung:** Produkt-Agents (Voice, Reviews) = selbst bauen. Business-Admin (Rechnungen, Buchhaltung) = kaufen (Bexio).
@@ -300,9 +326,9 @@ NACH ERLEDIGUNG:
 - **Website:** flowsight.ch
 - **Pricing:** flowsight.ch/pricing
 - **Referenz:** flowsight.ch/kunden/doerfler-ag
-- **Demo:** flowsight.ch/brunner-haustechnik
-- **Demo-Wizard:** flowsight.ch/brunner-haustechnik/meldung
+- **Demo:** flowsight.ch/kunden/brunner-haustechnik
+- **Demo-Wizard:** flowsight.ch/kunden/brunner-haustechnik/meldung
 - **Geschäftsnummer:** +41 44 552 09 19 (Lisa)
-- **LinkedIn:** linkedin.com/in/gunnar-wende
+- **LinkedIn:** linkedin.com/company/flowsight-gmbh
 - **Roadmap:** docs/OPS_BOARD.md
 - **Sales Pipeline:** docs/sales/pipeline.md

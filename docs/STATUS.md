@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-04 (PR #32: Voice STT Hardening + CoreBot Attachments verified)
+**Datum:** 2026-03-08 (PR #97: Customer Links Docs + Widmer Spenglerei)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -23,42 +23,47 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 | Modul | Status | Evidence |
 |-------|--------|----------|
-| **Wizard** (Website Intake) | LIVE ✅ | /wizard + /doerfler-ag/meldung → case → email |
-| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ confirmation, Language Gate, SMS+Photo mention in closing |
+| **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — service-based categories, branded per customer, photo upload, reporter_name |
+| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ, Language Gate, SMS+Photo mention, reporter_name, deterministic closing |
 | **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. Twilio alphanumeric sender. HMAC-secured. |
-| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2: full-width desc, inline Termin+Senden, 3 quick times), Case List (search, pagination, clickable rows, KPI click-to-filter), CSV-Export, Timeline |
-| **Email Notifications** | LIVE ✅ | HTML Ops-Notification (urgency colors, CTA) + HTML Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
+| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
+| **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
 | **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, legal, demo booking) |
-| **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19, Lead-E-Mail an Founder |
-| **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, lightbox) |
+| **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19, Pricing aktualisiert (Starter 199/Alltag 299/Wachstum 399) |
+| **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
+| **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
-| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (auto-classify, /status, ACK, **Voice→STT→Issue** with hardened error reporting, **Photo/Doc Attachments** via Supabase Storage, **/ticket** command, cross-instance sessions) |
-| **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo (6-Service Grid, 30 Bilder, KI-Teamfoto, Voice Agent Intake+Info) |
+| **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (Voice→STT, Photo/Doc Attachments, /ticket, /status) |
+| **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo + Voice Agent Intake+Info |
+| **BigBen Pub** | LIVE ✅ | /bigben-pub — Custom Demo (Reservierungen, Events, Galerie, Google Reviews) |
 
-## Kunden
+## Kunden (6 Websites live)
 
-| Kunde | Slug | Module | Go-Live |
-|-------|------|--------|---------|
-| Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 PASS, Reviews blocked (F9) |
-| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews, sms | DEMO — Showroom-Tenant, Voice +41 44 505 48 18, SMS "BrunnerHT" |
+| Kunde | Slug | Module | Status |
+|-------|------|--------|--------|
+| Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 PASS |
+| Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews, sms | DEMO-Tenant |
+| Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
+| Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
+| Widmer H. & Co. AG (Horgen) | widmer-sanitaer | wizard | Website LIVE |
+| BigBen Pub (Zürich) | bigben-pub | — | Custom Demo |
 
 ## Aktueller Stand
 
-- **14 Module LIVE.** CoreBot now with Voice→STT→Issue (hardened: 30s timeout, error categories, voice fallback) + Photo/Doc Attachments (Supabase Storage cross-instance sessions) + /ticket command.
-- **Voice STT Fix (04.03.):** OpenAI API Key issue diagnosed via new error reporting (PR #32). Hardened: discriminated union return type, AbortController timeout, error categories (auth/quota/timeout/format/network/empty), voice OGG fallback upload when STT fails. Founder-confirmed working.
-- **CoreBot Attachments (04.03.):** Photo/Doc upload + session persistence (L1 in-memory + L2 Supabase Storage) verified end-to-end. PR #27.
-- **P0 Demo-Fixes (04.03.):** SMS Verify Token (short 16-hex accepted) + PKCE Magic Link (flowType: implicit). PR #29.
-- **E2E Test 02.03.:** Voice ✅, E-Mail ✅, SMS ✅ (Twilio delivered, BrunnerHT Sender).
-- **Erledigt:** N17-N21 ✅, N26-N28 ✅, N30-N32 ✅, Issue #28 ✅, Issue #31 ✅ — 20+ Bugs fixed
+- **16 Module LIVE.** +2 seit letztem Update (Customer Links Page, BigBen Pub).
+- **37 Commits seit 04.03.** (PRs #53–#97).
+- **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows. Standardisierter 10-Regeln Intake-Prozess.
+- **Customer Wizard (07.03.):** Branded pro Kunde, Kategorien aus `services[]`, reporter_name, Photo Upload auf Success-Screen.
+- **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.
+- **Sales Agent Pricing (08.03.):** Starter CHF 199, Alltag CHF 299, Wachstum CHF 399 (war 99/249/349).
+- **Scout Tooling (06.03.):** ICP Scoring, Multi-Query, Municipality Scouting, Prospect Pipeline ready.
+- **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
+- **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Vercel Region:** Frankfurt (fra1) — näher an Supabase + CH-Usern.
-- **Ops Tooling:** `retell_sync.mjs` (Retell API Sync), `onboard_tenant.mjs` (Tenant Setup), `prospect_pipeline.mjs` (Full-Stack Prospect Onboarding, ~15min/prospect)
-- **Demo-Kit:** `demo-kit/` — Komplett-Toolkit (SIP-Setup, Audio-Proof, Reset-SQL, Cheat Sheet, Twilio-Diagnose+Fix Scripts)
-- **SIP Call Chain:** Twilio SIP → `/api/demo/sip-twiml` (callerId) → Retell Lisa. MicroSIP credentials: `flowsight-demo`. Verified: Call SID `CAfffc69b90813874e976ba5481258f4db` status `in-progress` (clean, 0 errors).
-- **Nächster Schritt:** Kundenakquise starten. Pipeline: `node prospect_pipeline.mjs --url https://x.ch --slug x`
+- **Nächster Schritt:** Kundenakquise fortsetzen. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -78,6 +83,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/sales/pipeline.md` | Sales Pipeline Tracker |
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
+| `docs/customers/<slug>/links.md` | Kunden-URLs (PFLICHT pro Kunde) |
+| `docs/customers/lessons-learned.md` | Intake-Prozess, Template-Learnings, Kunden-Learnings |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
 | `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
