@@ -52,7 +52,7 @@ export function ImageGallery({
         {images.length > 1 && (
           <button
             onClick={scrollLeft}
-            className="absolute -left-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-600 opacity-0 transition-opacity group-hover/gallery:opacity-100 hover:bg-gray-50"
+            className="absolute -left-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-600 opacity-100 md:opacity-0 transition-opacity md:group-hover/gallery:opacity-100 hover:bg-gray-50"
             aria-label="Zurück"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
@@ -84,7 +84,7 @@ export function ImageGallery({
         {images.length > 1 && (
           <button
             onClick={scrollRight}
-            className="absolute -right-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-600 opacity-0 transition-opacity group-hover/gallery:opacity-100 hover:bg-gray-50"
+            className="absolute -right-3 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-600 opacity-100 md:opacity-0 transition-opacity md:group-hover/gallery:opacity-100 hover:bg-gray-50"
             aria-label="Weiter"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
@@ -94,11 +94,11 @@ export function ImageGallery({
         )}
       </div>
 
-      {/* Lightbox overlay */}
+      {/* Lightbox overlay — z-[200] to stay above ServiceDetailOverlay (z-[90]) */}
       {lightboxIdx !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
-          onClick={closeLightbox}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4"
+          onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
         >
           <button
             onClick={closeLightbox}
