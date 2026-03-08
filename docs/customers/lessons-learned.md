@@ -42,6 +42,12 @@
 | 9 | **Text** | Alte Website als Basis + High-End Creative Writing. Keine 1:1-Kopie, kein Erfinden von Fakten. |
 | 10 | **Wizard** | Immer aktiv. Kategorien aus `services[]` ableiten. |
 
+### Pflicht-Output pro Kunde (IMMER):
+- `docs/customers/<slug>/links.md` — Website-URL, Links-Seite, Wizard-URL
+- Config in `src/web/src/lib/customers/<slug>.ts`
+- Bilder in `src/web/public/kunden/<slug>/`
+- Registry-Eintrag in `registry.ts`
+
 ### Zusätzlich wenn vorhanden:
 - Zertifizierungen / Verbandsmitgliedschaften
 - Markenpartner (URLs geprüft!)
@@ -67,7 +73,11 @@
 1. Config erstellen: `src/web/src/lib/customers/<slug>.ts`
 2. Registry ergänzen: 1 import + 1 Zeile in `registry.ts`
 3. Bilder ablegen: `src/web/public/kunden/<slug>/`
-4. Build + Push — fertig
+4. **`docs/customers/<slug>/links.md` anlegen** — Website-URL, Links-Seite, Wizard-URL. **PFLICHT bei jedem neuen Kunden.**
+5. Build + Push — fertig
+
+> **WICHTIG:** Schritt 4 ist nicht optional. `links.md` ist die SSOT für alle Kunden-URLs.
+> Ordnerstruktur pro Kunde: `docs/customers/<slug>/` muss mindestens `links.md` enthalten.
 
 ---
 
