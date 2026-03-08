@@ -16,36 +16,37 @@
 
 ---
 
-## Intake-Checkliste (pro Kunde)
+## Standardisierter Intake-Prozess (10 Regeln)
 
-### Vom Founder (5 min)
+> Festgelegt 2026-03-08 nach Orlandini + Widmer Feedback. Verbindlich für alle neuen Kunden.
 
-- [ ] URL der alten Website
-- [ ] Screenshot der Google Reviews (Sterne + Texte)
-- [ ] Brand-Farbe (oder: "extrahiere aus alter Website")
-- [ ] Wizard verlinken? (Default: JA)
-- [ ] Spezielle Wünsche / Abweichungen
-- [ ] Bilder: Kunde liefert eigene? Oder Crawler-Output nutzen?
+### Founder liefert pro Kunde:
 
-### CC extrahiert selbst
+1. **Leistungen:** Liste + je 1 Ordner mit 3-6 Bildern unter `docs/customers/<slug>/leistungen/<service>/`
+2. **Hero-Bild:** unter `docs/customers/<slug>/titelbild/` — Founder wählt
+3. **Google Reviews:** Screenshots unter `docs/customers/<slug>/reviews/` — wenn vorhanden. Wenn kein Ordner → keine Reviews anzeigen.
+4. **Alte Website URL** (für Kontaktdaten, Texte, Einzugsgebiet)
 
-- [ ] Firmenname, Adresse, Telefon, E-Mail
-- [ ] Öffnungszeiten
-- [ ] Leistungen + Beschreibungen
-- [ ] Team-Namen + Rollen
-- [ ] Geschichte / Meilensteine (nur von Website verifiziert!)
-- [ ] Zertifizierungen / Verbandsmitgliedschaften
-- [ ] Markenpartner + URLs (alle geprüft!)
-- [ ] Einzugsgebiet / Gemeinden
-- [ ] Karriere / Stellenangebote
-- [ ] Notdienst ja/nein + Telefonnummer
+### CC-Regeln (verbindlich):
 
-### Bilder-Workflow
+| # | Thema | Regel |
+|---|-------|-------|
+| 1 | **Services** | Kommen AUS den Ordnern unter `leistungen/` + Founder-Liste. Nichts erfinden. |
+| 2 | **Bilder** | Nur die Bilder aus dem jeweiligen Ordner. Keine generischen Platzhalter. |
+| 3 | **Hero** | Immer das Bild aus `titelbild/`. Founder entscheidet. |
+| 4 | **Reviews** | NUR wenn `reviews/`-Ordner existiert. Screenshots → Struct extrahieren. Sonst: `highlights: []` |
+| 5 | **Brand Color** | Aus alter Website extrahieren. Falls sehr veraltet (>15 Jahre Design) → modernisieren, Founder fragen. |
+| 6 | **Gründungsjahr** | Nur anzeigen wenn Betrieb >20 Jahre alt. |
+| 7 | **History** | Nur wenn >20 Jahre UND alte Website hat Meilensteine/Text. Wenn nichts → History-Section weglassen. |
+| 8 | **Team** | NUR verifizierte Personen (auf alter Website auffindbar). Minimum 2 für Section-Anzeige. |
+| 9 | **Text** | Alte Website als Basis + High-End Creative Writing. Keine 1:1-Kopie, kein Erfinden von Fakten. |
+| 10 | **Wizard** | Immer aktiv. Kategorien aus `services[]` ableiten. |
 
-1. Crawler laufen lassen (`scripts/_tools/crawl-website.mjs`)
-2. Ergebnis Founder zeigen (Qualität? Reicht das?)
-3. Founder entscheidet: Crawler-Bilder nutzen / Kunde liefert bessere
-4. Generische Platzhalter für fehlende Kategorien
+### Zusätzlich wenn vorhanden:
+- Zertifizierungen / Verbandsmitgliedschaften
+- Markenpartner (URLs geprüft!)
+- Karriere / Stellenangebote
+- Notdienst + Telefonnummer
 
 ---
 
@@ -117,6 +118,102 @@
 
 ---
 
+### Walter Leuthold (2026-03-08) — High-End-Kunde, Gründer-Feedback
+
+**Kontext:** Sanitär, Heizung, Spenglerei, Dachdecker, Fassadenbau. Zürich-Süd. Seit 2001. 25 Kunden-Bilder.
+
+**Was gut lief:**
+- Gründer lieferte 25 Bilder + 6 Google Reviews → Config-Qualität sofort hoch
+- Template skaliert: 5 Services + Detail-Overlays in ~30 min konfiguriert
+- 1 Feedback-Runde reichte (Nav, Hero, Icons, Texte, Overlays, Reviews, Bilder)
+- Wizard cross-business (Kategorien aus `services[]` abgeleitet) funktioniert für alle Branchen
+- reporter_name als Feature direkt produktiv — sofort für alle Kunden live
+
+**Was wir gelernt haben:**
+
+| Learning | Impact | Jetzt Standard? |
+|---------|--------|-----------------|
+| **ServiceCard + ServiceDetailOverlay** Pattern | Kunden erwarten "Mehr" → Overlay mit Expertise, Bullets, Galerie | ✅ Ja |
+| **`bullets?: string[]`** pro Service nutzen | High-End-Kunden brauchen Kompetenz-Bullet-Points | ✅ Schema erweitert |
+| **`"facade"` als ServiceIcon** | Neue Branche = neuer Icon-Typ | ✅ Typ erweitert |
+| **Bilder VOM Kunden** > Crawler | 25 echte Bilder vs. 297 Thumbnails bei Dörfler | Immer Kunden fragen |
+| **Galerie pro Service-Slug** | 1 Ordner = 1 Service, 3-6 Bilder. Nicht nach "Kategorie" | ✅ Standard |
+| **Unicode `\uXXXX` in JSX ist fatal** | Rendert literal ("Zur\u00fcck"). Fix: `{"Zurück"}` oder echte UTF-8 | ✅ Nie wieder escapes in JSX |
+| **reporter_name überall** | Wizard (required), Voice (fragen), Verify (editierbar), E-Mail (anzeigen) | ✅ Ab PR #86 |
+| **Nav: vereinfachen** | Nur Leistungen/Kontakt/Notfall. Kein "Schaden melden" in Nav. | ✅ Standard |
+| **Reviews: ohne Datum, 6 Stück** | Wirkt zeitlos frischer. Grid max-w-5xl. | ✅ Standard |
+| **Hero: starkes Overlay** | `from-gray-900/90 via-gray-900/80 to-gray-900/55` — Text immer lesbar | ✅ Standard |
+| **Team-Sektion ausblenden** wenn nur 1 Person | Unnötig, wirkt dünn | ✅ `c.team.length <= 1` |
+
+**Zeitaufwand Leuthold:**
+
+| Phase | Ist |
+|-------|-----|
+| Config + Bilder (real data) | ~45 min |
+| Template-Erweiterung (Overlays, Bullets) | ~2h |
+| Feedback-Runde (Nav, Hero, Icons, Reviews) | ~1.5h |
+| Wizard-Fixes (Umlaute, Foto-Upload, reporter_name) | ~1.5h |
+| Voice-Update (reporter_name, Prompt-Änderung) | ~30 min |
+| **Total** | **~6h** |
+
+---
+
+### Orlandini + Widmer (2026-03-08) — Rebuild nach Qualitäts-Audit
+
+**Kontext:** Beide Websites hatten Qualitätsprobleme: erfundene Services (Erdsonden), nicht-verifizierte Team-Mitglieder, fehlende Services.
+
+**Kritische Fehler die zum Rebuild führten:**
+
+| Fehler | Kunde | Impact | Fix |
+|--------|-------|--------|-----|
+| Service "Erdsonden" erfunden | Widmer | Nicht auf alter Website → falsche Behauptung | Service entfernt |
+| Team-Mitglied nicht verifiziert | Widmer (Brigitte) | Nicht auf alter Website → Showstopper | Entfernt, Section auto-hidden |
+| Service vergessen | Widmer (Spenglerei) | Founder musste erinnern → schlechte UX | Nachträglich hinzugefügt |
+| Gründungsjahr falsch | Widmer (1974 statt 1898) | Grob falsch → Vertrauensverlust | Korrigiert auf 1898 |
+| Falsche Brand Color | Widmer (Grün statt Blau) | Unpassend zum Betrieb | Auf #1a4b8c korrigiert |
+
+**Ergebnis:** Standardisierter 10-Regeln Intake-Prozess (siehe oben). Founder liefert Ordnerstruktur, CC baut daraus. Kein Content mehr erfinden.
+
+**Zeitaufwand Rebuild (beide Kunden):**
+
+| Phase | Zeit |
+|-------|------|
+| Analyse alte Websites + Reviews | ~30 min |
+| Orlandini Rebuild (5 Services, 3 Reviews) | ~45 min |
+| Widmer Rebuild (5 Services, Korrekturen) | ~45 min |
+| Intake-Prozess definieren | ~30 min |
+| **Total** | **~2.5h** |
+
+---
+
+## Playbook: Neuen Kunden in 1h onboarden
+
+### Voraussetzungen (Gründer liefert — gemäss Intake-Prozess oben):
+1. Leistungen-Ordner mit Bildern (`docs/customers/<slug>/leistungen/<service>/`)
+2. Hero-Bild (`docs/customers/<slug>/titelbild/`)
+3. Google Reviews Screenshots (wenn vorhanden)
+4. URL alter Website
+5. Sonderwünsche
+
+### CC-Workflow:
+1. **Config erstellen** (`src/web/src/lib/customers/<slug>.ts`) — Schema-konform, alle Services mit `bullets`, `description`, `icon`
+2. **Bilder** → `public/kunden/<slug>/<service-slug>/` (3-6 pro Service)
+3. **Registry** ergänzen (1 Import + 1 Zeile in `registry.ts`)
+4. **Build + Push** → PR → CI → Merge
+5. **Voice Agent** erstellen (nur wenn Kunde Voice-Modul hat)
+6. **SSOT updaten**: STATUS.md, OPS_BOARD.md, customer status.md
+
+### Template-Features (alle automatisch):
+- ServiceCard + ServiceDetailOverlay (wenn `description` + `bullets` vorhanden)
+- Wizard mit Kategorien aus `services[]`
+- reporter_name in Wizard + Voice + Verify
+- Responsive Galerie pro Service
+- Reviews ohne Datum
+- Notdienst-Banner (wenn `emergency.enabled`)
+- Team-Sektion (wenn > 1 Mitglied)
+
+---
+
 ## Offene Punkte (Template-Verbesserungen)
 
 - [ ] Impressum + Datenschutz Seiten (generisch, pro Kunde konfigurierbar)
@@ -126,4 +223,4 @@
 
 ---
 
-*Letztes Update: 2026-02-26 | Quelle: Dörfler AG Onboarding*
+*Letztes Update: 2026-03-08 | Quelle: Orlandini + Widmer Rebuild, Standardisierter Intake-Prozess*
