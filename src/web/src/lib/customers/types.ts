@@ -74,10 +74,12 @@ export interface Service {
   name: string;
   /** URL-safe slug for anchor/page, e.g. "badsanierung" */
   slug: string;
-  /** Short description (1-2 sentences) */
+  /** Short description (1-2 sentences) for card preview */
   summary: string;
-  /** Longer description for dedicated section */
+  /** Longer description for detail view */
   description?: string;
+  /** Key competence bullet points for detail view */
+  bullets?: string[];
   /** Icon identifier (we map these to SVG icons) */
   icon?: ServiceIcon;
   /** Reference images for this service */
@@ -96,7 +98,8 @@ export type ServiceIcon =
   | "roof"
   | "pump"
   | "tool"
-  | "leaf";
+  | "leaf"
+  | "facade";
 
 // ── Gallery ───────────────────────────────────────────────────────
 
