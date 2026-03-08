@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-08 (PR #97: Customer Links Docs + Widmer Spenglerei)
+**Datum:** 2026-03-08 (PR #105: Web-Engine Abschluss — Dörfler + Brunner Overhaul)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -54,7 +54,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 ## Aktueller Stand
 
 - **16 Module LIVE.** +2 seit letztem Update (Customer Links Page, BigBen Pub).
-- **37 Commits seit 04.03.** (PRs #53–#97).
+- **41 Commits seit 04.03.** (PRs #53–#105).
+- **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Dörfler: Hero, 6 Services mit Bullets+Bildern, 11-Punkt-Historie, Team verifiziert, Reviews zentriert, Karriere-Template fliessend. Brunner: 6 Services, Hero, 8er-Team mit Teamfoto (Two-Column Layout). Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
 - **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows. Standardisierter 10-Regeln Intake-Prozess.
 - **Customer Wizard (07.03.):** Branded pro Kunde, Kategorien aus `services[]`, reporter_name, Photo Upload auf Success-Screen.
 - **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.

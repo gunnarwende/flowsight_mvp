@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-08 (PR #97: Customer Links Docs)
+**Updated:** 2026-03-08 (PR #105: Web-Engine Abschluss)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,11 +11,11 @@
 - **Produkt:** 16 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 6 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 37 Commits, PRs #53–#97
+- **Shipped seit 04.03.:** 41 Commits, PRs #53–#105
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Kundenakquise + Website-Qualitätsoffensive. 10-Regeln Intake-Prozess etabliert.
+- **Phase:** Kundenakquise + Website-Qualitätsoffensive. 10-Regeln Intake-Prozess etabliert. Web-Engine abgeschlossen (alle 6 Websites auf Standard).
 
 ### How to Operate (Founder via Handy)
 
