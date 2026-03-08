@@ -1,5 +1,7 @@
 import type { CustomerSite } from "./types";
 
+const IMG = "/kunden/orlandini";
+
 export const orlandini: CustomerSite = {
   slug: "orlandini",
   companyName: "Orlandini Sanitär Heizung GmbH",
@@ -52,7 +54,14 @@ export const orlandini: CustomerSite = {
       summary:
         "Trinkwasser, Abwasser, Gas und Druckluftinstallationen \u2014 komplett aus einer Hand.",
       description:
-        "Von der Neuinstallation bis zur Sanierung: Wir planen und realisieren sämtliche Sanitäranlagen \u2014 Trinkwasserleitungen, Abwassersysteme, Gasinstallationen und Druckluftleitungen. Fachgerecht und nach aktuellen Normen.",
+        "Von der Neuinstallation bis zur kompletten Sanierung: Wir planen und realisieren sämtliche Sanitäranlagen \u2014 Trinkwasserleitungen, Abwassersysteme, Gasinstallationen und Druckluftleitungen. Fachgerecht, termingerecht und nach aktuellen Normen. Als Familienbetrieb setzen wir auf persönliche Betreuung in jedem Projekt.",
+      bullets: [
+        "Trinkwasser- und Abwasserinstallationen für Neu- und Umbauten",
+        "Gas- und Druckluftleitungen nach aktuellen Normen",
+        "Komplette Badsanierungen inkl. Planung und Koordination",
+        "Küchen- und Nasszelleninstallationen",
+        "Persönliche Beratung vor Ort durch den Familienbetrieb",
+      ],
     },
     {
       name: "Heizungstechnik",
@@ -61,29 +70,121 @@ export const orlandini: CustomerSite = {
       summary:
         "Gas, Öl, Wärmepumpen, Fussbodenheizung und Solaranlagen \u2014 für wohlige Wärme.",
       description:
-        "Ob Gasheizung, Ölkessel, Wärmepumpe oder Fussbodenheizung \u2014 wir beraten, planen und installieren die passende Heizlösung für Ihr Gebäude. Auch Solaranlagen zur Heizungsunterstützung gehören zu unserem Angebot.",
+        "Ob Gasheizung, Ölkessel, Wärmepumpe oder Fussbodenheizung \u2014 wir beraten, planen und installieren die passende Heizlösung für Ihr Gebäude. Von der Einzelraum-Lösung bis zur Gesamtanlage mit Solarunterstützung: Über 50 Jahre Erfahrung garantieren Ihnen effiziente und zukunftssichere Wärme.",
+      bullets: [
+        "Gasheizungen, Ölkessel und Wärmepumpen",
+        "Fussbodenheizung für Neubau und Sanierung",
+        "Solaranlagen zur Heizungsunterstützung",
+        "Heizungssanierung und Kesseltausch",
+        "Energieberatung für optimale Effizienz",
+      ],
     },
     {
       name: "Beratung & Planung",
-      slug: "beratung",
+      slug: "beratung_planung",
       icon: "tool",
       summary:
         "Persönliche Fachberatung für Ihre Sanitär- und Heizungsprojekte.",
       description:
-        "Ob Neubau, Umbau oder Sanierung \u2014 wir beraten Sie umfassend und erstellen massgeschneiderte Konzepte. Profitieren Sie von über 50 Jahren Erfahrung im Familienbetrieb.",
+        "Ob Neubau, Umbau oder Sanierung \u2014 wir beraten Sie umfassend und erstellen massgeschneiderte Konzepte. Profitieren Sie von über 50 Jahren Erfahrung im Familienbetrieb. Wir begleiten Sie von der ersten Idee bis zur schlüsselfertigen Übergabe.",
+      bullets: [
+        "Persönliche Beratung vor Ort \u2014 direkt vom Inhaber",
+        "Massgeschneiderte Konzepte für Neubau und Sanierung",
+        "Koordination aller Gewerke aus einer Hand",
+        "Kostentransparenz und verbindliche Offerten",
+        "Über 50 Jahre Erfahrung im Familienbetrieb",
+      ],
     },
     {
-      name: "Reparatur & Wartung",
-      slug: "reparatur",
+      name: "Reparaturen",
+      slug: "reparaturen",
       icon: "wrench",
       summary:
-        "Schnelle Hilfe bei Defekten und regelmässige Wartung Ihrer Anlagen.",
+        "Schnelle Hilfe bei Defekten \u2014 tropfender Hahn, verstopfter Abfluss oder Heizungsstörung.",
       description:
-        "Tropfender Hahn, verstopfter Abfluss oder Heizungsstörung? Wir kommen schnell und erledigen die Reparatur fachgerecht. Auch regelmässige Wartung für Heizung und Sanitäranlagen.",
+        "Tropfender Hahn, verstopfter Abfluss oder Heizungsstörung? Wir kommen schnell und erledigen die Reparatur fachgerecht. Unser eingespieltes Team löst die meisten Probleme noch am selben Tag \u2014 zuverlässig und zu fairen Preisen.",
+      bullets: [
+        "Schnelle Einsätze bei Rohrbrüchen und Wasserschäden",
+        "Reparatur von Armaturen, Ventilen und Dichtungen",
+        "Behebung von Abflussverstopfungen",
+        "Heizungsstörungen und Kesselreparaturen",
+        "Notdienst für dringende Fälle",
+      ],
+    },
+    {
+      name: "Wartungsservice",
+      slug: "wartungsservice",
+      icon: "water",
+      summary:
+        "Regelmässige Wartung Ihrer Sanitär- und Heizungsanlagen \u2014 damit alles reibungslos läuft.",
+      description:
+        "Regelmässige Wartung verhindert teure Folgeschäden und verlängert die Lebensdauer Ihrer Anlagen. Wir bieten systematische Funktionskontrollen für Heizung, Boiler und Sanitäranlagen \u2014 damit Sie sich auf wohlige Wärme und fliessendes Wasser verlassen können.",
+      bullets: [
+        "Periodische Heizungswartung und Brennerservice",
+        "Boilerentkalkung und Warmwasser-Checks",
+        "Kontrolle von Sicherheitsventilen und Filtern",
+        "Wartungsverträge mit festen Intervallen",
+        "Protokollierte Wartungsberichte",
+      ],
     },
   ],
 
-  gallery: [],
+  gallery: [
+    {
+      name: "Sanitär",
+      slug: "sanitaer",
+      images: [
+        { src: `${IMG}/sanitaer/01.avif`, alt: "Moderne Sanitärinstallation" },
+        { src: `${IMG}/sanitaer/02.avif`, alt: "Badezimmer-Neuinstallation" },
+        { src: `${IMG}/sanitaer/03.avif`, alt: "Sanitäre Anlage im Detail" },
+        { src: `${IMG}/sanitaer/04.jpg`, alt: "Badsanierung" },
+        { src: `${IMG}/sanitaer/05.jpg`, alt: "Installationsarbeit" },
+      ],
+    },
+    {
+      name: "Heizung",
+      slug: "heizung",
+      images: [
+        { src: `${IMG}/heizung/08.jpg`, alt: "Heizungsanlage im Technikraum" },
+        { src: `${IMG}/heizung/16.jpg`, alt: "Boiler und Speicher" },
+        { src: `${IMG}/heizung/17.jpg`, alt: "Warmwasser-System" },
+        { src: `${IMG}/heizung/18.jpg`, alt: "Heizungstechnik" },
+        { src: `${IMG}/heizung/19.webp`, alt: "Heizkörper-Installation" },
+      ],
+    },
+    {
+      name: "Beratung & Planung",
+      slug: "beratung_planung",
+      images: [
+        { src: `${IMG}/beratung_planung/01.jpg`, alt: "Beratungsgespräch vor Ort" },
+        { src: `${IMG}/beratung_planung/02.png`, alt: "Projektplanung" },
+        { src: `${IMG}/beratung_planung/03.png`, alt: "Konzepterstellung" },
+        { src: `${IMG}/beratung_planung/04.png`, alt: "Fachberatung" },
+      ],
+    },
+    {
+      name: "Reparaturen",
+      slug: "reparaturen",
+      images: [
+        { src: `${IMG}/reparaturen/25.jpg`, alt: "Sanitär-Fachmann bei der Reparatur" },
+        { src: `${IMG}/reparaturen/26.webp`, alt: "Reparatur an der Hausinstallation" },
+        { src: `${IMG}/reparaturen/27.jpg`, alt: "Armaturenwechsel" },
+        { src: `${IMG}/reparaturen/28.jpg`, alt: "Leitungsreparatur" },
+        { src: `${IMG}/reparaturen/30.webp`, alt: "Notfall-Reparatur" },
+      ],
+    },
+    {
+      name: "Wartungsservice",
+      slug: "wartungsservice",
+      images: [
+        { src: `${IMG}/wartungsservice/01.png`, alt: "Wartungsarbeiten" },
+        { src: `${IMG}/wartungsservice/02.png`, alt: "Heizungswartung" },
+        { src: `${IMG}/wartungsservice/03.png`, alt: "Boiler-Kontrolle" },
+        { src: `${IMG}/wartungsservice/04.png`, alt: "Systemprüfung" },
+        { src: `${IMG}/wartungsservice/05.png`, alt: "Wartungsprotokoll" },
+      ],
+    },
+  ],
 
   reviews: {
     averageRating: 3.8,
@@ -92,14 +193,19 @@ export const orlandini: CustomerSite = {
       "https://www.google.com/maps/place/Orlandini+Sanit%C3%A4r+Heizung+GmbH",
     highlights: [
       {
-        author: "Kundenstimme",
+        author: "Christoph Wehrli",
         rating: 5,
-        text: "Sehr kompetent und freundlich. Schnelle Terminvergabe und saubere Arbeit.",
+        text: "Wir erlitten in unserem älteren Haus einen nicht leicht zu lokalisierenden Wasserschaden. Die Firma Orlandini leistete einen wesentlichen Beitrag, um den Schaden zu unserer vollen Zufriedenheit zu beheben. Sehr rascher Einsatz mit kompetentem und flexiblem Personal. Eine sehr empfehlenswerte Firma!",
       },
       {
-        author: "Kundenstimme",
+        author: "Luca Kunz",
         rating: 5,
-        text: "Familiäre Atmosphäre und professionelle Ausführung \u2014 so stellt man sich einen lokalen Handwerker vor.",
+        text: "Top Service, sehr empfehlenswert! Ich bin sehr zufrieden mit dem Sanitärservice von Orlandini. Herr Majic war pünktlich, kompetent und freundlich. Das Problem wurde schnell und professionell gelöst, und alles wurde sauber hinterlassen. Absolut empfehlenswert!",
+      },
+      {
+        author: "Bernd H",
+        rating: 5,
+        text: "Wir sind seit vielen Jahren Kunde und machten immer sehr gute Erfahrungen. Fängt schon mit der netten Telefonistin an und endet jeweils mit dem tollen und schnellen Service der professionellen Handwerker. Dafür geben wir gerne 5 strahlende Sterne!",
       },
     ],
   },
