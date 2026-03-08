@@ -37,7 +37,7 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
   const supabase = getServiceClient();
   const { data: caseRow, error } = await supabase
     .from("cases")
-    .select("id, created_at, plz, city, street, house_number")
+    .select("id, created_at, reporter_name, plz, city, street, house_number")
     .eq("id", caseId)
     .single();
 
@@ -80,7 +80,7 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
           Meldung vervollstaendigen
         </h1>
         <p className="mt-2 text-sm text-gray-600">
-          Bitte pruefen Sie Ihre Adresse und laden Sie bei Bedarf Fotos vom Schaden hoch.
+          Bitte pruefen Sie Ihren Namen und Ihre Adresse und laden Sie bei Bedarf Fotos vom Schaden hoch.
         </p>
       </div>
 
@@ -88,6 +88,7 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
         <CorrectionForm
           caseId={caseId}
           token={tokenForApi}
+          initialName={caseRow.reporter_name ?? ""}
           initialPlz={caseRow.plz ?? ""}
           initialCity={caseRow.city ?? ""}
           initialStreet={caseRow.street ?? ""}

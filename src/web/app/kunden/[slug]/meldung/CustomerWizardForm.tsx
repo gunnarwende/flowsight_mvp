@@ -85,6 +85,7 @@ export function CustomerWizardForm({
   const [houseNumber, setHouseNumber] = useState("");
   const [plz, setPlz] = useState("");
   const [city, setCity] = useState("");
+  const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [description, setDescription] = useState("");
@@ -101,7 +102,7 @@ export function CustomerWizardForm({
     plz.trim().length > 0 &&
     city.trim().length > 0;
   const hasContact = contactPhone.trim().length > 0 || contactEmail.trim().length > 0;
-  const step3Valid = hasContact && description.trim().length > 0;
+  const step3Valid = contactName.trim().length > 0 && hasContact && description.trim().length > 0;
 
   function goNext() {
     if (step < 3) setStep(step + 1);
@@ -125,6 +126,7 @@ export function CustomerWizardForm({
       urgency,
       description: description.trim(),
     };
+    if (contactName.trim()) body.reporter_name = contactName.trim();
     if (contactPhone.trim()) body.contact_phone = contactPhone.trim();
     if (contactEmail.trim()) body.contact_email = contactEmail.trim();
 
@@ -227,6 +229,7 @@ export function CustomerWizardForm({
     setHouseNumber("");
     setPlz("");
     setCity("");
+    setContactName("");
     setContactPhone("");
     setContactEmail("");
     setDescription("");
@@ -467,8 +470,12 @@ export function CustomerWizardForm({
             <div className="space-y-5">
               <div>
                 <StepLabel>Kontaktdaten</StepLabel>
-                <p className="mb-4 text-xs text-gray-400">Mindestens Telefon oder E-Mail angeben.</p>
+                <p className="mb-4 text-xs text-gray-400">Damit der Techniker Sie vor Ort findet.</p>
                 <div className="space-y-3">
+                  <div>
+                    <FieldLabel htmlFor="name">Ihr Name *</FieldLabel>
+                    <Input id="name" type="text" required value={contactName} onChange={setContactName} placeholder="Max Muster" />
+                  </div>
                   <div>
                     <FieldLabel htmlFor="phone">Telefon</FieldLabel>
                     <Input id="phone" type="tel" value={contactPhone} onChange={setContactPhone} placeholder="+41 79 123 45 67" />

@@ -22,6 +22,7 @@ export async function POST(
   }
 
   const token = typeof body.token === "string" ? body.token : "";
+  const reporterName = typeof body.reporter_name === "string" ? body.reporter_name.trim() : "";
   const plz = typeof body.plz === "string" ? body.plz.trim() : "";
   const city = typeof body.city === "string" ? body.city.trim() : "";
   const street = typeof body.street === "string" ? body.street.trim() : "";
@@ -58,7 +59,8 @@ export async function POST(
   }
 
   // Update case
-  const updatePayload: Record<string, string> = { plz, city };
+  const updatePayload: Record<string, string | null> = { plz, city };
+  if (reporterName.length > 0) updatePayload.reporter_name = reporterName;
   if (street.length > 0) updatePayload.street = street;
   if (houseNumber.length > 0) updatePayload.house_number = houseNumber;
 
@@ -86,8 +88,8 @@ export async function POST(
     .insert({
       case_id: caseId,
       event_type: "address_corrected",
-      title: "Adresse per SMS-Link korrigiert",
-      metadata: { plz, city, street: street || null, house_number: houseNumber || null },
+      title: "Daten per SMS-Link korrigiert",
+      metadata: { reporter_name: reporterName || null, plz, city, street: street || null, house_number: houseNumber || null },
     })
     .then(({ error: evErr }) => {
       if (evErr) Sentry.captureException(evErr);
