@@ -253,6 +253,7 @@ export async function POST(req: Request) {
   const city = deCH(nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt));
   const street = deCH(nonEmptyStr(extractedData.street ?? extractedData.strasse));
   const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
+  const reporterName = deCH(nonEmptyStr(extractedData.reporter_name ?? extractedData.name ?? extractedData.melder));
   const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
   const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
   // Priority: custom extracted field (German) → transcript (raw conversation)
@@ -351,6 +352,7 @@ export async function POST(req: Request) {
     const insertPayload: Record<string, unknown> = {
       tenant_id: tenantId,
       source: "voice" as const,
+      reporter_name: reporterName ?? null,
       contact_phone: callerPhone!,
       contact_email: null,
       plz: plz!,
@@ -431,6 +433,7 @@ export async function POST(req: Request) {
       plz: plz!,
       description: description!,
       contactPhone: callerPhone ?? undefined,
+      reporterName: reporterName ?? undefined,
       street: street ?? undefined,
       houseNumber: houseNumber ?? undefined,
     });

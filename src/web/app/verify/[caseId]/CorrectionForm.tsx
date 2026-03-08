@@ -5,6 +5,7 @@ import { useState, useRef, type FormEvent } from "react";
 interface CorrectionFormProps {
   caseId: string;
   token: string;
+  initialName: string;
   initialPlz: string;
   initialCity: string;
   initialStreet: string;
@@ -25,11 +26,13 @@ const ACCEPT = "image/*,video/*";
 export default function CorrectionForm({
   caseId,
   token,
+  initialName,
   initialPlz,
   initialCity,
   initialStreet,
   initialHouseNumber,
 }: CorrectionFormProps) {
+  const [name, setName] = useState(initialName);
   const [plz, setPlz] = useState(initialPlz);
   const [city, setCity] = useState(initialCity);
   const [street, setStreet] = useState(initialStreet);
@@ -158,6 +161,7 @@ export default function CorrectionForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
+          reporter_name: name.trim(),
           plz: plz.trim(),
           city: city.trim(),
           street: street.trim(),
@@ -217,6 +221,33 @@ export default function CorrectionForm({
   // ── Form ──────────────────────────────────────────────────────────
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* ── Name section ──────────────────────────────────────────── */}
+      <fieldset className="space-y-4">
+        <legend className="text-sm font-semibold text-gray-800">
+          Ihr Name
+        </legend>
+        <p className="text-xs text-gray-500">
+          Damit der Techniker weiss, bei wem er klingeln muss.
+        </p>
+        <div>
+          <label
+            htmlFor="reporter_name"
+            className="mb-1.5 block text-sm font-medium text-gray-700"
+          >
+            Name
+          </label>
+          <input
+            id="reporter_name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Max Muster"
+            maxLength={120}
+            className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-teal-600 focus:outline-none"
+          />
+        </div>
+      </fieldset>
+
       {/* ── Address section ─────────────────────────────────────────── */}
       <fieldset className="space-y-4">
         <legend className="text-sm font-semibold text-gray-800">
