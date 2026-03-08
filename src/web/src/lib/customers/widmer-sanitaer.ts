@@ -79,6 +79,22 @@ export const widmerSanitaer: CustomerSite = {
       ],
     },
     {
+      name: "Spenglerei",
+      slug: "spenglerei",
+      icon: "tool",
+      summary:
+        "Fachgerechte Spenglerarbeiten für Dach und Fassade \u2014 Flachdach, Blechverkleidungen und Kamineinfassungen.",
+      description:
+        "Ob Flachdachabdichtung, Blechverkleidung oder Kamineinfassung: Unsere Spengler arbeiten präzise und wetterfest. Wir verbinden traditionelles Handwerk mit modernen Materialien \u2014 für langlebige Lösungen, die Ihr Gebäude dauerhaft schützen. Von der Rinne bis zur Fassadenverkleidung aus einer Hand.",
+      bullets: [
+        "Flachdachabdichtungen und Blecheindeckungen",
+        "Dachrinnen, Fallrohre und Entwässerungssysteme",
+        "Kamineinfassungen und Dachdurchführungen",
+        "Fassadenverkleidungen aus Metall",
+        "Reparaturen und Sanierungen an bestehenden Blecharbeiten",
+      ],
+    },
+    {
       name: "Beratung & Planung",
       slug: "beratung_planung",
       icon: "pipe",
@@ -136,6 +152,17 @@ export const widmerSanitaer: CustomerSite = {
       ],
     },
     {
+      name: "Spenglerei",
+      slug: "spenglerei",
+      images: [
+        { src: `${IMG}/spenglerei/11.jpg`, alt: "Spenglerarbeiten am Dach" },
+        { src: `${IMG}/spenglerei/12.jpg`, alt: "Blechverkleidung" },
+        { src: `${IMG}/spenglerei/13.webp`, alt: "Kamineinfassung" },
+        { src: `${IMG}/spenglerei/14.jpg`, alt: "Dachrinne und Fallrohr" },
+        { src: `${IMG}/spenglerei/15.jpeg`, alt: "Flachdachabdichtung" },
+      ],
+    },
+    {
       name: "Beratung & Planung",
       slug: "beratung_planung",
       images: [
@@ -182,16 +209,12 @@ export const widmerSanitaer: CustomerSite = {
     ],
   },
 
+  /* Team: only 1 verified person → section auto-hidden (requires >=2) */
   team: [
     {
       name: "Michael Widmer",
       role: "Geschäftsführer",
       bio: "Führt den Familienbetrieb in Horgen mit technischem Know-how und persönlichem Engagement.",
-    },
-    {
-      name: "Brigitte Widmer",
-      role: "Administration",
-      bio: "Verantwortlich für Büro, Offerten und Kundenbetreuung.",
     },
   ],
 
