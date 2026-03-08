@@ -220,18 +220,8 @@ export const orlandini: CustomerSite = {
     ],
   },
 
-  team: [
-    {
-      name: "Anastasia Orlandini",
-      role: "Geschäftsführerin",
-      bio: "Zweite Generation. Führt den Familienbetrieb mit Leidenschaft und persönlichem Engagement weiter.",
-    },
-    {
-      name: "Marco Orlandini",
-      role: "Betriebsleitung",
-      bio: "Verantwortlich für den operativen Betrieb und die Projektabwicklung.",
-    },
-  ],
+  /* Team: Namen/Rollen nicht verifiziert → entfernt. Section auto-hidden (< 2) */
+  team: [],
 
   certifications: [
     { name: "Suissetec", issuer: "Schweizerisch-Liechtensteinischer Gebäudetechnikverband" },
@@ -286,18 +276,5 @@ export const orlandini: CustomerSite = {
     },
   ],
 
-  history: [
-    {
-      year: 1972,
-      title: "Gründung",
-      description:
-        "Die Familie Orlandini gründet einen Sanitär- und Heizungsbetrieb in Horgen.",
-    },
-    {
-      year: 2000,
-      title: "Zweite Generation",
-      description:
-        "Anastasia Orlandini übernimmt die Geschäftsführung und führt den Betrieb als Familien-GmbH weiter.",
-    },
-  ],
+  /* History: Details nicht verifiziert → entfernt */
 };
