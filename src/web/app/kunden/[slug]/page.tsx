@@ -64,7 +64,7 @@ export default async function CustomerPage({
   if (!c) notFound();
 
   const accent = c.brandColor ?? "#2b6cb0";
-  const wizardUrl = `/${c.slug}/meldung`;
+  const wizardUrl = `/kunden/${c.slug}/meldung`;
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
