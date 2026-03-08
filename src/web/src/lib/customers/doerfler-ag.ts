@@ -20,6 +20,9 @@ export const doerflerAg: CustomerSite = {
     "Dörfler AG",
   ],
 
+  voicePhone: "044 505 74 20",
+  voicePhoneRaw: "+41445057420",
+
   contact: {
     phone: "043 443 52 00",
     phoneRaw: "+41434435200",

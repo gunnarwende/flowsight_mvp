@@ -20,6 +20,9 @@ export interface CustomerSite {
   brandColor?: string;
 
   contact: ContactInfo;
+  /** Voice agent phone number (if customer has voice module) */
+  voicePhone?: string;
+  voicePhoneRaw?: string;
   emergency?: EmergencyInfo;
   services: Service[];
   gallery: GalleryCategory[];
