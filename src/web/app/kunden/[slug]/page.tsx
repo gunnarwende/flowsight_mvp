@@ -99,16 +99,22 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
           <a href="#leistungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Leistungen</a>
           {c.team.length > 1 && <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>}
           <a href="#kontakt" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Kontakt</a>
-          {c.emergency?.enabled && (
+          {c.emergency?.enabled ? (
             <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">
               {c.emergency.label}
+            </a>
+          ) : (
+            <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+              Anrufen
             </a>
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <a href="#kontakt" className="text-sm text-gray-600">Kontakt</a>
-          {c.emergency?.enabled && (
+          {c.emergency?.enabled ? (
             <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white">Notfall</a>
+          ) : (
+            <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ backgroundColor: accent }}>Anrufen</a>
           )}
         </div>
       </div>
@@ -240,13 +246,17 @@ function ReviewsSection({
                 ))}
               </div>
               <p className="text-2xl font-bold text-gray-900">{reviews.averageRating} von 5 Sternen</p>
-              <p className="mt-1 text-sm text-gray-500">Basierend auf {reviews.totalReviews} Bewertungen</p>
+              {reviews.totalReviews >= 5 && (
+                <p className="mt-1 text-sm text-gray-500">Basierend auf {reviews.totalReviews} Bewertungen</p>
+              )}
             </>
           )}
           {!showScore && (
             <>
               <h2 className="text-2xl font-bold text-gray-900">Was unsere Kunden sagen</h2>
-              <p className="mt-1 text-sm text-gray-500">{reviews.totalReviews} Bewertungen</p>
+              {reviews.totalReviews >= 5 && (
+                <p className="mt-1 text-sm text-gray-500">{reviews.totalReviews} Bewertungen</p>
+              )}
             </>
           )}
         </div>

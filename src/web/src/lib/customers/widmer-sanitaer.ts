@@ -4,17 +4,17 @@ const IMG = "/kunden/widmer-sanitaer";
 
 export const widmerSanitaer: CustomerSite = {
   slug: "widmer-sanitaer",
-  companyName: "Widmer H. & Co. AG",
+  companyName: "Widmer & Co. AG",
   tagline: "Sanitär, Heizung, Spenglerei & Blitzschutz in Horgen — seit 1898",
   metaDescription:
-    "Widmer H. & Co. AG — Ihr Fachbetrieb für Sanitär, Heizung, Spenglerei und Blitzschutz in Horgen. Familienbetrieb seit 1898. Über 125 Jahre Erfahrung am Zürichsee.",
+    "Widmer & Co. AG — Ihr Fachbetrieb für Sanitär, Heizung, Spenglerei und Blitzschutz in Horgen. Familienbetrieb seit 1898. Über 125 Jahre Erfahrung am Zürichsee.",
   brandColor: "#1a4b8c",
   seoKeywords: [
     "Sanitär Horgen",
     "Heizung Horgen",
     "Spenglerei Horgen",
     "Blitzschutz Zürichsee",
-    "Widmer Sanitär Horgen",
+    "Widmer & Co. Sanitär Horgen",
     "Sanitär seit 1898",
   ],
 
@@ -36,14 +36,7 @@ export const widmerSanitaer: CustomerSite = {
     ],
   },
 
-  emergency: {
-    enabled: true,
-    phone: "044 725 47 00",
-    phoneRaw: "+41447254700",
-    label: "Notfall",
-    description:
-      "Rohrbruch, Heizungsausfall oder Wasserschaden? Rufen Sie uns an \u2014 wir sind für Sie da.",
-  },
+  /* Kein Notdienst auf alter Website → kein Notfall-Button, stattdessen "Anrufen" in Nav */
 
   services: [
     {
@@ -189,7 +182,7 @@ export const widmerSanitaer: CustomerSite = {
     averageRating: 5.0,
     totalReviews: 1,
     googleUrl:
-      "https://www.google.com/maps/place/Widmer+H.+%26+Co.+AG",
+      "https://www.google.com/maps/place/Widmer+%26+Co.+AG",
     highlights: [],
   },
 

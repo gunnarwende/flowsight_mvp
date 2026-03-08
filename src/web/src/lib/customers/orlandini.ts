@@ -14,7 +14,7 @@ export const orlandini: CustomerSite = {
     "Heizung Horgen",
     "Wärmepumpe Horgen",
     "Badsanierung Horgen",
-    "Sanitär Notdienst Horgen",
+    "Sanitär Reparatur Horgen",
     "Orlandini Sanitär",
     "Heizung Zürichsee",
   ],
@@ -37,14 +37,7 @@ export const orlandini: CustomerSite = {
     ],
   },
 
-  emergency: {
-    enabled: true,
-    phone: "044 725 41 44",
-    phoneRaw: "+41447254144",
-    label: "Notfall",
-    description:
-      "Rohrbruch, Heizungsausfall oder Wasserschaden? Rufen Sie uns an \u2014 wir helfen schnell und unkompliziert.",
-  },
+  /* Kein Notdienst auf alter Website → kein Notfall-Button, stattdessen "Anrufen" in Nav */
 
   services: [
     {
@@ -108,7 +101,7 @@ export const orlandini: CustomerSite = {
         "Reparatur von Armaturen, Ventilen und Dichtungen",
         "Behebung von Abflussverstopfungen",
         "Heizungsstörungen und Kesselreparaturen",
-        "Notdienst für dringende Fälle",
+        "Schnelle Terminvergabe für dringende Fälle",
       ],
     },
     {
@@ -237,6 +230,59 @@ export const orlandini: CustomerSite = {
       name: "Marco Orlandini",
       role: "Betriebsleitung",
       bio: "Verantwortlich für den operativen Betrieb und die Projektabwicklung.",
+    },
+  ],
+
+  certifications: [
+    { name: "Suissetec", issuer: "Schweizerisch-Liechtensteinischer Gebäudetechnikverband" },
+    { name: "VSSH", issuer: "Verband Schweizerischer Sanitär- und Heizungsfachleute" },
+    { name: "FWS", issuer: "Fachvereinigung Wärmepumpen Schweiz" },
+  ],
+
+  brandPartners: [
+    { name: "Geberit", url: "https://www.geberit.ch" },
+    { name: "Hansgrohe", url: "https://www.hansgrohe.ch" },
+    { name: "Duravit", url: "https://www.duravit.ch" },
+    { name: "Villeroy & Boch", url: "https://www.villeroy-boch.ch" },
+    { name: "Sanitas Troesch", url: "https://www.sanitastroesch.ch" },
+    { name: "Duscholux", url: "https://www.duscholux.ch" },
+    { name: "KWC", url: "https://www.kwc.com" },
+    { name: "Koralle", url: "https://www.koralle.de" },
+    /* Similor Kugler: Domain tot, Firma aufgegangen → entfernt */
+    { name: "Richner Miauton", url: "https://www.richner.ch" },
+    { name: "BWT Aqua", url: "https://www.bwt.com" },
+    { name: "Hoval", url: "https://www.hoval.ch" },
+    { name: "Vaillant", url: "https://www.vaillant.ch" },
+    { name: "Elco", url: "https://www.elco.ch" },
+    { name: "Domotec", url: "https://www.domotec.ch" },
+    { name: "Zehnder", url: "https://www.zehnder.ch" },
+    { name: "Meier Tobler", url: "https://www.meiertobler.ch" },
+  ],
+
+  careers: [
+    {
+      title: "Sanitär-Service-Fachleute (m/w), 80-100%",
+      type: "fulltime" as const,
+      description: "Wir sind eine 50-jährige Haustechnikfirma mit Schwerpunkt im Bereich Service, Reparaturen, Wartungen und kleineren Umbauten. Unsere Kundenliste wird immer länger — wir brauchen dringend Verstärkung.",
+      requirements: [
+        "Gelernte Fachfrauen und Männer mit Serviceerfahrung",
+        "Freude am selbständigen Arbeiten",
+        "Zuverlässigkeit, gepflegtes Auftreten und Teamfähigkeit",
+        "Deutsch in Wort und Schrift",
+        "Führerschein Kat. B",
+      ],
+    },
+    {
+      title: "Heizungs-Service-Fachleute (m/w), 80-100%",
+      type: "fulltime" as const,
+      description: "Service-Spezialisten für Heizungstechnik gesucht. Persönliches Servicefahrzeug, modernes Werkzeug und Terminplanungstools mit Tablets. Langfristig sichere Anstellung in einem familiären Umfeld.",
+      requirements: [
+        "Erfahrung im Heizungsservice oder Bereitschaft zur Einarbeitung",
+        "Freude an Kundenkontakt und selbständigem Arbeiten",
+        "Zuverlässigkeit und Teamfähigkeit",
+        "Deutsch in Wort und Schrift",
+        "Führerschein Kat. B",
+      ],
     },
   ],
 
