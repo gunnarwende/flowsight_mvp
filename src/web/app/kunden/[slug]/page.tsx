@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getCustomer, getAllCustomerSlugs } from "@/src/lib/customers/registry";
-import { ImageGallery } from "./ImageGallery";
-import { ServiceDescription } from "./ServiceDescription";
+import { ServiceCard } from "./ServiceCard";
 import type { Metadata } from "next";
 import type {
   CustomerSite,
@@ -100,20 +99,14 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
           <a href="#leistungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Leistungen</a>
           {c.team.length > 1 && <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>}
           <a href="#kontakt" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Kontakt</a>
-          <a href={wizardUrl} className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
-            Schaden melden
-          </a>
-          <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg border-2 px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90" style={{ borderColor: accent, color: accent }}>
-            {c.contact.phone}
-          </a>
           {c.emergency?.enabled && (
-            <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
+            <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">
               {c.emergency.label}
             </a>
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
-          <a href={wizardUrl} className="rounded-lg px-4 py-2 text-sm font-semibold text-white" style={{ backgroundColor: accent }}>Melden</a>
+          <a href="#kontakt" className="text-sm text-gray-600">Kontakt</a>
           {c.emergency?.enabled && (
             <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white">Notfall</a>
           )}
@@ -127,8 +120,8 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
 function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
   const foundedYear = c.history?.[0]?.year;
   const yearsActive = foundedYear ? new Date().getFullYear() - foundedYear : null;
-  // Use first gallery image as hero background if available
-  const heroImg = c.gallery?.[0]?.images?.[0]?.src;
+  // Hero image: dedicated hero file or first gallery image as fallback
+  const heroImg = `/kunden/${c.slug}/hero.jpg`;
 
   return (
     <section className="relative overflow-hidden text-white" style={{ minHeight: "70vh" }}>
@@ -136,7 +129,7 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={heroImg} alt="" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/70 to-gray-900/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/80 to-gray-900/55" />
         </>
       ) : (
         <>
@@ -166,11 +159,11 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
             {yearsActive && yearsActive >= 5 && (
               <div><p className="text-2xl font-bold">{yearsActive}+</p><p className="text-xs text-white/60">Jahre Erfahrung</p></div>
             )}
-            <div><p className="text-2xl font-bold">{c.services.length}</p><p className="text-xs text-white/60">Fachbereiche</p></div>
-            <div><p className="text-2xl font-bold">{c.serviceArea.gemeinden.length}+</p><p className="text-xs text-white/60">Gemeinden</p></div>
             {c.reviews && c.reviews.averageRating >= SHOW_RATING_THRESHOLD && (
               <div><p className="text-2xl font-bold">{c.reviews.averageRating}&#9733;</p><p className="text-xs text-white/60">{c.reviews.totalReviews} Bewertungen</p></div>
             )}
+            <div><p className="text-2xl font-bold">{c.services.length}</p><p className="text-xs text-white/60">Fachbereiche</p></div>
+            <div><p className="text-2xl font-bold">{c.serviceArea.gemeinden.length}+</p><p className="text-xs text-white/60">Gemeinden</p></div>
           </div>
         </div>
       </div>
@@ -179,8 +172,8 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
 }
 
 /* ── Services — Card Layout ───────────────────────────────────────
-   Icon → Name → Summary → Separator → Description (expandable) →
-   Reference images (always visible, with arrow navigation).        */
+   Icon → Name → 2-sentence Summary → "Mehr" → Reference images.
+   Click on card → opens full detail overlay.                       */
 function ServicesSection({
   services,
   gallery,
@@ -205,35 +198,16 @@ function ServicesSection({
           {services.map((s) => {
             const imgs = galleryMap.get(s.slug) ?? [];
             return (
-              <div key={s.slug} className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-lg">
-                {/* Icon header */}
-                <div className="flex items-center justify-center pt-8 pb-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
-                    <ServiceIconSvg icon={s.icon} />
-                  </div>
-                </div>
-                {/* Content */}
-                <div className="px-5 pb-6">
-                  <h3 className="text-center text-lg font-semibold">{s.name}</h3>
-                  <p className="mt-2 text-center text-sm leading-relaxed text-gray-600">{s.summary}</p>
-
-                  {/* Separator + Description */}
-                  {s.description && (
-                    <>
-                      <div className="my-4 border-t border-gray-100" />
-                      <ServiceDescription text={s.description} accent={accent} />
-                    </>
-                  )}
-
-                  {/* Reference images — always visible */}
-                  {imgs.length > 0 && (
-                    <div className="mt-4">
-                      <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Referenzbilder</p>
-                      <ImageGallery images={imgs} height={140} />
-                    </div>
-                  )}
-                </div>
-              </div>
+              <ServiceCard
+                key={s.slug}
+                name={s.name}
+                summary={s.summary}
+                description={s.description}
+                bullets={s.bullets}
+                icon={<ServiceIconSvg icon={s.icon} />}
+                images={imgs}
+                accent={accent}
+              />
             );
           })}
         </div>
@@ -278,7 +252,7 @@ function ReviewsSection({
         </div>
 
         {reviews.highlights.length > 0 && (
-          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {reviews.highlights.map((r, i) => (
               <div key={i} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-3 flex gap-0.5">
@@ -608,12 +582,24 @@ function Footer({ company: c }: { company: CustomerSite }) {
 function ServiceIconSvg({ icon, size = "md" }: { icon?: ServiceIcon; size?: "sm" | "md" }) {
   const cls = size === "sm" ? "h-4 w-4" : "h-6 w-6";
   switch (icon) {
-    case "bath": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>);
+    // Sanitäre Anlagen — bathtub/shower
+    case "bath": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>);
+    // Reparaturen & Wartung — wrench + screwdriver
+    case "wrench": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75a4.5 4.5 0 01-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 11-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 016.336-4.486l-3.276 3.276a3.004 3.004 0 002.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852z" /><path strokeLinecap="round" strokeLinejoin="round" d="M4.867 19.125h.008v.008h-.008v-.008z" /></svg>);
+    // Heizung
     case "flame": case "heating": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" /></svg>);
+    // Spenglerei Dach — house/roof
     case "roof": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>);
+    // Spenglerei am Haus — building facade
+    case "facade": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>);
+    // Solar / Leaf
     case "solar": case "leaf": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>);
-    case "pipe": case "water": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47m0 0a3.375 3.375 0 01-4.773 0L5 14.5m6.757 2.47a3.375 3.375 0 01-4.773 0" /></svg>);
-    case "wrench": case "tool": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1 5.1a2.121 2.121 0 01-3-3l5.1-5.1m0 0L15.17 4.42A2.121 2.121 0 0118.17 1.42l2.83 2.83a2.121 2.121 0 01-3 3L10.42 14.17z" /></svg>);
+    // Wasserenthärtung — water droplet
+    case "water": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3.75c0 0-6.75 7.5-6.75 11.25a6.75 6.75 0 0013.5 0C18.75 11.25 12 3.75 12 3.75z" /></svg>);
+    // Pipe
+    case "pipe": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47m0 0a3.375 3.375 0 01-4.773 0L5 14.5m6.757 2.47a3.375 3.375 0 01-4.773 0" /></svg>);
+    // Tool (generic)
+    case "tool": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1 5.1a2.121 2.121 0 01-3-3l5.1-5.1m0 0L15.17 4.42A2.121 2.121 0 0118.17 1.42l2.83 2.83a2.121 2.121 0 01-3 3L10.42 14.17z" /></svg>);
     default: return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1 5.1a2.121 2.121 0 01-3-3l5.1-5.1" /></svg>);
   }
 }
