@@ -65,8 +65,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
 - **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
 - **Weinberger AG Website (09.03.):** GTM Goldstandard. 5 Services (Sanitär, Heizung, Lüftung, Badsanierung, Kundendienst), 24h Notdienst, 17 echte Bilder, 4.4★/20 Reviews, Brand #004994, Geschichte seit 1912, 3 Lehrstellen. Alle Daten verifiziert (Goldene Regel #1). PR #116.
+- **GTM Foundation (09.03.):** G1 Prospect Card Format (JSON v1.0 + Weinberger-Instanz), G3 Provisioning Runbook (<25 Min), G8 Quality Gates (5 Gates, Gate-Matrix pro Paket). 5/10 Building Blocks done.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Weinberger Lisa (B-Full), dann G1 Prospect Card Format. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
+- **Nächster Schritt:** G2 B-Quick Demo-Agent oder G4 Video-Template. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -89,6 +90,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/customers/<slug>/links.md` | Kunden-URLs (PFLICHT pro Kunde) |
+| `docs/customers/<slug>/prospect_card.json` | Prospect Card (GTM, ab G1) |
+| `docs/gtm/quality_gates.md` | Quality Gates Checklist (G8) |
+| `docs/architecture/contracts/prospect_card.md` | Prospect Card JSON Contract |
+| `docs/runbooks/provisioning_prospect.md` | Provisioning Runbook (<25 Min, G3) |
 | `docs/customers/lessons-learned.md` | Intake-Prozess, Template-Learnings, Kunden-Learnings |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |

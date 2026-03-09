@@ -10,7 +10,7 @@
 
 - **Phase:** Woche 1 — Foundation + Weinberger Website
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 1/10 done (G10), G9a+G9b done
+- **Bausteine:** 5/10 done (G1, G3, G8, G9a, G9b, G10)
 - **Prospects provisioniert:** 0/5 Ziel
 - **Weinberger Website:** LIVE ✅ (PR #116)
 - **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — braucht noch Twilio-Nummer
@@ -24,13 +24,13 @@
 | # | Baustein | Owner | Status | Abhängigkeit | Aufwand |
 |---|---------|-------|--------|-------------|---------|
 | G10 | **GTM SSOT Docs** — Plan v2 + Tracker im Repo | CC | **DONE** ✅ | — | ~1h |
-| G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | OFFEN | scout.mjs + crawl | ~3h |
+| G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | **DONE** ✅ | scout.mjs + crawl | ~3h |
 | G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | **DONE** ✅ (PR #116) | G1 | ~4h |
 | G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | **DONE** ✅ (PR #118) | G9a | ~2h |
 | G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | OFFEN | B+D müssen stehen | ~2h |
 | G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | OFFEN | ChatGPT-Messaging | ~1h |
-| G3 | **Provisioning Runbook (<10 Min)** — Step-by-Step mit Quality Gates | CC | OFFEN | G1, G2 | ~2h |
-| G8 | **Quality Gates Checklist** — Pro Prospect: 5 Gates (Card, Website, Lisa, Video, Outreach) | CC | OFFEN | G3 | ~1h |
+| G3 | **Provisioning Runbook (<25 Min)** — Step-by-Step mit Quality Gates | CC | **DONE** ✅ | G1, G2 | ~2h |
+| G8 | **Quality Gates Checklist** — Pro Prospect: 5 Gates (Card, Website, Lisa, Video, Outreach) | CC | **DONE** ✅ | G3 | ~1h |
 
 ### Skalierung (nach Weinberger)
 
@@ -60,14 +60,14 @@
 
 | Tag | CC | Founder | ChatGPT |
 |-----|-----|---------|---------|
-| So 09.03. | G10 ✅ + Wizard Restructure ✅ + Weinberger Crawl + Config + Deploy ✅ | Review GTM Plan v2 | — |
-| Mo 10.03. | G1: Prospect Card Format | Freigabe GTM Plan + Review Weinberger Website | — |
-| Di 11.03. | Weinberger Lisa (B-Full) → retell_sync | — | Premium Outreach-Texte |
-| Mi 12.03. | G3: Provisioning Runbook | Review: Lisa glaubwürdig? | — |
-| Do 13.03. | G8: Quality Gates Checklist | Review (Handy + Desktop) | — |
-| Fr 14.03. | Buffer / Iteration | Feedback | — |
+| So 09.03. | G10 ✅ + Wizard Restructure ✅ + Weinberger Crawl + Config + Deploy ✅ + Weinberger Lisa (B-Full) ✅ + G1 ✅ + G3 ✅ + G8 ✅ | Review GTM Plan v2 | — |
+| Mo 10.03. | G4: Video-Template ODER G2: B-Quick Demo-Agent | Freigabe GTM Plan + Review Weinberger Website + Lisa | Premium Outreach-Texte |
+| Di 11.03. | G5: Premium Outreach-Templates | — | — |
+| Mi 12.03. | G6: Einsatzlogik-Engine | Review: Lisa glaubwürdig? | — |
+| Do 13.03. | G7: Pipeline Tracker Upgrade | Review (Handy + Desktop) | — |
+| Fr 14.03. | Buffer / Iteration / Weinberger C (E2E) | Feedback | — |
 
-**Woche 1 Ziel:** Weinberger Website LIVE (Leckerli D) ✅ + Prospect Card Format definiert
+**Woche 1 Ziel:** Weinberger Website LIVE (Leckerli D) ✅ + Lisa PUBLISHED ✅ + Foundation komplett ✅ (G1+G3+G8)
 
 ---
 
@@ -111,3 +111,6 @@ Welche bestehenden Systeme werden durch GTM verändert:
 | 2026-03-09 | Email-Outreach bleibt manuell (Founder aus eigenem Mail) | Plan v2 |
 | 2026-03-09 | Sales-Lisa bleibt separat, kein Prospect-Entry-Point | Plan v2 |
 | 2026-03-09 | Keine Supabase prospects-Tabelle bis >30 Prospects | Plan v2 |
+| 2026-03-09 | G1 Prospect Card: JSON-Schema v1.0 definiert, Weinberger als erste Instanz | CC |
+| 2026-03-09 | G3 Provisioning Runbook: <25 Min Flow basierend auf Weinberger-Erfahrung | CC |
+| 2026-03-09 | G8 Quality Gates: 5 Gates mit je 7-10 Checks, Gate-Matrix pro Paket | CC |
