@@ -17,14 +17,21 @@ const BRAND = {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const CATEGORIES = [
+/** Top row: dynamic top-3 cases for Brunner */
+const TOP_CATEGORIES = [
   { value: "Verstopfung", label: "Verstopfung", icon: <IconDrain />, hint: "Abfluss, WC, Leitung" },
   { value: "Leck", label: "Leck", icon: <IconDrop />, hint: "Tropft, feucht, nass" },
   { value: "Heizung", label: "Heizung", icon: <IconFlame />, hint: "Kalt, Ausfall, Störung" },
-  { value: "Boiler", label: "Boiler", icon: <IconThermo />, hint: "Warmwasser, Speicher" },
-  { value: "Rohrbruch", label: "Rohrbruch", icon: <IconBurst />, hint: "Akut, Wasseraustritt" },
-  { value: "Sanitär allgemein", label: "Allgemein", icon: <IconWrench />, hint: "Sonstiges Anliegen" },
 ] as const;
+
+/** Bottom row: fixed for all wizards */
+const FIXED_CATEGORIES = [
+  { value: "Allgemein", label: "Allgemein", icon: <IconClipboard />, hint: "Sonstiges Anliegen" },
+  { value: "Angebot", label: "Angebot", icon: <IconDocument />, hint: "Offerte, Beratung" },
+  { value: "Kontakt", label: "Kontakt", icon: <IconChat />, hint: "Frage, Rückruf" },
+] as const;
+
+const ALL_CATEGORIES = [...TOP_CATEGORIES, ...FIXED_CATEGORIES];
 
 const URGENCIES = [
   { value: "notfall", label: "Notfall", hint: "Sofort — Wasser läuft, Gefahr", color: "red" },
@@ -44,11 +51,6 @@ interface ApiSuccess {
   city: string;
   created_at: string;
   verify_token: string;
-}
-
-interface PendingFile {
-  file: File;
-  preview: string;
 }
 
 const MAX_PHOTOS = 5;
@@ -108,10 +110,24 @@ function IconBurst() {
     </svg>
   );
 }
-function IconWrench() {
+function IconClipboard() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
-      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
+    </svg>
+  );
+}
+function IconDocument() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+    </svg>
+  );
+}
+function IconChat() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
     </svg>
   );
 }
@@ -135,7 +151,7 @@ function Spinner() {
 // Sub-components
 // ---------------------------------------------------------------------------
 function StepIndicator({ current, total, onStepClick }: { current: number; total: number; onStepClick?: (step: number) => void }) {
-  const labels = ["Problem", "Adresse", "Kontakt"];
+  const labels = ["Anliegen", "Adresse", "Kontakt"];
   return (
     <div className="mb-8 flex items-center justify-center gap-1 sm:gap-2">
       {Array.from({ length: total }, (_, i) => {
@@ -209,6 +225,10 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
   const [step, setStep] = useState(1);
   const [pageState, setPageState] = useState<PageState>({ status: "form" });
 
+  // Photo pre-submit state
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Form data
   const [category, setCategory] = useState(initialCategory ?? "");
   const [urgency, setUrgency] = useState("");
@@ -255,7 +275,12 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
       });
       const json = await res.json();
       if (res.status === 201) {
-        setPageState({ status: "success", data: json as ApiSuccess });
+        const data = json as ApiSuccess;
+        setPageState({ status: "success", data });
+        // Auto-upload pending photos in background
+        if (data.verify_token && pendingFiles.length > 0) {
+          autoUploadPhotos(data.id, data.verify_token, pendingFiles);
+        }
       } else {
         setPageState({ status: "error", detail: json as ApiError });
       }
@@ -279,6 +304,7 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
     setContactPhone("");
     setContactEmail("");
     setDescription("");
+    setPendingFiles([]);
   }
 
   // ── Success ────────────────────────────────────────────────────────
@@ -314,8 +340,12 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
             </div>
           </div>
 
-          {/* Photo upload */}
-          <PhotoUpload caseId={pageState.data.id} token={pageState.data.verify_token} />
+          {/* Photo upload status (auto-uploaded from Step 3) */}
+          {pendingFiles.length > 0 && (
+            <div className="mx-auto mt-6 max-w-sm rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+              {pendingFiles.length} {pendingFiles.length === 1 ? "Foto wird" : "Fotos werden"} hochgeladen…
+            </div>
+          )}
 
           <div className="mt-6 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600">
             <p className="font-semibold" style={{ color: BRAND.primary }}>Nächster Schritt</p>
@@ -351,7 +381,7 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
     <Shell>
       {/* Header */}
       <div className="text-center mb-2">
-        <h1 className="text-2xl font-bold sm:text-3xl" style={{ color: BRAND.primary }}>Schadensmeldung</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl" style={{ color: BRAND.primary }}>Meldung erfassen</h1>
         <p className="mt-1 text-sm text-gray-500">
           Beschreiben Sie Ihr Anliegen in 3 kurzen Schritten.
         </p>
@@ -364,9 +394,24 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <StepLabel>Was ist das Problem?</StepLabel>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {CATEGORIES.map((c) => (
+              <StepLabel>Was ist Ihr Anliegen?</StepLabel>
+              {/* Top row: dynamic top-3 cases */}
+              <div className="grid grid-cols-3 gap-3">
+                {TOP_CATEGORIES.map((c) => (
+                  <Card key={c.value} selected={category === c.value} onClick={() => setCategory(c.value)}>
+                    <div className={`mb-1 ${category === c.value ? "" : "text-gray-400"}`} style={category === c.value ? { color: BRAND.accent } : undefined}>
+                      {c.icon}
+                    </div>
+                    <div className={`text-sm font-semibold ${category === c.value ? "text-gray-900" : "text-gray-700"}`}>
+                      {c.label}
+                    </div>
+                    <div className="text-xs text-gray-400">{c.hint}</div>
+                  </Card>
+                ))}
+              </div>
+              {/* Bottom row: fixed (Allgemein, Angebot, Kontakt) */}
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                {FIXED_CATEGORIES.map((c) => (
                   <Card key={c.value} selected={category === c.value} onClick={() => setCategory(c.value)}>
                     <div className={`mb-1 ${category === c.value ? "" : "text-gray-400"}`} style={category === c.value ? { color: BRAND.accent } : undefined}>
                       {c.icon}
@@ -468,27 +513,58 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Beschreiben Sie das Problem kurz…"
+                placeholder="Beschreiben Sie Ihr Anliegen kurz…"
                 className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-current focus:outline-none"
                 style={{ "--tw-ring-color": BRAND.accent } as React.CSSProperties}
               />
             </div>
 
-            {/* Review summary */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Zusammenfassung</p>
-              <div className="grid grid-cols-2 gap-y-2 text-gray-600">
-                <span className="text-gray-400">Kategorie</span>
-                <span className="font-medium text-gray-800">{category || "—"}</span>
-                <span className="text-gray-400">Dringlichkeit</span>
-                <span className="font-medium text-gray-800">{URGENCIES.find((u) => u.value === urgency)?.label || "—"}</span>
-                <span className="text-gray-400">Adresse</span>
-                <span className="font-medium text-gray-800">{street && houseNumber ? `${street} ${houseNumber}` : "\u2014"}</span>
-                <span className="text-gray-400">Ort</span>
-                <span className="font-medium text-gray-800">{plz && city ? `${plz} ${city}` : "\u2014"}</span>
-                <span className="text-gray-400">Kontakt</span>
-                <span className="font-medium text-gray-800">{contactPhone || contactEmail || "—"}</span>
-              </div>
+            {/* Photo upload (pre-submit) */}
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>Fotos (optional)</p>
+              <p className="mt-1 mb-3 text-xs text-gray-400">Bis zu 5 Fotos — hilft bei der Einschätzung.</p>
+              {pendingFiles.length > 0 && (
+                <div className="mb-3 space-y-2">
+                  {pendingFiles.map((f, i) => (
+                    <div key={i} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm">
+                      <span className="truncate text-gray-600">{f.name}</span>
+                      <button type="button" onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))} className="ml-2 text-xs text-gray-400 hover:text-red-500">&#10005;</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {pendingFiles.length < MAX_PHOTOS && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (!files) return;
+                      const remaining = MAX_PHOTOS - pendingFiles.length;
+                      const toAdd = Array.from(files).slice(0, remaining).filter(
+                        (f) => f.size <= MAX_FILE_SIZE && (f.type.startsWith("image/") || f.type.startsWith("video/"))
+                      );
+                      setPendingFiles((prev) => [...prev, ...toAdd]);
+                      e.target.value = "";
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-teal-500 hover:text-teal-700"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                    </svg>
+                    Foto hinzufügen {pendingFiles.length > 0 && `(${MAX_PHOTOS - pendingFiles.length} verbleibend)`}
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Error */}
@@ -543,125 +619,29 @@ export default function BrunnerWizardForm({ initialCategory }: { initialCategory
 }
 
 // ---------------------------------------------------------------------------
-// Photo Upload (on success screen)
+// Auto-upload photos (fires after successful case creation)
 // ---------------------------------------------------------------------------
-
-function PhotoUpload({ caseId, token }: { caseId: string; token: string }) {
-  const [files, setFiles] = useState<PendingFile[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploaded, setUploaded] = useState(false);
-  const [error, setError] = useState("");
-  const [progress, setProgress] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const selected = e.target.files;
-    if (!selected || selected.length === 0) return;
-
-    const remaining = MAX_PHOTOS - files.length;
-    if (remaining <= 0) { setError(`Max ${MAX_PHOTOS} Fotos.`); e.target.value = ""; return; }
-
-    const next: PendingFile[] = [];
-    for (const f of Array.from(selected).slice(0, remaining)) {
-      if (f.size > MAX_FILE_SIZE) { setError(`"${f.name}" ist zu gross (max 10 MB).`); e.target.value = ""; return; }
-      next.push({ file: f, preview: URL.createObjectURL(f) });
-    }
-    setError("");
-    setFiles((prev) => [...prev, ...next]);
-    e.target.value = "";
-  }
-
-  function removeFile(idx: number) {
-    setFiles((prev) => { const c = [...prev]; URL.revokeObjectURL(c[idx].preview); c.splice(idx, 1); return c; });
-  }
-
-  async function uploadAll() {
-    setUploading(true); setError("");
+async function autoUploadPhotos(caseId: string, token: string, files: File[]) {
+  for (const file of files) {
     try {
-      for (let i = 0; i < files.length; i++) {
-        setProgress(`Foto ${i + 1}/${files.length}...`);
-        const pf = files[i];
+      const urlRes = await fetch(`/api/verify/${caseId}/attachments`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, action: "request-upload", file_name: file.name, mime_type: file.type, size_bytes: file.size }),
+      });
+      if (!urlRes.ok) continue;
+      const { upload_url, storage_path } = await urlRes.json();
 
-        const urlRes = await fetch(`/api/verify/${caseId}/attachments`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, action: "request-upload", file_name: pf.file.name, mime_type: pf.file.type, size_bytes: pf.file.size }),
-        });
-        if (!urlRes.ok) throw new Error("Upload-URL fehlgeschlagen.");
-        const { upload_url, storage_path } = await urlRes.json();
+      const putRes = await fetch(upload_url, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
+      if (!putRes.ok) continue;
 
-        const putRes = await fetch(upload_url, { method: "PUT", headers: { "Content-Type": pf.file.type }, body: pf.file });
-        if (!putRes.ok) throw new Error(`Upload fehlgeschlagen: "${pf.file.name}"`);
-
-        const confirmRes = await fetch(`/api/verify/${caseId}/attachments`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, action: "confirm", storage_path, file_name: pf.file.name, mime_type: pf.file.type, size_bytes: pf.file.size }),
-        });
-        if (!confirmRes.ok) throw new Error("Bestätigung fehlgeschlagen.");
-      }
-      setUploaded(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Fehler beim Hochladen.");
-    } finally {
-      setUploading(false); setProgress("");
+      await fetch(`/api/verify/${caseId}/attachments`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, action: "confirm", storage_path, file_name: file.name, mime_type: file.type, size_bytes: file.size }),
+      });
+    } catch {
+      // Best-effort upload, don't block the success screen
     }
   }
-
-  if (uploaded) {
-    return (
-      <div className="mx-auto mt-6 max-w-sm rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
-        {files.length} {files.length === 1 ? "Foto" : "Fotos"} hochgeladen — danke!
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-white p-5 text-left">
-      <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>Fotos vom Schaden (optional)</p>
-      <p className="mt-1 text-xs text-gray-400">Fotos helfen dem Techniker, sich vorzubereiten.</p>
-
-      {files.length > 0 && (
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {files.map((pf, i) => (
-            <div key={i} className="group relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={pf.preview} alt={pf.file.name} className="h-20 w-full rounded-lg object-cover" />
-              <button type="button" onClick={() => removeFile(i)} disabled={uploading}
-                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow"
-              >X</button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {files.length < MAX_PHOTOS && !uploading && (
-        <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-teal-500 hover:text-teal-700">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-          </svg>
-          Foto hinzufügen
-          <input ref={inputRef} type="file" accept="image/*" capture="environment" multiple onChange={handleSelect} className="hidden" />
-        </label>
-      )}
-
-      {files.length > 0 && !uploading && (
-        <button type="button" onClick={uploadAll}
-          className="mt-3 w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110"
-          style={{ backgroundColor: BRAND.accent }}
-        >
-          {files.length} {files.length === 1 ? "Foto" : "Fotos"} hochladen
-        </button>
-      )}
-
-      {progress && (
-        <div className="mt-2 flex items-center gap-2 text-xs text-teal-700">
-          <Spinner /> {progress}
-        </div>
-      )}
-
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
-    </div>
-  );
 }
 
 // ---------------------------------------------------------------------------

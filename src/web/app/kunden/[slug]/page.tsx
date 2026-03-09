@@ -154,7 +154,7 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
           <p className="mt-4 text-lg text-white/80 sm:text-xl">{c.tagline}</p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
-              Schaden online melden
+              Anliegen melden
             </a>
             <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
               Anrufen: {c.contact.phone}
@@ -523,12 +523,12 @@ function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSi
         {/* Wizard CTA */}
         <div className="mb-12 overflow-hidden rounded-2xl" style={{ backgroundColor: accent }}>
           <div className="p-8 text-center text-white sm:p-12">
-            <h2 className="text-2xl font-bold sm:text-3xl">Schaden melden — schnell und unkompliziert</h2>
+            <h2 className="text-2xl font-bold sm:text-3xl">Anliegen melden — schnell und unkompliziert</h2>
             <p className="mx-auto mt-3 max-w-xl text-white/80">
-              Nutzen Sie unseren digitalen Assistenten, um Ihren Schaden direkt zu erfassen. Wir melden uns umgehend bei Ihnen.
+              Nutzen Sie unseren digitalen Assistenten, um Ihr Anliegen direkt zu erfassen. Wir melden uns umgehend bei Ihnen.
             </p>
             <a href={wizardUrl} className="mt-6 inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-opacity hover:opacity-90" style={{ color: accent }}>
-              Jetzt Schaden melden &rarr;
+              Jetzt Anliegen melden &rarr;
             </a>
           </div>
         </div>

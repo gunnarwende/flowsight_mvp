@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import BrunnerWizardForm from "./BrunnerWizardForm";
 
 export const metadata: Metadata = {
-  title: "Schadensmeldung — Brunner Haustechnik AG",
+  title: "Anliegen melden — Brunner Haustechnik AG",
   description:
     "Melden Sie Ihr Anliegen in 3 einfachen Schritten. Sanitär, Heizung, Rohrbruch und mehr.",
 };
@@ -11,9 +11,9 @@ const ALLOWED_CATEGORIES = [
   "Verstopfung",
   "Leck",
   "Heizung",
-  "Boiler",
-  "Rohrbruch",
-  "Sanitär allgemein",
+  "Allgemein",
+  "Angebot",
+  "Kontakt",
 ];
 
 export default async function MeldungPage({

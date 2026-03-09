@@ -206,7 +206,7 @@ export default function BrunnerHaustechnikDemo() {
                   className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-white font-semibold text-lg transition-all hover:bg-gray-100"
                   style={{ color: theme.primaryHex }}
                 >
-                  Schaden online melden
+                  Anliegen melden
                 </a>
                 <a
                   href={theme.phoneHref}
@@ -610,10 +610,10 @@ export default function BrunnerHaustechnikDemo() {
             {/* CTA Banner */}
             <div className="mb-14 rounded-2xl p-8 sm:p-10 text-center text-white" style={{ backgroundColor: theme.accentHex }}>
               <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-                Schaden melden — schnell und unkompliziert
+                Anliegen melden — schnell und unkompliziert
               </h2>
               <p className="mx-auto max-w-xl text-white/80 mb-6">
-                Nutzen Sie unseren digitalen Assistenten, um Ihren Schaden direkt zu erfassen.
+                Nutzen Sie unseren digitalen Assistenten, um Ihr Anliegen direkt zu erfassen.
                 Wir melden uns umgehend bei Ihnen.
               </p>
               <a
@@ -621,7 +621,7 @@ export default function BrunnerHaustechnikDemo() {
                 className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-opacity hover:opacity-90"
                 style={{ color: theme.primaryHex }}
               >
-                Jetzt Schaden melden →
+                Jetzt Anliegen melden →
               </a>
             </div>
 
