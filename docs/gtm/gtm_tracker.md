@@ -10,7 +10,7 @@
 
 - **Phase:** Woche 1 — Foundation + Weinberger Website
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 5/10 done (G1, G3, G8, G9a, G9b, G10)
+- **Bausteine:** 8/10 done (G1, G3, G4, G5, G6, G8, G9a, G9b, G10)
 - **Prospects provisioniert:** 0/5 Ziel
 - **Weinberger Website:** LIVE ✅ (PR #116)
 - **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — braucht noch Twilio-Nummer
@@ -27,8 +27,8 @@
 | G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | **DONE** ✅ | scout.mjs + crawl | ~3h |
 | G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | **DONE** ✅ (PR #116) | G1 | ~4h |
 | G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | **DONE** ✅ (PR #118) | G9a | ~2h |
-| G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | OFFEN | B+D müssen stehen | ~2h |
-| G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | OFFEN | ChatGPT-Messaging | ~1h |
+| G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | **DONE** ✅ | B+D müssen stehen | ~2h |
+| G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | **DONE** ✅ | ChatGPT-Messaging | ~1h |
 | G3 | **Provisioning Runbook (<25 Min)** — Step-by-Step mit Quality Gates | CC | **DONE** ✅ | G1, G2 | ~2h |
 | G8 | **Quality Gates Checklist** — Pro Prospect: 5 Gates (Card, Website, Lisa, Video, Outreach) | CC | **DONE** ✅ | G3 | ~1h |
 
@@ -37,7 +37,7 @@
 | # | Baustein | Owner | Status | Abhängigkeit | Aufwand |
 |---|---------|-------|--------|-------------|---------|
 | G2 | **B-Quick Demo-Agent** — 1 parametrisierter Agent mit Variablen-Slots, shared Testnummer | CC | OFFEN | Retell Dynamic Variables | ~4h |
-| G6 | **Einsatzlogik-Engine** — ICP Score → Leckerli-Paket → Asset-Liste → Steps | CC | OFFEN | G1 | ~1h |
+| G6 | **Einsatzlogik-Engine** — ICP Score → Leckerli-Paket → Asset-Liste → Steps | CC | **DONE** ✅ | G1 | ~1h |
 | G7 | **Pipeline Tracker Upgrade** — pipeline.csv + leckerli_paket, lisa_status, video_status, testnummer | CC | OFFEN | promote.mjs | ~2h |
 
 **Gesamt: ~20h CC-Arbeit über 4 Wochen**
@@ -60,14 +60,14 @@
 
 | Tag | CC | Founder | ChatGPT |
 |-----|-----|---------|---------|
-| So 09.03. | G10 ✅ + Wizard Restructure ✅ + Weinberger Crawl + Config + Deploy ✅ + Weinberger Lisa (B-Full) ✅ + G1 ✅ + G3 ✅ + G8 ✅ | Review GTM Plan v2 | — |
-| Mo 10.03. | G4: Video-Template ODER G2: B-Quick Demo-Agent | Freigabe GTM Plan + Review Weinberger Website + Lisa | Premium Outreach-Texte |
-| Di 11.03. | G5: Premium Outreach-Templates | — | — |
-| Mi 12.03. | G6: Einsatzlogik-Engine | Review: Lisa glaubwürdig? | — |
-| Do 13.03. | G7: Pipeline Tracker Upgrade | Review (Handy + Desktop) | — |
-| Fr 14.03. | Buffer / Iteration / Weinberger C (E2E) | Feedback | — |
+| So 09.03. | G10 ✅ + Wizard ✅ + Weinberger D ✅ + B-Full ✅ + G1 ✅ + G3 ✅ + G8 ✅ + G4 ✅ + G5 ✅ + G6 ✅ | Review GTM Plan v2 | — |
+| Mo 10.03. | G7: Pipeline Tracker Upgrade + G2: B-Quick Demo-Agent | Freigabe GTM Plan + Review Website + Lisa | — |
+| Di 11.03. | Weinberger C (E2E Proof) | — | — |
+| Mi 12.03. | Quick Wins: Leuthold + Orlandini + Widmer (B-Quick) | Review: Lisa glaubwürdig? | — |
+| Do 13.03. | Weinberger A (Video) — Skript + Founder-Aufnahme | Review (Handy + Desktop) | — |
+| Fr 14.03. | Buffer / Iteration / Erster Outreach | Feedback | — |
 
-**Woche 1 Ziel:** Weinberger Website LIVE (Leckerli D) ✅ + Lisa PUBLISHED ✅ + Foundation komplett ✅ (G1+G3+G8)
+**Woche 1 Ziel:** Weinberger D ✅ + B-Full ✅ + Foundation 8/10 ✅ — MASSIV VORAUS
 
 ---
 
@@ -114,3 +114,6 @@ Welche bestehenden Systeme werden durch GTM verändert:
 | 2026-03-09 | G1 Prospect Card: JSON-Schema v1.0 definiert, Weinberger als erste Instanz | CC |
 | 2026-03-09 | G3 Provisioning Runbook: <25 Min Flow basierend auf Weinberger-Erfahrung | CC |
 | 2026-03-09 | G8 Quality Gates: 5 Gates mit je 7-10 Checks, Gate-Matrix pro Paket | CC |
+| 2026-03-09 | G4 Video-Template: 5-Szenen-Dramaturgie, Variablen, Loom/OBS Setup, Gewerk-Varianten | CC |
+| 2026-03-09 | G5 Outreach-Templates: 3 E-Mail-Templates (nach ICP), Anruf-Script, Touch-Kadenz | CC |
+| 2026-03-09 | G6 Einsatzlogik: Entscheidungstabelle + Pseudocode + Quick Wins Übersicht | CC |
