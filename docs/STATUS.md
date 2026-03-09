@@ -81,6 +81,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/STATUS.md` | Was ist live, aktueller Stand (dieses Dokument) |
 | `docs/OPS_BOARD.md` | Roadmap, offene Tasks, Sales, Backlog |
 | `docs/business_briefing.md` | Vollständiger Business-Kontext (für ChatGPT/Partner) |
+| `docs/gtm/gtm_pipeline_plan_v2.md` | GTM-Strategie (Leckerli A-D, Weinberger Goldstandard) |
+| `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G10 Building Blocks) |
 | `docs/sales/pipeline.md` | Sales Pipeline Tracker |
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
