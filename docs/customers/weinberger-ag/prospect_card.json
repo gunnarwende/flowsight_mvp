@@ -1,0 +1,97 @@
+{
+  "version": "1.0",
+  "slug": "weinberger-ag",
+  "name": "Jul. Weinberger AG",
+  "generated_at": "2026-03-09T14:00:00Z",
+
+  "scoring": {
+    "icp_score": 9,
+    "tier": "HOT",
+    "trust": 4,
+    "gap": 3,
+    "reasons": [
+      "Trust 4: 4.4★ × 20 Reviews — solider Proof",
+      "Gap 3: Elementor-Website (JS-heavy, veraltet, schlecht indexiert)",
+      "Contactable: Telefon + E-Mail verifiziert"
+    ]
+  },
+
+  "leckerli": {
+    "recommendation": "A+B-Full+C+D",
+    "best_demo_case": "Samstag-Nacht-Notfall: Rohrbruch → Lisa → SMS → Ops-Fall in 3 Min"
+  },
+
+  "company": {
+    "legal_name": "Jul. Weinberger AG",
+    "short_name": "Weinberger",
+    "founding_year": 1912,
+    "gewerke": ["Sanitär", "Heizung", "Lüftung", "Badsanierung"],
+    "employees_estimate": null,
+    "brand_color": "#004994"
+  },
+
+  "contact": {
+    "phone": "044 721 22 23",
+    "phone_e164": "+41447212223",
+    "email": "info@julweinberger.ch",
+    "website": "https://www.julweinberger.ch",
+    "address": {
+      "street": "Zürcherstrasse 73",
+      "zip": "8800",
+      "city": "Thalwil",
+      "canton": "ZH"
+    }
+  },
+
+  "services": [
+    { "name": "Sanitär", "slug": "sanitaer", "icon": "bath", "verified": true },
+    { "name": "Heizung", "slug": "heizung", "icon": "flame", "verified": true },
+    { "name": "Lüftung", "slug": "lueftung", "icon": "snowflake", "verified": true },
+    { "name": "Badsanierung", "slug": "badsanierung", "icon": "water", "verified": true },
+    { "name": "Kundendienst", "slug": "kundendienst", "icon": "wrench", "verified": true }
+  ],
+
+  "emergency": {
+    "enabled": true,
+    "phone_e164": "+41447212223",
+    "label": "24h Notdienst",
+    "keywords_detected": ["Pikett", "24h", "Notdienst", "rund um die Uhr"]
+  },
+
+  "reviews": {
+    "google_rating": 4.4,
+    "google_reviews": 20,
+    "google_url": "https://www.google.com/maps/place/Jul.+Weinberger+AG",
+    "source": "handwerker.ch (aggregiert Google)"
+  },
+
+  "team": [
+    { "name": "Christian Weinberger", "role": "Geschäftsleitung", "source": "sanitaervergleich.ch" },
+    { "name": "Michael Fleischlin", "role": "Projektleiter Sanitär", "source": "LinkedIn" }
+  ],
+
+  "data_sources": [
+    "julweinberger.ch (Sitemap, Impressum, Kontakt)",
+    "local.ch / search.ch (Adresse, Telefon, Kategorien)",
+    "handwerker.ch (Google Rating 4.4/20, Zertifizierungen)",
+    "daibau.ch (Detaillierte Services, Kontaktperson: Herr Gür)",
+    "sanitaervergleich.ch (Kontaktperson: Christian Weinberger)",
+    "LinkedIn (Michael Fleischlin — Projektleiter Sanitär)"
+  ],
+
+  "crawl_metadata": {
+    "pages_visited": 8,
+    "images_found": 164,
+    "images_selected": 17,
+    "crawled_at": "2026-03-09T10:00:00Z",
+    "crawler": "crawl-website.mjs (Puppeteer)"
+  },
+
+  "provisioning_status": {
+    "leckerli_d_website": "DONE",
+    "leckerli_b_lisa": "DONE",
+    "leckerli_c_e2e": "OFFEN",
+    "leckerli_a_video": "OFFEN",
+    "outreach": "OFFEN"
+  }
+}

@@ -92,7 +92,11 @@
 | S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **DONE** ✅ (PR #94) |
 | G10 | GTM SSOT Docs (Plan v2 + Tracker) | CC | **DONE** ✅ |
 | G9a | Weinberger Website (Leckerli D) | CC | **DONE** ✅ (PR #116) |
-| G1–G9 | → Siehe `docs/gtm/gtm_tracker.md` | CC + Founder | IN PROGRESS |
+| G9b | Weinberger Lisa (Leckerli B-Full) | CC | **DONE** ✅ (PR #118) |
+| G1 | Prospect Card Format (JSON v1.0 + Contract) | CC | **DONE** ✅ |
+| G3 | Provisioning Runbook (<25 Min) | CC | **DONE** ✅ |
+| G8 | Quality Gates Checklist (5 Gates) | CC | **DONE** ✅ |
+| G2–G7 | → Siehe `docs/gtm/gtm_tracker.md` | CC + Founder | IN PROGRESS |
 
 ---
 
@@ -136,6 +140,8 @@
 | 2026-03-08 | Customer Links Docs (links.md pro Kunde, PFLICHT) | PR #97 |
 | 2026-03-09 | Wizard Restructure: Anliegen statt Schaden, Top-3 + fixed row, Photo in Step 3 | PR #113 |
 | 2026-03-09 | Weinberger AG Website — GTM Goldstandard (5 Services, 17 Bilder, 24h Notdienst) | PR #116 |
+| 2026-03-09 | Weinberger Lisa (B-Full) — DE + INTL Voice Agent published | PR #118 |
+| 2026-03-09 | GTM Foundation: G1 Prospect Card, G3 Provisioning Runbook, G8 Quality Gates | — |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
