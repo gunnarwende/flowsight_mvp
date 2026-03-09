@@ -65,9 +65,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
 - **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
 - **Weinberger AG Website (09.03.):** GTM Goldstandard. 5 Services (Sanitär, Heizung, Lüftung, Badsanierung, Kundendienst), 24h Notdienst, 17 echte Bilder, 4.4★/20 Reviews, Brand #004994, Geschichte seit 1912, 3 Lehrstellen. Alle Daten verifiziert (Goldene Regel #1). PR #116.
-- **GTM Foundation (09.03.):** 8/10 Building Blocks done. G1 Prospect Card, G3 Provisioning Runbook, G4 Video-Template, G5 Outreach-Templates, G6 Einsatzlogik, G8 Quality Gates — alle fertig. Weinberger D+B-Full live.
+- **GTM Foundation (09.03.):** 9/10 Building Blocks done. G1-G10 (ausser G2 B-Quick). Pipeline.csv mit Leckerli-Spalten + Weinberger Goldstandard. Weinberger D+B-Full live.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** G2 B-Quick Demo-Agent + G7 Pipeline Tracker Upgrade. Dann Weinberger C (E2E) + Quick Wins (Leuthold, Orlandini, Widmer). Offene Issues #79/#80 (BigBen Pub), #81 (Voice Handy).
+- **Nächster Schritt:** G2 B-Quick Demo-Agent (einziger offener Block). Dann Weinberger C (E2E) + Quick Wins (Leuthold, Orlandini, Widmer mit B-Quick). Offene Issues #79/#80 (BigBen Pub), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 
