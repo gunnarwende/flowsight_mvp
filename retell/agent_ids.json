@@ -20,5 +20,12 @@
     "intl_flow_id": "conversation_flow_dd3212a90e6e",
     "last_synced": "2026-03-08T14:30:00.000Z",
     "note": "Sales agents — phone +41445053019. Must be published after any change."
+  },
+  "weinberger-ag": {
+    "de_agent_id": "agent_d568564d51ccb908dadf032e7d",
+    "de_flow_id": "conversation_flow_4254de993a58",
+    "intl_agent_id": "agent_0976aabe2c12ab0ca4d48933a5",
+    "intl_flow_id": "conversation_flow_ac5b3603b478",
+    "last_synced": "2026-03-09T18:16:57.896Z"
   }
 }
