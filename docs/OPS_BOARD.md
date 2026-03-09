@@ -75,21 +75,23 @@
 
 ---
 
-## SALES — Aktive Kundenakquise
+## GTM Pipeline v2
 
-**Tracker:** `docs/sales/pipeline.md`
-**Rhythmus:** Täglich 4-5h, 5 neue Prospects/Woche
-**Methode:** Demo-Website für Prospect bauen → E-Mail → Anruf nach 2 Tagen
-**Tooling:** `scout.mjs` (ICP Scoring, Multi-Query, Municipality Scouting) + `prospect_pipeline.mjs`
+**Strategie:** `docs/gtm/gtm_pipeline_plan_v2.md`
+**Execution-Tracker:** `docs/gtm/gtm_tracker.md` ← **ALLE GTM-Tasks leben hier**
+**Pipeline:** `docs/sales/pipeline.md`
+**Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, Leckerli A+B+C+D)
+**Phase:** Woche 1 — Foundation + Weinberger Crawl
 
 | # | Task | Owner | Status |
 |---|------|-------|--------|
 | S1 | Sales Pipeline Tracker eingerichtet | CC | **DONE** ✅ |
 | S2 | Scout v2 — ICP Scoring + Multi-Query | CC | **DONE** ✅ |
 | S3 | E-Mail-Vorlage + Anruf-Skript ready | CC | **DONE** ✅ |
-| S4 | Wöchentliche Pipeline-Review | Founder | OFFEN |
 | S5 | BigBen Pub — Paul Follow-up | Founder | OFFEN — Paul interessiert (#79/#80) |
 | S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **DONE** ✅ (PR #94) |
+| G10 | GTM SSOT Docs (Plan v2 + Tracker) | CC | **DONE** ✅ |
+| G1–G9 | → Siehe `docs/gtm/gtm_tracker.md` | CC + Founder | IN PROGRESS |
 
 ---
 
