@@ -16,8 +16,8 @@
 
 | Leckerli | Was | Status |
 |----------|-----|--------|
-| **D** | Website (Services, Team, Notdienst, Wizard) | IN PROGRESS |
-| **B-Full** | Eigener Voice Agent (Lisa) | OFFEN |
+| **D** | Website (Services, Team, Notdienst, Wizard) | **DONE** ✅ (PR #116) |
+| **B-Full** | Eigener Voice Agent (Lisa DE + INTL) | **DONE** ✅ (PR #118) — needs Twilio number |
 | **C** | E2E Proof (Tenant, SMS, Ops-Fall) | OFFEN |
 | **A** | Video (5 Szenen, Founder-Aufnahme) | OFFEN |
 

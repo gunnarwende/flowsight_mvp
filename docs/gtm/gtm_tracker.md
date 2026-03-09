@@ -10,9 +10,10 @@
 
 - **Phase:** Woche 1 — Foundation + Weinberger Website
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 1/10 done (G10)
+- **Bausteine:** 1/10 done (G10), G9a+G9b done
 - **Prospects provisioniert:** 0/5 Ziel
 - **Weinberger Website:** LIVE ✅ (PR #116)
+- **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — braucht noch Twilio-Nummer
 
 ---
 
@@ -25,7 +26,7 @@
 | G10 | **GTM SSOT Docs** — Plan v2 + Tracker im Repo | CC | **DONE** ✅ | — | ~1h |
 | G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | OFFEN | scout.mjs + crawl | ~3h |
 | G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | **DONE** ✅ (PR #116) | G1 | ~4h |
-| G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | OFFEN | G9a | ~2h |
+| G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | **DONE** ✅ (PR #118) | G9a | ~2h |
 | G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | OFFEN | B+D müssen stehen | ~2h |
 | G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | OFFEN | ChatGPT-Messaging | ~1h |
 | G3 | **Provisioning Runbook (<10 Min)** — Step-by-Step mit Quality Gates | CC | OFFEN | G1, G2 | ~2h |
@@ -48,7 +49,7 @@
 | Leckerli | Was | Status | Evidence |
 |----------|-----|--------|----------|
 | **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews, Brand #004994 |
-| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | OFFEN | — |
+| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 — DE + INTL, published, 8 Kategorien, 24h Pikett |
 | **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | OFFEN | — |
 | **A** | Video (5 Szenen, 45-60s, Founder-Aufnahme) | OFFEN | Founder |
 | **Outreach** | Email + Testnummer + URL + Video | OFFEN | Founder |
