@@ -99,7 +99,8 @@
 | G5 | Premium Outreach-Templates (3 E-Mails + Call) | CC | **DONE** ✅ |
 | G6 | Einsatzlogik-Engine (ICP→Leckerli→Assets) | CC | **DONE** ✅ |
 | G8 | Quality Gates Checklist (5 Gates) | CC | **DONE** ✅ |
-| G2+G7 | → Siehe `docs/gtm/gtm_tracker.md` | CC | IN PROGRESS |
+| G7 | Pipeline Tracker Upgrade (5 neue Spalten + Leckerli) | CC | **DONE** ✅ |
+| G2 | B-Quick Demo-Agent → Siehe `docs/gtm/gtm_tracker.md` | CC | OFFEN |
 
 ---
 
