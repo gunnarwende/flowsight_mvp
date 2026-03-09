@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-08 (PR #105: Web-Engine Abschluss)
+**Updated:** 2026-03-09 (PR #113: Wizard Restructure)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,11 +11,11 @@
 - **Produkt:** 16 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 6 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 41 Commits, PRs #53–#105
+- **Shipped seit 04.03.:** 42 Commits, PRs #53–#113
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Kundenakquise + Website-Qualitätsoffensive. 10-Regeln Intake-Prozess etabliert. Web-Engine abgeschlossen (alle 6 Websites auf Standard).
+- **Phase:** GTM Pipeline v2. Wizard universalisiert (Anliegen statt Schaden). Web-Engine abgeschlossen.
 
 ### How to Operate (Founder via Handy)
 
@@ -131,6 +131,7 @@
 | 2026-03-08 | Lightbox z-index Fix + Mobile Gallery Arrows | PR #95 |
 | 2026-03-08 | Widmer Spenglerei + Intake Process Standardization | PR #96 |
 | 2026-03-08 | Customer Links Docs (links.md pro Kunde, PFLICHT) | PR #97 |
+| 2026-03-09 | Wizard Restructure: Anliegen statt Schaden, Top-3 + fixed row, Photo in Step 3 | PR #113 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
