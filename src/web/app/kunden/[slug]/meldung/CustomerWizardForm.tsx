@@ -11,6 +11,7 @@ interface WizardCategory {
   label: string;
   hint: string;
   iconKey: string;
+  fixed?: boolean;
 }
 
 interface Props {
@@ -90,9 +91,12 @@ export function CustomerWizardForm({
   const [contactEmail, setContactEmail] = useState("");
   const [description, setDescription] = useState("");
 
-  // Photo upload state
-  const [uploads, setUploads] = useState<UploadedFile[]>([]);
+  // Photo upload state (inline in Step 3, before submit)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Post-submit upload state
+  const [uploads, setUploads] = useState<UploadedFile[]>([]);
 
   // Validation
   const step1Valid = category !== "" && urgency !== "";
@@ -138,7 +142,14 @@ export function CustomerWizardForm({
       });
       const json = await res.json();
       if (res.status === 201) {
-        setPageState({ status: "success", data: json as ApiSuccess });
+        const data = json as ApiSuccess;
+        setPageState({ status: "success", data });
+        // Auto-upload pending photos in background
+        if (data.verify_token && pendingFiles.length > 0) {
+          for (const file of pendingFiles) {
+            uploadPhoto(file, data.id, data.verify_token);
+          }
+        }
       } else {
         setPageState({ status: "error", detail: json as ApiError });
       }
@@ -203,21 +214,19 @@ export function CustomerWizardForm({
     }
   }
 
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    if (pageState.status !== "success" || !pageState.data.verify_token) return;
+  function handleFileSelectPreSubmit(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files) return;
-
-    const remaining = MAX_PHOTOS - uploads.length;
-    const toUpload = Array.from(files).slice(0, remaining);
-
-    for (const file of toUpload) {
-      if (file.size > MAX_FILE_SIZE) continue;
-      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) continue;
-      uploadPhoto(file, pageState.data.id, pageState.data.verify_token);
-    }
-    // Reset input so same file can be re-selected
+    const remaining = MAX_PHOTOS - pendingFiles.length;
+    const toAdd = Array.from(files).slice(0, remaining).filter(
+      (f) => f.size <= MAX_FILE_SIZE && (f.type.startsWith("image/") || f.type.startsWith("video/"))
+    );
+    setPendingFiles((prev) => [...prev, ...toAdd]);
     e.target.value = "";
+  }
+
+  function removePendingFile(idx: number) {
+    setPendingFiles((prev) => prev.filter((_, i) => i !== idx));
   }
 
   function reset() {
@@ -233,13 +242,13 @@ export function CustomerWizardForm({
     setContactPhone("");
     setContactEmail("");
     setDescription("");
+    setPendingFiles([]);
     setUploads([]);
   }
 
   // ── Success ────────────────────────────────────────────────────────
   if (pageState.status === "success") {
     const urgLabel = URGENCIES.find((u) => u.value === urgency)?.label ?? urgency;
-    const canUpload = !!pageState.data.verify_token && uploads.length < MAX_PHOTOS;
     return (
       <Shell>
         <TopBar companyName={companyName} phone={phone} phoneRaw={phoneRaw} accent={accent} backUrl={backUrl} />
@@ -262,60 +271,28 @@ export function CustomerWizardForm({
             <Row label="Ort" value={`${plz} ${city}`} />
           </div>
 
-          {/* Photo upload section */}
-          {pageState.data.verify_token && (
+          {/* Upload progress (auto-uploaded from Step 3 selection) */}
+          {uploads.length > 0 && (
             <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-white p-5 text-left">
-              <p className="mb-1 text-sm font-semibold text-gray-900">Fotos vom Schaden</p>
-              <p className="mb-4 text-xs text-gray-400">
-                {"Bis zu 5 Fotos hochladen \u2014 hilft uns bei der Einschätzung."}
-              </p>
-
-              {/* Upload list */}
-              {uploads.length > 0 && (
-                <div className="mb-3 space-y-2">
-                  {uploads.map((u, i) => (
-                    <div key={i} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm">
-                      {u.status === "uploading" && <Spinner />}
-                      {u.status === "done" && (
-                        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l5 5L20 7" />
-                        </svg>
-                      )}
-                      {u.status === "error" && (
-                        <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      )}
-                      <span className="truncate text-gray-600">{u.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Upload button */}
-              {canUpload && (
-                <>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*,video/*"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileSelect}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
-                  >
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-                    </svg>
-                    Foto hinzuf&uuml;gen ({MAX_PHOTOS - uploads.length} verbleibend)
-                  </button>
-                </>
-              )}
+              <p className="mb-3 text-sm font-semibold text-gray-900">Fotos</p>
+              <div className="space-y-2">
+                {uploads.map((u, i) => (
+                  <div key={i} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm">
+                    {u.status === "uploading" && <Spinner />}
+                    {u.status === "done" && (
+                      <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l5 5L20 7" />
+                      </svg>
+                    )}
+                    {u.status === "error" && (
+                      <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
+                    <span className="truncate text-gray-600">{u.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -354,14 +331,14 @@ export function CustomerWizardForm({
   }
 
   // ── Form ───────────────────────────────────────────────────────────
-  const stepLabels = ["Problem", "Adresse", "Kontakt"];
+  const stepLabels = ["Anliegen", "Adresse", "Kontakt"];
 
   return (
     <Shell>
       <TopBar companyName={companyName} phone={phone} phoneRaw={phoneRaw} accent={accent} backUrl={backUrl} />
 
       <div className="mx-auto max-w-xl px-4 py-8 sm:py-12">
-        <h1 className="mb-1 text-center text-2xl font-semibold text-gray-900">Schadensmeldung</h1>
+        <h1 className="mb-1 text-center text-2xl font-semibold text-gray-900">Meldung erfassen</h1>
         <p className="mb-8 text-center text-sm text-gray-500">
           Beschreiben Sie Ihr Anliegen in 3 kurzen Schritten.
         </p>
@@ -373,9 +350,29 @@ export function CustomerWizardForm({
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <StepLabel>Was ist das Problem?</StepLabel>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {categories.map((c) => (
+                <StepLabel>Was ist Ihr Anliegen?</StepLabel>
+                {/* Top row: dynamic top-3 cases */}
+                <div className="grid grid-cols-3 gap-3">
+                  {categories.filter((c) => !c.fixed).map((c) => (
+                    <CategoryCard
+                      key={c.value}
+                      selected={category === c.value}
+                      onClick={() => setCategory(c.value)}
+                      accent={accent}
+                    >
+                      <div className={`mb-1.5 ${category === c.value ? "" : "text-gray-400"}`} style={category === c.value ? { color: accent } : undefined}>
+                        <CategoryIcon iconKey={c.iconKey} />
+                      </div>
+                      <div className={`text-sm font-medium ${category === c.value ? "text-gray-900" : "text-gray-700"}`}>
+                        {c.label}
+                      </div>
+                      <div className="text-xs text-gray-400">{c.hint}</div>
+                    </CategoryCard>
+                  ))}
+                </div>
+                {/* Bottom row: fixed (Allgemein, Angebot, Kontakt) */}
+                <div className="mt-3 grid grid-cols-3 gap-3">
+                  {categories.filter((c) => c.fixed).map((c) => (
                     <CategoryCard
                       key={c.value}
                       selected={category === c.value}
@@ -495,24 +492,48 @@ export function CustomerWizardForm({
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder={"Beschreiben Sie das Problem kurz\u2026"}
+                  placeholder={"Beschreiben Sie Ihr Anliegen kurz\u2026"}
                   className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                 />
               </div>
 
-              {/* Summary */}
-              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Zusammenfassung</p>
-                <div className="grid grid-cols-2 gap-y-1.5 text-gray-600">
-                  <span className="text-gray-400">Kategorie</span>
-                  <span>{category || "\u2014"}</span>
-                  <span className="text-gray-400">Dringlichkeit</span>
-                  <span>{URGENCIES.find((u) => u.value === urgency)?.label || "\u2014"}</span>
-                  <span className="text-gray-400">Adresse</span>
-                  <span>{street && houseNumber ? `${street} ${houseNumber}` : "\u2014"}</span>
-                  <span className="text-gray-400">Ort</span>
-                  <span>{plz && city ? `${plz} ${city}` : "\u2014"}</span>
-                </div>
+              {/* Photo upload (pre-submit) */}
+              <div className="rounded-xl border border-gray-200 bg-white p-4">
+                <p className="mb-1 text-sm font-semibold text-gray-900">Fotos (optional)</p>
+                <p className="mb-3 text-xs text-gray-400">{"Bis zu 5 Fotos \u2014 hilft bei der Einschätzung."}</p>
+                {pendingFiles.length > 0 && (
+                  <div className="mb-3 space-y-2">
+                    {pendingFiles.map((f, i) => (
+                      <div key={i} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm">
+                        <span className="truncate text-gray-600">{f.name}</span>
+                        <button type="button" onClick={() => removePendingFile(i)} className="ml-2 text-xs text-gray-400 hover:text-red-500">&#10005;</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {pendingFiles.length < MAX_PHOTOS && (
+                  <>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*,video/*"
+                      multiple
+                      className="hidden"
+                      onChange={handleFileSelectPreSubmit}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                    >
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                      </svg>
+                      Foto hinzuf&uuml;gen {pendingFiles.length > 0 && `(${MAX_PHOTOS - pendingFiles.length} verbleibend)`}
+                    </button>
+                  </>
+                )}
               </div>
 
               {/* Error */}
@@ -685,8 +706,12 @@ function CategoryIcon({ iconKey }: { iconKey: string }) {
       return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>);
     case "pipe": // Leitungsschaden — pipes
       return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h6m0 0v6m0-6l3 3M21 18h-6m0 0v-6m0 6l-3-3M3 18h4.5M21 6h-4.5" /></svg>);
-    case "clipboard": // Allgemein — clipboard (distinct from wrench!)
+    case "clipboard": // Allgemein — clipboard
       return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" /></svg>);
+    case "document": // Angebot — document/file
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>);
+    case "chat": // Kontakt — chat bubble
+      return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>);
     /* ── Service icons (kept for compatibility) ──────── */
     case "bath":
       return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5M3.75 12a2.25 2.25 0 01-2.25-2.25V6a2.25 2.25 0 012.25-2.25h.386c.51 0 .983.273 1.237.718L6.75 6.75M3.75 12v4.5a2.25 2.25 0 002.25 2.25h12a2.25 2.25 0 002.25-2.25V12" /></svg>);

@@ -40,9 +40,9 @@ export default async function CustomerLinksPage({
       icon: "🌐",
     },
     {
-      label: "Schaden melden (Wizard)",
+      label: "Anliegen melden (Wizard)",
       url: `${baseUrl}/kunden/${c.slug}/meldung`,
-      description: "Online-Formular für Schadensmeldungen",
+      description: "Online-Formular für Anliegen und Schadensmeldungen",
       icon: "📋",
     },
   ];
