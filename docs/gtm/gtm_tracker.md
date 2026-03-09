@@ -8,10 +8,11 @@
 
 ## Status Snapshot
 
-- **Phase:** Woche 1 — Foundation + Weinberger Crawl
+- **Phase:** Woche 1 — Foundation + Weinberger Website
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 0/10 done
+- **Bausteine:** 1/10 done (G10)
 - **Prospects provisioniert:** 0/5 Ziel
+- **Weinberger Website:** LIVE ✅ (PR #116)
 
 ---
 
@@ -23,7 +24,7 @@
 |---|---------|-------|--------|-------------|---------|
 | G10 | **GTM SSOT Docs** — Plan v2 + Tracker im Repo | CC | **DONE** ✅ | — | ~1h |
 | G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | OFFEN | scout.mjs + crawl | ~3h |
-| G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | OFFEN | G1 | ~4h |
+| G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | **DONE** ✅ (PR #116) | G1 | ~4h |
 | G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | OFFEN | G9a | ~2h |
 | G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | OFFEN | B+D müssen stehen | ~2h |
 | G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | OFFEN | ChatGPT-Messaging | ~1h |
@@ -46,7 +47,7 @@
 
 | Leckerli | Was | Status | Evidence |
 |----------|-----|--------|----------|
-| **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | OFFEN | — |
+| **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews, Brand #004994 |
 | **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | OFFEN | — |
 | **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | OFFEN | — |
 | **A** | Video (5 Szenen, 45-60s, Founder-Aufnahme) | OFFEN | Founder |
@@ -58,14 +59,14 @@
 
 | Tag | CC | Founder | ChatGPT |
 |-----|-----|---------|---------|
-| So 09.03. | G10 ✅ + Wizard Restructure ✅ | Review GTM Plan v2 | — |
-| Mo 10.03. | G1: Prospect Card Format | Freigabe GTM Plan | — |
-| Di 11.03. | Weinberger Crawl + Config | — | Premium Outreach-Texte |
-| Mi 12.03. | Weinberger Config verfeinern | Review: Fakten korrekt? | — |
-| Do 13.03. | Weinberger Deploy + PR | Review Website (Handy + Desktop) | — |
+| So 09.03. | G10 ✅ + Wizard Restructure ✅ + Weinberger Crawl + Config + Deploy ✅ | Review GTM Plan v2 | — |
+| Mo 10.03. | G1: Prospect Card Format | Freigabe GTM Plan + Review Weinberger Website | — |
+| Di 11.03. | Weinberger Lisa (B-Full) → retell_sync | — | Premium Outreach-Texte |
+| Mi 12.03. | G3: Provisioning Runbook | Review: Lisa glaubwürdig? | — |
+| Do 13.03. | G8: Quality Gates Checklist | Review (Handy + Desktop) | — |
 | Fr 14.03. | Buffer / Iteration | Feedback | — |
 
-**Woche 1 Ziel:** Weinberger Website LIVE (Leckerli D) + Prospect Card Format definiert
+**Woche 1 Ziel:** Weinberger Website LIVE (Leckerli D) ✅ + Prospect Card Format definiert
 
 ---
 

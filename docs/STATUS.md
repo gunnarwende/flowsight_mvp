@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-09 (PR #113: Wizard Restructure — Anliegen + Top-3 + Photo Step 3)
+**Datum:** 2026-03-09 (PR #116: Weinberger AG Website — GTM Goldstandard)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -40,7 +40,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo + Voice Agent Intake+Info |
 | **BigBen Pub** | LIVE ✅ | /bigben-pub — Custom Demo (Reservierungen, Events, Galerie, Google Reviews) |
 
-## Kunden (6 Websites live)
+## Kunden (7 Websites live)
 
 | Kunde | Slug | Module | Status |
 |-------|------|--------|--------|
@@ -49,12 +49,13 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
 | Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
 | Widmer H. & Co. AG (Horgen) | widmer-sanitaer | wizard | Website LIVE |
+| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | wizard | **GTM Goldstandard** — Website LIVE |
 | BigBen Pub (Zürich) | bigben-pub | — | Custom Demo |
 
 ## Aktueller Stand
 
-- **16 Module LIVE.** +2 seit letztem Update (Customer Links Page, BigBen Pub).
-- **41 Commits seit 04.03.** (PRs #53–#105).
+- **16 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard).
+- **44 Commits seit 04.03.** (PRs #53–#116).
 - **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Dörfler: Hero, 6 Services mit Bullets+Bildern, 11-Punkt-Historie, Team verifiziert, Reviews zentriert, Karriere-Template fliessend. Brunner: 6 Services, Hero, 8er-Team mit Teamfoto (Two-Column Layout). Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
 - **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows. Standardisierter 10-Regeln Intake-Prozess.
 - **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 dynamische Kategorien + fixe Reihe (Allgemein/Angebot/Kontakt), Photo Upload in Step 3 (statt Success-Screen), Summary entfernt. Gilt für alle Kunden-Wizards + Brunner Demo.
@@ -63,8 +64,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Scout Tooling (06.03.):** ICP Scoring, Multi-Query, Municipality Scouting, Prospect Pipeline ready.
 - **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
 - **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
+- **Weinberger AG Website (09.03.):** GTM Goldstandard. 5 Services (Sanitär, Heizung, Lüftung, Badsanierung, Kundendienst), 24h Notdienst, 17 echte Bilder, 4.4★/20 Reviews, Brand #004994, Geschichte seit 1912, 3 Lehrstellen. Alle Daten verifiziert (Goldene Regel #1). PR #116.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** GTM Pipeline v2 umsetzen. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
+- **Nächster Schritt:** Weinberger Lisa (B-Full), dann G1 Prospect Card Format. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 

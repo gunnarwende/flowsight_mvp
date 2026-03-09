@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-09 (PR #113: Wizard Restructure)
+**Updated:** 2026-03-09 (PR #116: Weinberger AG Website)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -9,9 +9,9 @@
 ## Snapshot
 
 - **Produkt:** 16 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
-- **Kunden:** 6 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, BigBen Pub)
+- **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 42 Commits, PRs #53–#113
+- **Shipped seit 04.03.:** 44 Commits, PRs #53–#116
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
@@ -91,6 +91,7 @@
 | S5 | BigBen Pub — Paul Follow-up | Founder | OFFEN — Paul interessiert (#79/#80) |
 | S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **DONE** ✅ (PR #94) |
 | G10 | GTM SSOT Docs (Plan v2 + Tracker) | CC | **DONE** ✅ |
+| G9a | Weinberger Website (Leckerli D) | CC | **DONE** ✅ (PR #116) |
 | G1–G9 | → Siehe `docs/gtm/gtm_tracker.md` | CC + Founder | IN PROGRESS |
 
 ---
@@ -134,6 +135,7 @@
 | 2026-03-08 | Widmer Spenglerei + Intake Process Standardization | PR #96 |
 | 2026-03-08 | Customer Links Docs (links.md pro Kunde, PFLICHT) | PR #97 |
 | 2026-03-09 | Wizard Restructure: Anliegen statt Schaden, Top-3 + fixed row, Photo in Step 3 | PR #113 |
+| 2026-03-09 | Weinberger AG Website — GTM Goldstandard (5 Services, 17 Bilder, 24h Notdienst) | PR #116 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
