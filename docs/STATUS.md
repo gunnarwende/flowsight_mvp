@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-08 (PR #105: Web-Engine Abschluss — Dörfler + Brunner Overhaul)
+**Datum:** 2026-03-09 (PR #113: Wizard Restructure — Anliegen + Top-3 + Photo Step 3)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -23,7 +23,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 | Modul | Status | Evidence |
 |-------|--------|----------|
-| **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — service-based categories, branded per customer, photo upload, reporter_name |
+| **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — "Was ist Ihr Anliegen?", Top-3 dynamic + fixed row (Allgemein/Angebot/Kontakt), photo upload in Step 3, branded per customer |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ, Language Gate, SMS+Photo mention, reporter_name, deterministic closing |
 | **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. Twilio alphanumeric sender. HMAC-secured. |
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
@@ -57,14 +57,14 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **41 Commits seit 04.03.** (PRs #53–#105).
 - **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Dörfler: Hero, 6 Services mit Bullets+Bildern, 11-Punkt-Historie, Team verifiziert, Reviews zentriert, Karriere-Template fliessend. Brunner: 6 Services, Hero, 8er-Team mit Teamfoto (Two-Column Layout). Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
 - **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows. Standardisierter 10-Regeln Intake-Prozess.
-- **Customer Wizard (07.03.):** Branded pro Kunde, Kategorien aus `services[]`, reporter_name, Photo Upload auf Success-Screen.
+- **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 dynamische Kategorien + fixe Reihe (Allgemein/Angebot/Kontakt), Photo Upload in Step 3 (statt Success-Screen), Summary entfernt. Gilt für alle Kunden-Wizards + Brunner Demo.
 - **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.
 - **Sales Agent Pricing (08.03.):** Starter CHF 199, Alltag CHF 299, Wachstum CHF 399 (war 99/249/349).
 - **Scout Tooling (06.03.):** ICP Scoring, Multi-Query, Municipality Scouting, Prospect Pipeline ready.
 - **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
 - **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Kundenakquise fortsetzen. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
+- **Nächster Schritt:** GTM Pipeline v2 umsetzen. Offene Issues #79/#80 (BigBen Pub Feedback), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 
