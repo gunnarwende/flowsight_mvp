@@ -49,7 +49,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
 | Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
 | Widmer H. & Co. AG (Horgen) | widmer-sanitaer | wizard | Website LIVE |
-| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | wizard | **GTM Goldstandard** — Website LIVE |
+| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | voice, wizard, ops, reviews, sms | **GTM Goldstandard** — D+B LIVE, C READY |
 | BigBen Pub (Zürich) | bigben-pub | — | Custom Demo |
 
 ## Aktueller Stand
