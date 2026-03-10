@@ -76,15 +76,19 @@ function normalizePlz(v: unknown): string | undefined {
 }
 
 /**
- * SIP demo calls arrive with from_number = Twilio number (+41445053019).
+ * Calls from Twilio-owned numbers (SIP demo or FlowSight Sales) arrive with
+ * from_number = a Twilio number. SMS to those numbers silently fails.
  * If DEMO_SIP_CALLER_ID is set, redirect SMS to founder's personal phone.
  */
-const TWILIO_SIP_NUMBER = "+41445053019";
+const TWILIO_OWNED_NUMBERS = [
+  "+41445053019", // Dörfler SIP trunk
+  "+41445520919", // FlowSight Sales number
+];
 
 function resolveSmsTarget(callerPhone: string | undefined): string | undefined {
   if (!callerPhone) return undefined;
   const override = (process.env.DEMO_SIP_CALLER_ID ?? "").trim();
-  if (callerPhone === TWILIO_SIP_NUMBER && override.length > 0) return override;
+  if (TWILIO_OWNED_NUMBERS.includes(callerPhone) && override.length > 0) return override;
   return callerPhone;
 }
 

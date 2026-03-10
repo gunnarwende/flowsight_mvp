@@ -249,68 +249,92 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
+          "text": "Alle Pflichtfelder wurden gesammelt. Sage jetzt die Verabschiedung — GENAU EINMAL:\n\n'Vielen Dank, ich habe alles notiert. Sie erhalten gleich eine SMS auf Ihr Handy — dort können Sie die erfassten Daten nochmals prüfen, bei Bedarf korrigieren und auch Fotos vom Schaden hochladen. Das hilft unserem Techniker, sich optimal vorzubereiten. Ich wünsche Ihnen alles Gute, auf Wiederhören!'\n\nWenn der Anrufer danach 'Danke', 'Tschüss', 'Perfekt' oder ähnliches sagt:\n→ Sage EXAKT: 'Sehr gerne, und keine Sorge — wir kümmern uns darum. Auf Wiederhören!'\n→ Rufe SOFORT end_call auf.\n\nWICHTIG: NIEMALS die SMS-Informationen oder Zusammenfassung wiederholen. Nach dem warmen Abschluss MUSS end_call aufgerufen werden."
         },
         "name": "Closing Intake",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-closing-intake-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged (said Danke, Tschüss, Auf Wiederhören, Perfekt, or similar), OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-closing-intake",
         "type": "conversation",
         "display_position": {
           "x": 1363,
           "y": 696
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-intake",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {
           "type": "prompt",
-          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
+          "text": "Die Info-Fragen sind beantwortet. Sage jetzt die Verabschiedung — GENAU EINMAL:\n\n'Sehr gerne. Falls Sie später noch Fragen haben, rufen Sie einfach wieder an. Ich wünsche Ihnen einen schönen Tag, auf Wiederhören!'\n\nWenn der Anrufer danach 'Danke', 'Tschüss' oder ähnliches sagt:\n→ Sage EXAKT: 'Sehr gerne! Auf Wiederhören!'\n→ Rufe SOFORT end_call auf."
         },
         "name": "Closing Info",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-closing-info-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged, OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-closing-info",
         "type": "conversation",
         "display_position": {
           "x": 1363,
           "y": 896
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-info",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {
           "type": "prompt",
-          "text": "Die Verabschiedung wurde bereits im Gespräch gesprochen. Sage NICHTS. Schweige komplett. Das Gespräch ist beendet."
+          "text": "Das Anliegen liegt ausserhalb unseres Fachgebiets. Sage freundlich:\n\n'Leider können wir Ihnen dabei nicht weiterhelfen — das liegt ausserhalb unseres Fachgebiets. Für solche Anliegen wenden Sie sich am besten an den Gewerbeverband in Ihrer Region. Ich wünsche Ihnen trotzdem einen schönen Tag, auf Wiederhören!'\n\nWenn der Anrufer danach antwortet:\n→ Sage: 'Gerne! Auf Wiederhören!'\n→ Rufe SOFORT end_call auf."
         },
         "name": "Out-of-scope Closing",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-oos-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged, OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-out-of-scope",
         "type": "conversation",
         "display_position": {
           "x": 943,
           "y": 944
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-oos",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {
