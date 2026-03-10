@@ -11,13 +11,14 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 50+ Commits, PRs #53–#128
+- **Shipped seit 04.03.:** 80+ Commits, PRs #53–#139
 - **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `provision_trial.mjs` + `offboard_tenant.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick cron + morning-report cron). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Trial Machine Build-Out + GTM Pipeline v2.
+- **Phase:** Trial Machine DONE + Monitoring-Härtung DONE. Nächst: Reise-Readiness (Founder-Actions).
 - **Operating Model:** `docs/gtm/operating_model.md` — 6 Phases, Trial Lifecycle, Quality Gates
+- **Reise-Checklist:** `docs/runbooks/reise_checklist.md` — Founder-Abwesenheit, alle offenen Tasks
 
 ### How to Operate (Founder via Handy)
 
@@ -78,7 +79,7 @@
 | # | Deliverable | Owner | Trigger | Status |
 |---|-------------|-------|---------|--------|
 | N3 | **Kalender-Sync** — Google/Outlook CalDAV | CC | Kundenfeedback | OFFEN |
-| N4 | **Morning Report (Cron)** — tägliche Zusammenfassung per E-Mail | CC | Vercel Pro upgrade | OFFEN |
+| N4 | ~~Morning Report (Cron)~~ | CC | — | **DONE** ✅ PR #138. GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail bei RED/YELLOW. Kein Vercel Pro nötig. |
 | N7 | Ops-light UI (reviews-only mode) | CC | Reviews-only Kunde signed | OFFEN |
 | N11 | **Adress-Autocomplete** — Swiss Post API / Google Places | CC | Post-MVP | OFFEN |
 | N15 | **Terminerinnerung 24h vorher** | CC | Post-Go-Live | OFFEN |

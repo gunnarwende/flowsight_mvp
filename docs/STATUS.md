@@ -17,7 +17,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Voice | Retell AI (Dual-Agent DE/INTL) → Twilio SIP → Peoplefone | Pay-as-you-go |
 | Email | Resend (Transaktional) | Free |
 | Monitoring | Sentry (Error Tracking + Alerts) | Free |
-| Ops Alerts | WhatsApp via Twilio REST (Founder-only, system RED) | Sandbox |
+| Ops Alerts | Telegram + E-Mail (primary), WhatsApp (optional) | GH Actions + Resend |
 
 ## Was ist live?
 
@@ -29,7 +29,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
-| **Morning Report** | LIVE ✅ | 10 KPIs, severity ampel, WhatsApp --send |
+| **Morning Report** | LIVE ✅ | 15 KPIs + Trial Status + Deep Health, GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail (RED/YELLOW) |
 | **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, legal, demo booking) |
 | **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19, Pricing aktualisiert (Starter 199/Alltag 299/Wachstum 399) |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
@@ -108,7 +108,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/compliance/` | Datenschutz, Subprocessors |
 | `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
 | `docs/briefings/` | Ad-hoc Inputs (aktive), archivierte → `docs/archive/briefings/` |
-| `.github/workflows/` | CI (lint+build) + Telegram Notifications |
+| `docs/runbooks/reise_checklist.md` | Founder-Abwesenheit: Vor/Während/Nach, Trial-Timing, Signale |
+| `.github/workflows/` | CI (lint+build), Telegram, lifecycle-tick (daily 07:00), morning-report (daily 07:30) |
 | `docs/archive/` | Wave Log, alte Dokumente, Agent-Framework, Templates, Architecture Audits |
 
 ## Hobby-Plan Constraints
