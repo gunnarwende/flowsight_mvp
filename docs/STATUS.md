@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #136: Trial Lifecycle Runner + Prospect Welcome Page)
+**Datum:** 2026-03-11 (PR #138: Monitoring-Härtung — Reise-Readiness)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -69,8 +69,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Trial Lifecycle Emails (11.03.):** PR #134. Welcome-Mail (auto via provision_trial.mjs), Offboarding-Mail (auto via offboard_tenant.mjs), Morning Report mit Trial-Awareness (active/follow-up/expiring/zombie).
 - **Scout v3 (11.03.):** PR #135. Module 2 (Voice Fit) Scoring: Emergency + Hours Gap + Service Breadth. Tier-Thresholds mit Einsatzlogik aligned (HOT >= 8, WARM >= 6).
 - **Trial Lifecycle Runner (11.03.):** PR #136. Idempotent Tick-Route (`/api/lifecycle/tick`), per-Milestone Timestamps (day7/10/13/14), Day 13 Trial-Expiry E-Mail, GitHub Actions Cron (daily 07:00 UTC), Morning Report tick_stale detection. Prospect Welcome Page (`/ops/welcome`) mit Primary CTA = Testnummer anrufen.
+- **Monitoring-Härtung (11.03.):** PR #138. Morning Report als GH Actions Cron (daily 07:30 UTC, Telegram + E-Mail bei RED/YELLOW). Lifecycle-Tick Failure → Telegram-Alert. Health Check mit DB-Ping + Resend-Key-Validation.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** E2E-Test Trial Lifecycle mit Weinberger (provision → tick → emails). Env: LIFECYCLE_TICK_SECRET + APP_URL als GitHub Secrets setzen. Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
+- **Nächster Schritt:** Founder-Actions: (1) GitHub Secrets setzen (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, FOUNDER_EMAIL, LIFECYCLE_TICK_SECRET, APP_URL), (2) DEMO_SIP_CALLER_ID auf Vercel prüfen, (3) Sentry Alert Rules einrichten. Reise-Runbook erstellen.
 
 ## Fixe Entscheidungen (No Drift)
 
