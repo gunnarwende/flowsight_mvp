@@ -1,34 +1,50 @@
 # FlowSight Sales Pipeline
 
 **Owner:** Founder
-**Start:** 2026-03-01
-**Rhythmus:** Täglich 4-5h Fokuszeit, 5 neue Prospects pro Woche
+**Aktualisiert:** 2026-03-11
 **Regel:** Jeder Prospect wird maximal 3× kontaktiert, dann ruhen lassen.
+**Operating Model:** `docs/gtm/operating_model.md` (6 Phasen, Trial Lifecycle)
 
 ---
 
-## Aktive Pipeline
+## Daten
 
-| # | Firma | Ort | Kontakt | Website alt | Google ★ | Demo-URL | E-Mail gesendet | Anruf 1 | Anruf 2 | Status | Notizen |
-|---|-------|-----|---------|-------------|----------|----------|-----------------|---------|---------|--------|---------|
-| 1 | | | | | | | | | | OFFEN | |
-| 2 | | | | | | | | | | OFFEN | |
-| 3 | | | | | | | | | | OFFEN | |
-| 4 | | | | | | | | | | OFFEN | |
-| 5 | | | | | | | | | | OFFEN | |
+**Pipeline-CSV:** `docs/sales/pipeline.csv` — 14 Prospects, ICP Scores, Leckerli-Pakete
+**Scout-CSV:** `docs/sales/scout_raw.csv` — Rohdaten aus `scout.mjs`
 
-**Status-Werte:** OFFEN → KONTAKTIERT → DEMO → VERHANDLUNG → GEWONNEN / VERLOREN / RUHT
+> Die CSV-Dateien sind die SSOT für Prospect-Daten. Diese Markdown-Datei beschreibt den Prozess.
 
 ---
 
-## Wöchentliche Metriken
+## Ablauf (Operating Model Kurzversion)
 
-| KW | Prospects neu | E-Mails | Anrufe | Demos | Abschlüsse |
-|----|---------------|---------|--------|-------|------------|
-| KW 10 (03.03) | | | | | |
-| KW 11 | | | | | |
-| KW 12 | | | | | |
-| KW 13 | | | | | |
+```
+Phase 0: Scout     → 20 Prospects/Tag identifizieren (scout.mjs)
+Phase 1: Outreach  → Personalisierter Erstkontakt (Founder, persönlich)
+Phase 2: Provision → Trial in <20 Min (provision_trial.mjs)
+Phase 3: Trial     → 14 Tage eigenes System
+Phase 4: Decision  → Convert / Live-Dock / Offboard
+Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
+```
+
+**Vollständiges Modell:** `docs/gtm/operating_model.md`
+
+---
+
+## Tenant Lifecycle Status
+
+| Status | Bedeutung | Nächster Schritt |
+|--------|-----------|--------------------|
+| `scouted` | In Pipeline, kein Kontakt | Outreach |
+| `contacted` | Outreach gesendet | Auf Signal warten |
+| `interested` | Prospect hat reagiert | Provisioning |
+| `trial_active` | Trial läuft (14d) | Follow-up Tag 10 |
+| `follow_up_due` | Tag 10 erreicht | Founder ruft an |
+| `decision_pending` | Tag 14 erreicht | Convert / Dock / Offboard |
+| `converted` | Vertrag, wird Kunde | Delivery |
+| `live_dock` | Echte Calls, Verlängerung (14d) | Final Decision Tag 24 |
+| `offboarded` | Sauber gelöscht | — |
+| `parked` | Kein Interesse jetzt | Re-Outreach in 3 Monaten |
 
 ---
 
@@ -40,83 +56,27 @@
 
 ---
 
-## Ablauf pro Prospect (Checkliste)
+## Provisioning Tools
 
-### Phase 1: Research (5 Min)
-- [ ] Google Maps: Firma finden, Adresse, Telefon, Rating, Reviews notieren
-- [ ] Website prüfen: gut/schlecht/keine? Screenshot.
-- [ ] Qualifiziert? (Sanitär/Heizung, 3-30 MA, Raum Zürichsee, schlechte/keine Website)
-
-### Phase 2: Demo-Website bauen (20 Min)
-- [ ] Customer Config erstellen: `src/web/src/lib/customers/<slug>.ts`
-- [ ] Registry eintragen: `src/web/src/lib/customers/registry.ts`
-- [ ] Build + Push → Vercel deployed automatisch
-- [ ] URL testen: `flowsight.ch/kunden/<slug>`
-
-### Phase 3: Outreach (5 Min)
-- [ ] E-Mail senden (Vorlage unten)
-- [ ] Datum in Pipeline eintragen
-
-### Phase 4: Follow-up (nach 2 Tagen)
-- [ ] Anrufen: "Haben Sie die Website gesehen?"
-- [ ] Status in Pipeline aktualisieren
-
-### Phase 5: Demo (wenn Interesse)
-- [ ] 15-Min Demo zeigen (Runbook: docs/runbooks/demo_script.md)
-- [ ] Module besprechen (Voice, Wizard, Ops, Reviews)
-- [ ] Preis nennen, Testphase anbieten
+| Tool | Zweck |
+|------|-------|
+| `provision_trial.mjs` | Unified Trial Setup (tenant + phone + seed + magic link) |
+| `offboard_tenant.mjs` | Clean Delete (cases + agents + auth + status) |
+| `retell_sync.mjs` | Voice Agent publish (B-Full, DE + INTL) |
+| `seed_demo_data.mjs` | Demo-Cases generieren |
+| `scout.mjs` | Prospect Discovery + ICP Scoring |
 
 ---
 
-## E-Mail-Vorlage
+## Outreach Templates
 
-```
-Betreff: Ihre Website, [Herr/Frau Nachname] — kurze Frage
-
-Guten Tag [Herr/Frau Nachname],
-
-ich bin Gunnar Wende von FlowSight in Thalwil.
-
-Ich habe mir Ihre Website und Ihre Google-Bewertungen
-angeschaut — Ihre Kunden sind offensichtlich zufrieden
-([Rating] Sterne, [Anzahl] Bewertungen).
-
-Aus Interesse habe ich einen Entwurf erstellt, wie Ihre
-Online-Präsenz aussehen könnte:
-
-→ flowsight.ch/kunden/[slug]
-
-Das ist komplett unverbindlich. Mich würde einfach
-interessieren, was Sie davon halten.
-
-Falls Sie 10 Minuten Zeit hätten: Ich zeige Ihnen gerne,
-was dahinter steckt — inkl. digitalem Telefonassistenten,
-der Ihre Anrufe automatisch entgegennimmt und als Fall
-erfasst.
-
-Freundliche Grüsse
-Gunnar Wende
-FlowSight GmbH
-044 552 09 19
-flowsight.ch
-```
+Siehe `docs/gtm/outreach_templates.md` — 3 Templates (nach ICP Tier) + Anruf-Skript.
 
 ---
 
-## Anruf-Skript (Follow-up, 2 Tage nach E-Mail)
+## Quality Gates
 
-```
-"Grüezi [Herr/Frau Nachname], Gunnar Wende von FlowSight
-aus Thalwil. Ich hatte Ihnen vor zwei Tagen eine E-Mail
-geschickt mit einem Website-Entwurf für [Firmenname].
-Haben Sie kurz reingeschaut?
-
-[Wenn ja:] Was ist Ihr erster Eindruck?
-[Wenn nein:] Kein Problem — darf ich Ihnen den Link
-nochmal per SMS schicken? Dauert 30 Sekunden zum Anschauen.
-[Wenn kein Interesse:] Verstehe ich, danke für Ihre Zeit.
-Falls sich was ändert — meine Nummer haben Sie."
-```
+Siehe `docs/gtm/quality_gates.md` — 5 Gates müssen PASS sein vor Outreach.
 
 ---
 

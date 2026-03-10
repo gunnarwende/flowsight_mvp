@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-08
+> Letzte Aktualisierung: 2026-03-11
 
 ---
 
@@ -247,25 +247,44 @@ NACH ERLEDIGUNG:
 
 ---
 
-## 7. Sales-Strategie (ab 02.03.2026)
+## 7. GTM — Product-Led Trial Machine (ab 11.03.2026)
 
-**Methode:** Demo-Website für Prospect bauen → E-Mail → Anruf nach 2 Tagen
+**Kernprinzip:** Kein Pitch-Deck, kein Demo-Call, kein Freemium. Jeder qualifizierte Prospect bekommt sein eigenes System und fühlt das Produkt auf seiner eigenen Nummer.
 
-**Tooling:**
-- `scout.mjs` — ICP Scoring, Multi-Query, Municipality Scouting
-- `prospect_pipeline.mjs` — Full-Stack Prospect Onboarding (~15min)
-- Sales Voice Agent "Lisa" auf +41 44 552 09 19
+**Kein B-Quick.** Jeder Prospect bekommt einen dedizierten B-Full Voice Agent (personalisiert mit Firmenname, Services, Region). Qualität vor Skalierung.
 
-**Ablauf pro Prospect (~30 Min):**
-1. Google Maps → Betrieb finden (3-30 MA, Raum Zürichsee, schlechte/keine Website)
-2. Website + Google Reviews analysieren
-3. Demo-Website erstellen (Template-Config, 20 Min)
-4. E-Mail: "Ich habe einen Entwurf für Ihre Website erstellt: [Link]"
-5. Anruf nach 2 Tagen: "Haben Sie die Website gesehen?"
-6. Demo zeigen → Module besprechen → Abschluss
+### Phasen-Modell
 
-**Ziel:** 5 Prospects/Woche, 1 Neukunde alle 3-6 Wochen
-**Tracker:** docs/sales/pipeline.md
+```
+Phase 0: Scout         → 20 Prospects/Tag identifizieren (scout.mjs)
+Phase 1: Outreach      → Personalisierter Erstkontakt (Founder, persönlich)
+Phase 2: Provisioning  → Trial in <20 Min (provision_trial.mjs)
+Phase 3: Trial         → 14 Tage eigenes System (eigene Nummer, Dashboard, Demo-Cases)
+Phase 4: Decision      → Convert / Live-Dock / Offboard
+Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
+```
+
+### Was der Prospect bekommt (Trial, 14 Tage)
+- **Eigene Schweizer Nummer** (Twilio Festnetz)
+- **Lisa (B-Full)** — personalisiert mit seinen Services, PLZ, Firmenname
+- **Dashboard** via Magic-Link (Prospect-View: Status + Review)
+- **15 Demo-Cases** (realistische Schweizer Daten)
+- **SMS-Flow** (Post-Call Korrekturlink)
+- **Review-Surface** (Google-Style mit Firmenname)
+
+### Trial-Timeline
+| Tag | Was |
+|-----|-----|
+| 0 | Trial Start + Welcome-Mail mit Magic-Link |
+| 0-2 | **First-Call-Moment** (Pflicht) — Founder ruft Prospect-Nummer an |
+| 10 | **Follow-up** (Pflicht) — Founder ruft persönlich an |
+| 14 | **Decision Day** — Convert / Live-Dock / Offboard |
+
+### Funnel-Erwartung
+20 Outreach/Tag → ~5 reagieren (25%) → ~3 wollen testen (60%) → ~1 converted (25-30%)
+
+**Operating Model:** `docs/gtm/operating_model.md`
+**Pipeline:** `docs/sales/pipeline.md` + `docs/sales/pipeline.csv`
 
 ---
 

@@ -1,6 +1,6 @@
 # Quality Gates — GTM Prospect Delivery
 
-**Erstellt:** 2026-03-09 | **Owner:** CC + Founder
+**Erstellt:** 2026-03-11 | **Owner:** CC + Founder
 **Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 10)
 **Regel:** KEIN Outreach ohne alle Gates PASS für das gewählte Leckerli-Paket.
 
@@ -8,8 +8,8 @@
 
 ## Gate-Matrix pro Leckerli-Paket
 
-| Gate | B-Quick+D | A+B-Quick+D | A+B-Full+C+D |
-|------|-----------|-------------|--------------|
+| Gate | B-Full+D | A+B-Full+D | A+B-Full+C+D |
+|------|----------|------------|--------------|
 | G1: Prospect Card | REQUIRED | REQUIRED | REQUIRED |
 | G2: Website | REQUIRED | REQUIRED | REQUIRED |
 | G3: Lisa | REQUIRED | REQUIRED | REQUIRED |
@@ -73,13 +73,6 @@
 | 3.8 | Kein Brunner | 0 Treffer bei grep nach "Brunner" in Agent JSONs |
 
 **FAIL → Fix Agent JSON + re-sync.** Häufige Fehler: alte Firmennamen im Template, fehlende INTL-Verlinkung.
-
-### B-Quick spezifisch
-
-| # | Check | PASS-Kriterium |
-|---|-------|----------------|
-| 3.9 | Dynamic Variables | `{FIRMA}`, `{GEWERK}`, `{REGION}` korrekt ersetzt |
-| 3.10 | Shared Testnummer | Anruf auf gemeinsame Nummer → korrekter Agent |
 
 ---
 
