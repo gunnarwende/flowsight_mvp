@@ -26,11 +26,30 @@
 | WARM-HOT (7-8) | A+B-Quick+D | Video + parametrisierte Lisa + Website |
 | WARM (6) | B-Quick+D | Parametrisierte Lisa + Website |
 
+### Schritt 2b: Website-Modus bestimmen (NEU seit 10.03.)
+
+| Kriterium | Modus 1: Full | Modus 2: Extend | Modus 3: Pure System |
+|-----------|--------------|-----------------|---------------------|
+| Eigene Website? | Nein / nur Verzeichnis | Ja, funktional | Ja, stark + gepflegt |
+| Website-Qualität | ≤ 3/10 | 4–7/10 | 8+/10 |
+| FlowSight liefert | Komplette Website + Voice + Ops | Wizard-CTA + Voice + Ops | Nur Voice + Ops |
+| Leckerli D | Volle Demo-Website | Landing/Demo mit Wizard + CTA-Vorschlag | Kein D nötig |
+| Botschaft | "Wir digitalisieren deinen Betrieb" | "Wir erweitern dein System" | "Dein unsichtbares Leitsystem" |
+
+**Schnelltest für Founder (5 Sekunden):**
+1. Hat der Betrieb eine Website? → NEIN → Modus 1
+2. Würdest du dort als Endkunde anfragen? → NEIN → Modus 1, JA aber umständlich → Modus 2, JA → Modus 3
+
+**Beispiele:** Dörfler AG = Modus 1 (keine Website). Weinberger AG = Modus 2 (Website ok, kein Wizard). Betrieb mit perfekter Website + Kontaktformular = Modus 3.
+
+**Encoding:** `"modus": 1|2|3` im `prospect_card.json` → Einsatzlogik liest Modus → passt Leckerli-Paket an.
+
 ### Schritt 3: Sonderfälle
 
 | Bedingung | Override |
 |-----------|---------|
 | Website bereits live (Leuthold, Orlandini, Widmer) | D entfällt → nur fehlende Leckerli |
+| Modus 2/3 (starke bestehende Website) | D = Wizard-Landing statt Full Website |
 | Kein Notdienst | Demo-Fall = "Anfrage" statt "Notfall" |
 | Nur 1 Gewerk (z.B. nur Heizung) | Vereinfachte Lisa (weniger Kategorien) |
 | Bestehender Kunde mit Voice | B entfällt → nur fehlende Leckerli |

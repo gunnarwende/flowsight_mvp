@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-09 (PR #116: Weinberger AG Website)
+**Updated:** 2026-03-10 (PRs #126+#127: Quality Wave)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -8,14 +8,14 @@
 
 ## Snapshot
 
-- **Produkt:** 16 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
+- **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 44 Commits, PRs #53–#116
+- **Shipped seit 04.03.:** 48+ Commits, PRs #53–#127
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** GTM Pipeline v2. Wizard universalisiert (Anliegen statt Schaden). Web-Engine abgeschlossen.
+- **Phase:** Quality Wave (Voice/Review/Dashboard Hardening) + GTM Pipeline v2.
 
 ### How to Operate (Founder via Handy)
 
@@ -53,6 +53,19 @@
 | G | **Kommunikation an Dörfler** | OFFEN | Blocked by: F |
 | F9 | Google Review Link (Dörfler) | BLOCKED | Nachrüsten wenn Link da. |
 | N25 | **MS Bookings UX** (Bug 17) | OFFEN | Kumpel-Feedback. Founder prüft Config. |
+
+---
+
+## OFFEN — Quality Wave Nacharbeiten
+
+| # | Task | Owner | Status | Details |
+|---|------|-------|--------|---------|
+| Q1 | **SMS E2E** — DEMO_SIP_CALLER_ID prüfen | Founder | BLOCKED | Env var auf Vercel prüfen (persönliche Handynr in E.164). Ohne: SMS geht an Twilio-Nr → silent fail. |
+| Q2 | **google_review_url** in Weinberger tenant modules | Founder | BLOCKED | Supabase → tenants → fc4ba994 → modules JSONB → `google_review_url` setzen |
+| Q3 | **Demo-Dataset** — 15 kuratierte Cases pro Tenant | CC | OFFEN | Seed-Script für realistische Demo-Daten |
+| Q4 | **Modus 1/2 Operationalisierung** — Einsatzlogik + Runbook | CC | OFFEN | Zwei-Modi-Logik in GTM-Docs dokumentieren |
+| Q5 | **Tenant-scoped Case List** — Auth-Architektur | CC | OFFEN | Cases nur vom eigenen Tenant im Dashboard |
+| Q6 | **Demo-Zugang / Prospect-safe Context** | CC | OFFEN | Design für sichere Demo-Ansicht |
 
 ---
 
@@ -146,6 +159,15 @@
 | 2026-03-09 | Weinberger AG Website — GTM Goldstandard (5 Services, 17 Bilder, 24h Notdienst) | PR #116 |
 | 2026-03-09 | Weinberger Lisa (B-Full) — DE + INTL Voice Agent published | PR #118 |
 | 2026-03-09 | GTM Foundation: G1 Prospect Card, G3 Runbook, G4 Video, G5 Outreach, G6 Einsatzlogik, G8 Quality Gates | — |
+| 2026-03-10 | Voice Closing Fix — skip_response_edge Bug, farewell + end_call, alle 4 Agents | PR #126 |
+| 2026-03-10 | Tenant-scoped Google Review URL (modules JSONB statt global env) | PR #126 |
+| 2026-03-10 | Twilio-owned Number Detection erweitert (+41445520919) | PR #126 |
+| 2026-03-10 | FAQ-Call Abbruch-Bug — Edge Condition tightened, back-to-main | PR #127 |
+| 2026-03-10 | Voice Greeting "Grüezi" + Notfall-Empathie v2 + "Weinberger AG" statt "Jul." | PR #127 |
+| 2026-03-10 | PLZ→City Auto-Lookup (24 Orte) + House-Number Normalization | PR #127 |
+| 2026-03-10 | Review Surface (/review/[caseId] — Google-style, HMAC, mobile-first) | PR #127 |
+| 2026-03-10 | Review via SMS Fallback (contact_phone als Channel) | PR #127 |
+| 2026-03-10 | Dashboard Tenant-Branding (Name+Initials statt "FlowSight") | PR #127 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 

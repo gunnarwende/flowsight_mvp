@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-09 (PR #116: Weinberger AG Website — GTM Goldstandard)
+**Datum:** 2026-03-10 (PRs #126+#127: Quality Wave — Voice Closing Fix, Review Surface, Dashboard Branding, PLZ Lookup)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -24,7 +24,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Modul | Status | Evidence |
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — "Was ist Ihr Anliegen?", Top-3 dynamic + fixed row (Allgemein/Angebot/Kontakt), photo upload in Step 3, branded per customer |
-| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, City-only PLZ, Language Gate, SMS+Photo mention, reporter_name, deterministic closing |
+| **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ→City auto-lookup (24 Orte), Language Gate, SMS+Photo mention, reporter_name, deterministic closing, Notfall-Empathie, FAQ-safe edge logic |
 | **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. Twilio alphanumeric sender. HMAC-secured. |
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
@@ -34,7 +34,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19, Pricing aktualisiert (Starter 199/Alltag 299/Wachstum 399) |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
 | **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
-| **Review Engine** | LIVE ✅ | Manual button, review_sent_at, GOOGLE_REVIEW_URL |
+| **Review Engine** | LIVE ✅ | Manual button, review_sent_at, tenant-scoped GOOGLE_REVIEW_URL, SMS fallback |
+| **Review Surface** | LIVE ✅ | /review/[caseId] — Google Review-style UI, HMAC-validated, tenant-dynamic, mobile-first |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
 | **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (Voice→STT, Photo/Doc Attachments, /ticket, /status) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo + Voice Agent Intake+Info |
@@ -54,20 +55,17 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **16 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard).
-- **44 Commits seit 04.03.** (PRs #53–#116).
-- **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Dörfler: Hero, 6 Services mit Bullets+Bildern, 11-Punkt-Historie, Team verifiziert, Reviews zentriert, Karriere-Template fliessend. Brunner: 6 Services, Hero, 8er-Team mit Teamfoto (Two-Column Layout). Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
-- **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows. Standardisierter 10-Regeln Intake-Prozess.
-- **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 dynamische Kategorien + fixe Reihe (Allgemein/Angebot/Kontakt), Photo Upload in Step 3 (statt Success-Screen), Summary entfernt. Gilt für alle Kunden-Wizards + Brunner Demo.
+- **17 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard). +1 Modul: Review Surface.
+- **48+ Commits seit 04.03.** (PRs #53–#127).
+- **Quality Wave (10.03.):** PR #126 + #127. Voice: Closing-Node Silence-Bug (skip_response_edge → farewell + end_call), FAQ-Abbruch (edge tightened, back-to-main), Grüezi-Greeting, Notfall-Empathie v2, PLZ→City Lookup (24 Orte), House-Number Normalization. Review: Tenant-scoped Google Review URL, Review Surface (/review/[caseId] — Google-style, HMAC, mobile-first), Review via SMS Fallback. Dashboard: Tenant-Branding. SMS: Twilio-owned Number Detection erweitert.
+- **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
+- **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows.
+- **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 + fixe Reihe, Photo Upload in Step 3.
 - **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.
-- **Sales Agent Pricing (08.03.):** Starter CHF 199, Alltag CHF 299, Wachstum CHF 399 (war 99/249/349).
-- **Scout Tooling (06.03.):** ICP Scoring, Multi-Query, Municipality Scouting, Prospect Pipeline ready.
-- **BigBen Pub (06.03.):** Custom Demo für Gastronomie-Prospect. Reservierung, Events, Galerie, Google Reviews. Zeigt Template-Flexibilität.
-- **Docs-Standard (08.03.):** `docs/customers/<slug>/links.md` = PFLICHT pro Kunde.
-- **Weinberger AG Website (09.03.):** GTM Goldstandard. 5 Services (Sanitär, Heizung, Lüftung, Badsanierung, Kundendienst), 24h Notdienst, 17 echte Bilder, 4.4★/20 Reviews, Brand #004994, Geschichte seit 1912, 3 Lehrstellen. Alle Daten verifiziert (Goldene Regel #1). PR #116.
-- **GTM Foundation (09.03.):** 9/10 Building Blocks done. G1-G10 (ausser G2 B-Quick). Pipeline.csv mit Leckerli-Spalten + Weinberger Goldstandard. Weinberger D+B-Full live.
+- **Weinberger AG (09.03.):** GTM Goldstandard. 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews. PR #116.
+- **GTM Foundation (09.03.):** 9/10 Building Blocks done. Weinberger D+B-Full live.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** G2 B-Quick Demo-Agent (einziger offener Block). Dann Weinberger C (E2E) + Quick Wins (Leuthold, Orlandini, Widmer mit B-Quick). Offene Issues #79/#80 (BigBen Pub), #81 (Voice Handy).
+- **Nächster Schritt:** Founder: DEMO_SIP_CALLER_ID + google_review_url prüfen → SMS E2E. Dann: Demo-Dataset, Modus 1/2 Docs, Tenant-scoped Case List, G2 B-Quick. Issues #79/#80 (BigBen), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 

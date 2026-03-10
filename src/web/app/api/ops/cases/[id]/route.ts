@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 
 // ---------------------------------------------------------------------------
 // Allowed values for ops fields
@@ -39,18 +39,6 @@ const OPS_UPDATABLE_FIELDS = [
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
 
 // ---------------------------------------------------------------------------
-// Auth helper: verify user is authenticated
-// ---------------------------------------------------------------------------
-
-async function getAuthenticatedUser() {
-  const supabase = await getAuthClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
-}
-
-// ---------------------------------------------------------------------------
 // GET /api/ops/cases/[id] — fetch single case (authenticated)
 // ---------------------------------------------------------------------------
 
@@ -58,8 +46,8 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getAuthenticatedUser();
-  if (!user) {
+  const scope = await resolveTenantScope();
+  if (!scope) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -73,6 +61,11 @@ export async function GET(
     ]);
 
     if (error || !row) {
+      return NextResponse.json({ error: "Case not found." }, { status: 404 });
+    }
+
+    // Tenant isolation: non-admin can only see cases of their own tenant
+    if (!scope.isAdmin && scope.tenantId && row.tenant_id !== scope.tenantId) {
       return NextResponse.json({ error: "Case not found." }, { status: 404 });
     }
 
@@ -96,9 +89,14 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getAuthenticatedUser();
-  if (!user) {
+  const scope = await resolveTenantScope();
+  if (!scope) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Prospects cannot modify cases (read-only + review trigger only)
+  if (scope.isProspect) {
+    return NextResponse.json({ error: "Read-only access." }, { status: 403 });
   }
 
   const { id } = await params;
@@ -159,12 +157,17 @@ export async function PATCH(
   try {
     const supabase = getServiceClient();
 
-    // Read old status before update (for status_changed event)
-    let oldStatus: string | undefined;
-    if ("status" in update) {
-      const { data: old } = await supabase.from("cases").select("status").eq("id", id).single();
-      oldStatus = old?.status;
+    // Tenant isolation check: read case first to verify tenant ownership
+    const { data: existing } = await supabase.from("cases").select("status, tenant_id").eq("id", id).single();
+    if (!existing) {
+      return NextResponse.json({ error: "Case not found." }, { status: 404 });
     }
+    if (!scope.isAdmin && scope.tenantId && existing.tenant_id !== scope.tenantId) {
+      return NextResponse.json({ error: "Case not found." }, { status: 404 });
+    }
+
+    // Read old status before update (for status_changed event)
+    const oldStatus = "status" in update ? existing.status : undefined;
 
     const { data: row, error } = await supabase
       .from("cases")
@@ -192,7 +195,7 @@ export async function PATCH(
         case_id: id,
         event_type: "status_changed",
         title: `Status geändert: ${STATUS_LABELS[oldStatus] ?? oldStatus} → ${STATUS_LABELS[newStatus] ?? newStatus}`,
-        metadata: { from: oldStatus, to: newStatus, user_id: user.id },
+        metadata: { from: oldStatus, to: newStatus, user_id: scope.userId },
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
@@ -202,7 +205,7 @@ export async function PATCH(
         case_id: id,
         event_type: "fields_updated",
         title: `Felder aktualisiert: ${nonStatusFields.join(", ")}`,
-        metadata: { fields: nonStatusFields, user_id: user.id },
+        metadata: { fields: nonStatusFields, user_id: scope.userId },
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
@@ -213,7 +216,7 @@ export async function PATCH(
         _tag: "ops_cases_api",
         decision: "updated",
         case_id: id,
-        user_id: user.id,
+        user_id: scope.userId,
         fields: updatedFields,
       })
     );

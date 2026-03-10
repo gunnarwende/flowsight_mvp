@@ -8,12 +8,13 @@
 
 ## Status Snapshot
 
-- **Phase:** Woche 1 — Foundation + Weinberger Website
+- **Phase:** Woche 1 — Foundation + Weinberger + Quality Wave
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
 - **Bausteine:** 9/10 done (G1, G3, G4, G5, G6, G7, G8, G9a, G9b, G10)
 - **Prospects provisioniert:** 0/5 Ziel
 - **Weinberger Website:** LIVE ✅ (PR #116)
-- **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — braucht noch Twilio-Nummer
+- **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — Quality Wave v2 (PRs #126+#127): Closing Fix, FAQ-safe, Grüezi, PLZ Lookup
+- **Weinberger C (E2E):** BLOCKED auf Founder-Env-Check (DEMO_SIP_CALLER_ID + google_review_url)
 
 ---
 
@@ -49,8 +50,8 @@
 | Leckerli | Was | Status | Evidence |
 |----------|-----|--------|----------|
 | **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews, Brand #004994 |
-| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 — DE + INTL, published, 8 Kategorien, 24h Pikett |
-| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | **READY** ⏳ | Tenant fc4ba994, SMS "Weinberger", +41435051101 → wartet auf Founder-Testanruf |
+| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 + Quality Wave PRs #126+#127 — Closing Fix, FAQ-safe, Grüezi, PLZ→City (24 Orte), Notfall-Empathie v2 |
+| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | **BLOCKED** ⏳ | Founder muss prüfen: DEMO_SIP_CALLER_ID + google_review_url in Supabase. Review Surface ready. |
 | **A** | Video (5 Szenen, 45-60s, Founder-Aufnahme) | OFFEN | Founder |
 | **Outreach** | Email + Testnummer + URL + Video | OFFEN | Founder |
 
@@ -118,3 +119,5 @@ Welche bestehenden Systeme werden durch GTM verändert:
 | 2026-03-09 | G5 Outreach-Templates: 3 E-Mail-Templates (nach ICP), Anruf-Script, Touch-Kadenz | CC |
 | 2026-03-09 | G6 Einsatzlogik: Entscheidungstabelle + Pseudocode + Quick Wins Übersicht | CC |
 | 2026-03-09 | G7 Pipeline Upgrade: 5 neue Spalten, Weinberger als erstes Entry, Leckerli-Empfehlung für alle Prospects | CC |
+| 2026-03-10 | Quality Wave: Voice Closing Fix + FAQ-safe Edge + Grüezi + PLZ Lookup + Review Surface + SMS Review + Dashboard Branding (PRs #126+#127) | CC |
+| 2026-03-10 | Modus 1/2 Logik erkannt: Modus 1 = volle Website (schwache bestehende), Modus 2 = Extend (starke bestehende). Weinberger = Modus 2. | Founder + CC |
