@@ -36,7 +36,7 @@ const AGENTS = {
 // Deploy sets voice_id deterministically using these Retell-internal IDs.
 // Source: GET /get-agent/{id} response, verified 2026-02-24.
 const VOICES = {
-  de:   "custom_voice_c0c7eb84f182225ef8003c9576",  // ElevenLabs Susi   (v3V1d2rk6528UrLKRuy8)
+  de:   "custom_voice_3209d3305910d955836523bfac",  // ElevenLabs Ela    (NE7AIW5DoJ7lUosXV2KR)
   intl: "custom_voice_cf152ba48ccbac0370ecebcd88",   // ElevenLabs Juniper (aMSt68OGf4xUZAnLpTU8)
 };
 

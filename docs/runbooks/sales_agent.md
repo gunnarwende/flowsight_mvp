@@ -21,7 +21,7 @@ The Sales Voice Agent handles inbound calls on FlowSight's business number. It a
 
 | Agent | Language | Voice | Role |
 |-------|----------|-------|------|
-| FlowSight Sales DE | de-DE | Susi (`v3V1d2rk6528UrLKRuy8`) | German sales + language gate |
+| FlowSight Sales DE | de-DE | Ela (`NE7AIW5DoJ7lUosXV2KR`) | German sales + language gate |
 | FlowSight Sales INTL | en-US | TBD | Multilingual sales (EN/FR/IT) |
 
 ## Responsibilities

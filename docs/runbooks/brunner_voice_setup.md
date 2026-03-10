@@ -33,7 +33,7 @@ Der Agent erkennt automatisch, ob der Anrufer ein Problem meldet oder eine Frage
 4. Prüfe:
    - Agent Name: **Brunner Haustechnik AG Intake (DE)**
    - Webhook URL: `https://flowsight-mvp.vercel.app/api/retell/webhook`
-   - Voice: **Susi** (v3V1d2rk6528UrLKRuy8)
+   - Voice: **Ela** (NE7AIW5DoJ7lUosXV2KR)
    - Language: de-DE
    - Conversation Flow: **9 Nodes** (Welcome, Language Gate, Main Conversation, Logic Split, Closing Intake, Closing Info, Out-of-scope, Language Transfer, End Call)
 5. **Notiere die agent_id** (Format: `agent_xxxxxxxxxxxxxxxxxxxx`)

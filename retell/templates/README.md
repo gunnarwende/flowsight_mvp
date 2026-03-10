@@ -11,7 +11,7 @@ Jeder Kunde bekommt ein eigenes Agent-Paar (DE + INTL). Die Brunner-Configs dien
 **Persona:** Alle Agents heissen "Lisa" — die digitale Assistentin. Begrüssung: "Guten Tag, hier ist Lisa — die digitale Assistentin der [Firma]. Wie kann ich Ihnen helfen?"
 
 **Stimmen (Standard):**
-- **DE Agent:** Susi (`custom_voice_c0c7eb84f182225ef8003c9576`)
+- **DE Agent:** Ela (`custom_voice_3209d3305910d955836523bfac`)
 - **INTL Agent:** Juniper (`custom_voice_cf152ba48ccbac0370ecebcd88`)
 
 **WICHTIG:** Beim JSON-Import in Retell MUSS die `voice_id` im Format `custom_voice_*` angegeben sein. ElevenLabs-IDs (z.B. `v3V1d2rk...`) funktionieren beim Import NICHT — Retell setzt dann eine Default-Stimme (Cimo). Die Brunner-Vorlage hat bereits die korrekten IDs.
