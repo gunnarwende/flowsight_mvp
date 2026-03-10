@@ -1,0 +1,112 @@
+name: Morning Report
+
+on:
+  schedule:
+    # Daily at 07:30 UTC (08:30 CET / 09:30 CEST) — 30min after lifecycle-tick
+    - cron: "30 7 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  report:
+    name: morning-report
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        run: cd src/web && npm ci
+
+      - name: Run morning report
+        id: report
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          APP_URL: ${{ secrets.APP_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.APP_URL }}
+        run: |
+          OUTPUT=$(node scripts/_ops/morning_report.mjs 2>&1) || true
+          echo "$OUTPUT"
+
+          # Store report for downstream steps
+          echo "report<<REPORT_EOF" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" >> "$GITHUB_OUTPUT"
+          echo "REPORT_EOF" >> "$GITHUB_OUTPUT"
+
+          # Detect severity for email trigger
+          if echo "$OUTPUT" | grep -q '🔴'; then
+            echo "severity=RED" >> "$GITHUB_OUTPUT"
+          elif echo "$OUTPUT" | grep -q '🟡'; then
+            echo "severity=YELLOW" >> "$GITHUB_OUTPUT"
+          else
+            echo "severity=GREEN" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send Telegram
+        if: always()
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPORT: ${{ steps.report.outputs.report }}
+        run: |
+          # Trim to Telegram 4096 char limit
+          BODY=$(echo "$REPORT" | head -30)
+
+          HTTP_CODE=$(curl -sS -o /tmp/tg_response.txt -w "%{http_code}" \
+            -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            -d text="${BODY}" \
+            -d disable_web_page_preview=true)
+
+          echo "Telegram HTTP status: ${HTTP_CODE}"
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "Telegram response:"
+            cat /tmp/tg_response.txt
+          fi
+
+      - name: Send Email (RED/YELLOW only)
+        if: steps.report.outputs.severity == 'RED' || steps.report.outputs.severity == 'YELLOW'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FOUNDER_EMAIL: ${{ secrets.FOUNDER_EMAIL }}
+          REPORT: ${{ steps.report.outputs.report }}
+          SEVERITY: ${{ steps.report.outputs.severity }}
+        run: |
+          if [ -z "$RESEND_API_KEY" ] || [ -z "$FOUNDER_EMAIL" ]; then
+            echo "Missing RESEND_API_KEY or FOUNDER_EMAIL — skipping email"
+            exit 0
+          fi
+
+          SUBJECT="FlowSight ${SEVERITY}: Morning Report"
+          # Convert plain text to simple HTML (preserve line breaks)
+          HTML_BODY=$(echo "$REPORT" | sed 's/$/<br>/g' | sed 's/^/<p style="font-family:monospace;margin:0">/' | sed 's/$/<\/p>/')
+          WRAPPED="<div style=\"background:#0b1120;color:#e2e8f0;padding:24px;border-radius:8px;font-family:monospace;font-size:14px;line-height:1.8\"><div style=\"height:4px;background:#d4a853;border-radius:2px;margin-bottom:16px\"></div>${HTML_BODY}</div>"
+
+          # Send via Resend API
+          PAYLOAD=$(jq -n \
+            --arg from "noreply@send.flowsight.ch" \
+            --arg to "$FOUNDER_EMAIL" \
+            --arg subject "$SUBJECT" \
+            --arg html "$WRAPPED" \
+            --arg text "$REPORT" \
+            '{from: $from, to: $to, subject: $subject, html: $html, text: $text}')
+
+          HTTP_CODE=$(curl -sS -o /tmp/resend_response.txt -w "%{http_code}" \
+            -X POST "https://api.resend.com/emails" \
+            -H "Authorization: Bearer ${RESEND_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          echo "Resend HTTP status: ${HTTP_CODE}"
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "Resend response:"
+            cat /tmp/resend_response.txt
+          fi

@@ -58,8 +58,12 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Trial Lifecycle
 - LIFECYCLE_TICK_SECRET -> selbst generiert (Bitwarden). Bearer token für POST /api/lifecycle/tick. Auch als GitHub Actions Secret setzen.
 
+## Morning Report (GH Actions Cron)
+- FOUNDER_EMAIL -> Founder Outlook-Adresse. Empfängt Morning Report bei RED/YELLOW. GitHub Actions Secret.
+- (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, APP_URL -> bereits oben, müssen auch als GitHub Actions Secrets gesetzt sein)
+
 ## App / Routing
-- APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app). Auch als GitHub Actions Secret (für lifecycle-tick cron).
+- APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app). Auch als GitHub Actions Secret (für lifecycle-tick + morning-report cron).
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
 - FALLBACK_TENANT_ID -> UUID eines Default-Tenants (nur server-side, temporär bis Routing steht)
 
