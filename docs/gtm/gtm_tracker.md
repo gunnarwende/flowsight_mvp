@@ -50,7 +50,7 @@
 |----------|-----|--------|----------|
 | **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews, Brand #004994 |
 | **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 — DE + INTL, published, 8 Kategorien, 24h Pikett |
-| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | OFFEN | — |
+| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | **READY** ⏳ | Tenant fc4ba994, SMS "Weinberger", +41435051101 → wartet auf Founder-Testanruf |
 | **A** | Video (5 Szenen, 45-60s, Founder-Aufnahme) | OFFEN | Founder |
 | **Outreach** | Email + Testnummer + URL + Video | OFFEN | Founder |
 
