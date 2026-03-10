@@ -153,7 +153,31 @@ node --env-file=src/web/.env.local scripts/_ops/onboard_tenant.mjs \
 
 ---
 
-## Schritt 5: Pipeline Tracker Update — ~1 Min
+## Schritt 5: Prospect Demo Access (optional) — ~2 Min
+
+> Nur wenn Prospect selbst ins System schauen soll (nach E2E Proof).
+
+```bash
+node --env-file=src/web/.env.local scripts/_ops/create_prospect_access.mjs \
+  --email=prospect@firma.ch --tenant=<slug>
+```
+
+**Output:** Magic-Link URL (24h gültig). Per E-Mail an Prospect senden.
+
+**Prospect kann:** Cases sehen, Status ändern, Review auslösen.
+**Prospect kann NICHT:** Neue Cases anlegen, Cases löschen, Details editieren.
+
+**Seed Demo-Daten (falls Tenant leer):**
+```bash
+node --env-file=src/web/.env.local scripts/_ops/seed_demo_data.mjs \
+  --tenant=<uuid> --gewerk=sanitaer --count=15
+```
+
+**Reset:** `--clean --count=0` löscht alle `is_demo=true` Cases.
+
+---
+
+## Schritt 6: Pipeline Tracker Update — ~1 Min
 
 `docs/sales/pipeline.csv` — Zeile aktualisieren:
 
@@ -164,13 +188,13 @@ demo_url → flowsight.ch/kunden/<slug>
 
 ---
 
-## Schritt 6: Quality Gates prüfen — ~2 Min
+## Schritt 7: Quality Gates prüfen — ~2 Min
 
 Siehe `docs/gtm/quality_gates.md` — alle Gates für das gewählte Leckerli-Paket durchlaufen.
 
 ---
 
-## Schritt 7: SSOT Update — ~2 Min
+## Schritt 8: SSOT Update — ~2 Min
 
 Nach jedem Provisioning:
 

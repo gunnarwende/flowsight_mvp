@@ -37,7 +37,8 @@ Die Prospect Card ist das strukturierte Bindeglied zwischen **Scout** (Entdeckun
 
   "leckerli": {
     "recommendation": "A+B-Full+C+D",
-    "best_demo_case": "Samstag-Nacht-Notfall: Rohrbruch → Lisa → SMS → Ops-Fall in 3 Min"
+    "best_demo_case": "Samstag-Nacht-Notfall: Rohrbruch → Lisa → SMS → Ops-Fall in 3 Min",
+    "modus": 2
   },
 
   "company": {
@@ -123,6 +124,7 @@ Die Prospect Card ist das strukturierte Bindeglied zwischen **Scout** (Entdeckun
 | `scoring.icp_score` | integer 0-10 | ICP Score aus Scout |
 | `scoring.tier` | enum | "HOT" / "WARM" / "COLD" |
 | `leckerli.recommendation` | string | Paket-Empfehlung (siehe Einsatzlogik) |
+| `leckerli.modus` | integer 1-3 | Website-Modus: 1=Full, 2=Extend, 3=Pure System (siehe `einsatzlogik.md`) |
 | `leckerli.best_demo_case` | string | Stärkster Demo-Fall für diesen Prospect |
 | `company.gewerke` | string[] | Mindestens 1 Gewerk |
 | `contact.phone_e164` | string | E.164 Format, mindestens 1 Nummer |

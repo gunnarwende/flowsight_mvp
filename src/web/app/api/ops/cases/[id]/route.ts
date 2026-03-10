@@ -94,10 +94,8 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Prospects cannot modify cases (read-only + review trigger only)
-  if (scope.isProspect) {
-    return NextResponse.json({ error: "Read-only access." }, { status: 403 });
-  }
+  // Prospects can only change status (no other fields)
+  const PROSPECT_ALLOWED_FIELDS: readonly string[] = ["status"];
 
   const { id } = await params;
 
@@ -108,9 +106,10 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  // Allowlist: only ops-managed fields
+  // Allowlist: prospects get restricted fields, others get full ops fields
+  const allowedFields = scope.isProspect ? PROSPECT_ALLOWED_FIELDS : OPS_UPDATABLE_FIELDS;
   const update: Record<string, unknown> = {};
-  for (const field of OPS_UPDATABLE_FIELDS) {
+  for (const field of allowedFields) {
     if (field in body) {
       update[field] = body[field];
     }
