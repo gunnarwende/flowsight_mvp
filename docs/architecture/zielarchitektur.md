@@ -172,20 +172,18 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 | **Wizard** | ✅ `/kunden/[slug]/meldung` | Brand Color, Logo, Services, Kategorien | Falsche Services angezeigt |
 | **SMS** | ✅ `sms_sender_name` aus tenant modules | Absendername, Korrekturlink-Domain | Falscher Absender |
 | **E-Mail** | ⚠️ Teilweise (Ops-Mail ok, Review-Mail tenant-scoped seit PR #126) | Firmenname, Reply-To, Brand | Falscher Firmenname |
-| **Ops Dashboard** | ⚠️ Tenant-Name seit PR #127, aber Cases nicht tenant-scoped | Header-Branding, Case-Liste nur eigene | **Cases anderer Tenants sichtbar** |
+| **Ops Dashboard** | ✅ Tenant-Name seit PR #127, Cases tenant-scoped via RLS seit PR #128 | Header-Branding, Case-Liste nur eigene | — |
 | **Review Surface** | ✅ `/review/[caseId]` liest Tenant aus Case | Firmenname, Google Review URL | Falscher Google-Link |
 | **Review E-Mail/SMS** | ✅ Seit PR #127 tenant-scoped URL + SMS fallback | Firmenname, Review-Link | Falsche Review-Seite |
 | **Website** | ✅ SSG per slug | Alles (Brand, Services, Team, Bilder) | Falscher Slug → 404 |
 | **Links Page** | ✅ `/kunden/[slug]/links` | Alle URLs | — |
 | **Case Events / Timeline** | ✅ case_id → tenant_id | — | — |
 
-### Kritische Lücke: Ops Dashboard Case Scoping
+### Ops Dashboard Case Scoping — RESOLVED ✅
 
-**Heute:** Jeder eingeloggte Ops-User sieht **alle Cases aller Tenants**. Das funktioniert für Founder (der alle sehen muss), aber nicht für:
-- Prospect-Demo (sieht fremde Echtkunden-Daten)
-- Künftige Kunden-Logins (sehen Daten anderer Kunden)
+**Seit PR #128:** RLS-Migration applied. Cases sind tenant-scoped via Supabase RLS (`cases.tenant_id = auth.jwt()->'app_metadata'->>'tenant_id'`). Founder (role=admin) sieht alle, Kunden/Prospects sehen nur eigene Cases. Zusätzlich enforced `resolveTenantScope.ts` Tenant-Isolation auf API-Ebene.
 
-**Empfohlene Zielarchitektur:**
+**Architektur (live):**
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -193,8 +191,8 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 │                                             │
 │ ┌─────────────┐  ┌──────────────────────┐   │
 │ │ Founder     │  │ Kunde / Prospect     │   │
-│ │ tenant_id:  │  │ tenant_id: fc4ba994  │   │
-│ │ null (=all) │  │ → sieht nur eigene   │   │
+│ │ role: admin │  │ tenant_id: fc4ba994  │   │
+│ │ → sieht all │  │ → sieht nur eigene   │   │
 │ └─────────────┘  └──────────────────────┘   │
 │                                             │
 │ RLS Policy: cases.tenant_id = auth.tenant_id│
@@ -202,7 +200,7 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 └─────────────────────────────────────────────┘
 ```
 
-**Entscheidungsbedarf (D8):** Soll Tenant-Scoping über Supabase RLS oder über API-Layer-Filter laufen? RLS = sicherer, API-Filter = flexibler für Demo-Modi. **Empfehlung:** RLS für Production, API-Filter für Demo-Modus.
+**Entscheidung (D8): UMGESETZT.** RLS für Production + API-Layer (`resolveTenantScope.ts`) als zusätzliche Absicherung. Demo-Modus via Tenant-Flag `is_demo`.
 
 ### Zentrale Tenant-Felder (modules JSONB)
 
@@ -390,7 +388,7 @@ Das ist der geschäftskritischste Modus. Hier entscheidet sich, ob der Prospect 
 | Gap | Impact | Lösung | Aufwand | Priorität |
 |-----|--------|--------|---------|-----------|
 | Kein Demo-Dataset | Prospect sieht leeres Dashboard | Seed-Script (§16) | ~2h | HOCH |
-| Cases nicht tenant-scoped | Prospect sieht fremde Cases | RLS oder API-Filter (§9) | ~4h | HOCH |
+| ~~Cases nicht tenant-scoped~~ | ~~Prospect sieht fremde Cases~~ | ✅ RLS applied (PR #128) + resolveTenantScope.ts | DONE | ERLEDIGT |
 | Kein Demo-Zugang | Prospect braucht Founder-Login | Magic-Link oder Read-Only (§11) | ~3h | HOCH |
 | SMS-Routing unklar | SMS geht an Founder statt Prospect | Routing-Logik (§12) | ~2h | MITTEL |
 | Kein "Demo-Modus"-Flag | Kein Unterschied zwischen Demo und Prod | Tenant-Flag `is_demo` | ~1h | MITTEL |
@@ -469,7 +467,7 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 | Wizard | Eingang, Schrift | ✅ (slug-basiert) | ✅ Echter Wizard | ✅ Responsive | G2 (Website) |
 | SMS | Brücke, Korrektur | ✅ (sender_name) | ⚠️ Routing-Frage | ✅ SMS = mobil | G3 (E2E) |
 | E-Mail | Benachrichtigung | ⚠️ (teilweise) | ⚠️ Geht an echte Adresse | ⚠️ Nur responsive | — |
-| Ops Dashboard | Steuerung | ✅ (seit PR #127) | ❌ Cases nicht scoped | ⚠️ Responsive, nicht optimiert | G5 (Outreach) |
+| Ops Dashboard | Steuerung | ✅ (seit PR #127) | ✅ Cases tenant-scoped (PR #128) | ⚠️ Responsive, nicht optimiert | G5 (Outreach) |
 | Review Surface | Nachlauf, Wow | ✅ (tenant name) | ✅ Mock möglich | ✅ Mobile-first | — |
 | Mobile Erlebnis | Proof-Dimension | — (Querschnitt) | ✅ Zentral | ✅ Muss perfekt sein | G2 + G3 |
 | CTA / Website | Entry Point | ✅ (slug-basiert) | ✅ Echte Website | ✅ Responsive | G2 (Website) |
@@ -828,7 +826,7 @@ Entscheidungsregel:
 ### Go/No-Go Kriterien vor Outreach
 
 **MUST (alle müssen PASS sein):**
-- [ ] Tenant-scoped Cases (Prospect sieht nur eigene)
+- [x] Tenant-scoped Cases (Prospect sieht nur eigene) — PR #128, RLS live
 - [ ] Demo-Dataset geladen (15+ Cases)
 - [ ] Demo-Zugang funktioniert (Link oder Login)
 - [ ] SMS E2E (Prospect erhält SMS auf eigenes Handy)
@@ -888,7 +886,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | Entscheidung | Wann | Referenz |
 |-------------|------|----------|
 | FlowSight = Leitsystem | 2026-03-10 | §3 |
-| Leckerli A-D = Proof, nicht Tiers | 2026-03-09 | gtm_pipeline_plan_v2.md |
+| Leckerli A-D = Proof, nicht Tiers | 2026-03-09 | operating_model.md |
 | Quality before Scale | 2026-03-10 | §18 |
 | Voice: Intake-only, max 7 Fragen, Recording OFF | 2026-02-18 | CLAUDE.md |
 | Output: E-Mail (Kunden), WhatsApp: Founder-only | 2026-02-18 | CLAUDE.md |
@@ -999,7 +997,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 |----------|------|--------|
 | STATUS.md | docs/STATUS.md | Was ist live (17 Module, 7 Websites) |
 | OPS_BOARD.md | docs/OPS_BOARD.md | Einziger Task-Tracker |
-| GTM Pipeline Plan v2 | docs/gtm/gtm_pipeline_plan_v2.md | Strategie + Leckerli-System |
+| Operating Model | docs/gtm/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
 | GTM Tracker | docs/gtm/gtm_tracker.md | Execution-Status + Weinberger |
 | Einsatzlogik | docs/gtm/einsatzlogik.md | ICP → Paket → Assets |
 | Quality Gates | docs/gtm/quality_gates.md | 5 Gates mit Pass/Fail |
