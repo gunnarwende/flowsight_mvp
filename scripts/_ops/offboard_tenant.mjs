@@ -28,6 +28,7 @@
 import { createRequire } from "node:module";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { sendEmail } from "./_lib/send_email.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -100,6 +101,90 @@ async function main() {
   console.log(`  Found: ${tenant.name} (${tenant.id})`);
   console.log(`  Status: ${tenant.trial_status || "(none)"}`);
   console.log(`  Prospect: ${tenant.prospect_email || "(none)"}`);
+
+  // ── Step 1b: Offboarding-Mail ─────────────────────────────────────────
+  console.log("\n── Step 1b: Offboarding-Mail ───────────────────────");
+
+  if (tenant.prospect_email) {
+    const offboardHtml = `<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#0b1120;border-radius:8px;overflow:hidden">
+<!-- Gold accent bar -->
+<tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
+<!-- Logo -->
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<!-- Heading -->
+<tr><td style="padding:0 24px;color:#e2e8f0;font-size:22px;font-weight:700">Guten Tag</td></tr>
+<!-- Body text -->
+<tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
+Ihr 14-Tage Trial bei FlowSight ist abgelaufen. Vielen Dank f&uuml;r Ihr Interesse.
+</td></tr>
+<!-- What they experienced -->
+<tr><td style="padding:20px 24px 0;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:1px">In den letzten 14 Tagen hatten Sie Zugang zu</td></tr>
+<tr><td style="padding:8px 24px 0;color:#e2e8f0;font-size:14px;line-height:2">
+&bull; Ihrer pers&ouml;nlichen KI-Assistentin Lisa<br>
+&bull; Dem FlowSight Dashboard<br>
+&bull; Automatisierten SMS-Best&auml;tigungen<br>
+&bull; Dem Review-System
+</td></tr>
+<!-- Door stays open -->
+<tr><td style="padding:24px 24px 0">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:6px">
+  <tr><td style="padding:20px;color:#e2e8f0;font-size:15px;line-height:1.6">
+Falls Sie FlowSight in Ihrem Betrieb einsetzen m&ouml;chten, melden Sie sich jederzeit.
+  </td></tr>
+  </table>
+</td></tr>
+<!-- Founder contact -->
+<tr><td style="padding:28px 24px 20px;border-top:1px solid #1e293b;margin-top:24px">
+  <div style="color:#64748b;font-size:13px;line-height:1.6;text-align:center">Gunnar Wende &mdash; 044 552 09 19 &mdash; gunnar@flowsight.ch</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+    const offboardText = [
+      "Guten Tag",
+      "",
+      "Ihr 14-Tage Trial bei FlowSight ist abgelaufen. Vielen Dank für Ihr Interesse.",
+      "",
+      "In den letzten 14 Tagen hatten Sie Zugang zu:",
+      "- Ihrer persönlichen KI-Assistentin Lisa",
+      "- Dem FlowSight Dashboard",
+      "- Automatisierten SMS-Bestätigungen",
+      "- Dem Review-System",
+      "",
+      "Falls Sie FlowSight in Ihrem Betrieb einsetzen möchten, melden Sie sich jederzeit.",
+      "",
+      "---",
+      "Gunnar Wende — 044 552 09 19 — gunnar@flowsight.ch",
+    ].join("\n");
+
+    if (dryRun) {
+      console.log(`  Would send offboarding mail to: ${tenant.prospect_email}`);
+    } else {
+      const offboardResult = await sendEmail({
+        to: tenant.prospect_email,
+        subject: "Ihr FlowSight Trial — Danke für Ihr Interesse",
+        html: offboardHtml,
+        text: offboardText,
+      });
+
+      if (offboardResult.success) {
+        console.log(`  Offboarding-Mail sent: ${offboardResult.messageId}`);
+      } else {
+        console.error(`  Offboarding-Mail failed (non-fatal): ${offboardResult.error}`);
+      }
+    }
+  } else {
+    console.log("  No prospect_email on tenant — skipping");
+  }
 
   // ── Step 2: Delete case_attachments ─────────────────────────────────────
   console.log("\n── Step 2: Case Attachments ────────────────────────");

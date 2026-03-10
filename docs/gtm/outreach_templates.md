@@ -1,6 +1,6 @@
 # Premium Outreach-Templates (Leckerli-Varianten)
 
-**Erstellt:** 2026-03-09 | **Owner:** Founder (Versand) + CC (Templates)
+**Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** Founder (Versand) + CC (Templates)
 **Referenz:** `docs/gtm/operating_model.md`
 **Regel:** Founder sendet IMMER aus eigener E-Mail. Kein Massenversand. Jede Mail personalisiert.
 
@@ -13,6 +13,20 @@
 3. **CTA immer konkret:** "Testen Sie Ihre eigene Lisa: [Nummer]" — nicht "Buchen Sie eine Demo".
 4. **Keine PII** anderer Kunden im Outreach.
 5. **Max 3 Touches** pro Prospect, dann Ruhe.
+
+---
+
+## Trial Machine Kontext
+
+Seit März 2026 bieten wir jedem qualifizierten Prospect einen **14-Tage Trial** an:
+- **Eigene Testnummer** — Lisa nimmt Anrufe für den Prospect entgegen
+- **Dashboard-Zugang** — Magic-Link, Demo-Fälle, Status-Übersicht
+- **SMS-Flow** — automatische Bestätigung nach jedem Anruf
+- **Review-System** — Google-style Bewertungsseite
+
+Der Outreach führt den Prospect zum Testen, nicht zum Kaufen. Die Templates spiegeln das wider: CTA ist immer "Testen Sie", nie "Buchen Sie".
+
+**Referenz:** `docs/gtm/operating_model.md` (6 Phasen, Trial Timeline)
 
 ---
 
@@ -43,7 +57,7 @@
 
 ---
 
-## Template 2: A+B-Quick+D (ICP 75-89, gute Prospects)
+## Template 2: A+B-Full+D (ICP 75-89, gute Prospects)
 
 **Betreff:** {FIRMA} — Ihre eigene Lisa wartet
 
@@ -67,7 +81,7 @@
 
 ---
 
-## Template 3: B-Quick+D (ICP 60-74, solide Prospects)
+## Template 3: B-Full+D (ICP 60-74, solide Prospects)
 
 **Betreff:** Kein verpasster Anruf mehr — Demo für {FIRMA}
 
@@ -87,6 +101,26 @@
 > Grüsse
 > Gunnar Wende
 > FlowSight — flowsight.ch
+
+---
+
+## Template 4: Trial-Einladung (nach Provision)
+
+**Trigger:** Prospect hat Interesse gezeigt → Trial provisioniert → Welcome-Mail geht automatisch via `provision_trial.mjs`.
+
+> Dieser Text wird automatisch als HTML-E-Mail gesendet. Die folgenden Inhalte sind zur Dokumentation.
+
+**Betreff:** Willkommen — Ihr 14-Tage Trial bei FlowSight
+
+**Inhalt:**
+- Begrüssung + "Ihr Trial ist aktiv"
+- Magic-Link zum Dashboard
+- Testnummer (falls zugewiesen)
+- Was enthalten ist: Dashboard, Lisa, SMS-Flow, Reviews
+- Trial-Zeitraum (14 Tage)
+- Founder-Kontakt
+
+**Automatisierung:** `provision_trial.mjs` sendet diese E-Mail automatisch nach Provisioning.
 
 ---
 
@@ -154,6 +188,7 @@ Vor jedem Versand:
 
 | Touch | Kanal | Timing | Template |
 |-------|-------|--------|----------|
+| 0 | E-Mail (auto) | Nach Provision | Template 4 (automatisch via provision_trial.mjs) |
 | 1 | E-Mail | Tag 0 | Template 1/2/3 (nach ICP) |
 | 2 | Anruf | Tag 2 | Anruf-Script |
 | 3 | E-Mail | Tag 7 | Kurzer Follow-up ("Hatten Sie Zeit zum Testen?") |
