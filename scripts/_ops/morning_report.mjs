@@ -116,6 +116,59 @@ if (oldestRow) {
   oldestAge = ageD > 0 ? `${ageD}d ${ageH % 24}h` : `${ageH}h`;
 }
 
+// ---------------------------------------------------------------------------
+// Trial Lifecycle Queries
+// ---------------------------------------------------------------------------
+
+const h24ahead = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+const h48ahead = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString();
+
+// T1. Active trials: trial_status IN ('trial_active', 'live_dock')
+const { data: activeTrials, error: eT1 } = await supabase
+  .from("tenants")
+  .select("slug, trial_status")
+  .in("trial_status", ["trial_active", "live_dock"]);
+if (eT1) console.error("Query active trials:", eT1.message);
+
+const activeTrialCount = activeTrials?.length ?? 0;
+
+// T2. Follow-ups due today: follow_up_at <= todayEnd AND trial_status = 'trial_active'
+const { data: followUpsDue, error: eT2 } = await supabase
+  .from("tenants")
+  .select("slug")
+  .eq("trial_status", "trial_active")
+  .lte("follow_up_at", todayEnd.toISOString());
+if (eT2) console.error("Query follow-ups:", eT2.message);
+
+const followUpDueCount = followUpsDue?.length ?? 0;
+const followUpNames = followUpsDue?.map((t) => t.slug).join(", ") ?? "";
+
+// T3. Expiring within 48h: trial_end <= now + 48h AND trial_status IN ('trial_active', 'live_dock')
+const { data: expiring48h, error: eT3 } = await supabase
+  .from("tenants")
+  .select("slug, trial_end")
+  .in("trial_status", ["trial_active", "live_dock"])
+  .lte("trial_end", h48ahead);
+if (eT3) console.error("Query expiring:", eT3.message);
+
+const expiring48hCount = expiring48h?.length ?? 0;
+const expiringNames = expiring48h?.map((t) => t.slug).join(", ") ?? "";
+
+// T3b. Subset: expiring within 24h (for RED severity)
+const expiring24h = expiring48h?.filter(
+  (t) => t.trial_end && new Date(t.trial_end).getTime() <= new Date(h24ahead).getTime()
+) ?? [];
+
+// T4. Zombie trials: trial_active but trial_start > 7 days ago (no activity signal)
+const { data: zombieTrials, error: eT4 } = await supabase
+  .from("tenants")
+  .select("slug")
+  .eq("trial_status", "trial_active")
+  .lt("trial_start", d7ago);
+if (eT4) console.error("Query zombies:", eT4.message);
+
+const zombieCount = zombieTrials?.length ?? 0;
+
 // 8. Health check
 let healthOk = false;
 try {
@@ -130,8 +183,8 @@ try {
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk;
-const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0;
+const isRed = (stuck48h ?? 0) > 0 || !healthOk || expiring24h.length > 0;
+const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0;
 const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
 
 // ---------------------------------------------------------------------------
@@ -155,6 +208,11 @@ const report = [
   `done_7d:        ${done7d ?? "?"}`,
   `reviews_7d:     ${reviewsSent7d ?? "?"}`,
   `oldest_open:    ${oldestAge}`,
+  `━━━ TRIALS ━━━━━━━━━`,
+  `active_trials:  ${activeTrialCount}`,
+  `follow_up_due:  ${followUpDueCount}${followUpNames ? ` (${followUpNames})` : ""}`,
+  `expiring_48h:   ${expiring48hCount}${expiringNames ? ` (${expiringNames})` : ""}`,
+  `zombie_trials:  ${zombieCount}`,
   `health:         ${healthOk ? "OK" : "FAIL"}`,
   `━━━━━━━━━━━━━━━━━━━`,
 ].join("\n");
