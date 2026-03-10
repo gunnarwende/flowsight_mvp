@@ -216,68 +216,92 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
+          "text": "All required fields have been collected. Now speak the farewell — EXACTLY ONCE:\n\n'Thank you, I've noted everything down. You'll receive an SMS on your mobile shortly — there you can review the details, correct anything if needed, and also upload photos of the damage. That helps our technician prepare. I wish you all the best, goodbye!'\n\nIf the caller then says 'Thanks', 'Bye', 'Perfect' or similar:\n→ Say EXACTLY: 'You're very welcome, and don't worry — we'll take care of it. Goodbye!'\n→ IMMEDIATELY call end_call.\n\nIMPORTANT: NEVER repeat the SMS information or summary. After the warm closing, end_call MUST be called."
         },
         "name": "Closing Intake",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-closing-intake-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged (said Thanks, Bye, Goodbye, Perfect, or similar), OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-closing-intake",
         "type": "conversation",
         "display_position": {
           "x": 1363,
           "y": 696
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-intake",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {
           "type": "prompt",
-          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
+          "text": "The info questions have been answered. Now speak the farewell — EXACTLY ONCE:\n\n'You're welcome. If you have any other questions later, just call again. Have a nice day, goodbye!'\n\nIf the caller then says 'Thanks', 'Bye' or similar:\n→ Say EXACTLY: 'You're welcome! Goodbye!'\n→ IMMEDIATELY call end_call."
         },
         "name": "Closing Info",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-closing-info-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged, OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-closing-info",
         "type": "conversation",
         "display_position": {
           "x": 1363,
           "y": 896
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-closing-info",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {
           "type": "prompt",
-          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
+          "text": "The request is outside our area of expertise. Say kindly:\n\n'Unfortunately, we can't help with that — it's outside our area of expertise. For such matters, I'd recommend contacting the local trade association in your area. Have a nice day, goodbye!'\n\nIf the caller then responds:\n→ Say: 'You're welcome! Goodbye!'\n→ IMMEDIATELY call end_call."
         },
         "name": "Out-of-scope Closing",
-        "edges": [],
+        "edges": [
+          {
+            "destination_node_id": "end-call-node",
+            "id": "edge-oos-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The agent has spoken the farewell AND the caller has acknowledged, OR the agent has called end_call"
+            }
+          }
+        ],
         "id": "node-out-of-scope",
         "type": "conversation",
         "display_position": {
           "x": 943,
           "y": 944
         },
-        "skip_response_edge": {
-          "destination_node_id": "end-call-node",
-          "id": "skip-response-edge-oos",
-          "transition_condition": {
-            "type": "prompt",
-            "prompt": "Skip response"
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after you have spoken the farewell and the caller has acknowledged it."
           }
-        }
+        ]
       },
       {
         "instruction": {

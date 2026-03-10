@@ -56,16 +56,32 @@ export async function POST(
     );
   }
 
-  // ── Google Review URL ─────────────────────────────────────────────────
-  const googleReviewUrl = process.env.GOOGLE_REVIEW_URL;
+  // ── Google Review URL (tenant-scoped, fallback to global env) ─────────
+  let googleReviewUrl: string | undefined;
+  {
+    const { data: tenant } = await supabase
+      .from("tenants")
+      .select("modules")
+      .eq("id", row.tenant_id)
+      .single();
+
+    const modules = tenant?.modules as Record<string, unknown> | null;
+    if (typeof modules?.google_review_url === "string" && modules.google_review_url.length > 0) {
+      googleReviewUrl = modules.google_review_url;
+    }
+  }
   if (!googleReviewUrl) {
-    Sentry.captureMessage("GOOGLE_REVIEW_URL not configured", {
+    googleReviewUrl = process.env.GOOGLE_REVIEW_URL;
+  }
+  if (!googleReviewUrl) {
+    Sentry.captureMessage("google_review_url not configured for tenant", {
       level: "warning",
       tags: {
         _tag: "resend",
         area: "email",
         email_type: "review_request",
         case_id: id,
+        tenant_id: row.tenant_id,
         error_code: "NO_REVIEW_URL",
       },
     });
