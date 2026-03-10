@@ -13,18 +13,16 @@
 
 | ICP Score (0-10) | Tier | Aktion |
 |-------------------|------|--------|
-| 9-10 | HOT | → Schritt 2 |
-| 7-8 | WARM-HOT | → Schritt 2 |
-| 6 | WARM | → Schritt 2 |
+| 8-10 | HOT | → Schritt 2 |
+| 6-7 | WARM | → Schritt 2 |
 | < 6 | COLD | **SKIP** — kein Provisioning |
 
 ### Schritt 2: Tier → Leckerli-Paket
 
 | Tier | Leckerli-Paket | Assets |
 |------|---------------|--------|
-| HOT (9-10) | A+B-Full+C+D | Video + eigener Agent + E2E Proof + Website |
-| WARM-HOT (7-8) | A+B-Quick+D | Video + parametrisierte Lisa + Website |
-| WARM (6) | B-Quick+D | Parametrisierte Lisa + Website |
+| HOT (8-10) | A+B-Full+C+D | Video + eigener Agent + E2E Proof + Website |
+| WARM (6-7) | B-Full+D | Eigener Agent + Website |
 
 ### Schritt 2b: Website-Modus bestimmen (NEU seit 10.03.)
 
