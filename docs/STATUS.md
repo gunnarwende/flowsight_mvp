@@ -66,8 +66,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Weinberger AG (09.03.):** GTM Goldstandard. 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews. PR #116.
 - **GTM Foundation (09.03.):** 9/10 Building Blocks done. Weinberger D+B-Full live.
 - **Trial Machine (11.03.):** PR #131. Operating Model (6 Phasen), Trial Lifecycle DB-Felder, provision_trial.mjs, offboard_tenant.mjs. B-Quick eliminiert — immer B-Full.
+- **Trial Lifecycle Emails (11.03.):** PR #134. Welcome-Mail (auto via provision_trial.mjs), Offboarding-Mail (auto via offboard_tenant.mjs), Morning Report mit Trial-Awareness (active/follow-up/expiring/zombie).
+- **Scout v3 (11.03.):** PR #135. Module 2 (Voice Fit) Scoring: Emergency + Hours Gap + Service Breadth. Tier-Thresholds mit Einsatzlogik aligned (HOT >= 8, WARM >= 6).
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Trial Machine vervollständigen: Welcome-Mail + Offboarding-Mail Templates, Trial Lifecycle Cron/Scheduler, Morning Report mit Trial-Status, Outreach-Templates auf Trial Machine aktualisieren, Scout v3 (Module 2 Scoring). Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
+- **Nächster Schritt:** Trial Lifecycle Cron/Scheduler (automatische Day 7/10/13/14 Events), Prospect Welcome Page (/trial/welcome), E2E-Test mit Weinberger. Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
 
 ## Fixe Entscheidungen (No Drift)
 
