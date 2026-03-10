@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PR #131: Trial Lifecycle — Operating Model + Provisioning + Offboarding)
+**Updated:** 2026-03-11 (PRs #133-#135: Repo Cleanup, Trial Emails, Scout v3)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -186,6 +186,9 @@
 | 2026-03-11 | Trial Lifecycle DB Migration (trial_status, trial_start/end, follow_up_at, prospect_email/phone) | PR #131 |
 | 2026-03-11 | provision_trial.mjs — Unified trial setup (tenant + phone + seed + prospect + magic link) | PR #131 |
 | 2026-03-11 | offboard_tenant.mjs — Clean delete (cases + events + attachments + numbers + agents + auth) | PR #131 |
+| 2026-03-11 | Repo Cleanup Round 2 — archive plan_v2, fix 10 stale references, Orlandini status.md, Runbooks README | PR #133 |
+| 2026-03-11 | Trial Lifecycle Emails — Welcome-Mail (auto), Offboarding-Mail (auto), Morning Report TRIALS section | PR #134 |
+| 2026-03-11 | Scout v3 — Module 2 Voice Fit Scoring (Emergency + Hours Gap + Breadth), aligned tier thresholds | PR #135 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
