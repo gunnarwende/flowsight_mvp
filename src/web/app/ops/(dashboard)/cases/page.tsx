@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { CaseListClient } from "@/src/components/ops/CaseListClient";
 import type { CaseRow, KpiData } from "@/src/components/ops/CaseListClient";
 
@@ -55,10 +56,25 @@ export default async function OpsCasesPage({
 
   const supabase = getServiceClient();
 
+  // ── Tenant scope: non-admin users see only their own tenant ──────────
+  const scope = await resolveTenantScope();
+  // scope is null only if layout auth failed (shouldn't happen — layout redirects)
+
   // Resolve tenant slug → tenant_id + name for filtered view
   let filterTenantId: string | undefined;
   let filterTenantName: string | undefined;
-  if (filterTenantSlug) {
+
+  // Non-admin: force tenant_id filter (overrides URL param)
+  if (scope && !scope.isAdmin && scope.tenantId) {
+    filterTenantId = scope.tenantId;
+    const { data: t } = await supabase
+      .from("tenants")
+      .select("name")
+      .eq("id", scope.tenantId)
+      .single();
+    if (t?.name) filterTenantName = t.name;
+  } else if (filterTenantSlug) {
+    // Admin: optional URL-based tenant filter
     const { data: t } = await supabase
       .from("tenants")
       .select("id, name")

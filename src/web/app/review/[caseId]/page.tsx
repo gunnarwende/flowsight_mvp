@@ -22,9 +22,9 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
             <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <p className="text-lg font-semibold text-gray-900">Link ungueltig</p>
+        <p className="text-lg font-semibold text-gray-900">Link ung&uuml;ltig</p>
         <p className="mt-2 text-sm text-gray-500">
-          Dieser Bewertungslink ist nicht mehr gueltig oder wurde bereits verwendet.
+          Dieser Bewertungslink ist nicht mehr g&uuml;ltig oder wurde bereits verwendet.
         </p>
       </div>
     </div>
@@ -45,7 +45,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
     return invalidShell;
   }
 
-  // ── Resolve tenant name ─────────────────────────────────────────────
+  // ── Resolve tenant ─────────────────────────────────────────────────
   let companyName = "Ihr Dienstleister";
   let googleReviewUrl: string | null = null;
   {
@@ -63,19 +63,23 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
     }
   }
 
-  // ── Derive initials ─────────────────────────────────────────────────
+  // ── Display values ─────────────────────────────────────────────────
   const displayName = "Max Mustermann";
-  const initial = displayName.charAt(0).toUpperCase();
+  const initial = "M";
 
-  // ── Pre-filled review text ──────────────────────────────────────────
-  const placeholderText =
-    "Hervorragender Service! Schnelle Reaktion auf unseren Notfall. Das Team war professionell und hat das Problem sofort geloest. Sehr empfehlenswert!";
+  // High-quality 3-liner as default review text
+  const defaultReviewText = [
+    "Sehr kompetenter und zuverl\u00e4ssiger Service.",
+    "Schnelle Reaktion, saubere Arbeit, faire Preise.",
+    "Jederzeit wieder \u2014 klare Empfehlung!",
+  ].join("\n");
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-[#e8eaed] p-4">
-      {/* Google-style review card */}
+      {/* Google-style review card — matches reference image exactly */}
       <div className="w-full max-w-[420px] rounded-2xl bg-white shadow-xl">
-        {/* Header — company name */}
+
+        {/* Header — dynamic company name */}
         <div className="border-b border-gray-100 px-6 pt-6 pb-4">
           <h1 className="text-center text-[17px] font-medium text-gray-900">
             {companyName}
@@ -84,7 +88,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
 
         {/* User avatar + name */}
         <div className="flex flex-col items-center px-6 pt-5">
-          {/* Avatar circle */}
+          {/* Avatar — magenta circle with initial */}
           <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#e91e8c]">
             <span className="text-xl font-medium text-white">{initial}</span>
           </div>
@@ -94,7 +98,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
           {/* Google disclosure */}
           <div className="mt-1 flex items-center gap-1">
             <p className="text-xs text-gray-500">
-              Beitrag wird Google-weit veroeffentlicht
+              Beitrag wird Google-weit ver&ouml;ffentlicht
             </p>
             <svg
               width="14"
@@ -115,8 +119,8 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* Stars */}
-        <div className="flex justify-center gap-1 px-6 pt-4 pb-2">
+        {/* Stars — 5 gold stars */}
+        <div className="flex justify-center gap-1.5 px-6 pt-4 pb-2">
           {[1, 2, 3, 4, 5].map((star) => (
             <svg
               key={star}
@@ -131,32 +135,32 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
           ))}
         </div>
 
-        {/* Text area */}
+        {/* Text area — high-quality 3-liner pre-filled */}
         <div className="px-6 pt-3">
           <textarea
-            className="h-[120px] w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-[14px] leading-relaxed text-gray-700 placeholder-gray-400 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-1 focus:ring-blue-400"
-            placeholder="Beschreiben Sie Ihre Erfahrung..."
-            defaultValue={placeholderText}
+            className="h-[110px] w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-[14px] leading-relaxed text-gray-700 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-1 focus:ring-blue-400"
+            placeholder="Schildere anderen deine Eindr&uuml;cke von diesem Ort"
+            defaultValue={defaultReviewText}
             readOnly
           />
         </div>
 
-        {/* Add photos button */}
+        {/* Add photos button — dark, full-width, matching reference */}
         <div className="px-6 pt-3">
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-[13px] font-medium text-gray-700 transition-colors hover:bg-gray-100"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#303134] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#404144]"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-white">
               <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
               <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
               <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            Fotos und Videos hinzufuegen
+            Fotos und Videos hinzuf&uuml;gen
           </button>
         </div>
 
-        {/* Bottom actions */}
+        {/* Bottom actions — Abbrechen + Posten */}
         <div className="flex items-center justify-between px-6 pt-5 pb-6">
           <button
             type="button"
@@ -164,6 +168,11 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
           >
             Abbrechen
           </button>
+          {/*
+            Primary: our Review Surface IS the experience.
+            "Posten" → Google Review URL if configured (production),
+            otherwise stays on our surface (demo — the surface itself is the proof).
+          */}
           {googleReviewUrl ? (
             <a
               href={googleReviewUrl}

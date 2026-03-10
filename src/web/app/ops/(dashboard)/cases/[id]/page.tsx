@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { CaseDetailForm } from "./CaseDetailForm";
 import { AttachmentsSection } from "./AttachmentsSection";
 import { CaseTimeline } from "@/src/components/ops/CaseTimeline";
@@ -84,12 +85,19 @@ export default async function CaseDetailPage({
   const { id } = await params;
 
   const supabase = getServiceClient();
+  const scope = await resolveTenantScope();
+
   const [{ data: row, error }, { data: events }] = await Promise.all([
     supabase.from("cases").select("*").eq("id", id).single(),
     supabase.from("case_events").select("*").eq("case_id", id).order("created_at"),
   ]);
 
   if (error || !row) notFound();
+
+  // Tenant isolation: non-admin can only see cases of their own tenant
+  if (scope && !scope.isAdmin && scope.tenantId && row.tenant_id !== scope.tenantId) {
+    notFound();
+  }
 
   const caseData = row as CaseDetail;
   const caseEvents = (events ?? []) as CaseEvent[];

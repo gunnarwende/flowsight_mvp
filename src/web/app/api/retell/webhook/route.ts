@@ -127,17 +127,29 @@ function normalizePlz(v: unknown): string | undefined {
 /**
  * Calls from Twilio-owned numbers (SIP demo or FlowSight Sales) arrive with
  * from_number = a Twilio number. SMS to those numbers silently fails.
- * If DEMO_SIP_CALLER_ID is set, redirect SMS to founder's personal phone.
+ *
+ * Three-tier SMS target resolution:
+ * 1. Tenant-specific demo_sms_target (for Prospect Demo — prospect's phone)
+ * 2. Global DEMO_SIP_CALLER_ID (for Internal Test — founder's phone)
+ * 3. No override → real caller phone (Production)
  */
 const TWILIO_OWNED_NUMBERS = [
   "+41445053019", // Dörfler SIP trunk
   "+41445520919", // FlowSight Sales number
 ];
 
-function resolveSmsTarget(callerPhone: string | undefined): string | undefined {
+function resolveSmsTarget(
+  callerPhone: string | undefined,
+  tenantDemoTarget?: string,
+): string | undefined {
   if (!callerPhone) return undefined;
-  const override = (process.env.DEMO_SIP_CALLER_ID ?? "").trim();
-  if (TWILIO_OWNED_NUMBERS.includes(callerPhone) && override.length > 0) return override;
+  if (TWILIO_OWNED_NUMBERS.includes(callerPhone)) {
+    // SIP call: resolve demo target
+    if (tenantDemoTarget) return tenantDemoTarget;
+    const override = (process.env.DEMO_SIP_CALLER_ID ?? "").trim();
+    if (override.length > 0) return override;
+    return undefined; // No target configured — skip SMS
+  }
   return callerPhone;
 }
 
@@ -501,9 +513,21 @@ export async function POST(req: Request) {
     }
 
     // ── Post-call SMS ─────────────────────────────────────────────
-    // SMS target override: SIP demo calls arrive with from_number = Twilio number.
-    // DEMO_SIP_CALLER_ID env var redirects SMS to founder's personal phone.
-    const smsTarget = resolveSmsTarget(callerPhone);
+    // SMS target: 3-tier resolution (tenant demo target → global override → real caller)
+    // Load tenant demo_sms_target for prospect demo mode
+    let tenantDemoTarget: string | undefined;
+    {
+      const { data: tenantRow } = await supabase
+        .from("tenants")
+        .select("modules")
+        .eq("id", tenantId)
+        .single();
+      const mods = tenantRow?.modules as Record<string, unknown> | null;
+      if (typeof mods?.demo_sms_target === "string" && mods.demo_sms_target.length > 0) {
+        tenantDemoTarget = mods.demo_sms_target;
+      }
+    }
+    const smsTarget = resolveSmsTarget(callerPhone, tenantDemoTarget);
 
     let smsSent = false;
     let smsSid: string | undefined;

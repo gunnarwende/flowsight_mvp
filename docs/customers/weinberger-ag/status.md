@@ -19,8 +19,8 @@
 | Leckerli | Was | Status |
 |----------|-----|--------|
 | **D** | Website (Services, Team, Notdienst, Wizard) | **DONE** ✅ (PR #116) |
-| **B-Full** | Eigener Voice Agent (Lisa DE + INTL, Ela Voice) | **DONE** ✅ (PR #118 + #124) — Twilio +41435051101 |
-| **C** | E2E Proof (Tenant, SMS, Ops-Fall) | **READY** ⏳ — Tenant + SMS aktiv, wartet auf Founder-Testanruf |
+| **B-Full** | Eigener Voice Agent (Lisa DE + INTL, Ela Voice) | **DONE** ✅ (PRs #118+#126+#127) — Quality Wave: Closing Fix, FAQ-safe, Grüezi, PLZ→City (24 Orte), Notfall-Empathie v2 |
+| **C** | E2E Proof (Tenant, SMS, Ops-Fall) | **BLOCKED** ⏳ — Founder muss DEMO_SIP_CALLER_ID + google_review_url prüfen |
 | **A** | Video (5 Szenen, Founder-Aufnahme) | OFFEN |
 
 ## Infrastruktur (Leckerli C)
@@ -31,7 +31,8 @@
 | Phone Routing | ✅ | +41435051101 → tenant_id via tenant_numbers |
 | SMS Channel | ✅ | Sender: "Weinberger", alphanumeric |
 | Webhook | ✅ | flowsight-mvp.vercel.app/api/retell/webhook |
-| Voice Agents | ✅ | DE + INTL published (Ela Voice) |
+| Voice Agents | ✅ | DE + INTL published (Ela Voice), Quality Wave v2: Closing Fix, FAQ-safe, Grüezi, PLZ Lookup |
+| Review Surface | ✅ | /review/[caseId] — Google-style, HMAC-validated, tenant-dynamic |
 | Wizard | ✅ | /kunden/weinberger-ag/meldung |
 | Ops Dashboard | ✅ | /ops → Fälle sichtbar |
 
