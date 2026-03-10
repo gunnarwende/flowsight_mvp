@@ -56,11 +56,21 @@ const NAV_ITEMS: NavItem[] = [
 
 export function OpsShell({
   userEmail,
+  tenantName,
   children,
 }: {
   userEmail: string;
+  tenantName?: string;
   children: React.ReactNode;
 }) {
+  const displayName = tenantName ?? "FlowSight";
+  const initials = tenantName
+    ? tenantName
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((w) => w[0]?.toUpperCase() ?? "")
+        .join("")
+    : "FS";
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -70,9 +80,9 @@ export function OpsShell({
       <div className="px-4 py-5 border-b border-gray-200">
         <Link href="/ops/cases" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">FS</span>
+            <span className="text-white font-bold text-sm">{initials}</span>
           </div>
-          <span className="font-bold text-gray-900">FlowSight</span>
+          <span className="font-bold text-gray-900 truncate">{displayName}</span>
         </Link>
       </div>
 
@@ -146,9 +156,9 @@ export function OpsShell({
         </button>
         <Link href="/ops/cases" className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
-            <span className="text-white font-bold text-xs">FS</span>
+            <span className="text-white font-bold text-xs">{initials}</span>
           </div>
-          <span className="font-semibold text-gray-900 text-sm">FlowSight</span>
+          <span className="font-semibold text-gray-900 text-sm truncate max-w-[160px]">{displayName}</span>
         </Link>
         <div className="w-9" /> {/* Spacer for centering */}
       </div>

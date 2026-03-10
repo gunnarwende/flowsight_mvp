@@ -207,9 +207,10 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
   }
 
   const canSendInvite = !!scheduledAt && inviteState !== "sending";
+  const hasContactInfo = !!contactEmail.trim() || !!contactPhone.trim();
   const canRequestReview =
     status === "done" &&
-    !!contactEmail.trim() &&
+    hasContactInfo &&
     reviewState !== "sent" &&
     reviewState !== "sending";
 
@@ -372,7 +373,7 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
         )}
 
         <button onClick={handleRequestReview} disabled={!canRequestReview}
-          title={!contactEmail.trim() ? "Keine E-Mail" : reviewState === "sent" ? "Bereits gesendet" : undefined}
+          title={!hasContactInfo ? "Keine Kontaktdaten" : reviewState === "sent" ? "Bereits gesendet" : undefined}
           className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >{reviewState === "sending" ? "Sende\u2026" : reviewState === "sent" ? "Review gesendet" : "Review anfragen"}</button>
 

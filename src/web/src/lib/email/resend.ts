@@ -443,6 +443,8 @@ interface ReviewRequestPayload {
   tenantId: string;
   contactEmail: string;
   googleReviewUrl: string;
+  /** If provided, email links to the review surface page instead of the raw Google URL */
+  reviewSurfaceUrl?: string;
 }
 
 /**
@@ -472,6 +474,8 @@ export async function sendReviewRequest(
   }
 
   try {
+    const reviewLink = payload.reviewSurfaceUrl ?? payload.googleReviewUrl;
+
     const { error } = await getResend().emails.send({
       from,
       to: payload.contactEmail,
@@ -482,7 +486,7 @@ export async function sendReviewRequest(
         `Wir hoffen, dass Sie mit unserem Service zufrieden waren.`,
         `Über eine kurze Bewertung würden wir uns sehr freuen:`,
         ``,
-        payload.googleReviewUrl,
+        reviewLink,
         ``,
         `Vielen Dank für Ihr Vertrauen.`,
         ``,
