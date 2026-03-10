@@ -62,11 +62,11 @@
 | # | Task | Owner | Status | Details |
 |---|------|-------|--------|---------|
 | Q1 | **SMS E2E** — DEMO_SIP_CALLER_ID prüfen | Founder | BLOCKED | Env var auf Vercel prüfen (persönliche Handynr in E.164). Ohne: SMS geht an Twilio-Nr → silent fail. |
-| Q2 | **google_review_url** in Weinberger tenant modules | Founder | BLOCKED | Supabase → tenants → fc4ba994 → modules JSONB → `google_review_url` setzen |
+| Q2 | **google_review_url** optional — unsere Review-Surface ist primär | CC | **DONE** ✅ | PR #130. Google URL nur noch optionaler Fallback auf Review-Surface. |
 | Q3 | **Demo-Dataset** — 15 kuratierte Cases pro Tenant | CC | **DONE** ✅ | PR #128. Seed-Script + 15 Weinberger Demo-Cases live. |
 | Q4 | **3-Modi Operationalisierung** — Einsatzlogik + Runbook | CC | **DONE** ✅ | PR #128. Full/Extend/Pure System in einsatzlogik.md. |
 | Q5 | **Tenant-scoped Case List** — RLS + Auth-Architektur | CC | **DONE** ✅ | PR #128. RLS applied + resolveTenantScope.ts + API/Dashboard enforcement. |
-| Q6 | **Demo-Zugang / Prospect Magic-Link** | CC | OFFEN | Design ready (D9). Code: ~2h (Magic-Link UI + API Route). |
+| Q6 | **Prospect Magic-Link + Rollenmodell** | CC | **DONE** ✅ | PR #130. Magic-Link CLI, Prospect UI (status+review only), Role Contract. |
 
 ---
 

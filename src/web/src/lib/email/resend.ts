@@ -442,9 +442,10 @@ interface ReviewRequestPayload {
   caseId: string;
   tenantId: string;
   contactEmail: string;
-  googleReviewUrl: string;
-  /** If provided, email links to the review surface page instead of the raw Google URL */
-  reviewSurfaceUrl?: string;
+  /** Our own review surface URL — always the primary link */
+  reviewSurfaceUrl: string;
+  /** Optional Google Review URL — only used as fallback on the review surface itself */
+  googleReviewUrl?: string;
 }
 
 /**
@@ -474,7 +475,7 @@ export async function sendReviewRequest(
   }
 
   try {
-    const reviewLink = payload.reviewSurfaceUrl ?? payload.googleReviewUrl;
+    const reviewLink = payload.reviewSurfaceUrl;
 
     const { error } = await getResend().emails.send({
       from,

@@ -52,7 +52,7 @@ function formatDate(iso: string): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
+export function CaseDetailForm({ initialData, isProspect = false }: { initialData: CaseDetail; isProspect?: boolean }) {
   // All fields as state — always editable, no toggle
   const [status, setStatus] = useState(initialData.status);
   const [urgency, setUrgency] = useState(initialData.urgency);
@@ -131,25 +131,29 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
     setErrorMsg("");
 
     try {
+      // Prospect: only send status. Admin/tenant: send all fields.
+      const payload = isProspect
+        ? { status }
+        : {
+            status,
+            urgency,
+            category: category.trim(),
+            plz: plz.trim(),
+            city: city.trim(),
+            description: description.trim(),
+            assignee_text: assigneeText || null,
+            scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+            internal_notes: internalNotes || null,
+            reporter_name: reporterName.trim() || null,
+            contact_phone: contactPhone.trim() || null,
+            contact_email: contactEmail.trim() || null,
+            street: street.trim() || null,
+            house_number: houseNumber.trim() || null,
+          };
       const res = await fetch(`/api/ops/cases/${initialData.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status,
-          urgency,
-          category: category.trim(),
-          plz: plz.trim(),
-          city: city.trim(),
-          description: description.trim(),
-          assignee_text: assigneeText || null,
-          scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
-          internal_notes: internalNotes || null,
-          reporter_name: reporterName.trim() || null,
-          contact_phone: contactPhone.trim() || null,
-          contact_email: contactEmail.trim() || null,
-          street: street.trim() || null,
-          house_number: houseNumber.trim() || null,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -253,8 +257,81 @@ export function CaseDetailForm({ initialData }: { initialData: CaseDetail }) {
 
   const inp =
     "w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500";
+  const inpReadonly =
+    "w-full rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm text-gray-600";
   const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
 
+  // ── Prospect view: clean, focused, only status + review ────────────
+  if (isProspect) {
+    return (
+      <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        {/* Status — the only editable field for prospects */}
+        <div className="mb-4">
+          <label htmlFor="status" className={lbl}>Status</label>
+          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={inp}>
+            {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </div>
+
+        {/* Key info — read-only display */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <span className={lbl}>Kategorie</span>
+            <p className={inpReadonly}>{category || "\u2014"}</p>
+          </div>
+          <div>
+            <span className={lbl}>Dringlichkeit</span>
+            <p className={inpReadonly}>{URGENCIES.find(u => u.value === urgency)?.label ?? urgency}</p>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <span className={lbl}>Beschreibung</span>
+          <p className={`${inpReadonly} whitespace-pre-wrap min-h-[60px]`}>{description || "\u2014"}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <span className={lbl}>Ort</span>
+            <p className={inpReadonly}>{[plz, city].filter(Boolean).join(" ") || "\u2014"}</p>
+          </div>
+          <div>
+            <span className={lbl}>Melder</span>
+            <p className={inpReadonly}>{reporterName || "\u2014"}</p>
+          </div>
+        </div>
+
+        {/* Action bar — Status save + Review only */}
+        <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
+          <button
+            onClick={performSave}
+            disabled={!isDirty || saveState === "saving"}
+            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {saveState === "saving" ? "Speichern\u2026" : "Status speichern"}
+          </button>
+
+          {status !== "done" && (
+            <button onClick={handleQuickDone} disabled={saveState === "saving"}
+              className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
+            >Erledigt</button>
+          )}
+
+          <button onClick={handleRequestReview} disabled={!canRequestReview}
+            title={!hasContactInfo ? "Keine Kontaktdaten" : reviewState === "sent" ? "Bereits gesendet" : undefined}
+            className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >{reviewState === "sending" ? "Sende\u2026" : reviewState === "sent" ? "Review gesendet" : "Review anfragen"}</button>
+
+          {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
+          {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
+          {reviewState === "sent" && <span className="text-emerald-600 text-xs ml-2">Review gesendet</span>}
+          {reviewState === "error" && <span className="text-red-600 text-xs ml-2">{reviewMsg}</span>}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Full admin/tenant view ─────────────────────────────────────────
   return (
     <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
       {/* Row 1: Status, Urgency, Category */}

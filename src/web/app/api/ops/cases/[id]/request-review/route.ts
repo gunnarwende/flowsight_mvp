@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { sendReviewRequest } from "@/src/lib/email/resend";
 import { sendSms } from "@/src/lib/sms/sendSms";
 import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
@@ -9,6 +9,7 @@ import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/request-review
 // Gate: status=done AND (contact_email OR contact_phone) AND review_sent_at IS NULL
+// Allowed: admin, tenant, prospect (prospect can trigger reviews)
 // ---------------------------------------------------------------------------
 
 export async function POST(
@@ -17,13 +18,9 @@ export async function POST(
 ) {
   const { id } = await params;
 
-  // ── Auth ──────────────────────────────────────────────────────────────
-  const supabaseAuth = await getAuthClient();
-  const {
-    data: { user },
-  } = await supabaseAuth.auth.getUser();
-
-  if (!user) {
+  // ── Auth (tenant-scoped) ───────────────────────────────────────────────
+  const scope = await resolveTenantScope();
+  if (!scope) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -36,6 +33,11 @@ export async function POST(
     .single();
 
   if (dbError || !row) {
+    return NextResponse.json({ error: "case_not_found" }, { status: 404 });
+  }
+
+  // ── Tenant isolation ────────────────────────────────────────────────
+  if (!scope.isAdmin && scope.tenantId && row.tenant_id !== scope.tenantId) {
     return NextResponse.json({ error: "case_not_found" }, { status: 404 });
   }
 
@@ -58,7 +60,7 @@ export async function POST(
     );
   }
 
-  // ── Google Review URL (tenant-scoped, fallback to global env) ─────────
+  // ── Google Review URL (optional fallback — our review surface is primary)
   let googleReviewUrl: string | undefined;
   {
     const { data: tenant } = await supabase
@@ -75,25 +77,10 @@ export async function POST(
   if (!googleReviewUrl) {
     googleReviewUrl = process.env.GOOGLE_REVIEW_URL;
   }
-  if (!googleReviewUrl) {
-    Sentry.captureMessage("google_review_url not configured for tenant", {
-      level: "warning",
-      tags: {
-        _tag: "resend",
-        area: "email",
-        email_type: "review_request",
-        case_id: id,
-        tenant_id: row.tenant_id,
-        error_code: "NO_REVIEW_URL",
-      },
-    });
-    return NextResponse.json(
-      { error: "review_url_not_configured" },
-      { status: 500 },
-    );
-  }
+  // google_review_url is optional — our own review surface is always the primary link.
+  // The Google URL only appears as a "Posten" button on the review surface itself.
 
-  // ── Build review surface URL ─────────────────────────────────────────
+  // ── Build review surface URL (always the primary link) ────────────────
   const baseUrl =
     process.env.APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
@@ -114,8 +101,8 @@ export async function POST(
       caseId: id,
       tenantId: row.tenant_id,
       contactEmail: row.contact_email,
-      googleReviewUrl,
       reviewSurfaceUrl,
+      googleReviewUrl,
     });
     channel = "email";
   }
