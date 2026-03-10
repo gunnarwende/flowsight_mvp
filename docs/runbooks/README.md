@@ -1,8 +1,8 @@
 # Runbooks Index
 
-**33 runbooks. Find the right one in 10 seconds.**
+**34 runbooks. Find the right one in 10 seconds.**
 
-Last updated: 2026-03-10
+Last updated: 2026-03-11
 
 ---
 
@@ -18,6 +18,7 @@ Last updated: 2026-03-10
 | `phone_routing_registry.md` | SSOT for all phone numbers, providers, Retell agent assignments | Need to check which number routes where |
 | `release_checklist.md` | Pre-push gates: lint, build, diff review, deploy verification | About to ship code to production |
 | `mobile_qa.md` | 30-min manual smartphone test for /ops/cases workflow | Before go-live or after major UI change |
+| `reise_checklist.md` | Founder-Abwesenheit: Vor/Während/Nach Checkliste, Trial-Timing, Signal-Übersicht | Before extended travel, 3-4 day offline planning |
 
 ## Setup / Onboarding
 
