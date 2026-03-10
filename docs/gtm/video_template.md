@@ -1,7 +1,7 @@
 # Video-Produktions-Template (Leckerli A)
 
 **Erstellt:** 2026-03-09 | **Owner:** Founder (Aufnahme) + CC (Skript)
-**Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 3 — Leckerli A)
+**Referenz:** `docs/gtm/operating_model.md`
 **Ziel:** 45-60 Sekunden personalisiertes Video pro Prospect. Wiederholbar dank fixem Template.
 
 ---

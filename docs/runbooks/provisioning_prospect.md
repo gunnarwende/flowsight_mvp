@@ -1,7 +1,7 @@
 # Provisioning Runbook — Prospect → Outreach-Ready (<25 Min)
 
-**Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** CC
-**Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 9 — G3)
+**Erstellt:** 2026-03-09 | **Owner:** CC
+**Referenz:** `docs/gtm/operating_model.md`
 **Validiert durch:** Weinberger AG Goldstandard (ICP 90+, A+B+C+D)
 
 ---
@@ -88,7 +88,7 @@ cd src/web && npx next build
 
 ## Schritt 2: Voice Agent (Leckerli B) — ~10 Min
 
-### B-Full (alle Prospects)
+### B-Full (ICP 90+)
 
 #### 2a. Template kopieren + anpassen
 
@@ -120,9 +120,9 @@ node --env-file=src/web/.env.local scripts/_ops/retell_sync.mjs \
 - [ ] Greeting korrekt (Firmenname, KI-Disclosure)
 - [ ] Kategorien matchen Services
 
-### Alle Prospects (immer B-Full)
+### B-Quick (ICP 60-89)
 
-> Seit 11.03. wird kein B-Quick mehr verwendet. Jeder Prospect bekommt einen eigenen B-Full Agent (dediziert, nicht shared). Siehe Schritt 2a–2c oben.
+> Noch nicht implementiert (G2). Wird ein parametrisierter Universal-Agent mit Dynamic Variables.
 
 ---
 
@@ -137,31 +137,9 @@ node --env-file=src/web/.env.local scripts/_ops/retell_sync.mjs \
 
 ---
 
-## Schritte 4+5: Unified Provisioning via provision_trial.mjs — ~5 Min
+## Schritt 4: Tenant in Supabase (Leckerli C) — ~3 Min
 
-> **Seit 11.03. kombiniert `provision_trial.mjs` die bisherigen Schritte 4 + 5.**
-> Erstellt Tenant, weist Nummer zu, seedet Demo-Daten und erzeugt Prospect Access in einem Schritt.
-> Siehe `docs/gtm/operating_model.md` für den vollständigen Trial Lifecycle (14-Tage Trial, Offboarding).
-
-```bash
-node --env-file=src/web/.env.local scripts/_ops/provision_trial.mjs \
-  --slug <slug> \
-  --name "<Firmenname>" \
-  --phone "<E.164 Nummer>" \
-  --email prospect@firma.ch
-```
-
-**Output:** Tenant + Demo-Daten + Magic-Link URL (14 Tage gültig)
-
-**Offboarding nach Trial-Ende:**
-```bash
-node --env-file=src/web/.env.local scripts/_ops/offboard_tenant.mjs --slug <slug>
-```
-
-**Legacy-Schritte (manuell, falls provision_trial.mjs nicht nutzbar):**
-
-<details>
-<summary>Schritt 4: Tenant in Supabase (manuell)</summary>
+> Nur für E2E Proof (C) nötig. Nicht für D-only oder B+D.
 
 ```bash
 node --env-file=src/web/.env.local scripts/_ops/onboard_tenant.mjs \
@@ -173,10 +151,9 @@ node --env-file=src/web/.env.local scripts/_ops/onboard_tenant.mjs \
 
 **Verify:** Tenant in Supabase → Wizard funktioniert → Case landet in Ops
 
-</details>
+---
 
-<details>
-<summary>Schritt 5: Prospect Demo Access (manuell)</summary>
+## Schritt 5: Prospect Demo Access (optional) — ~2 Min
 
 > Nur wenn Prospect selbst ins System schauen soll (nach E2E Proof).
 
@@ -197,8 +174,6 @@ node --env-file=src/web/.env.local scripts/_ops/seed_demo_data.mjs \
 ```
 
 **Reset:** `--clean --count=0` löscht alle `is_demo=true` Cases.
-
-</details>
 
 ---
 
@@ -235,6 +210,7 @@ Nach jedem Provisioning:
 | Paket | Schritte | Zeit |
 |-------|----------|------|
 | D only | 1 + 5 + 6 + 7 | ~20 Min |
+| B-Quick + D | 1 + 2(Quick) + 3 + 5 + 6 + 7 | ~25 Min |
 | B-Full + D | 1 + 2(Full) + 3 + 5 + 6 + 7 | ~30 Min |
 | A + B-Full + C + D | 1 + 2(Full) + 3 + 4 + 5 + 6 + 7 + Founder(Video) | ~45 Min |
 

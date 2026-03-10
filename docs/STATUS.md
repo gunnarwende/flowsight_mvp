@@ -67,7 +67,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **GTM Foundation (09.03.):** 9/10 Building Blocks done. Weinberger D+B-Full live.
 - **Trial Machine (11.03.):** PR #131. Operating Model (6 Phasen), Trial Lifecycle DB-Felder, provision_trial.mjs, offboard_tenant.mjs. B-Quick eliminiert — immer B-Full.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** E2E-Test (Founder sammelt Feedback), Welcome-Mail Template, Offboarding-Mail Template, Morning Report mit Trial-Status. Issues #79/#80 (BigBen), #81 (Voice Handy).
+- **Nächster Schritt:** Trial Machine vervollständigen: Welcome-Mail + Offboarding-Mail Templates, Trial Lifecycle Cron/Scheduler, Morning Report mit Trial-Status, Outreach-Templates auf Trial Machine aktualisieren, Scout v3 (Module 2 Scoring). Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
 
 ## Fixe Entscheidungen (No Drift)
 

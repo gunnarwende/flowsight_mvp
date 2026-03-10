@@ -1,7 +1,7 @@
 # Prospect Card Contract (SSOT)
 
-**Erstellt:** 2026-03-11 | **Owner:** CC
-**Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 5 — G1)
+**Erstellt:** 2026-03-09 | **Owner:** CC
+**Referenz:** `docs/gtm/operating_model.md`
 **Regel:** Jeder Prospect bekommt eine `prospect_card.json` in `docs/customers/<slug>/`.
 
 ---
@@ -150,8 +150,8 @@ Die Prospect Card ist das strukturierte Bindeglied zwischen **Scout** (Entdeckun
 | ICP Score | Tier | Leckerli-Paket | Setup-Zeit |
 |-----------|------|---------------|------------|
 | 90+ (≥9) | HOT | A+B-Full+C+D | ~45 Min |
-| 75-89 (7-8) | HOT/WARM | A+B-Full+D | ~35 Min |
-| 60-74 (6) | WARM | B-Full+D | ~30 Min |
+| 75-89 (7-8) | HOT/WARM | A+B-Quick+D | ~20 Min |
+| 60-74 (6) | WARM | B-Quick+D | ~12 Min |
 | <60 (<6) | COLD | SKIP | — |
 
 ### Best Demo Case Heuristik

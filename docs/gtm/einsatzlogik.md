@@ -1,8 +1,7 @@
 # Einsatzlogik-Engine (G6)
 
-**Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** CC
-**B-Quick eliminiert (2026-03-11):** Kein parametrisierter Universal-Agent mehr. Jeder Prospect bekommt einen eigenen B-Full Agent (Template copy → customize → retell_sync.mjs).
-**Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 3 — Einsatzlogik)
+**Erstellt:** 2026-03-09 | **Owner:** CC
+**Referenz:** `docs/gtm/operating_model.md`
 **Input:** Prospect Card (`prospect_card.json`)
 **Output:** Leckerli-Paket + Asset-Liste + Provisioning-Steps
 
@@ -24,8 +23,8 @@
 | Tier | Leckerli-Paket | Assets |
 |------|---------------|--------|
 | HOT (9-10) | A+B-Full+C+D | Video + eigener Agent + E2E Proof + Website |
-| WARM-HOT (7-8) | A+B-Full+D | Video + eigener Agent + Website |
-| WARM (6) | B-Full+D | Eigener Agent + Website |
+| WARM-HOT (7-8) | A+B-Quick+D | Video + parametrisierte Lisa + Website |
+| WARM (6) | B-Quick+D | Parametrisierte Lisa + Website |
 
 ### Schritt 2b: Website-Modus bestimmen (NEU seit 10.03.)
 
@@ -74,28 +73,28 @@
 
 **Pipeline-Update:** `status=DEMO`, `leckerli_paket=A+B-Full+C+D`, alle Status-Felder
 
-### A+B-Full+D (Gut, ~35 Min)
+### A+B-Quick+D (Gut, ~20 Min)
 
 | # | Asset | Provisioning-Schritt | Zeit |
 |---|-------|---------------------|------|
 | 1 | `prospect_card.json` | Manuell oder aus Scout | 5 Min |
 | 2 | Website (`/kunden/{slug}`) | `prospect_pipeline.mjs` oder manuell | 15 Min |
-| 3 | Voice Agent DE + INTL | Template copy aus brunner_agent.json → FIRMEN-WISSEN + node texts + Kategorien anpassen → retell_sync.mjs → verify | 10 Min |
+| 3 | B-Quick Agent-Variablen | Dynamic Variables setzen | 2 Min |
 | 4 | Video (Szenen 1-5) | Founder aufnimmt nach Template | 15 Min |
 | 5 | Outreach-E-Mail (Template 2) | Founder sendet | 3 Min |
 
-**Pipeline-Update:** `status=DEMO`, `leckerli_paket=A+B-Full+D`
+**Pipeline-Update:** `status=DEMO`, `leckerli_paket=A+B-Quick+D`
 
-### B-Full+D (Solide, ~30 Min)
+### B-Quick+D (Solide, ~12 Min)
 
 | # | Asset | Provisioning-Schritt | Zeit |
 |---|-------|---------------------|------|
 | 1 | `prospect_card.json` | Manuell oder aus Scout | 3 Min |
 | 2 | Website (`/kunden/{slug}`) | `prospect_pipeline.mjs` oder manuell | 15 Min |
-| 3 | Voice Agent DE + INTL | Template copy aus brunner_agent.json → FIRMEN-WISSEN + node texts + Kategorien anpassen → retell_sync.mjs → verify | 10 Min |
+| 3 | B-Quick Agent-Variablen | Dynamic Variables setzen | 2 Min |
 | 4 | Outreach-E-Mail (Template 3) | Founder sendet | 2 Min |
 
-**Pipeline-Update:** `status=DEMO`, `leckerli_paket=B-Full+D`
+**Pipeline-Update:** `status=DEMO`, `leckerli_paket=B-Quick+D`
 
 ---
 
@@ -105,12 +104,12 @@ Diese Kunden haben bereits Leckerli D (Website). Nur B + A fehlen:
 
 | Kunde | Slug | Fehlend | Aufwand |
 |-------|------|---------|---------|
-| Walter Leuthold | walter-leuthold | B-Full + A (Video) | ~25 Min |
-| Orlandini | orlandini | B-Full + A (Video) | ~25 Min |
-| Widmer Sanitär | widmer-sanitaer | B-Full + A (Video) | ~25 Min |
+| Walter Leuthold | walter-leuthold | B-Quick + A (Video) | ~20 Min |
+| Orlandini | orlandini | B-Quick + A (Video) | ~20 Min |
+| Widmer Sanitär | widmer-sanitaer | B-Quick + A (Video) | ~20 Min |
 | Dörfler AG | doerfler-ag | A (Video) + Go-Live | ~15 Min |
 
-**Alle 4 sofort provisionierbar** via Template copy + retell_sync.mjs (~2h gesamt).
+**Nach G2 (B-Quick Demo-Agent):** Alle 4 in <2h ergänzbar.
 
 ---
 
@@ -126,9 +125,9 @@ function bestimmeLeckerli(card: ProspectCard): LeckerliPaket {
   if (card.scoring.icp_score >= 9) {
     paket = "A+B-Full+C+D";
   } else if (card.scoring.icp_score >= 7) {
-    paket = "A+B-Full+D";
+    paket = "A+B-Quick+D";
   } else {
-    paket = "B-Full+D";
+    paket = "B-Quick+D";
   }
 
   // Schritt 3: Sonderfälle
@@ -136,7 +135,7 @@ function bestimmeLeckerli(card: ProspectCard): LeckerliPaket {
   const hatVoice = card.provisioning_status?.leckerli_b_lisa === "DONE";
 
   if (hatWebsite) paket = paket.replace("+D", "");
-  if (hatVoice) paket = paket.replace("+B-Full", "");
+  if (hatVoice) paket = paket.replace("+B-Full", "").replace("+B-Quick", "");
 
   // Schritt 4: Asset-Liste
   const assets = paketZuAssets(paket);
@@ -172,7 +171,7 @@ function besteDemoFall(card: ProspectCard): string {
 | Baustein | Status | Blockiert |
 |----------|--------|-----------|
 | G1 Prospect Card | **DONE** ✅ | — |
-| G2 B-Quick Demo-Agent | **ELIMINIERT** ❌ | Ersetzt durch B-Full für jeden Prospect |
+| G2 B-Quick Demo-Agent | OFFEN | B-Quick Varianten |
 | G3 Provisioning Runbook | **DONE** ✅ | — |
 | G4 Video-Template | **DONE** ✅ | — |
 | G5 Outreach-Templates | **DONE** ✅ | — |
