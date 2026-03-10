@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-10 (PR #128: Tenant Isolation + RLS + Architecture)
+**Updated:** 2026-03-11 (PR #131: Trial Lifecycle — Operating Model + Provisioning + Offboarding)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -13,10 +13,11 @@
 - **BLOCKER:** 0 ✅
 - **Shipped seit 04.03.:** 50+ Commits, PRs #53–#128
 - **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
-- **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
+- **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `provision_trial.mjs` + `offboard_tenant.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
-- **Phase:** Quality Wave (Voice/Review/Dashboard Hardening) + GTM Pipeline v2.
+- **Phase:** Trial Machine Build-Out + GTM Pipeline v2.
+- **Operating Model:** `docs/gtm/operating_model.md` — 6 Phases, Trial Lifecycle, Quality Gates
 
 ### How to Operate (Founder via Handy)
 
@@ -114,7 +115,9 @@
 | G6 | Einsatzlogik-Engine (ICP→Leckerli→Assets) | CC | **DONE** ✅ |
 | G8 | Quality Gates Checklist (5 Gates) | CC | **DONE** ✅ |
 | G7 | Pipeline Tracker Upgrade (5 neue Spalten + Leckerli) | CC | **DONE** ✅ |
-| G2 | B-Quick Demo-Agent → Siehe `docs/gtm/gtm_tracker.md` | CC | OFFEN |
+| G2 | ~~B-Quick Demo-Agent~~ → **ELIMINATED** (immer B-Full, kein B-Quick) | CC | N/A |
+| G11 | **Operating Model** — GTM Betriebsmodell (6 Phasen) | CC | **DONE** ✅ |
+| G12 | **Trial Lifecycle** — DB-Felder + provision_trial.mjs + offboard_tenant.mjs | CC | **DONE** ✅ |
 
 ---
 
@@ -122,7 +125,7 @@
 
 | # | Deliverable | Owner | Trigger |
 |---|-------------|-------|---------|
-| L1 | Offboarding runbook | CC | Customer #2 onboards |
+| L1 | ~~Offboarding runbook~~ | CC | **DONE** ✅ — `offboard_tenant.mjs` + Operating Model |
 | L2 | Verträge / AGB Vorlage | Founder (+ Anwalt) | Vor Kunde #2. SaaS-Vertrag CH-Recht. |
 | L3 | Failure drills (telephony) | CC | First real incident |
 | L5 | LinkedIn Unternehmensseite | Founder | 1 Post/Woche nach Go-Live |
@@ -177,6 +180,11 @@
 | 2026-03-10 | Architecture Document — 22 Sections, 15 Decisions, 3 Architectural Axes | PR #128 |
 | 2026-03-10 | 3-Modi GTM Logic (Full/Extend/Pure System) in einsatzlogik.md | PR #128 |
 | 2026-03-10 | Ops Scripts: setup_rls_and_admin.mjs, seed_demo_data.mjs | PR #128 |
+| 2026-03-10 | Prospect Magic-Link CLI + Prospect UI (status+review only) + Role Contract | PR #130 |
+| 2026-03-11 | GTM Operating Model — 6 Phases, Trial Timeline, Capacity Model, Quality Gates, Risks | PR #131 |
+| 2026-03-11 | Trial Lifecycle DB Migration (trial_status, trial_start/end, follow_up_at, prospect_email/phone) | PR #131 |
+| 2026-03-11 | provision_trial.mjs — Unified trial setup (tenant + phone + seed + prospect + magic link) | PR #131 |
+| 2026-03-11 | offboard_tenant.mjs — Clean delete (cases + events + attachments + numbers + agents + auth) | PR #131 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 

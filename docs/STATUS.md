@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-10 (PR #128: Tenant Isolation + RLS Migration + Architecture Doc)
+**Datum:** 2026-03-11 (PR #131: Trial Lifecycle — Operating Model + Provisioning + Offboarding)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
