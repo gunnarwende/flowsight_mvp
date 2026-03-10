@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-10 (PRs #126+#127: Quality Wave)
+**Updated:** 2026-03-10 (PR #128: Tenant Isolation + RLS + Architecture)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,7 +11,8 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 48+ Commits, PRs #53–#127
+- **Shipped seit 04.03.:** 50+ Commits, PRs #53–#128
+- **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `prospect_pipeline.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
@@ -62,10 +63,10 @@
 |---|------|-------|--------|---------|
 | Q1 | **SMS E2E** — DEMO_SIP_CALLER_ID prüfen | Founder | BLOCKED | Env var auf Vercel prüfen (persönliche Handynr in E.164). Ohne: SMS geht an Twilio-Nr → silent fail. |
 | Q2 | **google_review_url** in Weinberger tenant modules | Founder | BLOCKED | Supabase → tenants → fc4ba994 → modules JSONB → `google_review_url` setzen |
-| Q3 | **Demo-Dataset** — 15 kuratierte Cases pro Tenant | CC | OFFEN | Seed-Script für realistische Demo-Daten |
-| Q4 | **Modus 1/2 Operationalisierung** — Einsatzlogik + Runbook | CC | OFFEN | Zwei-Modi-Logik in GTM-Docs dokumentieren |
-| Q5 | **Tenant-scoped Case List** — Auth-Architektur | CC | OFFEN | Cases nur vom eigenen Tenant im Dashboard |
-| Q6 | **Demo-Zugang / Prospect-safe Context** | CC | OFFEN | Design für sichere Demo-Ansicht |
+| Q3 | **Demo-Dataset** — 15 kuratierte Cases pro Tenant | CC | **DONE** ✅ | PR #128. Seed-Script + 15 Weinberger Demo-Cases live. |
+| Q4 | **3-Modi Operationalisierung** — Einsatzlogik + Runbook | CC | **DONE** ✅ | PR #128. Full/Extend/Pure System in einsatzlogik.md. |
+| Q5 | **Tenant-scoped Case List** — RLS + Auth-Architektur | CC | **DONE** ✅ | PR #128. RLS applied + resolveTenantScope.ts + API/Dashboard enforcement. |
+| Q6 | **Demo-Zugang / Prospect Magic-Link** | CC | OFFEN | Design ready (D9). Code: ~2h (Magic-Link UI + API Route). |
 
 ---
 
@@ -168,6 +169,14 @@
 | 2026-03-10 | Review Surface (/review/[caseId] — Google-style, HMAC, mobile-first) | PR #127 |
 | 2026-03-10 | Review via SMS Fallback (contact_phone als Channel) | PR #127 |
 | 2026-03-10 | Dashboard Tenant-Branding (Name+Initials statt "FlowSight") | PR #127 |
+| 2026-03-10 | RLS Migration applied — tenant isolation at DB level (cases, case_events, attachments, tenants, tenant_numbers) | PR #128 |
+| 2026-03-10 | Tenant Scoping — resolveTenantScope.ts + Dashboard + API enforcement | PR #128 |
+| 2026-03-10 | 3-Tier SMS Routing (demo_sms_target → DEMO_SIP_CALLER_ID → caller) | PR #128 |
+| 2026-03-10 | Review Surface Rewrite — Google Review reference design, dynamic company name | PR #128 |
+| 2026-03-10 | Demo-Dataset — seed_demo_data.mjs + 15 Weinberger Demo-Cases | PR #128 |
+| 2026-03-10 | Architecture Document — 22 Sections, 15 Decisions, 3 Architectural Axes | PR #128 |
+| 2026-03-10 | 3-Modi GTM Logic (Full/Extend/Pure System) in einsatzlogik.md | PR #128 |
+| 2026-03-10 | Ops Scripts: setup_rls_and_admin.mjs, seed_demo_data.mjs | PR #128 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 

@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-10 (PRs #126+#127: Quality Wave — Voice Closing Fix, Review Surface, Dashboard Branding, PLZ Lookup)
+**Datum:** 2026-03-10 (PR #128: Tenant Isolation + RLS Migration + Architecture Doc)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -50,14 +50,15 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
 | Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
 | Widmer H. & Co. AG (Horgen) | widmer-sanitaer | wizard | Website LIVE |
-| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | voice, wizard, ops, reviews, sms | **GTM Goldstandard** — D+B LIVE, C READY |
+| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | voice, wizard, ops, reviews, sms | **GTM Goldstandard** — D+B LIVE, C READY, 15 Demo-Cases seeded |
 | BigBen Pub (Zürich) | bigben-pub | — | Custom Demo |
 
 ## Aktueller Stand
 
 - **17 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard). +1 Modul: Review Surface.
-- **48+ Commits seit 04.03.** (PRs #53–#127).
-- **Quality Wave (10.03.):** PR #126 + #127. Voice: Closing-Node Silence-Bug (skip_response_edge → farewell + end_call), FAQ-Abbruch (edge tightened, back-to-main), Grüezi-Greeting, Notfall-Empathie v2, PLZ→City Lookup (24 Orte), House-Number Normalization. Review: Tenant-scoped Google Review URL, Review Surface (/review/[caseId] — Google-style, HMAC, mobile-first), Review via SMS Fallback. Dashboard: Tenant-Branding. SMS: Twilio-owned Number Detection erweitert.
+- **50+ Commits seit 04.03.** (PRs #53–#128).
+- **Architecture Wave (10.03.):** PR #128. RLS Migration applied (tenant isolation at DB level). Tenant scoping in Dashboard + API (`resolveTenantScope.ts`). 3-Tier SMS Routing. Review Surface (Google-style). 15 Demo-Cases seeded (Weinberger). Architecture Document (22 Sections). 3-Modi GTM Logic. Ops Scripts (seed_demo_data, setup_rls_and_admin).
+- **Quality Wave (10.03.):** PR #126 + #127. Voice fixes, PLZ Lookup, Dashboard Branding, Review Engine.
 - **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
 - **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows.
 - **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 + fixe Reihe, Photo Upload in Step 3.
