@@ -182,21 +182,43 @@ if (eT5) console.error("Query stale lifecycle:", eT5.message);
 const staleCount = staleTrials?.length ?? 0;
 const staleNames = staleTrials?.map((t) => t.slug).join(", ") ?? "";
 
-// 8. Health check
+// 8. Health check (deep — DB + email via /api/health)
 let healthOk = false;
+let healthDb = "?";
+let healthEmail = "?";
 try {
   const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
   const res = await fetch(`${baseUrl}/api/health`, { signal: AbortSignal.timeout(5000) });
-  healthOk = res.ok;
+  if (res.ok) {
+    const body = await res.json();
+    healthOk = body.ok === true;
+    healthDb = body.db ?? "?";
+    healthEmail = body.email ?? "?";
+  }
 } catch {
   healthOk = false;
+}
+
+// 9. Resend API key validation (lightweight — call /domains, no quota cost)
+let resendOk = false;
+try {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    const rRes = await fetch("https://api.resend.com/domains", {
+      headers: { Authorization: `Bearer ${resendKey}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    resendOk = rRes.ok;
+  }
+} catch {
+  resendOk = false;
 }
 
 // ---------------------------------------------------------------------------
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk || expiring24h.length > 0 || staleCount > 0;
+const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0;
 const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0;
 const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
 
@@ -227,7 +249,11 @@ const report = [
   `expiring_48h:   ${expiring48hCount}${expiringNames ? ` (${expiringNames})` : ""}`,
   `zombie_trials:  ${zombieCount}`,
   `tick_stale:     ${staleCount}${staleNames ? ` (${staleNames})` : ""}`,
-  `health:         ${healthOk ? "OK" : "FAIL"}`,
+  `━━━ HEALTH ━━━━━━━━━`,
+  `api:            ${healthOk ? "OK" : "FAIL"}`,
+  `db:             ${healthDb}`,
+  `email_key:      ${healthEmail}`,
+  `resend_api:     ${resendOk ? "OK" : "FAIL"}`,
   `━━━━━━━━━━━━━━━━━━━`,
 ].join("\n");
 

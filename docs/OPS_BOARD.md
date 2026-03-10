@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PR #138: Monitoring-Härtung — Reise-Readiness)
+**Updated:** 2026-03-11 (PR #139: Reise-Härtung Session 2)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -193,6 +193,7 @@
 | 2026-03-11 | Prospect Welcome Page — /ops/welcome, Primary CTA = Testnummer, Admin bypass, Trial info | PR #136 |
 | 2026-03-11 | Morning Report — tick_stale detection for missed lifecycle events | PR #136 |
 | 2026-03-11 | Monitoring-Härtung — Morning Report Cron (GH Actions, Telegram + E-Mail), Tick-Failure Telegram, Health Check DB+Resend | PR #138 |
+| 2026-03-11 | Reise-Härtung — Runbook (Vor/Während/Nach), Trial-Timing-Regel, Morning Report Deep Health + Resend API Validation | PR #139 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
