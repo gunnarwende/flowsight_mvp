@@ -92,11 +92,12 @@
 
 ## GTM Pipeline v2
 
-**Strategie:** `docs/gtm/gtm_pipeline_plan_v2.md`
+**Operating Model:** `docs/gtm/operating_model.md` — 6 Phasen, Trial Lifecycle
+**Zielarchitektur:** `docs/architecture/zielarchitektur.md` — 16 Decisions
 **Execution-Tracker:** `docs/gtm/gtm_tracker.md` ← **ALLE GTM-Tasks leben hier**
-**Pipeline:** `docs/sales/pipeline.md`
-**Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, Leckerli A+B+C+D)
-**Phase:** Woche 1 — Foundation + Weinberger Crawl
+**Pipeline:** `docs/sales/pipeline.md` + `docs/sales/pipeline.csv`
+**Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, B-Full LIVE)
+**Phase:** Trial Machine Build-Out — alle Building Blocks done
 
 | # | Task | Owner | Status |
 |---|------|-------|--------|

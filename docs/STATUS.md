@@ -65,8 +65,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.
 - **Weinberger AG (09.03.):** GTM Goldstandard. 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews. PR #116.
 - **GTM Foundation (09.03.):** 9/10 Building Blocks done. Weinberger D+B-Full live.
+- **Trial Machine (11.03.):** PR #131. Operating Model (6 Phasen), Trial Lifecycle DB-Felder, provision_trial.mjs, offboard_tenant.mjs. B-Quick eliminiert — immer B-Full.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Founder: DEMO_SIP_CALLER_ID + google_review_url prüfen → SMS E2E. Dann: Demo-Dataset, Modus 1/2 Docs, Tenant-scoped Case List, G2 B-Quick. Issues #79/#80 (BigBen), #81 (Voice Handy).
+- **Nächster Schritt:** E2E-Test (Founder sammelt Feedback), Welcome-Mail Template, Offboarding-Mail Template, Morning Report mit Trial-Status. Issues #79/#80 (BigBen), #81 (Voice Handy).
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -83,9 +84,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/STATUS.md` | Was ist live, aktueller Stand (dieses Dokument) |
 | `docs/OPS_BOARD.md` | Roadmap, offene Tasks, Sales, Backlog |
 | `docs/business_briefing.md` | Vollständiger Business-Kontext (für ChatGPT/Partner) |
-| `docs/gtm/gtm_pipeline_plan_v2.md` | GTM-Strategie (Leckerli A-D, Weinberger Goldstandard) |
-| `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G10 Building Blocks) |
-| `docs/sales/pipeline.md` | Sales Pipeline Tracker |
+| `docs/gtm/operating_model.md` | GTM Operating Model (6 Phasen, Trial Lifecycle, Quality Gates) |
+| `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G12 Building Blocks) |
+| `docs/architecture/zielarchitektur.md` | Zielarchitektur — 16 Decisions, Business + Produkt + GTM |
+| `docs/sales/pipeline.md` | Sales Pipeline Prozess + Tool-Referenz |
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/customers/<slug>/links.md` | Kunden-URLs (PFLICHT pro Kunde) |
@@ -100,7 +102,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
 | `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
-| `docs/briefings/` | Ad-hoc Inputs, Transkripte, Kontext-Dokumente |
+| `docs/briefings/` | Ad-hoc Inputs (aktive), archivierte → `docs/archive/briefings/` |
 | `.github/workflows/` | CI (lint+build) + Telegram Notifications |
 | `docs/archive/` | Wave Log, alte Dokumente, Agent-Framework, Templates, Architecture Audits |
 

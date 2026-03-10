@@ -1,9 +1,10 @@
-# FlowSight — Zielarchitektur GTM / Demo / Product
+# FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.0 | **Datum:** 2026-03-10
+**Version:** 1.2 | **Datum:** 2026-03-11
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.1 — Founder-Decisions D4/D8/D9/D10/D11 eingearbeitet (10.03.)
+**Status:** v1.2 — D12 ELIMINATED (kein B-Quick, immer B-Full), D16 Trial Machine (11.03.)
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/OPS_BOARD.md`.
+**Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
 ---
 
@@ -22,10 +23,11 @@
 | D9 | Demo-Zugang → **Magic-Link via Supabase OTP** | **ENTSCHIEDEN** ✅ | Founder | §11 |
 | D10 | Demo-Dataset → **is_demo Boolean auf Cases** | **ENTSCHIEDEN** ✅ | Founder | §16 |
 | D11 | SMS-Zielrouting → **tenant.demo_sms_target** | **ENTSCHIEDEN** ✅ | Founder | §12 |
-| D12 | G2 B-Quick Agent (Retell Dynamic Variables) | **OFFEN** | CC | §5, OPS_BOARD |
+| D12 | ~~G2 B-Quick Agent~~ → **ELIMINATED**. Immer B-Full. Jeder Prospect bekommt eigenen dedizierten Agent. | **ENTSCHIEDEN** ✅ | Founder | §5, operating_model |
 | D13 | Multi-Tenant Dashboard UI (>1 Kunde) | **OFFEN** | CC (Vorschlag), Founder (Go) | §9, §15 |
 | D14 | Review-Surface Personalisierung (Name, Foto, Stars) | **OFFEN** | CC (Vorschlag) | §13 |
 | D15 | Mobile-First als explizites Proof-Kriterium in Quality Gates | **EMPFOHLEN** | CC | §14 |
+| D16 | Product-Led Trial Machine (14-Tage Trial, provision_trial.mjs, offboard_tenant.mjs) | **ENTSCHIEDEN** ✅ | Founder | operating_model.md |
 
 ---
 
@@ -166,7 +168,7 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 
 | Touchpoint | Tenant-aware heute? | Was muss tenant-spezifisch sein | Risiko bei Leak |
 |------------|---------------------|--------------------------------|-----------------|
-| **Voice Agent** | ✅ Pro Tenant (B-Full) / ❌ Shared (B-Quick, noch nicht gebaut) | Firmenname, Greeting, Gewerke, Kategorien, Notfall-Keywords | Prospect hört falschen Namen |
+| **Voice Agent** | ✅ Pro Tenant (B-Full, immer dediziert) | Firmenname, Greeting, Gewerke, Kategorien, Notfall-Keywords | Prospect hört falschen Namen |
 | **Wizard** | ✅ `/kunden/[slug]/meldung` | Brand Color, Logo, Services, Kategorien | Falsche Services angezeigt |
 | **SMS** | ✅ `sms_sender_name` aus tenant modules | Absendername, Korrekturlink-Domain | Falscher Absender |
 | **E-Mail** | ⚠️ Teilweise (Ops-Mail ok, Review-Mail tenant-scoped seit PR #126) | Firmenname, Reply-To, Brand | Falscher Firmenname |
@@ -234,7 +236,7 @@ Leckerli sind **keine Produkt-Tiers** und **keine Preisstufen**. Sie sind **Proo
 | Leckerli | Was | Zweck | Wer produziert | Aufwand |
 |----------|-----|-------|----------------|---------|
 | **D** | Website | Visuelle Vorwegnahme — "So könnte dein digitaler Auftritt aussehen" | CC (SSG Template) | ~15 Min |
-| **B** | Voice Agent (Lisa) | Erlebnis-Beweis — "Ruf an und teste selbst" | CC (B-Full: eigener Agent, B-Quick: parametrisiert) | 10–30 Min |
+| **B** | Voice Agent (Lisa) | Erlebnis-Beweis — "Ruf an und teste selbst" | CC (immer B-Full: eigener dedizierter Agent) | ~10 Min |
 | **C** | E2E Proof | System-Beweis — "Der Anruf wird zum Fall, die SMS kommt, das Dashboard zeigt alles" | CC + Founder (Testanruf) | ~10 Min |
 | **A** | Video | Persönlicher Beweis — "Der Gründer zeigt dir in 60s, was das System für dich tut" | Founder (Aufnahme) | ~15 Min |
 
@@ -247,7 +249,7 @@ System-Beweis:     C (E2E) — der Knockout, "dein Fall ist im System"
 Persönlich:        A (Video) — Vertrauen, Founder-Gesicht, nur für HOT Prospects
 
 D ist STANDARD (immer).
-B ist STANDARD (immer, B-Quick oder B-Full je nach ICP).
+B ist STANDARD (immer B-Full, eigener dedizierter Agent).
 C ist SELEKTIV (nur ICP ≥ 9, erfordert Supabase Tenant).
 A ist SELEKTIV (nur ICP ≥ 9, erfordert Founder-Aufnahme).
 ```
@@ -257,8 +259,8 @@ A ist SELEKTIV (nur ICP ≥ 9, erfordert Founder-Aufnahme).
 | ICP | Tier | Paket | Assets | Aufwand |
 |-----|------|-------|--------|---------|
 | 9–10 | HOT | A+B-Full+C+D | Website, eigener Agent, Tenant, Video, Outreach | ~45 Min |
-| 7–8 | WARM-HOT | A+B-Quick+D | Website, parametrisierter Agent, Video | ~25 Min |
-| 6 | WARM | B-Quick+D | Website, parametrisierter Agent | ~12 Min |
+| 7–8 | WARM-HOT | A+B-Full+D | Website, eigener Agent, Video | ~35 Min |
+| 6 | WARM | B-Full+D | Website, eigener Agent | ~30 Min |
 | <6 | COLD | SKIP | — | 0 |
 
 **Referenz:** `docs/gtm/einsatzlogik.md` (Entscheidungstabelle + Pseudocode)
@@ -463,7 +465,7 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 
 | Touchpoint | Rolle | Tenant-aware | Demo-Mode | Mobile-Proof | Quality Gate |
 |------------|-------|-------------|-----------|-------------|-------------|
-| Voice Call | Eingang, Wow | ✅ (B-Full) / ❌ (B-Quick) | ✅ Echter Agent | ✅ Telefon = mobil | G3 (Lisa) |
+| Voice Call | Eingang, Wow | ✅ (B-Full, immer dediziert) | ✅ Echter Agent | ✅ Telefon = mobil | G3 (Lisa) |
 | Wizard | Eingang, Schrift | ✅ (slug-basiert) | ✅ Echter Wizard | ✅ Responsive | G2 (Website) |
 | SMS | Brücke, Korrektur | ✅ (sender_name) | ⚠️ Routing-Frage | ✅ SMS = mobil | G3 (E2E) |
 | E-Mail | Benachrichtigung | ⚠️ (teilweise) | ⚠️ Geht an echte Adresse | ⚠️ Nur responsive | — |
@@ -796,8 +798,8 @@ Entscheidungsregel:
 | Aufgabe | Heute | Ziel |
 |---------|-------|------|
 | Website-Provisioning | Halbautomatisch (crawl + config + build) | Voll (prospect_pipeline.mjs --provision) |
-| Voice Agent | Manuell (JSON edit + retell_sync) | B-Quick: parametrisiert (G2) |
-| Demo-Dataset | ❌ Nicht vorhanden | Automatisch (seed_demo_data.mjs) |
+| Voice Agent | Manuell (JSON edit + retell_sync) | Template-basiert (B-Full, ~10 Min) |
+| Demo-Dataset | ✅ seed_demo_data.mjs | Automatisch (in provision_trial.mjs integriert) |
 | Quality Gates | Manuell (Checklist) | Halbautomatisch (smoke_voice.mjs + build check) |
 | SSOT-Updates | Manuell (CC nach jedem PR) | Bleibt manuell (SSOT-Drift-Risiko bei Automation) |
 | Outreach | Manuell (Founder sendet) | Bleibt manuell (persönlich > automatisch) |
@@ -909,7 +911,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | # | Frage | Nächster Schritt |
 |---|-------|-----------------|
 | D5 | TenantContext-Erweiterungen (brand_color, notification_email) | Migration planen |
-| D12 | G2 B-Quick Agent (Dynamic Variables) | Retell API testen |
+| D12 | ~~G2 B-Quick~~ ELIMINATED — immer B-Full | — |
 | D13 | Multi-Tenant Dashboard UI | Design nach D8 |
 | D14 | Review Surface Personalisierung | reporter_name einbauen |
 | D15 | Mobile-Check in Quality Gates | quality_gates.md ergänzen |
@@ -917,11 +919,13 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 ### Nächste Klärungen (nach D4/D8/D9/D10/D11)
 
 ```
-1. Founder: RLS-Migration in Supabase anwenden + Founder-User app_metadata.role='admin' setzen
-2. Founder: DEMO_SIP_CALLER_ID + google_review_url prüfen (SMS E2E)
-3. CC: Demo-Zugang (Magic-Link) bauen (nach RLS aktiv)
-4. CC: Seed-Script ausführen (nach is_demo Spalte da)
+1. ✅ RLS-Migration applied (PR #128)
+2. Founder: DEMO_SIP_CALLER_ID prüfen (SMS E2E)
+3. ✅ Magic-Link gebaut (PR #130)
+4. ✅ Seed-Script gebaut + ausgeführt (PR #128)
 5. CC: reporter_name in Review Surface einbauen
+6. CC: Welcome-Mail + Offboarding-Mail Templates
+7. CC: Morning Report mit Trial-Status
 ```
 
 ---
@@ -947,7 +951,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | 5 | **brand_color + notification_email in modules JSONB** | Ein Ort für alle Tenant-Config. Kein Env-Var-Wildwuchs. |
 | 6 | **Mobile-Check als Pflicht in Quality Gates G2 + G3** | Mobile = Default-Kontext. Kein Outreach ohne Mobile-PASS. |
 | 7 | **reporter_name in Review Surface** (statt "Max Mustermann") | Schneller Win, grosser Effekt auf Glaubwürdigkeit. |
-| 8 | **B-Quick als parametrisierter Agent** mit Retell Dynamic Variables | Skaliert auf 14 Prospects in Pipeline. Ohne B-Quick nur B-Full (30 Min/Prospect). |
+| 8 | ~~B-Quick~~ **ELIMINATED** — immer B-Full. Jeder Prospect bekommt eigenen dedizierten Agent. | Qualität > Skalierung. Template-basierter B-Full flow dauert ~10 Min. |
 
 ### Top-10 Architektur-Prioritäten (jetzt → nächste 2 Wochen)
 
@@ -960,7 +964,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | 5 | google_review_url für Weinberger (Founder DB) | Blockiert Review-Proof | ~10min (Founder) |
 | 6 | reporter_name in Review Surface (D14) | Quick Win, hoher Impact | ~30min |
 | 7 | Mobile E2E Journey Test | Validiert Mobile-Proof-Dimension | ~1h |
-| 8 | G2 B-Quick Agent (D12) | Skaliert Voice-Provisioning | ~4h |
+| 8 | ~~G2 B-Quick~~ ELIMINATED — immer B-Full | — | — |
 | 9 | Modus 1/2 in Einsatzlogik Docs (D4) | Skaliert Pipeline-Entscheidung | ~1h |
 | 10 | brand_color + notification_email → modules (D5) | Konsolidiert Tenant-Config | ~2h |
 

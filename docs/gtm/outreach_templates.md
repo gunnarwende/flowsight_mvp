@@ -1,6 +1,6 @@
 # Premium Outreach-Templates (Leckerli-Varianten)
 
-**Erstellt:** 2026-03-09 | **Owner:** Founder (Versand) + CC (Templates)
+**Erstellt:** 2026-03-11 | **Owner:** Founder (Versand) + CC (Templates)
 **Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Abschnitt 5 — G5)
 **Regel:** Founder sendet IMMER aus eigener E-Mail. Kein Massenversand. Jede Mail personalisiert.
 
@@ -43,7 +43,7 @@
 
 ---
 
-## Template 2: A+B-Quick+D (ICP 75-89, gute Prospects)
+## Template 2: A+B-Full+D (ICP 75-89, gute Prospects)
 
 **Betreff:** {FIRMA} — Ihre eigene Lisa wartet
 
@@ -67,7 +67,7 @@
 
 ---
 
-## Template 3: B-Quick+D (ICP 60-74, solide Prospects)
+## Template 3: B-Full+D (ICP 60-74, solide Prospects)
 
 **Betreff:** Kein verpasster Anruf mehr — Demo für {FIRMA}
 

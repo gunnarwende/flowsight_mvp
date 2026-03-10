@@ -2,6 +2,8 @@
 
 Ad-hoc Inputs, Transkripte und Kontext-Dokumente.
 
+**Archivierte Briefings:** `docs/archive/briefings/` (vor 2026-03-09)
+
 ## Namenskonvention
 
 ```

@@ -1,6 +1,6 @@
 # GTM Pipeline — Execution Tracker
 
-**Erstellt:** 2026-03-09 | **Owner:** CC + Founder
+**Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** CC + Founder
 **Referenz:** `docs/gtm/gtm_pipeline_plan_v2.md` (Strategie + Architektur)
 **Regel:** CC aktualisiert nach jedem Deliverable. Founder reviewed wöchentlich.
 
@@ -10,7 +10,7 @@
 
 - **Phase:** Woche 1 — Foundation + Weinberger + Quality Wave
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 9/10 done (G1, G3, G4, G5, G6, G7, G8, G9a, G9b, G10)
+- **Bausteine:** 10/10 done + Trial Lifecycle (G11, G12) — B-Quick eliminiert, immer B-Full
 - **Prospects provisioniert:** 0/5 Ziel
 - **Weinberger Website:** LIVE ✅ (PR #116)
 - **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — Quality Wave v2 (PRs #126+#127): Closing Fix, FAQ-safe, Grüezi, PLZ Lookup
@@ -37,7 +37,9 @@
 
 | # | Baustein | Owner | Status | Abhängigkeit | Aufwand |
 |---|---------|-------|--------|-------------|---------|
-| G2 | **B-Quick Demo-Agent** — 1 parametrisierter Agent mit Variablen-Slots, shared Testnummer | CC | OFFEN | Retell Dynamic Variables | ~4h |
+| G2 | ~~B-Quick Demo-Agent~~ → **ELIMINATED** (immer B-Full) | CC | **DONE** ✅ | — | — |
+| G11 | **Operating Model** — GTM Betriebsmodell (6 Phasen, Trial Lifecycle) | CC | **DONE** ✅ | G3, G6 | ~2h |
+| G12 | **Trial Lifecycle** — provision_trial.mjs + offboard_tenant.mjs | CC | **DONE** ✅ | G11 | ~3h |
 | G6 | **Einsatzlogik-Engine** — ICP Score → Leckerli-Paket → Asset-Liste → Steps | CC | **DONE** ✅ | G1 | ~1h |
 | G7 | **Pipeline Tracker Upgrade** — pipeline.csv + leckerli_paket, lisa_status, video_status, website_status, testnummer | CC | **DONE** ✅ | promote.mjs | ~2h |
 
@@ -62,9 +64,9 @@
 | Tag | CC | Founder | ChatGPT |
 |-----|-----|---------|---------|
 | So 09.03. | G10 ✅ + Wizard ✅ + Weinberger D ✅ + B-Full ✅ + G1 ✅ + G3 ✅ + G8 ✅ + G4 ✅ + G5 ✅ + G6 ✅ | Review GTM Plan v2 | — |
-| Mo 10.03. | G7: Pipeline Tracker Upgrade + G2: B-Quick Demo-Agent | Freigabe GTM Plan + Review Website + Lisa | — |
+| Mo 10.03. | G7: Pipeline Tracker Upgrade ✅ + G2: ~~B-Quick~~ eliminiert | Freigabe GTM Plan + Review Website + Lisa | — |
 | Di 11.03. | Weinberger C (E2E Proof) | — | — |
-| Mi 12.03. | Quick Wins: Leuthold + Orlandini + Widmer (B-Quick) | Review: Lisa glaubwürdig? | — |
+| Mi 12.03. | Quick Wins: Leuthold + Orlandini + Widmer (B-Full) | Review: Lisa glaubwürdig? | — |
 | Do 13.03. | Weinberger A (Video) — Skript + Founder-Aufnahme | Review (Handy + Desktop) | — |
 | Fr 14.03. | Buffer / Iteration / Erster Outreach | Feedback | — |
 
@@ -88,17 +90,21 @@ Welche bestehenden Systeme werden durch GTM verändert:
 | **pipeline.csv** | + leckerli_paket, lisa_status, video_status, website_status, testnummer | G7 | **DONE** ✅ |
 | **Email-System** | Outreach bleibt manuell (Founder sendet) | — | ✅ Entschieden |
 | **Supabase** | Keine prospects-Tabelle nötig (bis >30 Prospects) | — | ✅ Entschieden |
+| **provision_trial.mjs** | Unified Provisioning: Tenant + Nummer + Agent + Demo-Daten in einem Schritt | G12 | **DONE** ✅ |
+| **offboard_tenant.mjs** | Trial Offboarding: Cleanup nach 14-Tage Trial | G12 | **DONE** ✅ |
 
 ---
 
-## Quick Wins (nach B-Quick in Woche 2)
+## Quick Wins (Woche 2+)
 
 | Kunde | Existiert | Fehlt | Aufwand |
 |-------|-----------|-------|---------|
-| Walter Leuthold | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
-| Orlandini | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
-| Widmer Sanitär | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
+| Walter Leuthold | Website (D) | Lisa (B-Full), Video (A) | ~30 Min |
+| Orlandini | Website (D) | Lisa (B-Full), Video (A) | ~30 Min |
+| Widmer Sanitär | Website (D) | Lisa (B-Full), Video (A) | ~30 Min |
 | Dörfler AG | Website + Voice + Ops (B+C+D) | Video (A), Go-Live | ~15 Min |
+
+Alle 3 können mit B-Full in je ~30 Min ergänzt werden (Template → retell_sync.mjs).
 
 ---
 
@@ -121,3 +127,5 @@ Welche bestehenden Systeme werden durch GTM verändert:
 | 2026-03-09 | G7 Pipeline Upgrade: 5 neue Spalten, Weinberger als erstes Entry, Leckerli-Empfehlung für alle Prospects | CC |
 | 2026-03-10 | Quality Wave: Voice Closing Fix + FAQ-safe Edge + Grüezi + PLZ Lookup + Review Surface + SMS Review + Dashboard Branding (PRs #126+#127) | CC |
 | 2026-03-10 | Modus 1/2 Logik erkannt: Modus 1 = volle Website (schwache bestehende), Modus 2 = Extend (starke bestehende). Weinberger = Modus 2. | Founder + CC |
+| 2026-03-11 | B-Quick eliminiert. Immer B-Full. Jeder Prospect bekommt dedizierten Agent. | Founder |
+| 2026-03-11 | Trial Machine: 14-Tage Trial, provision_trial.mjs, offboard_tenant.mjs, Operating Model. | CC + Founder |
