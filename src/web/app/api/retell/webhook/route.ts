@@ -63,6 +63,55 @@ function nonEmptyStr(v: unknown): string | undefined {
   return undefined;
 }
 
+// ---------------------------------------------------------------------------
+// PLZ → City auto-correction (fixes STT errors like "Talwil" → "Thalwil")
+// ---------------------------------------------------------------------------
+
+const PLZ_CITY_MAP: Record<string, string> = {
+  "8800": "Thalwil",
+  "8942": "Oberrieden",
+  "8810": "Horgen",
+  "8802": "Kilchberg",
+  "8803": "Rüschlikon",
+  "8134": "Adliswil",
+  "8135": "Langnau am Albis",
+  "8820": "Wädenswil",
+  "8805": "Richterswil",
+  "8804": "Au ZH",
+  "8038": "Zürich",
+  "8001": "Zürich",
+  "8002": "Zürich",
+  "8003": "Zürich",
+  "8004": "Zürich",
+  "8005": "Zürich",
+  "8006": "Zürich",
+  "8008": "Zürich",
+  "8032": "Zürich",
+  "8037": "Zürich",
+  "8041": "Zürich",
+  "8045": "Zürich",
+  "8048": "Zürich",
+  "8055": "Zürich",
+};
+
+// ---------------------------------------------------------------------------
+// House number text→digit normalization (STT often produces words)
+// ---------------------------------------------------------------------------
+
+function normalizeHouseNumber(v: string | undefined): string | undefined {
+  if (!v) return undefined;
+  const trimmed = v.trim();
+  const WORD_TO_DIGIT: Record<string, string> = {
+    "eins": "1", "zwei": "2", "drei": "3", "vier": "4", "fünf": "5",
+    "sechs": "6", "sieben": "7", "acht": "8", "neun": "9", "zehn": "10",
+    "elf": "11", "zwölf": "12", "dreizehn": "13", "vierzehn": "14",
+    "fünfzehn": "15", "sechzehn": "16", "siebzehn": "17", "achtzehn": "18",
+    "neunzehn": "19", "zwanzig": "20",
+  };
+  const lower = trimmed.toLowerCase();
+  return WORD_TO_DIGIT[lower] ?? trimmed;
+}
+
 /** Swiss German: replace ß with ss (e.g. "Straße" → "Strasse"). */
 function deCH(v: string | undefined): string | undefined {
   return v?.replace(/ß/g, "ss");
@@ -254,9 +303,9 @@ export async function POST(req: Request) {
 
   // Structured fields — read from whichever path had data
   const plz = normalizePlz(extractedData.plz) ?? normalizePlz(extractedData.postal_code) ?? normalizePlz(extractedData.zip);
-  const city = deCH(nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt));
+  const city = (plz && PLZ_CITY_MAP[plz]) ? PLZ_CITY_MAP[plz] : deCH(nonEmptyStr(extractedData.city ?? extractedData.ort ?? extractedData.stadt));
   const street = deCH(nonEmptyStr(extractedData.street ?? extractedData.strasse));
-  const houseNumber = nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer);
+  const houseNumber = normalizeHouseNumber(nonEmptyStr(extractedData.house_number ?? extractedData.hausnummer));
   const reporterName = deCH(nonEmptyStr(extractedData.reporter_name ?? extractedData.name ?? extractedData.melder));
   const category = nonEmptyStr(extractedData.category ?? extractedData.kategorie);
   const urgencyRaw = nonEmptyStr(extractedData.urgency ?? extractedData.dringlichkeit);
