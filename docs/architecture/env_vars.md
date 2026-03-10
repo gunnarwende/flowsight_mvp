@@ -55,8 +55,11 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Scout (Prospect Discovery)
 - GOOGLE_SCOUT_KEY -> Google Cloud Console (Places API New). Used by scripts/_ops/scout.mjs for prospect discovery. $200/month free credit.
 
+## Trial Lifecycle
+- LIFECYCLE_TICK_SECRET -> selbst generiert (Bitwarden). Bearer token für POST /api/lifecycle/tick. Auch als GitHub Actions Secret setzen.
+
 ## App / Routing
-- APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app)
+- APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app). Auch als GitHub Actions Secret (für lifecycle-tick cron).
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
 - FALLBACK_TENANT_ID -> UUID eines Default-Tenants (nur server-side, temporär bis Routing steht)
 

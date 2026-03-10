@@ -220,7 +220,7 @@ async function main() {
     const { data: linkData, error: linkErr } = await supabase.auth.admin.generateLink({
       type: "magiclink",
       email: prospectEmail,
-      options: { redirectTo: `${appUrl}/ops/cases` },
+      options: { redirectTo: `${appUrl}/ops/welcome` },
     });
 
     if (linkErr) {
@@ -229,7 +229,7 @@ async function main() {
     }
 
     const props = linkData.properties;
-    const magicLink = `${url}/auth/v1/verify?token=${props.hashed_token}&type=magiclink&redirect_to=${encodeURIComponent(`${appUrl}/ops/cases`)}`;
+    const magicLink = `${url}/auth/v1/verify?token=${props.hashed_token}&type=magiclink&redirect_to=${encodeURIComponent(`${appUrl}/ops/welcome`)}`;
 
     // ── Step 5: Welcome-Mail ─────────────────────────────────────────────
     console.log("\n── Step 5: Welcome-Mail ────────────────────────────");
