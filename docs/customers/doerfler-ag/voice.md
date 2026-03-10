@@ -12,7 +12,7 @@ Two agents work together: the DE agent handles German calls, the INTL agent hand
 | `business_name` | Dörfler AG |
 | `greeting_text` | Guten Tag, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen? |
 | `closing_text` | Danke, ich habe alles aufgenommen. Die Dörfler AG meldet sich bei Ihnen, um das weitere Vorgehen zu besprechen. |
-| `voice_id` | v3V1d2rk6528UrLKRuy8 (ElevenLabs Susi) |
+| `voice_id` | NE7AIW5DoJ7lUosXV2KR (ElevenLabs Ela) |
 | `language` | de-DE |
 | `webhook_url` | https://flowsight-mvp.vercel.app/api/retell/webhook |
 
@@ -144,7 +144,7 @@ After every agent import, verify in Retell Dashboard:
 - [ ] PII Redaction = enabled with categories above
 - [ ] Recording = OFF
 - [ ] Webhook URL = `https://flowsight-mvp.vercel.app/api/retell/webhook`
-- [ ] Voice ID: DE = `v3V1d2rk6528UrLKRuy8` (Susi), INTL = `aMSt68OGf4xUZAnLpTU8` (Juniper)
+- [ ] Voice ID: DE = `NE7AIW5DoJ7lUosXV2KR` (Ela), INTL = `aMSt68OGf4xUZAnLpTU8` (Juniper)
 
 ## Notes
 

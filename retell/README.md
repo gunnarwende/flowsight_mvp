@@ -23,7 +23,7 @@ Each customer gets TWO agents:
    - Greets in German, runs intake in German
    - Has `AgentSwapTool` on the Intake Node
    - When caller speaks EN/FR/IT: transfers to INTL agent immediately
-   - Voice: ElevenLabs Susi (or customer-specific DE voice)
+   - Voice: ElevenLabs Ela (or customer-specific DE voice)
 
 2. **INTL Agent** — Multilingual (EN/FR/IT), transfer destination
    - Receives transferred calls with full conversation history
@@ -41,7 +41,7 @@ Each customer gets TWO agents:
 | `{{business_name}}` | Business name in prompts | Dörfler AG |
 | `{{greeting_text}}` | Welcome node spoken text | Guten Tag, hier ist... |
 | `{{closing_text}}` | Closing node spoken text | Danke, ich habe alles... |
-| `{{voice_id}}` | ElevenLabs voice ID (DE) | v3V1d2rk6528UrLKRuy8 |
+| `{{voice_id}}` | ElevenLabs voice ID (DE) | NE7AIW5DoJ7lUosXV2KR |
 | `{{webhook_url}}` | FlowSight webhook | https://flowsight-mvp.vercel.app/api/retell/webhook |
 | `{{intl_agent_id}}` | Retell agent_id of INTL agent | agent_xxx |
 

@@ -54,7 +54,7 @@
   "analysis_successful_prompt": "Evaluate whether the agent had a successful call. A successful call means the agent answered questions about FlowSight and/or collected demo booking information (name, company, phone number).",
   "analysis_summary_prompt": "Write a 2-3 sentence summary of the call. Note what the caller was interested in and whether they requested a demo.",
   "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
-  "voice_id": "custom_voice_c0c7eb84f182225ef8003c9576",
+  "voice_id": "custom_voice_3209d3305910d955836523bfac",
   "max_call_duration_ms": 420000,
   "interruption_sensitivity": 1,
   "allow_user_dtmf": true,
