@@ -211,6 +211,7 @@ async function searchPlaces(textQuery) {
         "places.googleMapsUri",
         "places.businessStatus",
         "places.types",
+        "places.regularOpeningHours",
       ].join(","),
     },
     body: JSON.stringify(body),
@@ -228,44 +229,46 @@ async function searchPlaces(textQuery) {
 
 // ── Scoring ─────────────────────────────────────────────────────────
 /**
- * ICP Scoring Model — "Digital Gap"
+ * ICP Scoring Model v3 — "Digital Gap + Voice Fit"
  *
- * We're looking for: strong local business + weak digital presence = leverage.
- * NOT: weak everything (might be dead) or strong everything (no gap).
+ * v3 adds Module 2 (Voice Agent) scoring alongside Module 1 (Website).
  *
- * Score = Local Trust (0-5) + Digital Gap (0-5) + Contactable (0/1) - Disqualifiers
+ * Score = Module1 (0-5) + Module2 (0-5) + Contactable (0/1) - Disqualifiers
  *
- * LOCAL TRUST (0-5) — deterministic from rating × reviews
- *   5: rating ≥ 4.5 AND reviews ≥ 10    (strong proof)
- *   4: rating ≥ 4.0 AND reviews ≥ 5     (solid proof)
- *   3: rating ≥ 3.5 AND reviews ≥ 3     (some proof)
- *   2: reviews ≥ 1 (has presence)
- *   1: on Google Maps but 0 reviews      (exists)
- *   0: not applicable
- *
- * DIGITAL GAP (0-5) — heuristic from website presence + type
- *   5: no website at all                 (maximum gap)
+ * MODULE 1: DIGITAL GAP (0-5) — website replacement potential
+ *   5: no website at all
  *   4: directory-only (local.ch, search.ch link)
- *   3: builder website (wix, jimdo, one.com, digitalone, squarespace)
- *   2: has website but basic domain (manual check needed)
- *   0: has professional-looking website   (low gap — but can't verify quality)
+ *   3: builder website (wix, jimdo, etc.)
+ *   2: has website (quality unknown)
  *
- *   Limitation: we can only assess website existence and URL pattern.
- *   Actual quality (modern? fast? conversion-optimized?) requires founder review.
+ * MODULE 2: VOICE FIT (0-5) — voice agent value potential
+ *   Sum of: Emergency (0-2) + Hours Gap (0-2) + Service Breadth (0-1)
  *
- * CONTACTABLE (0-1) — deterministic
- *   1: has phone number
- *   0: no phone
+ *   Emergency (0-2):
+ *     2: types include "plumber" or name has "Notdienst/Pikett/24h"
+ *     1: types include repair-adjacent categories
+ *     0: no emergency signal
  *
- * DISQUALIFIERS — heuristic
- *   -3: business types suggest chain/franchise/enterprise
- *   -2: name contains AG/SA + multiple location indicators
+ *   Hours Gap (0-2) — from regularOpeningHours:
+ *     2: closed evenings + weekends (standard business hours only)
+ *     1: extended hours but not 24/7
+ *     0: 24/7 or no hours data (can't assess)
  *
- * Assumptions:
- *   - Google Places API returns accurate rating/review data
- *   - "No website" from API means truly no website (not just missing from API)
- *   - Builder URL patterns are reliable indicators
- *   - We cannot determine employee count from API data (proxy: review count as rough scale)
+ *   Service Breadth (0-1):
+ *     1: multiple Gewerke (Sanitär + Heizung + Spenglerei)
+ *     0: single specialty
+ *
+ * LOCAL TRUST — used as tiebreaker, not in main score
+ *   Stored separately for founder review.
+ *
+ * CONTACTABLE (0-1): 1 if phone, 0 if not
+ *
+ * DISQUALIFIERS: -3 chain, -2 high reviews (>80), -5 enterprise name
+ *
+ * Tier thresholds (aligned with einsatzlogik.md):
+ *   >= 8: HOT     → A+B-Full+C+D
+ *   >= 6: WARM    → B-Full+D
+ *   <  6: COLD    → SKIP
  */
 function scorePlace(place) {
   const reasons = [];
@@ -274,27 +277,29 @@ function scorePlace(place) {
   const reviews = place.userRatingCount || 0;
   const phone = place.nationalPhoneNumber || place.internationalPhoneNumber || "";
   const types = place.types || [];
+  const nameLower = (place.displayName?.text || "").toLowerCase();
+  const hours = place.regularOpeningHours;
 
-  // ── Local Trust (0-5) ──
+  // ── Local Trust (0-5) — tiebreaker, not in main score ──
   let localTrust = 0;
   if (rating >= 4.5 && reviews >= 10) {
     localTrust = 5;
-    reasons.push(`Trust 5: ${rating}★ × ${reviews} Reviews — starker Proof`);
+    reasons.push(`Trust 5: ${rating}★ × ${reviews} Reviews`);
   } else if (rating >= 4.0 && reviews >= 5) {
     localTrust = 4;
-    reasons.push(`Trust 4: ${rating}★ × ${reviews} Reviews — solider Proof`);
+    reasons.push(`Trust 4: ${rating}★ × ${reviews} Reviews`);
   } else if (rating >= 3.5 && reviews >= 3) {
     localTrust = 3;
-    reasons.push(`Trust 3: ${rating}★ × ${reviews} Reviews — etwas Proof`);
+    reasons.push(`Trust 3: ${rating}★ × ${reviews} Reviews`);
   } else if (reviews >= 1) {
     localTrust = 2;
-    reasons.push(`Trust 2: ${reviews} Reviews — existiert digital`);
+    reasons.push(`Trust 2: ${reviews} Reviews`);
   } else {
     localTrust = 1;
-    reasons.push("Trust 1: auf Maps, aber 0 Reviews");
+    reasons.push("Trust 1: auf Maps, 0 Reviews");
   }
 
-  // ── Digital Gap (0-5) ──
+  // ── Module 1: Digital Gap (0-5) — website replacement potential ──
   let digitalGap = 0;
   const BUILDERS = ["wix", "jimdo", "one.com", "digitalone", "squarespace", "weebly", "webnode", "site123"];
   const DIRECTORIES = ["local.ch", "search.ch", "tel.search.ch", "yellow.ch"];
@@ -302,24 +307,78 @@ function scorePlace(place) {
 
   if (!website) {
     digitalGap = 5;
-    reasons.push("Gap 5: keine Website");
+    reasons.push("M1=5: keine Website");
   } else if (DIRECTORIES.some((d) => websiteLower.includes(d))) {
     digitalGap = 4;
-    reasons.push("Gap 4: nur Verzeichnis-Link");
+    reasons.push("M1=4: nur Verzeichnis-Link");
   } else if (BUILDERS.some((b) => websiteLower.includes(b))) {
     digitalGap = 3;
-    reasons.push(`Gap 3: Baukasten-Website`);
+    reasons.push("M1=3: Baukasten-Website");
   } else {
     digitalGap = 2;
-    reasons.push("Gap 2: hat Website (Qualität manuell prüfen)");
+    reasons.push("M1=2: hat Website");
   }
+
+  // ── Module 2: Voice Fit (0-5) — voice agent value ──
+  let voiceFit = 0;
+
+  // Emergency indicator (0-2)
+  const EMERGENCY_TYPES = ["plumber"];
+  const EMERGENCY_KEYWORDS = ["notdienst", "pikett", "24h", "notfall", "24-stunden"];
+  const REPAIR_TYPES = ["electrician", "hvac_contractor", "roofing_contractor"];
+
+  if (EMERGENCY_TYPES.some((t) => types.includes(t)) ||
+      EMERGENCY_KEYWORDS.some((k) => nameLower.includes(k))) {
+    voiceFit += 2;
+    reasons.push("M2+2: Notdienst/Sanitär");
+  } else if (REPAIR_TYPES.some((t) => types.includes(t))) {
+    voiceFit += 1;
+    reasons.push("M2+1: Reparatur-nah");
+  }
+
+  // Hours Gap (0-2) — from regularOpeningHours
+  if (hours && hours.periods && hours.periods.length > 0) {
+    const periods = hours.periods;
+    // Check if open 7 days
+    const daysOpen = new Set(periods.map((p) => p.open?.day)).size;
+    // Check if any period extends past 18:00
+    const hasEveningHours = periods.some((p) => {
+      const closeHour = p.close?.hour ?? 0;
+      return closeHour >= 20;
+    });
+
+    if (daysOpen <= 5 && !hasEveningHours) {
+      voiceFit += 2;
+      reasons.push("M2+2: Mo-Fr Bürozeiten (Lücke abends+Sa/So)");
+    } else if (daysOpen <= 6 || !hasEveningHours) {
+      voiceFit += 1;
+      reasons.push("M2+1: erweitert, nicht 24/7");
+    } else {
+      reasons.push("M2+0: 24/7 oder fast");
+    }
+  } else {
+    // No hours data — assume standard business hours (most small businesses)
+    voiceFit += 1;
+    reasons.push("M2+1: keine Öffnungszeiten (Standard angenommen)");
+  }
+
+  // Service Breadth (0-1)
+  const MULTI_GEWERK_KEYWORDS = ["sanitär", "heizung", "spenglerei", "lüftung", "klima", "haustechnik"];
+  const gewerkCount = MULTI_GEWERK_KEYWORDS.filter((k) => nameLower.includes(k)).length;
+  if (gewerkCount >= 2) {
+    voiceFit += 1;
+    reasons.push(`M2+1: ${gewerkCount} Gewerke im Namen`);
+  }
+
+  // Cap voiceFit at 5
+  voiceFit = Math.min(5, voiceFit);
 
   // ── Contactable (0-1) ──
   let contactable = 0;
   if (phone) {
     contactable = 1;
   } else {
-    reasons.push("Kein Telefon gefunden");
+    reasons.push("Kein Telefon");
   }
 
   // ── Disqualifiers ──
@@ -329,23 +388,21 @@ function scorePlace(place) {
     penalty += 3;
     reasons.push("Disq: Kette/Grossbetrieb");
   }
-  // Very high review count suggests larger operation
   if (reviews > 80) {
     penalty += 2;
-    reasons.push(`Disq: ${reviews} Reviews — vermutlich Grossbetrieb`);
+    reasons.push(`Disq: ${reviews} Reviews — Grossbetrieb`);
   }
-  // Known enterprise/chain names (not our ICP)
-  const nameLower = (place.displayName?.text || "").toLowerCase();
   const ENTERPRISE_NAMES = ["fust", "meier tobler", "coop", "migros", "jumbo", "hornbach", "bauhaus", "sanitas troesch"];
   if (ENTERPRISE_NAMES.some((e) => nameLower.includes(e))) {
     penalty += 5;
     reasons.push("Disq: Enterprise/Kette");
   }
 
-  const score = Math.max(0, Math.min(10, localTrust + digitalGap + contactable - penalty));
-  const tier = score >= 7 ? "HOT" : score >= 4 ? "WARM" : "COLD";
+  // ── Final score: M1 + M2 + Contactable - Penalty ──
+  const score = Math.max(0, Math.min(10, digitalGap + voiceFit + contactable - penalty));
+  const tier = score >= 8 ? "HOT" : score >= 6 ? "WARM" : "COLD";
 
-  return { score, tier, localTrust, digitalGap, contactable, penalty, reasons };
+  return { score, tier, localTrust, digitalGap, voiceFit, contactable, penalty, reasons };
 }
 
 // ── CSV helpers (semicolon-delimited, UTF-8 BOM for Excel) ──────────
@@ -363,7 +420,7 @@ function stripBOM(text) {
   return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
 }
 
-const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;google_rating;google_reviews;reasons;score;ort;adresse;telefon;maps_url;query;discovered;place_id";
+const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;adresse;telefon;maps_url;query;discovered;place_id";
 
 function ensureRawCSV() {
   if (!fs.existsSync(RAW_CSV)) {
@@ -681,7 +738,7 @@ async function main() {
         const address = p.formattedAddress || "";
         const ort = extractOrt(address);
         const phone = p.nationalPhoneNumber || p.internationalPhoneNumber || "";
-        const { score, tier, localTrust, digitalGap, contactable, penalty, reasons } = scorePlace(p);
+        const { score, tier, localTrust, digitalGap, voiceFit, contactable, penalty, reasons } = scorePlace(p);
 
         allResults.set(placeId, {
           placeId,
@@ -697,6 +754,7 @@ async function main() {
           tier,
           localTrust,
           digitalGap,
+          voiceFit,
           contactable,
           penalty,
           reasons,
@@ -747,7 +805,7 @@ async function main() {
       );
       // Show scoring breakdown
       console.log(
-        `          Trust:${r.localTrust} + Gap:${r.digitalGap} + Tel:${r.contactable}` +
+        `          M1:${r.digitalGap} + M2:${r.voiceFit} + Tel:${r.contactable} (Trust:${r.localTrust})` +
         (r.penalty ? ` - Penalty:${r.penalty}` : "")
       );
       // Show top reasons (max 2 for readability)
@@ -779,6 +837,7 @@ async function main() {
       r.tier,
       r.localTrust,
       r.digitalGap,
+      r.voiceFit,
       r.rating || "",
       r.reviews || "",
       csvEscape(r.reasons.join("; ")),
