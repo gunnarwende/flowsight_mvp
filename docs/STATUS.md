@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #131: Trial Lifecycle — Operating Model + Provisioning + Offboarding)
+**Datum:** 2026-03-11 (PR #136: Trial Lifecycle Runner + Prospect Welcome Page)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -68,8 +68,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Trial Machine (11.03.):** PR #131. Operating Model (6 Phasen), Trial Lifecycle DB-Felder, provision_trial.mjs, offboard_tenant.mjs. B-Quick eliminiert — immer B-Full.
 - **Trial Lifecycle Emails (11.03.):** PR #134. Welcome-Mail (auto via provision_trial.mjs), Offboarding-Mail (auto via offboard_tenant.mjs), Morning Report mit Trial-Awareness (active/follow-up/expiring/zombie).
 - **Scout v3 (11.03.):** PR #135. Module 2 (Voice Fit) Scoring: Emergency + Hours Gap + Service Breadth. Tier-Thresholds mit Einsatzlogik aligned (HOT >= 8, WARM >= 6).
+- **Trial Lifecycle Runner (11.03.):** PR #136. Idempotent Tick-Route (`/api/lifecycle/tick`), per-Milestone Timestamps (day7/10/13/14), Day 13 Trial-Expiry E-Mail, GitHub Actions Cron (daily 07:00 UTC), Morning Report tick_stale detection. Prospect Welcome Page (`/ops/welcome`) mit Primary CTA = Testnummer anrufen.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Trial Lifecycle Cron/Scheduler (automatische Day 7/10/13/14 Events), Prospect Welcome Page (/trial/welcome), E2E-Test mit Weinberger. Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
+- **Nächster Schritt:** E2E-Test Trial Lifecycle mit Weinberger (provision → tick → emails). Env: LIFECYCLE_TICK_SECRET + APP_URL als GitHub Secrets setzen. Founder: DEMO_SIP_CALLER_ID prüfen → SMS E2E.
 
 ## Fixe Entscheidungen (No Drift)
 

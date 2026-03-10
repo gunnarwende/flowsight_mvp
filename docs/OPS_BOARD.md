@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PRs #133-#135: Repo Cleanup, Trial Emails, Scout v3)
+**Updated:** 2026-03-11 (PR #136: Trial Lifecycle Runner + Prospect Welcome Page)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -14,7 +14,7 @@
 - **Shipped seit 04.03.:** 50+ Commits, PRs #53–#128
 - **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `provision_trial.mjs` + `offboard_tenant.mjs` + `scout.mjs` (ICP Scoring)
-- **CI/CD:** GitHub Actions (lint + build + Telegram notify). Branch Protection: PR required.
+- **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick cron). Branch Protection: PR required.
 - **Vercel Region:** Frankfurt (fra1)
 - **Phase:** Trial Machine Build-Out + GTM Pipeline v2.
 - **Operating Model:** `docs/gtm/operating_model.md` — 6 Phases, Trial Lifecycle, Quality Gates
@@ -189,6 +189,9 @@
 | 2026-03-11 | Repo Cleanup Round 2 — archive plan_v2, fix 10 stale references, Orlandini status.md, Runbooks README | PR #133 |
 | 2026-03-11 | Trial Lifecycle Emails — Welcome-Mail (auto), Offboarding-Mail (auto), Morning Report TRIALS section | PR #134 |
 | 2026-03-11 | Scout v3 — Module 2 Voice Fit Scoring (Emergency + Hours Gap + Breadth), aligned tier thresholds | PR #135 |
+| 2026-03-11 | Trial Lifecycle Runner — Idempotent Tick-Route, per-Milestone Timestamps, Day 13 Email, GH Actions Cron | PR #136 |
+| 2026-03-11 | Prospect Welcome Page — /ops/welcome, Primary CTA = Testnummer, Admin bypass, Trial info | PR #136 |
+| 2026-03-11 | Morning Report — tick_stale detection for missed lifecycle events | PR #136 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 

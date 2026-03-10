@@ -169,6 +169,19 @@ if (eT4) console.error("Query zombies:", eT4.message);
 
 const zombieCount = zombieTrials?.length ?? 0;
 
+// T5. Lifecycle tick errors: milestone columns that should be set but aren't
+// Check for trials past Day 14 still in trial_active (tick may have failed)
+const { data: staleTrials, error: eT5 } = await supabase
+  .from("tenants")
+  .select("slug, trial_start, day14_marked_at")
+  .eq("trial_status", "trial_active")
+  .is("day14_marked_at", null)
+  .lt("trial_start", new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString());
+if (eT5) console.error("Query stale lifecycle:", eT5.message);
+
+const staleCount = staleTrials?.length ?? 0;
+const staleNames = staleTrials?.map((t) => t.slug).join(", ") ?? "";
+
 // 8. Health check
 let healthOk = false;
 try {
@@ -183,7 +196,7 @@ try {
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk || expiring24h.length > 0;
+const isRed = (stuck48h ?? 0) > 0 || !healthOk || expiring24h.length > 0 || staleCount > 0;
 const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0;
 const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
 
@@ -213,6 +226,7 @@ const report = [
   `follow_up_due:  ${followUpDueCount}${followUpNames ? ` (${followUpNames})` : ""}`,
   `expiring_48h:   ${expiring48hCount}${expiringNames ? ` (${expiringNames})` : ""}`,
   `zombie_trials:  ${zombieCount}`,
+  `tick_stale:     ${staleCount}${staleNames ? ` (${staleNames})` : ""}`,
   `health:         ${healthOk ? "OK" : "FAIL"}`,
   `━━━━━━━━━━━━━━━━━━━`,
 ].join("\n");
