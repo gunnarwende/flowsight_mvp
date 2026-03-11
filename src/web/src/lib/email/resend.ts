@@ -546,14 +546,15 @@ interface SalesLeadPayload {
   companyName?: string;
   fromNumber?: string;
   interestLevel: string;
-  demoRequested: string;
+  callbackRequested: string;
+  callbackTime?: string;
   callSummary: string;
   retellCallId: string;
 }
 
 /**
- * Send a sales lead notification email to the founder.
- * Triggered by the Sales Voice Agent webhook after a call on 044 552 09 19.
+ * Send an interest-capture notification email to the founder.
+ * Triggered by the Interest Capture Agent webhook after a call on 044 552 09 19.
  *
  * Owns its own console.log (runs in a separate invocation via the sales webhook).
  * Errors are captured to Sentry but never thrown.
@@ -597,15 +598,16 @@ export async function sendSalesLeadNotification(
     const { data, error } = await getResend().emails.send({
       from,
       to,
-      subject: `${subjectPrefix} Neuer Lead — ${companyLabel} (${payload.interestLevel})`,
+      subject: `${subjectPrefix} Rückruf-Wunsch — ${companyLabel} (${payload.interestLevel})`,
       text: [
         `Neuer Anruf auf 044 552 09 19`,
         ``,
-        `Name:           ${payload.callerName || "nicht angegeben"}`,
-        `Firma:          ${payload.companyName || "nicht angegeben"}`,
-        `Telefon:        ${payload.fromNumber || "nicht angegeben"}`,
-        `Interesse:      ${payload.interestLevel}`,
-        `Demo gewünscht: ${payload.demoRequested}`,
+        `Name:             ${payload.callerName || "nicht angegeben"}`,
+        `Firma:            ${payload.companyName || "nicht angegeben"}`,
+        `Telefon:          ${payload.fromNumber || "nicht angegeben"}`,
+        `Interesse:        ${payload.interestLevel}`,
+        `Rückruf gewünscht: ${payload.callbackRequested}`,
+        ...(payload.callbackTime ? [`Bevorzugte Zeit:  ${payload.callbackTime}`] : []),
         ``,
         `Zusammenfassung:`,
         payload.callSummary,

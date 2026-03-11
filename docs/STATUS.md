@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #148: Demo→Test Flow — "Kostenlos testen" statt "Demo buchen")
+**Datum:** 2026-03-11 (PR #150: Lisa Interest Capture — Sales Agent → Erreichbarkeits-Netz)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -31,7 +31,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 15 KPIs + Trial Status + Deep Health, GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail (RED/YELLOW) |
 | **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, /testen — "Kostenlos testen" flow) |
-| **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19 (Pricing-Update auf 299 flat ausstehend) |
+| **Interest Capture Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19 — Interest Capture (kein Pricing, kein Pitch, Founder-Rückruf) |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
 | **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, tenant-scoped GOOGLE_REVIEW_URL, SMS fallback |
@@ -76,8 +76,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Gold Contact (11.03.):** PR #145. Nordstern-Dokument für Sales/Trial/Product/Go-Live. 5-Stufen-Kaufmodell, Spiegel-Effekt, 7 WOW-Momente, Meister/Betrieb-Profile, Phase 0-3 Journey mit konkretem High-Touch-Handover.
 - **299 Flat Pricing (11.03.):** PR #147. Ein Produkt, ein Preis: CHF 299/Monat. 3-Tier Packages eliminiert. Pre-Contact Quality Gate (`pre_contact_check.mjs`). Gold Contact + alle Docs aligned.
 - **Demo→Test Flow (11.03.):** PR #148. "Demo buchen" → "Kostenlos testen". Neue /testen Page ("Wir bauen Lisa für Ihren Betrieb"), /demo redirect, DemoForm mit PLZ+Website, Qualify-orientierte Bestätigung. Stage 1 von 3.
+- **Lisa Interest Capture (11.03.):** PR #150. Sales Agent → Interest Capture Agent. Kein Pricing, kein Feature-Pitch, kein Demo-Buchen. Stattdessen: warm empfangen, Interesse erfassen, Founder-Rückruf vorbereiten. Gold-Contact-aligned.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Sales Voice Agent Lisa Pricing auf 299 flat updaten. Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
+- **Nächster Schritt:** Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
 
 ## Fixe Entscheidungen (No Drift)
 
