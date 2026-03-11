@@ -33,10 +33,10 @@ export default function MarketingLayout({
               Preise
             </Link>
             <Link
-              href="/demo"
+              href="/testen"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
-              Kontakt
+              Testen
             </Link>
             <a
               href={`tel:${SITE.phoneRaw}`}
@@ -51,7 +51,7 @@ export default function MarketingLayout({
               href={SITE.demoUrl}
               className="rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-md hover:shadow-gold-500/15"
             >
-              Demo vereinbaren
+              Kostenlos testen
             </a>
           </div>
 
@@ -61,7 +61,7 @@ export default function MarketingLayout({
               href={SITE.demoUrl}
               className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400"
             >
-              Demo vereinbaren
+              Kostenlos testen
             </a>
             <MobileNav />
           </div>
@@ -108,10 +108,10 @@ export default function MarketingLayout({
                 </li>
                 <li>
                   <Link
-                    href="/demo"
+                    href="/testen"
                     className="transition-colors hover:text-gold-400"
                   >
-                    Demo
+                    Kostenlos testen
                   </Link>
                 </li>
               </ul>

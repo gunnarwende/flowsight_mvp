@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { SITE } from "@/src/lib/marketing/constants";
 
 export function DemoForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -20,6 +19,8 @@ export function DemoForm() {
           name: form.get("name"),
           company: form.get("company"),
           phone: form.get("phone"),
+          website: form.get("website"),
+          plz: form.get("plz"),
         }),
       });
 
@@ -60,21 +61,12 @@ export function DemoForm() {
           Vielen Dank!
         </h3>
         <p className="mt-2 text-base text-navy-200">
-          Buchen Sie direkt Ihren 20-Minuten-Termin:
+          Wir prüfen, ob FlowSight zu Ihrem Betrieb passt, und melden uns
+          innerhalb von 24 Stunden persönlich bei Ihnen.
         </p>
-        <a
-          href={SITE.bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gold-500 px-6 py-3 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v9.75" />
-          </svg>
-          Online-Termin buchen
-        </a>
-        <p className="mt-3 text-sm text-navy-400">
-          Oder wir melden uns innerhalb von 24 Stunden bei Ihnen.
+        <p className="mt-4 text-sm text-navy-400">
+          Wenn es passt, bauen wir Lisa persönlich für Ihren Betrieb —
+          in 48 Stunden. Kostenlos. 14 Tage zum Testen.
         </p>
       </div>
     );
@@ -85,16 +77,16 @@ export function DemoForm() {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-navy-700/50 bg-navy-800/50 p-8 backdrop-blur-sm sm:p-10"
     >
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label
-            htmlFor="demo-name"
+            htmlFor="lead-name"
             className="mb-1.5 block text-sm font-medium text-navy-200"
           >
-            Name
+            Kontaktperson
           </label>
           <input
-            id="demo-name"
+            id="lead-name"
             name="name"
             type="text"
             required
@@ -104,13 +96,13 @@ export function DemoForm() {
         </div>
         <div>
           <label
-            htmlFor="demo-company"
+            htmlFor="lead-company"
             className="mb-1.5 block text-sm font-medium text-navy-200"
           >
             Firma
           </label>
           <input
-            id="demo-company"
+            id="lead-company"
             name="company"
             type="text"
             required
@@ -120,13 +112,13 @@ export function DemoForm() {
         </div>
         <div>
           <label
-            htmlFor="demo-phone"
+            htmlFor="lead-phone"
             className="mb-1.5 block text-sm font-medium text-navy-200"
           >
             Telefon
           </label>
           <input
-            id="demo-phone"
+            id="lead-phone"
             name="phone"
             type="tel"
             required
@@ -134,6 +126,38 @@ export function DemoForm() {
             className="w-full rounded-lg border border-navy-600 bg-navy-900/60 px-4 py-3 text-sm text-white placeholder:text-navy-400 focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
           />
         </div>
+        <div>
+          <label
+            htmlFor="lead-plz"
+            className="mb-1.5 block text-sm font-medium text-navy-200"
+          >
+            PLZ + Ort
+          </label>
+          <input
+            id="lead-plz"
+            name="plz"
+            type="text"
+            required
+            placeholder="8800 Thalwil"
+            className="w-full rounded-lg border border-navy-600 bg-navy-900/60 px-4 py-3 text-sm text-white placeholder:text-navy-400 focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <label
+          htmlFor="lead-website"
+          className="mb-1.5 block text-sm font-medium text-navy-200"
+        >
+          Website <span className="text-navy-400">(optional)</span>
+        </label>
+        <input
+          id="lead-website"
+          name="website"
+          type="url"
+          placeholder="https://muster-sanitaer.ch"
+          className="w-full rounded-lg border border-navy-600 bg-navy-900/60 px-4 py-3 text-sm text-white placeholder:text-navy-400 focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
+        />
       </div>
 
       <button
@@ -141,11 +165,12 @@ export function DemoForm() {
         disabled={loading}
         className="mt-6 w-full rounded-lg bg-gold-500 py-3.5 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 disabled:opacity-60 sm:w-auto sm:px-10"
       >
-        {loading ? "Wird gesendet…" : "Demo vereinbaren"}
+        {loading ? "Wird gesendet…" : "Lisa für meinen Betrieb bauen"}
       </button>
 
       <p className="mt-4 text-xs text-navy-400">
-        Wir rufen Sie an — kein Spam, kein Newsletter. Ihre Daten werden
+        Wir melden uns innerhalb von 24h persönlich bei Ihnen. Keine
+        automatischen E-Mails, kein Newsletter. Ihre Daten werden
         ausschliesslich zur Kontaktaufnahme verwendet.
       </p>
     </form>

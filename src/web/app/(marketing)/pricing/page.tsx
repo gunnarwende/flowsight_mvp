@@ -73,7 +73,7 @@ export default function PricingPage() {
             </ul>
 
             <Link
-              href="/demo"
+              href="/testen"
               className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
               14 Tage kostenlos testen
@@ -82,7 +82,7 @@ export default function PricingPage() {
 
           <p className="mt-6 text-center text-sm text-navy-400">
             Ihr Betrieb hat spezielle Anforderungen?{" "}
-            <Link href="/demo" className="font-semibold text-gold-600 hover:text-gold-500">
+            <Link href="/testen" className="font-semibold text-gold-600 hover:text-gold-500">
               Schreiben Sie uns
             </Link>{" "}
             — wir finden eine passende Lösung.
@@ -180,11 +180,11 @@ export default function PricingPage() {
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Jetzt Demo vereinbaren.
+              Lisa für Ihren Betrieb bauen.
             </h2>
             <p className="mt-4 text-lg text-navy-200">
-              In 30 Minuten zeigen wir Ihnen, wie FlowSight Ihren Alltag
-              vereinfacht — persönlich und unverbindlich.
+              Sagen Sie uns, wer Sie sind — wir bauen Lisa persönlich
+              für Ihren Betrieb. In 48 Stunden. 14 Tage kostenlos.
             </p>
           </div>
 

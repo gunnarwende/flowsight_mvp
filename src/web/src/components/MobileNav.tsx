@@ -82,11 +82,11 @@ export function MobileNav() {
                 Preise
               </Link>
               <Link
-                href="/demo"
+                href="/testen"
                 onClick={() => setOpen(false)}
                 className="text-2xl font-semibold text-white transition-colors hover:text-gold-400"
               >
-                Kontakt
+                Testen
               </Link>
               <a
                 href={`tel:${SITE.phoneRaw}`}
@@ -99,11 +99,11 @@ export function MobileNav() {
               </a>
 
               <Link
-                href="/demo"
+                href="/testen"
                 onClick={() => setOpen(false)}
                 className="mt-4 rounded-lg bg-gold-500 px-10 py-4 text-lg font-semibold text-navy-950 transition-all hover:bg-gold-400"
               >
-                Demo vereinbaren
+                Kostenlos testen
               </Link>
             </nav>
           </div>
