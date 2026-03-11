@@ -2,7 +2,7 @@
 
 **Slug:** weinberger-ag
 **Rolle:** GTM Goldstandard (ICP 90+, Leckerli A+B+C+D)
-**Stand:** 2026-03-10
+**Stand:** 2026-03-11
 **Tenant-ID:** fc4ba994-c99c-4c17-9fa7-6c10bd0d6fa8
 **Twilio-Nr:** +41 43 505 11 01
 
@@ -20,7 +20,7 @@
 |----------|-----|--------|
 | **D** | Website (Services, Team, Notdienst, Wizard) | **DONE** ✅ (PR #116) |
 | **B-Full** | Eigener Voice Agent (Lisa DE + INTL, Ela Voice) | **DONE** ✅ (PRs #118+#126+#127) — Quality Wave: Closing Fix, FAQ-safe, Grüezi, PLZ→City (24 Orte), Notfall-Empathie v2 |
-| **C** | E2E Proof (Tenant, SMS, Ops-Fall) | **BLOCKED** ⏳ — Founder muss DEMO_SIP_CALLER_ID + google_review_url prüfen |
+| **C** | E2E Proof (Tenant, SMS, Ops-Fall) | **TESTBAR** ✅ — SMS + Review URL konfiguriert (PR #143), INTL Agent Fix |
 | **A** | Video (5 Szenen, Founder-Aufnahme) | OFFEN |
 
 ## Infrastruktur (Leckerli C)
