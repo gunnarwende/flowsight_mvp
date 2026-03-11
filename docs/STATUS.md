@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #145: Gold Contact — Nordstern-Dokument finalisiert)
+**Datum:** 2026-03-11 (PR #148: Demo→Test Flow — "Kostenlos testen" statt "Demo buchen")
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -30,7 +30,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 15 KPIs + Trial Status + Deep Health, GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail (RED/YELLOW) |
-| **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, legal, demo booking) |
+| **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, /testen — "Kostenlos testen" flow) |
 | **Sales Voice Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19 (Pricing-Update auf 299 flat ausstehend) |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
 | **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
@@ -74,8 +74,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **GTM SSOT Hygiene (11.03.):** PR #141. B-Quick komplett eliminiert (Einsatzlogik, Tracker, Outreach). GTM Tracker auf aktuellen Stand (G11+G12 DONE, Weinberger B=DONE C=testbar). ICP-Scoring aligned (0-11 Skala, HOT ≥8 / WARM 6-7). Modus 3 zurückgestellt.
 - **Weinberger E2E Ready (11.03.):** PR #143. SMS-Modul + Google Review URL aktiviert. INTL Agent Firmenname korrigiert. Weinberger C = TESTBAR.
 - **Gold Contact (11.03.):** PR #145. Nordstern-Dokument für Sales/Trial/Product/Go-Live. 5-Stufen-Kaufmodell, Spiegel-Effekt, 7 WOW-Momente, Meister/Betrieb-Profile, Phase 0-3 Journey mit konkretem High-Touch-Handover.
+- **299 Flat Pricing (11.03.):** PR #147. Ein Produkt, ein Preis: CHF 299/Monat. 3-Tier Packages eliminiert. Pre-Contact Quality Gate (`pre_contact_check.mjs`). Gold Contact + alle Docs aligned.
+- **Demo→Test Flow (11.03.):** PR #148. "Demo buchen" → "Kostenlos testen". Neue /testen Page ("Wir bauen Lisa für Ihren Betrieb"), /demo redirect, DemoForm mit PLZ+Website, Qualify-orientierte Bestätigung. Stage 1 von 3.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
+- **Nächster Schritt:** Sales Voice Agent Lisa Pricing auf 299 flat updaten. Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
 
 ## Fixe Entscheidungen (No Drift)
 

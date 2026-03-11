@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PR #145: Gold Contact finalisiert)
+**Updated:** 2026-03-11 (PR #148: Demo→Test Flow)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,7 +11,7 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 80+ Commits, PRs #53–#145
+- **Shipped seit 04.03.:** 80+ Commits, PRs #53–#148
 - **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `provision_trial.mjs` + `offboard_tenant.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick cron + morning-report cron). Branch Protection: PR required.
@@ -107,7 +107,9 @@
 | S2 | Scout v2 — ICP Scoring + Multi-Query | CC | **DONE** ✅ |
 | S3 | E-Mail-Vorlage + Anruf-Skript ready | CC | **DONE** ✅ |
 | S5 | BigBen Pub — Paul Follow-up | Founder | OFFEN — Paul interessiert (#79/#80) |
-| S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **DONE** ✅ (PR #94) |
+| S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **VERALTET** — muss auf 299 flat umgestellt werden |
+| S7 | **Demo→Test Flow** — "Kostenlos testen" statt "Demo buchen" | CC | **DONE** ✅ (PR #148) |
+| S8 | **299 Flat Pricing** — Ein Produkt, alle Docs aligned | CC | **DONE** ✅ (PR #147) |
 | G10 | GTM SSOT Docs (Plan v2 + Tracker) | CC | **DONE** ✅ |
 | G9a | Weinberger Website (Leckerli D) | CC | **DONE** ✅ (PR #116) |
 | G9b | Weinberger Lisa (Leckerli B-Full) | CC | **DONE** ✅ (PR #118) |
@@ -196,6 +198,11 @@
 | 2026-03-11 | Morning Report — tick_stale detection for missed lifecycle events | PR #136 |
 | 2026-03-11 | Monitoring-Härtung — Morning Report Cron (GH Actions, Telegram + E-Mail), Tick-Failure Telegram, Health Check DB+Resend | PR #138 |
 | 2026-03-11 | Reise-Härtung — Runbook (Vor/Während/Nach), Trial-Timing-Regel, Morning Report Deep Health + Resend API Validation | PR #139 |
+| 2026-03-11 | GTM SSOT Hygiene — B-Quick eliminiert, Tracker + Einsatzlogik + ICP aligned | PR #141 |
+| 2026-03-11 | Weinberger E2E Ready — SMS-Modul + Google Review URL aktiviert, INTL Agent fix | PR #143 |
+| 2026-03-11 | Gold Contact — Nordstern-Dokument (Kaufmodell, Profile, Journey, Architektur) | PR #145 |
+| 2026-03-11 | 299 Flat Pricing — Ein Produkt, ein Preis. 3-Tier eliminiert. Pre-Contact Quality Gate | PR #147 |
+| 2026-03-11 | Demo→Test Flow — /testen Page, /demo redirect, DemoForm PLZ+Website, Qualify-SMS | PR #148 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 
