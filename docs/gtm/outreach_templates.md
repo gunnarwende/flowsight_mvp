@@ -30,7 +30,7 @@ Der Outreach führt den Prospect zum Testen, nicht zum Kaufen. Die Templates spi
 
 ---
 
-## Template 1: A+B-Full+C+D (ICP 90+, Top-Prospects)
+## Template 1: A+B-Full+C+D (HOT, ICP ≥8)
 
 **Betreff:** {FIRMA} — ich habe etwas für Sie gebaut
 
@@ -57,7 +57,7 @@ Der Outreach führt den Prospect zum Testen, nicht zum Kaufen. Die Templates spi
 
 ---
 
-## Template 2: A+B-Full+D (ICP 75-89, gute Prospects)
+## Template 2: B-Full+D (WARM, ICP 6-7)
 
 **Betreff:** {FIRMA} — Ihre eigene Lisa wartet
 
@@ -81,30 +81,7 @@ Der Outreach führt den Prospect zum Testen, nicht zum Kaufen. Die Templates spi
 
 ---
 
-## Template 3: B-Full+D (ICP 60-74, solide Prospects)
-
-**Betreff:** Kein verpasster Anruf mehr — Demo für {FIRMA}
-
-**Body:**
-
-> Guten Tag,
->
-> ich bin Gunnar Wende von FlowSight. Wir haben eine KI-Assistentin gebaut, die Anrufe für {GEWERK}-Betriebe entgegennimmt — rund um die Uhr.
->
-> Ich habe eine kurze Demo für Sie vorbereitet:
->
-> **Testen Sie es selbst:** Rufen Sie {TESTNUMMER} an.
-> **Website-Vorschau:** {WEBSITE_URL}
->
-> Kein Abo, kein Termin. Einfach anrufen und testen.
->
-> Grüsse
-> Gunnar Wende
-> FlowSight — flowsight.ch
-
----
-
-## Template 4: Trial-Einladung (nach Provision)
+## Template 3: Trial-Einladung (nach Provision)
 
 **Trigger:** Prospect hat Interesse gezeigt → Trial provisioniert → Welcome-Mail geht automatisch via `provision_trial.mjs`.
 
@@ -188,8 +165,8 @@ Vor jedem Versand:
 
 | Touch | Kanal | Timing | Template |
 |-------|-------|--------|----------|
-| 0 | E-Mail (auto) | Nach Provision | Template 4 (automatisch via provision_trial.mjs) |
-| 1 | E-Mail | Tag 0 | Template 1/2/3 (nach ICP) |
+| 0 | E-Mail (auto) | Nach Provision | Template 3 (automatisch via provision_trial.mjs) |
+| 1 | E-Mail | Tag 0 | Template 1 (HOT) oder Template 2 (WARM) |
 | 2 | Anruf | Tag 2 | Anruf-Script |
 | 3 | E-Mail | Tag 7 | Kurzer Follow-up ("Hatten Sie Zeit zum Testen?") |
 | — | Pause | Danach | Kein weiterer Kontakt. Prospect ruht. |
