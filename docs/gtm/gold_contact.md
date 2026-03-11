@@ -11,6 +11,7 @@
 - Kontrollierter Echt-Moment mit Endkunden: ja, aber erst nach E2E + Selbsttest
 - Zwei Profile: Meister (2-8 Mann) / Betrieb (8-30 Mann), Prospect Card als Router
 - Ebene 1 = maximales Kundenerlebnis. Ebene 2 = Kaufmechanik darunter.
+- **Ein Produkt, ein Preis: CHF 299/Monat.** Kein Paketmodell. Was der Betrieb im Trial erlebt = was er kauft. 14 Tage kostenlos, monatlich kündbar.
 
 ---
 
@@ -352,7 +353,7 @@ Jeder Punkt ist ein sofortiger Abbruch. Der Betrieb testet nicht zweimal.
 |---|-----------|---------------|------------|
 | 1 | **Lisa sagt den falschen Firmennamen** | "Die kennen mich gar nicht." Alles danach kontaminiert. | E2E-Test als Quality Gate. Kein Kontakt bevor CC getestet hat. |
 | 2 | **Lisa gibt falsche Infos** (Preise, Zeiten, Team) | "Erzählt Quatsch über meine Firma." Schlimmer als kein System. | Nur verifizierte Crawl-Daten. Lieber "Das müsste ich prüfen." |
-| 3 | **SMS kommt nicht** | Stärkster WOW-Moment stirbt. "Funktioniert nicht." | SMS-Whitelist. Smoke-Test vor Kontakt. |
+| 3 | **SMS kommt nicht** | Stärkster WOW-Moment stirbt. "Funktioniert nicht." | SMS-Whitelist. `pre_contact_check.mjs` vor jedem Kontakt (automatisiert). |
 | 4 | **Website zeigt 404, fremde Firma, kaputtes Layout** | "Unprofessionell." Sofortiger Abbruch. | Mobile + Desktop QA als Gate. |
 | 5 | **SMS an falsche Nummer** | Datenschutz-Verstoss. Sofort Vertrauensverlust. Potentiell rechtlich. | 3-Tier SMS Routing. Whitelist-Guard. E2E-Test. |
 
@@ -434,7 +435,7 @@ Bei Modus 2 (Web ok, z.B. Weinberger): Anruf + E-Mail. "Ich habe Lisa für Sie g
 - Day 10: Founder ruft an. "Wie war's? Hat Lisa funktioniert?"
 - Natürliche Folgefrage: "Hat Ihre Frau / Ihr Partner es auch gesehen?"
 - Preis nur bei klarem Interesse oder auf direkte Frage.
-- Wenn er fragt: "199 im Monat. Sie bekommen Lisa, SMS, Dashboard — alles was Sie getestet haben."
+- Wenn er fragt: "299 im Monat. Alles, was Sie getestet haben, bleibt aktiv."
 
 ---
 
@@ -489,7 +490,7 @@ Einstieg: "Ich habe für die Jul. Weinberger AG eine eigene Assistentin gebaut �
 - Day 10: Founder ruft den Chef an. "Wie war's? Hat Ihre Bürokraft es auch gesehen?"
 - Natürliche Folgefrage: "Soll ich Ihrer Disponentin kurz zeigen, wie die Übersicht funktioniert?"
 - Wenn Disponentin eingebunden wird und positiv reagiert → fast sicher.
-- Preis: "299 im Monat für den Alltag-Plan. Dashboard, Lisa, SMS, alles drin."
+- Preis: "299 im Monat. Alles, was Sie getestet haben, bleibt aktiv."
 
 ---
 
@@ -512,8 +513,8 @@ Die Prospect Card enthält bereits: Teamgrösse, Kontaktperson, Website-Qualitä
 
 | | Modus 1 (Full) | Modus 2 (Extend) |
 |---|----------------|-------------------|
-| **Meister** | Dörfler AG: Persönlich, vor Ort. "Ich habe Ihnen eine Website + Lisa gebaut." Website + Voice = maximales Geschenk. | Selten — Meister haben meist schwache/keine Website. |
-| **Betrieb** | Möglich, aber unwahrscheinlich — grössere Betriebe haben meist eine Website. | Weinberger AG: E-Mail an Chef. "Ich habe Lisa gebaut." Website als Ergänzung, nicht als Hauptargument. |
+| **Meister** | Dörfler AG: Persönlich, vor Ort. "Ich habe Ihnen eine Website + Lisa gebaut." Website + Voice = maximales Geschenk. | Selten — Meister haben meist schwache/keine Website. Falls doch: Modus 2 (Extend) greift unabhängig vom Profil. |
+| **Betrieb** | Falls kein Web: Modus 1 (Full) greift. Profil bleibt Betrieb. | Weinberger AG: E-Mail an Chef. "Ich habe Lisa gebaut." Website als Ergänzung, nicht als Hauptargument. |
 
 **Fallback:** Im Zweifel → Meister. Lieber zu persönlich als zu formal.
 
@@ -596,7 +597,7 @@ Kein Vertrag. Kein Preis. Kein "Testzeitraum". Keine Feature-Liste. Drei konkret
 | Hochwertig | Personalisierte Website, eigene Nummer | "Hier ist unser Demolink" |
 | Glaubwürdig | "Ich habe das gebaut" (Founder, nicht Marketing) | "Unser Team hat für Sie..." |
 | Sofort erlebbar | "Rufen Sie an. 30 Sekunden." | "Buchen Sie einen Termin." |
-| Risikofrei | Kein Preis, kein Vertrag, kein Setup | "Starter-Paket nur 199/Mo" |
+| Risikofrei | Kein Preis, kein Vertrag, kein Setup | "Nur 299/Mo — welches Paket brauchen Sie?" |
 | Knapp | 3 Elemente: Nummer, Website, Anleitung | Feature-Tabelle, Comparison Chart |
 
 ### Was im Betrieb intern weitergezeigt werden kann
@@ -675,7 +676,7 @@ Betrieb: "Wollen Sie mal einen Abend-Anruf über Lisa laufen lassen? Ihre Dispon
 
 ### Day 10: Der persönliche Anruf
 
-Nicht verkaufen. Fragen.
+Nicht verkaufen. Fragen. *Skalierungs-Hinweis: Ab 5+ parallelen Trials → Day-10-Call standardisieren oder teilautomatisieren. Bis dahin: Founder persönlich.*
 
 Meister:
 > "Herr Dörfler, wie war Ihr Eindruck? Hat Lisa funktioniert? Hat Ihre Frau es gesehen?"
@@ -685,12 +686,12 @@ Betrieb:
 
 **Zuhören.** Dann, nur wenn der Moment stimmt oder er fragt:
 
-> "Die Testnummer ist noch 4 Tage für Sie reserviert. Wenn's passt, aktivieren wir Lisa dauerhaft. Starter-Paket: 199 im Monat."
+> "Die Testnummer ist noch 4 Tage für Sie reserviert. Wenn's passt, aktivieren wir Lisa dauerhaft. 299 im Monat — alles bleibt."
 
 ### Wann Preis, wer bringt es zur Sprache
 
 - **Betrieb fragt direkt** ("Was kostet das?") → Sofort antworten. Klar, kurz, keine Verhandlung.
-- **Betrieb fragt nicht** → Founder bringt es beiläufig ein: "Wenn Sie Lisa behalten möchten: 199/Mo, alles inklusive was Sie getestet haben."
+- **Betrieb fragt nicht** → Founder bringt es beiläufig ein: "Wenn Sie Lisa behalten möchten: 299 im Monat, alles was Sie getestet haben bleibt aktiv."
 - **Nie:** Preis per E-Mail ohne vorheriges Gespräch. Nie: Preisvergleichs-PDF.
 
 ### Day 13: Erinnerung (automatisch)
@@ -741,7 +742,7 @@ Tag 7:  Echter Kundenanruf über Lisa.
 
 Tag 10: Founder ruft an. "Wie war's?"
         → "Das ist das Erste, was funktioniert hat."
-        → "199 im Monat."
+        → "299 im Monat. Alles bleibt."
         → "Machen wir."
 
 Tag 30: Erster echter Fall gelöst. Review-Anfrage. 5 Sterne.

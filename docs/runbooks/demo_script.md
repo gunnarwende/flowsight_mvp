@@ -176,17 +176,16 @@
 
 > "Was kostet das?"
 
-**Preise nennen:**
-- **Starter** (ab CHF 99/Mt.): Website + Wizard + Bestätigungs-E-Mail + persönliches Onboarding
-- **Professional** (ab CHF 249/Mt.): + KI-Telefonassistent Lisa + Ops Dashboard + Foto-Anhänge
-- **Premium** (ab CHF 349/Mt.): + Google Reviews + Morning Report + Prioritäts-Support
+**Preis nennen:**
+- **CHF 299/Monat.** Alles inklusive: Website, Lisa (24/7), Dashboard, SMS, Bewertungen, Mehrsprachig.
+- Kein Paketmodell. Was Sie im Test erlebt haben = was Sie bekommen.
 
 **Zusatz-Infos (bei Nachfrage):**
 - Voice-Minuten: Abrechnung nach Verbrauch, kein Grundpreis für Minuten
 - Setup kostenfrei
 - Monatlich kündbar, keine Bindung
 
-> "Und unser 30-Tage-Versprechen: Wenn Sie nach 30 Tagen nicht mindestens 10 strukturierte Fälle im Dashboard haben und Ihre erste 5-Sterne-Google-Bewertung — ist der gesamte erste Monat kostenfrei. Null Risiko."
+> "14 Tage kostenlos testen. Kein Vertrag. Kein Setup. Was Sie im Test erlebt haben, bleibt danach aktiv — für 299 im Monat. Monatlich kündbar."
 
 ### Min 14–15: Close
 

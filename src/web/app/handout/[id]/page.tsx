@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HANDOUTS, PACKAGES, type HandoutData } from "@/src/lib/marketing/handouts";
+import { HANDOUTS, PRODUCT, type HandoutData } from "@/src/lib/marketing/handouts";
 import { SITE } from "@/src/lib/marketing/constants";
 import { generateQrSvg } from "@/src/lib/marketing/qr";
 import { PrintButton } from "./PrintButton";
@@ -154,49 +154,36 @@ export default async function HandoutPage({
           </div>
         </section>
 
-        {/* ━━━ PAKETE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+        {/* ━━━ PREIS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
         <section className="mt-5">
           <h2 className="text-[10px] font-bold uppercase tracking-[0.15em] text-navy-400">
-            Pakete & Preise
+            Preis
           </h2>
-          <div className="mt-2.5 grid grid-cols-3 gap-2.5">
-            {PACKAGES.map((pkg) => {
-              const isRec = pkg.id === data.recommendedPackage;
-              return (
-                <div
-                  key={pkg.id}
-                  className={`rounded-xl p-3.5 ${
-                    isRec
-                      ? "border-2 border-gold-500 bg-gold-100/30 shadow-sm"
-                      : "border border-navy-200"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <p className={`text-[10px] font-bold uppercase tracking-wider ${isRec ? "text-gold-600" : "text-navy-400"}`}>
-                      {pkg.name}
-                    </p>
-                    {isRec && (
-                      <span className="rounded-full bg-gold-500 px-1.5 py-0.5 text-[8px] font-bold uppercase text-navy-950">
-                        Empfohlen
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-base font-bold">
-                    {pkg.price}
-                    <span className="text-[10px] font-normal text-navy-400"> / Mt.</span>
-                  </p>
-                  <p className="text-[10px] text-navy-400">{pkg.subtitle}</p>
-                  <ul className="mt-2 space-y-0.5">
-                    {pkg.features.map((f) => (
-                      <li key={f} className="flex items-start gap-1 text-[10px] leading-snug text-navy-900/80">
-                        <Check />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+          <div className="mt-2.5">
+            <div className="rounded-xl border-2 border-gold-500 bg-gold-100/30 p-3.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gold-600">
+                  {PRODUCT.name}
+                </p>
+                <span className="rounded-full bg-gold-500 px-1.5 py-0.5 text-[8px] font-bold uppercase text-navy-950">
+                  Alles inklusive
+                </span>
+              </div>
+              <p className="mt-1 text-base font-bold">
+                {PRODUCT.price}
+                <span className="text-[10px] font-normal text-navy-400"> / Mt.</span>
+              </p>
+              <p className="text-[10px] text-navy-400">{PRODUCT.subtitle}</p>
+              <ul className="mt-2 space-y-0.5">
+                {PRODUCT.features.map((f) => (
+                  <li key={f} className="flex items-start gap-1 text-[10px] leading-snug text-navy-900/80">
+                    <Check />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[10px] text-navy-400">14 Tage kostenlos testen · Monatlich kündbar</p>
+            </div>
           </div>
         </section>
 

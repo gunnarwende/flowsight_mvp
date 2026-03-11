@@ -35,7 +35,7 @@ The Sales Voice Agent handles inbound calls on FlowSight's business number. It a
 
 The agent's knowledge is embedded in the conversation flow prompt (no external KB). Content sources:
 - Marketing website (flowsight.ch)
-- 3-tier pricing: Starter (CHF 99), Professional (CHF 249), Premium (CHF 349)
+- Flat pricing: CHF 299/month, everything included (Website, Lisa 24/7, Dashboard, SMS, Reviews)
 - Key facts: Swiss company, DSGVO-konform, no recordings, monthly cancellation
 
 ## Post-Call Analysis Schema
