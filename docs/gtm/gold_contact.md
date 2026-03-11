@@ -1,368 +1,400 @@
-# Gold Contact — Das kanonische Zielerlebnis
+# Gold Contact v2 — Der Schlüssel zum Betrieb
 
 **Erstellt:** 2026-03-11 | **Owner:** Founder + CC
-**Leitfrage:** Was muss passieren, damit ein Sanitär-/Heizungs-/Spenglerbetrieb nach dem ersten Kontakt mit FlowSight sagt: *"So etwas hat noch nie jemand für uns gemacht."*?
+**Status:** v2 in Arbeit — Teil I fertig, Teil II-IV folgt nach Founder-Review
+**Leitfrage:** Was muss ein Sanitär-/Heizungs-/Spengler-Betrieb innerlich durchlaufen, damit er aus voller Überzeugung Ja sagt?
+
+**Entscheidungen (11.03.):**
+- Handy-first als Default, Dashboard-first nur bei Bürokraft/Disposition (Option C)
+- Kontrollierter Echt-Moment mit Endkunden: ja, aber erst nach E2E + Selbsttest (Option A)
+- Zwei Profile im Denken (Meister / Betrieb), Prospect Card als Router (Option B/C)
+- Ebene 1 = maximales Kundenerlebnis. Ebene 2 = Kaufmechanik darunter.
 
 ---
 
-## Die Einsicht, die alles verändert
-
-Handwerksbetriebe werden täglich kontaktiert — von Software-Verkäufern, Versicherungen, Lieferanten. Sie haben eine dicke Haut entwickelt. Jeder verspricht "Digitalisierung". Niemand versteht ihren Alltag.
-
-**Unser unfairer Vorteil:** Wir zeigen nicht, was wir können. Wir zeigen dem Betrieb *sich selbst* — in einer Qualität, die er nicht erwartet hat. Jeder Berührungspunkt sagt: "Jemand hat sich wirklich hingesetzt und sich mit meinem Betrieb beschäftigt."
-
-Das ist der Kern von High-Touch, High-Tech: **Die Technik ist unsichtbar. Das Persönliche ist spürbar.**
+# TEIL I: DER SCHLÜSSEL
 
 ---
 
-## Wer ist die Hauptperson?
+## 1. Warum kauft ein Betrieb?
 
-### Der 2-5 Mann Betrieb (Dörfler, Weinberger, Orlandini)
+Ein Handwerksbetrieb kauft nicht, weil er beeindruckt ist. Er kauft, wenn fünf Dinge gleichzeitig stimmen — und keines davon fehlt.
 
-**Hauptperson: Der Inhaber selbst.** Er ist Geschäftsführer, Monteur, Kundenbetreuer, Buchhalter in einer Person. Er nimmt Anrufe auf der Baustelle entgegen, zwischen zwei Rohrstücken. Seine Frau oder eine Teilzeit-Bürokraft hilft mit der Planung. Abends um 21 Uhr beantwortet er noch Mails.
+### Die fünf Stufen
 
-**Sein grösstes Problem:** Er verpasst Anrufe. Nicht weil es ihm egal ist — weil er gerade unter einem Waschbecken liegt. Und er weiss es. Er denkt jeden Abend: "Wie viele haben heute angerufen und dann jemand anderen genommen?"
+**Stufe 1: Schmerz — "Ich verliere wirklich etwas."**
 
-**Seine Angst:** Technologie, die er nicht versteht. Ein Dashboard, das er nie öffnet. Ein Vertrag, der ihn bindet.
+Der Betrieb muss seinen eigenen Schmerz spüren. Nicht abstrakt ("Digitalisierung ist wichtig"), sondern konkret und persönlich.
 
-**Sein Traum:** Morgens aufstehen und wissen: Kein Anruf ging verloren. Alles ist aufgeschrieben. Er muss nur noch entscheiden, was zuerst.
+Was der Meister (2-8 Mann) wirklich fühlt:
+- Freitagabend, 19:30. Das Handy klingelt. Er liegt auf dem Sofa. Er geht nicht ran. Montag ist der Anruf vergessen — und der Kunde hat jemand anderen angerufen.
+- Er weiss nicht, wie viele Anrufe er verpasst. Aber er ahnt es. Und dieses Ahnen nagt.
+- Seine Frau sagt: "Du kannst nicht 24 Stunden erreichbar sein." Er weiss, dass sie recht hat. Er hat keine Lösung.
 
-### Der 10-30 Mann Betrieb
+Was der Betrieb (8-30 Mann) wirklich fühlt:
+- Die Disponentin geht um 17 Uhr. Danach: Anrufbeantworter. Oder das Handy vom Chef.
+- Montag morgen: 3 Nachrichten auf der Mailbox, 2 SMS, 1 Zettel. Eine davon war ein Notfall — aber der Zettel ist unter dem Kalender verschwunden.
+- Der Monteur fährt zum falschen Ort, weil die Adresse unvollständig war. Der Kunde ist wütend. Der Chef ist wütend. Die Disponentin ist frustriert.
 
-**Hauptperson: Der Inhaber oder Betriebsleiter.** Er hat eine Disponentin oder Bürokraft. Die nimmt Anrufe an — wenn sie nicht gerade in der Pause ist, am anderen Telefon, krank, oder im Urlaub. Der Chef bekommt Anrufe weitergeleitet, die er nicht will. Die Disponentin schreibt auf Zettel oder in Excel.
+**Wie wir Schmerz-Bewusstsein erzeugen — ohne zu belehren:**
 
-**Sein Problem ist anders:** Nicht verpasste Anrufe — sondern **verlorene Information**. Der Zettel verschwindet. Die SMS wird übersehen. Der Monteur fährt zum falschen Ort. Der Kunde ruft wütend nochmal an.
+Wir sagen nie: "Sie verlieren Anrufe." Das wäre anmassend.
 
-**Sein Traum:** Ein System, das seine Disponentin entlastet — ohne sie zu ersetzen. Das den Abend-/Wochenend-Anruf auffängt, den niemand nehmen will.
+Stattdessen lassen wir das System den Spiegel halten. Wenn der Betrieb Lisa um 21:47 testet und sieht, dass Lisa den Anruf aufgenommen hat, kommt die Erkenntnis von allein: *"Wäre das ein echter Kunde gewesen — hätte ich den verpasst."*
 
----
-
-## Das kanonische Zielerlebnis — Drei Module
-
-### Modul 1: "Da hat sich jemand hingesetzt" (Erster Kontakt)
-
-Der Betrieb öffnet eine E-Mail. Drin steht kein generisches "Sehr geehrte Damen und Herren". Drin steht:
-
-> *"Ich habe für die Jul. Weinberger AG eine eigene Seite gebaut — mit Ihren echten Services, Ihren Google-Bewertungen, Ihrem 24h-Notdienst. Und eine eigene Assistentin: Lisa. Sie nimmt ab, wenn Sie nicht können."*
-
-Er klickt auf den Link. Er sieht **seine Firma**. Seine Farben. Seine Dienstleistungen. Seine Bewertungen. Nicht ein Template — sein Betrieb, wie er ihn gerne präsentieren würde, aber nie die Zeit hatte.
-
-**Dann sieht er die Nummer.** "Ihre persönliche Testnummer."
-
-**Und er ruft an.** Nicht weil er muss — weil er neugierig ist. Was passiert?
-
-Lisa nimmt ab. Sie sagt seinen Firmennamen. Sie fragt nach der PLZ, erkennt den Ort. Sie ist höflich, schnell, professionell. Sie sagt: "Sie erhalten gleich eine SMS."
-
-**Und 10 Sekunden später vibriert sein Handy.** Eine SMS. Von "Weinberger". Mit einer Zusammenfassung. Einem Link, um Fotos hochzuladen.
-
-**Das ist der WOW-Moment.** Nicht die Technik. Die Erkenntnis: *"Das hat gerade für meinen Betrieb funktioniert. Mit meinem Namen. In 30 Sekunden."*
-
-### Modul 2: "So sieht mein Tag morgen aus" (Dashboard-Moment)
-
-Er klickt auf den Magic Link in seiner Welcome-Mail. Das Dashboard öffnet sich.
-
-Da steht sein Testfall. Kategorie, Dringlichkeit, PLZ, Beschreibung — alles, was Lisa aufgenommen hat. Dazu: Zeitstempel, Status, SMS-Bestätigung.
-
-**Für den 2-Mann-Betrieb:** Das ist das Erste Mal, dass er seine "Fälle" auf einen Bildschirm sieht. Er hat das bisher im Kopf, auf Zetteln, in WhatsApp-Chats mit seiner Frau.
-
-**Für den 10-30-Mann-Betrieb:** Er sieht sofort: "Das könnte unsere Excel-Liste ersetzen. Die Disponentin hätte morgens eine saubere Übersicht."
-
-Er scrollt. Er sieht: Suche, Filter, Export. Er denkt: "Wenn das mit echten Fällen so aussieht..."
-
-### Modul 3: "Mein Kunde hat eine Bewertung geschrieben" (Review-Moment)
-
-Zwei Tage später. Der Betrieb hat ein paar Testanrufe gemacht. Lisa funktioniert. Die SMS kommen. Das Dashboard füllt sich.
-
-Dann schickt er (oder wir simulieren es im Demo) eine Review-Anfrage. Der "Kunde" bekommt eine hübsche Seite, Google-Review-Style. Klickt auf "Bewerten". Schreibt einen Stern-Review.
-
-**Das ist der Langzeit-WOW:** "FlowSight bringt mir nicht nur Ordnung, sondern auch Bewertungen. Die Google-Sterne, die ich seit Jahren will, aber nie aktiv anfrage."
+Der Schmerz muss selbst-entdeckt sein, nicht präsentiert.
 
 ---
 
-## Die Journey im Detail
+**Stufe 2: Beweis — "Das funktioniert. Jetzt. Für mich."**
 
-### Phase 0: Vorbereitung (CC, ~45 Min, Betrieb merkt nichts)
+Nicht: "Schau dir unsere Demo an." Sondern: "Ruf deine eigene Nummer an."
 
-| Schritt | Was passiert | Ergebnis |
-|---------|-------------|----------|
-| Crawl | Website + Verzeichnisse + Google Maps | Rohdaten: Services, Team, Bewertungen, Fotos, Öffnungszeiten |
-| Prospect Card | Strukturierte Analyse: ICP Score, Gewerke, Notdienst, Region | `prospect_card.json` |
-| Website | `/kunden/{slug}` — echte Daten, echte Fotos, echte Bewertungen | Live-URL |
-| Voice Agent | Lisa DE + INTL — Firmenname, Services, Region, Preise, Team | Published auf Retell |
-| Telefonnummer | Twilio-Nummer → Retell → Webhook | Eigene Testnummer |
-| Tenant | Supabase: Modules, SMS Config, Review URL | E2E-fähig |
-| E2E-Test intern | CC ruft an, prüft SMS, Dashboard, Review Surface | Qualitätssicherung bevor Betrieb es sieht |
+Der entscheidende Unterschied zu jedem anderen Software-Verkäufer: **Es existiert schon.** Der Betrieb testet nicht eine generische Demo — er testet sein eigenes System. Mit seinem Namen, seinen Services, seiner Region.
 
-**Goldene Regel:** Der Betrieb sieht erst etwas, wenn alles fehlerfrei funktioniert. Kein "Beta-Gefühl". Kein "Noch nicht ganz fertig". Vom ersten Pixel an: fertig.
+Was als Beweis zählt:
+- Lisa sagt seinen Firmennamen. (Nicht "Willkommen beim Demo-System.")
+- Die SMS kommt von "Weinberger". (Nicht von "FlowSight" oder einer Nummer.)
+- Der Fall im Dashboard hat seine PLZ, seine Kategorie, seine Beschreibung.
+- Die Website zeigt seine echten Bewertungen, seine echten Services.
 
-### Phase 1: Erstkontakt (Founder, persönlich)
+Was nicht als Beweis zählt:
+- Ein Video, in dem jemand anderes das System benutzt.
+- Ein Screenshot von einem Dashboard mit fremden Daten.
+- Ein Versprechen: "Das können wir auch für Sie machen."
 
-**Der Einstieg, der aus den Socken haut:**
+**Architektur-Implikation:** Alles, was der Betrieb sieht, muss auf seinen Betrieb personalisiert sein. Kein generisches Element. Kein Platzhalter. Kein "Beispiel-Betrieb". Sein Name, seine Farben, seine Daten — oder gar nichts.
 
-Nicht: "Hallo, ich verkaufe Software."
-Nicht: "Wollen Sie mehr Google-Bewertungen?"
-Nicht: "Buchen Sie eine Demo."
+---
 
-Sondern:
+**Stufe 3: Risiko-Null — "Ich kann nichts verlieren."**
 
-> *"Guten Tag Herr Weinberger, ich bin Gunnar Wende. Ich habe für Ihren Betrieb etwas gebaut — darf ich Ihnen das kurz zeigen? Dauert 30 Sekunden: Rufen Sie diese Nummer an."*
+Ein Handwerker ist kein Early Adopter. Er hat schon schlechte Erfahrungen mit Software gemacht. Oder mit Verträgen. Oder mit Verkäufern, die "nur kurz was zeigen" wollten.
 
-**Die Kraft liegt darin, dass es schon existiert.** Kein Pitch. Kein Versprechen. Ein Anruf. Das war's.
+Seine innere Checkliste (meist unbewusst):
+- Was kostet mich das? → Nichts. 14 Tage kostenlos. Kein Vertrag.
+- Muss ich etwas installieren? → Nein. Alles läuft schon.
+- Muss ich etwas konfigurieren? → Nein. Ist personalisiert.
+- Was passiert nach 14 Tagen? → Nummer wird frei. Kein Druck. Kein Abo.
+- Sehen meine Kunden das? → Nur wenn du es willst. Du gibst die Nummer gezielt weiter.
+- Wer hat Zugriff auf meine Daten? → Nur du. DSGVO-konform. Schweizer Server.
 
-**Kanäle für den Erstkontakt (nach Modus):**
+**Entscheidend:** Risiko-Null muss nicht erklärt werden. Es muss spürbar sein. Der Betrieb merkt es daran, dass er nirgends ein Formular ausfüllen, ein Passwort setzen oder eine Kreditkarte hinterlegen muss. Alles ist schon da. Der Magic Link funktioniert. Die Nummer funktioniert. Fertig.
 
-| Modus | Einstieg | Warum |
-|-------|---------|-------|
-| **Modus 1** (Dörfler = kein Web) | Persönlich / Vor-Ort / Anruf + E-Mail | "Ich wohne um die Ecke. Ich habe Ihnen eine Website gebaut." |
-| **Modus 2** (Weinberger = Web ok) | E-Mail + Video + Testnummer | "Ich habe Lisa gebaut. Sie nimmt ab, wenn Sie nicht können." |
+Wenn du erklären musst, warum es kein Risiko ist — hast du schon verloren. Es muss offensichtlich sein.
 
-### Phase 2: Der Test (14 Tage)
+---
 
-**Was der Betrieb bekommt:**
+**Stufe 4: Soziale Bestätigung — "Andere finden das auch gut."**
 
-| Element | Beschreibung | Format |
-|---------|-------------|--------|
-| **Persönliche Testnummer** | Eigene Nummer, eigener Agent, eigener Firmenname | Tel: +41 43 XXX XX XX |
-| **Personalisierte Website** | `/kunden/{slug}` — seine Firma, seine Farben, sein Wizard | URL |
-| **Magic Link** | Einmal klicken → Dashboard. Kein Passwort, kein Login-Stress. | E-Mail |
-| **Welcome-Seite** | `/ops/welcome` — "Willkommen. So starten Sie: Rufen Sie an." | Dashboard-Startseite |
-| **Kurze Anleitung** | 3 Schritte: Anrufen → SMS prüfen → Dashboard öffnen | In Welcome-Mail |
-| **Persönliches Video** (HOT) | 45-60s Founder-Video: "Das habe ich für Sie gebaut. So funktioniert es." | Loom/YouTube |
-| **Begleittext** | Persönliche E-Mail, kein Template-Gefühl | Founder-Mail |
+Das ist die Stufe, die wir bisher fast komplett ignoriert haben. Und sie ist für Handwerker besonders stark.
 
-**Was der Betrieb NICHT bekommt:**
-- Keinen Vertrag
-- Keine Preisliste (erst nach Day 10)
-- Kein "Testzeitraum läuft ab"-Druck
-- Keine Aufforderung, etwas zu konfigurieren
-- Kein technisches Setup — alles ist schon da
+Handwerker sind Netzwerk-Menschen. Sie kennen die anderen Betriebe in der Region. Sie reden beim Lieferanten, auf der Baustelle, beim Stammtisch. Wenn einer was Gutes hat, wissen es die anderen.
 
-### Phase 3: Der Flow (während des Tests)
+Drei Quellen sozialer Bestätigung, die wir aktivieren können:
 
-**Auslöser:** Jeder echte oder simulierte Anruf/Wizard-Eintrag.
+**a) Die Frau / der Partner / die Bürokraft**
+
+Beim 2-8 Mann Betrieb entscheidet der Inhaber selten allein. Abends am Küchentisch: "Du, ich hab heute was getestet..." Wenn die Antwort ist "Klingt gut" → Kauf wahrscheinlich. Wenn die Antwort ist "Wieder so ein Ding?" → Kauf unwahrscheinlich.
+
+Unser Hebel: Die personalisierte Website ist etwas, das der Inhaber seiner Frau zeigen will. "Schau mal, die haben unsere Firma gemacht." Das ist kein Dashboard, kein Backend, kein technisches Tool — das ist etwas Schönes, Sichtbares, Verständliches. Die Website ist unser Trojanisches Pferd in den Küchentisch-Moment.
+
+**b) Der Endkunde des Betriebs**
+
+Wenn Frau Müller bei der Jul. Weinberger AG anruft, Lisa antwortet, und Frau Müller dem Betrieb danach sagt: "Das war aber professionell bei Ihnen" — dann hat der Betrieb seinen Beweis. Nicht unseren. Seinen.
+
+Das ist der kontrollierte Echt-Moment (Entscheidung Option A): Tag 5-10, der Betrieb leitet 1-2 echte Anrufe über seine Testnummer. Das Feedback des Endkunden wird zum stärksten Kaufargument, das es gibt. Weil es nicht von uns kommt.
+
+**c) Der Kollege in der Region**
+
+"Kennst du FlowSight? Die haben mir Lisa gebaut." Wenn ein Betrieb das einem Kollegen erzählt, ist der Akquise-Aufwand für den Kollegen praktisch null. Handwerker-Empfehlung schlägt jede E-Mail.
+
+Unser Hebel: Wir fragen aktiv — aber erst nach einem positiven Day-10-Gespräch: "Kennen Sie einen Kollegen in der Region, dem Lisa auch helfen könnte? Ich baue gerne eine Demo — Sie können ihm die Nummer direkt geben."
+
+---
+
+**Stufe 5: Handlungsdruck — "Wenn ich jetzt nicht zugreife, ist die Chance weg."**
+
+Kein Druck = keine Entscheidung. Der Alltag frisst die Begeisterung. Am Montag war er begeistert, am Freitag hat er es vergessen.
+
+Aber: Künstlicher Druck ist tödlich. "Nur noch 3 Tage!" zerstört Vertrauen bei Handwerkern sofort. Sie haben zu oft gehört, dass etwas "nur heute" gilt.
+
+Natürlicher, ehrlicher Handlungsdruck:
+
+- **Die Testnummer:** "Ihre Nummer ist 14 Tage für Sie reserviert. Danach wird sie für einen anderen Betrieb in der Region frei." Das ist wahr (Twilio kostet). Es ist fair. Und es sagt: Du bist nicht der Einzige, der das haben könnte.
+- **Die Region:** "Wir arbeiten aktuell am linken Zürichsee-Ufer. Ich suche 2-3 Betriebe, die Lisa testen." Das ist wahr (wir haben begrenzten Fokus). Es sagt: Exklusivität durch Nähe.
+- **Das Zeitfenster:** "Ich bin die nächsten Wochen erreichbar, danach reise ich. Wenn es passt, würde ich das gerne vor meiner Abwesenheit starten." Das ist wahr (Philippinen-Reise). Es sagt: Ich nehme mir jetzt persönlich Zeit für dich.
+
+Keiner dieser Punkte ist manipulativ. Alle sind wahr. Und alle erzeugen ein gesundes "Dann lieber jetzt als später."
+
+---
+
+### Das Zusammenspiel
+
+Die fünf Stufen sind nicht linear. Sie laufen teilweise parallel. Aber alle fünf müssen erfüllt sein, bevor ein "Ja" kommt:
 
 ```
-Anruf auf Testnummer
-  → Lisa nimmt ab (Firmenname, PLZ-Erkennung, Empathie)
-  → SMS an Anrufer (10 Sek): Zusammenfassung + Korrekturlink + Foto-Upload
-  → Fall im Dashboard (sofort): Kategorie, Dringlichkeit, Adresse, Beschreibung
-  → E-Mail an Betrieb: "Neue Meldung eingegangen"
-
-Wizard-Meldung auf Website
-  → Fall im Dashboard (sofort)
-  → SMS an Melder (wenn Handynummer angegeben)
-  → E-Mail an Betrieb: "Neue Meldung eingegangen"
+                    ┌─────────────────────────────────┐
+                    │          JA — ICH WILL           │
+                    │     (Conversion / Unterschrift)   │
+                    └──────────────┬──────────────────┘
+                                   │
+                    ┌──────────────┴──────────────────┐
+                    │ 5. Handlungsdruck               │
+                    │    "Jetzt, nicht irgendwann"     │
+                    ├─────────────────────────────────┤
+                    │ 4. Soziale Bestätigung           │
+                    │    "Meine Frau / mein Kunde /    │
+                    │     mein Kollege findet das gut"  │
+                    ├─────────────────────────────────┤
+                    │ 3. Risiko-Null                   │
+                    │    "Ich kann nichts verlieren"    │
+                    ├─────────────────────────────────┤
+                    │ 2. Beweis                        │
+                    │    "Es funktioniert. Für mich."  │
+                    ├─────────────────────────────────┤
+                    │ 1. Schmerz                       │
+                    │    "Ich verliere wirklich etwas"  │
+                    └─────────────────────────────────┘
 ```
 
-**Was aufs Handy kommt — und für wen:**
-
-| Empfänger | Was | Wann | Kanal |
-|-----------|-----|------|-------|
-| **Anrufer** (Kunde des Kunden) | Bestätigung + Korrekturlink + Foto-Upload | 10 Sek nach Anruf | SMS |
-| **Betrieb** (unser Kunde) | "Neue Meldung: {Kategorie} in {Ort}" | Sofort | E-Mail |
-| **Melder** (Wizard) | Bestätigung + Korrekturlink | Nach Absenden | SMS (wenn Nummer) |
-
-**Der "Kunde des Kunden" in der Story:**
-Das ist der Hauseigentümer, der Mieter, die Verwaltung — die Person, die anruft weil das Rohr leckt. Sie ist die **Hauptperson in Modul 1**. Wenn diese Person sagt "Wow, das ging schnell" — dann hat der Betrieb verstanden, was FlowSight wert ist.
-
-### Phase 4: Der Follow-up (Day 7-10)
-
-**Day 7:** System prüft automatisch (Lifecycle Tick).
-**Day 10:** Founder ruft an. Nicht um zu verkaufen — um zu fragen:
-
-> *"Wie war's? Hat Lisa funktioniert? Was hat Ihre Bürokraft / Frau / Ihr Partner dazu gesagt?"*
-
-Das ist **High-Touch**. Der Founder ruft persönlich an. Fragt nach dem Erlebnis. Hört zu.
-
-**Erst jetzt:** Preise. Starter 199 / Alltag 299 / Wachstum 399. Aber nur wenn gefragt wird oder der Moment stimmt.
-
-### Phase 5: Der Review-Moment (nach Conversion)
-
-Der Betrieb hat unterschrieben. Jetzt kommt der Langzeit-WOW:
-
-Erster echter Kundenkontakt → Fall gelöst → Review-Anfrage an den Kunden → Google-Bewertung kommt rein.
-
-**Der Betrieb sieht:** "FlowSight hat mir nicht nur Ordnung gebracht — sondern auch eine 5-Sterne-Bewertung."
+Wenn eine Stufe fehlt:
+- Ohne Schmerz: "Nett, aber brauche ich nicht."
+- Ohne Beweis: "Klingt gut, aber funktioniert das wirklich?"
+- Ohne Risiko-Null: "Interessant, aber was wenn...?"
+- Ohne soziale Bestätigung: "Ich muss nochmal drüber nachdenken." (= mit Partner reden)
+- Ohne Handlungsdruck: "Ja, irgendwann mal." (= nie)
 
 ---
 
-## WOW-Momente (chronologisch)
+## 2. Der Spiegel-Effekt
 
-| # | Moment | Was passiert | Emotion |
-|---|--------|-------------|---------|
-| 1 | **"Meine Firma"** | Betrieb sieht seine personalisierte Website zum ersten Mal | Überraschung, Wertschätzung |
-| 2 | **"Lisa kennt mich"** | Erster Testanruf — Agent sagt Firmennamen, erkennt PLZ, ist höflich | Verblüffung |
-| 3 | **"Mein Handy vibriert"** | SMS kommt 10 Sek nach Anruf — mit Zusammenfassung und Korrekturlink | "Das geht so schnell?!" |
-| 4 | **"So sieht ein Fall aus"** | Dashboard zeigt strukturiert, was Lisa aufgenommen hat | Klarheit, Erleichterung |
-| 5 | **"Das funktioniert auch nachts"** | Betrieb testet abends/am Wochenende — Lisa nimmt ab, 24/7 | Sicherheit |
-| 6 | **"Mein Kunde ist begeistert"** | Anrufer-SMS kommt an — der Endkunde ist positiv überrascht | Stolz |
-| 7 | **"Eine Google-Bewertung!"** | Review-Engine schickt Anfrage → Endkunde bewertet → 5 Sterne | Langzeit-Bindung |
+### Das Prinzip
 
----
+Jeder Berührungspunkt mit FlowSight zeigt dem Betrieb sich selbst — in einer Qualität, die er nicht erwartet hat.
 
-## Was im Dashboard sichtbar sein muss
+Nicht: "Schauen Sie, was unsere Software kann."
+Sondern: "Schauen Sie, wie Ihr Betrieb damit aussieht."
 
-Wenn der Betrieb das Dashboard öffnet, muss er in **5 Sekunden** verstehen:
+Das ist der Unterschied zwischen einem Software-Demo und einem Geschenk. Die Demo sagt: "Kauf mich." Das Geschenk sagt: "Ich habe an dich gedacht."
 
-1. **Wie viele neue Fälle** seit letztem Login
-2. **Was ist dringend** (Notfälle oben, rot markiert)
-3. **Wer hat angerufen** (Kategorie, Ort, Zeitstempel — keine PII-Namen im MVP)
-4. **Was wurde gesagt** (Beschreibung von Lisa)
-5. **Was muss ich tun** (Status: neu → in Bearbeitung → erledigt)
+### Was "persönlich" konkret bedeutet
 
-**Für den 2-Mann-Betrieb:** Das Dashboard ist sein "Morgen-Briefing". Kaffee, Dashboard, los.
-**Für den 30-Mann-Betrieb:** Die Disponentin exportiert CSV in ihre Planung.
+| Element | Generisch (andere) | Persönlich (FlowSight) |
+|---------|-------------------|----------------------|
+| Website | "Demo-Betrieb GmbH" mit Stockfotos | Seine Firma, seine Fotos, seine Bewertungen, seine Farben |
+| Voice Agent | "Willkommen bei unserem Demo-System" | "Jul. Weinberger AG, mein Name ist Lisa" |
+| SMS | Von "FlowSight" oder einer Nummer | Von "Weinberger" — sein eigener Absendername |
+| Dashboard | Leere Tabelle oder fremde Daten | Sein Testfall, seine PLZ, seine Kategorie |
+| E-Mail | "Sehr geehrte Damen und Herren" | "Guten Tag Herr Weinberger, ich habe etwas für Ihren Betrieb gebaut" |
+| Testnummer | Shared Demo-Hotline | +41 43 505 11 01 — seine eigene Nummer, nur für ihn |
+| Preise im Agent | Generische Aussagen | Seine tatsächlichen Preisindikationen von der Website |
 
----
+### Warum der Spiegel stärker ist als jede Feature-Liste
 
-## Was variiert je Modus
+Ein Sanitär-Unternehmer denkt nicht in Features. Er denkt in seiner Welt: Kunden, Aufträge, Monteure, Rechnungen. Wenn wir ihm "Ticket-Management" zeigen, muss er übersetzen. Wenn wir ihm seinen eigenen Kunden-Anruf zeigen — versteht er sofort.
 
-| Element | Modus 1 (Full) | Modus 2 (Extend) |
-|---------|----------------|-------------------|
-| Website | FlowSight baut komplette Seite | FlowSight baut Wizard-Landing + CTA-Vorschlag für bestehende Seite |
-| Einstieg | "Ich habe Ihnen eine Website + Lisa gebaut" | "Ich habe Lisa für Sie gebaut" |
-| Video-Fokus | Website + Lisa + SMS | Lisa + SMS + Dashboard |
-| Wizard-Integration | Auf FlowSight-Seite (`/kunden/{slug}/meldung`) | Auf FlowSight-Seite + Empfehlung für CTA auf eigener Website |
-| Outreach-Botschaft | "Wir digitalisieren Ihren Betrieb" | "Wir erweitern Ihr System" |
-| Persönlichkeits-Faktor | MAXIMAL — der Betrieb hatte nichts, wir geben ihm alles | HOCH — der Betrieb sieht, dass wir seine bestehende Arbeit respektieren |
+Der Spiegel funktioniert auf drei Ebenen:
 
----
+1. **Wiedererkennung:** "Das ist ja meine Firma." → Aufmerksamkeit
+2. **Aufwertung:** "So gut hat mein Betrieb noch nie ausgesehen." → Wertschätzung
+3. **Projektion:** "Wenn das mit echten Kunden so läuft..." → Kaufwunsch
 
-## Pflichtbestandteile jeder Gold-Contact Journey
+Alle drei Ebenen passieren innerhalb von 30 Sekunden. Ohne Erklärung. Ohne Pitch. Ohne Feature-Tour.
 
-Egal ob Modus 1 oder 2, egal ob 2-Mann oder 30-Mann:
+### Der eine Satz
 
-### Vor dem Kontakt (CC-Arbeit)
-- [ ] Prospect Card erstellt (echte Daten, keine Erfindung)
-- [ ] Website live + getestet (Mobile + Desktop)
-- [ ] Voice Agent live + getestet (Anruf → SMS → Dashboard)
-- [ ] Persönliche Testnummer zugewiesen
-- [ ] Interner E2E-Test bestanden (CC ruft an, prüft alles)
-- [ ] Demo-Fälle geseedet (Dashboard sieht nicht leer aus)
+> **"Wir haben Lisa für Sie gebaut. Rufen Sie an."**
 
-### Beim Kontakt (Founder-Arbeit)
-- [ ] Persönlicher Zugang: Magic Link + Welcome-Seite
-- [ ] Klare Welcome-Nachricht: "So starten Sie: Rufen Sie Ihre Nummer an."
-- [ ] Persönliches Video (HOT) oder Begleittext (WARM)
-- [ ] Testnummer prominent kommuniziert
-- [ ] Kein Vertrag, kein Druck, kein "Zeitraum läuft ab"
+Neun Worte. Eine Nummer. Keine Feature-Liste, kein Preisschild, kein Dashboard-Screenshot.
 
-### Während des Tests (automatisch)
-- [ ] Jeder Anruf → SMS an Anrufer (10 Sek)
-- [ ] Jeder Fall → E-Mail an Betrieb
-- [ ] Dashboard immer aktuell
-- [ ] 24/7 Verfügbarkeit (Lisa schläft nicht)
-
-### Follow-up (Founder)
-- [ ] Day 10: Persönlicher Anruf ("Wie war's?")
-- [ ] Day 13: Erinnerung (automatisch, aber warm formuliert)
-- [ ] Preise nur auf Nachfrage oder bei klarem Interesse
-
-### Danach (Conversion oder Pause)
-- [ ] Review-Engine aktiviert bei Conversion
-- [ ] Kein harter Abbruch bei Nicht-Conversion ("Die Nummer funktioniert weiterhin")
+Warum das funktioniert:
+- "für Sie" — persönlich, nicht generisch
+- "gebaut" — es existiert schon, kein Versprechen
+- "Lisa" — ein Name, kein Produkt ("Unser KI-Voice-Agent mit NLP")
+- "Rufen Sie an" — eine Handlung, keine Erklärung. 30 Sekunden investieren, nicht 30 Minuten
 
 ---
 
-## Was darf nie passieren
+## 3. Die WOW-Folge
 
-| # | Situation | Warum tödlich |
-|---|-----------|---------------|
-| 1 | **Lisa sagt den falschen Firmennamen** | Sofort Vertrauensverlust — "Die kennen mich gar nicht" |
-| 2 | **SMS kommt nicht** | Der WOW-Moment stirbt. Der Betrieb denkt: "Funktioniert nicht" |
-| 3 | **Dashboard ist leer** | Keine Orientierung, kein Verständnis was das System tut |
-| 4 | **Wizard zeigt 404 oder fremde Firma** | Unprofessionalität — sofortiger Abbruch |
-| 5 | **E-Mail sieht nach Template aus** | "Ah, wieder so ein Tool-Verkäufer" — in den Papierkorb |
-| 6 | **Technisches Setup nötig** | "Ich bin Sanitär, nicht IT" — Überforderung, Widerstand |
-| 7 | **Vertrag/Preis im Erstkontakt** | Sofortige Abwehrhaltung — "Wie viel kostet das?" statt "Wie cool ist das?" |
-| 8 | **Founder meldet sich nicht** | High-Touch ohne Touch = Marketing-Automation. Das Gegenteil von uns. |
-| 9 | **System fällt aus während Test** | Einzige Chance verbrannt. Der Betrieb testet nicht zweimal. |
-| 10 | **Lisa gibt falsche Infos** (Preise, Öffnungszeiten, Team) | "Die erzählt Quatsch über meine Firma" — Vertrauen zerstört |
-| 11 | **SMS an falsche Nummer** | Datenschutz-Katastrophe, sofortiger Vertrauensverlust |
-| 12 | **Review-Anfrage an unzufriedenen Kunden** | Negativbewertung statt Positivbewertung — Schaden statt Nutzen |
+Sieben Momente. Chronologisch. Jeder bedient mindestens eine Kaufstufe. Jeder baut auf dem vorherigen auf.
 
----
+### WOW 1: "Meine Firma" (Tag 0)
 
-## Die emotionale Reise des Betriebs
+**Auslöser:** Betrieb öffnet Erstkontakt-E-Mail, klickt auf Website-Link.
 
-```
-Tag 0:  "Wer ist das? Was will der?"
-        → E-Mail öffnen. "Hm, der hat sich meine Firma angeschaut."
-        → Link klicken. "Moment... das ist ja meine Firma. Mit meinen Bewertungen!"
-        → Nummer sehen. "OK, ich ruf mal kurz an. Mal schauen."
+**Was passiert:** Er sieht `/kunden/weinberger-ag`. Seine 5 Services. Seine Google-Bewertungen (4.4 Sterne, 20 Bewertungen). Seine Teamfotos. Seinen 24h-Notdienst. Seine Brand-Farbe #004994. Einen Wizard "Anliegen melden" mit seinen Service-Kategorien.
 
-Tag 0:  "Hallo, Jul. Weinberger AG, mein Name ist Lisa..."
-        → "Die sagt meinen Firmennamen! Und sie fragt nach der Postleitzahl?"
-        → "Thalwil, richtig!" — "Ja!"
-        → *bzzzz* SMS auf dem Handy
-        → "Das... das ist ja alles aufgeschrieben. In 30 Sekunden."
+**Was er fühlt:** Überraschung → Wertschätzung. "Jemand hat sich mit meinem Betrieb beschäftigt. Nicht mit einem generischen Template — mit mir."
 
-Tag 1:  Magic Link geklickt. Dashboard geöffnet.
-        → "Da ist mein Testanruf von gestern. Alles drin."
-        → "Wenn das mit echten Kunden so aussieht..."
+**Kaufstufe:** Schmerz-Aktivierung (er sieht seinen Betrieb, wie er sein könnte) + Beweis-Vorbereitung (die Qualität signalisiert Kompetenz).
 
-Tag 3:  Zweiter Anruf. Diesmal abends, 20:30.
-        → Lisa nimmt ab. SMS kommt. Fall im Dashboard.
-        → "Das funktioniert auch nachts."
-        → *erzählt seiner Frau/Partner davon*
+**Profilabhängig:**
+- Meister: Zeigt Website sofort seiner Frau/Partner. "Schau mal!"
+- Betrieb: Leitet E-Mail an Bürokraft weiter. "Was meinst du?"
 
-Tag 7:  Hat 5 Testanrufe gemacht. Zeigt Dashboard dem Lehrling.
-        → "Schau mal, so könnte unsere Auftragsannahme aussehen."
-
-Tag 10: Founder ruft an. "Wie war's?"
-        → "Ehrlich? Das ist das Erste, was funktioniert hat."
-        → "Was kostet das?"
-        → "199 im Monat. Starter-Paket."
-        → "Machen wir."
-
-Tag 14: Erster echter Kundenkontakt. Lisa nimmt einen echten Notfall auf.
-        → SMS an den Kunden. Betrieb ruft zurück. Problem gelöst.
-        → Review-Anfrage. 5 Sterne.
-        → Betrieb: "Warum habe ich das nicht schon vor 5 Jahren gehabt?"
-```
+**Kritisch:** Die Website muss auf dem Handy perfekt aussehen. Der Meister öffnet die E-Mail auf dem iPhone, nicht am Desktop.
 
 ---
 
-## Konkret: Was wir in 3 Wochen bauen / verfeinern
+### WOW 2: "Lisa kennt mich" (Tag 0, +5 Minuten)
 
-### Woche 1: Goldstandard-Journey festzurren (diese Woche)
-- [ ] Gold Contact Dokument reviewen + verfeinern (dieses Dokument)
-- [ ] Weinberger E2E-Test durchführen (Founder)
-- [ ] Welcome-Seite verfeinern (CTAs, Anleitung, Emotion)
-- [ ] Demo-Dataset säen (Weinberger: 5 realistische Fälle)
-- [ ] Welcome-Mail Text verfeinern (persönlich, nicht technisch)
+**Auslöser:** Betrieb ruft Testnummer an.
 
-### Woche 2: Skalierbare Werkzeuge
-- [ ] Provisioning-Pipeline verfeinern: Prospect Card → alles automatisch in <25 Min
-- [ ] Video-Template aufnehmen (Weinberger als erster)
-- [ ] Outreach-Flow testen: E-Mail → Anruf → Test → Follow-up
-- [ ] Dörfler AG als erster Trial-Kunde: Persönlicher Start (Modus 1, vor Ort)
+**Was passiert:** Lisa: "Jul. Weinberger AG, mein Name ist Lisa, wie kann ich Ihnen helfen?" Er sagt einen Testfall. Lisa fragt nach PLZ. Er sagt "8800". Lisa: "Thalwil, richtig?" Er sagt ein Problem. Lisa ordnet es ein. Höflich, schnell, kompetent.
 
-### Woche 3: Polieren + Go-Live-Readiness
-- [ ] 2-3 weitere Prospects provisionieren (aus Scout Pipeline)
-- [ ] Mobile QA: Betrieb-Erlebnis auf dem Handy testen (SMS, Dashboard, Review)
-- [ ] Edge Cases härten: Was wenn Lisa nicht versteht? Was wenn SMS nicht ankommt?
-- [ ] Reise-Readiness: Alles läuft ohne Founder (siehe `reise_checklist.md`)
+**Was er fühlt:** Verblüffung. "Die sagt meinen Firmennamen. Die kennt Thalwil. Die ist professionell."
+
+**Kaufstufe:** Beweis. Das System funktioniert. Jetzt. Für seinen Betrieb.
+
+**Profilabhängig:**
+- Meister: "Wenn die so mit meinen Kunden redet, ist das besser als mein Anrufbeantworter."
+- Betrieb: "Wenn die abends und am Wochenende so antwortet, entlastet das unsere Disponentin."
+
+**Kritisch:** Lisa darf keine falsche Info sagen. Keine falschen Öffnungszeiten, keine falschen Services, keinen falschen Firmennamen. Ein Fehler hier = sofortiges Ende.
 
 ---
 
-## Metriken: Wann ist Gold Contact erfolgreich?
+### WOW 3: "Mein Handy vibriert" (Tag 0, +10 Sekunden nach Anruf-Ende)
 
-| Metrik | Ziel | Messung |
-|--------|------|---------|
-| **First Call Rate** | >80% der kontaktierten Betriebe rufen die Testnummer an | Pipeline Tracker |
-| **WOW-Moment erreicht** | Betrieb sagt unprompted "Cool" / "Krass" / "Das funktioniert?" | Founder-Notiz nach Day 10 Call |
-| **Dashboard-Login** | >60% loggen sich mindestens 2x ein während Trial | Supabase Auth Logs |
-| **Conversion** | >30% starten nach Trial | Pipeline Status |
-| **Time-to-Value** | <60 Sekunden vom Anruf bis SMS auf dem Handy | Technisch gegeben |
-| **Net Promoter** | Betrieb erzählt anderen davon | Follow-up Frage: "Kennen Sie jemanden?" |
+**Auslöser:** Anruf beendet. SMS trifft ein.
+
+**Was passiert:** SMS von "Weinberger" (sein Firmenname als Absender). Inhalt: "Weinberger: Ihre Meldung (Sanitär) wurde aufgenommen. Erfasster Ort: 8800 Thalwil. Prüfen/Fotos: [Link]". Er klickt den Link. Eine saubere Seite. Alles was er gesagt hat. Möglichkeit, Fotos hochzuladen.
+
+**Was er fühlt:** "Das geht so schnell?!" Und dann: "Wenn mein Kunde das bekommt — der denkt, wir sind ein Hightech-Betrieb."
+
+**Kaufstufe:** Beweis (es funktioniert in Echtzeit) + Schmerz-Bewusstsein (sein Handy hat gerade gezeigt, was sein Kunde erleben könnte — und was er bisher verpasst hat).
+
+**Das ist der stärkste einzelne Moment.** Er ist körperlich spürbar (Vibration). Er ist überraschend schnell (10 Sekunden). Und er zeigt nicht nur dem Betrieb etwas — er zeigt dem Betrieb, was sein Kunde erleben würde. Das ist der Spiegel im Spiegel.
+
+**Profilabhängig:**
+- Meister: SMS ist sein Produkt. Er lebt auf dem Handy. Das versteht er sofort.
+- Betrieb: "Das bekommt der Kunde? Automatisch? Ohne dass meine Disponentin was tun muss?"
 
 ---
 
-## Der eine Satz, der alles zusammenfasst
+### WOW 4: "Da steht alles" (Tag 0-1)
 
-**"Wir haben Lisa für Sie gebaut. Rufen Sie an."**
+**Auslöser:** Betrieb klickt Magic Link aus Welcome-Mail → Dashboard.
 
-Kein Feature-Listing. Kein Dashboard-Screenshot. Kein Preis.
-Neun Worte. Eine Nummer. Ein Anruf.
-Und danach weiss der Betrieb: Das will ich haben.
+**Was passiert:** Sein Testfall ist da. Kategorie: Sanitär. Dringlichkeit: dringend. PLZ: 8800, Thalwil. Beschreibung: Was er Lisa gesagt hat. Status: Neu. Zeitstempel. SMS-Status: gesendet.
+
+**Was er fühlt:** Klarheit. "Wenn jeder Anruf so aufgeschrieben wird, weiss ich morgens sofort, was ansteht."
+
+**Kaufstufe:** Beweis (vertieft) — vom Erlebnis ("Lisa antwortet") zur Substanz ("es ist alles dokumentiert").
+
+**Profilabhängig:**
+- Meister: Das ist sein Morgen-Briefing. Aber realistisch: Er öffnet das Dashboard einmal, vielleicht zweimal. Das Handy-Erlebnis (WOW 3) bleibt sein primärer Kontaktpunkt. Das Dashboard ist der Beweis, dass Substanz dahinter steht — nicht sein tägliches Tool.
+- Betrieb: Die Disponentin sieht die Übersicht. Filter, Suche, Export. "Das könnte unsere Excel-Liste ersetzen." Für sie IST das Dashboard das Produkt.
+
+**Kritisch:** Das Dashboard darf nicht leer sein. Wenn nur sein einziger Testanruf drin steht, wirkt es dünn. Demo-Fälle geseedet (3-5 realistische Fälle aus seiner Branche) geben Kontext.
+
+---
+
+### WOW 5: "Das funktioniert auch nachts" (Tag 2-5)
+
+**Auslöser:** Betrieb testet abends oder am Wochenende. Vielleicht 20:30 Uhr. Vielleicht Samstagmorgen.
+
+**Was passiert:** Lisa nimmt ab. SMS kommt. Fall ist im Dashboard. Alles funktioniert identisch wie tagsüber.
+
+**Was er fühlt:** Sicherheit. Und dann: Erleichterung. "Ich muss nicht mehr erreichbar sein. Lisa ist erreichbar."
+
+**Kaufstufe:** Schmerz-Bewusstsein (voll aktiviert). Der Betrieb testet zu genau der Zeit, zu der er normalerweise Anrufe verpasst. Jetzt sieht er: "Hätte das ein echter Kunde gewesen — Lisa hätte ihn aufgenommen. Ohne mich."
+
+**Das ist der Moment, in dem der Schmerz und der Beweis verschmelzen.** Er fühlt gleichzeitig: "Ich habe ein Problem" und "Es gibt eine Lösung." Das ist die emotionale Grundlage für den Kauf.
+
+**Profilabhängig:** Gleich für beide. 24/7 ist universell wertvoll.
+
+---
+
+### WOW 6: "Mein Kunde ist begeistert" (Tag 5-10)
+
+**Auslöser:** Der kontrollierte Echt-Moment. Der Betrieb leitet 1-2 echte Kunden-Anrufe über seine Testnummer.
+
+**Was passiert:** Ein echter Endkunde ruft die Testnummer an. Lisa nimmt ab, nimmt die Meldung auf. Der Endkunde bekommt eine SMS von "Weinberger" — mit Zusammenfassung und Korrekturlink. Der Endkunde ist positiv überrascht. Der Betrieb sieht den Fall im Dashboard.
+
+**Was er fühlt:** Stolz. "Mein Kunde denkt, wir sind hochtechnisiert." Und: Bestätigung. "Das ist nicht nur eine Demo — das funktioniert mit echten Menschen."
+
+**Kaufstufe:** Soziale Bestätigung — die stärkste Form. Nicht wir sagen "Es funktioniert." Nicht der Betrieb testet es selbst. Sondern sein eigener Kunde bestätigt es. Das ist unwiderlegbar.
+
+**Voraussetzungen (kontrolliert, nicht wild):**
+- Betrieb hat vorher selbst 3-5 Testanrufe gemacht (WOW 2-5)
+- Interner E2E-Test war fehlerfrei
+- Betrieb entscheidet selbst, wann und ob. Wir schlagen es vor, nicht drängen.
+- Briefing: "Wenn der Kunde einen Rückruf erwartet, rufen Sie ihn bitte selbst an."
+- Maximal 1-2 echte Anrufe. Genug für den Beweis, wenig genug für Kontrolle.
+
+**Profilabhängig:**
+- Meister: Er gibt die Nummer einem Kunden, der abends anruft. "Rufen Sie diese Nummer an, da nimmt jemand ab."
+- Betrieb: Die Disponentin leitet Abend-/Wochenend-Anrufe auf die Testnummer um.
+
+---
+
+### WOW 7: "Eine Google-Bewertung" (nach Conversion)
+
+**Auslöser:** Betrieb hat sich entschieden. Erster echter Fall gelöst. Review-Engine sendet Anfrage an den Endkunden.
+
+**Was passiert:** Der Endkunde bekommt eine schöne Bewertungsseite (Google-Review-Style). Er klickt auf 5 Sterne. Er schreibt einen Satz. Die Bewertung geht rein.
+
+**Was er fühlt:** "FlowSight bringt mir nicht nur Ordnung — sondern auch Sterne." Das ist Langzeit-Bindung. Jede neue 5-Sterne-Bewertung bestätigt: Die Entscheidung war richtig.
+
+**Kaufstufe:** Über den Kauf hinaus — das ist Retention und Weiterempfehlung. Der Betrieb verbindet FlowSight mit Wachstum, nicht nur mit Ordnung.
+
+**Profilabhängig:** Gleich für beide. Jeder Betrieb will bessere Google-Bewertungen.
+
+---
+
+### Die WOW-Folge als Kaufstufen-Map
+
+| WOW | Moment | Primäre Kaufstufe | Sekundäre Kaufstufe |
+|-----|--------|-------------------|---------------------|
+| 1 | "Meine Firma" | Schmerz (Spiegel) | Beweis (Kompetenz-Signal) |
+| 2 | "Lisa kennt mich" | Beweis | — |
+| 3 | "Mein Handy vibriert" | Beweis | Schmerz (was Kunde erleben könnte) |
+| 4 | "Da steht alles" | Beweis (Substanz) | — |
+| 5 | "Auch nachts" | Schmerz + Beweis | Risiko-Null (System ist zuverlässig) |
+| 6 | "Mein Kunde begeistert" | Soziale Bestätigung | Beweis (unwiderlegbar) |
+| 7 | "Google-Bewertung" | Retention | Soziale Bestätigung |
+
+**Was auffällt:** Risiko-Null und Handlungsdruck haben keinen eigenen WOW-Moment. Sie sind Rahmenbedingungen — sie müssen stimmen, aber sie erzeugen kein "Wow". Sie verhindern ein "Nein", aber sie erzeugen kein "Ja".
+
+- **Risiko-Null** wird durch Abwesenheit von Reibung spürbar: Kein Vertrag, kein Setup, kein Passwort, kein Preis im Erstkontakt.
+- **Handlungsdruck** wird durch ehrliche Verknappung erzeugt: Testnummer-Reservation, Regionaler Fokus, Founder-Zeitfenster.
+
+---
+
+## 4. Was darf nie passieren
+
+Jeder Punkt auf dieser Liste ist ein sofortiger Abbruch. Kein zweiter Versuch. Der Betrieb testet nicht zweimal.
+
+### Vertrauensbrüche (Stufe 2+3 zerstört)
+
+| # | Situation | Warum tödlich | Prävention |
+|---|-----------|---------------|------------|
+| 1 | **Lisa sagt den falschen Firmennamen** | "Die kennen mich gar nicht." — Sofort Vertrauensverlust. Alles danach ist kontaminiert. | Interner E2E-Test als Quality Gate. Kein Betrieb sieht etwas, bevor CC den Anruf getestet hat. |
+| 2 | **Lisa gibt falsche Infos** (Preise, Öffnungszeiten, Team) | "Die erzählt Quatsch über meine Firma." — Schlimmer als kein System. | Nur verifizierte Daten aus Crawl. Lieber "Das müsste ich prüfen" als falsche Aussage. |
+| 3 | **SMS kommt nicht** | Der stärkste WOW-Moment stirbt. "Funktioniert nicht." | SMS-Whitelist für Testnummern. Smoke-Test vor Kontakt. |
+| 4 | **Website zeigt 404, fremde Firma, oder kaputtes Layout** | "Unprofessionell." — Sofortiger Abbruch. | Mobile + Desktop QA als Quality Gate. |
+| 5 | **Dashboard ist leer** | "Was soll ich damit?" — Keine Orientierung. | Demo-Fälle seeden (3-5 realistische Fälle). |
+
+### Verkaufs-Fehler (Stufe 1+4+5 zerstört)
+
+| # | Situation | Warum tödlich | Prävention |
+|---|-----------|---------------|------------|
+| 6 | **Preis/Vertrag im Erstkontakt** | Sofortige Abwehr: "Wie viel kostet das?" statt "Wie cool ist das?" — Der Betrieb wechselt von Staunen zu Verhandeln. | Preis erst nach Day 10. Erst fragen: "Wie war's?" |
+| 7 | **E-Mail sieht nach Template aus** | "Ah, wieder so ein Tool-Verkäufer." — In den Papierkorb, nie geöffnet. | Persönlich geschrieben. Firmenname im Betreff. Kein HTML-Newsletter. |
+| 8 | **Technisches Setup nötig** | "Ich bin Sanitär, nicht IT." — Überforderung, Widerstand, Abbruch. | Alles vorbereit. Magic Link. Kein Passwort. Kein Onboarding-Wizard. |
+| 9 | **Founder meldet sich nicht** (Day 10 Follow-up fehlt) | High-Touch ohne Touch = Marketing-Automation. Das Gegenteil von uns. Der Betrieb vergisst FlowSight. | Lifecycle-System erinnert. Founder ruft persönlich an. Keine Ausnahme. |
+
+### System-Ausfälle (Stufe 2+3 zerstört)
+
+| # | Situation | Warum tödlich | Prävention |
+|---|-----------|---------------|------------|
+| 10 | **System fällt aus während Test** | Die einzige Chance verbrannt. Der Betrieb denkt: "Unzuverlässig." | Morning Report, Health Check, Monitoring. Sentry Alerts. |
+| 11 | **SMS an falsche Nummer** | Datenschutz-Katastrophe. Sofort Vertrauensverlust. Potentiell rechtlich. | 3-Tier SMS Routing. Whitelist-Guard. E2E-Test als Gate. |
+| 12 | **Review-Anfrage an unzufriedenen Kunden** | Statt 5-Sterne eine 1-Stern-Bewertung. Schaden statt Nutzen. | Review-Engine nur manuell auslösbar. Betrieb entscheidet wer. |
+
+---
+
+*Teil II (Profile: Meister / Betrieb), Teil III (Journey: Phase 0-4), Teil IV (Architektur-Notizen) folgen nach Founder-Review von Teil I.*
