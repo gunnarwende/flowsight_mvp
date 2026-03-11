@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #139: Reise-Härtung Session 2 — Runbook + Morning Report Deep Health)
+**Datum:** 2026-03-11 (PR #141: GTM SSOT Hygiene — B-Quick elimination, Tracker update, ICP alignment)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -71,6 +71,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Trial Lifecycle Runner (11.03.):** PR #136. Idempotent Tick-Route (`/api/lifecycle/tick`), per-Milestone Timestamps (day7/10/13/14), Day 13 Trial-Expiry E-Mail, GitHub Actions Cron (daily 07:00 UTC), Morning Report tick_stale detection. Prospect Welcome Page (`/ops/welcome`) mit Primary CTA = Testnummer anrufen.
 - **Monitoring-Härtung (11.03.):** PR #138. Morning Report als GH Actions Cron (daily 07:30 UTC, Telegram + E-Mail bei RED/YELLOW). Lifecycle-Tick Failure → Telegram-Alert. Health Check mit DB-Ping + Resend-Key-Validation.
 - **Reise-Härtung (11.03.):** PR #139. Reise-Runbook (Vor/Während/Nach Checkliste, Trial-Timing-Regel, Signal-Übersicht). Morning Report Deep Health (DB/Email/Resend-API-Status einzeln sichtbar). Resend API Key Validation im Morning Report.
+- **GTM SSOT Hygiene (11.03.):** PR #141. B-Quick komplett eliminiert (Einsatzlogik, Tracker, Outreach). GTM Tracker auf aktuellen Stand (G11+G12 DONE, Weinberger B=DONE C=testbar). ICP-Scoring aligned (0-11 Skala, HOT ≥8 / WARM 6-7). Modus 3 zurückgestellt.
 - **BLOCKER:** Keine. Go-Live möglich.
 - **Nächster Schritt:** Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
 
