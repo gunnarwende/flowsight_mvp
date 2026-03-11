@@ -1,6 +1,6 @@
 # GTM Pipeline — Execution Tracker
 
-**Erstellt:** 2026-03-09 | **Owner:** CC + Founder
+**Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** CC + Founder
 **Referenz:** `docs/gtm/operating_model.md`
 **Regel:** CC aktualisiert nach jedem Deliverable. Founder reviewed wöchentlich.
 
@@ -8,40 +8,40 @@
 
 ## Status Snapshot
 
-- **Phase:** Woche 1 — Foundation + Weinberger + Quality Wave
+- **Phase:** Trial Machine complete — System läuft founder-arm (Monitoring, Lifecycle, Alerting)
 - **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, A+B+C+D)
-- **Bausteine:** 9/10 done (G1, G3, G4, G5, G6, G7, G8, G9a, G9b, G10)
-- **Prospects provisioniert:** 0/5 Ziel
+- **Bausteine:** 10/10 done (G2 eliminiert — immer B-Full). G11+G12 DONE.
 - **Weinberger Website:** LIVE ✅ (PR #116)
-- **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — Quality Wave v2 (PRs #126+#127): Closing Fix, FAQ-safe, Grüezi, PLZ Lookup
-- **Weinberger C (E2E):** BLOCKED auf Founder-Env-Check (DEMO_SIP_CALLER_ID + google_review_url)
+- **Weinberger Lisa:** PUBLISHED ✅ (PR #118) — Quality Wave v2 (PRs #126+#127)
+- **Weinberger C (E2E):** TESTBAR ✅ — Founder kann jederzeit E2E durchspielen
+- **Nächster Schritt:** Founder-Actions (Video, Outreach, Dörfler Trial) — siehe `docs/runbooks/reise_checklist.md`
 
 ---
 
-## Building Blocks (G1–G10)
+## Building Blocks (G1–G12)
 
 ### Kritischer Pfad (für ersten Prospect-Durchlauf)
 
-| # | Baustein | Owner | Status | Abhängigkeit | Aufwand |
-|---|---------|-------|--------|-------------|---------|
-| G10 | **GTM SSOT Docs** — Plan v2 + Tracker im Repo | CC | **DONE** ✅ | — | ~1h |
-| G1 | **Prospect Card Format** — Strukturiertes JSON (Firma, Gewerk, Region, Services, ICP, Leckerli-Empfehlung, bester Demo-Fall) | CC | **DONE** ✅ | scout.mjs + crawl | ~3h |
-| G9a | **Weinberger Website** (Leckerli D) — Crawl → Config → Deploy | CC | **DONE** ✅ (PR #116) | G1 | ~4h |
-| G9b | **Weinberger Lisa** (Leckerli B-Full) — Agent → retell_sync → publish | CC | **DONE** ✅ (PR #118) | G9a | ~2h |
-| G4 | **Video-Template** — 5-Szenen-Skript, OBS/Loom Setup, Variablen | CC + ChatGPT | **DONE** ✅ | B+D müssen stehen | ~2h |
-| G5 | **Premium Outreach-Templates** — Email/Call-Script, Leckerli A-D Varianten | ChatGPT → CC | **DONE** ✅ | ChatGPT-Messaging | ~1h |
-| G3 | **Provisioning Runbook (<25 Min)** — Step-by-Step mit Quality Gates | CC | **DONE** ✅ | G1, G2 | ~2h |
-| G8 | **Quality Gates Checklist** — Pro Prospect: 5 Gates (Card, Website, Lisa, Video, Outreach) | CC | **DONE** ✅ | G3 | ~1h |
+| # | Baustein | Owner | Status | Aufwand |
+|---|---------|-------|--------|---------|
+| G10 | **GTM SSOT Docs** — Plan v2 + Tracker im Repo | CC | **DONE** ✅ | ~1h |
+| G1 | **Prospect Card Format** — Strukturiertes JSON | CC | **DONE** ✅ | ~3h |
+| G9a | **Weinberger Website** (Leckerli D) | CC | **DONE** ✅ (PR #116) | ~4h |
+| G9b | **Weinberger Lisa** (Leckerli B-Full) | CC | **DONE** ✅ (PR #118 + #126+#127) | ~2h |
+| G4 | **Video-Template** — 5-Szenen-Skript | CC + ChatGPT | **DONE** ✅ | ~2h |
+| G5 | **Premium Outreach-Templates** — Email/Call-Script, 2 Tiers (HOT/WARM) | CC | **DONE** ✅ | ~1h |
+| G3 | **Provisioning Runbook (<25 Min)** | CC | **DONE** ✅ | ~2h |
+| G8 | **Quality Gates Checklist** | CC | **DONE** ✅ | ~1h |
 
-### Skalierung (nach Weinberger)
+### Skalierung + Ops
 
-| # | Baustein | Owner | Status | Abhängigkeit | Aufwand |
-|---|---------|-------|--------|-------------|---------|
-| G2 | **B-Quick Demo-Agent** — 1 parametrisierter Agent mit Variablen-Slots, shared Testnummer | CC | OFFEN | Retell Dynamic Variables | ~4h |
-| G6 | **Einsatzlogik-Engine** — ICP Score → Leckerli-Paket → Asset-Liste → Steps | CC | **DONE** ✅ | G1 | ~1h |
-| G7 | **Pipeline Tracker Upgrade** — pipeline.csv + leckerli_paket, lisa_status, video_status, website_status, testnummer | CC | **DONE** ✅ | promote.mjs | ~2h |
-
-**Gesamt: ~20h CC-Arbeit über 4 Wochen**
+| # | Baustein | Owner | Status | Aufwand |
+|---|---------|-------|--------|---------|
+| ~~G2~~ | ~~B-Quick Demo-Agent~~ | — | **ELIMINIERT** — immer B-Full (PR #131) | — |
+| G6 | **Einsatzlogik-Engine** — ICP → Leckerli-Paket | CC | **DONE** ✅ | ~1h |
+| G7 | **Pipeline Tracker Upgrade** — pipeline.csv + Felder | CC | **DONE** ✅ | ~2h |
+| G11 | **Trial Lifecycle Runner** — Idempotent Tick, Day 7-14 Milestones | CC | **DONE** ✅ (PR #136) | ~4h |
+| G12 | **Monitoring-Härtung** — Morning Report Cron, Tick Alerts, Deep Health | CC | **DONE** ✅ (PRs #138+#139) | ~3h |
 
 ---
 
@@ -49,56 +49,43 @@
 
 | Leckerli | Was | Status | Evidence |
 |----------|-----|--------|----------|
-| **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews, Brand #004994 |
-| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 + Quality Wave PRs #126+#127 — Closing Fix, FAQ-safe, Grüezi, PLZ→City (24 Orte), Notfall-Empathie v2 |
-| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | **BLOCKED** ⏳ | Founder muss prüfen: DEMO_SIP_CALLER_ID + google_review_url in Supabase. Review Surface ready. |
+| **D** | Website (Services, Team, Reviews, Notdienst, Galerie, Wizard) | **DONE** ✅ | PR #116 — 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews |
+| **B-Full** | Eigener Voice Agent (Lisa, Greeting, Triage, Kategorien) | **DONE** ✅ | PR #118 + Quality Wave #126+#127 — PLZ→City, Notfall-Empathie v2 |
+| **C** | E2E Proof (Tenant, SMS, Ops-Fall, Samstag-Nacht-Test) | **TESTBAR** ✅ | Review Surface ready. Founder kann jederzeit E2E durchspielen. |
 | **A** | Video (5 Szenen, 45-60s, Founder-Aufnahme) | OFFEN | Founder |
 | **Outreach** | Email + Testnummer + URL + Video | OFFEN | Founder |
 
 ---
 
-## Woche 1 Plan (09.03.–14.03.)
-
-| Tag | CC | Founder | ChatGPT |
-|-----|-----|---------|---------|
-| So 09.03. | G10 ✅ + Wizard ✅ + Weinberger D ✅ + B-Full ✅ + G1 ✅ + G3 ✅ + G8 ✅ + G4 ✅ + G5 ✅ + G6 ✅ | Review GTM Plan v2 | — |
-| Mo 10.03. | G7: Pipeline Tracker Upgrade + G2: B-Quick Demo-Agent | Freigabe GTM Plan + Review Website + Lisa | — |
-| Di 11.03. | Weinberger C (E2E Proof) | — | — |
-| Mi 12.03. | Quick Wins: Leuthold + Orlandini + Widmer (B-Quick) | Review: Lisa glaubwürdig? | — |
-| Do 13.03. | Weinberger A (Video) — Skript + Founder-Aufnahme | Review (Handy + Desktop) | — |
-| Fr 14.03. | Buffer / Iteration / Erster Outreach | Feedback | — |
-
-**Woche 1 Ziel:** Weinberger D ✅ + B-Full ✅ + Foundation 8/10 ✅ — MASSIV VORAUS
-
----
-
 ## Downstream Impact Tracker
 
-Welche bestehenden Systeme werden durch GTM verändert:
-
-| System | Änderung | Wann | Status |
-|--------|---------|------|--------|
-| **Wizard** | "Anliegen" statt "Schaden", Top-3 + fixed row | Sofort | **DONE** ✅ (PR #113) |
-| **prospect_pipeline.mjs** | + Prospect Card Output, + --demo-only, + --lisa-quick | G1 | OFFEN |
-| **scout.mjs** | + leckerli_recommendation, + best_demo_case | G6/G7 | OFFEN |
-| **retell_sync.mjs** | Keine Änderung nötig | — | ✅ |
-| **Kunden-Template** | Keine Änderung nötig | — | ✅ |
-| **FlowSight Website** | CTA-Anpassung → NIEDRIG, nach Weinberger | Woche 4+ | PAUSED |
-| **Sales Agent Lisa** | Bleibt separat (kein Prospect-Entry-Point) | — | ✅ Entschieden |
-| **pipeline.csv** | + leckerli_paket, lisa_status, video_status, website_status, testnummer | G7 | **DONE** ✅ |
-| **Email-System** | Outreach bleibt manuell (Founder sendet) | — | ✅ Entschieden |
-| **Supabase** | Keine prospects-Tabelle nötig (bis >30 Prospects) | — | ✅ Entschieden |
+| System | Änderung | Status |
+|--------|---------|--------|
+| **Wizard** | "Anliegen" statt "Schaden", Top-3 + fixed row | **DONE** ✅ (PR #113) |
+| **pipeline.csv** | + leckerli_paket, lisa_status, video_status, website_status, testnummer | **DONE** ✅ |
+| **Trial Lifecycle** | provision_trial.mjs, offboard_tenant.mjs, tick route, Welcome Page | **DONE** ✅ (PR #136) |
+| **Monitoring** | Morning Report Cron, Tick Alerts, Deep Health, Reise-Checklist | **DONE** ✅ (PRs #138+#139) |
+| **retell_sync.mjs** | Keine Änderung nötig | ✅ |
+| **Kunden-Template** | Keine Änderung nötig | ✅ |
+| **prospect_pipeline.mjs** | + Prospect Card Output, + --demo-only | OFFEN |
+| **scout.mjs** | + leckerli_recommendation, + best_demo_case | OFFEN |
+| **FlowSight Website** | CTA-Anpassung → nach Weinberger | PAUSED |
+| **Sales Agent Lisa** | Bleibt separat (kein Prospect-Entry-Point) | ✅ Entschieden |
+| **Email-System** | Outreach bleibt manuell (Founder sendet) | ✅ Entschieden |
+| **Supabase** | Keine prospects-Tabelle nötig (bis >30 Prospects) | ✅ Entschieden |
 
 ---
 
-## Quick Wins (nach B-Quick in Woche 2)
+## Quick Wins (bestehende Kunden-Websites)
 
 | Kunde | Existiert | Fehlt | Aufwand |
 |-------|-----------|-------|---------|
-| Walter Leuthold | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
-| Orlandini | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
-| Widmer Sanitär | Website (D) | Lisa (B-Quick), Video (A) | ~20 Min |
-| Dörfler AG | Website + Voice + Ops (B+C+D) | Video (A), Go-Live | ~15 Min |
+| Walter Leuthold | Website (D) | Lisa (B-Full), Video (A) | ~25 Min |
+| Orlandini | Website (D) | Lisa (B-Full), Video (A) | ~25 Min |
+| Widmer Sanitär | Website (D) | Lisa (B-Full), Video (A) | ~25 Min |
+| Dörfler AG | Website + Voice + Ops (B+C+D) | Video (A), Trial Go-Live | ~15 Min |
+
+**Dörfler AG:** Erster Trial-Kunde. Persönlicher Start (Founder wohnt um die Ecke, Modus 1). Immer B-Full.
 
 ---
 
@@ -108,16 +95,13 @@ Welche bestehenden Systeme werden durch GTM verändert:
 |-------|-------------|-----|
 | 2026-03-09 | GTM Pipeline v2 als Steuerungsdokument angenommen | Founder |
 | 2026-03-09 | Wizard = universeller Intake (Anliegen statt Schaden) | Founder + CC |
-| 2026-03-09 | Eigener Tracker `gtm_tracker.md`, OPS_BOARD verweist darauf | CC |
 | 2026-03-09 | Email-Outreach bleibt manuell (Founder aus eigenem Mail) | Plan v2 |
 | 2026-03-09 | Sales-Lisa bleibt separat, kein Prospect-Entry-Point | Plan v2 |
 | 2026-03-09 | Keine Supabase prospects-Tabelle bis >30 Prospects | Plan v2 |
-| 2026-03-09 | G1 Prospect Card: JSON-Schema v1.0 definiert, Weinberger als erste Instanz | CC |
-| 2026-03-09 | G3 Provisioning Runbook: <25 Min Flow basierend auf Weinberger-Erfahrung | CC |
-| 2026-03-09 | G8 Quality Gates: 5 Gates mit je 7-10 Checks, Gate-Matrix pro Paket | CC |
-| 2026-03-09 | G4 Video-Template: 5-Szenen-Dramaturgie, Variablen, Loom/OBS Setup, Gewerk-Varianten | CC |
-| 2026-03-09 | G5 Outreach-Templates: 3 E-Mail-Templates (nach ICP), Anruf-Script, Touch-Kadenz | CC |
-| 2026-03-09 | G6 Einsatzlogik: Entscheidungstabelle + Pseudocode + Quick Wins Übersicht | CC |
-| 2026-03-09 | G7 Pipeline Upgrade: 5 neue Spalten, Weinberger als erstes Entry, Leckerli-Empfehlung für alle Prospects | CC |
-| 2026-03-10 | Quality Wave: Voice Closing Fix + FAQ-safe Edge + Grüezi + PLZ Lookup + Review Surface + SMS Review + Dashboard Branding (PRs #126+#127) | CC |
-| 2026-03-10 | Modus 1/2 Logik erkannt: Modus 1 = volle Website (schwache bestehende), Modus 2 = Extend (starke bestehende). Weinberger = Modus 2. | Founder + CC |
+| 2026-03-09 | G1–G8 Foundation komplett an einem Tag (9/10 Building Blocks) | CC |
+| 2026-03-10 | Modus 1/2 Logik: Modus 1 = volle Website, Modus 2 = Extend. Modus 3 zurückgestellt. | Founder + CC |
+| 2026-03-10 | Quality Wave: Voice Closing Fix + PLZ Lookup + Review Surface + Dashboard Branding | CC |
+| 2026-03-11 | B-Quick eliminiert — immer B-Full (Operating Model PR #131) | Founder + CC |
+| 2026-03-11 | Trial Machine: Lifecycle Runner + Monitoring-Härtung + Reise-Checklist (PRs #136–#139) | CC |
+| 2026-03-11 | G11 + G12 als neue Bausteine definiert und abgeschlossen | CC |
+| 2026-03-11 | Dörfler AG = erster Trial-Kunde, persönlicher Touch, Modus 1 | Founder |

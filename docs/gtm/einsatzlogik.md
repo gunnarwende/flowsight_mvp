@@ -24,30 +24,32 @@
 | HOT (8-10) | A+B-Full+C+D | Video + eigener Agent + E2E Proof + Website |
 | WARM (6-7) | B-Full+D | Eigener Agent + Website |
 
-### Schritt 2b: Website-Modus bestimmen (NEU seit 10.03.)
+### Schritt 2b: Website-Modus bestimmen
 
-| Kriterium | Modus 1: Full | Modus 2: Extend | Modus 3: Pure System |
-|-----------|--------------|-----------------|---------------------|
-| Eigene Website? | Nein / nur Verzeichnis | Ja, funktional | Ja, stark + gepflegt |
-| Website-Qualität | ≤ 3/10 | 4–7/10 | 8+/10 |
-| FlowSight liefert | Komplette Website + Voice + Ops | Wizard-CTA + Voice + Ops | Nur Voice + Ops |
-| Leckerli D | Volle Demo-Website | Landing/Demo mit Wizard + CTA-Vorschlag | Kein D nötig |
-| Botschaft | "Wir digitalisieren deinen Betrieb" | "Wir erweitern dein System" | "Dein unsichtbares Leitsystem" |
+| Kriterium | Modus 1: Full | Modus 2: Extend |
+|-----------|--------------|-----------------|
+| Eigene Website? | Nein / nur Verzeichnis | Ja, funktional |
+| Website-Qualität | ≤ 5/10 | 6+/10 |
+| FlowSight liefert | Komplette Website + Voice + Ops | Wizard-CTA + Voice + Ops |
+| Leckerli D | Volle Demo-Website | Landing/Demo mit Wizard + CTA-Vorschlag |
+| Botschaft | "Wir digitalisieren deinen Betrieb" | "Wir erweitern dein System" |
 
 **Schnelltest für Founder (5 Sekunden):**
 1. Hat der Betrieb eine Website? → NEIN → Modus 1
-2. Würdest du dort als Endkunde anfragen? → NEIN → Modus 1, JA aber umständlich → Modus 2, JA → Modus 3
+2. Würdest du dort als Endkunde anfragen? → NEIN → Modus 1, JA → Modus 2
 
-**Beispiele:** Dörfler AG = Modus 1 (keine Website). Weinberger AG = Modus 2 (Website ok, kein Wizard). Betrieb mit perfekter Website + Kontaktformular = Modus 3.
+**Beispiele:** Dörfler AG = Modus 1 (keine Website). Weinberger AG = Modus 2 (Website ok, kein Wizard).
 
-**Encoding:** `"modus": 1|2|3` im `prospect_card.json` → Einsatzlogik liest Modus → passt Leckerli-Paket an.
+**Encoding:** `"modus": 1|2` im `prospect_card.json` → Einsatzlogik liest Modus → passt Leckerli-Paket an.
+
+> **Modus 3 (Pure System):** Zurückgestellt. Betriebe mit perfekter Website (8+/10) sind aktuell kein Fokus-ICP. Falls relevant → später definieren.
 
 ### Schritt 3: Sonderfälle
 
 | Bedingung | Override |
 |-----------|---------|
 | Website bereits live (Leuthold, Orlandini, Widmer) | D entfällt → nur fehlende Leckerli |
-| Modus 2/3 (starke bestehende Website) | D = Wizard-Landing statt Full Website |
+| Modus 2 (starke bestehende Website) | D = Wizard-Landing statt Full Website |
 | Kein Notdienst | Demo-Fall = "Anfrage" statt "Notfall" |
 | Nur 1 Gewerk (z.B. nur Heizung) | Vereinfachte Lisa (weniger Kategorien) |
 | Bestehender Kunde mit Voice | B entfällt → nur fehlende Leckerli |
@@ -71,43 +73,33 @@
 
 **Pipeline-Update:** `status=DEMO`, `leckerli_paket=A+B-Full+C+D`, alle Status-Felder
 
-### A+B-Quick+D (Gut, ~20 Min)
+### B-Full+D (WARM, ~35 Min)
 
 | # | Asset | Provisioning-Schritt | Zeit |
 |---|-------|---------------------|------|
 | 1 | `prospect_card.json` | Manuell oder aus Scout | 5 Min |
 | 2 | Website (`/kunden/{slug}`) | `prospect_pipeline.mjs` oder manuell | 15 Min |
-| 3 | B-Quick Agent-Variablen | Dynamic Variables setzen | 2 Min |
-| 4 | Video (Szenen 1-5) | Founder aufnimmt nach Template | 15 Min |
-| 5 | Outreach-E-Mail (Template 2) | Founder sendet | 3 Min |
+| 3 | Voice Agent DE + INTL | Template → retell_sync.mjs | 10 Min |
+| 4 | Twilio-Nummer | Console oder API | 2 Min |
+| 5 | Supabase Tenant | `onboard_tenant.mjs` | 3 Min |
+| 6 | Outreach-E-Mail (Template 2) | Founder sendet | 3 Min |
 
-**Pipeline-Update:** `status=DEMO`, `leckerli_paket=A+B-Quick+D`
-
-### B-Quick+D (Solide, ~12 Min)
-
-| # | Asset | Provisioning-Schritt | Zeit |
-|---|-------|---------------------|------|
-| 1 | `prospect_card.json` | Manuell oder aus Scout | 3 Min |
-| 2 | Website (`/kunden/{slug}`) | `prospect_pipeline.mjs` oder manuell | 15 Min |
-| 3 | B-Quick Agent-Variablen | Dynamic Variables setzen | 2 Min |
-| 4 | Outreach-E-Mail (Template 3) | Founder sendet | 2 Min |
-
-**Pipeline-Update:** `status=DEMO`, `leckerli_paket=B-Quick+D`
+**Pipeline-Update:** `status=DEMO`, `leckerli_paket=B-Full+D`
 
 ---
 
 ## Quick Wins: Bestehende Kunden-Websites
 
-Diese Kunden haben bereits Leckerli D (Website). Nur B + A fehlen:
+Diese Kunden haben bereits Leckerli D (Website). Nur B-Full + A fehlen:
 
 | Kunde | Slug | Fehlend | Aufwand |
 |-------|------|---------|---------|
-| Walter Leuthold | walter-leuthold | B-Quick + A (Video) | ~20 Min |
-| Orlandini | orlandini | B-Quick + A (Video) | ~20 Min |
-| Widmer Sanitär | widmer-sanitaer | B-Quick + A (Video) | ~20 Min |
-| Dörfler AG | doerfler-ag | A (Video) + Go-Live | ~15 Min |
+| Walter Leuthold | walter-leuthold | B-Full + A (Video) | ~25 Min |
+| Orlandini | orlandini | B-Full + A (Video) | ~25 Min |
+| Widmer Sanitär | widmer-sanitaer | B-Full + A (Video) | ~25 Min |
+| Dörfler AG | doerfler-ag | A (Video) + Trial Go-Live (Modus 1, persönlich) | ~15 Min |
 
-**Nach G2 (B-Quick Demo-Agent):** Alle 4 in <2h ergänzbar.
+**Hinweis:** Dörfler AG = erster Trial-Kunde. Persönlicher Start (Founder wohnt um die Ecke). Immer B-Full.
 
 ---
 
@@ -118,14 +110,12 @@ function bestimmeLeckerli(card: ProspectCard): LeckerliPaket {
   // Schritt 1: Score prüfen
   if (card.scoring.icp_score < 6) return { paket: "SKIP", assets: [] };
 
-  // Schritt 2: Tier → Paket
+  // Schritt 2: Tier → Paket (immer B-Full, kein B-Quick)
   let paket: string;
-  if (card.scoring.icp_score >= 9) {
-    paket = "A+B-Full+C+D";
-  } else if (card.scoring.icp_score >= 7) {
-    paket = "A+B-Quick+D";
+  if (card.scoring.icp_score >= 8) {
+    paket = "A+B-Full+C+D";  // HOT
   } else {
-    paket = "B-Quick+D";
+    paket = "B-Full+D";       // WARM (6-7)
   }
 
   // Schritt 3: Sonderfälle
@@ -133,7 +123,7 @@ function bestimmeLeckerli(card: ProspectCard): LeckerliPaket {
   const hatVoice = card.provisioning_status?.leckerli_b_lisa === "DONE";
 
   if (hatWebsite) paket = paket.replace("+D", "");
-  if (hatVoice) paket = paket.replace("+B-Full", "").replace("+B-Quick", "");
+  if (hatVoice) paket = paket.replace("+B-Full", "");
 
   // Schritt 4: Asset-Liste
   const assets = paketZuAssets(paket);
@@ -169,7 +159,7 @@ function besteDemoFall(card: ProspectCard): string {
 | Baustein | Status | Blockiert |
 |----------|--------|-----------|
 | G1 Prospect Card | **DONE** ✅ | — |
-| G2 B-Quick Demo-Agent | OFFEN | B-Quick Varianten |
+| G2 B-Quick Demo-Agent | **ELIMINIERT** — immer B-Full | — |
 | G3 Provisioning Runbook | **DONE** ✅ | — |
 | G4 Video-Template | **DONE** ✅ | — |
 | G5 Outreach-Templates | **DONE** ✅ | — |
