@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PR #141: GTM SSOT Hygiene)
+**Updated:** 2026-03-11 (PR #145: Gold Contact finalisiert)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -11,7 +11,7 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Dörfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 ✅
-- **Shipped seit 04.03.:** 80+ Commits, PRs #53–#141
+- **Shipped seit 04.03.:** 80+ Commits, PRs #53–#145
 - **DB Security:** RLS applied (tenant isolation), Founder = admin, Demo-Cases seeded
 - **Ops Tooling:** `retell_sync.mjs` + `onboard_tenant.mjs` + `provision_trial.mjs` + `offboard_tenant.mjs` + `scout.mjs` (ICP Scoring)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick cron + morning-report cron). Branch Protection: PR required.
@@ -98,6 +98,7 @@
 **Execution-Tracker:** `docs/gtm/gtm_tracker.md` ← **ALLE GTM-Tasks leben hier**
 **Pipeline:** `docs/sales/pipeline.md` + `docs/sales/pipeline.csv`
 **Goldstandard:** Jul. Weinberger AG, Thalwil (ICP 90+, Leckerli A+B-Full+C+D)
+**Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (Kaufmodell, Profile, Journey)
 **Phase:** Trial Machine Build-Out — alle Building Blocks done
 
 | # | Task | Owner | Status |

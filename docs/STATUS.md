@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #141: GTM SSOT Hygiene — B-Quick elimination, Tracker update, ICP alignment)
+**Datum:** 2026-03-11 (PR #145: Gold Contact — Nordstern-Dokument finalisiert)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -72,6 +72,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Monitoring-Härtung (11.03.):** PR #138. Morning Report als GH Actions Cron (daily 07:30 UTC, Telegram + E-Mail bei RED/YELLOW). Lifecycle-Tick Failure → Telegram-Alert. Health Check mit DB-Ping + Resend-Key-Validation.
 - **Reise-Härtung (11.03.):** PR #139. Reise-Runbook (Vor/Während/Nach Checkliste, Trial-Timing-Regel, Signal-Übersicht). Morning Report Deep Health (DB/Email/Resend-API-Status einzeln sichtbar). Resend API Key Validation im Morning Report.
 - **GTM SSOT Hygiene (11.03.):** PR #141. B-Quick komplett eliminiert (Einsatzlogik, Tracker, Outreach). GTM Tracker auf aktuellen Stand (G11+G12 DONE, Weinberger B=DONE C=testbar). ICP-Scoring aligned (0-11 Skala, HOT ≥8 / WARM 6-7). Modus 3 zurückgestellt.
+- **Weinberger E2E Ready (11.03.):** PR #143. SMS-Modul + Google Review URL aktiviert. INTL Agent Firmenname korrigiert. Weinberger C = TESTBAR.
+- **Gold Contact (11.03.):** PR #145. Nordstern-Dokument für Sales/Trial/Product/Go-Live. 5-Stufen-Kaufmodell, Spiegel-Effekt, 7 WOW-Momente, Meister/Betrieb-Profile, Phase 0-3 Journey mit konkretem High-Touch-Handover.
 - **BLOCKER:** Keine. Go-Live möglich.
 - **Nächster Schritt:** Founder-Actions vor Reise — siehe `docs/runbooks/reise_checklist.md`.
 
@@ -98,6 +100,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |
 | `docs/customers/<slug>/links.md` | Kunden-URLs (PFLICHT pro Kunde) |
 | `docs/customers/<slug>/prospect_card.json` | Prospect Card (GTM, ab G1) |
+| `docs/gtm/gold_contact.md` | Gold Contact — Nordstern (Kaufmodell, Profile, Journey, Architektur) |
 | `docs/gtm/quality_gates.md` | Quality Gates Checklist (G8) |
 | `docs/architecture/contracts/prospect_card.md` | Prospect Card JSON Contract |
 | `docs/runbooks/provisioning_prospect.md` | Provisioning Runbook (<25 Min, G3) |
