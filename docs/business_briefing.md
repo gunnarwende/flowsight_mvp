@@ -138,21 +138,20 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - Auf Geschäftsnummer +41 44 552 09 19
 - DE + INTL (auto language swap)
 - Beantwortet Fragen zu FlowSight, sammelt Demo-Anfragen
-- **Pricing aktuell:** Starter CHF 199, Alltag CHF 299, Wachstum CHF 399
+- **Pricing aktuell:** CHF 299/Monat — ein Produkt, alles inklusive
 
 ---
 
-## 4. Pakete & Pricing
+## 4. Pricing
 
-| Paket | Inhalt | Preis |
-|-------|--------|-------|
-| **Starter** | Moderne Website + Online-Schadensmeldung + E-Mail-Benachrichtigung + Kunden-SMS + Persönliches Onboarding | CHF 199/Monat |
-| **Alltag** | + Digitaler Telefonassistent (24/7) + Fallübersicht + Bestätigungs-SMS + Foto-Upload + Mehrsprachig | CHF 299/Monat |
-| **Wachstum** | + Google Review-Anfragen + Priority Support + Stärkeres Google-Profil | CHF 399/Monat |
+**Ein Produkt. Ein Preis. CHF 299/Monat.**
+
+Alles inklusive: Website, Telefonassistentin Lisa (24/7), Dashboard, SMS, Bewertungs-Engine, Mehrsprachig.
 
 - Telefonminuten: pay-per-use, keine Grundgebühr. Typischer Anruf: 2-4 Minuten.
-- Monatlich kündbar, kein Lock-in.
+- 14 Tage kostenlos testen. Monatlich kündbar, kein Lock-in.
 - Setup in einer Woche, persönliches Onboarding. Keine Setup-Kosten während Pilotphase.
+- Spezielle Anforderungen (grössere Betriebe): Auf Anfrage.
 
 Live auf flowsight.ch/pricing.
 
@@ -301,7 +300,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 - Branchenspezifisch, nicht generisch
 - All-in-one statt 5 verschiedene Tools
 - In einer Woche live, kein IT-Projekt
-- Ab CHF 199/Monat statt CHF 10'000 einmalig
+- CHF 299/Monat statt CHF 10'000 einmalig
 - Schweizer Nummer, Schweizer Hosting, Deutsch
 
 ---

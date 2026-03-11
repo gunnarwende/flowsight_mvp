@@ -140,7 +140,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 
 | Schritt | Detail |
 |---------|--------|
-| Vertrag | Founder sendet SaaS-Vertrag (Starter 199/Alltag 299/Wachstum 399) |
+| Vertrag | Founder sendet SaaS-Vertrag (CHF 299/Monat, ein Produkt, alles inklusive) |
 | Nummer | Peoplefone-Portierung oder Weiterleitung auf Twilio-Nummer |
 | Agent | Finalisierung (letzte Anpassungen nach Feedback) |
 | Offboarding Demo | `is_demo` Cases löschen, echte Daten beginnen |

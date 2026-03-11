@@ -14,46 +14,15 @@ function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-const TIERS = [
-  {
-    name: "Starter",
-    price: "CHF 199",
-    subtitle: "Website + Online-Schadenmeldung",
-    highlighted: false,
-    features: [
-      "Moderne Website im Firmenlook (mobiloptimiert)",
-      "Online-Schadenmeldung in 3 Schritten",
-      "Betriebsinfo per E-Mail bei neuer Meldung",
-      "Kunden-SMS: Bestätigung + Foto-Upload-Link",
-      "Persönliches Onboarding & Setup inklusive",
-    ],
-  },
-  {
-    name: "Alltag",
-    price: "CHF 299",
-    subtitle: "Telefonassistentin + Fallübersicht",
-    highlighted: true,
-    features: [
-      "Alles aus Starter, plus:",
-      "Digitale Telefonassistentin (24/7, nach Wunsch konfigurierbar)",
-      "Fallübersicht: alle Meldungen an einem Ort",
-      "Bestätigungs-SMS + Foto-Upload (weniger Rückfragen)",
-      "Mehrsprachig (DE/EN/FR/IT)",
-    ],
-  },
-  {
-    name: "Wachstum",
-    price: "CHF 399",
-    subtitle: "Alltag + Bewertungen & Priorität",
-    highlighted: false,
-    features: [
-      "Alles aus Alltag, plus:",
-      "Google-Bewertungen gezielt anfragen",
-      "Prioritäts-Support (schnellere Reaktion)",
-      "Bewertungen zum richtigen Zeitpunkt auslösen",
-      "Stärkeres Google-Profil — mehr Anfragen aus der Region",
-    ],
-  },
+const FEATURES = [
+  "Moderne Website im Firmenlook (mobiloptimiert)",
+  "Online-Schadenmeldung in 3 Schritten",
+  "Digitale Telefonassistentin Lisa (24/7, mehrsprachig)",
+  "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
+  "Fallübersicht: alle Meldungen an einem Ort",
+  "E-Mail-Benachrichtigung bei jeder neuen Meldung",
+  "Google-Bewertungen gezielt anfragen",
+  "Persönliches Onboarding & Setup inklusive",
 ] as const;
 
 export default function PricingPage() {
@@ -72,65 +41,52 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── 3 Pricing cards ─────────────────────────────── */}
+      {/* ── Single pricing card ─────────────────────────── */}
       <section className="bg-navy-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-3">
-            {TIERS.map((tier) => (
-              <div
-                key={tier.name}
-                className={`relative rounded-2xl bg-white p-8 shadow-sm ${
-                  tier.highlighted
-                    ? "border-2 border-gold-500 shadow-md"
-                    : "border border-navy-200"
-                }`}
-              >
-                {tier.highlighted && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
-                    Beliebt
-                  </span>
-                )}
+        <div className="mx-auto max-w-xl px-6 lg:px-8">
+          <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
+              Alles inklusive
+            </span>
 
-                <p
-                  className={`text-sm font-semibold uppercase tracking-wider ${
-                    tier.highlighted ? "text-gold-600" : "text-navy-400"
-                  }`}
+            <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
+              FlowSight
+            </p>
+            <p className="mt-4">
+              <span className="text-4xl font-bold text-navy-900">CHF 299</span>
+              <span className="ml-1 text-base text-navy-400">/ Monat</span>
+            </p>
+            <p className="mt-2 text-sm text-navy-900/70">
+              Website, Telefonassistentin, Dashboard, SMS, Bewertungen — ein Preis für alles.
+            </p>
+
+            <ul className="mt-8 space-y-3">
+              {FEATURES.map((f) => (
+                <li
+                  key={f}
+                  className="flex items-start gap-2 text-sm text-navy-900/80"
                 >
-                  {tier.name}
-                </p>
-                <p className="mt-4">
-                  <span className="text-3xl font-bold text-navy-900">
-                    {tier.price}
-                  </span>
-                  <span className="ml-1 text-base text-navy-400">/ Monat</span>
-                </p>
-                <p className="mt-2 text-sm text-navy-900/70">{tier.subtitle}</p>
+                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                  {f}
+                </li>
+              ))}
+            </ul>
 
-                <ul className="mt-8 space-y-3">
-                  {tier.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2 text-sm text-navy-900/80"
-                    >
-                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/demo"
-                  className={`mt-8 block w-full rounded-lg py-3.5 text-center text-sm font-semibold transition-all ${
-                    tier.highlighted
-                      ? "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
-                      : "border border-navy-200 text-navy-900 hover:bg-navy-50"
-                  }`}
-                >
-                  Demo vereinbaren
-                </Link>
-              </div>
-            ))}
+            <Link
+              href="/demo"
+              className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+            >
+              14 Tage kostenlos testen
+            </Link>
           </div>
+
+          <p className="mt-6 text-center text-sm text-navy-400">
+            Ihr Betrieb hat spezielle Anforderungen?{" "}
+            <Link href="/demo" className="font-semibold text-gold-600 hover:text-gold-500">
+              Schreiben Sie uns
+            </Link>{" "}
+            — wir finden eine passende Lösung.
+          </p>
         </div>
       </section>
 
@@ -178,12 +134,12 @@ export default function PricingPage() {
           <div className="mt-10 divide-y divide-navy-200/60">
             {[
               {
-                q: "Kann ich später upgraden?",
-                a: "Ja, jederzeit. Sie starten z.B. mit Starter und fügen Voice und Dashboard hinzu, sobald Sie bereit sind.",
+                q: "Was ist alles enthalten?",
+                a: "Alles: Website, Telefonassistentin Lisa (24/7), Dashboard, SMS-Bestätigungen, Bewertungs-Engine, Mehrsprachig — ein Preis, keine versteckten Extras.",
               },
               {
                 q: "Gibt es eine Mindestlaufzeit?",
-                a: "Nein. Alle Pakete sind monatlich kündbar — ohne Bindung.",
+                a: "Nein. Monatlich kündbar — ohne Bindung.",
               },
               {
                 q: "Was kostet die Einrichtung?",

@@ -11,7 +11,6 @@ export interface HandoutData {
   location: string;
   contactName: string;
   demoDate: string; // ISO date string, e.g. "2026-03-05"
-  recommendedPackage: "starter" | "alltag" | "wachstum";
   recommendationReason: string;
   demoWebsiteUrl?: string;
   wizardUrl?: string;
@@ -25,7 +24,6 @@ export const HANDOUTS: Record<string, HandoutData> = {
     location: "Oberrieden",
     contactName: "Herr Dörfler",
     demoDate: "2026-03-05",
-    recommendedPackage: "alltag",
     recommendationReason:
       "Viele Anrufe ausserhalb der Bürozeiten — die Telefonassistentin fängt diese ab und erstellt strukturierte Fälle.",
     demoWebsiteUrl: "https://flowsight.ch/doerfler-ag",
@@ -33,45 +31,17 @@ export const HANDOUTS: Record<string, HandoutData> = {
   },
 };
 
-export const PACKAGES = [
-  {
-    id: "starter" as const,
-    name: "Starter",
-    price: "CHF 199",
-    subtitle: "Website + Online-Schadenmeldung",
-    features: [
-      "Moderne Website im Firmenlook (mobiloptimiert)",
-      "Online-Schadenmeldung in 3 Schritten",
-      "Betriebsinfo per E-Mail bei neuer Meldung",
-      "Kunden-SMS: Bestätigung + Foto-Upload-Link",
-      "Persönliches Onboarding & Setup inklusive",
-    ],
-  },
-  {
-    id: "alltag" as const,
-    name: "Alltag",
-    price: "CHF 299",
-    subtitle: "Telefonassistentin + Fallübersicht",
-    highlighted: true,
-    features: [
-      "Alles aus Starter, plus:",
-      "Digitale Telefonassistentin (24/7, konfigurierbar)",
-      "Fallübersicht: alle Meldungen an einem Ort",
-      "Bestätigungs-SMS + Foto-Upload (weniger Rückfragen)",
-      "Mehrsprachig (DE / EN / FR / IT)",
-    ],
-  },
-  {
-    id: "wachstum" as const,
-    name: "Wachstum",
-    price: "CHF 399",
-    subtitle: "Bewertungen & Priorität",
-    features: [
-      "Alles aus Alltag, plus:",
-      "Google-Bewertungen gezielt anfragen",
-      "Bewertungen zum richtigen Zeitpunkt auslösen",
-      "Stärkeres Google-Profil — mehr Anfragen aus der Region",
-      "Prioritäts-Support (schnellere Reaktion)",
-    ],
-  },
-] as const;
+export const PRODUCT = {
+  name: "FlowSight",
+  price: "CHF 299",
+  subtitle: "Website, Telefonassistentin, Dashboard, SMS, Bewertungen — alles inklusive.",
+  features: [
+    "Moderne Website im Firmenlook (mobiloptimiert)",
+    "Online-Schadenmeldung in 3 Schritten",
+    "Digitale Telefonassistentin Lisa (24/7, mehrsprachig)",
+    "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
+    "Fallübersicht: alle Meldungen an einem Ort",
+    "Google-Bewertungen gezielt anfragen",
+    "Persönliches Onboarding & Setup inklusive",
+  ],
+} as const;

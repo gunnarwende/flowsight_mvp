@@ -404,63 +404,30 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-16 grid max-w-5xl gap-6 lg:grid-cols-3">
-            {/* Starter */}
-            <div className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md">
-              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Starter
+          <div className="mx-auto mt-16 max-w-xl">
+            <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
+                Alles inklusive
+              </span>
+              <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
+                FlowSight
               </p>
               <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">CHF 199</span>
+                <span className="text-4xl font-bold text-navy-900">CHF 299</span>
                 <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
               <p className="mt-2 text-sm text-navy-900/70">
-                Website + Online-Schadenmeldung
+                Website, Telefonassistentin, Dashboard, SMS, Bewertungen — ein Preis für alles.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Moderne Website im Firmenlook (mobiloptimiert)",
                   "Online-Schadenmeldung in 3 Schritten",
-                  "Betriebsinfo per E-Mail bei neuer Meldung",
-                  "Kunden-SMS: Bestätigung + Foto-Upload-Link",
-                  "Persönliches Onboarding & Setup inklusive",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
-                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/demo"
-                className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
-              >
-                Demo vereinbaren
-              </Link>
-            </div>
-
-            {/* Alltag — highlighted */}
-            <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
-                Beliebt
-              </span>
-              <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
-                Alltag
-              </p>
-              <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">CHF 299</span>
-                <span className="ml-1 text-base text-navy-400">/ Monat</span>
-              </p>
-              <p className="mt-2 text-sm text-navy-900/70">
-                Telefonassistentin + Fallübersicht
-              </p>
-              <ul className="mt-6 space-y-3">
-                {[
-                  "Alles aus Starter, plus:",
-                  "Digitale Telefonassistentin (24/7, nach Wunsch konfigurierbar)",
+                  "Digitale Telefonassistentin Lisa (24/7, mehrsprachig)",
+                  "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
                   "Fallübersicht: alle Meldungen an einem Ort",
-                  "Bestätigungs-SMS + Foto-Upload (weniger Rückfragen)",
-                  "Mehrsprachig (DE/EN/FR/IT)",
+                  "Google-Bewertungen gezielt anfragen",
+                  "Persönliches Onboarding & Setup inklusive",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
@@ -472,47 +439,13 @@ export default function HomePage() {
                 href="/demo"
                 className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
-                Demo vereinbaren
-              </Link>
-            </div>
-
-            {/* Wachstum */}
-            <div className="rounded-2xl border border-navy-200 bg-white p-8 shadow-sm transition-shadow hover:shadow-md">
-              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Wachstum
-              </p>
-              <p className="mt-4">
-                <span className="text-3xl font-bold text-navy-900">CHF 399</span>
-                <span className="ml-1 text-base text-navy-400">/ Monat</span>
-              </p>
-              <p className="mt-2 text-sm text-navy-900/70">
-                Alltag + Bewertungen & Priorität
-              </p>
-              <ul className="mt-6 space-y-3">
-                {[
-                  "Alles aus Alltag, plus:",
-                  "Google-Bewertungen gezielt anfragen",
-                  "Prioritäts-Support (schnellere Reaktion)",
-                  "Bewertungen zum richtigen Zeitpunkt auslösen",
-                  "Stärkeres Google-Profil — mehr Anfragen aus der Region",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
-                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/demo"
-                className="mt-8 block w-full rounded-lg border border-navy-200 py-3 text-center text-sm font-semibold text-navy-900 transition-colors hover:bg-navy-50"
-              >
-                Demo vereinbaren
+                14 Tage kostenlos testen
               </Link>
             </div>
           </div>
 
-          <p className="mt-8 text-center text-sm font-medium italic text-navy-900/60">
-            Setup kostenfrei · Erster Monat gratis · 30-Tage-Versprechen
+          <p className="mt-6 text-center text-sm font-medium italic text-navy-900/60">
+            Setup kostenfrei · 14 Tage kostenlos · Monatlich kündbar
           </p>
 
           <p className="mt-4 text-center">
@@ -520,7 +453,7 @@ export default function HomePage() {
               href="/pricing"
               className="text-sm font-semibold text-gold-600 transition-colors hover:text-gold-500"
             >
-              Alle Details zu den Preisen &rarr;
+              Alle Details zum Preis &rarr;
             </Link>
           </p>
 
@@ -530,7 +463,7 @@ export default function HomePage() {
               Testen Sie FlowSight — ohne Risiko.
             </h3>
             <p className="mt-2 text-base font-semibold text-gold-600">
-              Setup kostenfrei. Erster Monat gratis.
+              14 Tage kostenlos. Setup inklusive.
             </p>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-navy-900/70">
               Unser Versprechen: Wenn Sie nach 30&nbsp;Tagen nicht mindestens
@@ -559,7 +492,7 @@ export default function HomePage() {
             {[
               {
                 q: "Bekomme ich auch eine Website?",
-                a: "Ja — im Starter-Paket ist eine moderne, mobil-optimierte Website im Firmenlook enthalten. In einer Woche live.",
+                a: "Ja — eine moderne, mobil-optimierte Website im Firmenlook ist inklusive. In einer Woche live.",
               },
               {
                 q: "Brauche ich technisches Wissen?",
