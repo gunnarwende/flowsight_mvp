@@ -9,7 +9,7 @@ export const SITE = {
   phone: "044 552 09 19",
   phoneRaw: "+41445520919",
   email: "info@flowsight.ch",
-  demoUrl: "/demo",
+  demoUrl: "/testen",
   url: "https://flowsight.ch",
   linkedin: "https://www.linkedin.com/company/flowsight-gmbh",
   bookingUrl: "https://outlook.office.com/bookwithme/user/6657e1a6e17b4fcd80d90d45c4af61e6@flowsight.ch?anonymous&ismsaljsauthenabled&ep=plink",

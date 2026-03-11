@@ -113,10 +113,10 @@ export default function HomePage() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/demo"
+                href="/testen"
                 className="rounded-lg bg-gold-500 px-8 py-3.5 text-center text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
-                Demo vereinbaren
+                Kostenlos testen
               </Link>
               <a
                 href={`tel:${SITE.phoneRaw}`}
@@ -436,7 +436,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link
-                href="/demo"
+                href="/testen"
                 className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
                 14 Tage kostenlos testen
@@ -466,16 +466,15 @@ export default function HomePage() {
               14 Tage kostenlos. Setup inklusive.
             </p>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-navy-900/70">
-              Unser Versprechen: Wenn Sie nach 30&nbsp;Tagen nicht mindestens
-              10&nbsp;Fälle strukturiert in Ihrem Dashboard haben und Ihre erste
-              5-Sterne-Google-Bewertung erhalten haben — ist der gesamte erste
-              Monat für Sie kostenfrei.
+              Wir bauen Lisa persönlich für Ihren Betrieb — mit Ihrem
+              Firmennamen, Ihren Services und Ihrer Region. 14&nbsp;Tage
+              kostenlos testen. Kein Vertrag. Kein Setup. Monatlich kündbar.
             </p>
             <Link
-              href="/demo"
+              href="/testen"
               className="mt-6 inline-block rounded-lg bg-gold-500 px-8 py-3 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
-              Demo vereinbaren
+              Kostenlos testen
             </Link>
           </div>
         </div>
@@ -520,7 +519,7 @@ export default function HomePage() {
               },
               {
                 q: "Kann ich FlowSight risikofrei testen?",
-                a: "Ja. Setup ist kostenfrei, der erste Monat gratis. Unser 30-Tage-Versprechen: Wenn Sie nicht mindestens 10 Fälle strukturiert in der Fallübersicht haben und Ihre erste 5-Sterne-Bewertung erhalten haben — zahlen Sie nichts.",
+                a: "Ja. Wir bauen Lisa persönlich für Ihren Betrieb. 14 Tage kostenlos testen — kein Vertrag, kein Setup, monatlich kündbar.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-6">
@@ -553,11 +552,11 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Jetzt Demo vereinbaren.
+              Lisa für Ihren Betrieb bauen.
             </h2>
             <p className="mt-4 text-lg text-navy-200">
-              In 30 Minuten zeigen wir Ihnen, wie FlowSight Ihren Alltag
-              vereinfacht — persönlich und unverbindlich.
+              Sagen Sie uns, wer Sie sind — wir bauen Lisa persönlich
+              für Ihren Betrieb. In 48 Stunden. 14 Tage kostenlos.
             </p>
           </div>
 

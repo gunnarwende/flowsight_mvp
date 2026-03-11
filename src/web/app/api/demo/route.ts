@@ -21,10 +21,12 @@ export async function POST(req: Request) {
     const name = (body.name ?? "").trim();
     const company = (body.company ?? "").trim();
     const phone = (body.phone ?? "").trim();
+    const website = (body.website ?? "").trim();
+    const plz = (body.plz ?? "").trim();
 
-    if (!name || !company || !phone) {
+    if (!name || !company || !phone || !plz) {
       return NextResponse.json(
-        { error: "Name, Firma und Telefon sind Pflichtfelder." },
+        { error: "Kontaktperson, Firma, Telefon und PLZ sind Pflichtfelder." },
         { status: 400 }
       );
     }
@@ -50,15 +52,19 @@ export async function POST(req: Request) {
     const { error } = await resend.emails.send({
       from,
       to,
-      subject: "[FlowSight] Demo-Anfrage",
+      subject: `[FlowSight] Testanfrage — ${company}`,
       text: [
-        "Neue Demo-Anfrage über flowsight.ch",
+        "Neue Testanfrage über flowsight.ch",
         "──────────────────────",
         `Name:    ${name}`,
         `Firma:   ${company}`,
         `Telefon: ${phone}`,
+        `PLZ/Ort: ${plz}`,
+        `Website: ${website || "–"}`,
         "──────────────────────",
         `Zeitpunkt: ${new Date().toLocaleString("de-CH", { timeZone: "Europe/Zurich" })}`,
+        "",
+        "Nächster Schritt: Scout-Check → Qualify → Provisioning",
       ].join("\n"),
     });
 
@@ -82,12 +88,8 @@ export async function POST(req: Request) {
     const smsBody = [
       `Guten Tag ${name},`,
       ``,
-      `vielen Dank für Ihr Interesse an FlowSight — der KI-Telefonassistentin für Schweizer Handwerksbetriebe.`,
+      `vielen Dank für Ihr Interesse an FlowSight. Wir prüfen jetzt, ob Lisa zu ${company} passt, und melden uns innerhalb von 24h persönlich.`,
       ``,
-      `Buchen Sie jetzt Ihre persönliche 20-Minuten-Demo:`,
-      SITE.bookingUrl,
-      ``,
-      `Wir freuen uns auf Sie!`,
       `Ihr FlowSight-Team`,
     ].join("\n");
 
