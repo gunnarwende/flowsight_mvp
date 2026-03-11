@@ -1,6 +1,6 @@
 # OPS Board — FlowSight Roadmap (SSOT)
 
-**Updated:** 2026-03-11 (PR #148: Demo→Test Flow)
+**Updated:** 2026-03-11 (PR #150: Lisa Interest Capture)
 **Rule:** CC updates with every deliverable. Founder reviews weekly.
 **Einziger Task-Tracker.** Alle offenen Tasks leben hier.
 
@@ -107,9 +107,10 @@
 | S2 | Scout v2 — ICP Scoring + Multi-Query | CC | **DONE** ✅ |
 | S3 | E-Mail-Vorlage + Anruf-Skript ready | CC | **DONE** ✅ |
 | S5 | BigBen Pub — Paul Follow-up | Founder | OFFEN — Paul interessiert (#79/#80) |
-| S6 | Sales Agent Pricing aktualisiert (199/299/399) | CC | **VERALTET** — muss auf 299 flat umgestellt werden |
+| S6 | ~~Sales Agent Pricing (199/299/399)~~ → **Ersetzt durch S9** | CC | N/A |
 | S7 | **Demo→Test Flow** — "Kostenlos testen" statt "Demo buchen" | CC | **DONE** ✅ (PR #148) |
 | S8 | **299 Flat Pricing** — Ein Produkt, alle Docs aligned | CC | **DONE** ✅ (PR #147) |
+| S9 | **Lisa Interest Capture** — Sales Agent → Erreichbarkeits-Netz, Gold-Contact-aligned | CC | **DONE** ✅ (PR #150) |
 | G10 | GTM SSOT Docs (Plan v2 + Tracker) | CC | **DONE** ✅ |
 | G9a | Weinberger Website (Leckerli D) | CC | **DONE** ✅ (PR #116) |
 | G9b | Weinberger Lisa (Leckerli B-Full) | CC | **DONE** ✅ (PR #118) |
@@ -203,6 +204,7 @@
 | 2026-03-11 | Gold Contact — Nordstern-Dokument (Kaufmodell, Profile, Journey, Architektur) | PR #145 |
 | 2026-03-11 | 299 Flat Pricing — Ein Produkt, ein Preis. 3-Tier eliminiert. Pre-Contact Quality Gate | PR #147 |
 | 2026-03-11 | Demo→Test Flow — /testen Page, /demo redirect, DemoForm PLZ+Website, Qualify-SMS | PR #148 |
+| 2026-03-11 | Lisa Interest Capture — Sales Agent → Erreichbarkeits-Netz. Kein Pricing/Pitch/Demo-Buchen. Founder-Rückruf. Gold-Contact-aligned. | PR #150 |
 
 **Ältere Completed (vor 04.03.):** Siehe `docs/archive/wave_log.md`
 

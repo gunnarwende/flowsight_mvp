@@ -193,11 +193,12 @@ export async function POST(req: Request) {
   const { data: extractedData, path: extractedPath } = probeExtractedData(call, payload);
   const extractedKeys = Object.keys(extractedData);
 
-  // ── Extract sales-specific fields ──────────────────────────────────
+  // ── Extract interest-capture fields ────────────────────────────────
   const callerName = nonEmptyStr(extractedData.caller_name);
   const companyName = nonEmptyStr(extractedData.company_name);
   const interestLevel = nonEmptyStr(extractedData.interest_level) ?? "nicht angegeben";
-  const demoRequested = nonEmptyStr(extractedData.demo_requested) ?? "nicht angegeben";
+  const callbackRequested = nonEmptyStr(extractedData.callback_requested) ?? nonEmptyStr(extractedData.demo_requested) ?? "nicht angegeben";
+  const callbackTime = nonEmptyStr(extractedData.callback_time);
   const callSummary =
     nonEmptyStr(extractedData.call_summary) ??
     nonEmptyStr(call?.call_analysis?.call_summary) ??
@@ -214,7 +215,7 @@ export async function POST(req: Request) {
     has_caller_name: !!callerName,
     has_company_name: !!companyName,
     interest_level: interestLevel,
-    demo_requested: demoRequested,
+    callback_requested: callbackRequested,
     has_from_number: !!fromNumber,
   });
 
@@ -225,7 +226,8 @@ export async function POST(req: Request) {
       companyName,
       fromNumber,
       interestLevel,
-      demoRequested,
+      callbackRequested,
+      callbackTime,
       callSummary,
       retellCallId,
     });
