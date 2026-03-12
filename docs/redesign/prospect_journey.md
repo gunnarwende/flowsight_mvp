@@ -1,10 +1,10 @@
 # Prospect Journey — Zielbild (Gold)
 
 **Typ:** SSOT-Zielbild (Gold)
-**Stand:** 2026-03-12
+**Stand:** 2026-03-12 (geschaerft 2026-03-12: O1+O2 geschlossen, Wizard+Review integriert)
 **IST-Grundlage:** prospect_journey_ist.md (17 dokumentierte Luecken)
 **Nordstern:** gold_contact.md (5 Kaufstufen, 7 WOW-Momente, 2 Profile)
-**Referenziert:** identity_contract.md, voice.md, leitstand.md
+**Referenziert:** identity_contract.md, voice.md, leitstand.md, wizard.md, review.md
 
 ---
 
@@ -80,7 +80,7 @@ Quelle: `team_size` auf der Prospect Card (gesetzt bei Provisioning).
 
 ### 3.1 Touchpoint-Inventar
 
-17 Touchpoints in 14 Tagen. 9 automatisch, 5 manuell (Founder), 3 systemgestuetzt (Founder + System).
+18 Touchpoints in 14 Tagen. 9 automatisch, 5 manuell (Founder), 4 systemgestuetzt (Founder + System).
 
 | # | Tag | Touchpoint | Typ | Kanal | Profil |
 |---|-----|-----------|-----|-------|--------|
@@ -93,10 +93,11 @@ Quelle: `team_size` auf der Prospect Card (gesetzt bei Provisioning).
 | T7 | 0 | Post-Call SMS | Automatisch | SMS | Beide |
 | T8 | 0 | SMS-Korrekturseite | Prospect-Initiative | Web | Beide |
 | T9 | 0–1 | Erster Dashboard-Besuch | Prospect-Initiative | Web | Differenziert |
-| T10 | 2–5 | Abend-/Wochenend-Test | Prospect-Initiative | Telefon | Beide |
+| T10 | 2–5 | Abend-/Wochenend-Test (Voice oder Wizard) | Prospect-Initiative | Telefon/Web | Beide |
 | T11 | 5 | Day-5-Nudge | Automatisch | E-Mail | Differenziert |
 | T12 | 7 | Day-7-Engagement-Signal | Automatisch | Intern (kein Prospect-Kontakt) | — |
-| T13 | 5–10 | Kontrollierter Echt-Moment | Systemgestuetzt | Telefon | Beide |
+| T13 | 5–10 | Kontrollierter Echt-Moment | Systemgestuetzt | Telefon/Web | Beide |
+| T13b | 5–10 | Review-Proof-of-Value (erster Case → done → Review-Flow) | Systemgestuetzt | Web | Beide |
 | T14 | 10 | Founder-Anruf | Manuell | Telefon | Differenziert |
 | T15 | 10 | Weiterempfehlungs-Frage | Manuell | Telefon | Beide |
 | T16 | 13 | Expiry-Reminder | Automatisch | E-Mail | Beide |
@@ -112,7 +113,7 @@ AUTO: T4,T7  ──────────────────────�
 FOUND:T1,T2  ─────────────────────────────────────────────────────────────────── T14,T15
       (T3)
       │
-PROSP:T6,T8,T9 ──────────────────── T10 ──────────────── T13
+PROSP:T6,T8,T9 ──────────────────── T10 ──────────────── T13,T13b
 ```
 
 **Designprinzip:** Automatische Touchpoints halten die Verbindung. Founder-Touchpoints schaffen Vertrauen. Prospect-Touchpoints erzeugen Beweis. Kein Tag hat mehr als einen automatischen Touchpoint an den Prospect.
@@ -305,7 +306,10 @@ Morning Report erhaelt neuen KPI: `prospect_engagement` pro aktivem Trial.
 | Signal | Wert | Berechnung |
 |--------|------|-----------|
 | Cases created | Anzahl | `count(cases WHERE tenant_id AND NOT is_demo AND created_at > trial_start)` |
+| — davon Voice | Anzahl | `count(... AND source='voice')` |
+| — davon Wizard | Anzahl | `count(... AND source='wizard')` |
 | Last activity | Datum | `max(cases.created_at WHERE tenant_id AND NOT is_demo)` |
+| Review angefragt | Ja/Nein | `exists(cases WHERE review_sent_at IS NOT NULL AND tenant_id)` |
 | Dashboard visits | — | Nicht trackbar ohne Analytics (bewusst verzichtet, DSGVO-minimal) |
 
 Morning Report zeigt:
@@ -345,6 +349,8 @@ Rufen Sie {voice_number_formatted} um 20 Uhr an — und sehen Sie,
 was passiert, wenn ein Kunde ausserhalb der Buerozeiten anruft.
 
 Lisa nimmt ab. Die SMS kommt sofort. Der Fall steht im Dashboard.
+Oder testen Sie das Formular auf Ihrer Website — auch dort
+landet die Meldung direkt im System.
 
 Das ist der Moment, der den Unterschied macht.
 
@@ -391,6 +397,7 @@ Lifecycle Tick setzt `day7_checked_at = now()` UND speichert Engagement-Snapshot
     "cases_voice": 3,
     "cases_wizard": 1,
     "last_case_at": "2026-03-19T20:47:00Z",
+    "review_requested": true,
     "active": true
   }
 }
@@ -420,6 +427,8 @@ Stille ist richtig, wenn der Prospect aktiv ist. Ein aktiver Prospect braucht ke
 
 Das ist die Phase, in der WOW 5 ("Auch nachts") und WOW 6 ("Mein Kunde begeistert") passieren — beides durch Eigeninitiative des Prospects. Kein System-Touchpoint kann diese Momente erzeugen. Die Erkenntnis muss selbst-entdeckt sein.
 
+In dieser Phase kann auch WOW 7 passieren: Der Prospect setzt einen Case auf `done`, klickt "Review anfragen" und sieht den vollstaendigen Nachlauf-Kreislauf (review.md §8). Das ist der Review-Proof-of-Value-Moment (T13b).
+
 #### Wann Stille in ein Funkloch kippt
 
 Stille ist falsch, wenn sie Desinteresse verdeckt. Ein Prospect, der seit Tagen nicht getestet hat, vergisst das System — nicht weil es schlecht ist, sondern weil sein Alltag es ueberrollt.
@@ -446,6 +455,26 @@ Stille ist falsch, wenn sie Desinteresse verdeckt. Ein Prospect, der seit Tagen 
 #### Stille-Prinzip in einem Satz
 
 > Wenn der Prospect testet, schweigen wir. Wenn er nicht testet, rufen wir an. Aber wir schicken nie eine automatische "Wir vermissen Sie"-Mail.
+
+#### T13b: Review-Proof-of-Value (Tag 5–10)
+
+**Voraussetzung:** Prospect hat mindestens einen echten Case auf `done` gesetzt.
+
+**Was passiert:**
+1. Case → `done` → Review-Badge "Review moeglich" erscheint im Leitstand
+2. Prospect klickt "Review anfragen" → gebrandete E-Mail/SMS an Endkunden
+3. Im Leitstand: Badge wechselt zu "Angefragt" → ggf. "Geoeffnet" → "Google geoeffnet"
+
+**Was der Prospect erlebt:**
+- "Mein System hat gerade meinem Kunden eine Bewertungs-Anfrage geschickt."
+- "Die Anfrage traegt meinen Firmennamen, nicht FlowSight."
+- "Im Leitstand sehe ich den Status: angefragt, geoeffnet, geklickt."
+
+**Das ist WOW 7** (gold_contact.md): Nicht die Bewertung selbst, sondern das System dahinter. Vollstaendiger Kreislauf: Annahme → Arbeit → Abschluss → Anerkennung.
+
+**Einschraenkung:** Demo-Cases haben keine echten Endkunden → Review-Button ist disabled (kein `contact_email`). Das ist korrekt — keine Attrappe. T13b passiert nur bei echten Cases (nach dem kontrollierten Echt-Moment T13).
+
+**Querverweis:** review.md §8 (Prospect-/Trial-Perspektive) definiert das vollstaendige Review-Erlebnis.
 
 ---
 
@@ -519,6 +548,8 @@ Dauert 5 Minuten — dann kann sie selbst entscheiden, ob es passt.
 
 **Was Founder herausfinden will:**
 - Hat der Prospect einen eigenen Anwendungsfall entdeckt? ("Abends ist perfekt", "Die SMS hat mich ueberrascht")
+- Hat er beide Kanaele getestet? (Voice + Wizard auf der Website)
+- Hat er den Review-Flow gesehen? ("Haben Sie nach einem erledigten Fall die Bewertungs-Funktion getestet?")
 - Wurde der Beeinflusser eingebunden? (Frau gesehen? Buerokraft eingeloggt?)
 - Gibt es Bedenken? (Preis, Datenschutz, Technik, "passt nicht in unsere Ablaeufe")
 
@@ -925,6 +956,7 @@ Woran wir erkennen, dass die Prospect Journey Gold-Contact-Niveau erreicht hat.
 | 4 | "Da steht alles" | Dashboard → Testfall da, Kategorie/PLZ/Beschreibung korrekt, Demo-Cases in eigenem Tab | [ ] |
 | 5 | "Auch nachts" | Abendtest → Lisa nimmt ab, SMS kommt, Fall im Dashboard | [ ] |
 | 6 | "Mein Kunde begeistert" | Echt-Moment → Endkunde bekommt SMS von "{short_name}", Fall korrekt im Dashboard | [ ] |
+| 7 | "Auch noch Sterne" | Case → done → Review anfragen → gebrandete E-Mail an Endkunden → Status-Tracking im Leitstand | [ ] |
 
 ### 11.2 Spiegel-Test
 
@@ -960,13 +992,13 @@ Woran wir erkennen, dass die Prospect Journey Gold-Contact-Niveau erreicht hat.
 
 Bewusst nicht in diesem Dokument getroffen. Werden spaeter entschieden.
 
-| # | Frage | Wo entscheiden | Warum nicht hier |
-|---|-------|---------------|-----------------|
-| O1 | Wizard-Erlebnis als alternativer Testkanal | wizard.md Zielbild | Wizard hat eigene UX-Logik, Journey referenziert ihn als Touchpoint |
-| O2 | Review-Flow nach Case-Erledigung | review.md Zielbild | Review ist Post-Conversion-Schwerpunkt (WOW 7) |
-| O3 | Zweiter Magic Link fuer Disponentin (UX) | Implementierung | Technisch trivial, UX-Detail |
-| O4 | Welcome-to-Production-Mail (nach Conversion) | Implementierung | Post-Journey, nicht Teil der Trial-Journey |
-| O5 | Analytics/Tracking im Dashboard | DSGVO-Pruefung | Bewusst nicht implementiert (Datensparsamkeit) |
+| # | Frage | Wo entscheiden | Status |
+|---|-------|---------------|--------|
+| ~~O1~~ | ~~Wizard-Erlebnis als alternativer Testkanal~~ | wizard.md §10 | **GESCHLOSSEN** — Wizard als Touchpoint in T10+T11 integriert, Engagement-Signale zaehlen Wizard-Cases |
+| ~~O2~~ | ~~Review-Flow nach Case-Erledigung~~ | review.md §8 | **GESCHLOSSEN** — Review als T13b (Proof-of-Value) integriert, WOW 7 in Goldstandard-Pruefung |
+| O3 | Zweiter Magic Link fuer Disponentin (UX) | Implementierung | Offen — Technisch trivial, UX-Detail |
+| O4 | Welcome-to-Production-Mail (nach Conversion) | Implementierung | Offen — Post-Journey, nicht Teil der Trial-Journey |
+| O5 | Analytics/Tracking im Dashboard | DSGVO-Pruefung | Offen — Bewusst nicht implementiert (Datensparsamkeit) |
 
 ---
 
@@ -988,3 +1020,13 @@ Bewusst nicht in diesem Dokument getroffen. Werden spaeter entschieden.
 | L10: Day-10-Call-Script fehlt | Dokumentiert fuer beide Profile | SS4 Tag 10 |
 | L11: Disabled Nav sichtbar | Fuer Prospects ausblenden | SS10.4 |
 | L13: Case-Notification an Founder | Prospect sieht Cases im Dashboard; Notification kuenftig auch an Prospect | SS5.3 |
+
+### Schaerfungsloop (2026-03-12)
+
+3 Punkte geschaerft nach Abschluss aller 6 Redesign-Straenge:
+
+| # | Schaerfung | Aenderung |
+|---|-----------|----------|
+| S1 | **Wizard als Touchpoint** | T10 = "Voice oder Wizard". Day-5-Nudge erwaehnt Website-Formular. Engagement-Signale zaehlen `cases_wizard`. O1 geschlossen. |
+| S2 | **Review als Proof-of-Value** | T13b = Review-Proof-of-Value-Moment (Tag 5–10). WOW 7 in Goldstandard-Pruefung. Day-10-Call-Script fragt nach Review-Flow. O2 geschlossen. |
+| S3 | **Engagement-Signale vervollstaendigt** | Day-7-Snapshot: `review_requested` hinzugefuegt. Morning Report: Voice/Wizard-Split. Stille-Logik erkennt beide Kanaele. |
