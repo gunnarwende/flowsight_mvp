@@ -46,7 +46,7 @@ Ein halbgoldener Maschinenstart ist schlimmer als kein Start.
 
 ### Was vor uns liegt
 
-**Phase 1: Build — AKTIV (ab 13.03.)**
+**Phase 1: Build — AKTIV (ab 13.03.) — Block A DONE (PR #168+#169)**
 
 Zweck: Zielbilder in funktionierenden Code, verifizierte Oberflaechen und getestete Journeys ueberfuehren.
 
@@ -128,16 +128,16 @@ Der unsichtbare Unterbau. Wenn S1 nicht steht, ist alles andere Fassade.
 
 | Block | Beschreibung | Zielbild | Done-Kriterium |
 |-------|-------------|----------|----------------|
-| S1.1 | **Identity: 7 E-Mail-Templates auf Tenant-Branding** | identity_contract R1-R7 | Alle 7 E-Mails: Subject = `{display_name}`, Sender = `{display_name} via FlowSight`, kein "[FlowSight]" |
-| S1.2 | **Day-5-Email bauen** (Profil-Differenzierung Meister/Betrieb) | prospect_journey §4 Tag 5 | E-Mail kommt an. Unterdrueckung bei aktiven Prospects. Bedingt: `day5_nudge_sent_at`. |
-| S1.3 | **Demo-Case-Tabs** ("Ihre Faelle" / "So sieht Ihr Alltag aus") | prospect_journey §4 Tag 0 T9 | Default-Tab = echte Cases. Demo-Cases in eigenem Tab. Leerer Zustand mit CTA. |
-| S1.4 | **Day-7-Engagement-Snapshot** | prospect_journey §4 Tag 7 | JSONB `day7_snapshot` wird geschrieben. Morning Report zeigt Engagement-Signal. |
+| S1.1 | **Identity: 7 E-Mail-Templates auf Tenant-Branding** | identity_contract R1-R7 | ✅ DONE (PR #168) |
+| S1.2 | **Day-5-Email bauen** (Profil-Differenzierung Meister/Betrieb) | prospect_journey §4 Tag 5 | ✅ DONE (PR #169) |
+| S1.3 | **Demo-Case-Tabs** ("Ihre Faelle" / "So sieht Ihr Alltag aus") | prospect_journey §4 Tag 0 T9 | ✅ DONE (PR #169) |
+| S1.4 | **Day-7-Engagement-Snapshot** | prospect_journey §4 Tag 7 | ✅ DONE (PR #169) |
 | S1.5 | **Wizard: Notfall-Logik** (N1-N7) | wizard §3 | Notfall → Telefon-CTA primaer. "Schriftlich melden" sekundaer. Kein Case ohne Warnung. |
 | S1.6 | **Wizard: Kategorie-Vereinheitlichung** | wizard §8 | Eine Quelle `categories[]` in Tenant-Config. Voice + Wizard lesen dieselbe Liste. |
 | S1.7 | **Review Surface: Bewertungs-Vorbereiter** | review §3 (RS1-RS10) | Auftrags-Block, editierbares Textarea, Clipboard + Google CTA, keine Sterne, kein "Max Mustermann". |
 | S1.8 | **Review: Nachlauf-System** | review §5 (NS1-NS3) | 6 Status-Badges, review_sent_at, case_events Tracking, max 2 Anfragen, Resend nach 7d. |
 | S1.9 | **Leitstand: Review-Badges + Nachlauf** | leitstand + review §5.3 | Review-Badge im Falldetail. "Review anfragen" / "Nochmals" / "Kein Review". |
-| S1.10 | **Welcome Page Polish** | prospect_journey §4 Tag 0 T5 | Trial-Countdown, Tagline ohne "FlowSight", Profil-CTAs, Disabled-Nav ausgeblendet. |
+| S1.10 | **Welcome Page Polish** | prospect_journey §4 Tag 0 T5 | ✅ PARTIAL (PR #168+#169: Countdown + Tagline. TODO: Profil-CTAs, Nav) |
 
 ### S2: Oberflaechen-Qualitaet
 
@@ -164,7 +164,7 @@ Was der Prospect sieht und hoert. Der Spiegel-Effekt.
 | S2.3 | **Brunner HT Showroom** | Demo = genauso beeindruckend wie Echtbetrieb |
 | S2.4 | **Alle Voice-Agents: Gold-QA** | Greeting korrekt, PLZ, Empathie, Closing, FAQ, E2E (Anruf→SMS→Dashboard) |
 | S2.5 | **SMS-Config alle Tenants** | Absendername + Inhalt + Link pro Tenant verifiziert |
-| S2.6 | **Tab-Titel + Sidebar** | `{short_name} OPS`, Tenant-Initialen, kein "FlowSight OPS" |
+| S2.6 | **Tab-Titel + Sidebar** | ✅ DONE (PR #168: Tab-Titel = `{short_name} OPS`, Tenant-Initialen) |
 
 ### S3: Journey-Verifikation
 
