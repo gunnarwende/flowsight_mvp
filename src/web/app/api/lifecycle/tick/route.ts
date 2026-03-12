@@ -204,7 +204,9 @@ async function sendDay13Email(
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
 
-  const from = process.env.MAIL_FROM || "noreply@send.flowsight.ch";
+  const fromAddr = process.env.MAIL_FROM || "noreply@send.flowsight.ch";
+  const safeName = companyName.replace(/[<>"]/g, "");
+  const from = `${safeName} via FlowSight <${fromAddr}>`;
 
   const html = `<!DOCTYPE html>
 <html lang="de">
@@ -214,14 +216,14 @@ async function sendDay13Email(
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#0b1120;border-radius:8px;overflow:hidden">
 <tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
-<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">${companyName}</td></tr>
 <tr><td style="padding:0 24px;color:#e2e8f0;font-size:22px;font-weight:700">Ihr Trial endet bald</td></tr>
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
 Guten Tag,<br><br>
-Ihr FlowSight Trial f&uuml;r <strong style="color:#e2e8f0">${companyName}</strong> endet am <strong style="color:#e2e8f0">${trialEndDate}</strong>.
+Ihr 14-Tage Trial f&uuml;r <strong style="color:#e2e8f0">${companyName}</strong> endet am <strong style="color:#e2e8f0">${trialEndDate}</strong>.
 </td></tr>
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
-Falls Sie FlowSight weiterhin nutzen m&ouml;chten, melden Sie sich bei uns &mdash; wir k&uuml;mmern uns um alles Weitere.
+Falls Sie das System weiterhin nutzen m&ouml;chten, melden Sie sich bei uns &mdash; wir k&uuml;mmern uns um alles Weitere.
 </td></tr>
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
 Falls nicht: kein Problem. Ihre Daten werden nach Ablauf des Trials sicher gel&ouml;scht.
@@ -238,9 +240,9 @@ Falls nicht: kein Problem. Ihre Daten werden nach Ablauf des Trials sicher gel&o
   const text = [
     "Guten Tag,",
     "",
-    `Ihr FlowSight Trial für ${companyName} endet am ${trialEndDate}.`,
+    `Ihr 14-Tage Trial für ${companyName} endet am ${trialEndDate}.`,
     "",
-    "Falls Sie FlowSight weiterhin nutzen möchten, melden Sie sich bei uns — wir kümmern uns um alles Weitere.",
+    "Falls Sie das System weiterhin nutzen möchten, melden Sie sich bei uns — wir kümmern uns um alles Weitere.",
     "",
     "Falls nicht: kein Problem. Ihre Daten werden nach Ablauf des Trials sicher gelöscht.",
     "",
@@ -255,7 +257,7 @@ Falls nicht: kein Problem. Ihre Daten werden nach Ablauf des Trials sicher gel&o
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from, to, subject: "Ihr FlowSight Trial endet bald", html, text }),
+      body: JSON.stringify({ from, to, subject: `Ihr Trial endet bald — ${companyName}`, html, text }),
     });
     return res.ok;
   } catch {

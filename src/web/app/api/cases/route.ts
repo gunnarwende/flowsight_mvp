@@ -203,6 +203,14 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = getServiceClient();
 
+    // Resolve tenant display name for email branding (Identity Contract E4)
+    const { data: tenantInfo } = await supabase
+      .from("tenants")
+      .select("name")
+      .eq("id", tenantId)
+      .single();
+    const tenantDisplayName = tenantInfo?.name ?? undefined;
+
     // Build insert payload — street/house_number are optional columns
     // that may not exist if the address migration hasn't been applied yet.
     const insertPayload: Record<string, unknown> = {
@@ -259,6 +267,7 @@ export async function POST(request: NextRequest) {
         caseId: row.id,
         seqNumber: row.seq_number,
         tenantId,
+        tenantDisplayName,
         contactEmail: data.contact_email,
         category: data.category,
       });
@@ -271,6 +280,7 @@ export async function POST(request: NextRequest) {
       caseId: row.id,
       seqNumber: row.seq_number,
       tenantId,
+      tenantDisplayName,
       source: data.source,
       category: data.category,
       urgency: data.urgency,

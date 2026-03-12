@@ -116,18 +116,18 @@ async function main() {
 <!-- Gold accent bar -->
 <tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
 <!-- Logo -->
-<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">${tenant.name}</td></tr>
 <!-- Heading -->
 <tr><td style="padding:0 24px;color:#e2e8f0;font-size:22px;font-weight:700">Guten Tag</td></tr>
 <!-- Body text -->
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
-Ihr 14-Tage Trial bei FlowSight ist abgelaufen. Vielen Dank f&uuml;r Ihr Interesse.
+Ihr 14-Tage Trial ist abgelaufen. Vielen Dank f&uuml;r Ihr Interesse.
 </td></tr>
 <!-- What they experienced -->
 <tr><td style="padding:20px 24px 0;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:1px">In den letzten 14 Tagen hatten Sie Zugang zu</td></tr>
 <tr><td style="padding:8px 24px 0;color:#e2e8f0;font-size:14px;line-height:2">
 &bull; Ihrer pers&ouml;nlichen KI-Assistentin Lisa<br>
-&bull; Dem FlowSight Dashboard<br>
+&bull; Dem Dashboard<br>
 &bull; Automatisierten SMS-Best&auml;tigungen<br>
 &bull; Dem Review-System
 </td></tr>
@@ -152,15 +152,15 @@ Falls Sie FlowSight in Ihrem Betrieb einsetzen m&ouml;chten, melden Sie sich jed
     const offboardText = [
       "Guten Tag",
       "",
-      "Ihr 14-Tage Trial bei FlowSight ist abgelaufen. Vielen Dank für Ihr Interesse.",
+      "Ihr 14-Tage Trial ist abgelaufen. Vielen Dank für Ihr Interesse.",
       "",
       "In den letzten 14 Tagen hatten Sie Zugang zu:",
       "- Ihrer persönlichen KI-Assistentin Lisa",
-      "- Dem FlowSight Dashboard",
+      "- Dem Dashboard",
       "- Automatisierten SMS-Bestätigungen",
       "- Dem Review-System",
       "",
-      "Falls Sie FlowSight in Ihrem Betrieb einsetzen möchten, melden Sie sich jederzeit.",
+      "Falls Sie das System in Ihrem Betrieb einsetzen möchten, melden Sie sich jederzeit.",
       "",
       "---",
       "Gunnar Wende — 044 552 09 19 — gunnar@flowsight.ch",
@@ -171,9 +171,10 @@ Falls Sie FlowSight in Ihrem Betrieb einsetzen m&ouml;chten, melden Sie sich jed
     } else {
       const offboardResult = await sendEmail({
         to: tenant.prospect_email,
-        subject: "Ihr FlowSight Trial — Danke für Ihr Interesse",
+        subject: `Ihr Trial — Danke für Ihr Interesse`,
         html: offboardHtml,
         text: offboardText,
+        fromName: `${tenant.name} via FlowSight`,
       });
 
       if (offboardResult.success) {

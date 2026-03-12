@@ -258,12 +258,12 @@ async function main() {
 <!-- Gold accent bar -->
 <tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
 <!-- Logo -->
-<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">${name}</td></tr>
 <!-- Heading -->
 <tr><td style="padding:0 24px;color:#e2e8f0;font-size:22px;font-weight:700">Guten Tag</td></tr>
 <!-- Welcome text -->
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
-Ihr FlowSight Trial ist aktiv. Ab sofort k&ouml;nnen Sie unser System testen.
+Ihr 14-Tage Trial ist aktiv. Ab sofort k&ouml;nnen Sie das System testen.
 </td></tr>
 <!-- CTA button -->
 <tr><td style="padding:24px 24px 8px" align="center">
@@ -298,7 +298,7 @@ ${phoneSection}
     const welcomeText = [
       "Guten Tag",
       "",
-      "Ihr FlowSight Trial ist aktiv. Ab sofort können Sie unser System testen.",
+      "Ihr 14-Tage Trial ist aktiv. Ab sofort können Sie das System testen.",
       "",
       `Dashboard öffnen: ${magicLink}`,
       "",
@@ -319,9 +319,10 @@ ${phoneSection}
 
     const welcomeResult = await sendEmail({
       to: prospectEmail,
-      subject: "Willkommen — Ihr 14-Tage Trial bei FlowSight",
+      subject: `Willkommen — Ihr 14-Tage Trial für ${name}`,
       html: welcomeHtml,
       text: welcomeText,
+      fromName: `${name} via FlowSight`,
     });
 
     if (welcomeResult.success) {
