@@ -257,7 +257,10 @@ export const walterLeuthold: CustomerSite = {
     },
   ],
 
-  // Categories: no voice agent — wizard-only (Sanitär + Spenglerei focus)
+  voicePhone: "+41 XX XXX XX XX", // TODO: assign Twilio number
+  voicePhoneRaw: "+41XXXXXXXXX", // TODO: assign Twilio number
+
+  // Categories: Sanitär + Spenglerei focus
   categories: [
     { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
     { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },

@@ -26,5 +26,10 @@
     "intl_agent_id": "agent_0976aabe2c12ab0ca4d48933a5",
     "intl_flow_id": "conversation_flow_ac5b3603b478",
     "last_synced": "2026-03-12T14:38:25.213Z"
+  },
+  "walter-leuthold": {
+    "de_agent_id": null,
+    "intl_agent_id": null,
+    "last_synced": null
   }
 }

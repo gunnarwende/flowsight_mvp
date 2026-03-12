@@ -1,0 +1,85 @@
+{
+  "version": "1.0",
+  "slug": "walter-leuthold",
+  "name": "Walter Leuthold",
+  "generated_at": "2026-03-12T00:00:00Z",
+
+  "scoring": {
+    "icp_score": 8,
+    "tier": "HOT",
+    "trust": 5,
+    "gap": 2,
+    "reasons": [
+      "Trust 5: 4.9★ × 44 Reviews — herausragend",
+      "Gap 2: hat Website (eigene Domain, solide aber ausbaufähig)"
+    ]
+  },
+
+  "leckerli": {
+    "recommendation": "A+B-Full+D",
+    "best_demo_case": "Samstag-Nacht-Notfall: Rohrbruch → Lisa → SMS → Ops-Fall in 3 Min",
+    "modus": 2
+  },
+
+  "company": {
+    "legal_name": "Walter Leuthold",
+    "short_name": "Leuthold",
+    "founding_year": 2001,
+    "gewerke": ["Sanitär", "Heizung", "Spenglerei", "Badsanierung", "Boiler"],
+    "employees_estimate": 1,
+    "brand_color": "#203784"
+  },
+
+  "contact": {
+    "phone": "044 720 16 90",
+    "phone_e164": "+41447201690",
+    "email": "info@walter-leuthold.ch",
+    "website": "https://walter-leuthold.ch",
+    "address": {
+      "street": "Seestrasse 98a",
+      "zip": "8942",
+      "city": "Oberrieden",
+      "canton": "ZH"
+    }
+  },
+
+  "services": [
+    { "name": "Sanitäre Anlagen", "slug": "sanitaer", "icon": "bath", "verified": true },
+    { "name": "Reparaturen & Wartung", "slug": "reparaturen", "icon": "wrench", "verified": true },
+    { "name": "Wasserenthärtung", "slug": "wasserenthaertung", "icon": "water", "verified": true },
+    { "name": "Spenglerei — Dach", "slug": "spenglerei-dach", "icon": "roof", "verified": true },
+    { "name": "Spenglerei — Haus", "slug": "spenglerei-haus", "icon": "facade", "verified": true }
+  ],
+
+  "emergency": {
+    "enabled": true,
+    "phone_e164": "+41794177441",
+    "label": "24h Notfall",
+    "keywords_detected": ["24h Notfall", "rund um die Uhr", "Wochenende"]
+  },
+
+  "reviews": {
+    "google_rating": 4.9,
+    "google_reviews": 44,
+    "google_url": "https://www.google.com/maps/place/Walter+Leuthold+Sanitäre+Anlagen",
+    "source": "Google Maps"
+  },
+
+  "team": [
+    { "name": "Walter Leuthold", "role": "Inhaber / Sanitär & Spengler", "source": "walter-leuthold.ch" }
+  ],
+
+  "data_sources": [
+    "walter-leuthold.ch (Website, Impressum, Leistungen)",
+    "Google Maps (4.9★ / 44 Reviews)",
+    "FlowSight customer config (verified)"
+  ],
+
+  "crawl_metadata": {
+    "pages_visited": null,
+    "images_found": null,
+    "images_selected": null,
+    "crawled_at": null,
+    "crawler": "manual"
+  }
+}

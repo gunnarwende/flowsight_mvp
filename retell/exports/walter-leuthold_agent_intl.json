@@ -1,0 +1,295 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "agent_name": "Walter Leuthold Intake (INTL)",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 1,
+    "conversation_flow_id": ""
+  },
+  "webhook_url": "https://flowsight-mvp.vercel.app/api/retell/webhook",
+  "language": "en-US",
+  "data_storage_setting": "everything",
+  "opt_in_signed_url": false,
+  "post_call_analysis_data": [
+    {
+      "type": "string",
+      "name": "plz",
+      "description": "Swiss postal code (Postleitzahl). Return exactly 4 digits, e.g. \"8001\". Always return the numeric postal code regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "city",
+      "description": "City/town of the service location in Switzerland, e.g. \"Zürich\". Always return the German city name.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "street",
+      "description": "Street name of the service location. ALWAYS use Swiss German spelling with 'ss' (NEVER 'ß'): e.g. \"Bahnhofstrasse\", \"Seestrasse\", \"Dorfstrasse\". Return the street name only, without house number. If the caller did not provide a street, return empty string.",
+      "required": false
+    },
+    {
+      "type": "string",
+      "name": "house_number",
+      "description": "House number of the service location, e.g. \"12\" or \"3a\". If the caller did not provide a house number, return empty string.",
+      "required": false
+    },
+    {
+      "type": "string",
+      "name": "category",
+      "description": "Return exactly one of: \"Verstopfung\", \"Leck\", \"Heizung\", \"Boiler\", \"Rohrbruch\", \"Dachschaden\", \"Sanitär allgemein\". Always use the German value regardless of call language.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "urgency",
+      "description": "Return exactly one of: \"notfall\", \"dringend\", \"normal\". Lowercase German only.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "description": "1-3 sentence summary of the problem IN GERMAN. Include key symptoms and affected area. Never include personal data. Always write in German regardless of call language.",
+      "required": true
+    }
+  ],
+  "version": 1,
+  "is_published": false,
+  "version_title": "Walter Leuthold Intake (INTL)",
+  "post_call_analysis_model": "gpt-4.1-mini",
+  "pii_config": {
+    "mode": "post_call",
+    "categories": []
+  },
+  "analysis_successful_prompt": "Evaluate whether the agent had a successful call. The caller was transferred from the German agent. A successful call means the agent completed the intake in the caller's language (EN/FR/IT).",
+  "analysis_summary_prompt": "Write a 1-3 sentence summary of the call. Note the language used and that this was a transferred call.",
+  "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
+  "voice_id": "custom_voice_cf152ba48ccbac0370ecebcd88",
+  "max_call_duration_ms": 420000,
+  "interruption_sensitivity": 1,
+  "responsiveness": 0.9,
+  "reminder_trigger_ms": 10000,
+  "reminder_max_count": 1,
+  "allow_user_dtmf": true,
+  "user_dtmf_options": {},
+  "conversationFlow": {
+    "conversation_flow_id": "",
+    "version": 1,
+    "global_prompt": "You are the phone assistant for Walter Leuthold, a plumber and tinsmith (Spengler) based in Oberrieden, Switzerland. You take damage reports for plumbing, heating, and roofing/tinsmithing services.\n\nCONTEXT\n- The caller was transferred from the German-speaking agent because they spoke English, French, or Italian.\n- The full conversation history carries over. Check what was already said before asking again.\n- Walter Leuthold is a solo operation — one-man business, personal service.\n\nCOMPANY INFO\n- Company: Walter Leuthold (sole proprietorship)\n- Owner: Walter Leuthold — Plumber & Tinsmith\n- Address: Seestrasse 98a, 8942 Oberrieden\n- Phone: 044 720 16 90\n- Emergency: 079 417 74 41 (24h)\n- Email: info@walter-leuthold.ch\n- Website: walter-leuthold.ch\n- Services: Plumbing (pipe cleaning, repairs, bathroom renovation), Heating (maintenance, repairs), Roofing/Tinsmithing (copper roofs, flat roof sealing, chimney covers, metal facades), Water heater (descaling, replacement)\n- Service area: Oberrieden (8942), Thalwil (8800), Horgen (8810), Kilchberg (8802), Rüschlikon (8803), Adliswil, Wädenswil (8820), Au ZH, Richterswil — left shore of Lake Zurich\n- Hours: Mon-Fri 07:00-18:00, 24h emergency service\n\nSTYLE\n- Speak naturally and calmly — like an experienced dispatcher, not a robot.\n- Short sentences. No lists. Never ask multiple questions at once.\n- Empathetic micro-reactions: \"I understand.\", \"That sounds unpleasant.\", \"Got it.\" — before your next question.\n- Maximum 7 questions per call.\n- When the caller speaks: STOP talking immediately. Wait until they finish.\n- After each question: WAIT for the caller to respond. Do NOT ask another question until the caller has spoken. Maximum 1 reprompt if no response.\n\nLANGUAGE (FOLLOW MODE — NO LOCK)\n- Detect the caller's language from the conversation history or their first message after transfer.\n- Supported: English, French, Italian, German (Hochdeutsch).\n- ALWAYS follow the caller's LATEST language. If they switch mid-call, switch with them immediately.\n- If the caller asks you to repeat something in a different language: do it, then ask 'Shall I continue in <language>?' and continue in whatever they choose.\n- If the caller mixes languages: use the dominant language of their last message.\n- You may speak German if the caller requests it. German callers transferred by mistake are handled gracefully.\n- NEVER refuse a language switch. NEVER say 'I must stay in <language>'.\n- Post-call analysis values (category, urgency, description) must ALWAYS be in German — regardless of conversation language.\n\nGERMAN BACK-TRANSFER\n- If the caller switches to German or requests German (e.g. 'Deutsch bitte', 'auf Deutsch', 'German please'), transfer them back to the German agent using swap_to_de_agent immediately.\n- Do NOT speak German yourself — the German agent has a native German voice.\n- Transfer immediately — do not ask for confirmation.\n\nTOPIC\n- Plumbing, heating, and roofing/tinsmithing only. Politely decline other requests.\n- Never mention recording.\n\nPRIVACY\n- No personal data in the description (no names, phone numbers, emails, exact addresses).\n\nGOODBYE RULE (CRITICAL — NO LOOP)\n- Say your goodbye EXACTLY ONCE (SMS info + farewell wish + 'goodbye').\n- AFTER THAT: If the caller says 'bye', 'thanks', 'thank you', 'goodbye', 'perfect', 'great', 'okay' or similar → respond with: 'You're very welcome, and don't worry — we'll take care of it. Goodbye!' Then IMMEDIATELY call the 'end_call' tool to actively end the conversation.\n- NEVER repeat the SMS information, summary, or farewell wish.\n- After the warm closing, end_call MUST be called. No further talking.\n\nREQUIRED FIELDS (must be collected by end of call)\n1) Postal code of the service location (Switzerland, 4 digits)\n2) City/town of the service location\n3) Street and house number of the service location (best-effort — if the caller refuses, continue without it)\n4) Category — exactly one: Verstopfung | Leck | Heizung | Boiler | Rohrbruch | Dachschaden | Sanitär allgemein\n5) Urgency — exactly one (lowercase German): notfall | dringend | normal\n6) Short description (1–3 sentences, no PII)\n\nCUSTOM ANALYSIS DATA OUTPUT\nEven though the call is in English/French/Italian: ALL values must be in GERMAN.\nNEVER use 'ß' — ALWAYS use 'ss' (Swiss German). Example: 'Strasse' (not 'Straße'), 'Seestrasse' (not 'Seestraße').\n- plz: Postal code (4 digits only)\n- city: City/town (German name)\n- street: Street name (without house number). Leave empty if not provided.\n- house_number: House number. Leave empty if not provided.\n- category: exactly one of the 7 German values\n- urgency: exactly \"notfall\" or \"dringend\" or \"normal\" (lowercase)\n- description: 1–3 sentences in German summarizing the problem, no PII",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You were transferred from the German agent. Check the conversation history to understand what language the caller speaks and what they already said. Greet them warmly in their language (English, French, or Italian) and let them know you are here to help. If they already described their problem, acknowledge it briefly."
+        },
+        "always_edge": {
+          "destination_node_id": "node-intake",
+          "id": "always-edge-welcome",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Always"
+          }
+        },
+        "name": "Welcome Node",
+        "edges": [],
+        "start_speaker": "agent",
+        "id": "start-node",
+        "type": "conversation",
+        "display_position": {
+          "x": 232,
+          "y": 24
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "You are continuing an intake conversation. The caller was transferred from the German agent.\n\nCHECK CONVERSATION HISTORY FIRST\n- Review what the caller already said to the German agent before transfer.\n- Do NOT re-ask information that was already provided.\n- If the caller already described their problem, acknowledge it and continue with missing fields only.\n\nGREETING (only on your first turn after transfer)\n- Greet warmly in the detected language. Acknowledge what they already said.\n- English: \"Hello! I'll be happy to help you. [Acknowledge what they said]. Let me just confirm a few details.\"\n- French: \"Bonjour ! Je suis là pour vous aider. [Acknowledge]. Permettez-moi de confirmer quelques détails.\"\n- Italian: \"Buongiorno! Sono qui per aiutarla. [Acknowledge]. Mi permetta di confermare alcuni dettagli.\"\n\nWORKFLOW (flexible order — adapt to conversation)\n1. Let the caller explain what happened. Listen.\n2. React briefly with empathy.\n3. Derive category from description if possible. Only if unclear: ask (never list all 7).\n4. Ask for the street address: 'What is the street and house number at the service location?' If the caller refuses, accept and move on.\n5. Ask for postal code and city together: 'And the postal code and city?' Confirm ONLY the city name: 'Oberrieden, correct?' Do NOT read back digits — the city name is sufficient confirmation for Swiss postal codes. If the caller corrects the city, re-ask the postal code.\n6. Ask about urgency — ONLY if not yet answered.\n7. NO summary. Once all required fields are collected, say something like: 'Thank you, I have everything noted. You will receive an SMS shortly — you can verify the details, make corrections if needed, and also upload photos of the damage. This helps Walter Leuthold prepare. Take care, goodbye!' Then set intake_complete=true.\n\nNO-DOUBLE-ASKING RULE\n- Ask each required field EXACTLY ONCE. If the caller already answered (even casually), do NOT ask again.\n- On silence or unclear answer: ask ONCE more, then move on.\n- Before each question: check if the information is already available. If yes: skip.\n\nADDITIONAL RULES\n- Never ask two questions in one sentence.\n- If the caller is impatient: collect minimum and wrap up quickly.\n- If the request is not plumbing/heating/roofing: set out_of_scope=true.\n- When all required fields are collected (postal code, city, category, urgency, description): set intake_complete=true.\n- Street and house number are desirable but NOT a blocker for intake_complete.\n\nLANGUAGE (FOLLOW — NO LOCK)\n- Follow the caller's latest language for ALL turns. If they switch, switch with them.\n- Never refuse a language change. Never say 'I must stay in <language>'.\n- If speech is unclear: ask ONCE 'Sorry, I didn't catch that. Could you repeat?' If still unclear after 1 retry, summarize what you have and close gracefully.\n- Post-call analysis values (category, urgency, description) always in German.\n\nAFTER FAREWELL (HIGHEST PRIORITY)\nCheck your LAST message in the conversation history.\nIf your last message ALREADY contained 'SMS', 'verify', 'corrections', 'photos' or 'Take care' or 'goodbye', then YOU HAVE ALREADY SAID GOODBYE.\n\nIn that case — no matter what the caller says (thanks, bye, perfect, great, etc.):\n→ Say EXACTLY: 'You're very welcome, and don't worry — we'll take care of it. Goodbye!'\n→ IMMEDIATELY call end_call.\n→ FORBIDDEN: Say 'thank you' again. Mention SMS again. Repeat any data or summary.\n→ ONLY this short response + end_call. NOTHING ELSE."
+        },
+        "name": "Intake Node",
+        "edges": [
+          {
+            "destination_node_id": "node-de-transfer",
+            "id": "edge-intake-german-trigger",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller's latest message is clearly in German (a coherent German sentence or phrase), or the caller explicitly requests German (e.g. 'Deutsch bitte', 'auf Deutsch', 'German please', 'in German')"
+            }
+          },
+          {
+            "destination_node_id": "node-closing",
+            "id": "edge-intake-done",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "intake_complete is true (all required fields collected: postal code, city, category, urgency, description)"
+            }
+          },
+          {
+            "destination_node_id": "node-out-of-scope",
+            "id": "edge-intake-out-of-scope",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "out_of_scope is true (the request is not about plumbing, heating, or roofing/tinsmithing)"
+            }
+          }
+        ],
+        "id": "node-intake",
+        "type": "conversation",
+        "display_position": {
+          "x": 623,
+          "y": 310
+        },
+        "tools": [
+          {
+            "type": "end_call",
+            "name": "end_call",
+            "description": "End the phone call. Use this ONLY after the caller has acknowledged your farewell (e.g. said thanks, bye, perfect) and you have given your warm closing response. NEVER use this during the intake conversation."
+          }
+        ]
+      },
+      {
+        "name": "Logic Split Node",
+        "edges": [
+          {
+            "destination_node_id": "node-de-transfer",
+            "id": "edge-logic-german-check",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "The caller speaks German or has requested to continue in German"
+            }
+          },
+          {
+            "destination_node_id": "node-out-of-scope",
+            "id": "edge-out-of-scope",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "out_of_scope is true (the user's request is not about plumbing, heating, or roofing/tinsmithing)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing",
+            "id": "edge-intake-complete",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "intake_complete is true (all required fields have been collected: plz, city, category, urgency, description)"
+            }
+          }
+        ],
+        "id": "node-logic-split",
+        "else_edge": {
+          "destination_node_id": "node-intake",
+          "id": "edge-logic-else",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Else"
+          }
+        },
+        "type": "branch",
+        "display_position": {
+          "x": 989,
+          "y": 704
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
+        },
+        "name": "Closing Node",
+        "edges": [],
+        "id": "node-closing",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 796
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-closing",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "The goodbye was already spoken in the conversation. Say NOTHING. Stay completely silent. The call is over."
+        },
+        "name": "Out-of-scope Closing",
+        "edges": [],
+        "id": "node-out-of-scope",
+        "type": "conversation",
+        "display_position": {
+          "x": 943,
+          "y": 944
+        },
+        "skip_response_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "skip-response-edge-oos",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Skip response"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "The caller wants to continue in German. Call the 'swap_to_de_agent' tool IMMEDIATELY. Say nothing else — just call the tool. NEVER use end_call."
+        },
+        "name": "DE Transfer",
+        "edges": [],
+        "id": "node-de-transfer",
+        "type": "conversation",
+        "display_position": {
+          "x": 200,
+          "y": 700
+        },
+        "tools": [
+          {
+            "type": "agent_swap",
+            "agent_id": "REPLACE_WITH_LEUTHOLD_DE_AGENT_ID",
+            "name": "swap_to_de_agent",
+            "description": "Transfer the caller back to the German-speaking agent (Lisa). Execute this tool IMMEDIATELY — the caller wants German.",
+            "post_call_analysis_setting": "only_destination_agent"
+          }
+        ]
+      },
+      {
+        "name": "End Call",
+        "id": "end-call-node",
+        "type": "end",
+        "display_position": {
+          "x": 1766,
+          "y": 1116
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "End the call immediately. Say nothing else."
+        }
+      }
+    ],
+    "start_node_id": "start-node",
+    "start_speaker": "agent",
+    "model_choice": {
+      "type": "cascading",
+      "model": "gpt-4.1"
+    },
+    "tool_call_strict_mode": true,
+    "knowledge_base_ids": [],
+    "kb_config": {
+      "top_k": 3,
+      "filter_score": 0.6
+    },
+    "begin_tag_display_position": {
+      "x": 46,
+      "y": -43
+    },
+    "is_published": false,
+    "flex_mode": false,
+    "is_transfer_cf": true
+  }
+}
