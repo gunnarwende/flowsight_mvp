@@ -97,6 +97,7 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
         </a>
         <div className="hidden items-center gap-6 md:flex">
           <a href="#leistungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Leistungen</a>
+          {c.reviews && <a href="#bewertungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Bewertungen</a>}
           {c.team.length > 1 && <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>}
           <a href="#kontakt" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Kontakt</a>
           {c.emergency?.enabled ? (
@@ -134,7 +135,7 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
       {heroImg ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={heroImg} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={heroImg} alt={`${c.companyName} — ${c.tagline}`} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/80 to-gray-900/55" />
         </>
       ) : (
@@ -233,7 +234,7 @@ function ReviewsSection({
 }) {
   const showScore = reviews.averageRating >= SHOW_RATING_THRESHOLD;
   return (
-    <section className="border-y border-gray-100 bg-gray-50 py-20">
+    <section id="bewertungen" className="border-y border-gray-100 bg-gray-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           {showScore && (
@@ -261,7 +262,7 @@ function ReviewsSection({
           )}
         </div>
 
-        {reviews.highlights.length > 0 && (
+        {reviews.highlights.length > 0 ? (
           <div className={`mx-auto mt-12 max-w-5xl ${reviews.highlights.length <= 2 ? "flex flex-col items-center gap-6 sm:flex-row sm:justify-center" : "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"}`}>
             {reviews.highlights.map((r, i) => (
               <div key={i} className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${reviews.highlights.length <= 2 ? "w-full max-w-md" : ""}`}>
@@ -277,7 +278,19 @@ function ReviewsSection({
               </div>
             ))}
           </div>
-        )}
+        ) : reviews.googleUrl ? (
+          <div className="mt-10 text-center">
+            <a
+              href={reviews.googleUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:shadow-md"
+            >
+              <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              Alle Bewertungen auf Google ansehen
+            </a>
+          </div>
+        ) : null}
 
       </div>
     </section>
@@ -642,6 +655,10 @@ function ServiceIconSvg({ icon, size = "md" }: { icon?: ServiceIcon; size?: "sm"
     case "water": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3.75c0 0-6.75 7.5-6.75 11.25a6.75 6.75 0 0013.5 0C18.75 11.25 12 3.75 12 3.75z" /></svg>);
     // Pipe
     case "pipe": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47m0 0a3.375 3.375 0 01-4.773 0L5 14.5m6.757 2.47a3.375 3.375 0 01-4.773 0" /></svg>);
+    // Lüftung / Klima — snowflake
+    case "snowflake": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18l-3 3m3-3l3 3m-3 15l-3-3m3 3l3-3M3 12h18m-18 0l3-3m-3 3l3 3m15-3l-3-3m3 3l-3 3" /></svg>);
+    // Wärmepumpe — pump
+    case "pump": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5V18M15 7.5V18M3 16.811V8.69c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061A1.125 1.125 0 013 16.811z" /></svg>);
     // Tool (generic)
     case "tool": return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1 5.1a2.121 2.121 0 01-3-3l5.1-5.1m0 0L15.17 4.42A2.121 2.121 0 0118.17 1.42l2.83 2.83a2.121 2.121 0 01-3 3L10.42 14.17z" /></svg>);
     default: return (<svg className={cls} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1 5.1a2.121 2.121 0 01-3-3l5.1-5.1" /></svg>);

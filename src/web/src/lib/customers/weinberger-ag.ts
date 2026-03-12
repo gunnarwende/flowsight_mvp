@@ -21,6 +21,9 @@ export const weinbergerAg: CustomerSite = {
     "Jul. Weinberger AG",
   ],
 
+  voicePhone: "043 505 11 01",
+  voicePhoneRaw: "+41435051101",
+
   contact: {
     phone: "044 721 22 23",
     phoneRaw: "+41447212223",
