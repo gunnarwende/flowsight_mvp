@@ -82,7 +82,12 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **S1.6: Kategorie-Vereinheitlichung (13.03.):** PR #173. CASE_POOL + deriveWizardCategories() eliminiert. Per-customer `categories[]` in CustomerSite als SSOT. Values aligned mit Voice Agents: "Leck" statt "Leck / Wasserschaden", "Heizung" statt "Heizungsausfall". Shared FIXED_CATEGORIES. **S1 komplett DONE.**
 - **BLOCKER:** Keine. Go-Live möglich.
 - **S2 Surface Quality (13.03.):** PR #175. Snowflake+Pump Icons (Weinberger Lüftung fix). Reviews-Fallback (Google CTA bei leeren Highlights). Nav-Anchor #bewertungen. Weinberger voicePhone. Hero-Alt-Text dynamisch.
-- **Nächster Schritt:** S2 Fortsetzung — Weinberger hero.jpg + Review-Highlights (Founder), dann Tier-1 Website-QA.
+- **S2.2 Tier-1 Website QA (13.03.):** PR #177. Walter Leuthold History-Section enabled (2. Milestone). Widmer Spenglerei-Icon `roof`. Widmer Opening Hours Sa/So. Dörfler Blitzschutz-Bild Encoding-Fix.
+- **S2.4 Voice Agent Gold-QA (13.03.):** PR #178. Placeholder Agent-IDs ersetzt (Brunner + Weinberger DE↔INTL Transfer). Alle 8 Agents synced + published.
+- **BLOCKER:** Keine. Go-Live möglich.
+- **S2.5 SMS-Config (13.03.):** Verified. Brunner (BrunnerHT) + Weinberger (Weinberger) korrekt. Andere 4 Tenants wizard-only → kein SMS nötig.
+- **S2 KOMPLETT** (CC-seitig). Alle 6 Blocks done (S2.1–S2.6).
+- **Nächster Schritt:** Founder-Tasks: Weinberger hero.jpg + Review-Highlights, Widmer Certifications/BrandPartners/Team #2.
 
 ## Fixe Entscheidungen (No Drift)
 
