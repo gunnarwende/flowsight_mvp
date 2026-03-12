@@ -295,7 +295,7 @@
         "tools": [
           {
             "type": "agent_swap",
-            "agent_id": "REPLACE_WITH_BRUNNER_DE_AGENT_ID",
+            "agent_id": "agent_47deec4bdc891126de71dd42be",
             "name": "swap_to_de_agent",
             "description": "Transfer the caller back to the German-speaking agent (Susi). Execute this tool IMMEDIATELY — the caller wants German.",
             "post_call_analysis_setting": "only_destination_agent"
