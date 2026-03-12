@@ -132,11 +132,11 @@ Der unsichtbare Unterbau. Wenn S1 nicht steht, ist alles andere Fassade.
 | S1.2 | **Day-5-Email bauen** (Profil-Differenzierung Meister/Betrieb) | prospect_journey §4 Tag 5 | ✅ DONE (PR #169) |
 | S1.3 | **Demo-Case-Tabs** ("Ihre Faelle" / "So sieht Ihr Alltag aus") | prospect_journey §4 Tag 0 T9 | ✅ DONE (PR #169) |
 | S1.4 | **Day-7-Engagement-Snapshot** | prospect_journey §4 Tag 7 | ✅ DONE (PR #169) |
-| S1.5 | **Wizard: Notfall-Logik** (N1-N7) | wizard §3 | Notfall → Telefon-CTA primaer. "Schriftlich melden" sekundaer. Kein Case ohne Warnung. |
+| S1.5 | **Wizard: Notfall-Logik** (N1-N7) | wizard §3 | ✅ DONE (PR #171) |
 | S1.6 | **Wizard: Kategorie-Vereinheitlichung** | wizard §8 | Eine Quelle `categories[]` in Tenant-Config. Voice + Wizard lesen dieselbe Liste. |
-| S1.7 | **Review Surface: Bewertungs-Vorbereiter** | review §3 (RS1-RS10) | Auftrags-Block, editierbares Textarea, Clipboard + Google CTA, keine Sterne, kein "Max Mustermann". |
-| S1.8 | **Review: Nachlauf-System** | review §5 (NS1-NS3) | 6 Status-Badges, review_sent_at, case_events Tracking, max 2 Anfragen, Resend nach 7d. |
-| S1.9 | **Leitstand: Review-Badges + Nachlauf** | leitstand + review §5.3 | Review-Badge im Falldetail. "Review anfragen" / "Nochmals" / "Kein Review". |
+| S1.7 | **Review Surface: Bewertungs-Vorbereiter** | review §3 (RS1-RS10) | ✅ DONE (PR #171) |
+| S1.8 | **Review: Nachlauf-System** | review §5 (NS1-NS3) | ✅ DONE (PR #171) |
+| S1.9 | **Leitstand: Review-Badges + Nachlauf** | leitstand + review §5.3 | ✅ DONE (PR #171) |
 | S1.10 | **Welcome Page Polish** | prospect_journey §4 Tag 0 T5 | ✅ PARTIAL (PR #168+#169: Countdown + Tagline. TODO: Profil-CTAs, Nav) |
 
 ### S2: Oberflaechen-Qualitaet

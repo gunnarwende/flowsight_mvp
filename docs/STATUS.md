@@ -78,8 +78,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Demo→Test Flow (11.03.):** PR #148. "Demo buchen" → "Kostenlos testen". Neue /testen Page ("Wir bauen Lisa für Ihren Betrieb"), /demo redirect, DemoForm mit PLZ+Website, Qualify-orientierte Bestätigung. Stage 1 von 3.
 - **Lisa Interest Capture (11.03.):** PR #150. Sales Agent → Interest Capture Agent. Kein Pricing, kein Feature-Pitch, kein Demo-Buchen. Stattdessen: warm empfangen, Interesse erfassen, Founder-Rückruf vorbereiten. Gold-Contact-aligned.
 - **Block A: Identity + Lifecycle (13.03.):** PR #168 + #169. Identity Contract auf alle 7 E-Mail-Templates angewendet (Sender = `{name} via FlowSight`, kein `[FlowSight]` Prefix). Day-5 Engagement-Nudge (mit Suppression bei >=3 Cases). Day-7 Engagement-Snapshot (JSONB). Welcome-Page Trial-Countdown. Demo-Case-Tabs im Leitstand ("Ihre Fälle" / "Demo"). Tab-Titel = `{short_name} OPS`.
+- **Block B: Wizard + Review Gold (13.03.):** PR #171. Wizard Notfall-Logik (N1-N7): Phone-CTA-Screen bei Notfall. Review Surface komplett neu (editierbares Textarea, Auftrags-Block, Clipboard+Google-CTA, Tenant-Branding, Event-Tracking). Nachlauf-System (6 Review-Status aus case_events, max 2 Anfragen, 7d-Cooldown, Skip-Action). Leitstand Review-Badges + Aktionen.
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** Block B (Wizard + Review Gold) — S1.5-S1.9.
+- **Nächster Schritt:** S1.6 (Kategorie-Vereinheitlichung) + S2 (Oberflächen-Qualität).
 
 ## Fixe Entscheidungen (No Drift)
 

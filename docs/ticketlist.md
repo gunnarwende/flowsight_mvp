@@ -91,6 +91,17 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 
 ## Completed (Archiv — kondensiert)
 
+### Block B: Wizard + Review Gold (13.03.)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| Wizard Notfall-Logik (N1-N7): Phone-CTA-Screen | PR #171 (S1.5) |
+| Review Surface Gold (RS1-RS10): Komplett-Rewrite | PR #171 (S1.7) |
+| Nachlauf-System (NS1-NS3): 6 Status, Resend, Skip | PR #171 (S1.8) |
+| Leitstand Review-Badges + Aktionen | PR #171 (S1.9) |
+| deriveReviewStatus() — shared lib | PR #171 |
+| Skip-Review + Track API routes | PR #171 |
+
 ### Block A: Identity + Lifecycle (13.03.)
 
 | Deliverable | Evidence |
