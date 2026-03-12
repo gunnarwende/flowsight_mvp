@@ -271,5 +271,11 @@ export const walterLeuthold: CustomerSite = {
       title: "Gr\u00fcndung",
       description: "Walter Leuthold gr\u00fcndet seinen Sanit\u00e4r- und Spenglereibetrieb in Oberrieden.",
     },
+    {
+      year: 2024,
+      title: "\u00dcber 20 Jahre am Z\u00fcrichsee",
+      description:
+        "Seit \u00fcber zwei Jahrzehnten betreut Walter Leuthold Privathaushalte und Liegenschaften am linken Z\u00fcrichseeufer \u2014 pers\u00f6nlich, zuverl\u00e4ssig und rund um die Uhr erreichbar.",
+    },
   ],
 };
