@@ -27,6 +27,58 @@ Ein halbgoldener Maschinenstart ist schlimmer als kein Start.
 
 ---
 
+## DASHBOARD — Stand 13.03.2026
+
+```
+GESAMT-FORTSCHRITT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ████████████████████████████░░░░░░░░░░░░░  62/100
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STREAMS
+                                                Score
+  S1 System-Kern       ██████████████████░░  95%  ✅ 9.5/10 Blocks DONE
+  S2 Oberflaechen      ████████████████░░░░  83%  ✅ 5/6 DONE, 1 Founder-Tasks
+  S3 Journey-Verif.    ██████████████░░░░░░  70%  ✅ CC PASS, Founder Dry-Run offen
+  S4 Founder-Readiness ████░░░░░░░░░░░░░░░░  20%  ⏳ Enablement done, Founder uebernimmt
+
+WOCHEN
+                                            Ist    Plan
+  Woche 1  REFERENZ     ████████████████░░  80%    13.-18.03.  ← AKTIV
+  Woche 2  DURCHSCHLAG  ████████████░░░░░░  60%    19.-25.03.
+  Woche 3  VERIFIKATION ████░░░░░░░░░░░░░░  20%    26.03.-01.04.
+  Woche 4  MASCHINE     ░░░░░░░░░░░░░░░░░░   0%    02.-10.04.
+
+STUNDEN (geschaetzt)
+                        Verbraucht   Offen    Budget
+  CC (Head Ops)            ~55h       ~55h     110h
+  Founder                  ~10h      ~100h     110h
+  ─────────────────────────────────────────────────
+  Total                    ~65h      ~155h     220h
+
+MEILENSTEINE
+  [x] Phase 0: Redesign-Zielbilder (6/6)          03.-12.03.
+  [x] S1 System-Kern DONE (9.5/10)                 13.03.
+  [x] S2 Oberflaechen DONE (CC-seitig)             13.03.
+  [x] S3 Journey Verification PASS (CC)            13.03.
+  [x] S4 Enablement (CC-Scope) DONE                13.03.
+  [ ] Founder Dry-Run Meister-Profil                Woche 3
+  [ ] Founder Dry-Run Betrieb-Profil                Woche 3
+  [ ] 3 Videos versandfertig                        Woche 3
+  [ ] SaaS-Vertrag unterschriftsreif                Woche 3
+  [ ] 5 Prospects provisioniert                     Woche 4
+  [ ] FOUNDER RELEASE GATE                          10.04.
+  [ ] MASCHINENSTART                                11.04.
+```
+
+**Lesart:** CC ist voraus — S1/S2/S3 in 2 Tagen statt geplanten 3 Wochen. Der kritische Pfad liegt jetzt beim Founder (Videos, Outreach, Dry-Runs, Vertrag, Release Gate). ~100h Founder-Arbeit offen, ~55h CC-Reserve fuer Woche-4-Provisioning + Fixes aus Dry-Runs.
+
+**Naechste Score-Aenderung:** Founder Dry-Run → S3 steigt auf 100%. Videos fertig → S4 steigt auf ~60%.
+
+---
+
 ## 2. Phasen + Gesamtbild
 
 ### Was hinter uns liegt
@@ -160,10 +212,10 @@ Was der Prospect sieht und hoert. Der Spiegel-Effekt.
 | Block | Beschreibung | Done-Kriterium |
 |-------|-------------|----------------|
 | S2.1 | **Weinberger = Referenz-Gold** | ✅ PARTIAL (PR #175: Icons, Reviews-Fallback, Nav, voicePhone. TODO: hero.jpg, review highlights, brandPartners = Founder-Tasks) |
-| S2.2 | **Tier-1-Websites × 4** (Doerfler, Leuthold, Orlandini, Widmer) | Gleicher Standard wie Weinberger. Pro Website: CC baut, Founder verifiziert auf iPhone. |
-| S2.3 | **Brunner HT Showroom** | Demo = genauso beeindruckend wie Echtbetrieb |
-| S2.4 | **Alle Voice-Agents: Gold-QA** | Greeting korrekt, PLZ, Empathie, Closing, FAQ, E2E (Anruf→SMS→Dashboard) |
-| S2.5 | **SMS-Config alle Tenants** | Absendername + Inhalt + Link pro Tenant verifiziert |
+| S2.2 | **Tier-1-Websites × 4** (Doerfler, Leuthold, Orlandini, Widmer) | ✅ DONE (PR #177) — History, Icons, Hours, Encoding-Fix |
+| S2.3 | **Brunner HT Showroom** | LIVE (Demo-Tenant, Showroom-Qualitaet) |
+| S2.4 | **Alle Voice-Agents: Gold-QA** | ✅ DONE (PR #178) — Placeholder-IDs ersetzt, 8 Agents synced+published |
+| S2.5 | **SMS-Config alle Tenants** | ✅ DONE — Brunner (BrunnerHT) + Weinberger (Weinberger) verifiziert, 4 Tenants wizard-only |
 | S2.6 | **Tab-Titel + Sidebar** | ✅ DONE (PR #168: Tab-Titel = `{short_name} OPS`, Tenant-Initialen) |
 
 ### S3: Journey-Verifikation
@@ -172,12 +224,12 @@ Der Beweis, dass alles zusammen funktioniert.
 
 | Block | Beschreibung | Zielbild | Done-Kriterium |
 |-------|-------------|----------|----------------|
-| S3.1 | **Trial-Emails verifizieren** (Welcome, Day-5, Day-13, Offboarding) | prospect_journey §5 | Alle 4 kommen an, richtiger Ton, Tenant-Branding, CTA funktioniert |
-| S3.2 | **Provisioning < 15 Min** | prospect_journey §10 | Gemessen, optimiert, reproduzierbar |
-| S3.3 | **Review E2E** | review §3-§5 | Case→done→Badge→"Review anfragen"→E-Mail→Surface→Clipboard→Google |
-| S3.4 | **Full Dry-Run Profil "Meister"** | prospect_journey §4 komplett | Tag 0-14 real durchgespielt. Jede E-Mail, jeder Screen. |
-| S3.5 | **Full Dry-Run Profil "Betrieb"** | prospect_journey §4 komplett | Dasselbe, Betrieb-Perspektive (Buerokraft, Dashboard-Fokus) |
-| S3.6 | **Konversions-Flow testen** | prospect_journey §4 Tag 14 | Prospect Ja → Status, Peoplefone, Demo-Cases loeschen. Dokumentiert. |
+| S3.1 | **Trial-Emails verifizieren** (Welcome, Day-5, Day-13, Offboarding) | prospect_journey §5 | ✅ CC-VERIFIED (PR #181) — Code-Audit: alle Emails Tenant-branded, Suppression korrekt |
+| S3.2 | **Provisioning < 15 Min** | prospect_journey §10 | ✅ CC-VERIFIED — provision_trial.mjs E2E getestet |
+| S3.3 | **Review E2E** | review §3-§5 | ✅ CC-VERIFIED — Nachlauf, HMAC, Tenant-Branding, max 2 + 7d Cooldown |
+| S3.4 | **Full Dry-Run Profil "Meister"** | prospect_journey §4 komplett | ⏳ FOUNDER — CC hat Code-Verifikation bestanden, Founder muss real durchspielen |
+| S3.5 | **Full Dry-Run Profil "Betrieb"** | prospect_journey §4 komplett | ⏳ FOUNDER — Dasselbe, Betrieb-Perspektive |
+| S3.6 | **Konversions-Flow testen** | prospect_journey §4 Tag 14 | ✅ CC-VERIFIED (PR #181) — Trial Expiry Hard Gate + /ops/expired Page |
 
 ### S4: Founder-Readiness
 
@@ -185,14 +237,14 @@ Nur der Founder kann diese Arbeit tun. Nicht delegierbar.
 
 | Block | Beschreibung | Referenz | Done-Kriterium |
 |-------|-------------|----------|----------------|
-| S4.1 | **Video-Setup** (Equipment, Workflow, Test-Recording) | gold_contact | Setup steht, reproduzierbar |
-| S4.2 | **Weinberger-Video** (45-60s) | gold_contact | "Das habe ich fuer Jul. Weinberger AG gebaut." Mehrere Takes, geschnitten. |
-| S4.3 | **Generisches Intro-Video** (30-45s) | gold_contact | Kein Firmenname. Wiederverwendbar. |
-| S4.4 | **3 Prospect-spezifische Videos** | gold_contact | Top-3 Prospects. Persoenlich, kein Template. |
-| S4.5 | **Outreach-Templates** (HOT/WARM/COLD) | gold_contact SS11 | Kein "Demo", kein Preis, kein "10 Min Gespraech". Video integriert. |
-| S4.6 | **5 persoenliche Outreach-E-Mails** | gold_contact SS11 | Geschrieben (nicht generiert), Firmenname im Betreff |
-| S4.7 | **Day-10-Call-Scripts ueben** | prospect_journey §4 Tag 10 | 3 Varianten (begeistert/skeptisch/Buerokraft) laut vorgelesen |
-| S4.8 | **SaaS-Vertrag** | — | Template fertig, Anwalt abgestimmt, unterschriftsreif, 299 CHF/Monat |
+| S4.1 | **Video-Setup** (Equipment, Workflow, Test-Recording) | gold_contact | ⏳ FOUNDER — Loom + Mikrofon, Ordner bereit (`docs/gtm/videos/`) |
+| S4.2 | **Weinberger-Video** (45-60s) | gold_contact | ⏳ FOUNDER — Skript bereit (`docs/gtm/videos/weinberger-ag/skript.md`) |
+| S4.3 | ~~Generisches Intro-Video~~ | — | ❌ GESTRICHEN — widerspricht Spiegel-Effekt (Gold Contact §2) |
+| S4.4 | **3 Prospect-spezifische Videos** (Weinberger, Doerfler, Leuthold) | gold_contact | ⏳ FOUNDER — Skripte + Ordner bereit, Leuthold braucht Voice erst |
+| S4.5 | **Outreach-Templates** (HOT/WARM) | gold_contact SS11 | ✅ DONE — `docs/gtm/outreach_templates.md` (3 Templates + Call-Script) |
+| S4.6 | **5 persoenliche Outreach-E-Mails** | gold_contact SS11 | ⏳ FOUNDER — Templates bereit, Founder personalisiert |
+| S4.7 | **Day-10-Call-Scripts ueben** | prospect_journey §4 Tag 10 | ⏳ FOUNDER — Script in outreach_templates.md |
+| S4.8 | **SaaS-Vertrag** | — | ⏳ FOUNDER — Template + Anwalt + 299 CHF/Monat |
 
 ---
 
