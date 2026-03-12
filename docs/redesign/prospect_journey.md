@@ -238,6 +238,53 @@ Rufen Sie {voice_number_formatted} an — Lisa nimmt Ihr erstes Anliegen auf.
 
 **Entscheidung:** Demo-Cases werden nicht gefiltert/versteckt, sondern in einen eigenen Tab verschoben. Der Prospect sieht sie bewusst als Beispiele — das ist ehrlich und zeigt Bandbreite. Aber sein Default-View zeigt nur seine echten Faelle.
 
+#### Demo-Cases als Produktbeweis inszenieren
+
+Das Risiko bei Demo-Cases: Sie fuehlen sich an wie Fake-Daten, die ein Loch fuellen. Das Ziel: Sie fuehlen sich an wie eine Vorschau auf den Alltag mit Lisa.
+
+**Sprache:**
+- Tab-Name: "So sieht Ihr Alltag aus" (nicht "Beispiel-Faelle", nicht "Demo")
+- Badge auf einzelnen Cases: keines. Kein "Beispiel"-Label auf den Karten — das erzeugt Demo-Gefuehl. Stattdessen: der Tab-Kontext genuegt.
+- Intro-Text im Tab (einmalig, ueber der Liste):
+
+  Meister:
+  ```
+  Diese Faelle zeigen, wie Lisa typische Meldungen aufnimmt —
+  von der Notfall-Nacht bis zur Termin-Anfrage.
+  ```
+
+  Betrieb:
+  ```
+  So sieht eine typische Morgen-Uebersicht aus:
+  Neue Meldungen der letzten Nacht, priorisiert nach Dringlichkeit.
+  ```
+
+**Inhaltliche Qualitaet:**
+- Jeder Demo-Case muss so realistisch sein, dass er fuer einen echten Fall gehalten werden koennte
+- Namen: Echte Schweizer Vornamen + Nachnamen (kein "Max Mustermann", kein "Test User")
+- Adressen: Reale Strassen aus dem `service_area_plz[]` des Tenants (nicht aus Zuerich, wenn der Tenant in Thalwil ist)
+- Zeitstempel: Verteilung ueber die letzte Woche, mit realistischen Uhrzeiten (07:15, 19:47, 22:03 — nicht 00:00)
+- Status-Mix: Zeigt den Workflow (3× Neu, 2× Kontaktiert, 1× Geplant, 2× Erledigt bei 8 Cases)
+- Mindestens 1 Notfall-Case (zeigt Empathie-Handling)
+- Mindestens 1 Abend-/Wochenend-Case (zeigt 24/7-Wert)
+
+**Visueller Unterschied zum echten Tab:**
+- "Ihre Faelle" zeigt KPI-Kacheln (Total, Neu heute, In Bearbeitung, Erledigt)
+- "So sieht Ihr Alltag aus" zeigt KEINE KPI-Kacheln — nur die Liste mit dem Intro-Text
+- Das verhindert, dass Demo-Zahlen die echten KPIs verfaelschen
+
+**Uebergang nach Conversion:**
+- Bei `trial_status → converted`: Demo-Cases loeschen (`DELETE WHERE is_demo=true AND tenant_id=...`)
+- Tab "So sieht Ihr Alltag aus" verschwindet
+- Nur "Ihre Faelle" bleibt (jetzt der einzige Tab, kein Umschalten mehr noetig)
+
+**Anti-Muster (was wir NICHT tun):**
+- Kein "Beispiel"-Badge auf Cases (erzeugt Demo-Gefuehl)
+- Keine unrealistischen Beschreibungen ("Test-Sanitaer-Fall #3")
+- Keine Cases aus der Zukunft (Zeitstempel immer in der Vergangenheit)
+- Keine Cases ausserhalb des Tenant-Einzugsgebiets (PLZ muss matchen)
+- Keine 15 Cases fuer einen Solo-Meister (3 reichen, 15 wirken wie Spam)
+
 ---
 
 ### Tag 1–4: Organische Testphase
@@ -359,53 +406,213 @@ Gespeichert als JSONB in neuer Spalte `day7_snapshot` auf `tenants`.
 
 ---
 
+### Tag 5–10: Stille-Logik
+
+Die Phase zwischen Day-5-Nudge und Day-10-Founder-Call ist die laengste automatische Stille in der Journey. Das ist kein Versehen, sondern Design — aber nur unter bestimmten Bedingungen.
+
+#### Wann Stille gut und gewollt ist
+
+Stille ist richtig, wenn der Prospect aktiv ist. Ein aktiver Prospect braucht keinen Stupser — er braucht Ruhe, um sein eigenes Urteil zu bilden. Jeder automatische Touchpoint in dieser Phase wuerde die Botschaft senden: "Wir trauen dem Produkt nicht zu, fuer sich selbst zu sprechen."
+
+**Legitimations-Schwelle fuer Stille:**
+- `cases_created >= 1` UND `last_case_at` innerhalb der letzten 72h
+- Dann: System schweigt. Founder beobachtet via Morning Report. Kein Eingriff.
+
+Das ist die Phase, in der WOW 5 ("Auch nachts") und WOW 6 ("Mein Kunde begeistert") passieren — beides durch Eigeninitiative des Prospects. Kein System-Touchpoint kann diese Momente erzeugen. Die Erkenntnis muss selbst-entdeckt sein.
+
+#### Wann Stille in ein Funkloch kippt
+
+Stille ist falsch, wenn sie Desinteresse verdeckt. Ein Prospect, der seit Tagen nicht getestet hat, vergisst das System — nicht weil es schlecht ist, sondern weil sein Alltag es ueberrollt.
+
+**Funkloch-Erkennung:**
+
+| Signal | Bedingung | Schwere | Aktion |
+|--------|----------|---------|--------|
+| Frueh-Inaktiv | Tag 5 erreicht, 0 Cases, Nudge gesendet | YELLOW | Morning Report markiert. Founder beobachtet. |
+| Stille nach Nudge | Tag 7 erreicht, 0 Cases, Nudge wurde gesendet (nicht unterdrueckt) | RED | Day-7-Snapshot meldet `active=false`. Founder MUSS reagieren. |
+| Abbruch nach Start | Tag 7, ≥1 Case vorhanden, aber `last_case_at > 4 Tage zurueck` | YELLOW | Prospect hat angefangen, dann aufgehoert. Founder-Kontakt sinnvoll. |
+| Aktiv, dann Pause | Tag 7, ≥3 Cases, `last_case_at` innerhalb 72h | GRUEN | Stille ist legitimiert. Kein Eingriff. |
+
+**Founder-Reaktion bei Funkloch (nicht automatisiert):**
+
+| Situation | Founder-Aktion | Ton |
+|-----------|---------------|-----|
+| 0 Cases nach 7 Tagen | Kurzer Anruf: "Ich wollte fragen, ob alles geklappt hat. Brauchten Sie Hilfe beim Testen?" | Hilfsbereit, nicht fordernd |
+| 1 Case, dann Stille | Kurze E-Mail: "Ihr erster Test hat funktioniert — wenn Sie moegen, probieren Sie Lisa abends." | Aufbauend auf dem, was schon passiert ist |
+| Nudge gesendet + Stille | Abwarten bis Tag 10. Beim Day-10-Call direkt ansprechen: "Hatten Sie Gelegenheit zu testen?" | Offen, nicht vorwurfsvoll |
+
+**Entscheidung:** Zwischen Tag 5 und Tag 10 gibt es keinen automatischen Prospect-Kontakt. Die Stille wird legitimiert durch Engagement-Signale im Morning Report. Wenn die Signale schlecht sind, greift der Founder persoenlich ein — nicht das System. Der Grund: Ein Handwerker, der nach 7 Tagen nicht getestet hat, braucht ein Gespraech, keine dritte E-Mail.
+
+#### Stille-Prinzip in einem Satz
+
+> Wenn der Prospect testet, schweigen wir. Wenn er nicht testet, rufen wir an. Aber wir schicken nie eine automatische "Wir vermissen Sie"-Mail.
+
+---
+
 ### Tag 10: Founder-Anruf (T14)
 
 **Der wichtigste manuelle Touchpoint.** Nicht delegierbar, nicht automatisierbar.
 
-**Trigger:** Morning Report YELLOW (`follow_up_at <= today`)
+#### Ziel des Day-10-Moments
 
-**Call-Script Meister:**
-```
-"Guten Tag Herr {prospect_name}, hier ist Gunnar Wende von FlowSight.
-Ich wollte kurz fragen: Wie war Ihr Eindruck von Lisa?
+Der Day-10-Call hat drei Ziele — in dieser Reihenfolge:
 
-[ZUHÖREN]
+1. **Herausfinden, wie der Prospect sich fuehlt** (nicht: ihm sagen, wie er sich fuehlen soll)
+2. **Den Beeinflusser aktivieren** (Frau/Partner beim Meister, Disponentin beim Betrieb)
+3. **Das Entscheidungsfenster oeffnen** (Preis nur nennen, wenn der Moment stimmt)
 
-Hat Ihre Frau / Ihr Partner es auch gesehen?
-Viele Meister zeigen die Website am Kuechentisch — das kommt immer gut an.
+Der Call ist KEIN Verkaufsgespraech. Er ist ein Check-in: "Wie war's?" Alles andere folgt aus der Antwort.
 
-[Wenn positiv:]
-Die Testnummer ist noch 4 Tage fuer Sie reserviert.
-Wenn es passt: 299 im Monat, alles bleibt wie im Test.
-Kein Vertrag, monatlich kuendbar.
+#### Trigger
 
-[Wenn unsicher:]
-Kein Problem. Testen Sie gerne noch weiter. Wenn Sie Fragen haben, rufen Sie an.
+Morning Report YELLOW (`follow_up_at <= today`). Founder sieht vor dem Anruf:
+- Engagement-Signal: Wie viele Cases? Letzte Aktivitaet wann?
+- Profil: Meister oder Betrieb?
+- Day-7-Snapshot: War der Prospect aktiv oder inaktiv?
 
-[Bei positivem Gespraech — Weiterempfehlung:]
-Kennen Sie einen Kollegen in der Region, dem Lisa auch helfen koennte?
-Ich baue gerne eine persoenliche Demo — Sie koennen ihm die Nummer direkt geben."
-```
+**Vorbereitung:** Founder oeffnet Morning Report + Dashboard (Case-Liste des Prospects). 2 Minuten genuegen, um zu wissen, wie das Gespraech anfaengt.
 
-**Call-Script Betrieb:**
+#### Drei Szenarien
+
+##### Szenario A: Aktive Nutzung (≥3 Cases, letzte Aktivitaet <72h)
+
+Der Prospect hat getestet. Er weiss, was Lisa kann. Das Gespraech ist leicht.
+
+**Meister:**
 ```
 "Guten Tag Herr {prospect_name}, hier ist Gunnar Wende.
-Wie war Ihr Eindruck von Lisa? Hat Ihre Buerokraft die Uebersicht gesehen?
+Ich sehe, Sie haben Lisa schon ein paar Mal getestet — wie war Ihr Eindruck?
 
-[ZUHÖREN]
+[ZUHOEREN — hier kommen oft die besten Zitate]
 
-[Wenn Buerokraft eingebunden:]
-Soll ich Ihrer Disponentin kurz zeigen, wie die Uebersicht funktioniert?
+Hat Ihre Frau es auch gesehen? Viele Meister zeigen die Website
+am Kuechentisch — das kommt immer gut an.
 
-[Wenn positiv:]
-299 im Monat, alles bleibt. Monatlich kuendbar.
+[Wenn positiv, beilaeufig:]
+Die Testnummer ist noch 4 Tage fuer Sie reserviert.
+Wenn Sie Lisa behalten moechten: 299 im Monat, alles bleibt wie im Test.
+Monatlich kuendbar.
 
-[Weiterempfehlung:]
-Kennen Sie einen Betrieb in der Region, der aehnliche Probleme hat?"
+[Weiterempfehlung — NUR bei deutlich positivem Signal:]
+Kennen Sie einen Kollegen in der Region, dem Lisa auch helfen koennte?
+Ich baue gerne eine persoenliche Demo — Sie koennen ihm die Nummer geben."
 ```
 
-**Day-10-Call Logging (schliesst IST-Luecke L10):**
+**Betrieb:**
+```
+"Guten Tag Herr {prospect_name}, hier ist Gunnar Wende.
+Ich sehe, es sind schon einige Meldungen reingekommen — wie laeuft's?
+
+[ZUHOEREN]
+
+Hat Ihre Buerokraft die Uebersicht schon gesehen?
+Das Dashboard ist eigentlich fuer sie gebaut — die Morgen-Uebersicht
+zeigt, was ueber Nacht reingekommen ist.
+
+[Wenn Buerokraft noch nicht eingebunden:]
+Soll ich Ihrer Disponentin kurz zeigen, wie das funktioniert?
+Dauert 5 Minuten — dann kann sie selbst entscheiden, ob es passt.
+
+[Wenn positiv:]
+299 im Monat, alles bleibt. Monatlich kuendbar."
+```
+
+**Was Founder herausfinden will:**
+- Hat der Prospect einen eigenen Anwendungsfall entdeckt? ("Abends ist perfekt", "Die SMS hat mich ueberrascht")
+- Wurde der Beeinflusser eingebunden? (Frau gesehen? Buerokraft eingeloggt?)
+- Gibt es Bedenken? (Preis, Datenschutz, Technik, "passt nicht in unsere Ablaeufe")
+
+##### Szenario B: Kaum Nutzung (0–1 Cases, oder letzte Aktivitaet >5 Tage)
+
+Der Prospect hat angefangen oder gar nicht getestet. Das Gespraech muss herausfinden warum — nicht draengen.
+
+**Meister:**
+```
+"Guten Tag Herr {prospect_name}, hier ist Gunnar Wende.
+Ich wollte kurz fragen — hatten Sie schon Gelegenheit, Lisa zu testen?
+
+[ZUHOEREN — die Antwort entscheidet alles]
+
+[Wenn 'nein, hatte keine Zeit':]
+Kein Problem. Ein Tipp: Rufen Sie heute Abend kurz die Nummer an.
+30 Sekunden — und Sie sehen, was passiert. Lisa ist rund um die Uhr da.
+
+[Wenn 'ja, einmal, war ok':]
+Haben Sie die SMS gesehen? Das ist der Moment, der die meisten ueberrascht.
+Testen Sie nochmal nach Feierabend — da merkt man den Unterschied.
+
+[Wenn 'ich bin nicht sicher, ob ich das brauche':]
+Voellig fair. Testen Sie die letzten Tage einfach weiter.
+Wenn's nicht passt, passiert nichts — die Nummer wird frei. Kein Stress."
+```
+
+**Betrieb:**
+```
+"Guten Tag Herr {prospect_name}, hier ist Gunnar Wende.
+Ich wollte nachfragen — wie laeuft der Test?
+
+[Wenn noch nicht getestet:]
+Kein Problem. Wollen Sie, dass ich Ihrer Buerokraft kurz zeige,
+wie das Dashboard funktioniert? Das dauert 5 Minuten per Telefon.
+
+[Wenn getestet, aber nicht weiter genutzt:]
+Gab es etwas, das nicht funktioniert hat? Ich frage direkt,
+weil mir Ihr Feedback hilft — egal wie es ausgeht."
+```
+
+**Was Founder herausfinden will:**
+- Ist das Desinteresse oder Zeitmangel? (Zeitmangel = nochmal Chance geben. Desinteresse = akzeptieren.)
+- Gibt es ein technisches Problem? (SMS nicht angekommen? Link kaputt? Lisa hat falschen Namen gesagt?)
+- Hat der Beeinflusser blockiert? ("Meine Frau meint, wir brauchen das nicht" → Gold Contact Stufe 4 gescheitert)
+
+##### Szenario C: Deutlich positives Signal (Prospect hat sich selbst gemeldet, oder >5 Cases)
+
+Der Prospect ist begeistert. Das Gespraech ist kurz und zielgerichtet.
+
+**Beide Profile:**
+```
+"Guten Tag Herr {prospect_name}, ich sehe, dass Lisa bei Ihnen gut laeuft.
+Wie ist Ihr Gefuehl — passt das fuer Ihren Betrieb?
+
+[ZUHOEREN]
+
+[Wenn Ja-Signal:]
+Dann machen wir's einfach: 299 im Monat, monatlich kuendbar.
+Ich richte alles ein — Ihre Nummer bleibt, Ihr Dashboard bleibt,
+alles wie im Test. Sie bekommen eine kurze E-Mail mit den Details.
+
+[Weiterempfehlung:]
+Kennen Sie jemanden in der Region, der aehnliche Probleme hat?
+Ich baue gerne eine persoenliche Demo. Sie koennen ihm die Nummer geben."
+```
+
+**Was Founder herausfinden will:**
+- Ist das ein sofortiges Ja, oder will er nochmal drueber schlafen?
+- Gibt es einen Kollegen, dem er es empfehlen wuerde?
+
+#### No-Gos im Day-10-Call
+
+| # | No-Go | Warum toedlich |
+|---|-------|---------------|
+| 1 | **Preis erwaehnen, wenn Prospect unsicher ist** | Wechsel von "wie war's" zu "kauf jetzt". Toetet Vertrauen. |
+| 2 | **Feature-Aufzaehlung** | "Lisa kann auch X, Y, Z..." — das ist Sales-Pitch, nicht Check-in. |
+| 3 | **Vorwurf bei Nicht-Nutzung** | "Sie haben ja noch gar nicht getestet" — beschaemend. |
+| 4 | **Weiterempfehlung bei negativem Signal** | Prospect ist unsicher, und Founder fragt nach Kollegen. Wirkt verzweifelt. |
+| 5 | **Angebot verlaengern ohne Grund** | "Ich gebe Ihnen noch 2 Wochen" — untergräbt Zeitfenster-Dringlichkeit. |
+| 6 | **Script ablesen** | Prospect merkt es sofort. Der Call muss natuerlich sein. |
+
+#### Day-10-Call: Die eine Frage, die alles entscheidet
+
+Meister: **"Hat Ihre Frau es gesehen?"**
+Betrieb: **"Hat Ihre Buerokraft die Uebersicht gesehen?"**
+
+Wenn ja → Kaufwahrscheinlichkeit hoch (Beeinflusser eingebunden, Stufe 4 aktiviert).
+Wenn nein → Founder schlaegt vor, den Beeinflusser einzubinden ("Zeigen Sie ihr die Website" / "Soll ich Ihrer Disponentin 5 Minuten zeigen?").
+
+Das ist keine Manipulation. Das ist die Realitaet: Beim Meister entscheidet der Kuechentisch. Beim Betrieb entscheidet die Disponentin. Wenn keiner von beiden es gesehen hat, fehlt Stufe 4 (Soziale Bestaetigung), und der Prospect sagt "Ich muss nochmal drueber nachdenken" — was "nein" bedeutet.
+
+#### Day-10-Call Logging (schliesst IST-Luecke L10)
+
 Nach dem Anruf: Founder aktualisiert `tenants` via Morning-Report-Antwort oder manuell:
 - `follow_up_at = null` (Follow-up erledigt)
 - `trial_status` bleibt `trial_active` (nicht aendern)
