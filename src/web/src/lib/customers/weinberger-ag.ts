@@ -10,6 +10,7 @@ export const weinbergerAg: CustomerSite = {
   metaDescription:
     "Jul. Weinberger AG — Sanitär, Heizung, Lüftung und Badsanierung in Thalwil. Traditionsunternehmen seit 1912 mit 24h-Notdienst und persönlichem Service.",
   brandColor: "#004994",
+  modus: 2,
   seoKeywords: [
     "Sanitär Thalwil",
     "Heizung Thalwil",
