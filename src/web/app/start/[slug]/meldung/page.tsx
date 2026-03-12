@@ -1,0 +1,51 @@
+import { notFound } from "next/navigation";
+import {
+  getCustomer,
+  getAllCustomerSlugs,
+} from "@/src/lib/customers/registry";
+import { CustomerWizardForm } from "@/app/kunden/[slug]/meldung/CustomerWizardForm";
+import type { Metadata } from "next";
+
+// ── Static generation ─────────────────────────────────────────────
+export function generateStaticParams() {
+  return getAllCustomerSlugs().map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const c = getCustomer(slug);
+  if (!c) return {};
+  return {
+    title: `Anliegen melden — ${c.companyName}`,
+    description: `Melden Sie Ihr Anliegen direkt an ${c.companyName}. Schnell, unkompliziert, digital.`,
+    robots: { index: false },
+  };
+}
+
+// ── Page ──────────────────────────────────────────────────────────
+export default async function StartMeldungPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const c = getCustomer(slug);
+  if (!c) notFound();
+
+  return (
+    <CustomerWizardForm
+      companyName={c.companyName}
+      companySlug={c.slug}
+      phone={c.contact.phone}
+      phoneRaw={c.contact.phoneRaw}
+      emergency={c.emergency}
+      accent={c.brandColor ?? "#2b6cb0"}
+      categories={c.categories}
+      backUrl={`/start/${c.slug}`}
+    />
+  );
+}

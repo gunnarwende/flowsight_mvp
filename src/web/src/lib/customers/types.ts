@@ -43,6 +43,11 @@ export interface CustomerSite {
 
   /** Additional SEO keywords */
   seoKeywords?: string[];
+
+  /** Modus: 1 = Full (we build the website), 2 = Extend (prospect has own website).
+   *  Controls start page layout (website card shown only for modus 1).
+   *  Default: 1 */
+  modus?: 1 | 2;
 }
 
 // ── Contact ───────────────────────────────────────────────────────
