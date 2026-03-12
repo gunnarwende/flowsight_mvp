@@ -8,9 +8,13 @@ import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/request-review
-// Gate: status=done AND (contact_email OR contact_phone) AND review_sent_at IS NULL
+// Gate: status=done AND (contact_email OR contact_phone)
+// Max 2 requests per case, 7-day cooldown between requests (NS3)
 // Allowed: admin, tenant, prospect (prospect can trigger reviews)
 // ---------------------------------------------------------------------------
+
+const MAX_REVIEW_REQUESTS = 2;
+const RESEND_COOLDOWN_DAYS = 7;
 
 export async function POST(
   _request: NextRequest,
@@ -53,9 +57,45 @@ export async function POST(
     return NextResponse.json({ error: "no_contact_info" }, { status: 400 });
   }
 
-  if (row.review_sent_at) {
+  // ── Resend logic (NS3): max 2 requests, 7-day cooldown ──────────────
+  const { data: reviewEvents } = await supabase
+    .from("case_events")
+    .select("created_at")
+    .eq("case_id", id)
+    .eq("event_type", "review_requested")
+    .order("created_at", { ascending: false });
+
+  const reviewCount = reviewEvents?.length ?? 0;
+
+  if (reviewCount >= MAX_REVIEW_REQUESTS) {
     return NextResponse.json(
-      { error: "review_already_sent", sent_at: row.review_sent_at },
+      { error: "max_reviews_reached", count: reviewCount },
+      { status: 409 },
+    );
+  }
+
+  if (reviewCount > 0 && reviewEvents?.[0]) {
+    const lastSent = new Date(reviewEvents[0].created_at);
+    const daysSince = (Date.now() - lastSent.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysSince < RESEND_COOLDOWN_DAYS) {
+      return NextResponse.json(
+        { error: "cooldown_active", days_remaining: Math.ceil(RESEND_COOLDOWN_DAYS - daysSince) },
+        { status: 429 },
+      );
+    }
+  }
+
+  // Check for explicit skip
+  const { data: skipEvents } = await supabase
+    .from("case_events")
+    .select("id")
+    .eq("case_id", id)
+    .eq("event_type", "review_skipped")
+    .limit(1);
+
+  if (skipEvents && skipEvents.length > 0) {
+    return NextResponse.json(
+      { error: "review_skipped" },
       { status: 409 },
     );
   }
