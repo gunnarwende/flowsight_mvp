@@ -34,6 +34,7 @@ export const widmerSanitaer: CustomerSite = {
       "https://maps.google.com/maps?q=Einsiedlerstrasse+29,+8810+Horgen,+Schweiz&t=&z=15&ie=UTF8&iwloc=&output=embed",
     openingHours: [
       "Mo\u2013Fr: 07:00\u201312:00, 13:00\u201317:00",
+      "Sa/So: Nach Vereinbarung",
     ],
   },
 
@@ -75,7 +76,7 @@ export const widmerSanitaer: CustomerSite = {
     {
       name: "Spenglerei",
       slug: "spenglerei",
-      icon: "tool",
+      icon: "roof",
       summary:
         "Fachgerechte Spenglerarbeiten für Dach und Fassade \u2014 Flachdach, Blechverkleidungen und Kamineinfassungen.",
       description:
