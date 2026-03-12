@@ -91,6 +91,18 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 
 ## Completed (Archiv — kondensiert)
 
+### Block A: Identity + Lifecycle (13.03.)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| Identity Contract auf alle 7 E-Mail-Templates | PR #168 (S1.1) |
+| Day-5 Engagement-Nudge (Suppression bei >=3 Cases) | PR #169 (S1.2) |
+| Day-7 Engagement-Snapshot (JSONB) | PR #169 (S1.4) |
+| Demo-Case-Tabs ("Ihre Fälle" / "Demo") | PR #169 (S1.3) |
+| Welcome-Page Trial-Countdown | PR #169 (S1.10 partial) |
+| Tab-Titel `{short_name} OPS` | PR #168 (S2.6) |
+| DB Migration: day5_nudge_sent_at, day7_snapshot, is_demo | PR #169 |
+
 ### Redesign-Phase (12.03.)
 
 | Deliverable | Evidence |
