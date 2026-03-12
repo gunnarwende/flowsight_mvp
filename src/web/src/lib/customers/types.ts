@@ -97,18 +97,18 @@ export interface Service {
 
 export type ServiceIcon =
   | "bath"
-  | "heating"
-  | "pipe"
-  | "solar"
-  | "wrench"
-  | "water"
+  | "facade"
   | "flame"
-  | "snowflake"
-  | "roof"
-  | "pump"
-  | "tool"
+  | "heating"
   | "leaf"
-  | "facade";
+  | "pipe"
+  | "pump"
+  | "roof"
+  | "snowflake"
+  | "solar"
+  | "tool"
+  | "water"
+  | "wrench";
 
 // ── Gallery ───────────────────────────────────────────────────────
 
