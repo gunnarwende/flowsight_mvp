@@ -1,6 +1,6 @@
 # Lisa — Voice Agent Zielbild
 
-> **Status:** SSOT-Arbeitsdokument | **Stand:** 2026-03-12 | **Owner:** Founder + CC
+> **Status:** SSOT-Zielbild (Gold) | **Stand:** 2026-03-12 | **Owner:** Founder + CC
 > **Kontext:** Gold-Contact-Redesign, 4-Wochen-Sprint (12.03.–10.04.2026)
 > **IST-Zustand:** `docs/redesign/voice_ist.md` (694 Zeilen, 14 Sektionen)
 
@@ -167,15 +167,53 @@ Kein Intake. Kein Datensammeln. Kein Fall erstellen. Freundlicher Hinweis auf de
 
 **Die unbequeme Wahrheit:** Juniper auf Deutsch ist Stand heute (März 2026) hörbar weniger natürlich als Ela auf Deutsch. Ela klingt wärmer, schweizerischer, professioneller. Juniper klingt internationaler, etwas synthetischer.
 
-**Entscheidung:** Juniper ist der strategische Zielstandard, ABER: Die Qualität im Deutschen darf nicht unter ein definiertes Minimum fallen. Wenn Juniper DE-Qualität unter dem Minimum bleibt, fahren wir zweigleisig weiter (Ela DE + Juniper INTL), bis ElevenLabs nachbessert oder eine bessere multilingual-fähige DE-Stimme verfügbar ist.
+**Entscheidung:** Juniper ist der strategische Zielstandard, ABER: Wir migrieren nur, wenn die DE-Qualität den Gold-Contact-Anspruch nachweislich trägt. Nicht aus Skalierungssehnsucht. Nicht weil es einfacher wäre. Nur wenn es gut genug ist.
 
-**Qualitätsminimum Deutsch:**
-- Natürlicher als jeder erkennbare Roboter
-- "Grüezi" klingt nicht wie eine Amerikanerin, die das Wort zum ersten Mal sagt
-- Keine auffälligen Pausen in zusammengesetzten Wörtern (Sanitär-installations-arbeiten)
-- Intonation steigt und fällt wie natürliches Deutsch, nicht wie englisch-geprägtes Singsang
+**Grundsatz: Qualität vor Kosten.** Wenn Juniper DE-Qualität nicht reicht, fahren wir zweigleisig weiter (Ela DE + Juniper INTL) — auch wenn das doppelten Pflegeaufwand bedeutet. Die Kosten für 2 Agents pro Tenant sind tragbar (Retell-Kosten skalieren pro Minute, nicht pro Agent). Die Kosten eines schlechten ersten Eindrucks sind es nicht.
 
-**Evaluations-Verfahren:** Founder-Blindtest. 5 Anrufe mit Ela, 5 mit Juniper. Wenn Juniper DE bei >3 von 5 Anrufen als "professionell, kein Problem" bewertet wird → Juniper wird Standard. Wenn nicht → Dual weiter.
+#### Juniper-Gate: Evaluationsprotokoll
+
+**5 Qualitätskriterien (alle müssen bestanden werden):**
+
+| # | Kriterium | Pass | Fail |
+|---|-----------|------|------|
+| K1 | **Greeting-Natürlichkeit:** "Grüezi, [Firma], hier ist Lisa" klingt natürlich, nicht wie angelesenes Fremdwort | Kein Zucken beim Zuhörer | Hörbares "das klingt komisch" |
+| K2 | **Zusammengesetzte Wörter:** Sanitärinstallation, Heizungswartung, Rohrleitungsbruch — flüssig, ohne Mid-Word-Pause | Kein Stolpern hörbar | Auffällige Pausen oder Betonungsfehler |
+| K3 | **Intonation in Fragen:** "Wo befindet sich der Schaden?" — deutsche Fragemelodie, nicht englisches Singsang | Natürlich fragend | Englisch-geprägt oder monoton |
+| K4 | **Empathie-Sätze:** "Das klingt dringend" — warm, nicht synthetisch | Glaubwürdig menschlich | Roboterhaft oder aufgesetzt |
+| K5 | **Schweizer Begriffe:** Grüezi, Thalwil, Zürcherstrasse, Postleitzahl — korrekte Aussprache | Kein Aussprache-Fehler | Falsche Betonung oder Lautfehler |
+
+**Test-Szenarien (10 Anrufe, nicht 5):**
+
+| # | Szenario | Sprache | Prüft |
+|---|----------|---------|-------|
+| T1 | Standard-Intake: Verstopfung in Thalwil | DE | K1, K2, K3 |
+| T2 | Notfall-Intake: Wasser läuft, hektischer Anrufer | DE | K4 |
+| T3 | Info-Anruf: Öffnungszeiten | DE | K3, K5 |
+| T4 | Langer Strassenname: "Zürcherstrasse 73, 8800 Thalwil" | DE | K5 |
+| T5 | Schweizerdeutsch-Input: Anrufer spricht Züritüütsch | DE | K1 (ASR-Handling) |
+| T6 | Sprachwechsel: Start DE, Wechsel zu EN | DE→EN | Mid-Call-Switch |
+| T7 | Sprachwechsel: Start DE, Wechsel zu FR | DE→FR | Mid-Call-Switch |
+| T8 | Englisch komplett | EN | Multilingual-Qualität |
+| T9 | Französisch komplett | FR | Multilingual-Qualität |
+| T10 | Italienisch komplett | IT | Multilingual-Qualität |
+
+**Bewertung:**
+- Jeder Anruf wird vom Founder einzeln bewertet: **PASS** (professionell, kein Problem) oder **FAIL** (hörbare Schwäche, nicht Gold-Contact-Niveau).
+- Für die DE-Anrufe (T1-T5) gilt: **alle 5 müssen PASS sein.** Ein Fail bei DE = Gate nicht bestanden.
+- Für die Multilingual-Anrufe (T6-T10) gilt: **mindestens 4 von 5 PASS.**
+
+**Ergebnis-Logik:**
+
+| DE-Anrufe (T1-T5) | Multilingual (T6-T10) | Entscheidung |
+|--------------------|----------------------|-------------|
+| 5/5 PASS | ≥4/5 PASS | **→ Juniper wird Standard.** Migration beginnt. |
+| 5/5 PASS | <4/5 PASS | **→ Juniper DE Standard, INTL bleibt Dual** (unwahrscheinlich, aber möglich) |
+| <5/5 PASS | — | **→ Dual bleibt.** Ela DE + Juniper INTL. Re-Evaluation in 8 Wochen oder bei neuem ElevenLabs-Release. |
+
+**Wann:** Woche 1 des Sprints (12.–18.03.2026). Vor jeder anderen Voice-Architekturentscheidung. Das Gate bestimmt, ob wir 1 oder 2 Templates bauen.
+
+**Kosten bei Dual-Weiterführung:** ~2x Agent-Pflegeaufwand pro Tenant (beherrschbar durch Template-System). Keine relevanten Retell-Mehrkosten (Kosten pro Minute, nicht pro Agent). Trade-off akzeptabel, wenn die Alternative ein schwächerer DE-Eindruck ist.
 
 ### 4.4 Architektur-Konsequenz
 
@@ -259,36 +297,50 @@ Das ist der Standard. Nicht der Best Case. Der Standard.
 
 ## 6. Daten- und Extraktionslogik
 
-### 6.1 Pflichtdaten im Call
+### 6.1 Datenklassifikation — die einzige Definition
 
-**Minimal nötig für einen brauchbaren Fall:**
+Dieses Dokument definiert **eine einzige, verbindliche Datenklassifikation** für Voice Cases. Alle anderen Sektionen referenzieren diese Tabelle. Es gibt keine zweite implizite Pflichtdaten-Liste.
 
-| Feld | Pflicht | Quelle | Validierung |
-|------|---------|--------|-------------|
-| **Kontakttelefon** | Ja | Caller ID (automatisch) | E.164 Format |
-| **PLZ oder Ort** | Ja | Im Gespräch erfragen | 4-stellig, Plausibilitätscheck |
-| **Kategorie** | Ja | Ableiten aus Beschreibung | Gegen Tenant-Enum |
-| **Dringlichkeit** | Ja | Ableiten aus Kontext | notfall / dringend / normal |
-| **Beschreibung** | Ja | Zusammenfassung des Gesprächs | 1-3 Sätze, deutsch |
+**Tier 1 — Systemdaten (automatisch, immer vorhanden):**
 
-**Best-Effort (im Gespräch, aber nicht erzwungen):**
+| Feld | Quelle | Bemerkung |
+|------|--------|-----------|
+| **Kontakttelefon** | Caller ID via Retell | Immer vorhanden. Wenn nicht → kein Anruf, kein Case. |
+| **Tenant-Zuordnung** | `tenant_numbers` Lookup | Immer vorhanden via angerufene Nummer. |
+| **Zeitstempel** | Webhook-Eingang | Immer vorhanden. |
 
-| Feld | Gewünscht | Strategie |
-|------|-----------|-----------|
-| **Name** | Ja | Am Ende fragen, aber nicht insistieren |
-| **Strasse + Hausnummer** | Ja | Natürlich erfragen, nicht blockieren |
-| **Stadt** (falls nicht aus PLZ ableitbar) | Ja | Aus PLZ-Tabelle oder erfragen |
+**Tier 2 — Case-Pflichtdaten (Lisa muss aktiv sammeln):**
 
-**Nachgelagert (SMS / Korrekturseite / Leitstand):**
+| Feld | Erfassungsstrategie | Validierung |
+|------|---------------------|-------------|
+| **Beschreibung** | Zusammenfassung aus dem Gespräch. Lisa muss verstehen, was das Problem ist. | String, min 5 Wörter, deutsch |
+| **PLZ oder Ortsname** | Einmal fragen: "Wo befindet sich der Schaden?" | 4-stellige PLZ oder erkannter Ortsname. Wird in Layer 2 normalisiert. |
+| **Kategorie** | Ableiten aus Beschreibung. Nie direkt fragen. | Gegen Tenant-Kategorie-Enum. Fallback: "Allgemein" |
+| **Dringlichkeit** | Ableiten aus Kontext und Tonfall. Nie fragen "Ist es dringend?" | notfall / dringend / normal. Fallback: "normal" |
 
-| Feld | Wo ergänzt |
-|------|-----------|
-| Strasse + Hausnummer (falls nicht erfasst) | SMS-Korrekturseite |
-| Fotos | SMS-Link → Upload |
+**→ Ein Case mit allen Tier-1- und Tier-2-Feldern gilt als `complete`.**
+**→ Fehlt mindestens ein Tier-2-Feld, gilt der Case als `incomplete` (siehe §7.2).**
+
+**Tier 3 — Wertvolle Zusatzdaten (im Gespräch anstreben, nie erzwingen):**
+
+| Feld | Strategie | Fallback |
+|------|-----------|---------|
+| **Name des Anrufers** | Am Ende fragen, einmal. Nicht insistieren. | SMS-Korrekturseite |
+| **Strasse + Hausnummer** | Im Gesprächsfluss aufnehmen, wenn der Anrufer es anbietet. Nicht extra fragen, wenn PLZ/Ort bereits da. | SMS-Korrekturseite |
+| **Stadt** (wenn nicht aus PLZ ableitbar) | Nur fragen, wenn PLZ nicht gegeben wurde. | PLZ-Verzeichnis Layer 2 |
+
+**→ Fehlende Tier-3-Daten machen den Case NICHT incomplete. Sie sind Bonus.**
+
+**Tier 4 — Nachgelagerte Daten (nie im Gespräch, immer über Folgepfade):**
+
+| Feld | Kanal |
+|------|-------|
+| Strasse + Hausnummer (falls in Tier 3 nicht erfasst) | SMS-Korrekturseite |
+| Fotos vom Schaden | SMS-Link → Upload |
 | Korrekturen an PLZ/Ort/Beschreibung | SMS-Korrekturseite |
 | E-Mail-Adresse | Korrekturseite (optional) |
 
-**Philosophie:** Lisa ist keine Datenerfassungsmaschine. Sie ist eine professionelle Annahme. Pflichtdaten sind das Minimum, das der Betrieb braucht, um den Anrufer zurückrufen und den Einsatz planen zu können. Alles darüber hinaus ist ein Bonus — und der kommt über die SMS-Korrekturseite, nicht über nervige Rückfragen.
+**Philosophie:** Lisa ist keine Datenerfassungsmaschine. Tier 2 ist das Minimum, das der Betrieb braucht, um den Anrufer zurückrufen und den Einsatz planen zu können. Tier 3 macht den Fall besser. Tier 4 kommt über die SMS-Korrekturseite. Nie über nervige Rückfragen.
 
 ### 6.2 Adressqualität — der kritischste Punkt
 
@@ -318,7 +370,7 @@ Anrufer korrigiert falls nötig (Smartphone, 10 Sekunden)
 - Unsicherheit geht ins System, nicht in den Anrufer.
 
 **Layer 2 — Post-Call-Validierung (Webhook):**
-- PLZ gegen Schweizer PLZ-Verzeichnis prüfen (nicht nur 28 hardcoded Einträge, sondern vollständiges Verzeichnis)
+- PLZ gegen offizielles Post-CH-PLZ-Verzeichnis prüfen (~4200 Einträge, statisch geladen — entschieden, siehe §13)
 - Stadt aus PLZ ableiten (Auto-Korrektur: ASR-Fehler "Talwil" → "Thalwil")
 - PLZ gegen Tenant-Einzugsgebiet prüfen (soft: Flag setzen, nicht blockieren)
 - Strasse gegen bekannte Strassen im Einzugsgebiet plausibilisieren (wenn Daten verfügbar)
@@ -391,24 +443,62 @@ Lisa leitet die Kategorie aus der Beschreibung ab, ohne den Anrufer direkt zu fr
 
 | Situation | Heutiges Verhalten | Gold-Contact-Verhalten |
 |-----------|-------------------|----------------------|
-| Pflichtfelder fehlen nach Call | HTTP 204, Sentry Warning. Case nicht erstellt. Anrufer merkt nichts. | **Partial Case** erstellen mit dem, was vorhanden ist + `status: incomplete`. Leitstand zeigt den Fall rot an. |
+| Tier-2-Felder teilweise fehlen | HTTP 204, Sentry Warning. Case nicht erstellt. Anrufer merkt nichts. | **Incomplete Case** (§7.2): Beschreibung oder PLZ/Ort vorhanden → `incomplete`. Nur Telefon → `trace`. Leitstand zeigt beides an, aber getrennt. |
 | Webhook ist nicht erreichbar | Retell feuert Event ins Leere. Kein Case. | **Retell Retry** (3x). Wenn alle fehlschlagen: Case aus Retell-Daten bei nächstem Health-Check nacherstellen. |
 | Supabase ist nicht erreichbar | Webhook bekommt 500. Kein Case. | **Case-Payload in Dead-Letter-Queue** speichern (z.B. Vercel KV). Morning Report meldet ausstehende Cases. |
 | SMS schlägt fehl | Geloggt, Anrufer bekommt nichts. | **E-Mail-Fallback** an Betrieb: "Case erstellt, SMS konnte nicht zugestellt werden." Leitstand zeigt SMS-Status. |
-| Anrufer legt vorzeitig auf | Post-Call-Analyse läuft auf halbem Transkript. Case meist nicht brauchbar. | **Partial Case** mit dem, was da ist + `status: incomplete` + Flag `caller_hung_up`. Besser ein unvollständiger Fall als keiner. |
+| Anrufer legt vorzeitig auf | Post-Call-Analyse läuft auf halbem Transkript. Case meist nicht brauchbar. | Schwellenlogik §7.2: Beschreibung oder PLZ/Ort vorhanden → `incomplete` + Flag `caller_hung_up`. Sonst → `trace`. Nie stillschweigend verwerfen. |
 | Agent Swap schlägt fehl | Anruf endet. | **Fallback:** DE Agent setzt Gespräch fort mit: "Einen Moment bitte — ich helfe Ihnen gerne auf Deutsch weiter." Kein stilles Ende. |
 
-### 7.2 Partial Cases
+### 7.2 Partial Cases — Schwellenlogik
 
-Das IST-System kennt nur "Case erstellt" oder "Case nicht erstellt." Das Zielbild kennt drei Zustände:
+Das IST-System kennt nur "Case erstellt" oder "Case nicht erstellt." Das Zielbild kennt **vier Zustände** mit klaren, harten Schwellen:
 
-| Status | Bedeutung | Im Leitstand |
-|--------|-----------|-------------|
-| `complete` | Alle Pflichtfelder vorhanden | Normal angezeigt |
-| `incomplete` | Teilweise erfasst (z.B. PLZ fehlt) | Gelb markiert, mit Hinweis was fehlt |
-| `failed` | System-Fehler bei Verarbeitung | Rot markiert, mit Retry-Option |
+**Zustand 1: `complete`**
+- **Schwelle:** Alle Tier-1- UND Tier-2-Felder vorhanden (Telefon + Beschreibung + PLZ/Ort + Kategorie + Dringlichkeit)
+- **Im Leitstand:** Normal angezeigt, grüner Punkt
+- **SMS:** Wird gesendet
+- **Standard-Fall.** Das ist der Normalfall, den Lisa bei >80% der Intake-Calls erreichen muss.
 
-Ein `incomplete` Case ist besser als kein Case. Der Betrieb sieht: "Anruf von +41 79 123 45 67, Beschreibung: Heizung defekt, PLZ: fehlt." Die Disponentin kann den Anrufer zurückrufen und nachfragen. Ohne den Partial Case hätte sie nicht gewusst, dass jemand angerufen hat.
+**Zustand 2: `incomplete`**
+- **Schwelle:** Telefon (Tier 1, immer da) + **mindestens Beschreibung ODER PLZ/Ort** aus Tier 2
+- **Im Leitstand:** Gelb markiert, mit Hinweis welche Felder fehlen
+- **SMS:** Wird gesendet — mit dem Hinweis: "Einige Angaben fehlen noch. Bitte ergänzen Sie hier: [Link]"
+- **Zweck:** Der Betrieb sieht: "Anruf von +41 79 123 45 67, Problem: Heizung defekt, PLZ: fehlt." Die Disponentin kann zurückrufen und nachfragen. Ohne den Partial Case hätte sie nicht gewusst, dass jemand angerufen hat.
+- **Schutz gegen Müll:** `incomplete` Cases, die nach 48h nicht nachbearbeitet werden, bekommen im Leitstand einen Hinweis "Nicht bearbeitet — archivieren?" Kein Auto-Archiv, aber aktiver Nudge.
+
+**Zustand 3: `trace`**
+- **Schwelle:** Telefon vorhanden (Tier 1), aber WEDER Beschreibung NOCH PLZ/Ort extrahierbar (z.B. Anrufer hat sofort aufgelegt, Verbindungsabbruch nach 5 Sekunden, reines Rauschen)
+- **Im Leitstand:** Grau markiert, eigene Sektion "Spuren ohne Fall" — nicht im Hauptfeed
+- **SMS:** Wird NICHT gesendet (es gibt nichts zu bestätigen)
+- **Zweck:** Der Betrieb sieht, dass jemand angerufen hat. Er kann zurückrufen. Aber es steht kein Müll-Case im Hauptfeed.
+- **Auto-Cleanup:** `trace` Cases werden nach 7 Tagen automatisch archiviert, wenn nicht bearbeitet.
+
+**Zustand 4: `failed`**
+- **Schwelle:** System-Fehler bei Verarbeitung (DB down, Webhook Timeout, Payload korrupt)
+- **Im Leitstand:** Rot markiert, mit Retry-Option und technischer Fehlerinfo
+- **SMS:** Nicht gesendet (Case nicht sicher erstellt)
+- **Alert:** Sofort RED via Telegram/E-Mail an Founder
+- **Zweck:** Technischer Fehler, kein Datenproblem. Muss repariert werden.
+
+**Die Schwellenlogik auf einen Blick:**
+
+```
+Alle Tier-2-Felder vorhanden?
+  → JA  → complete (grün)
+  → NEIN → Mindestens Beschreibung ODER PLZ/Ort?
+             → JA  → incomplete (gelb)
+             → NEIN → Nur Telefon?
+                       → JA  → trace (grau, ausserhalb Hauptfeed)
+                       → NEIN → (unmöglich, Tier 1 immer da)
+System-Fehler?
+  → failed (rot)
+```
+
+**Warum diese Schwelle und keine andere:**
+- "Nur Telefon reicht für incomplete" wäre zu tief → Leitstand voller substanzloser Cases, Disponentin verliert Vertrauen ins System.
+- "Alle Tier-2-Felder für incomplete" wäre zu hoch → zurück beim stillen Datenverlust.
+- Beschreibung ODER PLZ/Ort ist die Schwelle, weil beides dem Betrieb einen Handlungsimpuls gibt: Entweder weiss er was das Problem ist ("Heizung defekt"), oder er weiss wo ("8800 Thalwil"). Beides reicht für einen Rückruf.
 
 ### 7.3 Downstream-Service-Ausfälle
 
@@ -573,7 +663,7 @@ Jeder Voice-Case im Leitstand muss sofort zeigen:
 | Melder-Telefon | Caller ID |
 | SMS-Status | Zugestellt / Fehlgeschlagen / Nicht gesendet |
 | Korrektur-Status | Korrigiert / Nicht besucht |
-| Vollständigkeits-Status | Komplett / Unvollständig (mit Hinweis was fehlt) |
+| Vollständigkeits-Status | `complete` / `incomplete` (mit Hinweis was fehlt) / `trace` (nur Telefon, ausserhalb Hauptfeed) |
 | Einzugsgebiet-Flag | Im Gebiet / Ausserhalb (soft) |
 
 ### 9.4 Qualitätssicherung im Zielbild
@@ -657,7 +747,7 @@ Kein Blocken. Kein "Ich kann das genauso gut." Die Möglichkeit anbieten, den Fa
 |---|-----------|---------|
 | 1 | Anrufer legt auf und denkt: "Das ging professionell." | Post-Call-Sentiment: positiv |
 | 2 | Gesprächsdauer 50-90 Sekunden | Timing-Audit |
-| 3 | Alle Pflichtfelder erfasst, keine doppelten Fragen | Extraction-Audit |
+| 3 | Alle Tier-2-Felder erfasst (= `complete`), keine doppelten Fragen | Extraction-Audit |
 | 4 | Kategorie und Dringlichkeit korrekt abgeleitet | Case-Review |
 | 5 | SMS innert 15 Sekunden zugestellt | SMS-Log |
 | 6 | Name des Betriebs korrekt, keine erfundenen Informationen | Transcript-Review |
@@ -689,7 +779,7 @@ Kein Blocken. Kein "Ich kann das genauso gut." Die Möglichkeit anbieten, den Fa
 | 5 | Agent Talk Ratio >65% | Lisa dominiert das Gespräch |
 | 6 | Name des Anrufers falsch wiederholt | Peinlich, unprofessionell |
 | 7 | SMS kommt nicht | WOW 3 stirbt |
-| 8 | Stiller Datenverlust (Call ohne Case) | Absolutes No-Go |
+| 8 | Stiller Datenverlust (Call ohne jede Spur: kein Case, kein Trace) | Absolutes No-Go |
 | 9 | Peinlicher Transfer ("Ich verbinde Sie jetzt...") | Bruch in der Illusion |
 | 10 | Farewell-Loop (Lisa verabschiedet sich 3x) | Roboterhaft |
 
@@ -704,9 +794,9 @@ Kein Blocken. Kein "Ich kann das genauso gut." Die Möglichkeit anbieten, den Fa
 | # | Entscheidung | Konsequenz |
 |---|-------------|-----------|
 | 1 | **Tenant-Voice-Config in Supabase** | `tenants.voice_config` JSONB-Feld mit allen betriebsspezifischen Daten. Template-System in retell_sync.mjs. |
-| 2 | **PLZ-Verzeichnis zentral** | Vollständiges Schweizer PLZ-Verzeichnis als Lookup-Tabelle oder Modul (statt 28 hardcoded Einträge). Tenant-Einzugsgebiet als Subset davon. |
+| 2 | **PLZ-Verzeichnis: Post CH offiziell** | Vollständiges Schweizer PLZ-Verzeichnis (~4200 Einträge) aus offizieller Post-CH-Quelle. Statisch geladen. Tenant-Einzugsgebiet als Subset davon. Qualität vor Kosten. |
 | 3 | **Kategorie-Enum pro Tenant** | Standard-Kategorien (7 Werte) + tenant-spezifische Erweiterungen. Webhook validiert gegen Tenant-Enum. |
-| 4 | **Partial Cases** | Neuer Case-Status `incomplete`. Webhook erstellt Case auch bei fehlenden Feldern. Leitstand zeigt Incomplete-Cases gelb. |
+| 4 | **4-stufige Case-Vollständigkeit** | `complete` (grün) / `incomplete` (gelb, Beschreibung oder PLZ vorhanden) / `trace` (grau, nur Telefon, ausserhalb Hauptfeed) / `failed` (rot, System-Fehler). Schwellenlogik §7.2. |
 | 5 | **SMS-Korrektur-Feedback** | Case Event `fields_corrected` wenn Anrufer über SMS-Link korrigiert. Leitstand zeigt Korrektur-Status. |
 | 6 | **Juniper als Ziel, Dual als Übergang** | Evaluations-Verfahren (Founder-Blindtest) vor Migration. Kein Big Bang. |
 | 7 | **Analyse-Chain automatisiert** | Wöchentlicher Cron mit Summary-Report. Echtzeit-Monitoring über Sentry + Morning Report. |
@@ -729,7 +819,7 @@ Kein Blocken. Kein "Ich kann das genauso gut." Die Möglichkeit anbieten, den Fa
     team: [{ name: "Christian Weinberger", role: "Geschäftsleitung" }]
   }
 
-Ändern: cases — neues Feld completeness_status (complete | incomplete | failed)
+Ändern: cases — neues Feld completeness_status (complete | incomplete | trace | failed)
 Ändern: cases — neues Feld outside_service_area (boolean, default false)
 Neu:    plz_directory (oder als statisches Modul): plz → city, kanton
 
@@ -753,16 +843,23 @@ Neu:    plz_directory (oder als statisches Modul): plz → city, kanton
 
 ### Noch nicht entschieden
 
+**Entschieden seit Schärfungs-Loop (12.03.2026):**
+
+| # | Frage | Entscheidung | Begründung |
+|---|-------|-------------|-----------|
+| E1 | **PLZ-Verzeichnis: woher?** | **Offizielle Post-CH-Datenbank** (statisch geladen, ~4200 Einträge). Kein Open Data, keine eigene Pflege. | Qualität vor Kosten. Das PLZ-Verzeichnis ist die Grundlage für Layer-2-Adressqualität. Die offizielle Quelle kostet wenig und ist 100% korrekt. |
+| E2 | **Partial Case: wie minimal?** | **Telefon + (Beschreibung ODER PLZ/Ort)** = `incomplete`. Nur Telefon = `trace`. Siehe §7.2. | Klare Schwelle, die sowohl Müll-Cases im Leitstand als auch stillen Datenverlust verhindert. |
+| E3 | **Juniper DE: reicht es?** | **Evaluationsprotokoll §4.3.** 10 Test-Anrufe, 5 DE-Kriterien, harte Pass/Fail-Logik. Woche 1. | Kein weicher Blindtest. Strukturiertes Gate mit Szenarien und Schwellen. |
+
+**Noch offen:**
+
 | # | Frage | Optionen | Wann klären |
 |---|-------|----------|-------------|
-| 1 | **Juniper DE-Qualität: reicht es?** | (a) Juniper Standard sofort, (b) Dual weiter, (c) Juniper DE-Finetuning bei ElevenLabs | Founder-Blindtest, Woche 1 |
-| 2 | **PLZ-Verzeichnis: woher?** | (a) Statische Tabelle (4000 PLZ, einmalig laden), (b) API (Post CH, kostenpflichtig), (c) Open Data (GeoAdmin) | Vor PLZ-Refactor |
-| 3 | **Partial Case: wie minimal?** | (a) Nur Telefonnummer reicht, (b) Telefon + mindestens 1 weiteres Feld, (c) Mindestens Beschreibung | Vor Webhook-Umbau |
-| 4 | **Dead-Letter-Queue: wo?** | (a) Vercel KV, (b) Supabase Queue-Tabelle, (c) Retell-seitiger Retry reicht | Vor Fallback-Implementierung |
-| 5 | **Voice Config: wo im Leitstand editierbar?** | (a) Einstellungen → Firmendaten (nur Founder/Admin), (b) Getrennte Voice-Config-Seite, (c) Phase 1 nur über provision_trial | Vor Leitstand-Umsetzung |
-| 6 | **Voicemail-Fallback: Peoplefone oder Twilio?** | (a) Peoplefone Failover, (b) Twilio Voicemail, (c) Retell Fallback-Message | Phase 2, wenn Bedarf nachgewiesen |
-| 7 | **Interne-Anrufer-Erkennung: wie robust?** | (a) Keyword-basiert (simpel), (b) Bekannte-Nummern-Matching, (c) Nur über Caller-ID des Betriebs | Bei Template-Bau |
-| 8 | **Analyse-Chain-Cron: Frequenz?** | (a) Täglich, (b) Wöchentlich, (c) Nur bei >X Calls/Tag | Bei Chain-Automatisierung |
+| 1 | **Dead-Letter-Queue: wo?** | (a) Vercel KV, (b) Supabase Queue-Tabelle, (c) Retell-seitiger Retry reicht | Vor Fallback-Implementierung |
+| 2 | **Voice Config: wo im Leitstand editierbar?** | (a) Einstellungen → Firmendaten (nur Founder/Admin), (b) Getrennte Voice-Config-Seite, (c) Phase 1 nur über provision_trial | Vor Leitstand-Umsetzung |
+| 3 | **Voicemail-Fallback: Peoplefone oder Twilio?** | (a) Peoplefone Failover, (b) Twilio Voicemail, (c) Retell Fallback-Message | Phase 2, wenn Bedarf nachgewiesen |
+| 4 | **Interne-Anrufer-Erkennung: wie robust?** | (a) Keyword-basiert (simpel), (b) Bekannte-Nummern-Matching, (c) Nur über Caller-ID des Betriebs | Bei Template-Bau |
+| 5 | **Analyse-Chain-Cron: Frequenz?** | (a) Täglich, (b) Wöchentlich, (c) Nur bei >X Calls/Tag | Bei Chain-Automatisierung |
 
 ### Bewusst vertagt
 
