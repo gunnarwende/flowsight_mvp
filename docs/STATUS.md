@@ -81,7 +81,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Block B: Wizard + Review Gold (13.03.):** PR #171. Wizard Notfall-Logik (N1-N7): Phone-CTA-Screen bei Notfall. Review Surface komplett neu (editierbares Textarea, Auftrags-Block, Clipboard+Google-CTA, Tenant-Branding, Event-Tracking). Nachlauf-System (6 Review-Status aus case_events, max 2 Anfragen, 7d-Cooldown, Skip-Action). Leitstand Review-Badges + Aktionen.
 - **S1.6: Kategorie-Vereinheitlichung (13.03.):** PR #173. CASE_POOL + deriveWizardCategories() eliminiert. Per-customer `categories[]` in CustomerSite als SSOT. Values aligned mit Voice Agents: "Leck" statt "Leck / Wasserschaden", "Heizung" statt "Heizungsausfall". Shared FIXED_CATEGORIES. **S1 komplett DONE.**
 - **BLOCKER:** Keine. Go-Live möglich.
-- **Nächster Schritt:** S2 (Oberflächen-Qualität) — Weinberger = Referenz-Gold, dann Tier-1-Websites.
+- **S2 Surface Quality (13.03.):** PR #175. Snowflake+Pump Icons (Weinberger Lüftung fix). Reviews-Fallback (Google CTA bei leeren Highlights). Nav-Anchor #bewertungen. Weinberger voicePhone. Hero-Alt-Text dynamisch.
+- **Nächster Schritt:** S2 Fortsetzung — Weinberger hero.jpg + Review-Highlights (Founder), dann Tier-1 Website-QA.
 
 ## Fixe Entscheidungen (No Drift)
 
