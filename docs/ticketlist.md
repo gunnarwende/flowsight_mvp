@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-13 (S1 komplett DONE — Kategorie-Vereinheitlichung shipped)
+**Updated:** 2026-03-13 (S4 Enablement — CC-Scope abgeschlossen, Founder uebernimmt)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 
@@ -11,7 +11,7 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0
-- **Phase:** Gold Contact Redesign — alle 6 Zielbilder DONE. **Build-Phase beginnt.**
+- **Phase:** S1-S3 DONE. S4 Enablement DONE (CC). **Founder-Phase: Videos + Outreach.**
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -90,6 +90,16 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 ---
 
 ## Completed (Archiv — kondensiert)
+
+### S4 Enablement (13.03.)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| S3 Journey Verification — Trial Expiry Hard Gate + follow_up_due fix | PR #181 |
+| Walter Leuthold Voice Agent JSONs (DE + INTL) | retell/exports/walter-leuthold_agent*.json |
+| Walter Leuthold Prospect Card + Status | docs/customers/walter-leuthold/ |
+| Video-Ordnerstruktur mit vorkonfektionierten Skripten (3 Prospects) | docs/gtm/videos/ |
+| SSOT-Update (STATUS, ticketlist) | This commit |
 
 ### S1.6: Kategorie-Vereinheitlichung (13.03.)
 

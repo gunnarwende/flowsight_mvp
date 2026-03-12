@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-11 (PR #150: Lisa Interest Capture — Sales Agent → Erreichbarkeits-Netz)
+**Datum:** 2026-03-13 (S4 Enablement: Leuthold Voice Prep + Video-Ordner + SSOT)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -87,7 +87,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **BLOCKER:** Keine. Go-Live möglich.
 - **S2.5 SMS-Config (13.03.):** Verified. Brunner (BrunnerHT) + Weinberger (Weinberger) korrekt. Andere 4 Tenants wizard-only → kein SMS nötig.
 - **S2 KOMPLETT** (CC-seitig). Alle 6 Blocks done (S2.1–S2.6).
-- **Nächster Schritt:** Founder-Tasks: Weinberger hero.jpg + Review-Highlights, Widmer Certifications/BrandPartners/Team #2.
+- **S3 Journey Verification (13.03.):** PR #181. Trial E2E Tag 0–14 verifiziert (Voice/Wizard/Review/SMS/Dashboard). Trial Expiry Hard Gate (Middleware → /ops/expired). Morning Report follow_up_due Auto-Expire (3d). Milestone-Retry-Bug = FALSE POSITIVE (Code korrekt). **S3 VERDICT: PASS.**
+- **S4 Enablement (13.03.):** Walter Leuthold Voice Agent JSONs (DE+INTL) erstellt. Prospect Card + Status erstellt. Video-Ordnerstruktur (`docs/gtm/videos/`) mit vorkonfektionierten Skripten für 3 Prospects (Weinberger, Dörfler, Leuthold). **CC-Scope S4 abgeschlossen. System bereit, Founder übernimmt.**
+- **Nächster Schritt (Founder):** (1) `retell_sync.mjs` für Leuthold → Twilio-Nummer → E2E-Test. (2) Videos aufnehmen (Weinberger → Dörfler → Leuthold). (3) Outreach starten.
 
 ## Fixe Entscheidungen (No Drift)
 
