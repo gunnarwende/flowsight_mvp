@@ -37,6 +37,10 @@ export interface CustomerSite {
   history?: HistoryEntry[];
   careers?: JobListing[];
 
+  /** Wizard categories (top row = problem, fixed = bottom row).
+   *  Values MUST match voice agent post_call_analysis category values. */
+  categories: CustomerCategory[];
+
   /** Additional SEO keywords */
   seoKeywords?: string[];
 }
@@ -202,6 +206,21 @@ export interface HistoryEntry {
   title: string;
   description?: string;
   image?: string;
+}
+
+// ── Wizard Categories ─────────────────────────────────────────────
+
+export interface CustomerCategory {
+  /** Value stored in Supabase case.category — MUST match voice agent values */
+  value: string;
+  /** Display label in wizard UI */
+  label: string;
+  /** Short hint text below label */
+  hint: string;
+  /** Icon key for wizard card (maps to CategoryIcon in CustomerWizardForm) */
+  iconKey: string;
+  /** true = fixed bottom row (Allgemein, Angebot, Kontakt) */
+  fixed?: boolean;
 }
 
 // ── Careers ───────────────────────────────────────────────────────

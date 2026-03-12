@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/doerfler-ag";
 
@@ -333,6 +334,15 @@ export const doerflerAg: CustomerSite = {
     { name: "Soltop", url: "https://www.soltop.ch" },
     { name: "Richner", url: "https://www.richner.ch" },
     { name: "Heim AG", url: "https://www.heim-ag.ch" },
+  ],
+
+  // Categories: values match voice agent (doerfler_agent.json)
+  // Voice: Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein
+  categories: [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
+    { value: "Heizung", label: "Heizung", hint: "Kalt, keine Wärme, Störung", iconKey: "flame" },
+    ...FIXED_CATEGORIES,
   ],
 
   history: [

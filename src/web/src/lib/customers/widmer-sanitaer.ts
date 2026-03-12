@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/widmer-sanitaer";
 
@@ -209,6 +210,14 @@ export const widmerSanitaer: CustomerSite = {
       role: "Geschäftsführer",
       bio: "Führt den Familienbetrieb in Horgen mit technischem Know-how und persönlichem Engagement.",
     },
+  ],
+
+  // Categories: no voice agent — wizard-only (Sanitär + Spenglerei focus)
+  categories: [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
+    { value: "Dachschaden", label: "Dachschaden", hint: "Undicht, Sturmschaden", iconKey: "roof" },
+    ...FIXED_CATEGORIES,
   ],
 
   history: [

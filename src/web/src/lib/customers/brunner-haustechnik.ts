@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/brunner-haustechnik";
 
@@ -347,6 +348,15 @@ export const brunnerHaustechnik: CustomerSite = {
       description:
         "Einführung von FlowSight — KI-gestützter Telefonassistent und digitales Fallmanagement.",
     },
+  ],
+
+  // Categories: values match voice agent (brunner_agent.json)
+  // Voice: Verstopfung, Leck, Heizung, Boiler, Rohrbruch, Sanitär allgemein
+  categories: [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
+    { value: "Heizung", label: "Heizung", hint: "Kalt, keine Wärme, Störung", iconKey: "flame" },
+    ...FIXED_CATEGORIES,
   ],
 
   careers: [

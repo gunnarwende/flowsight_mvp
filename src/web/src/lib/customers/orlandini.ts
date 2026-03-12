@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/orlandini";
 
@@ -274,6 +275,14 @@ export const orlandini: CustomerSite = {
         "Führerschein Kat. B",
       ],
     },
+  ],
+
+  // Categories: no voice agent — wizard-only (Sanitär + Heizung focus)
+  categories: [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
+    { value: "Heizung", label: "Heizung", hint: "Kalt, keine Wärme, Störung", iconKey: "flame" },
+    ...FIXED_CATEGORIES,
   ],
 
   /* History: Details nicht verifiziert → entfernt */

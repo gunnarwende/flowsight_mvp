@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/walter-leuthold";
 
@@ -254,6 +255,14 @@ export const walterLeuthold: CustomerSite = {
       name: "suissetec-Mitglied",
       issuer: "Schweizerisch-Liechtensteinischer Geb\u00e4udetechnikverband",
     },
+  ],
+
+  // Categories: no voice agent — wizard-only (Sanitär + Spenglerei focus)
+  categories: [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
+    { value: "Dachschaden", label: "Dachschaden", hint: "Undicht, Sturmschaden", iconKey: "roof" },
+    ...FIXED_CATEGORIES,
   ],
 
   history: [
