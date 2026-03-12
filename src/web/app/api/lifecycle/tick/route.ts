@@ -9,14 +9,16 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 // Auth: Bearer token must match LIFECYCLE_TICK_SECRET env var.
 //
 // Milestones:
-//   Day 7  — Engagement check → log (no email yet, just marks checked)
+//   Day 5  — Engagement nudge → email if prospect inactive (< 3 cases)
+//   Day 7  — Engagement snapshot → JSONB with cases_created, calls_count
 //   Day 10 — Founder alert (follow-up due) → updates follow_up_at awareness
 //   Day 13 — Trial expiry reminder to prospect → sends email
 //   Day 14 — Status → decision_pending (no auto-offboard)
 // ---------------------------------------------------------------------------
 
 const MILESTONES = [
-  { day: 7, column: "day7_checked_at", action: "check" },
+  { day: 5, column: "day5_nudge_sent_at", action: "nudge_prospect" },
+  { day: 7, column: "day7_checked_at", action: "engagement_snapshot" },
   { day: 10, column: "day10_alerted_at", action: "alert_founder" },
   { day: 13, column: "day13_reminder_sent_at", action: "remind_prospect" },
   { day: 14, column: "day14_marked_at", action: "mark_decision_pending" },
@@ -54,7 +56,7 @@ export async function POST(req: NextRequest) {
   const { data: trials, error: fetchErr } = await supabase
     .from("tenants")
     .select(
-      "id, slug, name, trial_start, trial_end, trial_status, prospect_email, prospect_phone, day7_checked_at, day10_alerted_at, day13_reminder_sent_at, day14_marked_at"
+      "id, slug, name, trial_start, trial_end, trial_status, prospect_email, prospect_phone, day5_nudge_sent_at, day7_checked_at, day10_alerted_at, day13_reminder_sent_at, day14_marked_at"
     )
     .in("trial_status", ["trial_active", "live_dock"]);
 
@@ -130,9 +132,74 @@ async function executeMilestone(
 
   try {
     switch (milestone.action) {
-      case "check":
-        // Day 7: Just mark as checked. Future: engagement metrics.
+      case "nudge_prospect": {
+        // Day 5: Send engagement nudge if prospect has < 3 cases
+        const { count: caseCount } = await supabase
+          .from("cases")
+          .select("id", { count: "exact", head: true })
+          .eq("tenant_id", tenant.id)
+          .eq("is_demo", false);
+
+        if ((caseCount ?? 0) >= 3) {
+          // Active prospect — suppress nudge, just mark as done
+          break;
+        }
+
+        if (tenant.prospect_email) {
+          const emailOk = await sendDay5Email(
+            tenant.prospect_email,
+            tenant.name
+          );
+          if (!emailOk) {
+            return { ...base, ok: false, error: "day5_email_failed" };
+          }
+        }
         break;
+      }
+
+      case "engagement_snapshot": {
+        // Day 7: Collect engagement metrics and store as JSONB
+        const [
+          { count: totalCases },
+          { count: voiceCases },
+          { count: wizardCases },
+        ] = await Promise.all([
+          supabase
+            .from("cases")
+            .select("id", { count: "exact", head: true })
+            .eq("tenant_id", tenant.id)
+            .eq("is_demo", false),
+          supabase
+            .from("cases")
+            .select("id", { count: "exact", head: true })
+            .eq("tenant_id", tenant.id)
+            .eq("is_demo", false)
+            .eq("source", "voice"),
+          supabase
+            .from("cases")
+            .select("id", { count: "exact", head: true })
+            .eq("tenant_id", tenant.id)
+            .eq("is_demo", false)
+            .eq("source", "wizard"),
+        ]);
+
+        const snapshot = {
+          cases_created: totalCases ?? 0,
+          cases_voice: voiceCases ?? 0,
+          cases_wizard: wizardCases ?? 0,
+          captured_at: now.toISOString(),
+        };
+
+        const { error: snapErr } = await supabase
+          .from("tenants")
+          .update({ day7_snapshot: snapshot })
+          .eq("id", tenant.id);
+
+        if (snapErr) {
+          return { ...base, ok: false, error: `snapshot_failed: ${snapErr.message}` };
+        }
+        break;
+      }
 
       case "alert_founder":
         // Day 10: Log awareness. Morning Report already shows follow_up_due.
@@ -189,6 +256,84 @@ async function executeMilestone(
       ok: false,
       error: err instanceof Error ? err.message : String(err),
     };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Day 5 email — Engagement nudge for inactive prospects
+// ---------------------------------------------------------------------------
+
+async function sendDay5Email(
+  to: string,
+  companyName: string
+): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return false;
+
+  const fromAddr = process.env.MAIL_FROM || "noreply@send.flowsight.ch";
+  const safeName = companyName.replace(/[<>"]/g, "");
+  const from = `${safeName} via FlowSight <${fromAddr}>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#0b1120;border-radius:8px;overflow:hidden">
+<tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">${companyName}</td></tr>
+<tr><td style="padding:0 24px;color:#e2e8f0;font-size:22px;font-weight:700">Ihr System wartet auf Sie</td></tr>
+<tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
+Guten Tag,<br><br>
+Ihre Einsatzzentrale f&uuml;r <strong style="color:#e2e8f0">${companyName}</strong> ist seit 5 Tagen aktiv &mdash; aber wir haben bisher wenige Testanrufe gesehen.
+</td></tr>
+<tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
+<strong style="color:#e2e8f0">Testen Sie es jetzt:</strong> Rufen Sie einfach Ihre Testnummer an, oder nutzen Sie das Auftragsformular auf Ihrer Website. Lisa nimmt ab und leitet alles strukturiert weiter.
+</td></tr>
+<tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
+Sie haben noch 9 Tage in Ihrem Trial. Nutzen Sie die Zeit, um zu sehen, wie das System Ihren Arbeitsalltag ver&auml;ndert.
+</td></tr>
+<tr><td style="padding:28px 24px 20px;border-top:1px solid #1e293b;margin-top:24px">
+  <div style="color:#64748b;font-size:13px;line-height:1.6;text-align:center">Gunnar Wende &mdash; 044 552 09 19 &mdash; flowsight.ch</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  const text = [
+    "Guten Tag,",
+    "",
+    `Ihre Einsatzzentrale für ${companyName} ist seit 5 Tagen aktiv — aber wir haben bisher wenige Testanrufe gesehen.`,
+    "",
+    "Testen Sie es jetzt: Rufen Sie einfach Ihre Testnummer an, oder nutzen Sie das Auftragsformular auf Ihrer Website.",
+    "",
+    "Sie haben noch 9 Tage in Ihrem Trial.",
+    "",
+    "---",
+    "Gunnar Wende — 044 552 09 19 — flowsight.ch",
+  ].join("\n");
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to,
+        subject: `Ihr System wartet auf Sie — ${companyName}`,
+        html,
+        text,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 

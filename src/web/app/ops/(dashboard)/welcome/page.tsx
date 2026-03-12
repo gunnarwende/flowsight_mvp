@@ -87,6 +87,17 @@ export default async function WelcomePage() {
   const trialEndFmt = formatDate(tenant.trial_end);
   const trialStartFmt = formatDate(tenant.trial_start);
 
+  // Calculate days remaining for countdown
+  const daysRemaining = tenant.trial_end
+    ? Math.max(
+        0,
+        Math.ceil(
+          (new Date(tenant.trial_end).getTime() - Date.now()) /
+            (1000 * 60 * 60 * 24)
+        )
+      )
+    : null;
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-lg w-full">
@@ -137,9 +148,16 @@ export default async function WelcomePage() {
           <div className="text-xs uppercase tracking-wider text-slate-500 mb-3">
             Trial-Zeitraum
           </div>
-          <div className="text-slate-300 text-sm font-medium mb-4">
-            {trialStartFmt} — {trialEndFmt} (14 Tage)
+          <div className="text-slate-300 text-sm font-medium mb-1">
+            {trialStartFmt} — {trialEndFmt}
           </div>
+          {daysRemaining !== null && (
+            <div className="text-amber-400 text-sm font-semibold mb-4">
+              {daysRemaining > 0
+                ? `${daysRemaining} ${daysRemaining === 1 ? "Tag" : "Tage"} verbleibend`
+                : "Trial abgelaufen"}
+            </div>
+          )}
 
           <div className="text-xs uppercase tracking-wider text-slate-500 mb-3">
             Das ist enthalten

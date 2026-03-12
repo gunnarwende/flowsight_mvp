@@ -51,6 +51,7 @@ export default async function OpsCasesPage({
   const filterTenantSlug = params.tenant;
   const showAll = params.show === "all";
   const filterQuery = params.q ?? "";
+  const showDemo = params.tab === "demo";
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const PAGE_SIZE = 15;
 
@@ -90,6 +91,7 @@ export default async function OpsCasesPage({
   let statsQuery = supabase
     .from("cases")
     .select("id, status, created_at, updated_at")
+    .eq("is_demo", showDemo)
     .limit(1000);
   if (filterTenantId) statsQuery = statsQuery.eq("tenant_id", filterTenantId);
 
@@ -100,6 +102,7 @@ export default async function OpsCasesPage({
       "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name",
       { count: "exact" }
     )
+    .eq("is_demo", showDemo)
     .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
@@ -172,6 +175,7 @@ export default async function OpsCasesPage({
   function filterHref(key: string, value: string): string {
     const p = new URLSearchParams();
     if (filterTenantSlug) p.set("tenant", filterTenantSlug);
+    if (showDemo) p.set("tab", "demo");
     if (key === "status") { if (value) p.set("status", value); }
     else if (filterStatus) p.set("status", filterStatus);
     if (key === "urgency") { if (value) p.set("urgency", value); }
@@ -194,9 +198,11 @@ export default async function OpsCasesPage({
         <div>
           <h1 className="text-xl font-bold text-gray-900">Fälle</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            {filterTenantName
-              ? `Tenant: ${filterTenantName}`
-              : "Übersicht aller eingehenden Aufträge"}
+            {showDemo
+              ? "Demo-Fälle zur Veranschaulichung"
+              : filterTenantName
+                ? `Tenant: ${filterTenantName}`
+                : "Übersicht aller eingehenden Aufträge"}
           </p>
         </div>
       </div>
@@ -204,10 +210,36 @@ export default async function OpsCasesPage({
       {/* Filters row — dropdowns */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 mb-5">
         <div className="flex flex-wrap items-center gap-3">
-          {/* View toggle */}
+          {/* Demo/Real tab toggle */}
           <div className="flex rounded-lg border border-gray-200 overflow-hidden">
             <Link
               href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}` : "/ops/cases"}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                !showDemo
+                  ? "bg-amber-500 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Ihre Fälle
+            </Link>
+            <Link
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}&tab=demo` : "/ops/cases?tab=demo"}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                showDemo
+                  ? "bg-amber-500 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              Demo
+            </Link>
+          </div>
+
+          <span className="border-l border-gray-200 h-6 inline-block" />
+
+          {/* View toggle */}
+          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+            <Link
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}${showDemo ? "&tab=demo" : ""}` : `/ops/cases${showDemo ? "?tab=demo" : ""}`}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 !showAll && !filterStatus
                   ? "bg-slate-700 text-white"
@@ -217,7 +249,7 @@ export default async function OpsCasesPage({
               Offen
             </Link>
             <Link
-              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}&show=all` : "/ops/cases?show=all"}
+              href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}&show=all${showDemo ? "&tab=demo" : ""}` : `/ops/cases?show=all${showDemo ? "&tab=demo" : ""}`}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 showAll && !filterStatus
                   ? "bg-slate-700 text-white"
