@@ -132,11 +132,14 @@ if (eT1) console.error("Query active trials:", eT1.message);
 
 const activeTrialCount = activeTrials?.length ?? 0;
 
-// T2. Follow-ups due today: follow_up_at <= todayEnd AND trial_status = 'trial_active'
+// T2. Follow-ups due: follow_up_at within last 3 days AND trial_status = 'trial_active'
+// After 3 days without action the flag auto-expires (Founder either called or skipped)
+const d3ago = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString();
 const { data: followUpsDue, error: eT2 } = await supabase
   .from("tenants")
   .select("slug")
   .eq("trial_status", "trial_active")
+  .gte("follow_up_at", d3ago)
   .lte("follow_up_at", todayEnd.toISOString());
 if (eT2) console.error("Query follow-ups:", eT2.message);
 
