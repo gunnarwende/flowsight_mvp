@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-12 (Clean Slate — Redesign-Zielbilder DONE, Build-Phase beginnt)
+**Updated:** 2026-03-13 (S1 komplett DONE — Kategorie-Vereinheitlichung shipped)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 
@@ -90,6 +90,15 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 ---
 
 ## Completed (Archiv — kondensiert)
+
+### S1.6: Kategorie-Vereinheitlichung (13.03.)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| `categories[]` per CustomerSite — SSOT fuer Wizard + Voice | PR #173 |
+| CASE_POOL + deriveWizardCategories() eliminiert | PR #173 |
+| Shared FIXED_CATEGORIES (Allgemein, Angebot, Kontakt) | PR #173 |
+| Values aligned: "Leck" (nicht "Leck / Wasserschaden"), "Heizung" (nicht "Heizungsausfall") | PR #173 |
 
 ### Block B: Wizard + Review Gold (13.03.)
 

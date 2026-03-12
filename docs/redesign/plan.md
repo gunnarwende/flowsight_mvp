@@ -133,7 +133,7 @@ Der unsichtbare Unterbau. Wenn S1 nicht steht, ist alles andere Fassade.
 | S1.3 | **Demo-Case-Tabs** ("Ihre Faelle" / "So sieht Ihr Alltag aus") | prospect_journey §4 Tag 0 T9 | ✅ DONE (PR #169) |
 | S1.4 | **Day-7-Engagement-Snapshot** | prospect_journey §4 Tag 7 | ✅ DONE (PR #169) |
 | S1.5 | **Wizard: Notfall-Logik** (N1-N7) | wizard §3 | ✅ DONE (PR #171) |
-| S1.6 | **Wizard: Kategorie-Vereinheitlichung** | wizard §8 | Eine Quelle `categories[]` in Tenant-Config. Voice + Wizard lesen dieselbe Liste. |
+| S1.6 | **Wizard: Kategorie-Vereinheitlichung** | wizard §8 | ✅ DONE (PR #173) — `categories[]` per CustomerSite, CASE_POOL eliminiert, values match voice agents |
 | S1.7 | **Review Surface: Bewertungs-Vorbereiter** | review §3 (RS1-RS10) | ✅ DONE (PR #171) |
 | S1.8 | **Review: Nachlauf-System** | review §5 (NS1-NS3) | ✅ DONE (PR #171) |
 | S1.9 | **Leitstand: Review-Badges + Nachlauf** | leitstand + review §5.3 | ✅ DONE (PR #171) |
