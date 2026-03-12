@@ -193,7 +193,6 @@ Nur der Founder kann diese Arbeit tun. Nicht delegierbar.
 | S4.6 | **5 persoenliche Outreach-E-Mails** | gold_contact SS11 | Geschrieben (nicht generiert), Firmenname im Betreff |
 | S4.7 | **Day-10-Call-Scripts ueben** | prospect_journey §4 Tag 10 | 3 Varianten (begeistert/skeptisch/Buerokraft) laut vorgelesen |
 | S4.8 | **SaaS-Vertrag** | — | Template fertig, Anwalt abgestimmt, unterschriftsreif, 299 CHF/Monat |
-| S4.9 | **DEMO_SIP_CALLER_ID verifizieren** | — | Env var auf Vercel. SMS E2E. BLOCKER fuer alles. |
 
 ---
 
@@ -207,7 +206,7 @@ Nur der Founder kann diese Arbeit tun. Nicht delegierbar.
 
 | Was | CC | Founder |
 |-----|-----|---------|
-| **Baut** | S1.1 (7 E-Mail-Templates), S1.2 (Day-5-Email), S1.3 (Demo-Tabs), S1.5-S1.6 (Wizard Notfall + Kategorien), S1.10 (Welcome Polish), S2.1 (Weinberger Gold), S2.6 (Tab-Titel) | S4.1 (Video-Setup), S4.9 (SMS-Blocker) |
+| **Baut** | S1.1 (7 E-Mail-Templates), S1.2 (Day-5-Email), S1.3 (Demo-Tabs), S1.5-S1.6 (Wizard Notfall + Kategorien), S1.10 (Welcome Polish), S2.1 (Weinberger Gold), S2.6 (Tab-Titel) | S4.1 (Video-Setup) |
 | **Verifiziert** | — | Weinberger E2E Dry-Run (Website→Anruf→SMS→Dashboard→Welcome) |
 | **Entscheidet** | — | Video-Hosting (Loom vs Embed), Vertrag-Quelle (Anwalt vs Vorlage) |
 
@@ -307,7 +306,6 @@ Nur der Founder kann diese Arbeit tun. Nicht delegierbar.
 - SaaS-Vertrag (Anwalt, Template, Finalisierung)
 - Mobile QA auf echtem iPhone
 - Alle Agents live anrufen
-- DEMO_SIP_CALLER_ID setzen (BLOCKER)
 - Dry-Run beide Profile durchspielen
 - Founder Release Gate durchfuehren
 

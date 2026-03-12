@@ -37,12 +37,6 @@
 
 ---
 
-## OFFEN — Founder Actions
-
-| # | Task | Status | Details |
-|---|------|--------|---------|
-| Q1 | **SMS E2E** — DEMO_SIP_CALLER_ID pruefen | BLOCKED | Env var auf Vercel pruefen (persoenliche Handynr in E.164). Ohne: SMS geht an Twilio-Nr → silent fail. |
-
 ---
 
 ## Backlog (trigger-basiert, Post-Build)
