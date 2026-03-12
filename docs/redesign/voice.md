@@ -835,7 +835,7 @@ Neu:    plz_directory (oder als statisches Modul): plz → city, kanton
 | `docs/architecture/env_vars.md` | Keine neuen Env Vars (alles in DB) |
 | `docs/runbooks/brunner_voice_setup.md` | Template-System statt manuellem JSON-Edit |
 | `retell/templates/README.md` | Neuer Workflow: Config in DB → Template → Generated Agent |
-| `docs/OPS_BOARD.md` | Tasks für Voice Config, PLZ-Verzeichnis, Partial Cases, Chain-Cron |
+| `docs/ticketlist.md` | Tasks für Voice Config, PLZ-Verzeichnis, Partial Cases, Chain-Cron |
 
 ---
 

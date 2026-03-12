@@ -19,4 +19,4 @@
 
 ## Empfehlung
 
-[Was soll als naechstes passieren? → Task im OPS_BOARD? Decision?]
+[Was soll als naechstes passieren? → Task im ticketlist? Decision?]

@@ -3,7 +3,7 @@
 **Version:** 1.2 | **Datum:** 2026-03-11
 **Autor:** CC (Head Ops) + Founder-Input
 **Status:** v1.2 — D12 ELIMINATED (kein B-Quick, immer B-Full), D16 Trial Machine (11.03.)
-**Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/OPS_BOARD.md`.
+**Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
 ---
@@ -782,7 +782,7 @@ Seed-Script Logik:
 Founder ←→ ChatGPT:  Strategie, Messaging, "Wie sage ich das?"
 Founder ←→ CC:       "Baue das.", "Prüfe das.", "Ship it."
 CC ←→ Agents:        scout.mjs, crawl-website.mjs, retell_sync.mjs
-CC ←→ SSOT:          STATUS.md, OPS_BOARD.md, gtm_tracker.md, customer/status.md
+CC ←→ SSOT:          STATUS.md, Ticketlist.md, gtm_tracker.md, customer/status.md
 
 Entscheidungsregel:
 - Founder sagt WAS und WARUM
@@ -847,7 +847,7 @@ Entscheidungsregel:
 
 ```
 docs/STATUS.md              ← Was ist live? (Produkt-Überblick)
-docs/OPS_BOARD.md           ← Was ist offen? (EINZIGER Task-Tracker)
+docs/ticketlist.md           ← Was ist offen? (EINZIGER Task-Tracker)
 docs/gtm/gtm_tracker.md    ← GTM-spezifische Tasks + Weinberger-Status
 docs/gtm/architecture_detail.md ← Zielarchitektur (DIESES Dokument)
 docs/customers/<slug>/status.md ← Pro-Kunde Status
@@ -860,7 +860,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | Frage | Dokument |
 |-------|----------|
 | "Was ist live?" | STATUS.md |
-| "Was muss ich als nächstes tun?" | OPS_BOARD.md |
+| "Was muss ich als nächstes tun?" | Ticketlist.md |
 | "Wie steht es um Weinberger?" | docs/customers/weinberger-ag/status.md |
 | "Wie soll die Architektur aussehen?" | **architecture_detail.md** (dieses Dok.) |
 | "Wie provisioniere ich einen Prospect?" | docs/runbooks/provisioning_prospect.md |
@@ -871,8 +871,8 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 
 | Regel | Mechanismus |
 |-------|------------|
-| Anti-Drift nach jedem PR | CC aktualisiert STATUS.md + OPS_BOARD.md + customer status.md |
-| Kein zweiter Task-Tracker | OPS_BOARD.md = EINZIGER Ort für Tasks |
+| Anti-Drift nach jedem PR | CC aktualisiert STATUS.md + Ticketlist.md + customer status.md |
+| Kein zweiter Task-Tracker | Ticketlist.md = EINZIGER Ort für Tasks |
 | Challenge before Build | CC challenged jeden Prompt bevor Implementierung |
 | SSOT-Check vor Outreach | Quality Gate 5: Docs aktuell? Pipeline aktuell? |
 | Memory Hygiene | CC aktualisiert MEMORY.md vor Context-Komprimierung |
@@ -996,7 +996,7 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | Dokument | Pfad | Inhalt |
 |----------|------|--------|
 | STATUS.md | docs/STATUS.md | Was ist live (17 Module, 7 Websites) |
-| OPS_BOARD.md | docs/OPS_BOARD.md | Einziger Task-Tracker |
+| Ticketlist.md | docs/ticketlist.md | Einziger Task-Tracker |
 | Operating Model | docs/gtm/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
 | GTM Tracker | docs/gtm/gtm_tracker.md | Execution-Status + Weinberger |
 | Einsatzlogik | docs/gtm/einsatzlogik.md | ICP → Paket → Assets |

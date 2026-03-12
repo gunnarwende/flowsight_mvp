@@ -348,5 +348,5 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 - **Demo-Wizard:** flowsight.ch/kunden/brunner-haustechnik/meldung
 - **Geschäftsnummer:** +41 44 552 09 19 (Lisa)
 - **LinkedIn:** linkedin.com/company/flowsight-gmbh
-- **Roadmap:** docs/OPS_BOARD.md
+- **Roadmap:** docs/ticketlist.md
 - **Sales Pipeline:** docs/sales/pipeline.md

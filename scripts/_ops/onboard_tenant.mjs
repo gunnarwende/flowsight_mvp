@@ -227,7 +227,7 @@ if (!dryRun) {
     console.log("  4. Import Retell agent JSONs (see retell/templates/README.md)");
   }
   console.log(`  5. Create status doc:       docs/customers/${slug}/status.md`);
-  console.log(`  6. Update:                  docs/STATUS.md + docs/OPS_BOARD.md`);
+  console.log(`  6. Update:                  docs/STATUS.md + docs/ticketlist.md`);
   console.log("");
 } else {
   console.log("━━━ Step 3: Verification — skipped (dry-run) ━━━\n");

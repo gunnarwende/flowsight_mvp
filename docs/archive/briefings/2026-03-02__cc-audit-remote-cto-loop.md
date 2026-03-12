@@ -20,7 +20,7 @@ FlowSight ist ein funktionierendes MVP mit **13 Modulen LIVE**, 1 echtem Kunden 
 HEUTE:
   Founder/CC → editiert Code → git push main → Vercel auto-deploy (Prod!) → 90s warten
   → manueller Smoke Test (curl /api/health + node smoke_voice.mjs)
-  → manuelles SSOT-Update (STATUS.md, OPS_BOARD.md)
+  → manuelles SSOT-Update (STATUS.md, ticketlist.md)
 ```
 
 - **Kein PR-Flow.** Alles geht direkt auf `main`.
@@ -59,7 +59,7 @@ GitHub Secrets:     Keine (weil keine Actions existieren)
 ```
 EXISTIEREN UND FUNKTIONIEREN:
   docs/STATUS.md              — Company-Status (13 Module, Kunden, Tech Stack)
-  docs/OPS_BOARD.md           — Einziger Task-Tracker (Roadmap, Backlog, Sales)
+  docs/ticketlist.md           — Einziger Task-Tracker (Roadmap, Backlog, Sales)
   docs/business_briefing.md   — Vollständiger Business-Kontext für LLMs
   docs/customers/*/status.md  — Pro-Kunde Status
   docs/runbooks/*.md          — 30 Runbooks (Release, Voice, Onboarding, etc.)
@@ -251,7 +251,7 @@ DAY-3+ (nur wenn nötig):
 | 4 | `.github/workflows/ci.yml` — Lint + Build + Telegram Notify | 30 Min | CI Pipeline |
 | 5 | `.github/workflows/notify-merge.yml` — Post-Merge Notification | 15 Min | Ship Alert |
 | 6 | `docs/briefings/` + `docs/decisions/` + Templates anlegen | 15 Min | Dropzone |
-| 7 | OPS_BOARD.md + STATUS.md updaten | 10 Min | SSOT |
+| 7 | ticketlist.md + STATUS.md updaten | 10 Min | SSOT |
 | 8 | Erster PR erstellen → CI laufen lassen → Telegram testen | 15 Min | Evidence |
 
 **Gesamt Day-1: ~1.5h**
@@ -276,7 +276,7 @@ DAY-3+ (nur wenn nötig):
 | 3 | Beste Approval-Stellschraube? | **GitHub Branch Protection + Required Status Checks.** Einfachstes, robustestes Gate. Labels/Environments sind Overkill für Solo-Founder. |
 | 4 | Minimal-sicherer Weg für Telegram Commands? | Day-1: Keine Commands (nur Notifications). Day-2: Read-only `/status` via Bot Webhook → GitHub API mit read-only PAT. Approve erst Day-3. |
 | 5 | Welche Secrets? | Nur 2: `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` in GitHub Secrets. Alles andere bleibt Vercel. |
-| 6 | SSOT-Dateien? | STATUS.md, OPS_BOARD.md, CLAUDE.md, business_briefing.md, runbooks/. NEU: briefings/, decisions/. |
+| 6 | SSOT-Dateien? | STATUS.md, ticketlist.md, CLAUDE.md, business_briefing.md, runbooks/. NEU: briefings/, decisions/. |
 | 7 | Bestehende Ähnlichkeiten? | WhatsApp Morning Report (manuell). Sonst: nichts. Kein Slack, kein Webhook, kein Telegram. |
 | 8 | Was würde ich ändern? | (a) CI vor Telegram, (b) GitHub Mobile statt Telegram für Approvals, (c) Commands erst Day-3, (d) Dropzone schlanker. Siehe Abschnitt 2. |
 | 9 | Nicht-agentisch? | Prod-Deploy, Secrets, Migrations, Voice Publish, Telefon-Routing, Billing, Kundenkommunikation. Siehe Abschnitt 2.5. |
@@ -377,7 +377,7 @@ jobs:
 [Freitext, Transkript, Screenshot-Beschreibung, Link]
 
 ## Takeaway
-[Was soll damit passieren? → OPS_BOARD Task? Decision? Ignorieren?]
+[Was soll damit passieren? → ticketlist Task? Decision? Ignorieren?]
 ```
 
 ### Decision Template (`docs/decisions/TEMPLATE.md`)

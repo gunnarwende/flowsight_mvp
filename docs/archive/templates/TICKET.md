@@ -12,7 +12,7 @@
 
 - [ ] [Konkretes Ergebnis 1]
 - [ ] [Konkretes Ergebnis 2]
-- [ ] SSOT-Update (STATUS.md, OPS_BOARD.md)
+- [ ] SSOT-Update (STATUS.md, ticketlist.md)
 
 ## Evidence / Kontext
 

@@ -201,7 +201,7 @@ Nach jedem Provisioning:
 1. `docs/customers/<slug>/status.md` — Leckerli-Status aktualisieren
 2. `docs/gtm/gtm_tracker.md` — Prospect-Zähler erhöhen
 3. `docs/STATUS.md` — Kundenzahl + Aktueller Stand
-4. `docs/OPS_BOARD.md` — Snapshot aktualisieren
+4. `docs/ticketlist.md` — Snapshot aktualisieren
 
 ---
 
