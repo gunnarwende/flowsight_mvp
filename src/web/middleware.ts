@@ -41,7 +41,54 @@ export async function middleware(request: NextRequest) {
   });
 
   // Refresh session — this writes updated tokens to cookies
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // ── Trial expiry hard gate ──────────────────────────────────────────
+  // Prospects whose trial has ended cannot access /ops (except /ops/expired).
+  if (user && request.nextUrl.pathname.startsWith("/ops")) {
+    const meta = user.app_metadata ?? {};
+    const role = meta.role as string | undefined;
+    const tenantId = meta.tenant_id as string | undefined;
+
+    if (role === "prospect" && tenantId) {
+      // Skip if already heading to /ops/expired
+      if (!request.nextUrl.pathname.startsWith("/ops/expired")) {
+        const svcUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const svcKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+        if (svcUrl && svcKey) {
+          try {
+            const res = await fetch(
+              `${svcUrl}/rest/v1/tenants?select=trial_end,trial_status&id=eq.${tenantId}&limit=1`,
+              {
+                headers: {
+                  apikey: svcKey,
+                  Authorization: `Bearer ${svcKey}`,
+                },
+                signal: AbortSignal.timeout(3000),
+              }
+            );
+            if (res.ok) {
+              const rows = await res.json();
+              const tenant = rows?.[0];
+              if (
+                tenant?.trial_end &&
+                new Date(tenant.trial_end).getTime() < Date.now() &&
+                tenant.trial_status !== "live"
+              ) {
+                const expiredUrl = new URL("/ops/expired", request.url);
+                return NextResponse.redirect(expiredUrl);
+              }
+            }
+          } catch {
+            // On fetch error, allow access (fail-open) — Morning Report catches stale trials
+          }
+        }
+      }
+    }
+  }
 
   return supabaseResponse;
 }
