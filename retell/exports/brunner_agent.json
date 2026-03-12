@@ -360,7 +360,7 @@
         "tools": [
           {
             "type": "agent_swap",
-            "agent_id": "REPLACE_WITH_BRUNNER_INTL_AGENT_ID",
+            "agent_id": "agent_01fad4217f8b0697f0c26c69d5",
             "name": "swap_to_intl_agent",
             "description": "Transfer the caller to the multilingual (EN/FR/IT) agent. Execute this tool IMMEDIATELY — the caller does not speak German.",
             "post_call_analysis_setting": "only_destination_agent"

@@ -4,27 +4,27 @@
     "de_flow_id": "conversation_flow_e2c3a7cec528",
     "intl_agent_id": "agent_01fad4217f8b0697f0c26c69d5",
     "intl_flow_id": "conversation_flow_3c7d423226a9",
-    "last_synced": "2026-03-10T08:38:50.914Z"
+    "last_synced": "2026-03-12T14:38:17.164Z"
   },
   "doerfler": {
     "de_agent_id": "agent_d7dfe45ab444e1370e836c3e0f",
     "de_flow_id": "conversation_flow_8170ad3c2ca9",
     "intl_agent_id": "agent_fb4b956eec31db9c591880fdeb",
     "intl_flow_id": "conversation_flow_608d542979bb",
-    "last_synced": "2026-03-10T08:38:57.024Z"
+    "last_synced": "2026-03-12T14:38:29.730Z"
   },
   "flowsight_sales": {
     "de_agent_id": "agent_6515d8d1f23072ce61db806901",
     "de_flow_id": "conversation_flow_1f30bf247bf3",
     "intl_agent_id": "agent_e03666c402209716fb2c5b41d6",
     "intl_flow_id": "conversation_flow_dd3212a90e6e",
-    "last_synced": "2026-03-10T08:39:11.575Z"
+    "last_synced": "2026-03-12T14:38:33.047Z"
   },
   "weinberger-ag": {
     "de_agent_id": "agent_d568564d51ccb908dadf032e7d",
     "de_flow_id": "conversation_flow_4254de993a58",
     "intl_agent_id": "agent_0976aabe2c12ab0ca4d48933a5",
     "intl_flow_id": "conversation_flow_ac5b3603b478",
-    "last_synced": "2026-03-11T07:08:35.470Z"
+    "last_synced": "2026-03-12T14:38:25.213Z"
   }
 }

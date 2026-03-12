@@ -327,7 +327,7 @@
         "tools": [
           {
             "type": "agent_swap",
-            "agent_id": "REPLACE_WITH_WEINBERGER_DE_AGENT_ID",
+            "agent_id": "agent_d568564d51ccb908dadf032e7d",
             "name": "swap_to_de_agent",
             "description": "Transfer the caller back to the German-speaking agent (Susi). Execute this tool IMMEDIATELY — the caller wants German.",
             "post_call_analysis_setting": "only_destination_agent"
