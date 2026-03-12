@@ -159,7 +159,7 @@ Was der Prospect sieht und hoert. Der Spiegel-Effekt.
 
 | Block | Beschreibung | Done-Kriterium |
 |-------|-------------|----------------|
-| S2.1 | **Weinberger = Referenz-Gold** | Lighthouse > 90, Mobile QA, Video-Integration, E2E fehlerfrei |
+| S2.1 | **Weinberger = Referenz-Gold** | ✅ PARTIAL (PR #175: Icons, Reviews-Fallback, Nav, voicePhone. TODO: hero.jpg, review highlights, brandPartners = Founder-Tasks) |
 | S2.2 | **Tier-1-Websites × 4** (Doerfler, Leuthold, Orlandini, Widmer) | Gleicher Standard wie Weinberger. Pro Website: CC baut, Founder verifiziert auf iPhone. |
 | S2.3 | **Brunner HT Showroom** | Demo = genauso beeindruckend wie Echtbetrieb |
 | S2.4 | **Alle Voice-Agents: Gold-QA** | Greeting korrekt, PLZ, Empathie, Closing, FAQ, E2E (Anruf→SMS→Dashboard) |
