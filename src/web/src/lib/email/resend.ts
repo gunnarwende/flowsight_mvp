@@ -18,6 +18,7 @@ interface CaseEmailPayload {
   caseId: string;
   seqNumber?: number | null;
   tenantId: string;
+  tenantDisplayName?: string;
   source: string;
   category: string;
   urgency: string;
@@ -59,6 +60,17 @@ function escapeHtml(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+/**
+ * Build RFC 5322 From address with tenant branding.
+ * Identity Contract E4: "{display_name} via FlowSight <noreply@...>"
+ */
+function buildFromAddress(tenantDisplayName?: string): string {
+  const addr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  if (!tenantDisplayName) return addr;
+  const safe = tenantDisplayName.replace(/[<>"]/g, "");
+  return `${safe} via FlowSight <${addr}>`;
 }
 
 function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string {
@@ -108,7 +120,7 @@ function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string
 <!-- Gold accent bar -->
 <tr><td style="height:4px;background:#d4a853;font-size:0;line-height:0">&nbsp;</td></tr>
 <!-- Logo -->
-<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">FlowSight</td></tr>
+<tr><td style="padding:20px 24px 12px;color:#d4a853;font-size:20px;font-weight:700;letter-spacing:0.5px">${escapeHtml(p.tenantDisplayName ?? "FlowSight")}</td></tr>
 <!-- Urgency header -->
 <tr><td style="padding:0 24px">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${urg.bg};border-radius:6px">
@@ -138,7 +150,7 @@ function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string
 </td></tr>
 <!-- Footer -->
 <tr><td style="padding:20px 24px;border-top:1px solid #1e293b;margin-top:16px">
-  <div style="color:#64748b;font-size:12px;text-align:center">FlowSight GmbH &middot; flowsight.ch</div>
+  <div style="color:#64748b;font-size:12px;text-align:center">${escapeHtml(p.tenantDisplayName ?? "FlowSight")} &middot; via FlowSight</div>
 </td></tr>
 </table>
 </td></tr>
@@ -206,12 +218,11 @@ Freundliche Gr&uuml;sse<br>Ihr Service-Team
 export async function sendCaseNotification(
   payload: CaseEmailPayload
 ): Promise<boolean> {
-  const fromEnvValue = process.env.MAIL_FROM;
-  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
+  const from = buildFromAddress(payload.tenantDisplayName);
   const to = process.env.MAIL_REPLY_TO;
-  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
   // Base log fields — always present, no PII (no actual addresses)
+  const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
   const base: Record<string, unknown> = {
     _tag: "resend",
     case_id: payload.caseId,
@@ -219,8 +230,8 @@ export async function sendCaseNotification(
     tenant_id: payload.tenantId,
     recipient_env: "MAIL_REPLY_TO",
     recipient_present: !!to,
-    from_env: fromEnvValue ? "MAIL_FROM" : "default",
-    from_domain: from.split("@")[1] ?? "unknown",
+    from_env: process.env.MAIL_FROM ? "MAIL_FROM" : "default",
+    from_domain: fromAddr.split("@")[1] ?? "unknown",
     ...(payload.reporterEmailSent !== undefined && {
       reporter_email_sent: payload.reporterEmailSent,
     }),
@@ -268,7 +279,7 @@ export async function sendCaseNotification(
     const { data, error } = await getResend().emails.send({
       from,
       to,
-      subject: `${subjectPrefix} ${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber)} – ${payload.category} (${payload.city})`,
+      subject: `${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber)} – ${payload.category} (${payload.city})`,
       html: buildOpsNotificationHtml(payload, deepLink),
       text: [
         `Neuer Fall erstellt`,
@@ -356,6 +367,7 @@ interface ReporterConfirmationPayload {
   caseId: string;
   seqNumber?: number | null;
   tenantId: string;
+  tenantDisplayName?: string;
   contactEmail: string;
   category: string;
 }
@@ -374,8 +386,8 @@ export async function sendReporterConfirmation(
 ): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) return false;
 
-  const from = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
-  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
+  const from = buildFromAddress(payload.tenantDisplayName);
+  const tenantLabel = payload.tenantDisplayName ?? "FlowSight";
 
   try {
     const caseLabel = formatCaseLabel(payload.caseId, payload.seqNumber);
@@ -383,7 +395,7 @@ export async function sendReporterConfirmation(
     const { error } = await getResend().emails.send({
       from,
       to: payload.contactEmail,
-      subject: `${subjectPrefix} Ihre Meldung wurde erfasst`,
+      subject: `Ihre Meldung wurde erfasst — ${tenantLabel}`,
       html: buildReporterConfirmationHtml(caseLabel, payload.category),
       text: [
         `Guten Tag`,
@@ -441,6 +453,7 @@ export async function sendReporterConfirmation(
 interface ReviewRequestPayload {
   caseId: string;
   tenantId: string;
+  tenantDisplayName?: string;
   contactEmail: string;
   /** Our own review surface URL — always the primary link */
   reviewSurfaceUrl: string;
@@ -458,9 +471,8 @@ interface ReviewRequestPayload {
 export async function sendReviewRequest(
   payload: ReviewRequestPayload
 ): Promise<boolean> {
-  const fromEnvValue = process.env.MAIL_FROM;
-  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
-  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
+  const from = buildFromAddress(payload.tenantDisplayName);
+  const tenantLabel = payload.tenantDisplayName ?? "FlowSight";
 
   const base: Record<string, unknown> = {
     _tag: "resend",
@@ -480,7 +492,7 @@ export async function sendReviewRequest(
     const { error } = await getResend().emails.send({
       from,
       to: payload.contactEmail,
-      subject: `${subjectPrefix} Wie war unser Service?`,
+      subject: `Wie war unser Service? — ${tenantLabel}`,
       text: [
         `Guten Tag`,
         ``,
@@ -562,10 +574,9 @@ interface SalesLeadPayload {
 export async function sendSalesLeadNotification(
   payload: SalesLeadPayload
 ): Promise<boolean> {
-  const fromEnvValue = process.env.MAIL_FROM;
-  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
+  const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const from = `FlowSight Sales <${fromAddr}>`;
   const to = process.env.MAIL_REPLY_TO;
-  const subjectPrefix = process.env.MAIL_SUBJECT_PREFIX ?? "[FlowSight]";
 
   const base: Record<string, unknown> = {
     _tag: "resend",
@@ -574,8 +585,8 @@ export async function sendSalesLeadNotification(
     retell_call_id: payload.retellCallId,
     recipient_env: "MAIL_REPLY_TO",
     recipient_present: !!to,
-    from_env: fromEnvValue ? "MAIL_FROM" : "default",
-    from_domain: from.split("@")[1] ?? "unknown",
+    from_env: process.env.MAIL_FROM ? "MAIL_FROM" : "default",
+    from_domain: fromAddr.split("@")[1] ?? "unknown",
   };
 
   if (!process.env.RESEND_API_KEY) {
@@ -598,7 +609,7 @@ export async function sendSalesLeadNotification(
     const { data, error } = await getResend().emails.send({
       from,
       to,
-      subject: `${subjectPrefix} Rückruf-Wunsch — ${companyLabel} (${payload.interestLevel})`,
+      subject: `Rückruf-Wunsch — ${companyLabel} (${payload.interestLevel})`,
       text: [
         `Neuer Anruf auf 044 552 09 19`,
         ``,

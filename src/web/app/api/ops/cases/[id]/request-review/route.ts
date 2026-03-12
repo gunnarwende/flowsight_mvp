@@ -60,15 +60,17 @@ export async function POST(
     );
   }
 
-  // ── Google Review URL (optional fallback — our review surface is primary)
+  // ── Tenant info (name + modules) ─────────────────────────────────────
   let googleReviewUrl: string | undefined;
+  let tenantDisplayName: string | undefined;
   {
     const { data: tenant } = await supabase
       .from("tenants")
-      .select("modules")
+      .select("name, modules")
       .eq("id", row.tenant_id)
       .single();
 
+    tenantDisplayName = tenant?.name ?? undefined;
     const modules = tenant?.modules as Record<string, unknown> | null;
     if (typeof modules?.google_review_url === "string" && modules.google_review_url.length > 0) {
       googleReviewUrl = modules.google_review_url;
@@ -100,6 +102,7 @@ export async function POST(
     sent = await sendReviewRequest({
       caseId: id,
       tenantId: row.tenant_id,
+      tenantDisplayName,
       contactEmail: row.contact_email,
       reviewSurfaceUrl,
       googleReviewUrl,

@@ -99,7 +99,7 @@ export default async function WelcomePage() {
             Willkommen, {tenant.name}
           </h1>
           <p className="text-slate-400 text-base">
-            Ihr FlowSight Trial ist bereit. Testen Sie jetzt Ihre persönliche KI-Assistentin.
+            Ihr 14-Tage Trial ist bereit. Testen Sie jetzt Ihre persönliche KI-Assistentin.
           </p>
         </div>
 

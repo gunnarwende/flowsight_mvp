@@ -397,6 +397,15 @@ export async function POST(req: Request) {
 
   Sentry.setTag("tenant_id", tenantId);
 
+  // Resolve tenant display name for email branding (Identity Contract E4)
+  const supabaseEarly = getServiceClient();
+  const { data: tenantRow } = await supabaseEarly
+    .from("tenants")
+    .select("name")
+    .eq("id", tenantId)
+    .single();
+  const tenantDisplayName = tenantRow?.name ?? undefined;
+
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
     Sentry.captureMessage("voice_module_disabled", {
@@ -491,6 +500,7 @@ export async function POST(req: Request) {
       caseId,
       seqNumber: row.seq_number,
       tenantId,
+      tenantDisplayName,
       source: "voice",
       category: category!,
       urgency: urgencyRaw as CaseUrgency,

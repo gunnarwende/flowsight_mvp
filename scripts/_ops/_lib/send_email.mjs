@@ -10,16 +10,17 @@
 const RESEND_API = "https://api.resend.com/emails";
 
 /**
- * @param {{ to: string, subject: string, html: string, text?: string }} opts
+ * @param {{ to: string, subject: string, html: string, text?: string, fromName?: string }} opts
  * @returns {Promise<{ success: boolean, messageId?: string, error?: string }>}
  */
-export async function sendEmail({ to, subject, html, text }) {
+export async function sendEmail({ to, subject, html, text, fromName }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return { success: false, error: "RESEND_API_KEY not set" };
   }
 
-  const from = process.env.MAIL_FROM || "noreply@send.flowsight.ch";
+  const addr = process.env.MAIL_FROM || "noreply@send.flowsight.ch";
+  const from = fromName ? `${fromName} <${addr}>` : addr;
 
   try {
     const body = { from, to, subject, html };
