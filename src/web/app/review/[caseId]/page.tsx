@@ -1,5 +1,7 @@
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { validateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { getCustomer } from "@/src/lib/customers/registry";
+import { ReviewSurfaceClient } from "./ReviewSurfaceClient";
 
 interface PageProps {
   params: Promise<{ caseId: string }>;
@@ -15,7 +17,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
 
   // ── Invalid link shell ──────────────────────────────────────────────
   const invalidShell = (
-    <div className="flex min-h-dvh items-center justify-center bg-[#e8eaed] p-4">
+    <div className="flex min-h-dvh items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-[420px] rounded-2xl bg-white p-8 text-center shadow-lg">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -34,7 +36,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   const supabase = getServiceClient();
   const { data: caseRow, error } = await supabase
     .from("cases")
-    .select("id, created_at, tenant_id, reporter_name")
+    .select("id, created_at, tenant_id, category, plz, city")
     .eq("id", caseId)
     .single();
 
@@ -48,6 +50,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   // ── Resolve tenant ─────────────────────────────────────────────────
   let companyName = "Ihr Dienstleister";
   let googleReviewUrl: string | null = null;
+  let tenantSlug: string | null = null;
   {
     const { data: tenant } = await supabase
       .from("tenants")
@@ -56,6 +59,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
       .single();
 
     if (tenant?.name) companyName = tenant.name;
+    if (tenant?.slug) tenantSlug = tenant.slug;
 
     const modules = tenant?.modules as Record<string, unknown> | null;
     if (typeof modules?.google_review_url === "string" && modules.google_review_url.length > 0) {
@@ -63,11 +67,26 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
     }
   }
 
-  // ── Display values ─────────────────────────────────────────────────
-  const displayName = "Max Mustermann";
-  const initial = "M";
+  // ── Brand color from customer registry ──────────────────────────────
+  const customer = tenantSlug ? getCustomer(tenantSlug) : undefined;
+  const brandColor = customer?.brandColor ?? "#d4a853"; // FlowSight gold as fallback
 
-  // High-quality 3-liner as default review text
+  // ── Track surface opened (fire-and-forget) ─────────────────────────
+  await supabase.from("case_events").insert({
+    case_id: caseId,
+    event_type: "review_surface_opened",
+    title: "Bewertungsseite ge\u00f6ffnet",
+  }).then(() => {});
+
+  // ── Display values ─────────────────────────────────────────────────
+  const location = [caseRow.plz, caseRow.city].filter(Boolean).join(" ") || "\u2014";
+  const caseDate = new Date(caseRow.created_at).toLocaleDateString("de-CH", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "Europe/Zurich",
+  });
+
   const defaultReviewText = [
     "Sehr kompetenter und zuverl\u00e4ssiger Service.",
     "Schnelle Reaktion, saubere Arbeit, faire Preise.",
@@ -75,123 +94,15 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   ].join("\n");
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-[#e8eaed] p-4">
-      {/* Google-style review card — matches reference image exactly */}
-      <div className="w-full max-w-[420px] rounded-2xl bg-white shadow-xl">
-
-        {/* Header — dynamic company name */}
-        <div className="border-b border-gray-100 px-6 pt-6 pb-4">
-          <h1 className="text-center text-[17px] font-medium text-gray-900">
-            {companyName}
-          </h1>
-        </div>
-
-        {/* User avatar + name */}
-        <div className="flex flex-col items-center px-6 pt-5">
-          {/* Avatar — magenta circle with initial */}
-          <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#e91e8c]">
-            <span className="text-xl font-medium text-white">{initial}</span>
-          </div>
-          <p className="mt-2.5 text-[15px] font-medium text-gray-900">
-            {displayName}
-          </p>
-          {/* Google disclosure */}
-          <div className="mt-1 flex items-center gap-1">
-            <p className="text-xs text-gray-500">
-              Beitrag wird Google-weit ver&ouml;ffentlicht
-            </p>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="text-gray-400"
-            >
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-              <path
-                d="M12 16v-4m0-4h.01"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </div>
-
-        {/* Stars — 5 gold stars */}
-        <div className="flex justify-center gap-1.5 px-6 pt-4 pb-2">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <svg
-              key={star}
-              width="36"
-              height="36"
-              viewBox="0 0 24 24"
-              fill="#fbbc04"
-              className="cursor-pointer transition-transform hover:scale-110"
-            >
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          ))}
-        </div>
-
-        {/* Text area — high-quality 3-liner pre-filled */}
-        <div className="px-6 pt-3">
-          <textarea
-            className="h-[110px] w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-[14px] leading-relaxed text-gray-700 outline-none transition-colors focus:border-blue-400 focus:bg-white focus:ring-1 focus:ring-blue-400"
-            placeholder="Schildere anderen deine Eindr&uuml;cke von diesem Ort"
-            defaultValue={defaultReviewText}
-            readOnly
-          />
-        </div>
-
-        {/* Add photos button — dark, full-width, matching reference */}
-        <div className="px-6 pt-3">
-          <button
-            type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#303134] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#404144]"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-white">
-              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
-              <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Fotos und Videos hinzuf&uuml;gen
-          </button>
-        </div>
-
-        {/* Bottom actions — Abbrechen + Posten */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-6">
-          <button
-            type="button"
-            className="text-[14px] font-medium text-blue-600 hover:text-blue-700"
-          >
-            Abbrechen
-          </button>
-          {/*
-            Primary: our Review Surface IS the experience.
-            "Posten" → Google Review URL if configured (production),
-            otherwise stays on our surface (demo — the surface itself is the proof).
-          */}
-          {googleReviewUrl ? (
-            <a
-              href={googleReviewUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-[#1a73e8] px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-colors hover:bg-[#1557b0]"
-            >
-              Posten
-            </a>
-          ) : (
-            <button
-              type="button"
-              className="rounded-full bg-[#1a73e8] px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-colors hover:bg-[#1557b0]"
-            >
-              Posten
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+    <ReviewSurfaceClient
+      companyName={companyName}
+      brandColor={brandColor}
+      category={caseRow.category || "\u2014"}
+      location={location}
+      caseDate={caseDate}
+      defaultText={defaultReviewText}
+      googleReviewUrl={googleReviewUrl}
+      trackUrl={`/api/review/${caseId}/track`}
+    />
   );
 }

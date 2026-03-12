@@ -132,7 +132,7 @@ export default async function CaseDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Left: form (all fields, always editable) */}
         <div className="lg:col-span-3">
-          <CaseDetailForm initialData={caseData} isProspect={scope?.isProspect ?? false} />
+          <CaseDetailForm initialData={caseData} isProspect={scope?.isProspect ?? false} caseEvents={caseEvents} />
         </div>
 
         {/* Right: contact + timeline + attachments */}

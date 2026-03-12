@@ -99,7 +99,7 @@ export default async function OpsCasesPage({
   let listQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name",
+      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at",
       { count: "exact" }
     )
     .eq("is_demo", showDemo)

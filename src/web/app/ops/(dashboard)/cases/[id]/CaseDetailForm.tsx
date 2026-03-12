@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { CaseDetail } from "./page";
+import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
+import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -52,7 +54,7 @@ function formatDate(iso: string): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function CaseDetailForm({ initialData, isProspect = false }: { initialData: CaseDetail; isProspect?: boolean }) {
+export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [] }: { initialData: CaseDetail; isProspect?: boolean; caseEvents?: CaseEvent[] }) {
   // All fields as state — always editable, no toggle
   const [status, setStatus] = useState(initialData.status);
   const [urgency, setUrgency] = useState(initialData.urgency);
@@ -94,10 +96,9 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
   const [errorMsg, setErrorMsg] = useState("");
   const [inviteState, setInviteState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [inviteMsg, setInviteMsg] = useState("");
-  const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">(
-    initialData.review_sent_at ? "sent" : "idle"
-  );
+  const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewMsg, setReviewMsg] = useState("");
+  const [localEvents, setLocalEvents] = useState(caseEvents);
 
   const isDirty =
     status !== baseline.status ||
@@ -212,11 +213,15 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
 
   const canSendInvite = !!scheduledAt && inviteState !== "sending";
   const hasContactInfo = !!contactEmail.trim() || !!contactPhone.trim();
-  const canRequestReview =
-    status === "done" &&
-    hasContactInfo &&
-    reviewState !== "sent" &&
-    reviewState !== "sending";
+
+  // Derive review status from events (NS1)
+  const reviewInfo = deriveReviewStatus({
+    caseStatus: status,
+    hasContactInfo,
+    reviewSentAt: initialData.review_sent_at,
+    events: localEvents.map(e => ({ event_type: e.event_type, created_at: e.created_at })),
+  });
+  const canRequestReview = reviewInfo.canRequest || reviewInfo.canResend;
 
   async function handleSendInvite() {
     if (isDirty) {
@@ -249,9 +254,32 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       setReviewState("sent");
+      setTimeout(() => setReviewState("idle"), 2000);
+      // Add synthetic event to re-derive status
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(),
+        event_type: "review_requested",
+        title: "Review-Anfrage gesendet",
+        created_at: new Date().toISOString(),
+      }]);
     } catch (err) {
       setReviewState("error");
       setReviewMsg(err instanceof Error ? err.message : "Senden fehlgeschlagen.");
+    }
+  }
+
+  async function handleSkipReview() {
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/skip-review`, { method: "POST" });
+      if (!res.ok) throw new Error("Fehler");
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(),
+        event_type: "review_skipped",
+        title: "Review \u00fcbersprungen",
+        created_at: new Date().toISOString(),
+      }]);
+    } catch {
+      // silent
     }
   }
 
@@ -301,7 +329,7 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
           </div>
         </div>
 
-        {/* Action bar — Status save + Review only */}
+        {/* Action bar — Status save */}
         <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
           <button
             onClick={performSave}
@@ -317,16 +345,35 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
             >Erledigt</button>
           )}
 
-          <button onClick={handleRequestReview} disabled={!canRequestReview}
-            title={!hasContactInfo ? "Keine Kontaktdaten" : reviewState === "sent" ? "Bereits gesendet" : undefined}
-            className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >{reviewState === "sending" ? "Sende\u2026" : reviewState === "sent" ? "Review gesendet" : "Review anfragen"}</button>
-
           {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
           {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
-          {reviewState === "sent" && <span className="text-emerald-600 text-xs ml-2">Review gesendet</span>}
-          {reviewState === "error" && <span className="text-red-600 text-xs ml-2">{reviewMsg}</span>}
         </div>
+
+        {/* Review Nachlauf — prospect view */}
+        {status === "done" && reviewInfo.status !== "nicht_bereit" && (
+          <div className="border-t border-gray-100 pt-3 mt-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${reviewInfo.color}`}>
+                {reviewInfo.label}
+              </span>
+              {canRequestReview && (
+                <button onClick={handleRequestReview} disabled={reviewState === "sending"}
+                  className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
+                >
+                  {reviewState === "sending" ? "Sende\u2026" :
+                    reviewInfo.canResend ? "Nochmals anfragen" : "Review anfragen"}
+                </button>
+              )}
+              {reviewInfo.canSkip && (
+                <button onClick={handleSkipReview}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+                >Kein Review</button>
+              )}
+              {reviewState === "sent" && <span className="text-emerald-600 text-xs">Gesendet</span>}
+              {reviewState === "error" && <span className="text-red-600 text-xs">{reviewMsg}</span>}
+            </div>
+          </div>
+        )}
       </section>
     );
   }
@@ -433,7 +480,7 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
         </div>
       </div>
 
-      {/* Action bar — Speichern, Erledigt, Review */}
+      {/* Action bar — Speichern, Erledigt */}
       <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
         <button
           onClick={performSave}
@@ -449,20 +496,46 @@ export function CaseDetailForm({ initialData, isProspect = false }: { initialDat
           >Erledigt</button>
         )}
 
-        <button onClick={handleRequestReview} disabled={!canRequestReview}
-          title={!hasContactInfo ? "Keine Kontaktdaten" : reviewState === "sent" ? "Bereits gesendet" : undefined}
-          className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >{reviewState === "sending" ? "Sende\u2026" : reviewState === "sent" ? "Review gesendet" : "Review anfragen"}</button>
-
-        {/* Feedback inline */}
         {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
         {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
         {inviteState === "error" && <span className="text-red-600 text-xs ml-2">{inviteMsg}</span>}
-        {reviewState === "sent" && initialData.review_sent_at && (
-          <span className="text-emerald-600 text-xs ml-2">Review gesendet ({formatDate(initialData.review_sent_at)})</span>
-        )}
-        {reviewState === "error" && <span className="text-red-600 text-xs ml-2">{reviewMsg}</span>}
       </div>
+
+      {/* Review Nachlauf (S1.9) — only when case is done */}
+      {status === "done" && reviewInfo.status !== "nicht_bereit" && (
+        <div className="border-t border-gray-100 pt-3 mt-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Review badge */}
+            <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${reviewInfo.color}`}>
+              {reviewInfo.label}
+            </span>
+
+            {/* Actions based on derived state */}
+            {canRequestReview && (
+              <button onClick={handleRequestReview} disabled={reviewState === "sending"}
+                className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
+              >
+                {reviewState === "sending" ? "Sende\u2026" :
+                  reviewInfo.canResend ? "Nochmals anfragen" : "Review anfragen"}
+              </button>
+            )}
+
+            {reviewInfo.canSkip && (
+              <button onClick={handleSkipReview}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Kein Review
+              </button>
+            )}
+
+            {reviewState === "sent" && <span className="text-emerald-600 text-xs">Gesendet</span>}
+            {reviewState === "error" && <span className="text-red-600 text-xs">{reviewMsg}</span>}
+            {reviewInfo.reviewCount > 0 && (
+              <span className="text-gray-400 text-xs">{reviewInfo.reviewCount}/2 Anfragen</span>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
