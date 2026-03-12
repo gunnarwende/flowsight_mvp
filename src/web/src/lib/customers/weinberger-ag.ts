@@ -1,4 +1,5 @@
 import type { CustomerSite } from "./types";
+import { FIXED_CATEGORIES } from "./categories";
 
 const IMG = "/kunden/weinberger-ag";
 
@@ -269,6 +270,15 @@ export const weinbergerAg: CustomerSite = {
       description:
         "Seit 2007 gehören Sanitärinstallationen zu den Kernkompetenzen — von Badezimmern über Küchen bis zu Wellness-Einrichtungen.",
     },
+  ],
+
+  // Categories: values match voice agent (weinberger-ag_agent.json)
+  // Voice: Sanitär, Heizung, Lüftung, Badsanierung, Boiler, Rohrbruch, Verstopfung, Notfall
+  categories: [
+    { value: "Sanitär", label: "Sanitär", hint: "Installation, Reparatur", iconKey: "bath" },
+    { value: "Heizung", label: "Heizung", hint: "Wärmepumpe, Ausfall, Wartung", iconKey: "flame" },
+    { value: "Lüftung", label: "Lüftung", hint: "Raumklima, Komfortlüftung", iconKey: "snowflake" },
+    ...FIXED_CATEGORIES,
   ],
 
   careers: [
