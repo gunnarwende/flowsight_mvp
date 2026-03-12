@@ -90,7 +90,7 @@
 - **Docs:** docs/agents/sales_agent.md, docs/runbooks/retell_agent_config.md (Section 6)
 
 ### 2026-02-26 | CC | SSOT Konsolidierung
-- **Merged:** open_tasks.md → OPS_BOARD.md (einziger Task-Tracker)
+- **Merged:** open_tasks.md → ticketlist.md (einziger Task-Tracker)
 - **Archiviert:** docs/archive/open_tasks_v1.md
-- **Updated:** STATUS.md, OPS_BOARD.md, doerfler-ag/status.md
-- **Regel:** Alle offenen Tasks leben nur noch im OPS_BOARD.md
+- **Updated:** STATUS.md, ticketlist.md, doerfler-ag/status.md
+- **Regel:** Alle offenen Tasks leben nur noch im ticketlist.md

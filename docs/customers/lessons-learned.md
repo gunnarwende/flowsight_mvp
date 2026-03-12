@@ -217,7 +217,7 @@
 3. **Registry** ergänzen (1 Import + 1 Zeile in `registry.ts`)
 4. **Build + Push** → PR → CI → Merge
 5. **Voice Agent** erstellen (nur wenn Kunde Voice-Modul hat)
-6. **SSOT updaten**: STATUS.md, OPS_BOARD.md, customer status.md
+6. **SSOT updaten**: STATUS.md, ticketlist.md, customer status.md
 
 ### Template-Features (alle automatisch):
 - ServiceCard + ServiceDetailOverlay (wenn `description` + `bullets` vorhanden)

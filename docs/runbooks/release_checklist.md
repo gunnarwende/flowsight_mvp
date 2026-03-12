@@ -48,7 +48,7 @@ No PII, no secrets, no free text beyond what the tools output.
 ## SSOT Updates
 
 - [ ] STATUS.md: wave entry updated (date, bullets, commit, evidence)
-- [ ] OPS_BOARD.md: deliverable status updated (if applicable)
+- [ ] ticketlist.md: deliverable status updated (if applicable)
 
 ## Rollback
 

@@ -33,5 +33,5 @@
 
 ## Cross-References
 
-- Billing guards: OPS_BOARD F10 (DONE)
+- Billing guards: ticketlist F10 (DONE)
 - Backup awareness: [backup_awareness.md](backup_awareness.md)

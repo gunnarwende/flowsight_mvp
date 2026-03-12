@@ -12,7 +12,7 @@
 
 ## SSOT Paths
 - Company status + document map: docs/STATUS.md
-- Roadmap + execution: docs/OPS_BOARD.md
+- Tickets + backlog: docs/ticketlist.md
 - Customer files: docs/customers/<slug>/status.md
 - Contracts: docs/architecture/contracts/
 - Runbooks: docs/runbooks/

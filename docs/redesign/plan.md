@@ -2,7 +2,67 @@
 
 **Zeitraum:** 12.03. – 10.04.2026 | **Maschinenstart:** 11.04. | **Flug:** 01.05.
 **170h Founder-Fokus | CC parallel**
-**Status:** ACTIVE — Redesign-Programm bis 10.04.
+**Status:** ACTIVE — Phase 0 (Zielbilder) DONE, Phase 1 (Build) beginnt.
+
+---
+
+## Stand 12.03. — Wo wir sind
+
+### Phase 0: Redesign-Zielbilder — DONE ✅
+
+Alle 6 Straenge haben Gold-Level-Zielbilder. 4 IST-Audits (aus Code). 1 bindendes Querschnittsdokument (Identity Contract). Jeder Strang geschaerft und querverwiesen.
+
+| Strang | Dokument | PRs | Status |
+|--------|----------|-----|--------|
+| Leitstand | leitstand.md | — | DONE |
+| Voice | voice_ist.md + voice.md | #153-#155 | DONE |
+| Identity Contract | identity_contract.md | #156 | DONE (Querschnitt) |
+| Prospect Journey | prospect_journey_ist.md + prospect_journey.md | #157-#158, #164 | DONE (geschaerft) |
+| Wizard | wizard_ist.md + wizard.md | #160-#161 | DONE |
+| Review | review_ist.md + review.md | #162-#163 | DONE |
+
+**Was die Zielbilder liefern (neu fuer den Build):**
+- **Wizard:** Notfall→Telefon-Logik (N1-N7), Kategorie-Vereinheitlichung Voice+Wizard, PLZ_CITY_MAP als Shared Module, gebrandete Correction Page
+- **Review:** Bewertungs-Vorbereiter (kein Google-Klon), Nachlauf als System (6 Status-Badges, Tracking, max 2 Anfragen), refresh_reviews.mjs
+- **Prospect Journey:** 18 Touchpoints inkl. T13b (Review PoV), Stille-Logik, Day-10-Call-Scripts, Profil-Differenzierung (Meister/Betrieb)
+- **Voice:** PLZ-Verzeichnis erweitert, Partial-Case-Handling, Chain-Cron, FAQ-Persistenz
+- **Leitstand:** Nachlauf-Badges, Review-Spalte, Demo-Case-Tabs, Prospect-View-Polish
+- **Identity Contract:** 7 verbindliche Regeln (R1-R7), Dual-SSOT (Supabase gewinnt), alle E-Mails auf Tenant-Branding
+
+### Phase 1: Build — NAECHSTER SCHRITT
+
+**Wo wir stehen:** Start von Woche 1 (12.03.). Die Zielbilder haben Tag 1 der Woche 1 verbraucht. Ab morgen (13.03.): Build beginnt.
+
+**Was sich gegenueber dem Original-Plan aendert:**
+1. **Specs sind jetzt klar.** Jeder Build-Task hat ein Zielbild als Referenz. Kein Raten, keine offenen Designfragen.
+2. **Bugs entfernt.** Ticketlist bereinigt — alte Bugs (Voice, Doerfler, Kalender etc.) werden nach Build E2E neu getestet. Clean Slate.
+3. **Wizard + Review haben eigene Build-Specs.** Die Zielbilder definieren exakt was gebaut werden muss (RS1-RS10, N1-N7, NS1-NS3 etc.).
+4. **Identity Contract ist bindend.** Alle 7 E-Mail-Templates muessen auf Tenant-Branding umgestellt werden — das ist jetzt eine klare Liste, nicht eine vage Anforderung.
+
+### Grober Zeithorizont
+
+```
+WOCHE 1 (12.-18.03.)     Build-Start. Blocker Kill + Weinberger = Gold.
+                          Identity Contract auf alle E-Mails durchschlagen.
+                          Day-5-Email + Demo-Case-Tabs + Welcome-Polish.
+                          ~6 verbleibende Tage nach Zielbild-Phase.
+
+WOCHE 2 (19.-25.03.)     Standard auf alle 7 Websites + alle Agents.
+                          Review Surface = Bewertungs-Vorbereiter (review.md).
+                          Wizard Gold (Notfall-Logik, Kategorie-Vereinheitlichung).
+                          Video-Produktion (Founder).
+
+WOCHE 3 (26.03.-01.04.)  Trial Journey E2E Dry-Run (beide Profile).
+                          Nachlauf-System (Review-Badges, Tracking, Resend).
+                          Vertrag. Call-Scripts ueben.
+
+WOCHE 4 (02.-10.04.)     5 Prospects provisionieren + QA.
+                          Founder Release Gate (10 Beruehrungspunkte).
+                          Maschinenstart-Freigabe.
+
+11.04.                    MASCHINENSTART — Erste E-Mail geht raus.
+01.05.                    FLUG — System laeuft founder-arm.
+```
 
 ---
 
@@ -183,7 +243,7 @@ Video ist Kernbestandteil des High-End-Systems, nicht Nice-to-have. Der Strang d
 
 **Owner:** 80% CC (Code), 20% Founder (Ton + Text-Review)
 
-### Strang F: OPS Dashboard / Mobile Experience
+### Strang F: Leitstand / Mobile Experience
 
 | Element | Gold-Contact-Anforderung | Status | Was fehlt |
 |---------|--------------------------|--------|-----------|
@@ -229,7 +289,7 @@ Jeder Tag hat einen definierten Zustand. Jeder Zustand wird real durchgespielt �
 | Quality Gate 1-7 | Alle 7 Checks pro Prospect bestanden | Checkliste da, Enforcement fehlt |
 | Demo-Case Seeding | Profil-angepasst (Meister: 3, Betrieb: 15) | Default 15, kein Auto-Routing |
 | Morning Report | Zeigt: Outreach-ready, Active Trials, Health | Teilweise |
-| SSOT Docs | STATUS + OPS_BOARD + gold_contact aktuell | Aktuell bis PR #150 |
+| SSOT Docs | STATUS + Ticketlist + gold_contact aktuell | Aktuell bis PR #150 |
 
 **Owner:** 90% CC, 10% Founder (Verification)
 
@@ -341,7 +401,7 @@ WOCHE 1                    WOCHE 2                    WOCHE 3                   
 - [ ] Video-Setup funktioniert (Test-Recording gemacht)
 - [ ] Outreach-Templates Gold-Contact-konform
 
-**SSOT-Folgen:** OPS_BOARD Q1 gelöst. Neue PRs archiviert. STATUS.md Datum-Bump.
+**SSOT-Folgen:** Ticketlist Q1 gelöst. Neue PRs archiviert. STATUS.md Datum-Bump.
 
 ---
 
@@ -385,7 +445,7 @@ WOCHE 1                    WOCHE 2                    WOCHE 3                   
 - [ ] Video #1 (Weinberger) + Video #2 (Generisch) fertig
 - [ ] Outreach-Templates final (3 Varianten, Video integriert)
 
-**SSOT-Folgen:** Jede Website-Änderung → PR. Agent-Updates → retell_sync.mjs. STATUS.md + OPS_BOARD aktualisieren.
+**SSOT-Folgen:** Jede Website-Änderung → PR. Agent-Updates → retell_sync.mjs. STATUS.md + Ticketlist aktualisieren.
 
 ---
 
@@ -449,7 +509,7 @@ WOCHE 1                    WOCHE 2                    WOCHE 3                   
 | 4.12 | Quality Gate Enforcement: Pre-Contact-Check Ergebnis pro Prospect dokumentieren | CC | 2 | H | **Standardisierung** |
 | 4.13 | Morning Report: "5 Prospects outreach-ready, 0 active trials, system healthy" | CC | 1 | H | **Standardisierung** |
 | 4.14 | Final System-Check: Health grün, Sentry konfiguriert, Telegram läuft, Lifecycle Tick OK | CC | 2 | H | **GC-Pflicht** |
-| 4.15 | SSOT Final Review: STATUS.md, OPS_BOARD.md, gold_contact.md — Stand 10.04. | CC+F | 2+2 | H | **Standardisierung** |
+| 4.15 | SSOT Final Review: STATUS.md, Ticketlist.md, gold_contact.md — Stand 10.04. | CC+F | 2+2 | H | **Standardisierung** |
 | 4.16 | **FOUNDER RELEASE GATE** (siehe unten) | Founder | 4 | ALLE | **GC-Pflicht** |
 | 4.17 | Puffer | F+CC | 3+2 | — | **Puffer** |
 

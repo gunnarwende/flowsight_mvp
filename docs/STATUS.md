@@ -93,7 +93,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Dokument | Inhalt |
 |----------|--------|
 | `docs/STATUS.md` | Was ist live, aktueller Stand (dieses Dokument) |
-| `docs/OPS_BOARD.md` | Roadmap, offene Tasks, Sales, Backlog |
+| `docs/ticketlist.md` | Offene Tickets, Backlog, GTM Pipeline |
 | `docs/business_briefing.md` | Vollständiger Business-Kontext (für ChatGPT/Partner) |
 | `docs/gtm/operating_model.md` | GTM Operating Model (6 Phasen, Trial Lifecycle, Quality Gates) |
 | `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G12 Building Blocks) |

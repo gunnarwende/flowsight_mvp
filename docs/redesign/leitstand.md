@@ -531,7 +531,7 @@ Neu:    tenants.modules.case_id_prefix (text, Default: erste 2 Buchstaben)
 | `docs/architecture/contracts/case_contract.md` | appointments-Relation, scheduled_at deprecated |
 | `docs/architecture/env_vars.md` | Kein neuer Env Var nötig (alles in DB/modules) |
 | `docs/runbooks/provisioning_prospect.md` | Staff-Setup, Appointments-Config, Branding-Felder |
-| `docs/OPS_BOARD.md` | Tasks für Appointments, Staff, ICS v2, Puls-UI, Branding |
+| `docs/Ticketlist.md` | Tasks für Appointments, Staff, ICS v2, Puls-UI, Branding |
 
 ---
 

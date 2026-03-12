@@ -478,7 +478,7 @@ Optionen:
 |-----|---------|-------------|-------------|
 | Mo | 3. + 4. Prospect provisionieren (verschiedene Leckerli-Stufen testen) | QA: Qualitaet konsistent? | — |
 | Di | scout.mjs Erweiterung: Leckerli-Empfehlung + Best-Demo-Case Felder | Review XLSX: Stimmen die Empfehlungen? | — |
-| Mi | Alle SSOT-Docs updaten: STATUS.md, OPS_BOARD.md, Runbooks angleichen | — | Finale QA auf alle Outreach-Texte |
+| Mi | Alle SSOT-Docs updaten: STATUS.md, ticketlist.md, Runbooks angleichen | — | Finale QA auf alle Outreach-Texte |
 | Do | Smoke-Test: Gesamter Flow 1x durchspielen (Scout → Card → Provision → Lisa → Video → Email) | Durchspielen als Founder: Fuehlt sich der Flow natuerlich an? | — |
 | Fr | Bugfixes + letzte Anpassungen. GTM-Maschine = LIVE. | **Go/No-Go Entscheidung: Ist die Maschine high-end genug?** | — |
 
