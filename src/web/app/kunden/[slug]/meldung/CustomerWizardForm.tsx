@@ -36,6 +36,8 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 interface ApiSuccess {
   id: string;
+  seq_number?: number;
+  case_id_prefix?: string;
   tenant_id: string;
   source: string;
   urgency: string;
@@ -265,7 +267,11 @@ export function CustomerWizardForm({
           <p className="text-gray-500">{"Vielen Dank \u2014 wir kümmern uns darum."}</p>
 
           <div className="mx-auto mt-6 max-w-sm rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm">
-            <Row label="Fall-Nr." value={pageState.data.id.slice(0, 8) + "\u2026"} />
+            <Row label="Fall-Nr." value={
+              pageState.data.seq_number
+                ? `${pageState.data.case_id_prefix ?? "FS"}-${String(pageState.data.seq_number).padStart(4, "0")}`
+                : pageState.data.id.slice(0, 8) + "\u2026"
+            } />
             <Row label="Kategorie" value={category} />
             <Row label="Dringlichkeit" value={urgLabel} />
             <Row label="Ort" value={`${plz} ${city}`} />

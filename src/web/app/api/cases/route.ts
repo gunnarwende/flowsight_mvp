@@ -203,13 +203,14 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = getServiceClient();
 
-    // Resolve tenant display name for email branding (Identity Contract E4)
+    // Resolve tenant display name + case_id_prefix for branding (Identity Contract E4)
     const { data: tenantInfo } = await supabase
       .from("tenants")
-      .select("name")
+      .select("name, case_id_prefix")
       .eq("id", tenantId)
       .single();
     const tenantDisplayName = tenantInfo?.name ?? undefined;
+    const caseIdPrefix = tenantInfo?.case_id_prefix ?? "FS";
 
     // Build insert payload — street/house_number are optional columns
     // that may not exist if the address migration hasn't been applied yet.
@@ -266,6 +267,7 @@ export async function POST(request: NextRequest) {
       reporterEmailSent = await sendReporterConfirmation({
         caseId: row.id,
         seqNumber: row.seq_number,
+        caseIdPrefix: caseIdPrefix,
         tenantId,
         tenantDisplayName,
         contactEmail: data.contact_email,
@@ -279,6 +281,7 @@ export async function POST(request: NextRequest) {
     const emailSent = await sendCaseNotification({
       caseId: row.id,
       seqNumber: row.seq_number,
+      caseIdPrefix: caseIdPrefix,
       tenantId,
       tenantDisplayName,
       source: data.source,
@@ -351,9 +354,9 @@ export async function POST(request: NextRequest) {
       await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${baseUrl}/ops/cases/${row.id}` });
     }
 
-    // Include verify token for photo uploads on the success screen
+    // Include verify token + case_id_prefix for branded success screen
     const verifyToken = generateShortVerifyToken(row.id, row.created_at);
-    return NextResponse.json({ ...row, verify_token: verifyToken }, { status: 201 });
+    return NextResponse.json({ ...row, case_id_prefix: caseIdPrefix, verify_token: verifyToken }, { status: 201 });
   } catch (err) {
     Sentry.captureException(err, {
       tags: { _tag: "cases_api", area: "api", feature: "cases", stage: "db", error_code: "UNEXPECTED", decision: "failed" },

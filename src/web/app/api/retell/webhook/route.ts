@@ -398,14 +398,15 @@ export async function POST(req: Request) {
 
   Sentry.setTag("tenant_id", tenantId);
 
-  // Resolve tenant display name for email branding (Identity Contract E4)
+  // Resolve tenant display name + case_id_prefix for email branding (Identity Contract E4)
   const supabaseEarly = getServiceClient();
   const { data: tenantRow } = await supabaseEarly
     .from("tenants")
-    .select("name")
+    .select("name, case_id_prefix")
     .eq("id", tenantId)
     .single();
   const tenantDisplayName = tenantRow?.name ?? undefined;
+  const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
 
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
@@ -500,6 +501,7 @@ export async function POST(req: Request) {
     const emailSent = await sendCaseNotification({
       caseId,
       seqNumber: row.seq_number,
+      caseIdPrefix,
       tenantId,
       tenantDisplayName,
       source: "voice",
