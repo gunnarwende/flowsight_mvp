@@ -1,13 +1,19 @@
 import "server-only";
 
+import { sendSmsEcall } from "./sendSmsEcall";
+
 /**
- * Send an SMS via Twilio REST API.
- * Supports both E.164 phone numbers and alphanumeric sender IDs.
- * Phone number senders avoid carrier spam filters in Switzerland.
+ * Send an SMS — routes to the best available provider:
+ *   1. eCall.ch (Swiss gateway, no spam) — if ECALL_API_* env vars are set
+ *   2. Twilio (international) — fallback
  *
- * Env vars:
- * - TWILIO_ACCOUNT_SID
- * - TWILIO_AUTH_TOKEN
+ * Env vars (eCall — preferred):
+ * - ECALL_API_URL, ECALL_API_USERNAME, ECALL_API_PASSWORD
+ *
+ * Env vars (Twilio — fallback):
+ * - TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
+ *
+ * Shared:
  * - SMS_ALLOWED_NUMBERS (optional) — comma-separated E.164 whitelist.
  *   When set, only these numbers receive SMS. Empty/unset = send to all.
  *
@@ -31,7 +37,40 @@ function isE164(from: string): boolean {
   return /^\+[1-9]\d{7,14}$/.test(from);
 }
 
+/** Check if eCall env vars are configured. */
+function isEcallConfigured(): boolean {
+  return !!(
+    process.env.ECALL_API_URL &&
+    process.env.ECALL_API_USERNAME &&
+    process.env.ECALL_API_PASSWORD
+  );
+}
+
 export async function sendSms(
+  to: string,
+  body: string,
+  from: string,
+): Promise<SendSmsResult> {
+  // Whitelist guard: when SMS_ALLOWED_NUMBERS is set, only send to listed numbers.
+  const allowList = process.env.SMS_ALLOWED_NUMBERS;
+  if (allowList) {
+    const allowed = allowList.split(",").map((n) => n.trim());
+    if (!allowed.includes(to)) {
+      return { sent: false, reason: `not_in_allowlist: ${to}` };
+    }
+  }
+
+  // Route 1: eCall (Swiss gateway — preferred)
+  if (isEcallConfigured()) {
+    return sendSmsEcall(to, body, from);
+  }
+
+  // Route 2: Twilio (fallback)
+  return sendSmsTwilio(to, body, from);
+}
+
+/** Send SMS via Twilio REST API. */
+async function sendSmsTwilio(
   to: string,
   body: string,
   from: string,
@@ -45,15 +84,6 @@ export async function sendSms(
 
   if (!isE164(from) && !isValidAlphaSender(from)) {
     return { sent: false, reason: `invalid_sender: "${from}"` };
-  }
-
-  // Whitelist guard: when SMS_ALLOWED_NUMBERS is set, only send to listed numbers.
-  const allowList = process.env.SMS_ALLOWED_NUMBERS;
-  if (allowList) {
-    const allowed = allowList.split(",").map((n) => n.trim());
-    if (!allowed.includes(to)) {
-      return { sent: false, reason: `not_in_allowlist: ${to}` };
-    }
   }
 
   try {
