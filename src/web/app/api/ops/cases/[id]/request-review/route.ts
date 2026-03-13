@@ -4,6 +4,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { sendReviewRequest } from "@/src/lib/email/resend";
 import { sendSms } from "@/src/lib/sms/sendSms";
+import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 // ---------------------------------------------------------------------------
@@ -153,9 +154,9 @@ export async function POST(
   if (!sent && row.contact_phone) {
     Sentry.setTag("area", "sms");
     channel = "sms";
-    const modules = (await supabase.from("tenants").select("modules").eq("id", row.tenant_id).single()).data?.modules as Record<string, unknown> | null;
-    const senderName = (typeof modules?.sms_sender_name === "string" && modules.sms_sender_name.length > 0)
-      ? modules.sms_sender_name : "FlowSight";
+    const smsConfig = await getTenantSmsConfig(row.tenant_id);
+    const senderName = smsConfig?.senderName ?? "FlowSight";
+    const fromNumber = smsConfig?.fromNumber;
     const smsBody = [
       `${senderName}: Wie war unser Service?`,
       ``,
@@ -164,7 +165,7 @@ export async function POST(
       ``,
       `Vielen Dank für Ihr Vertrauen — Ihr Service-Team`,
     ].join("\n");
-    const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
+    const smsResult = await sendSms(row.contact_phone, smsBody, fromNumber ?? senderName);
     sent = smsResult.sent;
   }
 
