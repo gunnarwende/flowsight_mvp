@@ -2,7 +2,7 @@
 slug: weinberger-ag
 firma: Jul. Weinberger AG
 testnummer: +41 43 505 11 01
-website: flowsight.ch/kunden/weinberger-ag
+website: flowsight.ch/start/weinberger-ag
 tier: HOT (ICP 9)
 profil: Betrieb
 video-ready: JA
@@ -21,8 +21,8 @@ weinberger-ag — Video-Skript
     von der Weinberger AG..." (Greeting + PLZ-Frage zeigen, ~8 Sek)
 5. → Handy: SMS von "Weinberger" — Zusammenfassung + Korrekturlink
 6. → Browser: /ops → Weinberger-Fall → Kategorie "Heizung", Dringlichkeit, PLZ
-7. → Browser: flowsight.ch/kunden/weinberger-ag (Mobile-Viewport)
+7. → Browser: flowsight.ch/start/weinberger-ag (Mobile-Viewport)
 8. "Testen Sie Ihre Lisa: 043 505 11 01."
-9. "Ihre Website: flowsight.ch/kunden/weinberger-ag."
+9. "Ihr persönlicher Einstieg: flowsight.ch/start/weinberger-ag."
 10. [Ende — sauber, kein Nachsatz]
 ```
