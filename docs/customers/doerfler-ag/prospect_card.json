@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "slug": "doerfler-ag",
+  "name": "Dörfler AG",
+  "generated_at": "2026-03-13T12:00:00Z",
+
+  "scoring": {
+    "icp_score": 6,
+    "tier": "WARM+",
+    "trust": 3,
+    "gap": 4,
+    "reasons": [
+      "Trust 3: Keine Google Reviews auf Plattformen (5★ × 2 manuell verifiziert)",
+      "Gap 4: Alte Website (doerflerag.ch), kein Online-Buchungssystem",
+      "Contactable: Telefon + E-Mail verifiziert",
+      "Sonderfall: Erster Pilotkunde, Modus 1, Founder wohnt um die Ecke"
+    ]
+  },
+
+  "leckerli": {
+    "recommendation": "A+B-Full+C+D",
+    "best_demo_case": "Samstagabend-Notfall: Wasserleck im Keller → Lisa → SMS → Ops-Fall in 3 Min",
+    "modus": 1
+  },
+
+  "company": {
+    "legal_name": "Dörfler AG",
+    "short_name": "Dörfler",
+    "founding_year": 1926,
+    "gewerke": ["Sanitär", "Heizung", "Spenglerei", "Solartechnik", "Blitzschutz", "Reparaturservice"],
+    "employees_estimate": null,
+    "brand_color": "#2b6cb0"
+  },
+
+  "contact": {
+    "phone": "043 443 52 00",
+    "phone_e164": "+41434435200",
+    "email": "info@doerflerag.ch",
+    "website": "https://www.doerflerag.ch",
+    "address": {
+      "street": "Hubstrasse 30",
+      "zip": "8942",
+      "city": "Oberrieden",
+      "canton": "ZH"
+    }
+  },
+
+  "services": [
+    { "name": "Sanitär", "slug": "sanitaer", "icon": "bath", "verified": true },
+    { "name": "Heizung", "slug": "heizung", "icon": "flame", "verified": true },
+    { "name": "Spenglerei", "slug": "spenglerei", "icon": "roof", "verified": true },
+    { "name": "Solartechnik", "slug": "solar", "icon": "solar", "verified": true },
+    { "name": "Blitzschutz", "slug": "blitzschutz", "icon": "tool", "verified": true },
+    { "name": "Reparaturservice", "slug": "reparatur", "icon": "wrench", "verified": true }
+  ],
+
+  "emergency": {
+    "enabled": true,
+    "phone_e164": "+41434435200",
+    "label": "Notfall",
+    "keywords_detected": ["Notdienst", "Wochenende erreichbar"]
+  },
+
+  "reviews": {
+    "google_rating": 5.0,
+    "google_reviews": 2,
+    "google_url": null,
+    "source": "Manuell verifiziert (Martin B. 5★, Markus Widmer 5★)"
+  },
+
+  "team": [
+    { "name": "Beat Dörfler", "role": "Geschäftsleitung", "source": "doerflerag.ch (Team-Seite)" }
+  ],
+
+  "data_sources": [
+    "doerflerag.ch (Homepage, Angebot, Team, Firmengeschichte, Kontakt, Galerien)",
+    "Suissetec-Mitgliedschaft (verifiziert via Website)",
+    "local.ch / search.ch (Adresse, Telefon)"
+  ],
+
+  "crawl_metadata": {
+    "pages_visited": 12,
+    "images_found": 297,
+    "images_selected": 67,
+    "crawled_at": "2026-02-26T10:00:00Z",
+    "crawler": "crawl-website.mjs (Puppeteer)"
+  },
+
+  "provisioning_status": {
+    "leckerli_d_website": "DONE",
+    "leckerli_b_lisa": "DONE",
+    "leckerli_c_e2e": "DONE",
+    "leckerli_a_video": "OFFEN",
+    "outreach": "OFFEN"
+  }
+}

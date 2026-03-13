@@ -43,6 +43,7 @@ STREAMS
   S2 Oberflaechen      ████████████████░░░░  83%  ✅ 5/6 DONE, 1 Founder-Tasks
   S3 Journey-Verif.    ██████████████░░░░░░  70%  ✅ CC PASS, Founder Dry-Run offen
   S4 Founder-Readiness ████░░░░░░░░░░░░░░░░  20%  ⏳ Enablement done, Founder uebernimmt
+  S5 Proof-Capture     ██████░░░░░░░░░░░░░░  30%  ⏳ S5.1-S5.5 DONE (Manifeste), S5.6-S5.10 TODO
 
 WOCHEN
                                             Ist    Plan
@@ -335,6 +336,66 @@ Nur der Founder kann diese Arbeit tun. Nicht delegierbar.
 **Exit-Kriterium:** Mindestens 3/5 Prospects bestehen Founder Release Gate. System Health gruen. Morning Report zeigt "outreach-ready".
 
 **Groesstes Drift-Risiko:** Founder gibt Prospects durch, die nicht Gold sind ("Reicht schon fuer den Anfang"). **Gegenmittel:** Gate ist 10/10 oder 8-9/10 (mit dokumentiertem Plan fuer fehlende Punkte). < 8 = Prospect geht nicht raus.
+
+---
+
+## S5: Proof-Capture-Maschine (ab Woche 4)
+
+### Kontext
+
+S1-S4 bauen das Produkt. S5 baut die **Skalierungs-Pipeline**, die das Produkt auf 10 Betriebe/Tag bringt. S5 startet in Woche 4 parallel zu Provisioning und laeuft ueber den Maschinenstart hinaus.
+
+**Zielkapazitaet:** 10 Betriebe/Tag (5x Modus 1 + 5x Modus 2)
+**Architektur:** Proof-Capture-Maschine + Founder-Batch-Narration (kein Avatar, kein HeyGen)
+**Referenzdokumente:** `docs/gtm/machine_manifest.md`, `docs/gtm/video_manifest.md`, `docs/gtm/qa_gate.md`
+
+### Pipeline-Uebersicht
+
+```
+Scout -> Analyse -> Modul-Entscheid -> Provisionieren -> Produzieren ->
+Proof-Capture -> Narration (Founder Batch) -> Assembly -> QA -> Versand ->
+Follow-up -> Learning Loop
+```
+
+### Build-Bloecke
+
+| Block | Beschreibung | Referenz | Done-Kriterium |
+|-------|-------------|----------|----------------|
+| S5.1 | **Prospect-Schema erweitern** (Outreach + Assets + QA) | prospect_manifest.md | Schema dokumentiert, Weinberger + Leuthold Cards erweitert |
+| S5.2 | **Machine Manifest** (Pipeline E2E) | machine_manifest.md | Pipeline-Phasen, Routing, Founder-Rolle, Staffelung definiert |
+| S5.3 | **Video Manifest** (Szenen-Spec) | video_manifest.md | Szenen-Typen, Variablen, Capture-Methoden, Kill-Kriterien |
+| S5.4 | **QA Gate** (Outreach) | qa_gate.md | 9 auto + 3 manuelle Checks, PASS/FAIL |
+| S5.5 | **Outreach-Templates bereinigen** | outreach_templates.md | Nur Gold-Contact, Lifecycle raus, Variablen-Referenz |
+| S5.6 | **CustomerSite Generator** (80%) | _generator script | prospect_card -> 80% TypeScript, Modus 1 Bottleneck geloest |
+| S5.7 | **Proof-Capture Automation** (Playwright) | machine_manifest | Screen-Captures automatisiert (Website, /start, Leitstand, Wizard) |
+| S5.8 | **Retell API Capture** (parallel testen) | machine_manifest | API-Call vs Founder-Anruf Qualitaetsvergleich |
+| S5.9 | **Assembly-Pipeline** (FFmpeg) | video_manifest | Narration + Screen-Segmente -> finales Video |
+| S5.10 | **E-Mail-Versand-Script** | outreach_templates | Template + prospect_card -> Resend API, getimed |
+
+### Abhaengigkeiten
+
+```
+S5.1 (Schema) ──-> S5.2 (Manifest) ──-> S5.3 (Video)
+                                    ──-> S5.4 (QA)
+                                    ──-> S5.5 (Templates)
+S5.1 ──-> S5.6 (Generator)
+
+S5.3 + S5.6 ──-> S5.7 (Capture)
+S5.3 ──-> S5.8 (Retell API)
+S5.3 + S5.7 ──-> S5.9 (Assembly)
+S5.5 ──-> S5.10 (Versand)
+```
+
+### Phasen
+
+```
+Woche 4 (02.-10.04.)  S5.1-S5.5 (Manifeste + Docs) — CC parallel zu Provisioning
+Woche 5+ (ab 11.04.)  S5.6-S5.10 (Automation) — CC baut waehrend Founder Outreach startet
+```
+
+**Proof-Capture-Ansatz:** Hybrid. Founder-Anruf = Gold-Referenz fuer erste 2-3 Prospects. Retell-API-Capture parallel testen (Audioqualitaet, Timing, Natuerlichkeit). Erst nach Qualitaetsvergleich entscheiden, ob API Standard wird.
+
+**Regionale Staffelung:** Max 2 Betriebe pro PLZ-Cluster pro Woche (Handwerker reden miteinander).
 
 ---
 
