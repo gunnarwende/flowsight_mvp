@@ -45,6 +45,11 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - Portal-Zugang: my.peoplefone.ch (Credentials in Bitwarden)
 - Siehe: docs/runbooks/peoplefone_front_door.md
 
+## eCall.ch (Swiss SMS Gateway — Primary)
+- ECALL_API_URL -> https://rest.ecall.ch/api/message (eCall REST endpoint)
+- ECALL_API_USERNAME -> eCall Portal → REST API User
+- ECALL_API_PASSWORD -> eCall Portal → REST API Passwort
+
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
 - SMS_ALLOWED_NUMBERS -> (optional) Komma-separierte E.164 Whitelist. Wenn gesetzt, gehen SMS nur an diese Nummern. Leer/fehlend = senden an alle. Testphase: nur Founder-Handy.

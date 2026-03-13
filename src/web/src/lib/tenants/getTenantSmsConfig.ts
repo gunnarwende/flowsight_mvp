@@ -34,9 +34,9 @@ export async function getTenantSmsConfig(
     const senderName = modules.sms_sender_name;
     if (typeof senderName !== "string" || senderName.length === 0) return null;
 
-    // fromNumber: will be populated once Swiss SMS provider (eCall) is configured.
-    // Twilio SIP trunk numbers are NOT SMS-capable — do not use them as sender.
-    // Until eCall is live, SMS sends via alphanumeric sender (spam risk accepted).
+    // eCall is now the primary SMS provider (Swiss gateway, no spam issues).
+    // fromNumber is no longer needed — eCall accepts alphanumeric senders natively.
+    // Kept for potential future per-tenant number routing.
     const fromNumber: string | null = null;
 
     return { senderName, fromNumber };
