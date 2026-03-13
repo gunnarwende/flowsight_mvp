@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
+import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -82,11 +83,6 @@ const SOURCE_LABEL: Record<string, string> = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function formatCaseId(seq: number | null): string {
-  if (seq === null) return "—";
-  return `FS-${String(seq).padStart(4, "0")}`;
-}
-
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("de-CH", {
     day: "2-digit",
@@ -106,10 +102,10 @@ function truncate(s: string, max: number): string {
   return s.length > max ? s.slice(0, max) + "..." : s;
 }
 
-function exportCsv(rows: CaseRow[]) {
+function exportCsv(rows: CaseRow[], prefix: string, tenantName?: string) {
   const headers = ["Fall-ID", "Kunde", "Adresse", "Kategorie", "Beschreibung", "Quelle", "Dringlichkeit", "Status", "Erstellt"];
   const lines = rows.map((r) => [
-    formatCaseId(r.seq_number),
+    formatCaseId(r.seq_number, prefix),
     r.reporter_name ?? "",
     formatAddress(r),
     r.category,
@@ -125,7 +121,9 @@ function exportCsv(rows: CaseRow[]) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `flowsight-faelle-${new Date().toISOString().slice(0, 10)}.csv`;
+  // Identity Contract R4: use tenant name in filename, not "flowsight"
+  const slug = (tenantName ?? "faelle").toLowerCase().replace(/[^a-z0-9]/g, "-");
+  a.download = `${slug}-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -141,6 +139,9 @@ export function CaseListClient({
   totalPages,
   totalCount,
   searchQuery,
+  caseIdPrefix = "FS",
+  tenantShortName,
+  hiddenByPuls = false,
 }: {
   rows: CaseRow[];
   kpi: KpiData;
@@ -148,6 +149,10 @@ export function CaseListClient({
   totalPages: number;
   totalCount: number;
   searchQuery: string;
+  caseIdPrefix?: string;
+  tenantShortName?: string;
+  /** When true, table rows are hidden (Puls view is shown instead). KPI + actions stay visible. */
+  hiddenByPuls?: boolean;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState(searchQuery);
@@ -226,7 +231,7 @@ export function CaseListClient({
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => exportCsv(rows)}
+            onClick={() => exportCsv(rows, caseIdPrefix, tenantShortName)}
             className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors"
           >
             Exportieren
@@ -240,8 +245,8 @@ export function CaseListClient({
         </div>
       </div>
 
-      {/* Desktop table */}
-      {rows.length === 0 ? (
+      {/* Table view — hidden when Puls is active */}
+      {hiddenByPuls ? null : rows.length === 0 ? (
         <p className="text-gray-400 text-sm py-8 text-center">
           Keine Fälle gefunden.
         </p>
@@ -277,7 +282,7 @@ export function CaseListClient({
                         href={`/ops/cases/${c.id}`}
                         className="text-amber-600 hover:text-amber-700 font-medium hover:underline"
                       >
-                        {formatCaseId(c.seq_number)}
+                        {formatCaseId(c.seq_number, caseIdPrefix)}
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-gray-900">
@@ -341,7 +346,7 @@ export function CaseListClient({
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <span className="text-amber-600 font-medium text-sm">
-                      {formatCaseId(c.seq_number)}
+                      {formatCaseId(c.seq_number, caseIdPrefix)}
                     </span>
                     {c.reporter_name && (
                       <span className="text-gray-500 text-sm ml-2">{c.reporter_name}</span>
@@ -370,8 +375,8 @@ export function CaseListClient({
         </>
       )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
+      {/* Pagination — hidden when Puls is active */}
+      {!hiddenByPuls && totalPages > 1 && (
         <div className="flex items-center justify-center gap-4 mt-4 py-3">
           <button
             onClick={() => goToPage(currentPage - 1)}

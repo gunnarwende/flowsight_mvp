@@ -3,6 +3,10 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { CaseListClient } from "@/src/components/ops/CaseListClient";
 import type { CaseRow, KpiData } from "@/src/components/ops/CaseListClient";
+import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { PulsView } from "@/src/components/ops/PulsView";
+import type { CaseRow as PulsCaseRow } from "@/src/components/ops/CaseListClient";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -87,6 +91,9 @@ export default async function OpsCasesPage({
     }
   }
 
+  // Determine if we show the Puls view (default landing, no filters active)
+  const showPuls = !filterStatus && !filterUrgency && !filterSource && !filterQuery && !showAll;
+
   // Stats query (lightweight, all cases, for KPI tiles)
   let statsQuery = supabase
     .from("cases")
@@ -94,6 +101,16 @@ export default async function OpsCasesPage({
     .eq("is_demo", showDemo)
     .limit(1000);
   if (filterTenantId) statsQuery = statsQuery.eq("tenant_id", filterTenantId);
+
+  // Puls query: all active cases (for grouping into priority buckets)
+  let pulsQuery = supabase
+    .from("cases")
+    .select("id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at")
+    .eq("is_demo", showDemo)
+    .neq("status", "archived")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (filterTenantId) pulsQuery = pulsQuery.eq("tenant_id", filterTenantId);
 
   // Filtered list query
   let listQuery = supabase
@@ -133,9 +150,10 @@ export default async function OpsCasesPage({
   const to = from + PAGE_SIZE - 1;
   listQuery = listQuery.range(from, to);
 
-  const [{ data: allCases }, { data: cases, error, count }] = await Promise.all([
+  const [{ data: allCases }, { data: cases, error, count }, { data: pulsCases }] = await Promise.all([
     statsQuery,
     listQuery,
+    showPuls ? pulsQuery : Promise.resolve({ data: null }),
   ]);
 
   // KPI calculations
@@ -170,6 +188,21 @@ export default async function OpsCasesPage({
   const rows = (cases ?? []) as CaseRow[];
   const totalCount = count ?? rows.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  // Resolve tenant identity for case ID prefix + branding
+  let caseIdPrefix = "FS";
+  let tenantShortName: string | undefined;
+  try {
+    const authClient = await getAuthClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (user) {
+      const identity = await resolveTenantIdentity(user);
+      if (identity) {
+        caseIdPrefix = identity.caseIdPrefix;
+        tenantShortName = identity.shortName;
+      }
+    }
+  } catch { /* fallback to defaults */ }
 
   // Build filter URL helper — changing any filter resets to page 1
   function filterHref(key: string, value: string): string {
@@ -305,7 +338,18 @@ export default async function OpsCasesPage({
         totalPages={totalPages}
         totalCount={totalCount}
         searchQuery={filterQuery}
+        caseIdPrefix={caseIdPrefix}
+        tenantShortName={tenantShortName}
+        hiddenByPuls={showPuls}
       />
+
+      {/* Puls-Ansicht: primary work list (leitstand.md §5.1) */}
+      {showPuls && pulsCases && (
+        <PulsView
+          cases={(pulsCases ?? []) as PulsCaseRow[]}
+          caseIdPrefix={caseIdPrefix}
+        />
+      )}
     </>
   );
 }

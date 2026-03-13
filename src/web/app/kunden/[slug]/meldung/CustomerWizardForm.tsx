@@ -648,8 +648,8 @@ function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-gray-50">
       {children}
       <footer className="border-t border-gray-200 bg-white py-4 text-center text-xs text-gray-400">
-        {"Website powered by "}
-        <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">FlowSight</a>
+        Technologie-Partner:{" "}
+        <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">flowsight.ch</a>
       </footer>
     </div>
   );

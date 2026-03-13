@@ -19,6 +19,8 @@ interface CaseEmailPayload {
   seqNumber?: number | null;
   tenantId: string;
   tenantDisplayName?: string;
+  /** Tenant case ID prefix, e.g. "WB". Falls back to "FS". */
+  caseIdPrefix?: string;
   source: string;
   category: string;
   urgency: string;
@@ -34,9 +36,9 @@ interface CaseEmailPayload {
   reporterEmailSent?: boolean;
 }
 
-/** Format case ID for display: FS-0029 if seq_number available, else UUID fragment. */
-function formatCaseLabel(caseId: string, seqNumber?: number | null): string {
-  if (seqNumber != null) return `FS-${String(seqNumber).padStart(4, "0")}`;
+/** Format case ID for display: WB-0029 if seq_number available, else UUID fragment. */
+function formatCaseLabel(caseId: string, seqNumber?: number | null, prefix: string = "FS"): string {
+  if (seqNumber != null) return `${prefix}-${String(seqNumber).padStart(4, "0")}`;
   return caseId.slice(0, 8);
 }
 
@@ -74,7 +76,7 @@ function buildFromAddress(tenantDisplayName?: string): string {
 }
 
 function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string {
-  const label = formatCaseLabel(p.caseId, p.seqNumber);
+  const label = formatCaseLabel(p.caseId, p.seqNumber, p.caseIdPrefix);
   const sourceLabel = SOURCE_LABELS[p.source] ?? p.source;
 
   // Urgency styling
@@ -279,12 +281,12 @@ export async function sendCaseNotification(
     const { data, error } = await getResend().emails.send({
       from,
       to,
-      subject: `${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber)} – ${payload.category} (${payload.city})`,
+      subject: `${urgencyLabel} – ${formatCaseLabel(payload.caseId, payload.seqNumber, payload.caseIdPrefix)} – ${payload.category} (${payload.city})`,
       html: buildOpsNotificationHtml(payload, deepLink),
       text: [
         `Neuer Fall erstellt`,
         `──────────────────────`,
-        `Fall-Nr:   ${formatCaseLabel(payload.caseId, payload.seqNumber)}`,
+        `Fall-Nr:   ${formatCaseLabel(payload.caseId, payload.seqNumber, payload.caseIdPrefix)}`,
         `Quelle:    ${sourceLabel}`,
         `Kategorie: ${payload.category}`,
         `Dringend:  ${payload.urgency}`,
@@ -368,6 +370,7 @@ interface ReporterConfirmationPayload {
   seqNumber?: number | null;
   tenantId: string;
   tenantDisplayName?: string;
+  caseIdPrefix?: string;
   contactEmail: string;
   category: string;
 }
@@ -387,10 +390,11 @@ export async function sendReporterConfirmation(
   if (!process.env.RESEND_API_KEY) return false;
 
   const from = buildFromAddress(payload.tenantDisplayName);
-  const tenantLabel = payload.tenantDisplayName ?? "FlowSight";
+  // Identity Contract R4: never show "FlowSight" to end users
+  const tenantLabel = payload.tenantDisplayName ?? "Ihr Servicebetrieb";
 
   try {
-    const caseLabel = formatCaseLabel(payload.caseId, payload.seqNumber);
+    const caseLabel = formatCaseLabel(payload.caseId, payload.seqNumber, payload.caseIdPrefix);
 
     const { error } = await getResend().emails.send({
       from,
@@ -472,7 +476,8 @@ export async function sendReviewRequest(
   payload: ReviewRequestPayload
 ): Promise<boolean> {
   const from = buildFromAddress(payload.tenantDisplayName);
-  const tenantLabel = payload.tenantDisplayName ?? "FlowSight";
+  // Identity Contract R4: never show "FlowSight" to end users
+  const tenantLabel = payload.tenantDisplayName ?? "Ihr Servicebetrieb";
 
   const base: Record<string, unknown> = {
     _tag: "resend",

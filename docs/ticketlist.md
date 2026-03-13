@@ -1,8 +1,9 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-13 (S4 Enablement — CC-Scope abgeschlossen, Founder uebernimmt)
+**Updated:** 2026-03-13 (Voice-Bugs + Leitstand-Redesign-Gap aus E2E-Walkthrough)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
+**Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
 
 ---
 
@@ -10,8 +11,8 @@
 
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
-- **BLOCKER:** 0
-- **Phase:** S1-S3 DONE. S4 Enablement DONE (CC). **Founder-Phase: Videos + Outreach.**
+- **BLOCKER:** 1 (V5: SMS-Spam — wartet auf eCall-Konto)
+- **Phase:** S1-S3 DONE. S4 Enablement DONE (CC). **E2E Verification + Leitstand-Redesign-Alignment.**
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -28,14 +29,62 @@
 
 ---
 
-## OFFEN — Aktive Tickets
+## [STOPP] — E2E-Blocker (CC fixt sofort)
+
+| # | Titel | Pfad | Root Cause | Status |
+|---|-------|------|-----------|--------|
+| S1 | **Weinberger SMS kommt nicht an** | Voice→Webhook→SMS | `+41435051101` fehlte in TWILIO_OWNED_NUMBERS → SMS ging an Twilio-Nr statt Founder-Handy | **DONE** (PR #189) |
+| S2 | **SMS_ALLOWED_NUMBERS Whitelist pruefen** | Vercel Env | `+41764458942` ist in Whitelist → kein Blocker | **PASS** |
+
+**Status:** S1+S2 DONE. S3 SMS-Spam-Fix via eCall.ch (Founder richtet Konto ein).
+
+---
+
+## OFFEN — Voice-Agent-Bugs (Testanruf call_397c66acc2c1abc53dba31570b8)
+
+> Aus Founder E2E-Walkthrough 13.03. Weinberger-Testanruf. Bewertung: 7/10.
+
+| # | Titel | Root Cause | Schwere | Status |
+|---|-------|-----------|---------|--------|
+| V1 | **Voice auf Juniper umstellen (alle Agents)** — Weinberger hat noch ELA. Zielbild: Juniper als Default fuer alle Agents. | Agent-JSONs verwenden falsche voice_id | hoch | **CC FIXT** |
+| V2 | **"Jul" aus Greeting entfernen** — Lisa sagt "Jul Weinberger AG", klingt katastrophal. Nur "Weinberger AG" sagen. | Greeting-Text in Agent-JSON: `display_name` statt gesprochener Form | hoch | **CC FIXT** |
+| V3 | **Ortsnamen NICHT wiederholen** — Schweizerdeutsche Aussprache weicht von Hochdeutsch ab, klingt grauenhaft. Ort nur aufnehmen+niederschreiben, nicht zuruecklesen. | Agent-Prompt wiederholt erfasste Daten inkl. Ort | mittel | **CC FIXT** |
+| V4 | **Dringlichkeits-Echo korrigieren** — Melder sagt "Notfall", Lisa antwortet "verstehe, es ist dringend". Muss exakt das Echo des Melders sein ("Notfall" = "Notfall"). | Agent-Prompt mappt Urgency-Werte nicht 1:1 | mittel | **CC FIXT** |
+| V5 | **SMS landet im Spam** — Alphanumeric Sender via Twilio wird von CH-Carriern gefiltert. Fix: Schweizer SMS-Provider (eCall.ch). | Twilio routet ueber internationale Gateways | hoch | **FOUNDER** (eCall-Konto) + CC (Code) |
+
+---
+
+## OFFEN — Leitstand-Redesign-Gap
+
+> Founder-Fazit: "Das Redesign hat hier absolut null gezogen."
+> Referenz: `docs/redesign/leitstand.md` (Zielbild) + `docs/redesign/identity_contract.md`
+> **Regel:** Zielbild ist der Massstab. Alles was dort steht und hier fehlt = Bug.
+
+| # | Titel | Zielbild-Ref | IST-Zustand | Schwere | Status |
+|---|-------|-------------|-------------|---------|--------|
+| L1 | **Sidebar: "FS FlowSight" → Tenant-Branding** — Links oben muss dynamisch Tenant-Initials + Name stehen, nicht FlowSight. | identity_contract R4, leitstand §8 | Fallback "FS"/"FlowSight" sichtbar bei fehlender Tenant-Aufloesung | hoch | **CC FIXT** |
+| L2 | **"Bald"-Badges entfernen** — Nav-Items (Anrufe, Reviews, Einstellungen) zeigen "Bald". Zielbild §10.8: "Kein Coming Soon in Nav". Nur funktionale Eintraege zeigen. | leitstand §10.8 | 3 Nav-Items mit Badge "Bald" sichtbar | hoch | **CC FIXT** |
+| L3 | **Puls statt KPI-Tabelle** — Startseite muss priorisierte Handlungsliste sein (Achtung → Heute → In Arbeit → Abschluss), nicht chronologische Tabelle mit KPI-Karten. | leitstand §5.1 | Chronologische Fallliste + 4 KPI-Cards | hoch | **CC PLANT** |
+| L4 | **KPI-Click filtert Tabelle** — Klick auf "Neu heute: 3" soll Tabelle auf diese 3 Faelle filtern. Gleiches fuer Total, In Bearbeitung, Erledigt. | leitstand §5.1 | KPIs sind Links, aber Filtermechanismus unklar fuer User | mittel | **CC PRUEFT** |
+| L5 | **Einsatzplan (Schedule)** — Liste nach Mitarbeiter gruppiert, nicht Kalender-Widget. Tages-/Wochenansicht. | leitstand §5.3 | Nicht vorhanden | mittel | **CC PLANT** |
+| L6 | **Zahlen (Metrics)** — 8 Kennzahlen, nur fuer Inhaber. Trends, nicht Echtzeit-Counter. | leitstand §5.4 | Nicht vorhanden | niedrig | **BACKLOG** |
+| L7 | **Einstellungen** — Mitarbeiter CRUD, Termin-Defaults, Benachrichtigungen, Google Review Link. | leitstand §5.5 | Nicht vorhanden | niedrig | **BACKLOG** |
+| L8 | **Case-ID-Prefix** — Tenant-spezifisch (WA-0001 statt FS-0001). | identity_contract, leitstand §8 | Hardcoded "FS"-Prefix | mittel | **CC FIXT** |
+| L9 | **Termin als eigenes Objekt** — appointments-Tabelle, Status-Lifecycle, ICS v2 (UID/SEQUENCE/CANCEL). | leitstand §6, §10.1 | scheduled_at auf cases, kein eigenes Objekt | hoch | **CC PLANT** |
+| L10 | **Mitarbeiter als eigenes Objekt** — staff-Tabelle, Dropdown statt Freitext. | leitstand §10.2 | Nicht vorhanden | hoch | **CC PLANT** |
+
+---
+
+## OFFEN — Sonstige Tickets
+
+---
+
+## OFFEN — Sonstige Tickets
 
 | # | Titel | Labels | Status |
 |---|-------|--------|--------|
 | #80 | BigBen Pub — Ruecksprache Paul erfolgt | telephony, voice | OFFEN — Paul interessiert, Tier 3 |
 | #79 | BigBen Pub — Paul zeigt sich interessiert | decision, voice | OFFEN — Follow-up noetig |
-
----
 
 ---
 
