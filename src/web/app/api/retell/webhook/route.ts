@@ -561,6 +561,7 @@ export async function POST(req: Request) {
           createdAt: row.created_at,
           callerPhone: smsTarget,
           smsSenderName: smsConfig.senderName,
+          smsFromNumber: smsConfig.fromNumber ?? undefined,
           plz: plz!,
           city: city!,
           category: category!,

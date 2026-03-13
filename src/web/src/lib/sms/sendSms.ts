@@ -1,11 +1,9 @@
 import "server-only";
 
 /**
- * Send an SMS via Twilio REST API using Alphanumeric Sender ID.
- * Zero dependencies — uses native fetch + Basic auth.
- *
- * Sender: Alphanumeric (e.g. "BrunnerHT", "FlowSight") — no SMS-capable
- * phone number needed. CH carriers support this without registration.
+ * Send an SMS via Twilio REST API.
+ * Supports both E.164 phone numbers and alphanumeric sender IDs.
+ * Phone number senders avoid carrier spam filters in Switzerland.
  *
  * Env vars:
  * - TWILIO_ACCOUNT_SID
@@ -28,6 +26,11 @@ function isValidAlphaSender(from: string): boolean {
   return /^[A-Za-z0-9 ]{3,11}$/.test(from) && /[A-Za-z]/.test(from);
 }
 
+/** E.164 phone number: +{country}{number}, 8-15 digits total. */
+function isE164(from: string): boolean {
+  return /^\+[1-9]\d{7,14}$/.test(from);
+}
+
 export async function sendSms(
   to: string,
   body: string,
@@ -40,8 +43,8 @@ export async function sendSms(
     return { sent: false, reason: "missing_env" };
   }
 
-  if (!isValidAlphaSender(from)) {
-    return { sent: false, reason: `invalid_alpha_sender: "${from}"` };
+  if (!isE164(from) && !isValidAlphaSender(from)) {
+    return { sent: false, reason: `invalid_sender: "${from}"` };
   }
 
   // Whitelist guard: when SMS_ALLOWED_NUMBERS is set, only send to listed numbers.
