@@ -34,18 +34,10 @@ export async function getTenantSmsConfig(
     const senderName = modules.sms_sender_name;
     if (typeof senderName !== "string" || senderName.length === 0) return null;
 
-    // Fetch tenant's Twilio number for use as SMS sender (avoids spam filters)
-    let fromNumber: string | null = null;
-    const { data: numRow } = await supabase
-      .from("tenant_numbers")
-      .select("phone_number")
-      .eq("tenant_id", tenantId)
-      .eq("active", true)
-      .limit(1)
-      .single();
-    if (numRow?.phone_number) {
-      fromNumber = numRow.phone_number;
-    }
+    // fromNumber: will be populated once Swiss SMS provider (eCall) is configured.
+    // Twilio SIP trunk numbers are NOT SMS-capable — do not use them as sender.
+    // Until eCall is live, SMS sends via alphanumeric sender (spam risk accepted).
+    const fromNumber: string | null = null;
 
     return { senderName, fromNumber };
   } catch {
