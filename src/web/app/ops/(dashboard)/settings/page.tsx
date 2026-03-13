@@ -1,70 +1,261 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface Settings {
+  google_review_url: string;
+  default_appointment_duration_min: number;
+  notify_reporter_email: boolean;
+  notify_reporter_sms: boolean;
+  business_calendar_email: string;
+}
+
+interface SettingsData {
+  tenant_name: string;
+  case_id_prefix: string;
+  settings: Settings;
+}
 
 export default function SettingsPage() {
+  const [data, setData] = useState<SettingsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Form state
+  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
+  const [appointmentDuration, setAppointmentDuration] = useState(60);
+  const [notifyEmail, setNotifyEmail] = useState(true);
+  const [notifySms, setNotifySms] = useState(true);
+  const [calendarEmail, setCalendarEmail] = useState("");
+
+  useEffect(() => {
+    fetch("/api/ops/settings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((d: SettingsData | null) => {
+        if (d) {
+          setData(d);
+          setGoogleReviewUrl(d.settings.google_review_url);
+          setAppointmentDuration(d.settings.default_appointment_duration_min);
+          setNotifyEmail(d.settings.notify_reporter_email);
+          setNotifySms(d.settings.notify_reporter_sms);
+          setCalendarEmail(d.settings.business_calendar_email);
+        }
+      })
+      .catch(() => setError("Einstellungen konnten nicht geladen werden."))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    setSaved(false);
+    setError(null);
+    try {
+      const res = await fetch("/api/ops/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          google_review_url: googleReviewUrl,
+          default_appointment_duration_min: appointmentDuration,
+          notify_reporter_email: notifyEmail,
+          notify_reporter_sms: notifySms,
+          business_calendar_email: calendarEmail,
+        }),
+      });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      } else {
+        setError("Speichern fehlgeschlagen.");
+      }
+    } catch {
+      setError("Netzwerkfehler.");
+    }
+    setSaving(false);
+  }
+
+  if (loading) {
+    return <p className="text-sm text-gray-400 py-8 text-center">Laden…</p>;
+  }
+
   return (
     <div>
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">Einstellungen</h2>
-        <p className="text-sm text-gray-500">Konfiguration für Ihren Betrieb</p>
+        <p className="text-sm text-gray-500">
+          Konfiguration für {data?.tenant_name ?? "Ihren Betrieb"}
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Mitarbeiter */}
-        <Link
-          href="/ops/staff"
-          className="bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 transition-colors group"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
-              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900">Mitarbeiter verwalten</h3>
-              <p className="text-xs text-gray-500">Techniker hinzufügen, Rollen zuweisen</p>
-            </div>
-          </div>
-        </Link>
+      {/* Quick links */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <NavCard href="/ops/staff" label="Mitarbeiter" sub="Verwalten" color="amber" />
+        <NavCard href="/ops/metrics" label="Kennzahlen" sub="Trends" color="emerald" />
+        <NavCard href="/ops/schedule" label="Einsatzplan" sub="Termine" color="blue" />
+      </div>
 
-        {/* Kennzahlen */}
-        <Link
-          href="/ops/metrics"
-          className="bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 transition-colors group"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-              <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900">Kennzahlen</h3>
-              <p className="text-xs text-gray-500">Trends und Übersicht</p>
-            </div>
-          </div>
-        </Link>
+      {/* Settings sections */}
+      <div className="space-y-6">
+        {/* Google Review Link */}
+        <Section title="Google-Bewertungen" description="Link zu Ihrem Google-Bewertungsprofil. Wird in Review-Anfragen verwendet.">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Google Review URL
+          </label>
+          <input
+            type="url"
+            value={googleReviewUrl}
+            onChange={(e) => setGoogleReviewUrl(e.target.value)}
+            placeholder="https://g.page/r/..."
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
+          <p className="mt-1.5 text-xs text-gray-400">
+            Tipp: Suchen Sie Ihren Betrieb auf Google Maps → &quot;Rezension schreiben&quot; → Link kopieren
+          </p>
+        </Section>
 
-        {/* Einsatzplan */}
-        <Link
-          href="/ops/schedule"
-          className="bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 transition-colors group"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-              <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-              </svg>
+        {/* Termin-Defaults */}
+        <Section title="Termine" description="Standard-Einstellungen für neue Termine.">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Standard-Termindauer (Minuten)
+          </label>
+          <select
+            value={appointmentDuration}
+            onChange={(e) => setAppointmentDuration(Number(e.target.value))}
+            className="w-full sm:w-48 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          >
+            <option value={30}>30 Minuten</option>
+            <option value={45}>45 Minuten</option>
+            <option value={60}>60 Minuten (Standard)</option>
+            <option value={90}>90 Minuten</option>
+            <option value={120}>2 Stunden</option>
+            <option value={180}>3 Stunden</option>
+            <option value={240}>4 Stunden</option>
+          </select>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Kalender-E-Mail (für ICS-Einladungen)
+            </label>
+            <input
+              type="email"
+              value={calendarEmail}
+              onChange={(e) => setCalendarEmail(e.target.value)}
+              placeholder="betrieb@example.ch"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
+            <p className="mt-1.5 text-xs text-gray-400">
+              Optional — Termine werden als ICS-Einladung an diese Adresse gesendet
+            </p>
+          </div>
+        </Section>
+
+        {/* Benachrichtigungen */}
+        <Section title="Melder-Benachrichtigungen" description="Automatische Bestätigungen an den Melder nach Fallerfassung.">
+          <div className="space-y-3">
+            <Toggle
+              checked={notifyEmail}
+              onChange={setNotifyEmail}
+              label="E-Mail-Bestätigung"
+              description="Melder erhält eine E-Mail mit Fallnummer und Zusammenfassung"
+            />
+            <Toggle
+              checked={notifySms}
+              onChange={setNotifySms}
+              label="SMS-Bestätigung"
+              description="Melder erhält eine SMS-Bestätigung nach der Meldung"
+            />
+          </div>
+        </Section>
+
+        {/* Betriebsinfo (read-only) */}
+        <Section title="Betriebsinformationen" description="Diese Werte werden zentral verwaltet.">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-gray-400 text-xs mb-0.5">Betriebsname</p>
+              <p className="text-gray-900 font-medium">{data?.tenant_name ?? "—"}</p>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Einsatzplan</h3>
-              <p className="text-xs text-gray-500">Termine nach Mitarbeiter</p>
+              <p className="text-gray-400 text-xs mb-0.5">Fall-Präfix</p>
+              <p className="text-gray-900 font-medium">{data?.case_id_prefix ?? "FS"}</p>
             </div>
           </div>
-        </Link>
+        </Section>
+      </div>
+
+      {/* Save bar */}
+      <div className="mt-8 flex items-center gap-3">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="rounded-lg bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600 disabled:opacity-50"
+        >
+          {saving ? "Speichern…" : "Einstellungen speichern"}
+        </button>
+        {saved && (
+          <span className="text-sm text-emerald-600 font-medium">Gespeichert</span>
+        )}
+        {error && (
+          <span className="text-sm text-red-600">{error}</span>
+        )}
       </div>
     </div>
+  );
+}
+
+// -- Sub-components --
+
+function Section({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-5">
+      <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{title}</h3>
+      <p className="text-xs text-gray-400 mb-4">{description}</p>
+      {children}
+    </div>
+  );
+}
+
+function Toggle({ checked, onChange, label, description }: { checked: boolean; onChange: (v: boolean) => void; label: string; description: string }) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer">
+      <div className="pt-0.5">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          onClick={() => onChange(!checked)}
+          className={`relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors ${
+            checked ? "bg-amber-500" : "bg-gray-200"
+          }`}
+        >
+          <span
+            className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+              checked ? "translate-x-4" : "translate-x-0"
+            }`}
+          />
+        </button>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-gray-700">{label}</p>
+        <p className="text-xs text-gray-400">{description}</p>
+      </div>
+    </label>
+  );
+}
+
+function NavCard({ href, label, sub, color }: { href: string; label: string; sub: string; color: string }) {
+  const bgMap: Record<string, string> = { amber: "bg-amber-50 group-hover:bg-amber-100", emerald: "bg-emerald-50 group-hover:bg-emerald-100", blue: "bg-blue-50 group-hover:bg-blue-100" };
+  const textMap: Record<string, string> = { amber: "text-amber-600", emerald: "text-emerald-600", blue: "text-blue-600" };
+  return (
+    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-300 transition-colors group flex items-center gap-3">
+      <div className={`w-9 h-9 rounded-lg ${bgMap[color]} flex items-center justify-center transition-colors`}>
+        <span className={`text-sm font-bold ${textMap[color]}`}>{label[0]}</span>
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-gray-900">{label}</p>
+        <p className="text-xs text-gray-500">{sub}</p>
+      </div>
+    </Link>
   );
 }
