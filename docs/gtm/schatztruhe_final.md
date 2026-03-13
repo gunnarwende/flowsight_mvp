@@ -4,7 +4,7 @@
 > Es beantwortet: Was erlebt er? Auf welchem Gerät? In welchem Format? Und warum macht er weiter?
 > Mechanik × Psychologie × Proof = Conversion.
 
-**Status:** FINAL — alle Entscheide gefallen. Produktionsbereit.
+**Status:** FINAL — alle Entscheide gefallen. Produktionsbereit. Skalierungspfad (§23) integriert.
 **Letzte Änderung:** 2026-03-13
 **Vorgänger:** schatztruhe.md + schatztruhe2.md — abgelöst durch dieses Dokument
 **Abhängigkeiten:** gold_contact.md (Nordstern), quality_gates.md (QA), videos/[slug]/production_brief.md (Drehbuch)
@@ -582,5 +582,313 @@ ER DENKT:
 
 ---
 
+## 18. Hardware + Aufnahme-Setup (einmalig, vor Session 0)
+
+### Pflicht-Hardware
+| Gerät | Empfehlung | Preis | Warum |
+|-------|-----------|-------|-------|
+| **Mikrofon** | Rode NT-USB Mini | ~CHF 100 | USB-C, kompakt, professioneller Klang, kein Treiber |
+| **Mikrofon Alt.** | Blue Yeti Nano | ~CHF 90 | USB-A, bewährt |
+| **Kamera** | MacBook M1+ eingebaut | — | Reicht für 1080p Loom |
+| **Kamera wenn nötig** | Logitech C920 | ~CHF 80 | Für ältere Windows-Laptops |
+| **Licht** | Fenster links + A4-Papier rechts | — | Kostenlos, sehr gut |
+| **Licht wenn investiert** | Elgato Key Light Mini | ~CHF 100 | Gleichmässig, einstellbar |
+
+**Minimale Investition:** Rode NT-USB Mini (~CHF 100). Alles andere ist bereits da.
+**Regel:** Kein Laptop-Mikrofon. Je schlechter der Ton, desto unprofessioneller wirkt Lisa.
+
+### Loom-Konfiguration (exakt)
+```
+Loom Starter ($15/mo) — vor Aufnahme aktivieren
+
+Einstellungen:
+  Auflösung:      1080p
+  Frame Rate:     30fps
+  Mikrofon:       Externes USB-Mikro (nicht "Eingebaut Mikrofon")
+  Kamera:         Eingebaut oder Logitech C920
+  Kamera-Bubble:  AN — Grösse: Medium — Position: unten rechts
+  System Audio:   AN  ← Pflicht: für Lisa-Stimme beim Live-Anruf
+  Countdown:      3 Sekunden (Zeit zum Aufräumen vor Start)
+  Max. Länge:     Starter = unbegrenzt ✅
+```
+
+### FlowSight-Logo in Kamera-Ecke — technische Lösung
+Loom unterstützt keine nativen Overlays.
+
+**Weg A (Rohschnitt — reicht für Analyse-Session):**
+flowsight.ch ist in der Browser-Adresszeile sichtbar wenn Leitstand oder /start/weinberger-ag gezeigt wird. Subtil, aber da.
+
+**Weg B (Final-Schnitt — für Versand):**
+Logo-Overlay in **CapCut** (gratis, Desktop + Mobil) einblenden:
+1. Rohschnitt von Loom exportieren
+2. In CapCut importieren
+3. FlowSight-Logo (PNG transparent) als Overlay, unten links, 40% Opazität
+4. Exportieren → neuer Loom-Upload → neuer Link
+Zeitaufwand: ~15 Minuten, keine Vorkenntnisse nötig.
+
+### Mikrofon-Placement (oft unterschätzt)
+
+- **Abstand:** 10–15 cm vom Mund — nicht weiter (Rauschen nimmt zu), nicht näher (Atemgeräusche + Plosive)
+- **Position:** Leicht seitlich (3-Uhr-Position) — nie direkt frontal vor dem Mund (P, B, T → harte Plosive)
+- **Pflicht-Check vor jeder Session:** 5-Sekunden-Testaufnahme abspielen — kein Rauschen, keine Plosive, Lisa klar hörbar
+- **System Audio = AN ist absolutes Kill-Kriterium:** Ohne System Audio hört der Viewer Lisa nicht. Kein Take, kein Versand, bevor das geprüft ist.
+
+### Tab-Stack vor Aufnahme (exakte Reihenfolge)
+
+Alle Tabs **vor** dem Recording öffnen, einloggen, vollständig laden. Kein Tab-Wechsel darf Ladezeit oder Login-Screen verraten — das bricht die Illusion der Echtheit.
+
+| Tab | Inhalt | Szene |
+|-----|--------|-------|
+| 1 | `julweinberger.ch` | 00:00 Spiegel |
+| 2 | Softphone / Retell-Testanruf vorbereitet | 00:12 Lisa-Anruf |
+| 3 | SMS / Handy (physisch oder Mirroring) | 00:52 SMS-Beweis |
+| 4 | Leitstand (`/ops/cases`) — Testfall geladen | 01:02 Struktureller Beweis |
+| 5 | `/start/weinberger-ag` | 01:12 Direktmeldung + Pers. Einstieg |
+
+**SMS-Empfehlung:** Echtes Handy schlägt Screen-Mirroring. Die Physikalität des Geräts im Bild signalisiert "das ist echt." Ein gespiegelter Screen wirkt wie Demo-Modus.
+
+### Bubble-Verhalten je Szene
+
+| Szene | Bubble | Warum |
+|-------|--------|-------|
+| julweinberger.ch (Spiegel) | ✅ Medium, unten rechts | Founder sichtbar — Persönlichkeit im Spiegel-Moment |
+| Lisa-Anruf | ✅ Medium, unten rechts | Reaktion des Founders sichtbar beim Beweis-Moment |
+| SMS-Szene | ⚠️ Klein oder deaktivieren | SMS muss vollständig lesbar sein: Absender "Weinberger" + Falltext |
+| Leitstand | ✅ Klein, unten rechts | Kein Fall-Content verdeckt |
+| Direktmeldung / Pers. Einstieg | ✅ Klein, unten rechts | Formular und CTAs sichtbar |
+
+**SMS-Kill-Kriterium:** Absender "Weinberger" und Fallzusammenfassung ohne Zoom lesbar. Falls nicht → Bubble kleiner, Handy-Abstand anpassen, oder in CapCut-Schnitt Bubble wegschneiden.
+
+---
+
+## 19. Arbeitsplan — 6 ChatGPT-Sessions
+
+Jede Session hat: Input, Aufgabe, Output. Kein Übergang ohne Output.
+
+```
+SESSION 0 — Pre-Flight (~2h)
+─────────────────────────────
+Input:   Context Block + schatztruhe_final.md + production_brief.md
+Aufgabe: "Prüfe mein Setup gegen das Drehbuch. Gib mir eine
+          Schritt-für-Schritt-Checkliste für heute Abend
+          bevor ich morgen aufnehme."
+Output:  Finale Aufnahme-Checkliste. Hardware bestätigt. Tabs-Liste.
+
+SESSION 1 — Script laut sprechen (~1h)
+──────────────────────────────────────
+Input:   production_brief.md Drehbuch
+Aufgabe: "Ich lese dir jeden Satz vor. Du sagst mir: klingt das
+          natürlich für einen Schweizer Sanitär-Inhaber?
+          Oder wirkt es wie ein Verkäufer? Verbessere was holprig klingt."
+Output:  Sprecher-Drehbuch (Wort für Wort, kein Impro mehr)
+
+SESSION 2 — Test-Aufnahme (~1h)
+────────────────────────────────
+Input:   30-Sekunden-Testaufnahme als Loom-URL
+Aufgabe: "Schau dir den ersten 30s-Test an.
+          Ton: gut oder nicht? Licht: ok? Lisa hörbar?
+          Was muss ich ändern bevor ich den Hauptblock aufnehme?"
+Output:  Setup-Freigabe ODER konkrete Anpassungsliste
+
+SESSION 3 — Hauptaufnahme (~4–5h)
+──────────────────────────────────
+Kein ChatGPT während der Aufnahme — konzentriert arbeiten.
+Danach: Rohschnitt-URL an ChatGPT für erste Einschätzung.
+Output:  Rohschnitt 130–140s ✅
+
+SESSION 4 — Analyse-Session (~2h)
+──────────────────────────────────
+Input:   Rohschnitt Loom-URL + Analyse-Kriterien (§20)
+Aufgabe: "Schau dir den Rohschnitt an. Bewerte jede Szene:
+          BEHALTEN / KÜRZEN / STREICHEN.
+          Einziges Kriterium: Fällt Christian Weinberger die Kinnlade runter?"
+Output:  Cut-Liste → Final-Schnitt in CapCut → neuer Loom-Link
+
+SESSION 5 — E-Mail-Paket finalisieren (~1h)
+────────────────────────────────────────────
+Input:   Finales Video-URL + schatztruhe_final.md §7
+Aufgabe: "Das Video ist fertig. Hilf mir die E-Mail zusammenbauen:
+          Loom-Thumbnail-URL einbetten, Versand-Checkliste durchgehen."
+Output:  Versandfertiges E-Mail-Paket für Weinberger
+
+SESSION 6 — Entscheid Skalierung (nach Weinberger-Reaktion)
+─────────────────────────────────────────────────────────────
+Input:   Weinberger-Reaktion (geöffnet? angerufen? geantwortet?)
+Aufgabe: "Hier ist was passiert. Was lernen wir?
+          Lohnt sich jetzt Tavus/HeyGen oder weiter manuell?"
+Output:  Go/No-Go für automatisierte Video-Personalisierung
+```
+
+---
+
+## 20. Analyse-Kriterien (für Session 4 — Rohschnitt bewerten)
+
+### BEHALTEN — wenn:
+- Einzigartiger WOW-Moment ohne den Proof-Lücke entsteht
+- Lisa sagt "Weinberger AG" → **immer behalten**
+- SMS-Absender sichtbar → **immer behalten**
+- Steuererklärung-Moment → behalten für Meister-Profil (≤8 MA)
+
+### KÜRZEN — wenn:
+- Szene hat >3 Sekunden Leerlauf (Übergang, Warten, Stille)
+- Founder-Erklärung dauert länger als der visuelle Beweis
+
+### STREICHEN — wenn:
+- Szene erklärt was das Video vorher bereits gezeigt hat
+- Szene bremst Tempo ohne neuen WOW-Trigger
+- Zwei aufeinanderfolgende Szenen lösen denselben Psychologie-Hebel aus
+
+### Die Analyse-Frage für jede Szene:
+> "Wenn ich diese Szene rausschneide — verliere ich einen WOW-Moment
+> oder gewinne ich Tempo und Schärfe?"
+> Tempo + Schärfe schlägt Vollständigkeit. Weniger ist mehr wenn das Weniger präzise ist.
+
+---
+
+## 21. Skalierungs-Entscheid — wann wechseln wir auf Maschine?
+
+**Jetzt (Phase A–C):** Manuell. Weinberger + Dörfler + Leuthold = 3 Videos.
+Persönlich aufgenommen, individuell. Authentizität > Skalierung.
+
+**Tavus / HeyGen evaluieren wenn:**
+- Weinberger sagt Ja → Goldstandard-Video validiert → Basis für KI-Personalisierung
+- ODER: 5 Outreach-E-Mails versendet + >3 positive Signale → Volumen steigt
+- ODER: Scout-Pipeline >10 Prospects/Tag → manuelle Aufnahme wird Engpass
+
+**Was die Maschine dann kann:**
+Founder nimmt Weinberger-Video EINMAL auf (Goldstandard).
+Tavus klont Stimme + Lippensync → personalisiert Firmenname, Nummer, URL per API.
+CC baut `generate_video.mjs` → Provisioning + Video in einem Schritt.
+
+**Entscheid liegt bei:** Founder nach Session 6.
+
+---
+
+## 22. Nächste Schritte (Stand 2026-03-13)
+
+```
+[ ] Rode NT-USB Mini kaufen (falls nicht vorhanden)
+[ ] Loom Starter aktivieren ($15)
+[ ] Session 0 starten (ChatGPT — Context Block + diese Datei + production_brief.md)
+[ ] E2E Weinberger PASS: Anruf → Lisa → SMS → Leitstand prüfen
+[ ] /start/weinberger-ag live schalten (CC-Task)
+```
+
+---
+
+## 23. Skalierungspfad — Von Weinberger zu 20 Kontakten/Tag
+
+> Dieser Abschnitt ist der Nordstern, kein Arbeitsplan für heute.
+> Phase 0–5 (Weinberger-Produktion) wird durch §18–22 gesteuert.
+> §23 entscheidet, was **nach** dem ersten Goldstandard-Video passiert.
+
+### Das Flaschenhals-Prinzip
+
+> *"20/Tag scheitert am Founder-Flaschenhals."*
+
+Skalierung entsteht nicht durch Eile — sondern durch die **Standardisierung aller nicht-kreativen Schritte.** Die kreative Persönlichkeit bleibt Founder-kritisch. Der Rest wird Maschine.
+
+| Kategorie | Automatisierbar | Founder-kritisch (bleibt manuell) |
+|-----------|:--------------:|:---------------------------------:|
+| Research + Prospect Card | ✅ | — |
+| Provisioning (Slug, Nummer, SMS, Startseite) | ✅ | — |
+| Link-Generierung, Testfall-Schema | ✅ | — |
+| Mail-Entwurf (Stammdaten-Teil) | ✅ | — |
+| Tracking-Auswertung (Loom Analytics) | ✅ | — |
+| Finale Dramaturgie + Tonalität | — | ✅ |
+| Letzte 10% Personalität pro Betrieb | — | ✅ |
+| Anruf-Einstieg (Reaktion via Loom Analytics) | — | ✅ |
+| Segment-Auswahl (welcher Master passt?) | — | ✅ |
+| Go/No-Go für Versand | — | ✅ |
+
+---
+
+### Phase 8 — Segment-Templates
+
+**Wann:** Nach Weinberger + Dörfler + mindestens 1 weiterer Goldstandard-Produktion — **frühestens nach 3 Referenzen.**
+Nicht früher: Jede Schablone muss aus echten Learnings entstehen, nicht aus Annahmen.
+
+Segment-Master die entstehen werden:
+
+| Segment | Typ | Erkennungszeichen |
+|---------|-----|-------------------|
+| Sanitär/Heizung, inhabergeführt | Weinberger-Typ (Meister-Profil) | ≤8 MA, Inhaber = Entscheider, SMS = Wahrheit |
+| Größerer Betrieb mit Disposition | Betrieb-Profil | >8 MA, Bürokraft, Outlook |
+| Betrieb ohne/mit veralteter Website | Modus 1 | Website-Szene +15–20s |
+| Betrieb mit starker eigener Marke | Modus 2 | Seine Website bleibt, kein FlowSight-Website-Moment |
+
+**Qualitätsgate Phase 8:** Für neue Prospects existiert ein passender Segment-Master — der Founder personalisiert ihn, erfindet ihn nicht neu.
+
+---
+
+### Phase 9 — Teilautomatisierung
+
+**Wann:** 2–4 Wochen nach validiertem Weinberger-Master + etablierten Segment-Templates.
+**Ziel:** Neue Prospect-Vorbereitung läuft ohne dass der Founder jeden Schritt neu zusammensucht.
+
+**Wichtig: Kein neues CRM nötig.** Wir haben die Architektur bereits:
+
+| Was | Wo | Status |
+|-----|----|--------|
+| Provisioning (Slug, Nummer, SMS, Seed, Magic Link) | `provision_trial.mjs` | ✅ Existiert |
+| Prospect-Datenstruktur | `docs/customers/[slug]/` | ✅ Existiert |
+| Tenant-SSOT | Supabase | ✅ Existiert |
+| Ops-Scripts | `scripts/_ops/` | ✅ Existiert |
+
+Was Phase 9 **ergänzt**: Strukturiertes Prospect Card Schema (Felder einheitlich), Mail-Entwurf-Automatisierung (Stammdaten-Teil), Tracking-Board-Eintrag automatisch beim Provisioning.
+
+**Trennung: Variable vs. Founder-original**
+
+| Variable (automatisierbar) | Founder-original (manuell) |
+|---------------------------|---------------------------|
+| Stammdaten (Firmenname, Ort, Slug, Nummer) | Finale E-Mail-Ansprache |
+| Provisioning (Screens, Links, Testfälle) | Psychologischer Feinschliff pro Betrieb |
+| Betreff-Entwürfe (Vorlage) | Sonderfall-Handling (ungewöhnliche Betriebe) |
+| Leitstand-Seed + SMS-Absender | Segment-Auswahl |
+
+**Qualitätsgate Phase 9:** Ein neuer Prospect kann in standardisierter Form vorbereitet werden — der Founder sucht nichts mehr händisch zusammen.
+
+---
+
+### Phase 10 — Vollskalierung (Nordstern)
+
+**Wann:** Monate, nicht Wochen. Erst wenn Phase 8 + 9 für ≥5 Prospects validiert sind.
+**Zielbild:** 20 hochpersonalisierte Kontakte/Werktag ohne Qualitätsbruch.
+
+**Tavus/HeyGen (KI-Video-Personalisierung):**
+Founder nimmt Weinberger-Video EINMAL auf (Goldstandard). KI klont Stimme + Lippensync → personalisiert Firmenname, Nummer, URL per API.
+CC baut `generate_video.mjs` → Provisioning + Video in einem Schritt.
+→ **Erst aktivieren nach Go/No-Go per §21 Trigger** — nicht früher.
+
+**System-Anforderungen Phase 10:**
+- Validierter Gold-Contact-Master (Weinberger)
+- Segment-Templates für ≥2 Segmente bewährt
+- Provisioning-Automation live (Phase 9)
+- Kein Qualitätsbruch messbar über 5+ Prospects
+
+---
+
+### Tool-Zeithorizont (operationell)
+
+| Horizont | Tools | Warum jetzt / Skalierungsnutzen |
+|----------|-------|---------------------------------|
+| **Sofort** | Loom Starter ($15), Rode NT-USB Mini (~CHF 100), CapCut (gratis), sauberer Tab-Stack | Direkte Qualitätswirkung auf Bild, Ton, Review. Bleiben Kernwerkzeuge bis Phase 10. |
+| **Kurzfristig** | `docs/customers/[slug]/` Prospect Card Schema (einheitliche Felder), QA-Checkliste, standardisierte Ordnerstruktur | Grundlage sauberer Vorbereitung pro Betrieb. Werden Automations-Input in Phase 9. |
+| **Mittelfristig** | Claude Code Provisioning-Erweiterungen, Mail-Entwurfslogik, Link/Slug-Generator | Standardisieren nicht-kreative Arbeit ohne Qualitätsverlust. Enabler für höhere Schlagzahl. |
+| **Später** | Tavus/HeyGen (KI-Video), erweitertes Tracking-Dashboard | Erst wenn Gold-Contact-Muster über ≥5 Prospects validiert (→ §21 Trigger). |
+
+---
+
+### Qualitätsgates je Skalierungsschritt
+
+| Gate | Voraussetzung | Nicht früher |
+|------|--------------|--------------|
+| **Start Phase 8** | ≥3 Goldstandard-Referenzproduktionen — jede mit "Kinnlade-runter"-Urteil, nicht nur "ganz gut" | 3 echte Cases, keine Simulationen |
+| **Start Phase 9** | Weinberger-Master validiert. Segment-Templates dokumentiert. Prospect Card Schema sauber. | Segment-Master zuerst |
+| **Start Phase 10** | Phase 9 läuft für ≥5 Prospects. Kein Qualitätsbruch messbar. Weinberger-Goldstandard als KI-Vorlage hinterlegt. | Kein Tavus ohne Gold |
+
+---
+
 *Mechanik × Psychologie × Proof = Die Schatztruhe ist offen.*
-*Nächster Schritt: production_brief.md via CC updaten mit vollständigem 130–140s Drehbuch.*
+*Dieses Dokument ist das EINZIGE Steuerungsdokument — von der ersten Aufnahme bis 20 Kontakte/Tag.*
+*production_brief.md (Drehbuch) ist der einzige weitere Input der während der Aufnahme benötigt wird.*

@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-13 (Schatztruhe Final: E2E Touchpoint-Architektur + Production Brief v2)
+**Datum:** 2026-03-13 (Proof-Capture-Maschine: Machine/Video/QA Manifeste + Prospect Manifest v2.0)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -90,6 +90,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **S3 Journey Verification (13.03.):** PR #181. Trial E2E Tag 0–14 verifiziert (Voice/Wizard/Review/SMS/Dashboard). Trial Expiry Hard Gate (Middleware → /ops/expired). Morning Report follow_up_due Auto-Expire (3d). Milestone-Retry-Bug = FALSE POSITIVE (Code korrekt). **S3 VERDICT: PASS.**
 - **S4 Enablement (13.03.):** Walter Leuthold Voice Agent JSONs (DE+INTL) erstellt. Prospect Card + Status erstellt. Video-Ordnerstruktur (`docs/gtm/videos/`) mit vorkonfektionierten Skripten für 3 Prospects (Weinberger, Dörfler, Leuthold). **CC-Scope S4 abgeschlossen. System bereit, Founder übernimmt.**
 - **Schatztruhe Final (13.03.):** PR #186. E2E Touchpoint-Architektur (Mechanik × Psychologie × Proof). schatztruhe_final.md = SSOT für alle Touchpoints. production_brief.md v2.0 = vollständiges 130-140s Drehbuch (echte Lisa-Transkripte). Lisa-Greeting + URL-Drift korrigiert.
+- **S5 Proof-Capture-Maschine (13.03.):** Prospect Manifest v2.0 (5 Blöcke: Scout/Outreach/Provisioning/Assets/QA). Machine Manifest (12-Schritt Pipeline, Modus-Routing, Kapazitätsmodell). Video Manifest (11-Szenen-Katalog, Capture-Methoden, Assembly-Template). QA Gate (9 Auto + 3 Manual Checks). Outreach-Templates Gold-Contact-aligned (Lifecycle raus, prospect_manifest Variablen). Dörfler AG prospect_card.json erstellt (Gap geschlossen).
 - **Nächster Schritt (Founder):** (1) DEMO_SIP_CALLER_ID auf Vercel verifizieren (SMS Kill-Kriterium). (2) `retell_sync.mjs` für Leuthold → Twilio-Nummer → E2E-Test. (3) Videos aufnehmen (Weinberger → Dörfler → Leuthold). (4) Outreach starten.
 
 ## Fixe Entscheidungen (No Drift)
@@ -117,7 +118,11 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/customers/<slug>/prospect_card.json` | Prospect Card (GTM, ab G1) |
 | `docs/gtm/gold_contact.md` | Gold Contact — Nordstern (Kaufmodell, Profile, Journey, Architektur) |
 | `docs/gtm/quality_gates.md` | Quality Gates Checklist (G8) |
-| `docs/architecture/contracts/prospect_card.md` | Prospect Card JSON Contract |
+| `docs/architecture/contracts/prospect_card.md` | Prospect Card JSON Contract (v1.0 Scout-Output) |
+| `docs/architecture/contracts/prospect_manifest.md` | Prospect Manifest v2.0 (Scout + Outreach + Provisioning + Assets + QA) |
+| `docs/gtm/machine_manifest.md` | Proof-Capture-Maschine Pipeline (12 Schritte, Modus-Routing, Kapazität) |
+| `docs/gtm/video_manifest.md` | Video-Spezifikation (11 Szenen, Variablen, Capture-Methoden, Assembly) |
+| `docs/gtm/qa_gate.md` | QA Gate (9 Auto + 3 Manual Checks, Automatisierungs-Roadmap) |
 | `docs/runbooks/provisioning_prospect.md` | Provisioning Runbook (<25 Min, G3) |
 | `docs/gtm/video_template.md` | Video-Produktions-Template (G4) |
 | `docs/gtm/outreach_templates.md` | Premium Outreach-Templates (G5) |
