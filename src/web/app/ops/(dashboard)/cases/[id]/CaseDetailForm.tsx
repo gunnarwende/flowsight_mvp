@@ -92,6 +92,15 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
     house_number: initialData.house_number ?? "",
   });
 
+  // Staff members for assignee dropdown (L10)
+  const [staffMembers, setStaffMembers] = useState<{ display_name: string }[]>([]);
+  useEffect(() => {
+    fetch("/api/ops/staff")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: { display_name: string }[]) => setStaffMembers(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [inviteState, setInviteState] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -437,7 +446,24 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
         </div>
         <div>
           <label htmlFor="assignee" className={lbl}>Zuständig</label>
-          <input id="assignee" type="text" value={assigneeText} onChange={(e) => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
+          {staffMembers.length > 0 ? (
+            <select
+              id="assignee"
+              value={assigneeText}
+              onChange={(e) => setAssigneeText(e.target.value)}
+              className={inp}
+            >
+              <option value="">— Nicht zugewiesen —</option>
+              {staffMembers.map((s) => (
+                <option key={s.display_name} value={s.display_name}>{s.display_name}</option>
+              ))}
+              {assigneeText && !staffMembers.some((s) => s.display_name === assigneeText) && (
+                <option value={assigneeText}>{assigneeText} (manuell)</option>
+              )}
+            </select>
+          ) : (
+            <input id="assignee" type="text" value={assigneeText} onChange={(e) => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
+          )}
         </div>
       </div>
 

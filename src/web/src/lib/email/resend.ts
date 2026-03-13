@@ -684,3 +684,86 @@ export async function sendSalesLeadNotification(
     return false;
   }
 }
+
+// ---------------------------------------------------------------------------
+// ICS Appointment Email (L9: ICS v2 per E-Mail)
+// ---------------------------------------------------------------------------
+
+interface AppointmentEmailPayload {
+  appointmentId: string;
+  caseId: string;
+  seqNumber?: number | null;
+  caseIdPrefix?: string;
+  tenantDisplayName?: string;
+  staffName: string;
+  staffEmail?: string;
+  scheduledAt: string;
+  durationMin: number;
+  category?: string;
+  city?: string;
+  notes?: string;
+  icsContent: string;
+  method?: "REQUEST" | "CANCEL";
+}
+
+export async function sendAppointmentIcsEmail(payload: AppointmentEmailPayload): Promise<boolean> {
+  const from = `${payload.tenantDisplayName ?? "Leitstand"} <${process.env.RESEND_FROM ?? "noreply@flowsight.ch"}>`;
+  const recipientEmail = payload.staffEmail || process.env.MAIL_REPLY_TO;
+  if (!recipientEmail) return false;
+
+  const prefix = payload.caseIdPrefix ?? "FS";
+  const caseLabel = payload.seqNumber
+    ? `${prefix}-${String(payload.seqNumber).padStart(4, "0")}`
+    : payload.caseId.slice(0, 8);
+
+  const isCancellation = payload.method === "CANCEL";
+  const subject = isCancellation
+    ? `Termin abgesagt — ${caseLabel} ${payload.category ?? ""}`
+    : `Termin — ${caseLabel} ${payload.category ?? ""} (${payload.city ?? ""})`;
+
+  const date = new Date(payload.scheduledAt);
+  const dateStr = date.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" });
+  const timeStr = date.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
+
+  const textBody = [
+    isCancellation ? `Termin abgesagt` : `Neuer Termin`,
+    ``,
+    `Fall:        ${caseLabel}`,
+    `Techniker:   ${payload.staffName}`,
+    `Datum:       ${dateStr}`,
+    `Uhrzeit:     ${timeStr}`,
+    `Dauer:       ${payload.durationMin} Min.`,
+    ...(payload.category ? [`Kategorie:   ${payload.category}`] : []),
+    ...(payload.city ? [`Ort:         ${payload.city}`] : []),
+    ...(payload.notes ? [`\nNotizen: ${payload.notes}`] : []),
+  ].join("\n");
+
+  try {
+    const { error } = await getResend().emails.send({
+      from,
+      to: recipientEmail,
+      subject,
+      text: textBody,
+      attachments: [
+        {
+          filename: "termin.ics",
+          content: Buffer.from(payload.icsContent, "utf-8").toString("base64"),
+          contentType: "text/calendar; method=" + (payload.method ?? "REQUEST"),
+        },
+      ],
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: { _tag: "resend", area: "ops", email_type: "appointment_ics", decision: "failed" },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: { _tag: "resend", area: "ops", email_type: "appointment_ics", decision: "failed" },
+    });
+    return false;
+  }
+}
