@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-13 (S4 Enablement: Leuthold Voice Prep + Video-Ordner + SSOT)
+**Datum:** 2026-03-13 (Schatztruhe Final: E2E Touchpoint-Architektur + Production Brief v2)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -89,7 +89,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **S2 KOMPLETT** (CC-seitig). Alle 6 Blocks done (S2.1–S2.6).
 - **S3 Journey Verification (13.03.):** PR #181. Trial E2E Tag 0–14 verifiziert (Voice/Wizard/Review/SMS/Dashboard). Trial Expiry Hard Gate (Middleware → /ops/expired). Morning Report follow_up_due Auto-Expire (3d). Milestone-Retry-Bug = FALSE POSITIVE (Code korrekt). **S3 VERDICT: PASS.**
 - **S4 Enablement (13.03.):** Walter Leuthold Voice Agent JSONs (DE+INTL) erstellt. Prospect Card + Status erstellt. Video-Ordnerstruktur (`docs/gtm/videos/`) mit vorkonfektionierten Skripten für 3 Prospects (Weinberger, Dörfler, Leuthold). **CC-Scope S4 abgeschlossen. System bereit, Founder übernimmt.**
-- **Nächster Schritt (Founder):** (1) `retell_sync.mjs` für Leuthold → Twilio-Nummer → E2E-Test. (2) Videos aufnehmen (Weinberger → Dörfler → Leuthold). (3) Outreach starten.
+- **Schatztruhe Final (13.03.):** PR #186. E2E Touchpoint-Architektur (Mechanik × Psychologie × Proof). schatztruhe_final.md = SSOT für alle Touchpoints. production_brief.md v2.0 = vollständiges 130-140s Drehbuch (echte Lisa-Transkripte). Lisa-Greeting + URL-Drift korrigiert.
+- **Nächster Schritt (Founder):** (1) DEMO_SIP_CALLER_ID auf Vercel verifizieren (SMS Kill-Kriterium). (2) `retell_sync.mjs` für Leuthold → Twilio-Nummer → E2E-Test. (3) Videos aufnehmen (Weinberger → Dörfler → Leuthold). (4) Outreach starten.
 
 ## Fixe Entscheidungen (No Drift)
 
@@ -121,6 +122,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | `docs/gtm/video_template.md` | Video-Produktions-Template (G4) |
 | `docs/gtm/outreach_templates.md` | Premium Outreach-Templates (G5) |
 | `docs/gtm/einsatzlogik.md` | Einsatzlogik-Engine (G6) |
+| `docs/gtm/schatztruhe_final.md` | E2E Touchpoint-Architektur (Mechanik × Psychologie × Proof) — SSOT |
+| `docs/gtm/videos/[slug]/production_brief.md` | Video-Drehbuch pro Prospect (Szene-für-Szene) |
 | `docs/customers/lessons-learned.md` | Intake-Prozess, Template-Learnings, Kunden-Learnings |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |

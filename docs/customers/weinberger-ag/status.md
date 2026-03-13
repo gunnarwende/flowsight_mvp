@@ -2,7 +2,7 @@
 
 **Slug:** weinberger-ag
 **Rolle:** GTM Goldstandard (ICP 90+, Leckerli A+B+C+D)
-**Stand:** 2026-03-11
+**Stand:** 2026-03-13
 **Tenant-ID:** fc4ba994-c99c-4c17-9fa7-6c10bd0d6fa8
 **Twilio-Nr:** +41 43 505 11 01
 
@@ -21,7 +21,7 @@
 | **D** | Website (Services, Team, Notdienst, Wizard) | **DONE** ✅ (PR #116) |
 | **B-Full** | Eigener Voice Agent (Lisa DE + INTL, Ela Voice) | **DONE** ✅ (PRs #118+#126+#127) — Quality Wave: Closing Fix, FAQ-safe, Grüezi, PLZ→City (24 Orte), Notfall-Empathie v2 |
 | **C** | E2E Proof (Tenant, SMS, Ops-Fall) | **TESTBAR** ✅ — SMS + Review URL konfiguriert (PR #143), INTL Agent Fix |
-| **A** | Video (5 Szenen, Founder-Aufnahme) | OFFEN |
+| **A** | Video (11 Szenen, 130-140s Rohschnitt) | **PRODUCTION-READY** — schatztruhe_final.md + production_brief.md v2.0 fertig. Blocker: DEMO_SIP_CALLER_ID auf Vercel verifizieren |
 
 ## Infrastruktur (Leckerli C)
 
@@ -33,7 +33,8 @@
 | Webhook | ✅ | flowsight-mvp.vercel.app/api/retell/webhook |
 | Voice Agents | ✅ | DE + INTL published (Ela Voice), Quality Wave v2: Closing Fix, FAQ-safe, Grüezi, PLZ Lookup |
 | Review Surface | ✅ | /review/[caseId] — Google-style, HMAC-validated, tenant-dynamic |
-| Wizard | ✅ | /kunden/weinberger-ag/meldung |
+| Wizard | ✅ | /kunden/weinberger-ag/meldung + /start/weinberger-ag/meldung |
+| Persönlicher Einstieg | ✅ | /start/weinberger-ag (Spiegel-Effekt, Modus 2) |
 | Ops Dashboard | ✅ | /ops → Fälle sichtbar |
 
 ### Testanruf-Anleitung (Founder)
