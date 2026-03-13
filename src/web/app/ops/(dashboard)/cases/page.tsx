@@ -124,7 +124,10 @@ export default async function OpsCasesPage({
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
   // Default: open cases (exclude done + archived), unless showAll or explicit status filter
-  if (filterStatus) {
+  if (filterStatus === "in_progress") {
+    // Virtual status: contacted + scheduled (L4: KPI click → filter)
+    listQuery = listQuery.in("status", ["contacted", "scheduled"]);
+  } else if (filterStatus) {
     listQuery = listQuery.eq("status", filterStatus);
   } else if (!showAll) {
     listQuery = listQuery.not("status", "in", "(done,archived)");
