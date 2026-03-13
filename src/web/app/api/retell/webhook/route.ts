@@ -136,6 +136,7 @@ function normalizePlz(v: unknown): string | undefined {
 const TWILIO_OWNED_NUMBERS = [
   "+41445053019", // Dörfler SIP trunk
   "+41445520919", // FlowSight Sales number
+  "+41435051101", // Weinberger SIP trunk
 ];
 
 function resolveSmsTarget(
