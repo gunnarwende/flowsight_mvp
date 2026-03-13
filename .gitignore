@@ -43,6 +43,9 @@ demo-kit/microsip/
 # Local agent artifacts
 .claude/
 
+# Founder working documents (internal, not repo content)
+BAUPLAN.md
+
 # Chain reports / debug artifacts (PII, audio, raw API responses)
 tmp/
 

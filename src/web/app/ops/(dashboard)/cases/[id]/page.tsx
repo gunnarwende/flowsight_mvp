@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
+import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
+import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { CaseDetailForm } from "./CaseDetailForm";
 import { AttachmentsSection } from "./AttachmentsSection";
 import { CaseTimeline } from "@/src/components/ops/CaseTimeline";
@@ -52,11 +54,6 @@ const URGENCY_COLORS: Record<string, string> = {
   normal: "bg-gray-400",
 };
 
-function formatCaseId(seq: number | null): string {
-  if (seq === null) return "—";
-  return `FS-${String(seq).padStart(4, "0")}`;
-}
-
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("de-CH", {
     day: "2-digit",
@@ -101,7 +98,10 @@ export default async function CaseDetailPage({
 
   const caseData = row as CaseDetail;
   const caseEvents = (events ?? []) as CaseEvent[];
-  const caseId = formatCaseId(caseData.seq_number);
+
+  // Resolve tenant identity for case ID prefix
+  const identity = await resolveTenantIdentityById(caseData.tenant_id);
+  const caseId = formatCaseId(caseData.seq_number, identity?.caseIdPrefix);
   const urgencyDot = URGENCY_COLORS[caseData.urgency] ?? "bg-gray-400";
   const isProspect = scope?.isProspect ?? false;
 

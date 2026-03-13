@@ -624,7 +624,7 @@ function Footer({ company: c }: { company: CustomerSite }) {
             <a href={`/kunden/${c.slug}/impressum`} className="hover:text-gray-600">Impressum</a>
             <a href={`/kunden/${c.slug}/datenschutz`} className="hover:text-gray-600">Datenschutz</a>
             <span className="text-gray-300">&middot;</span>
-            <span>Website powered by <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">FlowSight</a></span>
+            <span>Technologie-Partner: <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-700">flowsight.ch</a></span>
           </div>
         </div>
       </div>

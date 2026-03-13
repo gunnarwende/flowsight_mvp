@@ -152,11 +152,11 @@ export function ReviewSurfaceClient({
           </div>
         </div>
 
-        {/* RS10: Footer */}
+        {/* RS10: Footer — Identity Contract R4 */}
         <p className="mt-4 text-center text-xs text-gray-400">
-          Website powered by{" "}
+          Technologie-Partner:{" "}
           <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-600">
-            FlowSight
+            flowsight.ch
           </a>
         </p>
       </div>
