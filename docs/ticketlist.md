@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-13 (Renovation Gold Contact — Phasen 0-5 DONE)
+**Updated:** 2026-03-14 (Founder E2E-Verification — 22 neue Tickets aus Walkthrough)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -11,8 +11,8 @@
 
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
-- **BLOCKER:** 1 (V5: SMS-Spam — wartet auf eCall-Konto)
-- **Phase:** S1-S4 DONE. **Renovation Gold Contact DONE** (V1-V4, L1-L10). Naechster Schritt: Founder E2E-Verification.
+- **BLOCKER:** 2 (S3: eCall SMS kommt nicht an + V2/V3 Voice-Fixes nicht live auf Retell)
+- **Phase:** Renovation Code DONE. **Founder E2E-Verification 14.03. deckt 22 Gaps auf.** Naechster Schritt: STOPP-Blocker fixen, dann Leitstand-Redesign R2.
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -35,46 +35,70 @@
 |---|-------|------|-----------|--------|
 | S1 | **Weinberger SMS kommt nicht an** | Voice→Webhook→SMS | `+41435051101` fehlte in TWILIO_OWNED_NUMBERS → SMS ging an Twilio-Nr statt Founder-Handy | **DONE** (PR #189) |
 | S2 | **SMS_ALLOWED_NUMBERS Whitelist pruefen** | Vercel Env | `+41764458942` ist in Whitelist → kein Blocker | **PASS** |
+| S3 | **eCall SMS kommt nicht an** | eCall-Integration deployed (PR #197), Env Vars gesetzt, aber SMS kommt weder normal noch als Spam an | Debuggen: eCall-Response pruefen, Nummernformat, API-Testcall | **OFFEN** |
 
-**Status:** S1+S2 DONE. S3 SMS-Spam-Fix via eCall.ch (Founder richtet Konto ein).
+**Status:** S1+S2 DONE. **S3 = aktiver Blocker.** eCall-Code deployed, Env Vars auf Vercel, aber SMS kommt nicht an. Muss debuggt werden.
 
 ---
 
-## OFFEN — Voice-Agent-Bugs (Testanruf call_397c66acc2c1abc53dba31570b8)
+## OFFEN — Voice-Agent-Bugs
 
-> Aus Founder E2E-Walkthrough 13.03. Weinberger-Testanruf. Bewertung: 7/10.
+> Aus Founder E2E-Walkthrough 13.03. + **14.03. (call_e2fa645d00d0bd3b2ed94a98918)**. Bewertung: Nicht Gold Contact.
 
 | # | Titel | Root Cause | Schwere | Status |
 |---|-------|-----------|---------|--------|
-| V1 | **Voice auf Juniper umstellen (alle Agents)** | Agent-JSONs verwenden falsche voice_id | hoch | **DONE** (PR #193, 4 DE Agents auf Juniper, retell_sync published) |
-| V2 | **"Jul" aus Greeting entfernen** | Greeting-Text in Agent-JSON | hoch | **DONE** (PR #193, Greeting war bereits korrekt) |
-| V3 | **Ortsnamen NICHT wiederholen** | Agent-Prompt wiederholt Ort | mittel | **DONE** (PR #193, Prompt: keine Ort-Wiederholung) |
-| V4 | **Dringlichkeits-Echo korrigieren** | Agent-Prompt mappt nicht 1:1 | mittel | **DONE** (PR #193, EXAKT-Echo-Regel) |
-| V5 | **SMS landet im Spam** — Schweizer SMS-Provider noetig. | Twilio routet ueber internationale Gateways | hoch | **FOUNDER** (eCall-Konto) + CC (Code) |
+| V1 | **Voice auf Juniper umstellen (alle Agents)** | Agent-JSONs verwenden falsche voice_id | hoch | **DONE** (PR #193) |
+| V2 | **"Jul" aus Greeting entfernen** | Agent sagt weiterhin "Jul Weinberger AG" statt nur "Weinberger AG". Prompt/Greeting nicht korrekt auf Retell publiziert? | hoch | **REOPENED** — Testanruf 14.03. bestaetigt: "Jul" wird gesprochen |
+| V3 | **Ortsnamen NICHT wiederholen** | Agent wiederholt weiterhin "Thalwil, richtig?" — Prompt-Aenderung nicht auf Retell live? | mittel | **REOPENED** — Testanruf 14.03. bestaetigt |
+| V4 | **Dringlichkeits-Echo korrigieren** | Agent-Prompt mappt nicht 1:1 | mittel | **DONE** (PR #193) |
+| V5 | **SMS kommt nicht an (eCall)** | eCall-Integration deployed (PR #197), SMS kommt trotzdem nicht an | hoch | **OFFEN** — identisch mit S3 |
+| V6 | **Namens-Frage falsch formuliert** | Agent sagt "Und wie ist Ihr Name bitte? Damit unser Techniker weiss bei wem er klingeln muss." — Soll stattdessen sagen: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" | mittel | **OFFEN** |
 
 ---
 
-## DONE — Leitstand-Renovation (Gold Contact)
+## Leitstand-Renovation — Status
 
-> Renovation 13.03. — Alle 10 Tickets auf Gold Contact Standard.
+> Renovation 13.03. — Code deployed. **Founder E2E-Verification 14.03. deckt erhebliche UX-Gaps auf.**
 > Referenz: `docs/redesign/leitstand.md` (Zielbild) + `docs/redesign/identity_contract.md`
+
+### Phase 1 (Code deployed, PRs #192-#196)
 
 | # | Titel | Status | Evidence |
 |---|-------|--------|----------|
-| L1 | **Sidebar: Tenant-Branding** | **DONE** | PR #192 — Fallback "Leitstand"/"LS", kein FlowSight |
-| L2 | **"Bald"-Badges entfernt** | **DONE** | PR #192 — 3 Items weg, 5 funktionale Nav-Items |
-| L3 | **Puls-Ansicht** | **DONE** | PR #192 — PulsView mit 4 Prioritaets-Gruppen |
-| L4 | **KPI-Click filtert Tabelle** | **DONE** | PR #196 — Alle 4 KPIs filtern korrekt (inkl. "In Bearbeitung" → contacted+scheduled) |
-| L5 | **Einsatzplan** | **DONE** | PR #192 — ScheduleView, nach Mitarbeiter gruppiert, Heute/Woche |
-| L6 | **Zahlen (Metrics)** | **DONE** | PR #192 — 8 KPIs, MetricsView |
-| L7 | **Einstellungen** | **DONE** | PR #195 — Google Review URL, Termin-Defaults, Benachrichtigungen, Kalender-Email |
-| L8 | **Case-ID-Prefix** | **DONE** | PR #192 — Tenant-spezifisch (WB-0001), formatCaseId shared utility |
-| L9 | **Termin als eigenes Objekt** | **DONE** | PR #192+#196 — appointments-Tabelle, ICS v2, ICS-E-Mail bei Termin-Erstellung |
-| L10 | **Mitarbeiter als eigenes Objekt** | **DONE** | PR #192+#196 — staff-Tabelle, Staff-Dropdown in Fall-Detail (statt Freitext) |
+| L1 | **Sidebar: Tenant-Branding** | **REOPENED** → D8 | Zeigt "LS" in Orange statt Tenant-Initialen (JW) in Tenant-Farbe |
+| L2 | **"Bald"-Badges entfernt** | **DONE** | PR #192 |
+| L3 | **Puls-Ansicht** | **REOPENED** → D2, D6 | Cards-Design nicht Gold-tauglich, inkonsistent mit Tabelle |
+| L4 | **KPI-Click filtert Tabelle** | **REOPENED** → D5, D7 | Filter + Tab-Interaktion broken, KPI-Klick springt auf falschen Tab |
+| L5 | **Einsatzplan** | Code deployed | Founder-Review steht aus (→ D9) |
+| L6 | **Zahlen (Metrics)** | Code deployed | Founder-Review steht aus (→ D9) |
+| L7 | **Einstellungen** | **REOPENED** → D11.9 | Kalender-E-Mail/ICS kommt nicht an, Rollen unklar |
+| L8 | **Case-ID-Prefix** | **REOPENED** → D10.1, D11.10 | Prefix soll auto-2-Buchstaben sein (JW statt WB), "ProfiTicketNr." statt UUID |
+| L9 | **Termin als eigenes Objekt** | **REOPENED** → D11.9 | ICS-E-Mail kommt nicht an bei Termin-Erstellung |
+| L10 | **Mitarbeiter als eigenes Objekt** | **REOPENED** → D11.8 | Rollen reduzieren (nur Admin + Techniker), E-Mail bei Anlage kommt nicht |
 
----
+### Phase 2 — OFFEN: Leitstand-Redesign R2 (Founder E2E 14.03.)
 
-## OFFEN — Sonstige Tickets
+> Aus Weinberger-Testanruf + Leitstand-Walkthrough. Screenshots: `Weinberger Leitsystem1.jpeg`, `Weinberger Leitsystem2.png`
+
+| # | Titel | Beschreibung | Schwere | Status |
+|---|-------|-------------|---------|--------|
+| D1 | **Pagination — Max 15 Faelle pro Seite** | Aktuell alle Faelle auf einer Seite → endloses Scrollen. Max 15, dann Seite wechseln. | hoch | OFFEN |
+| D2 | **Falluebersicht: Tabelle statt Cards** | PulsView-Cards wirken unuebersichtlich. Stattdessen: saubere, gut designte Tabelle mit Sortierung. Gold Contact = sofort scannbar. | hoch | OFFEN |
+| D3 | **Sortierung/Zahlen inkonsistent** | "32 Achtung" angezeigt, 33 Faelle in Liste, 57 Total. Zahlen muessen 1:1 stimmen. | hoch | OFFEN |
+| D4 | **"Ihre Faelle" vs "Demo" Tabs — Langfriststrategie** | Demo-Tab fuer Testphase sinnvoll, aber: Was passiert nach Trial? Demo-Cases loeschen oder archivieren? Klare Trennung definieren. | mittel | OFFEN |
+| D5 | **KPI-Klick + Tab-Interaktion broken** | Bei "Demo" gefiltert → Klick auf "Total Faelle" springt auf "Ihre Faelle" und zeigt 57 statt 15. KPI-Filter muss im aktiven Tab bleiben. | hoch | OFFEN |
+| D6 | **Inkonsistente Ansichten: Cards vs Tabelle** | Klick auf "Offen" → Cards. Klick auf "Alle" → alte Tabelle. EINE konsistente Darstellung noetig. | hoch | OFFEN |
+| D7 | **KPI-Klick zeigt exakte Menge** | "Erledigt (7d) = 5" → Klick muss exakt diese 5 zeigen. Gleiches fuer alle KPIs. Keine Unschaerfe. | hoch | OFFEN |
+| D8 | **Tenant-Branding statt Orange** | "LS" in Orange → soll "JW" in Tenant-Farbe sein. ALLE orangen Akzente durch dynamische Tenant-Farbe ersetzen (aus Website des Betriebs). Betrieb muss sich wiederfinden. | hoch | OFFEN |
+| D9 | **Einsatzplan/Mitarbeiter/Kennzahlen/Einstellungen — Review** | Grundstruktur steht. Pflicht: 2 Grafiken einbauen die das Unternehmen widerspiegeln. Langfristige Inhalte muessen besprochen werden. | mittel | OFFEN — Founder-Review |
+| D10 | **Falldetail-Ansicht: nicht Gold Contact** | Gesamtdesign der Falldetail-Seite muss ueberarbeitet werden (siehe D10.1-D10.4). | hoch | OFFEN |
+| D10.1 | **Case-ID: "ProfiTicketNr." statt WB-0022** | Oben rechts steht WB-0022. Soll professioneller wirken, z.B. "Ticket #JW-0022" oder aehnlich. Prefix auto-2-Buchstaben. | mittel | OFFEN |
+| D10.2 | **11 Kacheln unuebersichtlich** | Status, Dringlichkeit, Kategorie, PLZ, Ort, Strasse, Nr, Melder, Telefon, E-Mail, Zustaendig — alle wichtig, aber Layout braucht klare Gruppierung (Kontakt / Adresse / Fall-Meta). | hoch | OFFEN |
+| D10.3 | **Google Maps staerker hervorheben** | Aktuell nur kleiner Link. Low hanging fruit — soll prominent sein, Lust machen es zu nutzen. Evtl. Mini-Map-Preview. | mittel | OFFEN |
+| D10.4 | **Design insgesamt nicht High End** | Orange-Akzente unpassend (→ D8), Gesamteindruck muss professioneller. Tenant-Farbe + saubere Typografie. | hoch | OFFEN |
+| D11.8 | **Mitarbeiter: nur 2 Rollen (Admin + Techniker)** | Aktuell zu viele Rollen. Reduzieren auf Admin + Techniker. Funktionen klar definieren. Bei Mitarbeiter-Anlage: keine E-Mail erwartet? Klaeren. | mittel | OFFEN |
+| D11.9 | **Einstellungen: ICS/Kalender-E-Mail kommt nicht an** | Kalender-E-Mail fuer ICS-Einladungen eingetragen + gespeichert, SMS+E-Mail aktiviert — aber ICS-Mail kommt nie an. Muss debuggt werden. | hoch | OFFEN |
+| D11.10 | **Case-ID-Prefix: auto 2-Buchstaben aus Firmenname** | Aktuell manuell "WB". Soll automatisch aus Firmenname abgeleitet werden: "Jul. Weinberger AG" → "JW". Dynamisch, nicht hardcoded. | mittel | OFFEN |
 
 ---
 
@@ -138,6 +162,14 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 ---
 
 ## Completed (Archiv — kondensiert)
+
+### eCall SMS Integration (14.03.)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| sendSmsEcall.ts — eCall.ch REST API Client (Swiss Gateway) | PR #197 |
+| sendSms.ts — Auto-Routing: eCall (preferred) → Twilio (fallback) | PR #197 |
+| Env Vars dokumentiert (ECALL_API_URL, USERNAME, PASSWORD) | PR #197 |
 
 ### Renovation Gold Contact (13.03.)
 
