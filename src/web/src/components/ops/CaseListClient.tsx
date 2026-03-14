@@ -201,7 +201,7 @@ export function CaseListClient({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Name, Adresse, Kategorie…"
-                className="rounded-lg border border-gray-300 bg-white pl-8 pr-3 py-2 text-xs text-gray-700 placeholder:text-gray-400 w-52 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
+                className="rounded-lg border border-gray-300 bg-white pl-8 pr-3 py-2 text-xs text-gray-700 placeholder:text-gray-400 w-52 focus:outline-none focus:ring-2 focus:ring-slate-400/30 focus:border-slate-400"
               />
             </div>
             {search !== searchQuery && (
@@ -280,7 +280,7 @@ export function CaseListClient({
                     <td className="px-4 py-3">
                       <Link
                         href={`/ops/cases/${c.id}`}
-                        className="text-amber-600 hover:text-amber-700 font-medium hover:underline"
+                        className="text-slate-700 hover:text-slate-900 font-medium hover:underline"
                       >
                         {formatCaseId(c.seq_number, caseIdPrefix)}
                       </Link>
@@ -291,11 +291,13 @@ export function CaseListClient({
                     <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">
                       {formatAddress(c)}
                     </td>
-                    <td className="px-4 py-3 text-gray-700 max-w-[200px]">
-                      <span className="font-medium">{c.category}</span>
-                      {c.description && (
-                        <span className="text-gray-400"> — {truncate(c.description, 40)}</span>
-                      )}
+                    <td className="px-4 py-3 text-gray-700 max-w-[220px]">
+                      <div className="truncate">
+                        <span className="font-medium">{c.category}</span>
+                        {c.description && (
+                          <span className="text-gray-400"> — {truncate(c.description, 50)}</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-gray-500">
                       <span className="mr-1">{SOURCE_ICON[c.source] ?? ""}</span>
@@ -341,11 +343,11 @@ export function CaseListClient({
               <Link
                 key={c.id}
                 href={`/ops/cases/${c.id}`}
-                className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-amber-300 transition-colors"
+                className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <span className="text-amber-600 font-medium text-sm">
+                    <span className="text-slate-700 font-medium text-sm">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </span>
                     {c.reporter_name && (
