@@ -49,6 +49,7 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - ECALL_API_URL -> https://rest.ecall.ch/api/message (eCall REST endpoint)
 - ECALL_API_USERNAME -> eCall Portal → REST API User
 - ECALL_API_PASSWORD -> eCall Portal → REST API Passwort
+- ECALL_SENDER_NUMBER -> Fallback-Nummer (E.164) wenn alphanumerischer Sender nicht freigeschaltet. Langfristig: Sender im eCall-Portal freischalten ("Weinberger", "Doerfler" etc.).
 
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
