@@ -110,6 +110,15 @@ async function retellPost(urlPath, body) {
   return data;
 }
 
+async function retellGet(urlPath) {
+  const res = await fetch(`${RETELL_BASE}${urlPath}`, { headers: hdrs });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error(`GET ${urlPath} → ${res.status}: ${JSON.stringify(data)}`);
+  }
+  return data;
+}
+
 async function retellPatch(urlPath, body) {
   const res = await fetch(`${RETELL_BASE}${urlPath}`, {
     method: "PATCH",
@@ -323,6 +332,31 @@ try {
 
   await retellPost(`/publish-agent/${intlAgentId}`, {});
   console.log(`  ✓ INTL agent published`);
+  console.log("");
+
+  // ── Step 4b: Unpin phone number versions ──────────────────────────
+  // Phone numbers can be pinned to a specific agent version. After publish,
+  // reassign to ensure calls use the latest published version.
+  console.log("━━━ Step 4b: Unpin phone number versions ━━━\n");
+
+  async function unpinPhoneNumbers(agentId) {
+    try {
+      const phones = await retellGet("/list-phone-numbers");
+      for (const p of phones) {
+        if (p.inbound_agent_id === agentId && p.inbound_agent_version != null) {
+          await retellPatch(`/update-phone-number/${encodeURIComponent(p.phone_number)}`, {
+            inbound_agent_id: agentId,
+          });
+          console.log(`  ✓ ${p.phone_number} unpinned (was v${p.inbound_agent_version})`);
+        }
+      }
+    } catch (e) {
+      console.log(`  ⚠ Could not unpin phone numbers: ${e.message}`);
+    }
+  }
+
+  await unpinPhoneNumbers(deAgentId);
+  await unpinPhoneNumbers(intlAgentId);
   console.log("");
 
   // ── Step 5: Save IDs ────────────────────────────────────────────────
