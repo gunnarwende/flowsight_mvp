@@ -49,7 +49,7 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - ECALL_API_URL -> https://rest.ecall.ch/api/message (eCall REST endpoint)
 - ECALL_API_USERNAME -> eCall Portal → REST API User
 - ECALL_API_PASSWORD -> eCall Portal → REST API Passwort
-- ECALL_SENDER_NUMBER -> FlowSight-Servicenummer (E.164). Globaler Fallback wenn alphanumerischer Sender (Tier 1) vom eCall-Portal rejected wird. KEINE Founder-Privatnummer. Dedizierte CH-Nummer beschaffen (eCall oder Peoplefone).
+- ECALL_SENDER_NUMBER -> FlowSight-Servicenummer (E.164, +41766012739). IMMER als SMS-Absender verwendet. Firmenname steht im SMS-Text. KEINE Founder-Privatnummer.
 
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links
