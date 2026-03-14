@@ -90,8 +90,10 @@ export default async function CustomerPage({
 /* ── Navigation ──────────────────────────────────────────────────── */
 function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+      {/* Brand accent bar */}
+      <div className="h-1" style={{ backgroundColor: accent }} />
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <a href={`/kunden/${c.slug}`} className="text-xl font-bold" style={{ color: accent }}>
           {c.companyName}
         </a>
@@ -100,22 +102,26 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
           {c.reviews && <a href="#bewertungen" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Bewertungen</a>}
           {c.team.length > 1 && <a href="#team" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Team</a>}
           <a href="#kontakt" className="text-sm text-gray-600 transition-colors hover:text-gray-900">Kontakt</a>
+          <a href={`tel:${c.contact.phoneRaw}`} className="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
+            {c.contact.phone}
+          </a>
           {c.emergency?.enabled ? (
             <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">
               {c.emergency.label}
             </a>
           ) : (
-            <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
-              Anrufen
+            <a href={wizardUrl} className="rounded-lg px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+              Anliegen melden
             </a>
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
-          <a href="#kontakt" className="text-sm text-gray-600">Kontakt</a>
           {c.emergency?.enabled ? (
             <a href={`tel:${c.emergency.phoneRaw}`} className="rounded-lg bg-[#c41e3a] px-4 py-2 text-sm font-bold text-white">Notfall</a>
           ) : (
-            <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ backgroundColor: accent }}>Anrufen</a>
+            <a href={`tel:${c.contact.phoneRaw}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ backgroundColor: accent }}>
+              {c.contact.phone}
+            </a>
           )}
         </div>
       </div>
@@ -195,13 +201,13 @@ function ServicesSection({
   const galleryMap = new Map(gallery.map((g) => [g.slug, g.images]));
 
   return (
-    <section id="leistungen" className="py-20">
+    <section id="leistungen" className="py-14">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Unsere Leistungen</h2>
           <p className="mt-3 text-lg text-gray-600">Kompetenz aus einer Hand — von {companyName}</p>
         </div>
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => {
             const imgs = galleryMap.get(s.slug) ?? [];
             return (
