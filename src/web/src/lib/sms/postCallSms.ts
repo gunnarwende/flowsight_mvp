@@ -8,8 +8,6 @@ export interface PostCallSmsPayload {
   createdAt: string;
   callerPhone: string;
   smsSenderName: string;
-  /** Twilio phone number (E.164) to send from. Falls back to smsSenderName (alphanumeric) if not set. */
-  smsFromNumber?: string;
   plz: string;
   city: string;
   category: string;
@@ -53,5 +51,5 @@ export async function sendPostCallSms(
     `Ihr Service-Team meldet sich schnellstmöglich.`,
   ].join("\n");
 
-  return sendSms(p.callerPhone, body, p.smsFromNumber ?? p.smsSenderName);
+  return sendSms(p.callerPhone, body, p.smsSenderName);
 }

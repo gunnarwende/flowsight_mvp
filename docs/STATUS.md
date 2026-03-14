@@ -25,7 +25,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 |-------|--------|----------|
 | **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — "Was ist Ihr Anliegen?", Top-3 dynamic + fixed row (Allgemein/Angebot/Kontakt), photo upload in Step 3, branded per customer |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ→City auto-lookup (24 Orte), Language Gate, SMS+Photo mention, reporter_name, deterministic closing, Notfall-Empathie, FAQ-safe edge logic |
-| **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. Twilio alphanumeric sender. HMAC-secured. |
+| **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. eCall.ch Swiss gateway (2-tier sender: alphanumeric → FlowSight-Servicenummer). HMAC-secured. |
 | **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
@@ -85,6 +85,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **S2.2 Tier-1 Website QA (13.03.):** PR #177. Walter Leuthold History-Section enabled (2. Milestone). Widmer Spenglerei-Icon `roof`. Widmer Opening Hours Sa/So. Dörfler Blitzschutz-Bild Encoding-Fix.
 - **S2.4 Voice Agent Gold-QA (13.03.):** PR #178. Placeholder Agent-IDs ersetzt (Brunner + Weinberger DE↔INTL Transfer). Alle 8 Agents synced + published.
 - **BLOCKER:** Keine. Go-Live möglich.
+- **SMS-Architektur (14.03.):** eCall.ch = einziger SMS-Provider (CH). Twilio = nur Voice/SIP. 2-Tier Sender: alphanumerisch (Tenant) → ECALL_SENDER_NUMBER (FlowSight-Servicenummer). Twilio-SMS-Pfad entfernt.
 - **S2.5 SMS-Config (13.03.):** Verified. Brunner (BrunnerHT) + Weinberger (Weinberger) korrekt. Andere 4 Tenants wizard-only → kein SMS nötig.
 - **S2 KOMPLETT** (CC-seitig). Alle 6 Blocks done (S2.1–S2.6).
 - **S3 Journey Verification (13.03.):** PR #181. Trial E2E Tag 0–14 verifiziert (Voice/Wizard/Review/SMS/Dashboard). Trial Expiry Hard Gate (Middleware → /ops/expired). Morning Report follow_up_due Auto-Expire (3d). Milestone-Retry-Bug = FALSE POSITIVE (Code korrekt). **S3 VERDICT: PASS.**
