@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 /**
- * qa_sweep.mjs — DOM-Only QA Sweep for FlowSight surfaces
+ * qa_sweep.mjs — QA Sweep for FlowSight surfaces (Phase A: DOM + Phase B: Vision)
  *
  * Compares live surfaces against Identity Contract + Leitstand Zielbild.
  * Outputs structured delta report: STOPP / SYSTEM / FOUNDER / POLISH.
+ *
+ * Phase A (DOM): Structural checks (text, classes, attributes, tab titles).
+ * Phase B (Vision): Claude Vision API analysis of screenshots for visual/qualitative gaps.
+ *   Requires ANTHROPIC_API_KEY. Skipped gracefully if not set.
  *
  * Surfaces checked:
  *   - Website /kunden/[slug]  (public)
@@ -11,9 +15,9 @@
  *   - Leitstand /ops/cases  (auth via magic link)
  *
  * Usage:
- *   node --env-file=src/web/.env.local scripts/_ops/qa_sweep.mjs --tenant=weinberger-ag
- *   node --env-file=src/web/.env.local scripts/_ops/qa_sweep.mjs --tenant=weinberger-ag --target=http://localhost:3000
  *   node --env-file=src/web/.env.local scripts/_ops/qa_sweep.mjs --tenant=weinberger-ag --screenshots
+ *   node --env-file=src/web/.env.local scripts/_ops/qa_sweep.mjs --tenant=weinberger-ag --screenshots --no-vision
+ *   node --env-file=src/web/.env.local scripts/_ops/qa_sweep.mjs --tenant=weinberger-ag --target=http://localhost:3000 --screenshots
  *
  * Prerequisites:
  *   cd src/web && npm install --save-dev playwright && npx playwright install chromium
@@ -55,6 +59,9 @@ const TARGET =
   process.env.NEXT_PUBLIC_APP_URL ||
   "https://flowsight.ch";
 const TAKE_SCREENSHOTS = !!args.screenshots;
+const SKIP_VISION = !!args["no-vision"];
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const VISION_ENABLED = !SKIP_VISION && !!ANTHROPIC_API_KEY && TAKE_SCREENSHOTS;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -670,6 +677,215 @@ function checkBrandColorSync(config) {
   }
 }
 
+// ── Phase B: Vision Analysis (Claude API) ─────────────────
+const VISION_CHECKLISTS = {
+  website: {
+    surface: "Website",
+    prompt: `You are a QA auditor for a Swiss plumbing/heating business website.
+Analyze this screenshot of the customer-facing website.
+
+Tenant: {displayName} ({slug})
+Expected brand color: {brandColor}
+
+Check for these specific quality gaps:
+1. **Brand consistency**: Does the page look professionally branded for this specific company? Is the brand color ({brandColor}) visible and used appropriately?
+2. **Visual hierarchy**: Is the phone number / emergency CTA prominent and easy to find? Is the service list clearly readable?
+3. **Typography**: Are fonts consistent, properly sized, and readable? No broken characters or encoding issues?
+4. **Layout quality**: Any overlapping elements, broken grids, excessive whitespace, or cut-off content?
+5. **Mobile-readiness visual cues**: Does the desktop layout look like it would break on mobile (very wide elements, tiny text)?
+6. **Empty states**: Any visible placeholder text, "Lorem ipsum", or empty sections?
+7. **Image quality**: Any missing images (broken icons), low-res images, or incorrect aspect ratios?
+8. **Trust signals**: Does the page look trustworthy for a Swiss Handwerker business? (Professional photos, clear contact info, real address)
+
+Do NOT check for:
+- "FlowSight" branding issues (handled by DOM checks)
+- HTML/DOM structure or accessibility attributes
+- Code-level issues
+
+Return a JSON array of findings. Each finding:
+{ "severity": "STOPP|SYSTEM|FOUNDER|POLISH", "id": "VIS_WEB_xxx", "title": "short description", "detail": "what you see vs what's expected" }
+
+Severity guide:
+- STOPP: Broken layout, missing critical CTA, unreadable text, clearly wrong branding
+- SYSTEM: Suboptimal hierarchy, weak brand presence, inconsistent spacing
+- FOUNDER: Design taste decisions (color choices, photo selection, layout preference)
+- POLISH: Minor spacing, alignment, shadow/border refinements
+
+Return [] if everything looks good. ONLY return the JSON array, nothing else.`,
+  },
+  wizard: {
+    surface: "Wizard",
+    prompt: `You are a QA auditor for a Swiss plumbing/heating service request form (Meldungsformular).
+Analyze this screenshot of the customer-facing wizard/form.
+
+Tenant: {displayName} ({slug})
+Expected brand color: {brandColor}
+
+Check for:
+1. **Brand consistency**: Tenant name and color visible? Feels like it belongs to the business?
+2. **Form usability**: Are form fields clearly labeled? Is the flow intuitive? Can you tell what to do?
+3. **Emergency visibility**: Is the emergency/Notfall option clearly visible and prominent?
+4. **Visual quality**: Clean layout, no broken elements, proper spacing?
+5. **Typography**: Consistent, readable fonts? German text properly rendered (ä, ö, ü, ß)?
+6. **Trust**: Does this form look professional enough that a Swiss homeowner would fill it out?
+7. **Empty states / placeholders**: Any "Lorem ipsum", TODO, or placeholder text visible?
+
+Do NOT check for "FlowSight" branding (handled by DOM checks).
+
+Return a JSON array of findings:
+{ "severity": "STOPP|SYSTEM|FOUNDER|POLISH", "id": "VIS_WIZ_xxx", "title": "short description", "detail": "what you see vs what's expected" }
+
+Return [] if everything looks good. ONLY return the JSON array, nothing else.`,
+  },
+  leitstand: {
+    surface: "Leitstand",
+    prompt: `You are a QA auditor for a Swiss plumbing/heating business operations dashboard ("Leitstand").
+Analyze this screenshot of the internal operations dashboard.
+
+Tenant: {displayName} ({slug})
+Expected brand color: {brandColor}
+
+This dashboard is used by the business owner/office staff to manage incoming service cases.
+The Zielbild (target state) is a clean, professional sidebar-layout dashboard with:
+- Left sidebar: tenant logo/initials in brand color, navigation items (Fälle, Einsatzplan, Mitarbeiter, Kennzahlen, Einstellungen)
+- Main area: case list or pulse view with priority grouping
+- KPI summary at top
+
+Check for:
+1. **Brand integration**: Is the sidebar branded with tenant color ({brandColor})? Are initials/logo correct?
+2. **Information hierarchy**: Can you quickly see the most important information (new cases, emergencies)?
+3. **Table/list quality**: Is the case list readable? Proper column alignment? No data overflow?
+4. **Empty state handling**: If few/no cases, is there a helpful empty state (not just blank)?
+5. **Navigation clarity**: Is it clear which section you're in? Active state visible?
+6. **Visual polish**: Consistent spacing, borders, shadows? Professional appearance?
+7. **Data presentation**: Are numbers, dates, status badges formatted properly?
+8. **Responsiveness cues**: Does the layout use space efficiently? No excessive whitespace?
+
+Do NOT check for:
+- "FlowSight" / "Bald" text issues (handled by DOM checks)
+- Tab title issues (handled by DOM checks)
+- Authentication/routing issues
+
+Return a JSON array of findings:
+{ "severity": "STOPP|SYSTEM|FOUNDER|POLISH", "id": "VIS_OPS_xxx", "title": "short description", "detail": "what you see vs what's expected" }
+
+Return [] if everything looks good. ONLY return the JSON array, nothing else.`,
+  },
+};
+
+async function analyzeScreenshot(screenshotPath, surface, config) {
+  if (!VISION_ENABLED) return;
+  if (!fs.existsSync(screenshotPath)) return;
+
+  const checklist = VISION_CHECKLISTS[surface];
+  if (!checklist) return;
+
+  const imageData = fs.readFileSync(screenshotPath);
+  const base64 = imageData.toString("base64");
+  const mediaType = "image/png";
+
+  // Fill in tenant details
+  const prompt = checklist.prompt
+    .replace(/{displayName}/g, config.displayName)
+    .replace(/{slug}/g, config.slug)
+    .replace(/{brandColor}/g, config.brandColor);
+
+  console.log(`  Vision: analyzing ${checklist.surface}...`);
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2048,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "image",
+                source: { type: "base64", media_type: mediaType, data: base64 },
+              },
+              { type: "text", text: prompt },
+            ],
+          },
+        ],
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.log(`  Vision: API error ${res.status} — ${err.slice(0, 120)}`);
+      return;
+    }
+
+    const body = await res.json();
+    const text = body.content?.[0]?.text ?? "";
+
+    // Extract JSON array from response (may be wrapped in ```json ... ```)
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      if (text.includes("[]")) return; // No findings
+      console.log(`  Vision: could not parse response for ${surface}`);
+      return;
+    }
+
+    const findings = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(findings) || findings.length === 0) return;
+
+    console.log(`  Vision: ${findings.length} finding(s) for ${checklist.surface}`);
+
+    for (const f of findings) {
+      const severity = ["STOPP", "SYSTEM", "FOUNDER", "POLISH"].includes(f.severity)
+        ? f.severity
+        : "POLISH";
+      delta(
+        severity,
+        f.id || `VIS_${surface.toUpperCase()}_UNKNOWN`,
+        f.title || "Vision finding",
+        `${checklist.surface} (Vision)`,
+        f.detail || "",
+        "Visuell erkannt",
+        "Phase B Vision Analysis",
+      );
+    }
+  } catch (err) {
+    console.log(`  Vision: error for ${surface} — ${err.message}`);
+  }
+}
+
+async function runVisionAnalysis(config) {
+  if (!VISION_ENABLED) {
+    if (!ANTHROPIC_API_KEY && !SKIP_VISION) {
+      console.log("\n  Phase B (Vision): Skipped — no ANTHROPIC_API_KEY set");
+    } else if (!TAKE_SCREENSHOTS) {
+      console.log("\n  Phase B (Vision): Skipped — --screenshots not set");
+    } else if (SKIP_VISION) {
+      console.log("\n  Phase B (Vision): Skipped — --no-vision flag");
+    }
+    return;
+  }
+
+  console.log("\n  Phase B (Vision): Analyzing screenshots...");
+  const dir = "tmp/qa/screenshots";
+
+  // Analyze each surface screenshot if it exists
+  const surfaces = [
+    { key: "website", file: `${dir}/website_${config.slug}.png` },
+    { key: "wizard", file: `${dir}/wizard_${config.slug}.png` },
+    { key: "leitstand", file: `${dir}/leitstand_${config.slug}.png` },
+  ];
+
+  for (const { key, file } of surfaces) {
+    await analyzeScreenshot(file, key, config);
+  }
+}
+
 // ── Report Generator ───────────────────────────────────────────
 function generateReport(config, startTime) {
   const duration = ((Date.now() - startTime) / 1000).toFixed(1);
@@ -677,12 +893,14 @@ function generateReport(config, startTime) {
   deltas.forEach((d) => counts[d.severity]++);
   const total = deltas.length;
 
+  const visionLabel = VISION_ENABLED ? "A+B (DOM + Vision)" : "A (DOM only)";
   let md = "# QA Sweep — Delta Report\n\n";
   md += "| | |\n|---|---|\n";
   md += `| **Tenant** | ${config.displayName} (\`${config.slug}\`) |\n`;
   md += `| **Target** | ${TARGET} |\n`;
   md += `| **Date** | ${new Date().toISOString().slice(0, 19)}Z |\n`;
   md += `| **Duration** | ${duration}s |\n`;
+  md += `| **Phase** | ${visionLabel} |\n`;
   md += `| **Deltas** | ${total} |\n\n`;
 
   md += "## Summary\n\n";
@@ -727,7 +945,7 @@ function generateReport(config, startTime) {
 // ── Main ───────────────────────────────────────────────────────
 async function main() {
   const startTime = Date.now();
-  console.log(`QA Sweep — ${TENANT_SLUG} @ ${TARGET}`);
+  console.log(`QA Sweep — ${TENANT_SLUG} @ ${TARGET} [Phase ${VISION_ENABLED ? "A+B" : "A"}]`);
 
   const config = await loadTenantConfig();
   console.log(
@@ -767,6 +985,9 @@ async function main() {
   } finally {
     await browser.close();
   }
+
+  // Phase B: Vision analysis (after browser close — uses saved screenshots)
+  await runVisionAnalysis(config);
 
   // Generate and write report
   const report = generateReport(config, startTime);
