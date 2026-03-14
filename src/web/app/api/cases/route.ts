@@ -323,7 +323,6 @@ export async function POST(request: NextRequest) {
           createdAt: row.created_at,
           callerPhone: data.contact_phone,
           smsSenderName: smsConfig.senderName,
-          smsFromNumber: smsConfig.fromNumber ?? undefined,
           plz: data.plz,
           city: data.city,
           category: data.category,

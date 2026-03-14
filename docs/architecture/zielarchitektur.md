@@ -489,9 +489,11 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 
 #### SMS
 - **Rolle:** Brücke zwischen Voice und Korrektur. Einziger Post-Call-Kontakt zum Melder.
+- **Provider:** eCall.ch (Schweizer SMS-Gateway). Twilio = nur Voice/SIP, kein SMS.
+- **Sender-Logik (2-Tier):** (1) Alphanumerischer Sender pro Tenant (z.B. "Weinberger") — muss im eCall-Portal freigeschaltet sein. (2) Fallback: ECALL_SENDER_NUMBER (FlowSight-Servicenummer, global).
 - **Qualitätsanspruch:** Muss von Firmenname kommen (alphanumeric sender). Muss Korrekturlink enthalten. Muss unter 160 Chars (~85 Chars aktuell). Muss auf Handy funktionieren.
-- **Typische Risiken:** SMS an Twilio-owned Number (gefixt PR #126). DEMO_SIP_CALLER_ID nicht gesetzt → SMS ins Nirgendwo. SMS-Provider-Limits.
-- **Zielzustand:** Melder erhält SMS innerhalb 10s nach Anruf. Korrekturlink funktioniert. Foto-Upload möglich.
+- **Typische Risiken:** Alphanumerischer Sender nicht im eCall-Portal freigeschaltet → 400 → Fallback auf Servicenummer. eCall-Env-Vars nicht gesetzt → SMS-Versand komplett blockiert.
+- **Zielzustand:** Melder erhält SMS innerhalb 10s nach Anruf. Korrekturlink funktioniert. Foto-Upload möglich. Absender = Firmenname (nach eCall-Freischaltung).
 
 #### Ops Dashboard
 - **Rolle:** "Mein System" — der Ort, an dem der Handwerker seine Fälle sieht und bearbeitet.
@@ -546,40 +548,75 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 
 ---
 
-## 12. SMS-/Kontaktzielrouting
+## 12. SMS-Architektur (eCall.ch)
 
-### Das Problem als Architekturthema
+### Architekturentscheidung (14.03.2026)
 
-SMS-Routing ist kein Bug — es ist eine **Architekturentscheidung**, die sich durch alle Demo-Modi zieht. Die Frage "Wer bekommt die SMS?" muss pro Modus klar beantwortet sein.
+**eCall.ch = einziger SMS-Provider für Schweiz. Twilio = nur Voice/SIP, kein SMS.**
 
-### Routing-Matrix
+Grund: Twilio-SMS via internationale Carrier verursachen Spam-Friktion bei Schweizer Empfängern. eCall.ch routet direkt über Schweizer Carrier → keine Spam-Filter-Probleme. Ein Twilio-SMS-Fallback wäre ein Fallback der nicht funktioniert und false confidence gibt.
 
-| Auslöser | Modus | Anrufer-Nummer | SMS-Ziel | Logik |
-|----------|-------|----------------|----------|-------|
-| Voice-Call | **Production** | Echter Melder (+41...) | Anrufer-Nummer | Standard |
-| Voice-Call | **Internal Test** | Founder von SIP (+41445053019 / +41445520919) | DEMO_SIP_CALLER_ID (Founder-Handy) | Twilio-owned Detection |
-| Voice-Call | **Prospect Demo** | Prospect von SIP oder eigenem Handy | ??? (D11 — offen) | Muss geklärt werden |
-| Review-SMS | **Production** | — | case.contact_phone | Standard |
-| Review-SMS | **Prospect Demo** | — | Demo-Case → Prospect-Handy? | Muss geklärt werden |
-
-### Empfohlene Routing-Logik
+### Provider-Architektur
 
 ```
-WENN anrufer_nummer ∈ TWILIO_OWNED_NUMBERS:
-  → sms_ziel = tenant.modules.demo_sms_target ?? DEMO_SIP_CALLER_ID
-SONST:
-  → sms_ziel = anrufer_nummer (Standard)
+┌──────────────────────────────────────────────────┐
+│  SMS (eCall.ch)          │  Voice/SIP (Twilio)    │
+│                          │                        │
+│  sendSms()               │  Retell → Twilio SIP   │
+│    → sendSmsEcall()      │    → Peoplefone         │
+│                          │                        │
+│  Env: ECALL_API_*        │  Env: TWILIO_*          │
+│  Env: ECALL_SENDER_NUMBER│                        │
+└──────────────────────────────────────────────────┘
 ```
 
-**Vorteile:**
-- Tenant-spezifisch: Jeder Demo-Tenant kann ein anderes SMS-Ziel haben
-- Fallback auf globale Env-Var (Founder-Handy)
-- Production unberührt (echte Nummern → echte Melder)
+### Sender-Logik (2-Tier)
 
-**Entscheidungsbedarf (D11):**
-- Soll der Prospect beim Demo-Anruf die SMS auf SEIN Handy bekommen? (= überzeugender, aber erfordert Prospect-Nummer im System)
-- Oder soll die SMS an Founder gehen, der sie dem Prospect zeigt? (= sicherer, aber weniger Wow)
-- **Empfehlung:** Prospect soll SMS selbst erhalten. Demo-Tenant bekommt `demo_sms_target` = Prospect-Handynummer (Founder setzt vor Demo-Call).
+```
+Tier 1: tenant.modules.sms_sender_name
+        "Weinberger", "Doerfler" etc. (alphanumerisch)
+        Muss pro Tenant im eCall-Portal freigeschaltet sein
+        → Empfänger sieht: "Weinberger"
+
+        ↓ 400 rejected (nicht freigeschaltet)?
+
+Tier 2: ECALL_SENDER_NUMBER
+        FlowSight-Servicenummer (global, dedizierte CH-Nummer)
+        KEINE Founder-Privatnummer
+        → Empfänger sieht: +41 7x xxx xx xx + Text "Weinberger: Ihre Meldung..."
+```
+
+### SMS-Empfänger-Routing (unverändert)
+
+| Auslöser | Modus | SMS-Empfänger | Logik |
+|----------|-------|---------------|-------|
+| Voice-Call | **Production** | Anrufer-Nummer (Melder) | Standard |
+| Voice-Call | **Internal Test** | DEMO_SIP_CALLER_ID (Founder-Handy) | Twilio-owned Detection |
+| Voice-Call | **Prospect Demo** | demo_sms_target (Prospect-Handy) | Tenant-spezifisch |
+| Review-SMS | **Production** | case.contact_phone | Standard |
+
+### Richtung
+
+**One-Way.** Kein Reply-Handling. Korrekturen/Interaktion laufen über Korrekturlink → Wizard → Leitstand.
+
+### Code-Pfade
+
+```
+postCallSms.ts  →  sendSms()  →  sendSmsEcall()  →  eCall REST API
+                    ↑ Whitelist                        ↑ 2-Tier Sender
+                    SMS_ALLOWED_NUMBERS                 Tier 1 → Tier 2
+```
+
+### Produktionsreife-Checkliste
+
+- [x] eCall REST API Client (`sendSmsEcall.ts`)
+- [x] 2-Tier Sender-Fallback (alpha → Servicenummer)
+- [x] Twilio-SMS-Pfad entfernt
+- [ ] FlowSight-Servicenummer beschaffen (bei eCall oder dedizierte CH-Nummer)
+- [ ] ECALL_SENDER_NUMBER auf Vercel setzen (Servicenummer)
+- [ ] Alpha-Sender pro Tenant im eCall-Portal freischalten
+- [ ] SMS_ALLOWED_NUMBERS Whitelist entfernen (nach Go-Live-Entscheid)
+- [ ] Delivery-Status-Monitoring (eCall Status-Webhooks → Morning Report)
 
 ---
 

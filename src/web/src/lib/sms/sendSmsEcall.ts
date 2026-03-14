@@ -15,7 +15,7 @@ import type { SendSmsResult } from "./sendSms";
  * Sender logic:
  * - First tries the alphanumeric sender (e.g. "Weinberger")
  * - If rejected (400 invalid sender): retries with ECALL_SENDER_NUMBER
- * - Alphanumeric senders must be pre-approved in eCall portal
+ * - Alphanumeric senders need pre-approval in the eCall portal
  *
  * Phone format: eCall expects international format with 00 prefix (e.g. 0041791234567).
  * We accept E.164 (+41...) and convert automatically.

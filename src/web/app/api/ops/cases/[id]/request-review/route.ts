@@ -156,7 +156,6 @@ export async function POST(
     channel = "sms";
     const smsConfig = await getTenantSmsConfig(row.tenant_id);
     const senderName = smsConfig?.senderName ?? "FlowSight";
-    const fromNumber = smsConfig?.fromNumber;
     const smsBody = [
       `${senderName}: Wie war unser Service?`,
       ``,
@@ -165,7 +164,7 @@ export async function POST(
       ``,
       `Vielen Dank für Ihr Vertrauen — Ihr Service-Team`,
     ].join("\n");
-    const smsResult = await sendSms(row.contact_phone, smsBody, fromNumber ?? senderName);
+    const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
     sent = smsResult.sent;
   }
 
