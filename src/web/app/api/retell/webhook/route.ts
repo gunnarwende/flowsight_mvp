@@ -568,6 +568,7 @@ export async function POST(req: Request) {
           category: category!,
           street: street ?? undefined,
           houseNumber: houseNumber ?? undefined,
+          reporterName: reporterName ?? undefined,
         });
         smsSent = smsResult.sent;
         smsSid = smsResult.messageSid;

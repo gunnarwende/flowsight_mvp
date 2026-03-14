@@ -328,6 +328,7 @@ export async function POST(request: NextRequest) {
           category: data.category,
           street: data.street,
           houseNumber: data.house_number,
+          reporterName: data.reporter_name,
         });
         if (smsResult.sent) {
           await supabase.from("case_events").insert({
