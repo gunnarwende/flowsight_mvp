@@ -11,8 +11,8 @@
 
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
-- **BLOCKER:** 1 (S3: eCall SMS — Code ready, wartet auf Founder-Action: FlowSight-Servicenummer + ECALL_SENDER_NUMBER)
-- **Phase:** Voice V2/V3/V6 DONE (PR #198). SMS-Architektur vereinfacht: eCall-only, 2-Tier Sender, Twilio-SMS entfernt (PR #199). Naechster Schritt: Founder setzt Servicenummer, dann E2E-Verify, dann Leitstand-Redesign R2.
+- **BLOCKER:** 0 (S3 + V2/V3/V5/V6 = READY TO TEST)
+- **Phase:** SMS Direkt-Sender deployed (PR #200). Voice Agents re-published. Alles READY TO TEST — Founder muss Testanruf Weinberger machen.
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -35,9 +35,9 @@
 |---|-------|------|-----------|--------|
 | S1 | **Weinberger SMS kommt nicht an** | Voice→Webhook→SMS | `+41435051101` fehlte in TWILIO_OWNED_NUMBERS → SMS ging an Twilio-Nr statt Founder-Handy | **DONE** (PR #189) |
 | S2 | **SMS_ALLOWED_NUMBERS Whitelist pruefen** | Vercel Env | `+41764458942` ist in Whitelist → kein Blocker | **PASS** |
-| S3 | **eCall SMS kommt nicht an** | eCall-Integration deployed (PR #197+#199), 2-Tier Sender (alpha→Servicenr), Twilio-SMS entfernt. **Blocker:** ECALL_SENDER_NUMBER (FlowSight-Servicenr) noch nicht gesetzt + Alpha-Sender nicht im eCall-Portal freigeschaltet. | Founder: Servicenummer beschaffen → ECALL_SENDER_NUMBER setzen → E2E-Test | **OFFEN (Founder-Action)** |
+| S3 | **eCall SMS kommt nicht an** | Servicenummer +41766012739 beschafft + auf Vercel gesetzt. Direkt-Sender (PR #200): immer ECALL_SENDER_NUMBER, kein Alpha-Fallback. Test-SMS kommt an. | Founder: Testanruf Weinberger → SMS muss ankommen | **READY TO TEST** (PR #200) |
 
-**Status:** S1+S2 DONE. **S3 = Founder-Action.** Code ist produktionsreif (2-Tier, eCall-only). Wartet auf: (1) FlowSight-Servicenummer beschaffen, (2) ECALL_SENDER_NUMBER auf Vercel setzen, (3) E2E-Verify.
+**Status:** S1+S2 DONE. **S3 = READY TO TEST.** Servicenummer live, Direkt-Sender deployed (PR #200). Founder muss Testanruf machen um E2E zu verifizieren.
 
 ---
 
@@ -48,11 +48,11 @@
 | # | Titel | Root Cause | Schwere | Status |
 |---|-------|-----------|---------|--------|
 | V1 | **Voice auf Juniper umstellen (alle Agents)** | Agent-JSONs verwenden falsche voice_id | hoch | **DONE** (PR #193) |
-| V2 | **"Jul" aus Greeting entfernen** | Global gefixt: agent_name, greeting, global_prompt, FIRMEN-WISSEN — alle "Jul." entfernt. Alle 8 Agents republished. | hoch | **DONE** (PR #198) — Founder-Verify ausstehend |
-| V3 | **Ortsnamen NICHT wiederholen** | NIEMALS-Regel mit VERBOTEN-Beispielen auf allen 4 DE-Agents. Republished. | mittel | **DONE** (PR #198) — Founder-Verify ausstehend |
+| V2 | **"Jul" aus Greeting entfernen** | Global gefixt: agent_name, greeting, global_prompt, FIRMEN-WISSEN — alle "Jul." entfernt. Alle 8 Agents republished. | hoch | **READY TO TEST** (PR #198) |
+| V3 | **Ortsnamen NICHT wiederholen** | NIEMALS-Regel mit VERBOTEN-Beispielen auf allen 4 DE-Agents. Republished. | mittel | **READY TO TEST** (PR #198) |
 | V4 | **Dringlichkeits-Echo korrigieren** | Agent-Prompt mappt nicht 1:1 | mittel | **DONE** (PR #193) |
-| V5 | **SMS kommt nicht an (eCall)** | Identisch mit S3. Code produktionsreif. Wartet auf Founder-Action (Servicenummer + ECALL_SENDER_NUMBER) | hoch | **OFFEN** — blockiert durch S3 |
-| V6 | **Namens-Frage falsch formuliert** | Global gefixt auf allen 4 DE-Agents: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" Republished. | mittel | **DONE** (PR #198) — Founder-Verify ausstehend |
+| V5 | **SMS kommt nicht an (eCall)** | Identisch mit S3. Direkt-Sender deployed (PR #200). Test-SMS kommt an. | hoch | **READY TO TEST** — blockiert durch S3 |
+| V6 | **Namens-Frage falsch formuliert** | Global gefixt auf allen 4 DE-Agents: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" Republished. | mittel | **READY TO TEST** (PR #198) |
 
 ---
 
