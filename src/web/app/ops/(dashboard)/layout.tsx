@@ -9,19 +9,23 @@ import { OpsShell } from "@/src/components/ops/OpsShell";
  * Falls back to "Leitstand" for admin or when no tenant is scoped.
  * Never shows "FlowSight" (R4).
  */
+/**
+ * Tab title: "{short_name} Leitstand" — Identity Contract E2.
+ * Uses title.absolute to bypass root layout's " — FlowSight" template (R4).
+ */
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const authClient = await getAuthClient();
     const {
       data: { user },
     } = await authClient.auth.getUser();
-    if (!user) return { title: "Leitstand" };
+    if (!user) return { title: { absolute: "Leitstand" } };
 
     const identity = await resolveTenantIdentity(user);
     const tabLabel = identity?.shortName ?? "Leitstand";
-    return { title: `${tabLabel} Leitstand` };
+    return { title: { absolute: `${tabLabel} Leitstand` } };
   } catch {
-    return { title: "Leitstand" };
+    return { title: { absolute: "Leitstand" } };
   }
 }
 
@@ -39,7 +43,11 @@ export default async function DashboardLayout({
   const identity = await resolveTenantIdentity(user);
 
   return (
-    <OpsShell userEmail={user.email ?? ""} tenantName={identity?.displayName ?? undefined}>
+    <OpsShell
+      userEmail={user.email ?? ""}
+      tenantName={identity?.displayName ?? undefined}
+      brandColor={identity?.primaryColor ?? undefined}
+    >
       {children}
     </OpsShell>
   );

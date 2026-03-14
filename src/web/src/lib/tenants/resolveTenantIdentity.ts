@@ -67,11 +67,13 @@ export async function resolveTenantIdentity(
       }
     }
 
-    // Fallback: single-tenant MVP
+    // Fallback: pick first tenant (admin without tenant_id, or single-tenant MVP).
+    // Admin sees all cases via RLS anyway — this just provides branding context.
     const { data: tenants } = await supabase
       .from("tenants")
       .select("id, name, slug, case_id_prefix, modules")
-      .limit(2);
+      .order("created_at", { ascending: true })
+      .limit(1);
 
     if (tenants && tenants.length === 1) {
       const t = tenants[0];
