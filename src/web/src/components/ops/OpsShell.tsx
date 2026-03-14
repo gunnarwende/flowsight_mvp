@@ -63,10 +63,13 @@ const NAV_ITEMS: NavItem[] = [
 export function OpsShell({
   userEmail,
   tenantName,
+  brandColor,
   children,
 }: {
   userEmail: string;
   tenantName?: string;
+  /** Tenant brand color hex (e.g. "#004994"). Falls back to amber if not set. */
+  brandColor?: string;
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -78,22 +81,26 @@ export function OpsShell({
         .map((w) => w[0]?.toUpperCase() ?? "")
         .join("")
     : "LS";
+  const color = brandColor ?? "#d97706"; // fallback amber-600
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   const sidebarContent = (
     <>
-      {/* Logo */}
+      {/* Logo — Identity Contract R4: Tenant branding, not FlowSight */}
       <div className="px-4 py-5 border-b border-gray-200">
         <Link href="/ops/cases" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: color }}
+          >
             <span className="text-white font-bold text-sm">{initials}</span>
           </div>
           <span className="font-bold text-gray-900 truncate">{displayName}</span>
         </Link>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation — active state uses tenant brand color */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname.startsWith(item.href);
@@ -104,9 +111,18 @@ export function OpsShell({
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-amber-50 text-amber-700 border-l-2 border-amber-500 -ml-px"
+                  ? "border-l-2 -ml-px"
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
               }`}
+              style={
+                isActive
+                  ? {
+                      backgroundColor: `${color}10`,
+                      color: color,
+                      borderColor: color,
+                    }
+                  : undefined
+              }
             >
               {item.icon}
               <span>{item.label}</span>
@@ -149,7 +165,10 @@ export function OpsShell({
           </svg>
         </button>
         <Link href="/ops/cases" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
+          <div
+            className="w-7 h-7 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: color }}
+          >
             <span className="text-white font-bold text-xs">{initials}</span>
           </div>
           <span className="font-semibold text-gray-900 text-sm truncate max-w-[160px]">{displayName}</span>
