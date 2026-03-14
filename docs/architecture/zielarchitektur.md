@@ -570,21 +570,19 @@ Grund: Twilio-SMS via internationale Carrier verursachen Spam-Friktion bei Schwe
 └──────────────────────────────────────────────────┘
 ```
 
-### Sender-Logik (2-Tier)
+### Sender-Logik (1-Tier, direkt)
 
 ```
-Tier 1: tenant.modules.sms_sender_name
-        "Weinberger", "Doerfler" etc. (alphanumerisch)
-        Muss pro Tenant im eCall-Portal freigeschaltet sein
-        → Empfänger sieht: "Weinberger"
-
-        ↓ 400 rejected (nicht freigeschaltet)?
-
-Tier 2: ECALL_SENDER_NUMBER
-        FlowSight-Servicenummer (global, dedizierte CH-Nummer)
-        KEINE Founder-Privatnummer
-        → Empfänger sieht: +41 7x xxx xx xx + Text "Weinberger: Ihre Meldung..."
+ECALL_SENDER_NUMBER = +41766012739 (FlowSight-Servicenummer)
+→ Immer als Absender verwendet (keine alphanumerische Sender-Registrierung nötig)
+→ Empfänger sieht: +41766012739 + Text "Weinberger: Ihre Meldung..."
+→ Firmenname steht im SMS-Text, nicht im Absender-Feld
+→ Skaliert: Ein Sender für alle Tenants, kein Setup pro Betrieb
 ```
+
+Bewusste Entscheidung (14.03.): Alphanumerische Sender (z.B. "Weinberger" als Absendername)
+erfordern pro Tenant eine Freischaltung im eCall-Portal. Bei 50+ Betrieben = operativer Overhead.
+Stattdessen: Eine Nummer für alle, Firmenname im Text. Upgrade auf Alpha-Sender optional pro Tenant.
 
 ### SMS-Empfänger-Routing (unverändert)
 
@@ -610,13 +608,13 @@ postCallSms.ts  →  sendSms()  →  sendSmsEcall()  →  eCall REST API
 ### Produktionsreife-Checkliste
 
 - [x] eCall REST API Client (`sendSmsEcall.ts`)
-- [x] 2-Tier Sender-Fallback (alpha → Servicenummer)
 - [x] Twilio-SMS-Pfad entfernt
-- [ ] FlowSight-Servicenummer beschaffen (bei eCall oder dedizierte CH-Nummer)
-- [ ] ECALL_SENDER_NUMBER auf Vercel setzen (Servicenummer)
-- [ ] Alpha-Sender pro Tenant im eCall-Portal freischalten
+- [x] FlowSight-Servicenummer beschafft: +41766012739 (eCall)
+- [x] ECALL_SENDER_NUMBER auf Vercel gesetzt
+- [x] Direkt-Sender: ECALL_SENDER_NUMBER immer als Absender (kein Alpha-Fallback-Tanz)
 - [ ] SMS_ALLOWED_NUMBERS Whitelist entfernen (nach Go-Live-Entscheid)
 - [ ] Delivery-Status-Monitoring (eCall Status-Webhooks → Morning Report)
+- [ ] Optional: Alpha-Sender pro Tenant im eCall-Portal (UX-Upgrade, kein Blocker)
 
 ---
 
