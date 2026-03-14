@@ -11,7 +11,9 @@ import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 interface PulsGroup {
   key: string;
   label: string;
+  emptyLabel: string;
   color: string;
+  headerBg: string;
   bgColor: string;
   borderColor: string;
   dotColor: string;
@@ -110,7 +112,9 @@ function groupCases(cases: CaseRow[]): PulsGroup[] {
     {
       key: "achtung",
       label: "Achtung",
+      emptyLabel: "Keine Notfälle oder überfällige Fälle",
       color: "text-red-700",
+      headerBg: "bg-red-100",
       bgColor: "bg-red-50",
       borderColor: "border-red-200",
       dotColor: "bg-red-500",
@@ -119,7 +123,9 @@ function groupCases(cases: CaseRow[]): PulsGroup[] {
     {
       key: "heute",
       label: "Heute",
+      emptyLabel: "Keine neuen Fälle heute",
       color: "text-amber-700",
+      headerBg: "bg-amber-100",
       bgColor: "bg-amber-50",
       borderColor: "border-amber-200",
       dotColor: "bg-amber-500",
@@ -128,7 +134,9 @@ function groupCases(cases: CaseRow[]): PulsGroup[] {
     {
       key: "in-arbeit",
       label: "In Arbeit",
+      emptyLabel: "Keine Fälle in Bearbeitung",
       color: "text-blue-700",
+      headerBg: "bg-blue-100",
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200",
       dotColor: "bg-blue-500",
@@ -137,7 +145,9 @@ function groupCases(cases: CaseRow[]): PulsGroup[] {
     {
       key: "abschluss",
       label: "Abschluss",
+      emptyLabel: "Keine Abschlüsse diese Woche",
       color: "text-emerald-700",
+      headerBg: "bg-emerald-100",
       bgColor: "bg-emerald-50",
       borderColor: "border-emerald-200",
       dotColor: "bg-emerald-500",
@@ -160,63 +170,70 @@ export function PulsView({
   const groups = groupCases(cases);
 
   return (
-    <div className="space-y-4">
-      {groups.map((group) => {
-        if (group.cases.length === 0) return null;
-        return (
-          <section key={group.key}>
-            {/* Group header */}
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${group.dotColor}`} />
-              <h2 className={`text-sm font-semibold ${group.color}`}>
-                {group.label}
-              </h2>
-              <span className="text-xs text-gray-400">
-                {group.cases.length}
-              </span>
-            </div>
+    <div className="space-y-5">
+      {groups.map((group) => (
+        <section key={group.key}>
+          {/* Group header — always visible, shows count badge */}
+          <div className={`flex items-center gap-2.5 mb-2.5 px-3 py-2 rounded-lg ${group.headerBg}`}>
+            <span className={`w-2.5 h-2.5 rounded-full ${group.dotColor}`} />
+            <h2 className={`text-sm font-bold ${group.color}`}>
+              {group.label}
+            </h2>
+            <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${group.color} bg-white/60`}>
+              {group.cases.length}
+            </span>
+          </div>
 
-            {/* Case cards */}
+          {/* Empty state — confirms "all clear" */}
+          {group.cases.length === 0 ? (
+            <p className="text-xs text-gray-400 pl-3 pb-1">
+              {group.emptyLabel}
+            </p>
+          ) : (
+            /* Case cards */
             <div className="space-y-2">
               {group.cases.map((c) => (
                 <Link
                   key={c.id}
                   href={`/ops/cases/${c.id}`}
-                  className={`block rounded-xl border ${group.borderColor} ${group.bgColor} p-3 transition-all hover:shadow-sm hover:border-gray-300`}
+                  className={`block rounded-xl border ${group.borderColor} bg-white p-3.5 transition-all hover:shadow-md hover:border-gray-300`}
                 >
-                  <div className="flex items-start justify-between">
+                  {/* Row 1: Category + Reporter | Time + Case ID */}
+                  <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-300"}`} />
                       <span className="text-sm font-semibold text-gray-900 truncate">
                         {c.category}
                       </span>
                       {c.reporter_name && (
-                        <span className="text-sm text-gray-500 truncate">
+                        <span className="text-sm text-gray-500 truncate hidden sm:inline">
                           — {c.reporter_name}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <span className="text-xs text-gray-400">
                         {SOURCE_ICON[c.source]} {timeAgo(c.created_at)}
                       </span>
-                      <span className="text-xs font-medium text-amber-600">
+                      <span className="text-xs font-medium text-slate-500">
                         {formatCaseId(c.seq_number, caseIdPrefix)}
                       </span>
                     </div>
                   </div>
 
+                  {/* Row 2: Description */}
                   {c.description && (
-                    <p className="mt-1 text-xs text-gray-500 line-clamp-1">
+                    <p className="mt-1.5 text-sm text-gray-600 line-clamp-1">
                       {c.description}
                     </p>
                   )}
 
-                  <div className="mt-1.5 flex items-center gap-3 text-xs">
+                  {/* Row 3: Location + Status + Assignee */}
+                  <div className="mt-2 flex items-center gap-3 text-xs">
                     <span className="text-gray-500">
                       {c.plz} {c.city}
                     </span>
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
                       c.status === "new" ? "bg-blue-100 text-blue-700" :
                       c.status === "contacted" ? "bg-sky-100 text-sky-700" :
                       c.status === "scheduled" ? "bg-violet-100 text-violet-700" :
@@ -231,23 +248,23 @@ export function PulsView({
                       </span>
                     )}
                     {c.assignee_text && (
-                      <span className="text-gray-400">
+                      <span className="font-medium text-gray-600">
                         → {c.assignee_text}
+                      </span>
+                    )}
+                    {/* Mobile: show reporter inline */}
+                    {c.reporter_name && (
+                      <span className="text-gray-400 sm:hidden truncate">
+                        {c.reporter_name}
                       </span>
                     )}
                   </div>
                 </Link>
               ))}
             </div>
-          </section>
-        );
-      })}
-
-      {groups.every((g) => g.cases.length === 0) && (
-        <div className="text-center py-12 text-gray-400 text-sm">
-          Keine aktiven Fälle — alles im Griff.
-        </div>
-      )}
+          )}
+        </section>
+      ))}
     </div>
   );
 }

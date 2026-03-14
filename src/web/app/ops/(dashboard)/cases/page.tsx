@@ -252,7 +252,7 @@ export default async function OpsCasesPage({
               href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}` : "/ops/cases"}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 !showDemo
-                  ? "bg-amber-500 text-white"
+                  ? "bg-slate-700 text-white"
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -262,7 +262,7 @@ export default async function OpsCasesPage({
               href={filterTenantSlug ? `/ops/cases?tenant=${filterTenantSlug}&tab=demo` : "/ops/cases?tab=demo"}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 showDemo
-                  ? "bg-amber-500 text-white"
+                  ? "bg-slate-700 text-white"
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >
