@@ -73,7 +73,7 @@
       {
         "instruction": {
           "type": "static_text",
-          "text": "Grüezi, hier ist Lisa von FlowSight. Wie kann ich Ihnen helfen?"
+          "text": "Grüeezi, hier ist Lisa von FlowSight. Wie kann ich Ihnen helfen?"
         },
         "always_edge": {
           "destination_node_id": "node-capture",

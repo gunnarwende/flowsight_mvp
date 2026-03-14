@@ -5,7 +5,7 @@
 
 set -e
 
-TARGET="${1:-https://flowsight-mvp.vercel.app}"
+TARGET="${1:-https://flowsight.ch}"
 FAKE_TENANT="00000000-0000-0000-0000-000000000000"
 
 echo "=== WhatsApp Alert Proof ==="

@@ -321,6 +321,8 @@ export async function POST(request: NextRequest) {
         const smsResult = await sendPostCallSms({
           caseId: row.id,
           createdAt: row.created_at,
+          seqNumber: row.seq_number,
+          caseIdPrefix,
           callerPhone: data.contact_phone,
           smsSenderName: smsConfig.senderName,
           plz: data.plz,
@@ -350,7 +352,7 @@ export async function POST(request: NextRequest) {
 
     // Notify: system failures only (email dispatch fail → RED alert)
     if (!emailSent) {
-      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
       await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${baseUrl}/ops/cases/${row.id}` });
     }
 

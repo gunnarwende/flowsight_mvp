@@ -12,7 +12,7 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 (S3 + V2/V3/V5/V6 = READY TO TEST)
-- **Phase:** SMS Direkt-Sender deployed (PR #200). Voice Agents re-published. Alles READY TO TEST — Founder muss Testanruf Weinberger machen.
+- **Phase:** Voice version-pin fix + SMS-Qualitaet deployed (PR #202). Root cause: Phone-Nummern waren auf alte Agent-Version gepinnt → alle Voice-Fixes wirkungslos. Jetzt unpinned + auto-unpin in retell_sync.mjs. SMS zeigt jetzt Meldername. Founder muss Testanruf machen.
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -48,11 +48,11 @@
 | # | Titel | Root Cause | Schwere | Status |
 |---|-------|-----------|---------|--------|
 | V1 | **Voice auf Juniper umstellen (alle Agents)** | Agent-JSONs verwenden falsche voice_id | hoch | **DONE** (PR #193) |
-| V2 | **"Jul" aus Greeting entfernen** | Global gefixt: agent_name, greeting, global_prompt, FIRMEN-WISSEN — alle "Jul." entfernt. Alle 8 Agents republished. | hoch | **READY TO TEST** (PR #198) |
-| V3 | **Ortsnamen NICHT wiederholen** | NIEMALS-Regel mit VERBOTEN-Beispielen auf allen 4 DE-Agents. Republished. | mittel | **READY TO TEST** (PR #198) |
+| V2 | **"Jul" aus Greeting entfernen** | Global gefixt (PR #198). Root cause fuer Nicht-Wirkung: Phone-Nr version-pinned auf v1 → Fix in PR #202 (auto-unpin). | hoch | **READY TO TEST** (PR #198 + #202) |
+| V3 | **Ortsnamen NICHT wiederholen** | NIEMALS-Regel auf allen DE-Agents (PR #198). Phone-Nr version-pin war root cause → Fix PR #202. | mittel | **READY TO TEST** (PR #198 + #202) |
 | V4 | **Dringlichkeits-Echo korrigieren** | Agent-Prompt mappt nicht 1:1 | mittel | **DONE** (PR #193) |
-| V5 | **SMS kommt nicht an (eCall)** | Identisch mit S3. Direkt-Sender deployed (PR #200). Test-SMS kommt an. | hoch | **READY TO TEST** — blockiert durch S3 |
-| V6 | **Namens-Frage falsch formuliert** | Global gefixt auf allen 4 DE-Agents: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" Republished. | mittel | **READY TO TEST** (PR #198) |
+| V5 | **SMS kommt nicht an (eCall)** | Identisch mit S3. Direkt-Sender (PR #200) + SMS-Qualitaet mit Meldername (PR #202). | hoch | **READY TO TEST** (PR #200 + #202) |
+| V6 | **Namens-Frage falsch formuliert** | Global gefixt (PR #198). Phone-Nr version-pin war root cause → Fix PR #202. | mittel | **READY TO TEST** (PR #198 + #202) |
 
 ---
 

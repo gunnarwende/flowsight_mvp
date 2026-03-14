@@ -6,6 +6,8 @@ import { generateShortVerifyToken } from "./verifySmsToken";
 export interface PostCallSmsPayload {
   caseId: string;
   createdAt: string;
+  seqNumber: number;
+  caseIdPrefix: string;
   callerPhone: string;
   smsSenderName: string;
   plz: string;
@@ -27,10 +29,11 @@ export async function sendPostCallSms(
   const baseUrl =
     process.env.APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
-    "https://flowsight-mvp.vercel.app";
+    "https://flowsight.ch";
 
   const shortToken = generateShortVerifyToken(p.caseId, p.createdAt);
-  const correctionUrl = `${baseUrl}/v/${p.caseId}?t=${shortToken}`;
+  const caseRef = `${p.caseIdPrefix}-${p.seqNumber}`;
+  const correctionUrl = `${baseUrl}/v/${caseRef}?t=${shortToken}`;
 
   const hasStreet = p.street && p.street.length > 0;
 
