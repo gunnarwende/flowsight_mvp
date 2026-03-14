@@ -561,6 +561,8 @@ export async function POST(req: Request) {
         const smsResult = await sendPostCallSms({
           caseId,
           createdAt: row.created_at,
+          seqNumber: row.seq_number,
+          caseIdPrefix,
           callerPhone: smsTarget,
           smsSenderName: smsConfig.senderName,
           plz: plz!,
@@ -602,7 +604,7 @@ export async function POST(req: Request) {
     let waSid: string | undefined;
 
     if (!emailSent) {
-      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
       const wa = await notify({
         severity: "RED",
         code: "EMAIL_DISPATCH_FAILED",

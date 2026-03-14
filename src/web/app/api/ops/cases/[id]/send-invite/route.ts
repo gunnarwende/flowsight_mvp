@@ -156,7 +156,7 @@ export async function POST(
   const baseUrl =
     process.env.APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
-    "https://flowsight-mvp.vercel.app";
+    "https://flowsight.ch";
   const opsLink = `${baseUrl}/ops/cases/${id}`;
 
   const ics = buildIcs({

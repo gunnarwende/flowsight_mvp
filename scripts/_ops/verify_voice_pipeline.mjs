@@ -28,7 +28,7 @@ const HEADERS = {
   Authorization: `Bearer ${key}`,
   "Content-Type": "application/json",
 };
-const PROD_WEBHOOK = "https://flowsight-mvp.vercel.app/api/retell/webhook";
+const PROD_WEBHOOK = "https://flowsight.ch/api/retell/webhook";
 const MINUTES = parseInt(process.argv[2] || "60", 10);
 
 async function query(path) {
