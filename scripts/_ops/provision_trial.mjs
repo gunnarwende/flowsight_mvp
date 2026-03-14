@@ -85,7 +85,7 @@ const supabase = createClient(url, key, {
 const appUrl =
   process.env.APP_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
-  "https://flowsight-mvp.vercel.app";
+  "https://flowsight.ch";
 
 // ── Modules parsing ─────────────────────────────────────────────────────────
 function parseModules(input) {

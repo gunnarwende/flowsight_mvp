@@ -14,7 +14,7 @@
  *   node --env-file=src/web/.env.local scripts/_ops/smoke_voice.mjs
  */
 
-const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
 const supaUrl = process.env.SUPABASE_URL;
 const supaKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 

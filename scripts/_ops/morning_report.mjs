@@ -190,7 +190,7 @@ let healthOk = false;
 let healthDb = "?";
 let healthEmail = "?";
 try {
-  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
   const res = await fetch(`${baseUrl}/api/health`, { signal: AbortSignal.timeout(5000) });
   if (res.ok) {
     const body = await res.json();
@@ -260,7 +260,7 @@ const report = [
   `━━━━━━━━━━━━━━━━━━━`,
 ].join("\n");
 
-const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight-mvp.vercel.app";
+const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
 const fullReport = `${report}\n→ ${baseUrl}/ops/cases`;
 
 console.log("\n" + fullReport + "\n");
