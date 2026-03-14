@@ -76,6 +76,9 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Review Engine (W12)
 - GOOGLE_REVIEW_URL -> Google Maps Review-URL des Kunden (single tenant, server-side)
 
+## Anthropic (QA Sweep Vision Layer — Phase B)
+- ANTHROPIC_API_KEY -> Anthropic Console (used by qa_sweep.mjs Phase B for screenshot analysis via Claude Vision API). Optional: Phase A (DOM checks) runs without it.
+
 ## OpenAI (Whisper STT for CoreBot voice tickets)
 - OPENAI_API_KEY -> OpenAI Dashboard (required for voice→issue transcription in CoreBot)
 
