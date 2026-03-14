@@ -33,10 +33,10 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - RETELL_API_KEY -> Retell Dashboard (optional)
 - RETELL_AGENT_ID -> optional
 
-## Twilio (Carrier)
+## Twilio (Voice/SIP only — kein SMS)
 - TWILIO_ACCOUNT_SID -> Twilio Console
 - TWILIO_AUTH_TOKEN -> Twilio Console
-- TWILIO_PHONE_NUMBER -> gekaufte CH Nummer (E.164)
+- TWILIO_PHONE_NUMBER -> gekaufte CH Nummer (E.164) — nur SIP/Voice-Routing
 - TWILIO_SIP_TRUNK_NAME -> SIP Trunk Name für Retell-Routing
 
 ## Peoplefone (Brand-Nummer, optional)
@@ -45,11 +45,11 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - Portal-Zugang: my.peoplefone.ch (Credentials in Bitwarden)
 - Siehe: docs/runbooks/peoplefone_front_door.md
 
-## eCall.ch (Swiss SMS Gateway — Primary)
+## eCall.ch (Einziger SMS-Provider für CH)
 - ECALL_API_URL -> https://rest.ecall.ch/api/message (eCall REST endpoint)
 - ECALL_API_USERNAME -> eCall Portal → REST API User
 - ECALL_API_PASSWORD -> eCall Portal → REST API Passwort
-- ECALL_SENDER_NUMBER -> Fallback-Nummer (E.164) wenn alphanumerischer Sender nicht freigeschaltet. Langfristig: Sender im eCall-Portal freischalten ("Weinberger", "Doerfler" etc.).
+- ECALL_SENDER_NUMBER -> FlowSight-Servicenummer (E.164). Globaler Fallback wenn alphanumerischer Sender (Tier 1) vom eCall-Portal rejected wird. KEINE Founder-Privatnummer. Dedizierte CH-Nummer beschaffen (eCall oder Peoplefone).
 
 ## SMS (Post-Call Verification)
 - SMS_HMAC_SECRET -> selbst generiert (Bitwarden), für HMAC-SHA256 Token in Korrektur-Links

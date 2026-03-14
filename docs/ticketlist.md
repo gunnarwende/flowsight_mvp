@@ -11,8 +11,8 @@
 
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
-- **BLOCKER:** 2 (S3: eCall SMS kommt nicht an + V2/V3 Voice-Fixes nicht live auf Retell)
-- **Phase:** Renovation Code DONE. **Founder E2E-Verification 14.03. deckt 22 Gaps auf.** Naechster Schritt: STOPP-Blocker fixen, dann Leitstand-Redesign R2.
+- **BLOCKER:** 1 (S3: eCall SMS — Code ready, wartet auf Founder-Action: FlowSight-Servicenummer + ECALL_SENDER_NUMBER)
+- **Phase:** Voice V2/V3/V6 DONE (PR #198). SMS-Architektur vereinfacht: eCall-only, 2-Tier Sender, Twilio-SMS entfernt (PR #199). Naechster Schritt: Founder setzt Servicenummer, dann E2E-Verify, dann Leitstand-Redesign R2.
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -35,9 +35,9 @@
 |---|-------|------|-----------|--------|
 | S1 | **Weinberger SMS kommt nicht an** | Voice→Webhook→SMS | `+41435051101` fehlte in TWILIO_OWNED_NUMBERS → SMS ging an Twilio-Nr statt Founder-Handy | **DONE** (PR #189) |
 | S2 | **SMS_ALLOWED_NUMBERS Whitelist pruefen** | Vercel Env | `+41764458942` ist in Whitelist → kein Blocker | **PASS** |
-| S3 | **eCall SMS kommt nicht an** | eCall-Integration deployed (PR #197), Env Vars gesetzt, aber SMS kommt weder normal noch als Spam an | Debuggen: eCall-Response pruefen, Nummernformat, API-Testcall | **OFFEN** |
+| S3 | **eCall SMS kommt nicht an** | eCall-Integration deployed (PR #197+#199), 2-Tier Sender (alpha→Servicenr), Twilio-SMS entfernt. **Blocker:** ECALL_SENDER_NUMBER (FlowSight-Servicenr) noch nicht gesetzt + Alpha-Sender nicht im eCall-Portal freigeschaltet. | Founder: Servicenummer beschaffen → ECALL_SENDER_NUMBER setzen → E2E-Test | **OFFEN (Founder-Action)** |
 
-**Status:** S1+S2 DONE. **S3 = aktiver Blocker.** eCall-Code deployed, Env Vars auf Vercel, aber SMS kommt nicht an. Muss debuggt werden.
+**Status:** S1+S2 DONE. **S3 = Founder-Action.** Code ist produktionsreif (2-Tier, eCall-only). Wartet auf: (1) FlowSight-Servicenummer beschaffen, (2) ECALL_SENDER_NUMBER auf Vercel setzen, (3) E2E-Verify.
 
 ---
 
@@ -48,11 +48,11 @@
 | # | Titel | Root Cause | Schwere | Status |
 |---|-------|-----------|---------|--------|
 | V1 | **Voice auf Juniper umstellen (alle Agents)** | Agent-JSONs verwenden falsche voice_id | hoch | **DONE** (PR #193) |
-| V2 | **"Jul" aus Greeting entfernen** | Agent sagt weiterhin "Jul Weinberger AG" statt nur "Weinberger AG". Prompt/Greeting nicht korrekt auf Retell publiziert? | hoch | **REOPENED** — Testanruf 14.03. bestaetigt: "Jul" wird gesprochen |
-| V3 | **Ortsnamen NICHT wiederholen** | Agent wiederholt weiterhin "Thalwil, richtig?" — Prompt-Aenderung nicht auf Retell live? | mittel | **REOPENED** — Testanruf 14.03. bestaetigt |
+| V2 | **"Jul" aus Greeting entfernen** | Global gefixt: agent_name, greeting, global_prompt, FIRMEN-WISSEN — alle "Jul." entfernt. Alle 8 Agents republished. | hoch | **DONE** (PR #198) — Founder-Verify ausstehend |
+| V3 | **Ortsnamen NICHT wiederholen** | NIEMALS-Regel mit VERBOTEN-Beispielen auf allen 4 DE-Agents. Republished. | mittel | **DONE** (PR #198) — Founder-Verify ausstehend |
 | V4 | **Dringlichkeits-Echo korrigieren** | Agent-Prompt mappt nicht 1:1 | mittel | **DONE** (PR #193) |
-| V5 | **SMS kommt nicht an (eCall)** | eCall-Integration deployed (PR #197), SMS kommt trotzdem nicht an | hoch | **OFFEN** — identisch mit S3 |
-| V6 | **Namens-Frage falsch formuliert** | Agent sagt "Und wie ist Ihr Name bitte? Damit unser Techniker weiss bei wem er klingeln muss." — Soll stattdessen sagen: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" | mittel | **OFFEN** |
+| V5 | **SMS kommt nicht an (eCall)** | Identisch mit S3. Code produktionsreif. Wartet auf Founder-Action (Servicenummer + ECALL_SENDER_NUMBER) | hoch | **OFFEN** — blockiert durch S3 |
+| V6 | **Namens-Frage falsch formuliert** | Global gefixt auf allen 4 DE-Agents: "Und koennten Sie mir als letztes sagen, wo unser Techniker klingeln darf?" Republished. | mittel | **DONE** (PR #198) — Founder-Verify ausstehend |
 
 ---
 
@@ -163,13 +163,16 @@ Alle GTM Building Blocks (G1-G12, S1-S9) = DONE. Details → `docs/gtm/gtm_track
 
 ## Completed (Archiv — kondensiert)
 
-### eCall SMS Integration (14.03.)
+### SMS-Architektur Vereinfachung (14.03.)
 
 | Deliverable | Evidence |
 |-------------|----------|
 | sendSmsEcall.ts — eCall.ch REST API Client (Swiss Gateway) | PR #197 |
-| sendSms.ts — Auto-Routing: eCall (preferred) → Twilio (fallback) | PR #197 |
-| Env Vars dokumentiert (ECALL_API_URL, USERNAME, PASSWORD) | PR #197 |
+| Twilio-SMS-Pfad komplett entfernt — eCall = einziger SMS-Provider (CH) | PR #199 |
+| 2-Tier Sender: alphanumerisch (Tenant) → ECALL_SENDER_NUMBER (FlowSight-Servicenr) | PR #199 |
+| Tote `fromNumber`-Logik entfernt (getTenantSmsConfig, postCallSms, API routes) | PR #199 |
+| Docs aligned: zielarchitektur.md §12, STATUS.md, env_vars.md, ticketlist.md | PR #199 |
+| Voice V2/V3/V6 global gefixt + alle 8 Agents republished | PR #198 |
 
 ### Renovation Gold Contact (13.03.)
 
