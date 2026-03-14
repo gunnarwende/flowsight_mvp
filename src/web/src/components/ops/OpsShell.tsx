@@ -87,16 +87,19 @@ export function OpsShell({
 
   const sidebarContent = (
     <>
-      {/* Logo — Identity Contract R4: Tenant branding, not FlowSight */}
-      <div className="px-4 py-5 border-b border-gray-200">
+      {/* Logo — Identity Contract R4: Tenant branding, Full Brand Header */}
+      <div
+        className="px-4 py-5"
+        style={{ backgroundColor: color }}
+      >
         <Link href="/ops/cases" className="flex items-center gap-2">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: color }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center border-2 border-white/30"
+            style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
           >
             <span className="text-white font-bold text-sm">{initials}</span>
           </div>
-          <span className="font-bold text-gray-900 truncate">{displayName}</span>
+          <span className="font-bold text-white truncate">{displayName}</span>
         </Link>
       </div>
 
@@ -153,12 +156,15 @@ export function OpsShell({
         {sidebarContent}
       </aside>
 
-      {/* Mobile header */}
-      <div className="md:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      {/* Mobile header — Full Brand Header */}
+      <div
+        className="md:hidden sticky top-0 z-30 px-4 py-3 flex items-center justify-between"
+        style={{ backgroundColor: color }}
+      >
         <button
           onClick={() => setSidebarOpen(true)}
           aria-label="Menü öffnen"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
@@ -166,12 +172,12 @@ export function OpsShell({
         </button>
         <Link href="/ops/cases" className="flex items-center gap-2">
           <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: color }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center border border-white/30"
+            style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
           >
             <span className="text-white font-bold text-xs">{initials}</span>
           </div>
-          <span className="font-semibold text-gray-900 text-sm truncate max-w-[160px]">{displayName}</span>
+          <span className="font-semibold text-white text-sm truncate max-w-[160px]">{displayName}</span>
         </Link>
         <div className="w-9" /> {/* Spacer for centering */}
       </div>
@@ -187,7 +193,7 @@ export function OpsShell({
             <button
               onClick={() => setSidebarOpen(false)}
               aria-label="Menü schliessen"
-              className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg text-white/70 hover:text-white hover:bg-white/10"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
