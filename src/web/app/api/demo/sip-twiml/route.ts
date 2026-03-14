@@ -4,25 +4,33 @@ import { NextRequest } from "next/server";
  * GET/POST /api/demo/sip-twiml — Returns TwiML for SIP-originated demo calls.
  *
  * Used as Voice URL on the Twilio SIP Domain "flowsight-demo.sip.twilio.com".
- * MicroSIP → SIP Domain → this route → TwiML → Dial target Retell agent.
+ * MicroSIP → SIP Domain → this route → TwiML → Dial target number.
  *
  * Routes based on dialed number (SIP To header):
- * - +41445054818 or +41447203142 (Brunner numbers) → Brunner Retell agent
- * - +41445520919 or +41445053019 (FlowSight numbers) → FlowSight Sales Retell agent
- * - Default → Brunner (demo fallback)
+ * - Matches a known Retell number → dials that number (Retell picks up)
+ * - Unknown → returns error TwiML
  *
- * callerId = TWILIO_NUMBER (voice-safe, verified on our account).
+ * callerId = CALLER_ID (our Twilio number, verified on our account).
  */
 
 const CALLER_ID = "+41445053019";
-const BRUNNER_RETELL = "+41445054818";
 
-// FlowSight Sales agent is registered in Retell on +41445053019.
-// SIP calls route via Retell SIP endpoint directly.
-const FLOWSIGHT_SALES_RETELL = "+41445053019";
-
-// Numbers that should route to FlowSight Sales (Lisa von FlowSight)
-const SALES_NUMBERS = new Set(["+41445520919", "+41445053019", "41445520919", "41445053019"]);
+/**
+ * All known Retell phone numbers. MicroSIP dials any of these,
+ * TwiML forwards to that exact number → Retell picks up with the right agent.
+ */
+const KNOWN_NUMBERS: Record<string, string> = {
+  // Weinberger AG
+  "41435051101": "+41435051101",
+  // Brunner Haustechnik
+  "41445054818": "+41445054818",
+  // Dörfler AG
+  "41445057420": "+41445057420",
+  // FlowSight Sales
+  "41445053019": "+41445053019",
+  // Legacy aliases (displayed format without leading 0)
+  "41445520919": "+41445053019",
+};
 
 function extractDialedNumber(to: string): string | null {
   // "To" value is either a SIP URI (sip:+41445520919@…) or an E.164 number
@@ -41,6 +49,14 @@ function buildTwiml(target: string): string {
 </Response>`;
 }
 
+function buildErrorTwiml(dialed: string | null): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="de-DE">Diese Nummer ist nicht konfiguriert. Bitte prüfen Sie die gewählte Nummer.</Say>
+  <Hangup/>
+</Response>`;
+}
+
 async function routeCall(request: NextRequest): Promise<Response> {
   // Twilio sends params as URL query (GET) or form body (POST)
   let to = new URL(request.url).searchParams.get("To") || "";
@@ -54,9 +70,15 @@ async function routeCall(request: NextRequest): Promise<Response> {
   }
 
   const dialed = extractDialedNumber(to);
-  const target = dialed && SALES_NUMBERS.has(dialed) ? FLOWSIGHT_SALES_RETELL : BRUNNER_RETELL;
+  const target = dialed ? KNOWN_NUMBERS[dialed] : null;
 
-  console.log(JSON.stringify({ _tag: "sip_twiml", to, dialed, target }));
+  console.log(JSON.stringify({ _tag: "sip_twiml", to, dialed, target: target ?? "UNKNOWN" }));
+
+  if (!target) {
+    return new Response(buildErrorTwiml(dialed), {
+      headers: { "Content-Type": "application/xml" },
+    });
+  }
 
   return new Response(buildTwiml(target), {
     headers: { "Content-Type": "application/xml" },
