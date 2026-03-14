@@ -88,7 +88,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Prüfe den Gesprächsverlauf. Falls dies ein neuer Anruf ist (keine vorherigen Nachrichten des Anrufers): Sage 'Grüeezi, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen?' Falls der Anrufer bereits gesprochen hat (Rückübertragung vom mehrsprachigen Agenten): Sage sinngemäss 'Alles klar, ich mache auf Deutsch weiter.' und fasse kurz zusammen, was bereits besprochen wurde. Wiederhole NICHT die volle Begrüssung bei Rückübertragung."
+          "text": "Prüfe den Gesprächsverlauf. Falls dies ein neuer Anruf ist (keine vorherigen Nachrichten des Anrufers): Sage 'Hallo, hier ist der Sanitär- und Heizungsdienst der Dörfler AG. Wie kann ich Ihnen helfen?' Falls der Anrufer bereits gesprochen hat (Rückübertragung vom mehrsprachigen Agenten): Sage sinngemäss 'Alles klar, ich mache auf Deutsch weiter.' und fasse kurz zusammen, was bereits besprochen wurde. Wiederhole NICHT die volle Begrüssung bei Rückübertragung."
         },
         "always_edge": {
           "destination_node_id": "node-language-gate",
