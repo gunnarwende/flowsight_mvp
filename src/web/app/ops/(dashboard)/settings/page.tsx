@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface Settings {
@@ -77,32 +76,46 @@ export default function SettingsPage() {
   }
 
   if (loading) {
-    return <p className="text-sm text-gray-400 py-8 text-center">Laden…</p>;
+    return <p className="text-sm text-gray-400 py-12 text-center">Laden…</p>;
   }
 
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-8">
         <h2 className="text-lg font-bold text-gray-900">Einstellungen</h2>
-        <p className="text-sm text-gray-500">
-          Konfiguration für {data?.tenant_name ?? "Ihren Betrieb"}
-        </p>
+        {data?.tenant_name && (
+          <p className="text-sm text-gray-500">{data.tenant_name}</p>
+        )}
       </div>
 
-      {/* Quick links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-        <NavCard href="/ops/staff" label="Mitarbeiter" sub="Verwalten" color="amber" />
-        <NavCard href="/ops/metrics" label="Kennzahlen" sub="Trends" color="emerald" />
-        <NavCard href="/ops/schedule" label="Einsatzplan" sub="Termine" color="blue" />
+      {/* Betriebsinformationen — prominent, read-only */}
+      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          Betrieb
+        </h3>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-400 text-xs mb-0.5">Betriebsname</p>
+            <p className="text-gray-900 font-medium">
+              {data?.tenant_name ?? "—"}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-400 text-xs mb-0.5">Fall-Präfix</p>
+            <p className="text-gray-900 font-medium">
+              {data?.case_id_prefix ?? "—"}
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Settings sections */}
-      <div className="space-y-6">
-        {/* Google Review Link */}
-        <Section title="Google-Bewertungen" description="Link zu Ihrem Google-Bewertungsprofil. Wird in Review-Anfragen verwendet.">
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Google Review URL
-          </label>
+      {/* Editable settings */}
+      <div className="space-y-5">
+        {/* Google Review */}
+        <Section
+          title="Google-Bewertungen"
+          description="Link zu Ihrem Google-Bewertungsprofil. Wird in Review-Anfragen verwendet."
+        >
           <input
             type="url"
             value={googleReviewUrl}
@@ -111,14 +124,18 @@ export default function SettingsPage() {
             className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
           <p className="mt-1.5 text-xs text-gray-400">
-            Tipp: Suchen Sie Ihren Betrieb auf Google Maps → &quot;Rezension schreiben&quot; → Link kopieren
+            Suchen Sie Ihren Betrieb auf Google Maps &rarr; &quot;Rezension
+            schreiben&quot; &rarr; Link kopieren
           </p>
         </Section>
 
-        {/* Termin-Defaults */}
-        <Section title="Termine" description="Standard-Einstellungen für neue Termine.">
+        {/* Termine */}
+        <Section
+          title="Termine"
+          description="Standard-Einstellungen für neue Termine."
+        >
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Standard-Termindauer (Minuten)
+            Standard-Termindauer
           </label>
           <select
             value={appointmentDuration}
@@ -136,7 +153,7 @@ export default function SettingsPage() {
 
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Kalender-E-Mail (für ICS-Einladungen)
+              Kalender-E-Mail
             </label>
             <input
               type="email"
@@ -146,40 +163,29 @@ export default function SettingsPage() {
               className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
             />
             <p className="mt-1.5 text-xs text-gray-400">
-              Optional — Termine werden als ICS-Einladung an diese Adresse gesendet
+              Termine werden als ICS-Einladung an diese Adresse gesendet
             </p>
           </div>
         </Section>
 
-        {/* Benachrichtigungen */}
-        <Section title="Melder-Benachrichtigungen" description="Automatische Bestätigungen an den Melder nach Fallerfassung.">
+        {/* Bestätigungen */}
+        <Section
+          title="Bestätigungen an Meldende"
+          description="Automatische Rückmeldung nach Fallerfassung."
+        >
           <div className="space-y-3">
             <Toggle
               checked={notifyEmail}
               onChange={setNotifyEmail}
               label="E-Mail-Bestätigung"
-              description="Melder erhält eine E-Mail mit Fallnummer und Zusammenfassung"
+              description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
             />
             <Toggle
               checked={notifySms}
               onChange={setNotifySms}
               label="SMS-Bestätigung"
-              description="Melder erhält eine SMS-Bestätigung nach der Meldung"
+              description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
             />
-          </div>
-        </Section>
-
-        {/* Betriebsinfo (read-only) */}
-        <Section title="Betriebsinformationen" description="Diese Werte werden zentral verwaltet.">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">Betriebsname</p>
-              <p className="text-gray-900 font-medium">{data?.tenant_name ?? "—"}</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">Fall-Präfix</p>
-              <p className="text-gray-900 font-medium">{data?.case_id_prefix ?? "FS"}</p>
-            </div>
           </div>
         </Section>
       </div>
@@ -191,22 +197,32 @@ export default function SettingsPage() {
           disabled={saving}
           className="rounded-lg bg-slate-800 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-50"
         >
-          {saving ? "Speichern…" : "Einstellungen speichern"}
+          {saving ? "Speichern…" : "Speichern"}
         </button>
         {saved && (
-          <span className="text-sm text-emerald-600 font-medium">Gespeichert</span>
+          <span className="text-sm text-emerald-600 font-medium">
+            Gespeichert
+          </span>
         )}
-        {error && (
-          <span className="text-sm text-red-600">{error}</span>
-        )}
+        {error && <span className="text-sm text-red-600">{error}</span>}
       </div>
     </div>
   );
 }
 
-// -- Sub-components --
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
-function Section({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{title}</h3>
@@ -216,7 +232,17 @@ function Section({ title, description, children }: { title: string; description:
   );
 }
 
-function Toggle({ checked, onChange, label, description }: { checked: boolean; onChange: (v: boolean) => void; label: string; description: string }) {
+function Toggle({
+  checked,
+  onChange,
+  label,
+  description,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  description: string;
+}) {
   return (
     <label className="flex items-start gap-3 cursor-pointer">
       <div className="pt-0.5">
@@ -241,21 +267,5 @@ function Toggle({ checked, onChange, label, description }: { checked: boolean; o
         <p className="text-xs text-gray-400">{description}</p>
       </div>
     </label>
-  );
-}
-
-function NavCard({ href, label, sub, color }: { href: string; label: string; sub: string; color: string }) {
-  const bgMap: Record<string, string> = { amber: "bg-amber-50 group-hover:bg-amber-100", emerald: "bg-emerald-50 group-hover:bg-emerald-100", blue: "bg-blue-50 group-hover:bg-blue-100" };
-  const textMap: Record<string, string> = { amber: "text-amber-600", emerald: "text-emerald-600", blue: "text-blue-600" };
-  return (
-    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors group flex items-center gap-3">
-      <div className={`w-9 h-9 rounded-lg ${bgMap[color]} flex items-center justify-center transition-colors`}>
-        <span className={`text-sm font-bold ${textMap[color]}`}>{label[0]}</span>
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-gray-900">{label}</p>
-        <p className="text-xs text-gray-500">{sub}</p>
-      </div>
-    </Link>
   );
 }

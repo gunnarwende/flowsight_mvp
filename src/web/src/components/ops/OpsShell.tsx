@@ -98,7 +98,7 @@ export function OpsShell({
         .map((w) => w[0]?.toUpperCase() ?? "")
         .join("")
     : "LS";
-  const color = brandColor ?? "#d97706"; // fallback amber-600
+  const color = brandColor ?? "#64748b"; // slate-500 — neutral "no brand set" signal
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 

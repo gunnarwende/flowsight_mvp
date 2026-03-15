@@ -5,81 +5,181 @@ import { useEffect, useState } from "react";
 interface MetricsData {
   totalCases: number;
   openCases: number;
+  newThisWeek: number;
+  newThisMonth: number;
   resolvedThisWeek: number;
   resolvedThisMonth: number;
   avgResolutionHours: number | null;
   notfallCount: number;
   voiceCases: number;
   wizardCases: number;
+  manualCases: number;
 }
 
-function MetricCard({
-  label,
-  value,
-  sublabel,
-  color = "text-gray-900",
-}: {
-  label: string;
-  value: string | number;
-  sublabel?: string;
-  color?: string;
-}) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl px-4 py-3">
-      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      {sublabel && <p className="text-xs text-gray-400 mt-0.5">{sublabel}</p>}
-    </div>
-  );
-}
+// ---------------------------------------------------------------------------
+// Überblick — Betriebsbrief, nicht KPI-Wand
+// ---------------------------------------------------------------------------
 
 export function MetricsView() {
   const [data, setData] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMetrics();
+    fetch("/api/ops/metrics")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((d) => setData(d))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  async function fetchMetrics() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/ops/metrics");
-      if (res.ok) {
-        setData(await res.json());
-      }
-    } catch { /* ignore */ }
-    setLoading(false);
-  }
-
   if (loading) {
-    return <p className="text-sm text-gray-400 py-8 text-center">Laden…</p>;
+    return <p className="text-sm text-gray-400 py-12 text-center">Laden…</p>;
   }
 
   if (!data) {
-    return <p className="text-sm text-red-500 py-8 text-center">Fehler beim Laden der Kennzahlen.</p>;
+    return (
+      <p className="text-sm text-gray-400 py-12 text-center">
+        Daten konnten nicht geladen werden.
+      </p>
+    );
   }
+
+  const totalSources = data.voiceCases + data.wizardCases + data.manualCases;
 
   return (
     <div>
-      <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900">Kennzahlen</h2>
-        <p className="text-sm text-gray-500">Trends und Übersicht — nur für Inhaber sichtbar</p>
+      <div className="mb-8">
+        <h2 className="text-lg font-bold text-gray-900">Überblick</h2>
+        <p className="text-sm text-gray-500">
+          Ihr Betrieb auf einen Blick
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <MetricCard label="Total Fälle" value={data.totalCases} color="text-slate-900" />
-        <MetricCard label="Offen" value={data.openCases} color="text-blue-700" />
-        <MetricCard label="Erledigt (Woche)" value={data.resolvedThisWeek} color="text-emerald-700" sublabel="letzte 7 Tage" />
-        <MetricCard label="Erledigt (Monat)" value={data.resolvedThisMonth} color="text-emerald-700" sublabel="letzte 30 Tage" />
-        <MetricCard
-          label="Ø Bearbeitungszeit"
-          value={data.avgResolutionHours !== null ? `${data.avgResolutionHours}h` : "—"}
-          sublabel="Erstellung → Erledigt"
-        />
-        <MetricCard label="Notfälle" value={data.notfallCount} color="text-red-700" sublabel="gesamt" />
-        <MetricCard label="Anrufe" value={data.voiceCases} sublabel="via Voice Agent" />
-        <MetricCard label="Website" value={data.wizardCases} sublabel="via Meldungsformular" />
+      {/* Leistung — Woche vs. Monat */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">
+              Letzte 7 Tage
+            </h3>
+            <div className="space-y-2.5">
+              <Stat value={data.newThisWeek} label="neue Fälle" />
+              <Stat value={data.resolvedThisWeek} label="erledigt" />
+              {data.avgResolutionHours !== null && (
+                <Stat
+                  value={`Ø ${data.avgResolutionHours}h`}
+                  label="bis Abschluss"
+                />
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">
+              Letzte 30 Tage
+            </h3>
+            <div className="space-y-2.5">
+              <Stat value={data.newThisMonth} label="neue Fälle" />
+              <Stat value={data.resolvedThisMonth} label="erledigt" />
+              {data.notfallCount > 0 && (
+                <Stat
+                  value={data.notfallCount}
+                  label="Notfälle"
+                  accent="text-red-700"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Aktuell + Eingangsquellen */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">
+            Aktuell
+          </h3>
+          <div className="space-y-2.5">
+            <Stat value={data.openCases} label="offene Fälle" />
+            <Stat value={data.totalCases} label="insgesamt" />
+          </div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">
+            Eingangsquellen
+          </h3>
+          <div className="space-y-2">
+            <SourceRow
+              label="Anrufe"
+              count={data.voiceCases}
+              total={totalSources}
+            />
+            <SourceRow
+              label="Formulare"
+              count={data.wizardCases}
+              total={totalSources}
+            />
+            {data.manualCases > 0 && (
+              <SourceRow
+                label="Manuell"
+                count={data.manualCases}
+                total={totalSources}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+function Stat({
+  value,
+  label,
+  accent,
+}: {
+  value: string | number;
+  label: string;
+  accent?: string;
+}) {
+  return (
+    <p className="text-sm text-gray-600">
+      <span className={`font-semibold ${accent ?? "text-gray-900"}`}>
+        {value}
+      </span>{" "}
+      {label}
+    </p>
+  );
+}
+
+function SourceRow({
+  label,
+  count,
+  total,
+}: {
+  label: string;
+  count: number;
+  total: number;
+}) {
+  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+  return (
+    <div className="flex items-center justify-between text-sm">
+      <span className="text-gray-600">{label}</span>
+      <div className="flex items-center gap-2">
+        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gray-400 rounded-full"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <span className="text-gray-900 font-semibold tabular-nums w-6 text-right">
+          {count}
+        </span>
       </div>
     </div>
   );

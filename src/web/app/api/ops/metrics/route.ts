@@ -47,11 +47,14 @@ export async function GET() {
   return NextResponse.json({
     totalCases: cases.length,
     openCases: openCases.length,
+    newThisWeek: cases.filter((c) => new Date(c.created_at).getTime() > weekAgo).length,
+    newThisMonth: cases.filter((c) => new Date(c.created_at).getTime() > monthAgo).length,
     resolvedThisWeek: doneCases.filter((c) => new Date(c.updated_at).getTime() > weekAgo).length,
     resolvedThisMonth: doneCases.filter((c) => new Date(c.updated_at).getTime() > monthAgo).length,
     avgResolutionHours,
     notfallCount: cases.filter((c) => c.urgency === "notfall").length,
     voiceCases: cases.filter((c) => c.source === "voice").length,
     wizardCases: cases.filter((c) => c.source === "wizard").length,
+    manualCases: cases.filter((c) => c.source === "manual").length,
   });
 }
