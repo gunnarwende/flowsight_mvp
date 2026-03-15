@@ -6,7 +6,7 @@ import { ZentraleView } from "@/src/components/ops/ZentraleView";
 import type { ZentraleCase, TodayAppointment } from "@/src/components/ops/ZentraleView";
 
 // ---------------------------------------------------------------------------
-// Page (Server Component) — "Zentrale" (Daily Driver)
+// Page (Server Component) — Leitsystem
 // ---------------------------------------------------------------------------
 
 export default async function OpsCasesPage({
@@ -35,7 +35,7 @@ export default async function OpsCasesPage({
     if (t) filterTenantId = t.id;
   }
 
-  // ── Query 1: Active cases (up to 200) for Zentrale grouping ────────
+  // ── Query 1: Active cases (up to 200) for Leitsystem grouping ────
   let casesQuery = supabase
     .from("cases")
     .select(
@@ -82,17 +82,42 @@ export default async function OpsCasesPage({
     .gte("updated_at", sevenDaysAgo);
   if (filterTenantId) statsErledigtQuery = statsErledigtQuery.eq("tenant_id", filterTenantId);
 
+  // ── Query 5+6: Review stats (server-side, last 30 days) ──────────
+  const thirtyDaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  let reviewSentQuery = supabase
+    .from("cases")
+    .select("id", { count: "exact", head: true })
+    .eq("is_demo", showDemo)
+    .eq("status", "done")
+    .not("review_sent_at", "is", null)
+    .gte("updated_at", thirtyDaysAgo);
+  if (filterTenantId) reviewSentQuery = reviewSentQuery.eq("tenant_id", filterTenantId);
+
+  let reviewPendingQuery = supabase
+    .from("cases")
+    .select("id", { count: "exact", head: true })
+    .eq("is_demo", showDemo)
+    .eq("status", "done")
+    .is("review_sent_at", null)
+    .gte("updated_at", thirtyDaysAgo);
+  if (filterTenantId) reviewPendingQuery = reviewPendingQuery.eq("tenant_id", filterTenantId);
+
   // ── Execute all queries in parallel ────────────────────────────────
   const [
     { data: casesRaw },
     { data: appointmentsRaw },
     { count: neueCount },
     { count: erledigtCount },
+    { count: reviewSentCount },
+    { count: reviewPendingCount },
   ] = await Promise.all([
     casesQuery,
     appointmentsQuery,
     statsNeueQuery,
     statsErledigtQuery,
+    reviewSentQuery,
+    reviewPendingQuery,
   ]);
 
   const cases = (casesRaw ?? []) as ZentraleCase[];
@@ -127,6 +152,10 @@ export default async function OpsCasesPage({
       weekStats={{
         neue: neueCount ?? 0,
         erledigt: erledigtCount ?? 0,
+      }}
+      reviewStats={{
+        sent: reviewSentCount ?? 0,
+        pending: reviewPendingCount ?? 0,
       }}
     />
   );
