@@ -229,21 +229,15 @@ export default async function OpsCasesPage({
 
   return (
     <>
-      {/* Page header */}
-      <div className="flex items-end justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900">Fälle</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {showDemo
-              ? "Demo-Fälle zur Veranschaulichung"
-              : filterTenantName
-                ? `Tenant: ${filterTenantName}`
-                : "Übersicht aller eingehenden Aufträge"}
-          </p>
-        </div>
-      </div>
+      {/* Puls-Ansicht: primary work list — FIRST thing visible (leitstand.md §5.1) */}
+      {showPuls && pulsCases && (
+        <PulsView
+          cases={(pulsCases ?? []) as PulsCaseRow[]}
+          caseIdPrefix={caseIdPrefix}
+        />
+      )}
 
-      {/* Filters row — dropdowns */}
+      {/* Filters row — dropdowns (below Puls, secondary) */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 mb-5">
         <div className="flex flex-wrap items-center gap-3">
           {/* Demo/Real tab toggle */}
@@ -345,14 +339,6 @@ export default async function OpsCasesPage({
         tenantShortName={tenantShortName}
         hiddenByPuls={showPuls}
       />
-
-      {/* Puls-Ansicht: primary work list (leitstand.md §5.1) */}
-      {showPuls && pulsCases && (
-        <PulsView
-          cases={(pulsCases ?? []) as PulsCaseRow[]}
-          caseIdPrefix={caseIdPrefix}
-        />
-      )}
     </>
   );
 }

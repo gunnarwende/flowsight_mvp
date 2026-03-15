@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const supabase = getServiceClient();
   let query = supabase
     .from("appointments")
-    .select("*, staff:staff_id(id, display_name, role)")
+    .select("*, staff:staff_id(id, display_name, role), case_info:case_id(category, reporter_name, street, house_number, plz, city)")
     .order("scheduled_at", { ascending: true });
 
   if (scope.tenantId) query = query.eq("tenant_id", scope.tenantId);

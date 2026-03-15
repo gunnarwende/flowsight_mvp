@@ -9,6 +9,15 @@ interface StaffMember {
   role: string;
 }
 
+interface AppointmentCase {
+  category: string | null;
+  reporter_name: string | null;
+  street: string | null;
+  house_number: string | null;
+  plz: string | null;
+  city: string | null;
+}
+
 interface Appointment {
   id: string;
   case_id: string;
@@ -18,6 +27,7 @@ interface Appointment {
   status: string;
   notes: string | null;
   staff: StaffMember;
+  case_info: AppointmentCase | null;
 }
 
 function formatTime(iso: string): string {
@@ -120,14 +130,14 @@ export function ScheduleView() {
         <p className="text-sm text-gray-400 py-8 text-center">Laden…</p>
       ) : byStaff.size === 0 ? (
         <div className="text-center py-12 text-gray-400 text-sm">
-          {view === "today" ? "Heute keine Termine geplant." : "Diese Woche keine Termine geplant."}
+          Termine erscheinen hier, sobald Sie im Fall einen Termin anlegen.
         </div>
       ) : (
         <div className="space-y-4">
           {Array.from(byStaff.values()).map(({ staff, items }) => (
             <section key={staff.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-4 py-3 bg-slate-50/80 border-b border-gray-200 flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-slate-600 flex items-center justify-center">
                   <span className="text-white text-xs font-bold">
                     {staff.display_name.charAt(0).toUpperCase()}
                   </span>
@@ -144,26 +154,42 @@ export function ScheduleView() {
                 {items.map((apt) => {
                   const badge = STATUS_BADGE[apt.status] ?? STATUS_BADGE.scheduled;
                   return (
-                    <div key={apt.id} className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors">
-                      <div className="text-sm">
-                        <span className="font-medium text-gray-900">{formatTime(apt.scheduled_at)}</span>
-                        {view === "week" && (
-                          <span className="text-gray-400 ml-1">({formatDate(apt.scheduled_at)})</span>
+                    <div key={apt.id} className="px-4 py-3 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="text-sm">
+                          <span className="font-medium text-gray-900">{formatTime(apt.scheduled_at)}</span>
+                          {view === "week" && (
+                            <span className="text-gray-400 ml-1">({formatDate(apt.scheduled_at)})</span>
+                          )}
+                          <span className="text-gray-400 ml-1">· {apt.duration_min} Min.</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${badge.bg}`}>
+                          {badge.label}
+                        </span>
+                        {apt.case_info?.category && (
+                          <span className="text-xs font-medium text-gray-700">{apt.case_info.category}</span>
                         )}
-                        <span className="text-gray-400 ml-1">· {apt.duration_min} Min.</span>
+                        {apt.case_info?.reporter_name && (
+                          <span className="text-xs text-gray-500 hidden sm:inline">— {apt.case_info.reporter_name}</span>
+                        )}
+                        <Link
+                          href={`/ops/cases/${apt.case_id}`}
+                          className="ml-auto text-xs text-slate-700 hover:text-slate-900 font-medium"
+                        >
+                          Fall →
+                        </Link>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${badge.bg}`}>
-                        {badge.label}
-                      </span>
-                      {apt.notes && (
-                        <span className="text-xs text-gray-400 truncate max-w-[200px]">{apt.notes}</span>
+                      {/* Address line */}
+                      {(apt.case_info?.street || apt.case_info?.city) && (
+                        <p className="text-xs text-gray-400 mt-0.5 ml-0">
+                          {[apt.case_info.street, apt.case_info.house_number].filter(Boolean).join(" ")}
+                          {(apt.case_info.street || apt.case_info.house_number) && ", "}
+                          {[apt.case_info.plz, apt.case_info.city].filter(Boolean).join(" ")}
+                        </p>
                       )}
-                      <Link
-                        href={`/ops/cases/${apt.case_id}`}
-                        className="ml-auto text-xs text-amber-600 hover:text-amber-700 font-medium"
-                      >
-                        Fall →
-                      </Link>
+                      {apt.notes && (
+                        <p className="text-xs text-gray-400 mt-0.5 truncate">{apt.notes}</p>
+                      )}
                     </div>
                   );
                 })}

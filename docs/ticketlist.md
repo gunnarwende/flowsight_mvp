@@ -12,7 +12,7 @@
 - **Produkt:** 17 Module LIVE (Website, Voice, Wizard, Ops, Reviews, Review Surface, Morning Report, Entitlements, Email, Peoplefone, Sales Agent, Demo Booking, Demo-Strang, SMS Channel, CoreBot, Customer Links Page, BigBen Pub)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0 (S3 + V2/V3/V5/V6 = READY TO TEST)
-- **Phase:** OPS Visual Block deployed (PRs #208-#210). QA Sweep Machine live (Phase A+B). Weinberger: 0 STOPP, Identity Contract clean, Puls + Brand Header live. Founder-Run am 15.03. geplant.
+- **Phase:** Leitstand-Renovation deployed (15.03.). Puls-First, 3+2 Nav, Scan-Kopf, Einsatzplan angereichert, Amber-Purge komplett.
 - **Redesign-Docs:** `docs/redesign/` — plan.md + 6 Zielbilder + 4 IST-Audits + identity_contract.md
 - **Gold Contact:** `docs/gtm/gold_contact.md` — Nordstern (unveraendert)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
@@ -67,7 +67,7 @@
 |---|-------|--------|----------|
 | L1 | **Sidebar: Tenant-Branding** | **DONE** (PR #208) | Full Brand Header: Sidebar + Mobile in Tenant-Farbe, weisse Initialen |
 | L2 | **"Bald"-Badges entfernt** | **DONE** | PR #192 |
-| L3 | **Puls-Ansicht** | **IMPROVED** (PR #210) | Group headers always visible, empty states, white cards, slate colors. D2/D6 teilweise adressiert — finale Tabelle-vs-Puls Entscheidung steht noch aus |
+| L3 | **Puls-Ansicht** | **DONE** (Renovation 15.03.) | Puls-First, leere Gruppen collapsed, "Alles im Griff", KPI-Karten bei Puls verborgen |
 | L4 | **KPI-Click filtert Tabelle** | **REOPENED** → D5, D7 | Filter + Tab-Interaktion broken, KPI-Klick springt auf falschen Tab |
 | L5 | **Einsatzplan** | Code deployed | Founder-Review steht aus (→ D9) |
 | L6 | **Zahlen (Metrics)** | Code deployed | Founder-Review steht aus (→ D9) |
@@ -89,13 +89,13 @@
 | D5 | **KPI-Klick + Tab-Interaktion broken** | Bei "Demo" gefiltert → Klick auf "Total Faelle" springt auf "Ihre Faelle" und zeigt 57 statt 15. KPI-Filter muss im aktiven Tab bleiben. | hoch | OFFEN |
 | D6 | **Inkonsistente Ansichten: Cards vs Tabelle** | Klick auf "Offen" → Cards. Klick auf "Alle" → alte Tabelle. EINE konsistente Darstellung noetig. | hoch | OFFEN |
 | D7 | **KPI-Klick zeigt exakte Menge** | "Erledigt (7d) = 5" → Klick muss exakt diese 5 zeigen. Gleiches fuer alle KPIs. Keine Unschaerfe. | hoch | OFFEN |
-| D8 | **Tenant-Branding statt Orange** | Full Brand Header (PR #208), amber purge (PR #209+#210). Sidebar, Nav-Active, Case-IDs, Toggles — alles auf Tenant-Farbe oder neutrales Slate. | hoch | **DONE** (PRs #208-#210) |
+| D8 | **Tenant-Branding statt Orange** | Full Brand Header (PR #208), amber purge komplett (Renovation 15.03.). Alle Buttons/Toggles/Focus-Ringe auf Slate. | hoch | **DONE** |
 | D9 | **Einsatzplan/Mitarbeiter/Kennzahlen/Einstellungen — Review** | Grundstruktur steht. Pflicht: 2 Grafiken einbauen die das Unternehmen widerspiegeln. Langfristige Inhalte muessen besprochen werden. | mittel | OFFEN — Founder-Review |
 | D10 | **Falldetail-Ansicht: nicht Gold Contact** | Gesamtdesign der Falldetail-Seite muss ueberarbeitet werden (siehe D10.1-D10.4). | hoch | OFFEN |
 | D10.1 | **Case-ID: "ProfiTicketNr." statt WB-0022** | Oben rechts steht WB-0022. Soll professioneller wirken, z.B. "Ticket #JW-0022" oder aehnlich. Prefix auto-2-Buchstaben. | mittel | OFFEN |
 | D10.2 | **11 Kacheln unuebersichtlich** | Status, Dringlichkeit, Kategorie, PLZ, Ort, Strasse, Nr, Melder, Telefon, E-Mail, Zustaendig — alle wichtig, aber Layout braucht klare Gruppierung (Kontakt / Adresse / Fall-Meta). | hoch | OFFEN |
 | D10.3 | **Google Maps staerker hervorheben** | Aktuell nur kleiner Link. Low hanging fruit — soll prominent sein, Lust machen es zu nutzen. Evtl. Mini-Map-Preview. | mittel | OFFEN |
-| D10.4 | **Design insgesamt nicht High End** | Orange-Akzente geloest (→ D8 DONE). Puls-Cards + Case-List verbessert (PR #210). Falldetail-Design noch offen. | hoch | TEILWEISE (D8 done, Detail offen) |
+| D10.4 | **Design insgesamt nicht High End** | Orange-Akzente komplett geloest (D8 DONE). Scan-Kopf (Was/Wo/Wer/Wann) eingebaut. Puls-First. Nav 3+2. | hoch | **IMPROVED** (Renovation 15.03.) |
 | D11.8 | **Mitarbeiter: nur 2 Rollen (Admin + Techniker)** | Aktuell zu viele Rollen. Reduzieren auf Admin + Techniker. Funktionen klar definieren. Bei Mitarbeiter-Anlage: keine E-Mail erwartet? Klaeren. | mittel | OFFEN |
 | D11.9 | **Einstellungen: ICS/Kalender-E-Mail kommt nicht an** | Kalender-E-Mail fuer ICS-Einladungen eingetragen + gespeichert, SMS+E-Mail aktiviert — aber ICS-Mail kommt nie an. Muss debuggt werden. | hoch | OFFEN |
 | D11.10 | **Case-ID-Prefix: auto 2-Buchstaben aus Firmenname** | Aktuell manuell "WB". Soll automatisch aus Firmenname abgeleitet werden: "Jul. Weinberger AG" → "JW". Dynamisch, nicht hardcoded. | mittel | OFFEN |

@@ -293,7 +293,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   }
 
   const inp =
-    "w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500";
+    "w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
   const inpReadonly =
     "w-full rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm text-gray-600";
   const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
@@ -343,7 +343,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
           <button
             onClick={performSave}
             disabled={!isDirty || saveState === "saving"}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {saveState === "saving" ? "Speichern\u2026" : "Status speichern"}
           </button>
@@ -482,14 +482,14 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
             <div className="flex rounded-lg border border-gray-200 overflow-hidden">
               {([0, 1] as const).map((d) => (
                 <button key={d} type="button" onClick={() => setQuickDay(d)}
-                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-amber-500 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-slate-700 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
                 >{d === 0 ? "Heute" : "Morgen"}</button>
               ))}
             </div>
             <div className="flex gap-1">
               {QUICK_TIMES.map((time) => (
                 <button key={time} type="button" onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
-                  className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-colors"
+                  className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-slate-500 hover:text-slate-600 transition-colors"
                 >{time}</button>
               ))}
             </div>
@@ -511,7 +511,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
         <button
           onClick={performSave}
           disabled={!isDirty || saveState === "saving"}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {saveState === "saving" ? "Speichern\u2026" : "Speichern"}
         </button>

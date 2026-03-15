@@ -189,7 +189,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600 disabled:opacity-50"
+          className="rounded-lg bg-slate-800 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-50"
         >
           {saving ? "Speichern…" : "Einstellungen speichern"}
         </button>
@@ -226,7 +226,7 @@ function Toggle({ checked, onChange, label, description }: { checked: boolean; o
           aria-checked={checked}
           onClick={() => onChange(!checked)}
           className={`relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors ${
-            checked ? "bg-amber-500" : "bg-gray-200"
+            checked ? "bg-slate-700" : "bg-gray-200"
           }`}
         >
           <span
@@ -248,7 +248,7 @@ function NavCard({ href, label, sub, color }: { href: string; label: string; sub
   const bgMap: Record<string, string> = { amber: "bg-amber-50 group-hover:bg-amber-100", emerald: "bg-emerald-50 group-hover:bg-emerald-100", blue: "bg-blue-50 group-hover:bg-blue-100" };
   const textMap: Record<string, string> = { amber: "text-amber-600", emerald: "text-emerald-600", blue: "text-blue-600" };
   return (
-    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-300 transition-colors group flex items-center gap-3">
+    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors group flex items-center gap-3">
       <div className={`w-9 h-9 rounded-lg ${bgMap[color]} flex items-center justify-center transition-colors`}>
         <span className={`text-sm font-bold ${textMap[color]}`}>{label[0]}</span>
       </div>
