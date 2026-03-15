@@ -170,101 +170,112 @@ export function PulsView({
   const groups = groupCases(cases);
 
   return (
-    <div className="space-y-5">
-      {groups.map((group) => (
-        <section key={group.key}>
-          {/* Group header — always visible, shows count badge */}
-          <div className={`flex items-center gap-2.5 mb-2.5 px-3 py-2 rounded-lg ${group.headerBg}`}>
-            <span className={`w-2.5 h-2.5 rounded-full ${group.dotColor}`} />
-            <h2 className={`text-sm font-bold ${group.color}`}>
-              {group.label}
-            </h2>
-            <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${group.color} bg-white/60`}>
-              {group.cases.length}
-            </span>
-          </div>
+    <div className="space-y-5 mb-6">
+      {groups.map((group) => {
+        // Collapse empty groups except "Achtung" (always visible)
+        const isEmpty = group.cases.length === 0;
+        if (isEmpty && group.key !== "achtung") return null;
 
-          {/* Empty state — confirms "all clear" */}
-          {group.cases.length === 0 ? (
-            <p className="text-xs text-gray-400 pl-3 pb-1">
-              {group.emptyLabel}
-            </p>
-          ) : (
-            /* Case cards */
-            <div className="space-y-2">
-              {group.cases.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/ops/cases/${c.id}`}
-                  className={`block rounded-xl border ${group.borderColor} bg-white p-3.5 transition-all hover:shadow-md hover:border-gray-300`}
-                >
-                  {/* Row 1: Category + Reporter | Time + Case ID */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-300"}`} />
-                      <span className="text-sm font-semibold text-gray-900 truncate">
-                        {c.category}
+        return (
+          <section key={group.key}>
+            {/* Group header — always visible, shows count badge */}
+            <div className={`flex items-center gap-2.5 mb-2.5 px-3 py-2 rounded-lg ${group.headerBg}`}>
+              <span className={`w-2.5 h-2.5 rounded-full ${group.dotColor}`} />
+              <h2 className={`text-sm font-bold ${group.color}`}>
+                {group.label}
+              </h2>
+              <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${group.color} bg-white/60`}>
+                {group.cases.length}
+              </span>
+            </div>
+
+            {/* Empty state — only for "Achtung": positive confirmation */}
+            {isEmpty ? (
+              <div className="flex items-center gap-2 pl-3 pb-1">
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <p className="text-sm text-emerald-600 font-medium">
+                  Alles im Griff
+                </p>
+              </div>
+            ) : (
+              /* Case cards */
+              <div className="space-y-2">
+                {group.cases.map((c) => (
+                  <Link
+                    key={c.id}
+                    href={`/ops/cases/${c.id}`}
+                    className={`block rounded-xl border ${group.borderColor} bg-white p-3.5 transition-all hover:shadow-md hover:border-gray-300`}
+                  >
+                    {/* Row 1: Category + Reporter | Time + Case ID */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-300"}`} />
+                        <span className="text-sm font-semibold text-gray-900 truncate">
+                          {c.category}
+                        </span>
+                        {c.reporter_name && (
+                          <span className="text-sm text-gray-500 truncate hidden sm:inline">
+                            — {c.reporter_name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-xs text-gray-400">
+                          {SOURCE_ICON[c.source]} {timeAgo(c.created_at)}
+                        </span>
+                        <span className="text-xs font-medium text-slate-500">
+                          {formatCaseId(c.seq_number, caseIdPrefix)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Row 2: Description */}
+                    {c.description && (
+                      <p className="mt-1.5 text-sm text-gray-600 line-clamp-1">
+                        {c.description}
+                      </p>
+                    )}
+
+                    {/* Row 3: Location + Status + Assignee */}
+                    <div className="mt-2 flex items-center gap-3 text-xs">
+                      <span className="text-gray-500">
+                        {c.plz} {c.city}
                       </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                        c.status === "new" ? "bg-blue-100 text-blue-700" :
+                        c.status === "contacted" ? "bg-sky-100 text-sky-700" :
+                        c.status === "scheduled" ? "bg-violet-100 text-violet-700" :
+                        c.status === "done" ? "bg-emerald-100 text-emerald-700" :
+                        "bg-gray-100 text-gray-500"
+                      }`}>
+                        {STATUS_LABELS[c.status] ?? c.status}
+                      </span>
+                      {c.status === "done" && !c.review_sent_at && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-200">
+                          R
+                        </span>
+                      )}
+                      {c.assignee_text && (
+                        <span className="font-medium text-gray-600">
+                          → {c.assignee_text}
+                        </span>
+                      )}
+                      {/* Mobile: show reporter inline */}
                       {c.reporter_name && (
-                        <span className="text-sm text-gray-500 truncate hidden sm:inline">
-                          — {c.reporter_name}
+                        <span className="text-gray-400 sm:hidden truncate">
+                          {c.reporter_name}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-xs text-gray-400">
-                        {SOURCE_ICON[c.source]} {timeAgo(c.created_at)}
-                      </span>
-                      <span className="text-xs font-medium text-slate-500">
-                        {formatCaseId(c.seq_number, caseIdPrefix)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Row 2: Description */}
-                  {c.description && (
-                    <p className="mt-1.5 text-sm text-gray-600 line-clamp-1">
-                      {c.description}
-                    </p>
-                  )}
-
-                  {/* Row 3: Location + Status + Assignee */}
-                  <div className="mt-2 flex items-center gap-3 text-xs">
-                    <span className="text-gray-500">
-                      {c.plz} {c.city}
-                    </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
-                      c.status === "new" ? "bg-blue-100 text-blue-700" :
-                      c.status === "contacted" ? "bg-sky-100 text-sky-700" :
-                      c.status === "scheduled" ? "bg-violet-100 text-violet-700" :
-                      c.status === "done" ? "bg-emerald-100 text-emerald-700" :
-                      "bg-gray-100 text-gray-500"
-                    }`}>
-                      {STATUS_LABELS[c.status] ?? c.status}
-                    </span>
-                    {c.status === "done" && !c.review_sent_at && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-200">
-                        R
-                      </span>
-                    )}
-                    {c.assignee_text && (
-                      <span className="font-medium text-gray-600">
-                        → {c.assignee_text}
-                      </span>
-                    )}
-                    {/* Mobile: show reporter inline */}
-                    {c.reporter_name && (
-                      <span className="text-gray-400 sm:hidden truncate">
-                        {c.reporter_name}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </section>
-      ))}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }

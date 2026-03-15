@@ -95,7 +95,7 @@ export function CreateCaseModal({
   }
 
   const inputClasses =
-    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500";
+    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
   const labelClasses = "block text-xs font-medium text-gray-600 mb-1";
 
   return (
@@ -282,7 +282,7 @@ export function CreateCaseModal({
             type="submit"
             form="create-case-form"
             disabled={saving}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? "Erstelle..." : "Fall erstellen"}
           </button>

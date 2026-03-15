@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { OpsShell } from "@/src/components/ops/OpsShell";
 
 /**
@@ -42,11 +44,27 @@ export default async function DashboardLayout({
 
   const identity = await resolveTenantIdentity(user);
 
+  // Lightweight staff count for progressive nav (leitstand.md §2)
+  let staffCount = 0;
+  try {
+    const scope = await resolveTenantScope();
+    if (scope?.tenantId) {
+      const supabase = getServiceClient();
+      const { count } = await supabase
+        .from("staff")
+        .select("id", { count: "exact", head: true })
+        .eq("tenant_id", scope.tenantId)
+        .eq("is_active", true);
+      staffCount = count ?? 0;
+    }
+  } catch { /* fallback to 0 */ }
+
   return (
     <OpsShell
       userEmail={user.email ?? ""}
       tenantName={identity?.displayName ?? undefined}
       brandColor={identity?.primaryColor ?? undefined}
+      staffCount={staffCount}
     >
       {children}
     </OpsShell>

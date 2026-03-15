@@ -195,7 +195,7 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
                   href={a.download_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-600 hover:text-amber-700 text-xs font-medium ml-3 shrink-0"
+                  className="text-slate-600 hover:text-slate-800 text-xs font-medium ml-3 shrink-0"
                 >
                   Download
                 </a>

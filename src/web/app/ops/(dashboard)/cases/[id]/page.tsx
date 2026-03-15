@@ -123,9 +123,61 @@ export default async function CaseDetailPage({
             {formatDate(caseData.created_at)} &middot; {SOURCE_LABELS[caseData.source] ?? caseData.source}
           </span>
         </div>
-        <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
+        <span className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm font-semibold">
           {caseId}
         </span>
+      </div>
+
+      {/* Scan head — "Was? Wo? Wer? Wann?" in 3 seconds (leitstand_renovation §5.4) */}
+      <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-1.5 gap-x-6 text-sm">
+          {/* Was */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Was</span>
+            <span className="text-gray-900">
+              <span className="font-semibold">{caseData.category}</span>
+              {caseData.description && (
+                <span className="text-gray-500"> — {caseData.description.length > 60 ? caseData.description.slice(0, 60) + "…" : caseData.description}</span>
+              )}
+            </span>
+          </div>
+          {/* Wo */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Wo</span>
+            <span className="text-gray-900">
+              {[caseData.street, caseData.house_number].filter(Boolean).join(" ")}
+              {(caseData.street || caseData.house_number) && ", "}
+              {caseData.plz} {caseData.city}
+            </span>
+            <a
+              href={googleMapsUrl(caseData.street, caseData.house_number, caseData.plz, caseData.city)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-400 hover:text-gray-600 flex-shrink-0"
+              title="Google Maps"
+            >
+              <svg className="w-3.5 h-3.5 inline" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+          {/* Wer */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Wer</span>
+            <span className="text-gray-900">
+              {caseData.assignee_text ? `→ ${caseData.assignee_text}` : <span className="text-gray-400">Nicht zugewiesen</span>}
+            </span>
+          </div>
+          {/* Wann */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Wann</span>
+            <span className="text-gray-900">
+              {caseData.scheduled_at
+                ? new Date(caseData.scheduled_at).toLocaleDateString("de-CH", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" })
+                : <span className="text-gray-400">Kein Termin</span>}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Two-column layout — fits on one screen */}
