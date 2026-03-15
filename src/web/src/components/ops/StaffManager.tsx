@@ -99,7 +99,7 @@ export function StaffManager() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Mitarbeiter</h2>
+          <h2 className="text-lg font-bold text-gray-900">Team</h2>
           <p className="text-sm text-gray-500">Team verwalten — für Fall-Zuweisung und Einsatzplanung</p>
         </div>
         {!showForm && (
