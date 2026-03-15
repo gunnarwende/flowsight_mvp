@@ -28,23 +28,16 @@ export interface CaseRow {
   review_sent_at: string | null;
 }
 
-export interface KpiData {
-  total: number;
-  todayNew: number;
-  inProgress: number;
-  doneWeek: number;
-}
-
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const STATUS_LABELS: Record<string, string> = {
-  new: "Neu",
-  contacted: "Kontaktiert",
-  scheduled: "Geplant",
+  new: "Neu eingegangen",
+  contacted: "In Bearbeitung",
+  scheduled: "Termin steht",
   done: "Erledigt",
-  archived: "Archiviert",
+  archived: "Abgeschlossen",
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -134,25 +127,23 @@ function exportCsv(rows: CaseRow[], prefix: string, tenantName?: string) {
 
 export function CaseListClient({
   rows,
-  kpi,
   currentPage,
   totalPages,
   totalCount,
   searchQuery,
   caseIdPrefix = "FS",
   tenantShortName,
-  hiddenByPuls = false,
+  basePath = "/ops/faelle",
 }: {
   rows: CaseRow[];
-  kpi: KpiData;
   currentPage: number;
   totalPages: number;
   totalCount: number;
   searchQuery: string;
   caseIdPrefix?: string;
   tenantShortName?: string;
-  /** When true, table rows are hidden (Puls view is shown instead). KPI + actions stay visible. */
-  hiddenByPuls?: boolean;
+  /** Base path for navigation (search, pagination). Defaults to /ops/faelle */
+  basePath?: string;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState(searchQuery);
@@ -168,28 +159,18 @@ export function CaseListClient({
     if (search.trim()) p.set("q", search.trim());
     else p.delete("q");
     p.delete("page");
-    router.push(`/ops/cases?${p.toString()}`);
+    router.push(`${basePath}?${p.toString()}`);
   }
 
   function goToPage(page: number) {
     const p = new URLSearchParams(params.toString());
     if (page > 1) p.set("page", String(page));
     else p.delete("page");
-    router.push(`/ops/cases?${p.toString()}`);
+    router.push(`${basePath}?${p.toString()}`);
   }
 
   return (
     <>
-      {/* KPI cards — hidden when Puls is active (Puls badges ARE the KPI) */}
-      {!hiddenByPuls && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" href="/ops/cases?show=all" />
-          <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" href="/ops/cases?status=new" />
-          <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" href="/ops/cases?status=in_progress" />
-          <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" href="/ops/cases?show=all&status=done" />
-        </div>
-      )}
-
       {/* Action bar */}
       <div className="flex items-center justify-between mb-4 gap-3">
         <div className="flex items-center gap-3">
@@ -219,7 +200,7 @@ export function CaseListClient({
                   const p = new URLSearchParams(params.toString());
                   p.delete("q");
                   p.delete("page");
-                  router.push(`/ops/cases?${p.toString()}`);
+                  router.push(`${basePath}?${p.toString()}`);
                 }}
                 className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
               >
@@ -247,8 +228,8 @@ export function CaseListClient({
         </div>
       </div>
 
-      {/* Table view — hidden when Puls is active */}
-      {hiddenByPuls ? null : rows.length === 0 ? (
+      {/* Table view */}
+      {rows.length === 0 ? (
         <p className="text-gray-400 text-sm py-8 text-center">
           Keine Fälle gefunden.
         </p>
@@ -379,8 +360,8 @@ export function CaseListClient({
         </>
       )}
 
-      {/* Pagination — hidden when Puls is active */}
-      {!hiddenByPuls && totalPages > 1 && (
+      {/* Pagination */}
+      {totalPages > 1 && (
         <div className="flex items-center justify-center gap-4 mt-4 py-3">
           <button
             onClick={() => goToPage(currentPage - 1)}
@@ -407,34 +388,3 @@ export function CaseListClient({
   );
 }
 
-// ---------------------------------------------------------------------------
-// KPI Card
-// ---------------------------------------------------------------------------
-
-function KpiCard({
-  label,
-  value,
-  color,
-  accent,
-  href,
-}: {
-  label: string;
-  value: number;
-  color: string;
-  accent: string;
-  href?: string;
-}) {
-  const inner = (
-    <>
-      <p className="text-gray-500 text-xs font-medium mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${color}`}>{value}</p>
-    </>
-  );
-
-  const cls = `bg-white border border-gray-200 border-l-4 ${accent} rounded-xl px-4 py-3 ${href ? "cursor-pointer hover:bg-gray-50 transition-colors" : ""}`;
-
-  if (href) {
-    return <a href={href} className={cls}>{inner}</a>;
-  }
-  return <div className={cls}>{inner}</div>;
-}

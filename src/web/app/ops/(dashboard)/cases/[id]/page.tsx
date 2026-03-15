@@ -43,16 +43,34 @@ export interface CaseDetail {
 // ---------------------------------------------------------------------------
 
 const SOURCE_LABELS: Record<string, string> = {
-  voice: "Voice Agent",
+  voice: "Anruf",
   wizard: "Website-Formular",
   manual: "Manuell erfasst",
 };
 
-const URGENCY_COLORS: Record<string, string> = {
-  notfall: "bg-red-500",
-  dringend: "bg-amber-500",
-  normal: "bg-gray-400",
+const URGENCY_LABELS: Record<string, { text: string; className: string }> = {
+  notfall: { text: "Notfall", className: "text-red-700 bg-red-50 border-red-200" },
+  dringend: { text: "Dringend", className: "text-amber-700 bg-amber-50 border-amber-200" },
+  normal: { text: "Normal", className: "text-gray-500 bg-gray-50 border-gray-200" },
 };
+
+const STATUS_LABELS_BETRIEB: Record<string, string> = {
+  new: "Neu eingegangen",
+  contacted: "In Bearbeitung",
+  scheduled: "Termin steht",
+  done: "Erledigt",
+  archived: "Abgeschlossen",
+};
+
+function computeNextStep(c: CaseDetail): string {
+  if (c.status === "new") return "Sichten und einordnen";
+  if (c.status === "contacted" && !c.scheduled_at) return "Termin vereinbaren";
+  if (c.status === "contacted" && c.scheduled_at) return "Termin best\u00e4tigen";
+  if (c.status === "scheduled") return "Einsatz durchf\u00fchren";
+  if (c.status === "done" && !c.review_sent_at) return "Review anfragen";
+  if (c.status === "done") return "Abgeschlossen";
+  return "";
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("de-CH", {
@@ -102,23 +120,32 @@ export default async function CaseDetailPage({
   // Resolve tenant identity for case ID prefix
   const identity = await resolveTenantIdentityById(caseData.tenant_id);
   const caseId = formatCaseId(caseData.seq_number, identity?.caseIdPrefix);
-  const urgencyDot = URGENCY_COLORS[caseData.urgency] ?? "bg-gray-400";
   const isProspect = scope?.isProspect ?? false;
+
+  const nextStep = computeNextStep(caseData);
+  const urgencyBarColor = caseData.urgency === "notfall" ? "bg-red-500" : caseData.urgency === "dringend" ? "bg-amber-400" : "bg-gray-200";
 
   return (
     <>
       {/* Compact header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <Link href="/ops/cases" className="text-gray-400 hover:text-gray-600 transition-colors">
+          <Link href="/ops/cases" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
+            <span className="text-xs hidden sm:inline">Zentrale</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <span className={`w-2.5 h-2.5 rounded-full ${urgencyDot}`} />
-            <h1 className="text-lg font-bold text-gray-900">{caseData.category}</h1>
-          </div>
+          <h1 className="text-lg font-bold text-gray-900">{caseData.category}</h1>
+          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+            caseData.status === "new" ? "bg-blue-100 text-blue-700" :
+            caseData.status === "contacted" ? "bg-sky-100 text-sky-700" :
+            caseData.status === "scheduled" ? "bg-violet-100 text-violet-700" :
+            caseData.status === "done" ? "bg-emerald-100 text-emerald-700" :
+            "bg-gray-100 text-gray-500"
+          }`}>
+            {STATUS_LABELS_BETRIEB[caseData.status] ?? caseData.status}
+          </span>
           <span className="text-xs text-gray-400">
             {formatDate(caseData.created_at)} &middot; {SOURCE_LABELS[caseData.source] ?? caseData.source}
           </span>
@@ -128,8 +155,8 @@ export default async function CaseDetailPage({
         </span>
       </div>
 
-      {/* Scan head — "Was? Wo? Wer? Wann?" in 3 seconds (leitstand_renovation §5.4) */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
+      {/* Lagekarte — enhanced Scan Head */}
+      <div className={`bg-white border border-gray-200 border-l-[3px] ${urgencyBarColor === "bg-red-500" ? "border-l-red-500" : urgencyBarColor === "bg-amber-400" ? "border-l-amber-400" : "border-l-gray-200"} rounded-xl p-4 mb-4 shadow-sm`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-1.5 gap-x-6 text-sm">
           {/* Was */}
           <div className="flex items-baseline gap-2">
@@ -137,7 +164,7 @@ export default async function CaseDetailPage({
             <span className="text-gray-900">
               <span className="font-semibold">{caseData.category}</span>
               {caseData.description && (
-                <span className="text-gray-500"> — {caseData.description.length > 60 ? caseData.description.slice(0, 60) + "…" : caseData.description}</span>
+                <span className="text-gray-500"> — {caseData.description.length > 60 ? caseData.description.slice(0, 60) + "\u2026" : caseData.description}</span>
               )}
             </span>
           </div>
@@ -165,7 +192,7 @@ export default async function CaseDetailPage({
           <div className="flex items-baseline gap-2">
             <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Wer</span>
             <span className="text-gray-900">
-              {caseData.assignee_text ? `→ ${caseData.assignee_text}` : <span className="text-gray-400">Nicht zugewiesen</span>}
+              {caseData.assignee_text ? `\u2192 ${caseData.assignee_text}` : <span className="text-gray-400">Nicht zugewiesen</span>}
             </span>
           </div>
           {/* Wann */}
@@ -177,7 +204,27 @@ export default async function CaseDetailPage({
                 : <span className="text-gray-400">Kein Termin</span>}
             </span>
           </div>
+          {/* Prio */}
+          {caseData.urgency !== "normal" && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-gray-400 text-xs font-medium w-8 flex-shrink-0">Prio</span>
+              <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium border ${URGENCY_LABELS[caseData.urgency]?.className ?? "text-gray-500"}`}>
+                {URGENCY_LABELS[caseData.urgency]?.text ?? caseData.urgency}
+              </span>
+            </div>
+          )}
         </div>
+
+        {/* Nächster Schritt */}
+        {nextStep && caseData.status !== "archived" && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <p className="text-sm text-amber-900 font-medium">
+                N\u00e4chster Schritt: {nextStep}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Two-column layout — fits on one screen */}
