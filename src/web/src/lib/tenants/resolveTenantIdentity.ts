@@ -20,10 +20,10 @@ export interface TenantIdentity {
 }
 
 const FALLBACK: Omit<TenantIdentity, "tenantId"> = {
-  displayName: "FlowSight",
-  shortName: "FlowSight",
+  displayName: "Leitstand",
+  shortName: "Leitstand",
   caseIdPrefix: "FS",
-  primaryColor: "#d4a853",
+  primaryColor: "#64748b", // slate-500 — neutral "no brand set" signal
 };
 
 /**

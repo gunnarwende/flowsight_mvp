@@ -100,6 +100,7 @@ export default async function FaellePage({
   if (filterCategory) listQuery = listQuery.ilike("category", filterCategory);
   if (filterSource) listQuery = listQuery.eq("source", filterSource);
   if (filterAssigned === "yes") listQuery = listQuery.not("assignee_text", "is", null);
+  if (filterAssigned === "no") listQuery = listQuery.is("assignee_text", null);
 
   // Text search
   if (filterQuery) {
@@ -159,11 +160,69 @@ export default async function FaellePage({
     return `/ops/faelle${qs ? `?${qs}` : ""}`;
   }
 
-  const hasActiveFilters = !!(filterStatus || filterUrgency || filterSource);
+  const hasActiveFilters = !!(filterStatus || filterUrgency || filterSource || filterAssigned);
+
+  // Quickfilter chip helper
+  function quickHref(overrides: Record<string, string>): string {
+    const p = new URLSearchParams();
+    if (filterTenantSlug) p.set("tenant", filterTenantSlug);
+    if (showDemo) p.set("tab", "demo");
+    for (const [k, v] of Object.entries(overrides)) {
+      if (v) p.set(k, v);
+    }
+    if (filterQuery) p.set("q", filterQuery);
+    const qs = p.toString();
+    return `/ops/faelle${qs ? `?${qs}` : ""}`;
+  }
+
+  const QUICK_FILTERS = [
+    { label: "Neu", href: quickHref({ status: "new" }), active: filterStatus === "new" },
+    { label: "Bei uns", href: quickHref({ status: "in_progress" }), active: filterStatus === "in_progress" },
+    { label: "Abschluss", href: quickHref({ status: "done", show: "all" }), active: filterStatus === "done" },
+    { label: "Kritisch", href: quickHref({ urgency: "notfall" }), active: filterUrgency === "notfall" && !filterStatus },
+    { label: "Unzugewiesen", href: quickHref({ assigned: "no" }), active: filterAssigned === "no" && !filterStatus },
+  ];
 
   return (
     <>
-      {/* Filters row */}
+      {/* Quickfilter chips — semantic betriebsnahe Schnellzugriffe */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <Link
+          href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}${showDemo ? "&tab=demo" : ""}` : `/ops/faelle${showDemo ? "?tab=demo" : ""}`}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            !hasActiveFilters && !showAll
+              ? "bg-slate-800 text-white"
+              : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          Offen
+        </Link>
+        {QUICK_FILTERS.map((qf) => (
+          <Link
+            key={qf.label}
+            href={qf.href}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              qf.active
+                ? "bg-slate-800 text-white"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            {qf.label}
+          </Link>
+        ))}
+        <Link
+          href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}&show=all${showDemo ? "&tab=demo" : ""}` : `/ops/faelle?show=all${showDemo ? "&tab=demo" : ""}`}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            showAll && !filterStatus && !filterUrgency && !filterAssigned
+              ? "bg-slate-800 text-white"
+              : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          Alle
+        </Link>
+      </div>
+
+      {/* Secondary filters */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 mb-5">
         <div className="flex flex-wrap items-center gap-3">
           {/* Demo/Real tab toggle */}
@@ -176,7 +235,7 @@ export default async function FaellePage({
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >
-              Ihre F\u00e4lle
+              Ihre Fälle
             </Link>
             <Link
               href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}&tab=demo` : "/ops/faelle?tab=demo"}
@@ -192,33 +251,7 @@ export default async function FaellePage({
 
           <span className="border-l border-gray-200 h-6 inline-block" />
 
-          {/* View toggle */}
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-            <Link
-              href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}${showDemo ? "&tab=demo" : ""}` : `/ops/faelle${showDemo ? "?tab=demo" : ""}`}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                !showAll && !filterStatus
-                  ? "bg-slate-700 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Offen
-            </Link>
-            <Link
-              href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}&show=all${showDemo ? "&tab=demo" : ""}` : `/ops/faelle?show=all${showDemo ? "&tab=demo" : ""}`}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                showAll && !filterStatus
-                  ? "bg-slate-700 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Alle
-            </Link>
-          </div>
-
-          <span className="border-l border-gray-200 h-6 inline-block" />
-
-          {/* Filter dropdowns */}
+          {/* Detail filters */}
           <FilterSelect options={STATUS_OPTIONS} value={filterStatus} paramKey="status" filterHref={filterHref} />
           <FilterSelect options={URGENCY_OPTIONS} value={filterUrgency} paramKey="urgency" filterHref={filterHref} />
           <FilterSelect options={SOURCE_OPTIONS} value={filterSource} paramKey="source" filterHref={filterHref} />
@@ -229,7 +262,7 @@ export default async function FaellePage({
               href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}` : "/ops/faelle"}
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors ml-1"
             >
-              Filter zur\u00fccksetzen
+              Zurücksetzen
             </Link>
           )}
         </div>

@@ -598,11 +598,17 @@ export function ZentraleView({
         </section>
       )}
 
-      {/* Betriebsleiste — ambient footer */}
-      <div className="text-center pt-2 pb-1">
+      {/* Betriebsleiste — ambient footer with Wirkung */}
+      <div className="text-center pt-3 pb-1">
         <p className="text-xs text-gray-400">
           {weekStats.neue} neue · {weekStats.erledigt} erledigt
-          <span className="text-gray-300 ml-1">(7d)</span>
+          <span className="text-gray-300 ml-0.5">(7d)</span>
+          {g.abschluss.length > 0 && (
+            <>
+              <span className="text-gray-300 mx-1.5">·</span>
+              {g.abschluss.length} Review offen
+            </>
+          )}
         </p>
       </div>
 

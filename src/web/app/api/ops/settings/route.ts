@@ -41,7 +41,7 @@ export async function GET() {
     tenant_id: data.id,
     tenant_name: data.name,
     tenant_slug: data.slug,
-    case_id_prefix: data.case_id_prefix ?? "FS",
+    case_id_prefix: data.case_id_prefix,
     settings: {
       google_review_url: (modules.google_review_url as string) ?? "",
       default_appointment_duration_min: (modules.default_appointment_duration_min as number) ?? 60,
