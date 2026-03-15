@@ -180,13 +180,15 @@ export function CaseListClient({
 
   return (
     <>
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" href="/ops/cases?show=all" />
-        <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" href="/ops/cases?status=new" />
-        <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" href="/ops/cases?status=in_progress" />
-        <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" href="/ops/cases?show=all&status=done" />
-      </div>
+      {/* KPI cards — hidden when Puls is active (Puls badges ARE the KPI) */}
+      {!hiddenByPuls && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          <KpiCard label="Total Fälle" value={kpi.total} color="text-slate-900" accent="border-l-slate-400" href="/ops/cases?show=all" />
+          <KpiCard label="Neu heute" value={kpi.todayNew} color="text-blue-700" accent="border-l-blue-500" href="/ops/cases?status=new" />
+          <KpiCard label="In Bearbeitung" value={kpi.inProgress} color="text-violet-700" accent="border-l-violet-500" href="/ops/cases?status=in_progress" />
+          <KpiCard label="Erledigt (7d)" value={kpi.doneWeek} color="text-emerald-700" accent="border-l-emerald-500" href="/ops/cases?show=all&status=done" />
+        </div>
+      )}
 
       {/* Action bar */}
       <div className="flex items-center justify-between mb-4 gap-3">

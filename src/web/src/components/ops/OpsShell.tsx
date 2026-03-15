@@ -10,10 +10,10 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-// Only show functional nav items — no "Bald" placeholders (Identity Contract R4)
-const NAV_ITEMS: NavItem[] = [
+// Primary nav: Daily Driver items (leitstand.md §2 Progressive Nutzungstiefe)
+const PRIMARY_NAV: NavItem[] = [
   {
-    label: "Fälle",
+    label: "Puls",
     href: "/ops/cases",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -31,24 +31,6 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Mitarbeiter",
-    href: "/ops/staff",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Kennzahlen",
-    href: "/ops/metrics",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-      </svg>
-    ),
-  },
-  {
     label: "Einstellungen",
     href: "/ops/settings",
     icon: (
@@ -60,16 +42,40 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+// Secondary nav: Verwaltung (visually separated)
+const SECONDARY_NAV_KENNZAHLEN: NavItem = {
+  label: "Kennzahlen",
+  href: "/ops/metrics",
+  icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+    </svg>
+  ),
+};
+
+const SECONDARY_NAV_MITARBEITER: NavItem = {
+  label: "Mitarbeiter",
+  href: "/ops/staff",
+  icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+    </svg>
+  ),
+};
+
 export function OpsShell({
   userEmail,
   tenantName,
   brandColor,
+  staffCount = 0,
   children,
 }: {
   userEmail: string;
   tenantName?: string;
   /** Tenant brand color hex (e.g. "#004994"). Falls back to amber if not set. */
   brandColor?: string;
+  /** Number of staff members — controls progressive nav (leitstand.md §2) */
+  staffCount?: number;
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -104,34 +110,100 @@ export function OpsShell({
       </div>
 
       {/* Navigation — active state uses tenant brand color */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "border-l-2 -ml-px"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              }`}
-              style={
-                isActive
-                  ? {
-                      backgroundColor: `${color}10`,
-                      color: color,
-                      borderColor: color,
-                    }
-                  : undefined
-              }
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 px-3 py-4">
+        {/* Primary nav: Daily Driver */}
+        <div className="space-y-1">
+          {PRIMARY_NAV.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? "border-l-2 -ml-px"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+                style={
+                  isActive
+                    ? {
+                        backgroundColor: `${color}10`,
+                        color: color,
+                        borderColor: color,
+                      }
+                    : undefined
+                }
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Separator + Secondary nav: Verwaltung */}
+        <div className="mt-5 pt-4 border-t border-gray-200">
+          <p className="px-3 mb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Verwaltung</p>
+          <div className="space-y-0.5">
+            {/* Kennzahlen — always visible */}
+            {(() => {
+              const item = SECONDARY_NAV_KENNZAHLEN;
+              const isActive = pathname.startsWith(item.href);
+              return (
+                <Link
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    isActive
+                      ? "border-l-2 -ml-px"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: `${color}10`,
+                          color: color,
+                          borderColor: color,
+                        }
+                      : undefined
+                  }
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })()}
+            {/* Mitarbeiter — only when staffCount > 0 (Progressive Nutzungstiefe) */}
+            {staffCount > 0 && (() => {
+              const item = SECONDARY_NAV_MITARBEITER;
+              const isActive = pathname.startsWith(item.href);
+              return (
+                <Link
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    isActive
+                      ? "border-l-2 -ml-px"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: `${color}10`,
+                          color: color,
+                          borderColor: color,
+                        }
+                      : undefined
+                  }
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })()}
+          </div>
+        </div>
       </nav>
 
       {/* User info + logout */}

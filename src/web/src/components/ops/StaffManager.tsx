@@ -168,7 +168,7 @@ export function StaffManager() {
             <button
               onClick={handleSave}
               disabled={!name.trim() || saving}
-              className="rounded-lg bg-amber-500 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 disabled:opacity-40 transition-colors"
+              className="rounded-lg bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700 disabled:opacity-40 transition-colors"
             >
               {saving ? "Speichern…" : editingId ? "Aktualisieren" : "Hinzufügen"}
             </button>
