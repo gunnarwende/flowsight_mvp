@@ -26,10 +26,11 @@ interface PulsGroup {
 
 const STATUS_LABELS: Record<string, string> = {
   new: "Neu",
-  contacted: "Kontaktiert",
   scheduled: "Geplant",
+  in_arbeit: "In Arbeit",
+  warten: "Warten",
   done: "Erledigt",
-  archived: "Archiviert",
+  archived: "Abgeschlossen",
 };
 
 const URGENCY_DOT: Record<string, string> = {
@@ -245,7 +246,6 @@ export function PulsView({
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
                         c.status === "new" ? "bg-blue-100 text-blue-700" :
-                        c.status === "contacted" ? "bg-sky-100 text-sky-700" :
                         c.status === "scheduled" ? "bg-violet-100 text-violet-700" :
                         c.status === "done" ? "bg-emerald-100 text-emerald-700" :
                         "bg-gray-100 text-gray-500"
