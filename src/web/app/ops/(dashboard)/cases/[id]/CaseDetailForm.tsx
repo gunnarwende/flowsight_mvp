@@ -91,6 +91,27 @@ function googleMapsUrl(street: string | null, houseNumber: string | null, plz: s
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(parts.join(" "))}`;
 }
 
+/** Humanize legacy timeline titles stored with raw field names */
+const LEGACY_FIELD_MAP: Record<string, string> = {
+  urgency: "Priorität", category: "Kategorie", description: "Beschreibung",
+  plz: "PLZ", city: "Ort", street: "Strasse", house_number: "Hausnummer",
+  assignee_text: "Zuständig", scheduled_at: "Termin", internal_notes: "Notizen",
+  contact_email: "E-Mail", contact_phone: "Telefon", reporter_name: "Melder",
+};
+
+function humanizeTitle(title: string): string {
+  // "Felder aktualisiert: urgency, category" → "Priorität, Kategorie aktualisiert"
+  const fieldsMatch = title.match(/^Felder aktualisiert:\s*(.+)$/);
+  if (fieldsMatch) {
+    const fields = fieldsMatch[1].split(",").map(f => f.trim());
+    const humanFields = fields.map(f => LEGACY_FIELD_MAP[f] ?? f);
+    return humanFields.length === 1
+      ? `${humanFields[0]} aktualisiert`
+      : `${humanFields.join(", ")} aktualisiert`;
+  }
+  return title;
+}
+
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
@@ -163,6 +184,8 @@ export function CaseDetailForm({
   const [reviewMsg, setReviewMsg] = useState("");
   const [localEvents, setLocalEvents] = useState(caseEvents);
   const [timelineExpanded, setTimelineExpanded] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
   // ── Staff for assignee dropdown ──────────────────────────────────────
   const [staffMembers, setStaffMembers] = useState<{ display_name: string }[]>([]);
@@ -371,12 +394,6 @@ export function CaseDetailForm({
     urgency === "notfall" ? "border-l-red-500" :
     urgency === "dringend" ? "border-l-amber-400" : "border-l-gray-200";
 
-  const nextStepText = (() => {
-    if (status === "done" && !initialData.review_sent_at) return "Review anfragen";
-    if (status === "done") return "Abschliessen";
-    return NEXT_STEP[status] ?? "";
-  })();
-
   const canEditSection = (s: Section) => !editingSection || editingSection === s;
 
   // ════════════════════════════════════════════════════════════════════
@@ -429,7 +446,7 @@ export function CaseDetailForm({
         {editingSection === "steuerung" ? (
           <>
             <SectionHead title="Steuerung" editing onClose={cancelEdit} />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div>
                 <label className={lbl}>Status</label>
                 <select value={status} onChange={e => setStatus(e.target.value)} className={inp}>
@@ -490,7 +507,7 @@ export function CaseDetailForm({
         ) : (
           <>
             <SectionHead title="Fallkern" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-2 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
               <KV label="Status">
                 <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
                   {STATUS_LABELS[status] ?? status}
@@ -562,13 +579,13 @@ export function CaseDetailForm({
                 </a>
               </div>
               {/* Contact — clickable links for mobile */}
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                 {reporterName && <span className="font-medium text-gray-900">{reporterName}</span>}
                 {contactPhone && (
-                  <a href={`tel:${contactPhone}`} className="text-blue-600 hover:underline">{contactPhone}</a>
+                  <a href={`tel:${contactPhone}`} className="text-blue-600 hover:underline min-h-[44px] sm:min-h-0 flex items-center">{contactPhone}</a>
                 )}
                 {contactEmail && (
-                  <a href={`mailto:${contactEmail}`} className="text-blue-600 hover:underline break-all">{contactEmail}</a>
+                  <a href={`mailto:${contactEmail}`} className="text-blue-600 hover:underline break-all min-h-[44px] sm:min-h-0 flex items-center">{contactEmail}</a>
                 )}
                 {!reporterName && !contactPhone && !contactEmail && (
                   <span className="text-gray-400">Kein Kontakt hinterlegt</span>
@@ -594,19 +611,22 @@ export function CaseDetailForm({
           <>
             <SectionHead title="Beschreibung" onEdit={() => startEdit("falldaten")} canEdit={canEditSection("falldaten")} />
             <p className="text-sm font-medium text-gray-900 mb-1">{category}</p>
-            <p className="text-sm text-gray-600 whitespace-pre-wrap">{description || "—"}</p>
+            {description ? (
+              <div>
+                <p className={`text-sm text-gray-600 whitespace-pre-wrap ${!descExpanded ? "line-clamp-3" : ""}`}>{description}</p>
+                {description.split("\n").length > 3 || description.length > 200 ? (
+                  <button onClick={() => setDescExpanded(p => !p)}
+                    className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
+                    {descExpanded ? "Weniger" : "Mehr anzeigen"}
+                  </button>
+                ) : null}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">—</p>
+            )}
           </>
         )}
       </div>
-
-      {/* ── NÄCHSTER SCHRITT ──────────────────────────────────────── */}
-      {nextStepText && status !== "archived" && (
-        <div className={sectionPad}>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <p className="text-sm text-amber-900 font-medium">→ {nextStepText}</p>
-          </div>
-        </div>
-      )}
 
       {/* ── KURZVERLAUF ───────────────────────────────────────────── */}
       <div className={sectionPad}>
@@ -615,17 +635,22 @@ export function CaseDetailForm({
       </div>
 
       {/* ── WIRKUNG ───────────────────────────────────────────────── */}
-      <div className={sectionPad}>
-        <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Wirkung</h3>
+      <div className={`${sectionPad} ${canRequestReview ? "bg-emerald-50/50" : ""}`}>
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+          </svg>
+          <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Wirkung</h3>
+        </div>
         {status === "done" && reviewInfo.status !== "nicht_bereit" ? (
           <WirkungContent reviewInfo={reviewInfo} canRequestReview={canRequestReview}
             reviewState={reviewState} reviewMsg={reviewMsg}
             onRequest={handleRequestReview} onSkip={handleSkipReview} />
         ) : status === "archived" && initialData.review_sent_at ? (
-          <p className="text-sm text-emerald-600">Bewertungsanfrage gesendet</p>
+          <p className="text-sm text-emerald-600 font-medium">Bewertungsanfrage gesendet</p>
         ) : (
           <p className="text-sm text-gray-400">
-            {status === "done" ? "Kein Kontakt für Review" : "Noch nicht fällig"}
+            {status === "done" ? "Kein Kontakt für Review" : "Verfügbar nach Abschluss"}
           </p>
         )}
       </div>
@@ -642,7 +667,15 @@ export function CaseDetailForm({
           <>
             <SectionHead title="Interne Notizen" onEdit={() => startEdit("notizen")} canEdit={canEditSection("notizen")} />
             {internalNotes ? (
-              <p className="text-sm text-gray-600 whitespace-pre-wrap">{internalNotes}</p>
+              <div>
+                <p className={`text-sm text-gray-600 whitespace-pre-wrap ${!notesExpanded ? "line-clamp-1" : ""}`}>{internalNotes}</p>
+                {(internalNotes.includes("\n") || internalNotes.length > 80) && (
+                  <button onClick={() => setNotesExpanded(p => !p)}
+                    className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
+                    {notesExpanded ? "Weniger" : "Alles anzeigen"}
+                  </button>
+                )}
+              </div>
             ) : (
               <p className="text-sm text-gray-400">Keine Notizen</p>
             )}
@@ -789,7 +822,7 @@ function TimelineItem({ event }: { event: CaseEvent }) {
         <div className="w-[10px] h-[10px] rounded-full border-2 border-white bg-slate-400" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-700 leading-snug truncate">{event.title}</p>
+        <p className="text-sm text-gray-700 leading-snug truncate">{humanizeTitle(event.title)}</p>
         <p className="text-[11px] text-gray-400">{formatEventDate(event.created_at)}</p>
       </div>
     </div>

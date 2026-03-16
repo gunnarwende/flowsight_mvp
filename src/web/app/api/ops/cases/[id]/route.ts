@@ -18,6 +18,22 @@ const STATUS_LABELS: Record<string, string> = {
   archived: "Abgeschlossen",
 };
 
+const FIELD_LABELS: Record<string, string> = {
+  urgency: "Priorität",
+  category: "Kategorie",
+  description: "Beschreibung",
+  plz: "PLZ",
+  city: "Ort",
+  street: "Strasse",
+  house_number: "Hausnummer",
+  assignee_text: "Zuständig",
+  scheduled_at: "Termin",
+  internal_notes: "Notizen",
+  contact_email: "E-Mail",
+  contact_phone: "Telefon",
+  reporter_name: "Melder",
+};
+
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
 
 const OPS_UPDATABLE_FIELDS = [
@@ -202,10 +218,14 @@ export async function PATCH(
 
     const nonStatusFields = Object.keys(update).filter((f) => f !== "status");
     if (nonStatusFields.length > 0) {
+      const humanFields = nonStatusFields.map(f => FIELD_LABELS[f] ?? f);
+      const title = humanFields.length === 1
+        ? `${humanFields[0]} aktualisiert`
+        : `${humanFields.join(", ")} aktualisiert`;
       await supabase.from("case_events").insert({
         case_id: id,
         event_type: "fields_updated",
-        title: `Felder aktualisiert: ${nonStatusFields.join(", ")}`,
+        title,
         metadata: { fields: nonStatusFields, user_id: scope.userId },
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
