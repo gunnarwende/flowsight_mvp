@@ -76,8 +76,12 @@ export function OpsShell({
 
   function isNavActive(href: string): boolean {
     if (href === "/ops/cases") {
-      // Active for Leitsystem main AND case detail views
-      return pathname === "/ops/cases" || pathname === "/ops/cases/" || pathname.startsWith("/ops/cases/");
+      // Leitsystem: only exact match (not case detail pages)
+      return pathname === "/ops/cases" || pathname === "/ops/cases/";
+    }
+    if (href === "/ops/faelle") {
+      // Fallübersicht: /ops/faelle/* AND individual case pages /ops/cases/[id]
+      return pathname.startsWith("/ops/faelle") || (pathname.startsWith("/ops/cases/") && pathname !== "/ops/cases/");
     }
     return pathname.startsWith(href);
   }
