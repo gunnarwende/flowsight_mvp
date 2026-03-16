@@ -117,7 +117,7 @@ function humanizeTitle(title: string): string {
 
 const inp = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400/30 transition-colors";
 const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
-const sectionTitle = "text-xs font-bold text-gray-600 uppercase tracking-wider";
+const sectionTitle = "text-xs font-bold text-gray-700 uppercase tracking-wider";
 const sectionPad = "px-5 py-4";
 const editBtnClass = "p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
@@ -136,11 +136,13 @@ export function CaseDetailForm({
   isProspect = false,
   caseEvents = [],
   brandColor = "#64748b",
+  hasAttachments = false,
 }: {
   initialData: CaseDetail;
   isProspect?: boolean;
   caseEvents?: CaseEvent[];
   brandColor?: string;
+  hasAttachments?: boolean;
 }) {
   // ── Field state ──────────────────────────────────────────────────────
   const [status, setStatus] = useState(initialData.status);
@@ -412,12 +414,12 @@ export function CaseDetailForm({
   // FULL CASE SURFACE
   // ════════════════════════════════════════════════════════════════════
   return (
-    <div className={`bg-white border border-gray-200 rounded-2xl border-l-[4px] ${urgencyBorder} shadow-sm divide-y divide-gray-100 print:shadow-none print:border-gray-300`}>
+    <div className={`bg-white border border-gray-200 ${hasAttachments ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"} border-l-[4px] ${urgencyBorder} shadow-sm divide-y divide-gray-100 print:shadow-none print:border-gray-300`}>
       {/* ── STEUERUNG (full width) ──────────────────────────────── */}
       <div className={sectionPad}>
         {editingSection === "steuerung" ? (
           <div className="bg-gray-50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
-            <SectionHead title="Steuerung" editing onClose={cancelEdit} />
+            <SectionHead title="Übersicht" editing onClose={cancelEdit} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div>
                 <label className={lbl}>Status</label>
@@ -478,7 +480,7 @@ export function CaseDetailForm({
           </div>
         ) : (
           <>
-            <SectionHead title="Steuerung" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
+            <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
               <KV label="Status">
                 <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
@@ -491,12 +493,12 @@ export function CaseDetailForm({
               <KV label="Zuständig">
                 {assigneeText
                   ? <span className="text-gray-900">→ {assigneeText}</span>
-                  : <span className="text-gray-400">Nicht zugewiesen</span>}
+                  : <span className="text-gray-500">Nicht zugewiesen</span>}
               </KV>
               <KV label="Termin">
                 {scheduledAt
                   ? <span className="text-gray-900 font-medium">{formatTermin(new Date(scheduledAt).toISOString())}</span>
-                  : <span className="text-gray-400">Offen</span>}
+                  : <span className="text-gray-500">Offen</span>}
               </KV>
             </div>
 
@@ -527,14 +529,14 @@ export function CaseDetailForm({
           ) : (
             <>
               <SectionHead title="Beschreibung" onEdit={() => startEdit("beschreibung")} canEdit={canEditSection("beschreibung")} />
-              <p className="text-sm font-semibold text-gray-800 mb-1">{category}</p>
+              <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
               {description ? (
                 <div className="overflow-hidden">
-                  <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-3" : ""}`}>{description}</p>
+                  <p className={`text-sm text-gray-600 leading-normal whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-3" : ""}`}>{description}</p>
                   {(description.split("\n").length > 3 || description.length > 200) && (
                     <button onClick={() => setDescExpanded(p => !p)}
-                      className="text-xs text-gray-400 hover:text-gray-600 mt-1.5 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
-                      {descExpanded ? "Weniger" : "Mehr anzeigen"}
+                      className="text-xs font-medium text-gray-500 hover:text-gray-700 hover:underline mt-2 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
+                      {descExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
                     </button>
                   )}
                 </div>
@@ -545,8 +547,9 @@ export function CaseDetailForm({
           )}
         </div>
 
-        {/* RIGHT: Kontakt + Notizen */}
-        <div className="md:w-72 lg:w-80 flex-shrink-0 mt-5 md:mt-0 space-y-5">
+        {/* RIGHT: Kontakt + Notizen — reference rail */}
+        <div className="md:w-72 lg:w-80 flex-shrink-0 mt-5 md:mt-0">
+         <div className="md:bg-gray-50/50 md:rounded-xl md:p-4 space-y-4">
           {/* ── KONTAKT ─────────────────────────────────────────── */}
           {editingSection === "kontakt" ? (
             <div className="bg-gray-50 -mx-5 md:mx-0 px-5 md:px-4 py-4 md:rounded-lg">
@@ -599,7 +602,7 @@ export function CaseDetailForm({
           )}
 
           {/* ── NOTIZEN (in right rail) ────────────────────────── */}
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-3 border-t border-gray-200/60">
             {editingSection === "notizen" ? (
               <div className="bg-gray-50 -mx-5 md:mx-0 px-5 md:px-4 py-4 md:rounded-lg">
                 <SectionHead title="Interne Notizen" editing onClose={cancelEdit} />
@@ -625,6 +628,7 @@ export function CaseDetailForm({
               </>
             )}
           </div>
+         </div>
         </div>
       </div>
 
@@ -674,14 +678,14 @@ function SectionHead({
       <h3 className={sectionTitle}>{title}</h3>
       {editing && onClose && (
         <button onClick={onClose} className={editBtnClass} title="Abbrechen">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
       )}
       {!editing && onEdit && (
         <button onClick={onEdit} disabled={!canEdit} className={`${editBtnClass} print:hidden`} title="Bearbeiten">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
           </svg>
         </button>
@@ -740,11 +744,10 @@ function CompactTimeline({
       : <p className="text-sm text-gray-400">Noch keine Einträge</p>;
   }
 
-  const showAll = expanded || events.length <= 3;
+  const showAll = expanded || events.length <= 2;
   const first = events[0];
   const last = events.length > 1 ? events[events.length - 1] : null;
-  const secondToLast = events.length > 2 ? events[events.length - 2] : null;
-  const middleCount = events.length - (secondToLast ? 3 : 2);
+  const middleCount = events.length - 2;
 
   return (
     <div className="relative">
@@ -762,7 +765,6 @@ function CompactTimeline({
                 +{middleCount} weitere {middleCount === 1 ? "Schritt" : "Schritte"}
               </button>
             )}
-            {secondToLast && <TimelineItem event={secondToLast} />}
             {last && <TimelineItem event={last} />}
           </>
         )}
@@ -776,7 +778,7 @@ function CompactTimeline({
         )}
       </div>
 
-      {expanded && events.length > 3 && (
+      {expanded && events.length > 2 && (
         <button onClick={onToggle} className="text-xs text-gray-400 hover:text-gray-600 mt-2 ml-[18px] transition-colors">
           Weniger anzeigen
         </button>
@@ -803,9 +805,14 @@ function TimelineItem({ event }: { event: CaseEvent }) {
 // Stars SVG
 // ---------------------------------------------------------------------------
 
-function StarIcon({ filled, color }: { filled: boolean; color: string }) {
+function StarIcon({ filled, brandColor, muted }: { filled: boolean; brandColor: string; muted?: boolean }) {
   return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill={filled ? "#f59e0b" : "none"} strokeWidth={1.5} stroke={filled ? "#f59e0b" : color}>
+    <svg className="w-6 h-6" viewBox="0 0 24 24"
+      fill={filled ? "#f59e0b" : "none"}
+      strokeWidth={1.5}
+      stroke={filled ? brandColor : brandColor}
+      style={muted ? { opacity: 0.35 } : undefined}
+    >
       <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
     </svg>
   );
@@ -831,7 +838,7 @@ function BewertungEndCap({
 }) {
   const isActive = status === "done" || status === "archived";
   const reviewSent = reviewInfo.status === "angefragt" || reviewInfo.status === "geoeffnet" || reviewInfo.status === "geklickt";
-  const starColor = isActive ? brandColor : "#d1d5db"; // gray-300 when not active
+  const starsMuted = !isActive; // muted when case not yet done
 
   // Determine copy
   let label: string;
@@ -859,14 +866,14 @@ function BewertungEndCap({
       <div className="relative flex items-center gap-3">
         {/* Star circle — end-cap of timeline */}
         <div className="relative z-10 flex-shrink-0">
-          <div className="w-[10px] h-[10px] rounded-full" style={{ backgroundColor: reviewSent ? "#f59e0b" : isActive ? brandColor : "#d1d5db" }} />
+          <div className="w-[10px] h-[10px] rounded-full" style={{ backgroundColor: reviewSent ? "#f59e0b" : brandColor, opacity: starsMuted ? 0.35 : 1 }} />
         </div>
 
         <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
           {/* Stars */}
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map(i => (
-              <StarIcon key={i} filled={reviewSent} color={starColor} />
+              <StarIcon key={i} filled={reviewSent} brandColor={brandColor} muted={starsMuted} />
             ))}
           </div>
 

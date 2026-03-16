@@ -103,7 +103,7 @@ export function OpsShell({
           <span className="text-white font-bold text-lg tracking-tight">{initials}</span>
         </div>
         <div className="min-w-0">
-          <span className="block text-[14px] font-semibold text-white leading-tight whitespace-nowrap truncate">
+          <span className="block text-[14px] font-semibold text-white leading-tight">
             {displayName}
           </span>
           <span className="block text-[11px] text-white/50 mt-0.5">Leitsystem</span>
@@ -170,7 +170,7 @@ export function OpsShell({
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-56 bg-gray-950 border-r border-gray-800/50">
+      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-64 bg-gray-950 border-r border-gray-800/50">
         {sidebarContent}
       </aside>
 
@@ -223,7 +223,7 @@ export function OpsShell({
       )}
 
       {/* Main content */}
-      <main className="md:ml-56">
+      <main className="md:ml-64">
         <div className="max-w-6xl mx-auto px-4 py-6">
           {children}
         </div>

@@ -147,8 +147,8 @@ export function AttachmentsSection({ caseId }: { caseId: string }) {
   }
 
   return (
-    <section className="bg-white border border-gray-200 rounded-xl p-5">
-      <h2 className="text-base font-semibold text-gray-900 mb-4">Anhänge</h2>
+    <section>
+      <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">Anhänge</h3>
 
       {/* Upload */}
       <div className="mb-4">

@@ -122,11 +122,15 @@ export default async function CaseDetailPage({
         isProspect={isProspect}
         caseEvents={caseEvents}
         brandColor={brandColor}
+        hasAttachments={!isProspect}
       />
 
-      {/* Attachments — integrated below */}
+      {/* Attachments — visual continuation of case card */}
       {!isProspect && (
-        <div className="mt-1">
+        <div className={`bg-white border border-gray-200 border-t-gray-100 rounded-b-2xl border-l-[4px] ${
+          caseData.urgency === "notfall" ? "border-l-red-500" :
+          caseData.urgency === "dringend" ? "border-l-amber-400" : "border-l-gray-200"
+        } -mt-[1px] px-5 py-4`}>
           <AttachmentsSection caseId={caseData.id} />
         </div>
       )}
