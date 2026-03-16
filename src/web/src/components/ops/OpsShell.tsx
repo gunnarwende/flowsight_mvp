@@ -16,7 +16,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Leitsystem",
+    label: "Leitzentrale",
     href: "/ops/cases",
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -25,7 +25,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Fall\u00fcbersicht",
+    label: "Fallübersicht",
     href: "/ops/faelle",
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -99,7 +99,7 @@ export function OpsShell({
           <span className="text-white font-bold text-lg tracking-tight">{initials}</span>
         </div>
         <div className="min-w-0">
-          <span className="block text-[15px] font-semibold text-white leading-tight">
+          <span className="block text-[14px] font-semibold text-white leading-tight whitespace-nowrap truncate">
             {displayName}
           </span>
           <span className="block text-[11px] text-white/50 mt-0.5">Leitsystem</span>
@@ -177,7 +177,7 @@ export function OpsShell({
       >
         <button
           onClick={() => setSidebarOpen(true)}
-          aria-label="Men\u00fc \u00f6ffnen"
+          aria-label="Menü öffnen"
           className="flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -206,7 +206,7 @@ export function OpsShell({
           <aside className="relative w-64 max-w-[80%] h-full bg-gray-950 flex flex-col shadow-2xl">
             <button
               onClick={() => setSidebarOpen(false)}
-              aria-label="Men\u00fc schliessen"
+              aria-label="Menü schliessen"
               className="absolute top-4 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/10"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

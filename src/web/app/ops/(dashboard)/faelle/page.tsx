@@ -36,9 +36,9 @@ export default async function FaellePage({
 }) {
   const params = await searchParams;
 
-  // Filters from URL
   const filterStatus = params.status ?? "";
   const filterUrgency = params.urgency ?? "";
+  const filterWaitingFor = params.waiting_for ?? "";
   const filterTenantSlug = params.tenant;
   const filterQuery = params.q ?? "";
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
@@ -65,21 +65,25 @@ export default async function FaellePage({
   let listQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at",
+      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, waiting_for",
       { count: "exact" }
     )
     .eq("is_demo", false)
     .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
-  // ── Apply status filter ─────────────────────────────────────────
+  // ── Apply filters (AND combination) ─────────────────────────────
   if (filterStatus) {
     listQuery = listQuery.eq("status", filterStatus);
   }
-
-  // ── Apply urgency filter (AND combination) ──────────────────────
   if (filterUrgency) {
     listQuery = listQuery.eq("urgency", filterUrgency);
+  }
+  // waiting_for=active: all cases where waiting_for != niemand (drilldown from Leitzentrale)
+  if (filterWaitingFor === "active") {
+    listQuery = listQuery.neq("waiting_for", "niemand");
+  } else if (filterWaitingFor) {
+    listQuery = listQuery.eq("waiting_for", filterWaitingFor);
   }
 
   // Text search
@@ -107,7 +111,6 @@ export default async function FaellePage({
   const totalCount = count ?? rows.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-  // Resolve tenant identity for case ID prefix
   let caseIdPrefix = "FS";
   let tenantShortName: string | undefined;
   try {
@@ -122,7 +125,6 @@ export default async function FaellePage({
     }
   } catch { /* fallback to defaults */ }
 
-  // URL builder — preserves all active filters
   function buildHref(overrides: Record<string, string>): string {
     const p = new URLSearchParams();
     if (filterTenantSlug) p.set("tenant", filterTenantSlug);
@@ -134,10 +136,12 @@ export default async function FaellePage({
     if (status) p.set("status", status);
     if (urgency) p.set("urgency", urgency);
     if (q) p.set("q", q);
+    // Preserve waiting_for unless a status/urgency filter change clears context
+    if (!("status" in overrides) && !("urgency" in overrides) && filterWaitingFor) {
+      p.set("waiting_for", filterWaitingFor);
+    }
     // Reset page when changing filters
-    if ("status" in overrides || "urgency" in overrides) {
-      // page resets
-    } else if (overrides.page) {
+    if (!("status" in overrides) && !("urgency" in overrides) && overrides.page) {
       p.set("page", overrides.page);
     }
 
@@ -145,19 +149,31 @@ export default async function FaellePage({
     return `/ops/faelle${qs ? `?${qs}` : ""}`;
   }
 
+  // Active waiting_for filter label for display
+  const waitingForLabel = filterWaitingFor === "active" ? "Wartend" :
+    filterWaitingFor === "kunde" ? "Wartet auf Kunde" :
+    filterWaitingFor === "material" ? "Wartet auf Material" :
+    filterWaitingFor === "partner" ? "Wartet auf Partner" :
+    filterWaitingFor === "intern" ? "Wartet intern" : "";
+
   return (
     <>
       {/* Page title */}
       <h1 className="text-xl font-semibold text-gray-900 mb-5">
-        Fall\u00fcbersicht
+        Fallübersicht
+        {waitingForLabel && (
+          <span className="ml-3 inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1 align-middle">
+            {waitingForLabel}
+            <Link href={buildHref({ status: filterStatus, urgency: filterUrgency })} className="text-amber-400 hover:text-amber-600 ml-0.5">&times;</Link>
+          </span>
+        )}
       </h1>
 
       {/* Filter rows */}
       <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4 mb-5 space-y-3">
-
         {/* Row 1: Status */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-gray-400 uppercase tracking-wide w-16 shrink-0">
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider w-16 shrink-0">
             Status
           </span>
           <div className="flex flex-wrap items-center gap-1.5">
@@ -167,10 +183,10 @@ export default async function FaellePage({
                 <Link
                   key={f.value || "__all"}
                   href={buildHref({ status: f.value })}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     isActive
                       ? "bg-gray-900 text-white shadow-sm"
-                      : "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                   }`}
                 >
                   {f.label}
@@ -184,9 +200,9 @@ export default async function FaellePage({
         <div className="border-t border-gray-100" />
 
         {/* Row 2: Priorität */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-gray-400 uppercase tracking-wide w-16 shrink-0">
-            Priorit\u00e4t
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider w-16 shrink-0">
+            Priorität
           </span>
           <div className="flex flex-wrap items-center gap-1.5">
             {URGENCY_FILTERS.map((f) => {
@@ -195,10 +211,10 @@ export default async function FaellePage({
                 <Link
                   key={f.value || "__all"}
                   href={buildHref({ urgency: f.value })}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     isActive
                       ? "bg-gray-900 text-white shadow-sm"
-                      : "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                   }`}
                 >
                   {f.label}

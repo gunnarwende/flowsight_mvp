@@ -11,15 +11,23 @@ import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
 const STATUSES = [
   { value: "new", label: "Neu" },
-  { value: "contacted", label: "Kontaktiert" },
   { value: "scheduled", label: "Geplant" },
   { value: "done", label: "Erledigt" },
+  { value: "archived", label: "Abgeschlossen" },
 ] as const;
 
 const URGENCIES = [
   { value: "notfall", label: "Notfall" },
   { value: "dringend", label: "Dringend" },
   { value: "normal", label: "Normal" },
+] as const;
+
+const WAITING_FOR_OPTIONS = [
+  { value: "niemand", label: "Niemand" },
+  { value: "kunde", label: "Kunde" },
+  { value: "material", label: "Material" },
+  { value: "partner", label: "Partner" },
+  { value: "intern", label: "Intern" },
 ] as const;
 
 const QUICK_TIMES = ["08:00", "11:00", "15:00"] as const;
@@ -39,25 +47,14 @@ function quickDateTime(dayOffset: number, time: string): string {
   return toDatetimeLocal(d.toISOString());
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("de-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Zurich",
-  });
-}
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [] }: { initialData: CaseDetail; isProspect?: boolean; caseEvents?: CaseEvent[] }) {
-  // All fields as state — always editable, no toggle
   const [status, setStatus] = useState(initialData.status);
   const [urgency, setUrgency] = useState(initialData.urgency);
+  const [waitingFor, setWaitingFor] = useState(initialData.waiting_for ?? "niemand");
   const [category, setCategory] = useState(initialData.category);
   const [plz, setPlz] = useState(initialData.plz);
   const [city, setCity] = useState(initialData.city);
@@ -74,10 +71,10 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [quickDay, setQuickDay] = useState<0 | 1>(0);
 
-  // Baseline for dirty-check
   const [baseline, setBaseline] = useState({
     status: initialData.status,
     urgency: initialData.urgency,
+    waiting_for: initialData.waiting_for ?? "niemand",
     category: initialData.category,
     plz: initialData.plz,
     city: initialData.city,
@@ -92,7 +89,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
     house_number: initialData.house_number ?? "",
   });
 
-  // Staff members for assignee dropdown (L10)
+  // Staff members for assignee dropdown
   const [staffMembers, setStaffMembers] = useState<{ display_name: string }[]>([]);
   useEffect(() => {
     fetch("/api/ops/staff")
@@ -112,6 +109,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const isDirty =
     status !== baseline.status ||
     urgency !== baseline.urgency ||
+    waitingFor !== baseline.waiting_for ||
     category !== baseline.category ||
     plz !== baseline.plz ||
     city !== baseline.city ||
@@ -141,12 +139,12 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
     setErrorMsg("");
 
     try {
-      // Prospect: only send status. Admin/tenant: send all fields.
       const payload = isProspect
         ? { status }
         : {
             status,
             urgency,
+            waiting_for: waitingFor,
             category: category.trim(),
             plz: plz.trim(),
             city: city.trim(),
@@ -174,6 +172,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       setBaseline({
         status,
         urgency,
+        waiting_for: waitingFor,
         category: category.trim(),
         plz: plz.trim(),
         city: city.trim(),
@@ -223,7 +222,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const canSendInvite = !!scheduledAt && inviteState !== "sending";
   const hasContactInfo = !!contactEmail.trim() || !!contactPhone.trim();
 
-  // Derive review status from events (NS1)
   const reviewInfo = deriveReviewStatus({
     caseStatus: status,
     hasContactInfo,
@@ -264,7 +262,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       setReviewState("sent");
       setTimeout(() => setReviewState("idle"), 2000);
-      // Add synthetic event to re-derive status
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(),
         event_type: "review_requested",
@@ -284,7 +281,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(),
         event_type: "review_skipped",
-        title: "Review \u00fcbersprungen",
+        title: "Review übersprungen",
         created_at: new Date().toISOString(),
       }]);
     } catch {
@@ -292,8 +289,9 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
     }
   }
 
+  // Style tokens
   const inp =
-    "w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+    "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400/30 transition-colors";
   const inpReadonly =
     "w-full rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm text-gray-600";
   const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
@@ -302,7 +300,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   if (isProspect) {
     return (
       <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        {/* Status — the only editable field for prospects */}
         <div className="mb-4">
           <label htmlFor="status" className={lbl}>Status</label>
           <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={inp}>
@@ -310,45 +307,43 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
           </select>
         </div>
 
-        {/* Key info — read-only display */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
             <span className={lbl}>Kategorie</span>
-            <p className={inpReadonly}>{category || "\u2014"}</p>
+            <p className={inpReadonly}>{category || "—"}</p>
           </div>
           <div>
-            <span className={lbl}>Dringlichkeit</span>
+            <span className={lbl}>Priorität</span>
             <p className={inpReadonly}>{URGENCIES.find(u => u.value === urgency)?.label ?? urgency}</p>
           </div>
         </div>
 
         <div className="mb-4">
           <span className={lbl}>Beschreibung</span>
-          <p className={`${inpReadonly} whitespace-pre-wrap min-h-[60px]`}>{description || "\u2014"}</p>
+          <p className={`${inpReadonly} whitespace-pre-wrap min-h-[60px]`}>{description || "—"}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
             <span className={lbl}>Ort</span>
-            <p className={inpReadonly}>{[plz, city].filter(Boolean).join(" ") || "\u2014"}</p>
+            <p className={inpReadonly}>{[plz, city].filter(Boolean).join(" ") || "—"}</p>
           </div>
           <div>
             <span className={lbl}>Melder</span>
-            <p className={inpReadonly}>{reporterName || "\u2014"}</p>
+            <p className={inpReadonly}>{reporterName || "—"}</p>
           </div>
         </div>
 
-        {/* Action bar — Status save */}
         <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
           <button
             onClick={performSave}
             disabled={!isDirty || saveState === "saving"}
-            className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
-            {saveState === "saving" ? "Speichern\u2026" : "Status speichern"}
+            {saveState === "saving" ? "Speichern…" : "Status speichern"}
           </button>
 
-          {status !== "done" && (
+          {status !== "done" && status !== "archived" && (
             <button onClick={handleQuickDone} disabled={saveState === "saving"}
               className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
             >Erledigt</button>
@@ -358,7 +353,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
           {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
         </div>
 
-        {/* Review Nachlauf — prospect view */}
         {status === "done" && reviewInfo.status !== "nicht_bereit" && (
           <div className="border-t border-gray-100 pt-3 mt-3">
             <div className="flex items-center gap-2 flex-wrap">
@@ -369,7 +363,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
                 <button onClick={handleRequestReview} disabled={reviewState === "sending"}
                   className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
                 >
-                  {reviewState === "sending" ? "Sende\u2026" :
+                  {reviewState === "sending" ? "Sende…" :
                     reviewInfo.canResend ? "Nochmals anfragen" : "Review anfragen"}
                 </button>
               )}
@@ -389,29 +383,37 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
 
   // ── Full admin/tenant view ─────────────────────────────────────────
   return (
-    <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-      {/* Row 1: Status, Urgency, Category */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
-        <div>
-          <label htmlFor="status" className={lbl}>Status</label>
-          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={inp}>
-            {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="urgency" className={lbl}>Dringlichkeit</label>
-          <select id="urgency" value={urgency} onChange={(e) => setUrgency(e.target.value)} className={inp}>
-            {URGENCIES.map((u) => <option key={u.value} value={u.value}>{u.label}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="category" className={lbl}>Kategorie</label>
-          <input id="category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} className={inp} />
+    <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+      {/* ── Führungsblock: Status, Priorität, Wartet auf ─────────── */}
+      <div className="bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label htmlFor="status" className={lbl}>Status</label>
+            <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={inp}>
+              {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="urgency" className={lbl}>Priorität</label>
+            <select id="urgency" value={urgency} onChange={(e) => setUrgency(e.target.value)} className={inp}>
+              {URGENCIES.map((u) => <option key={u.value} value={u.value}>{u.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="waiting_for" className={lbl}>Wartet auf</label>
+            <select id="waiting_for" value={waitingFor} onChange={(e) => setWaitingFor(e.target.value)} className={inp}>
+              {WAITING_FOR_OPTIONS.map((w) => <option key={w.value} value={w.value}>{w.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="category" className={lbl}>Kategorie</label>
+            <input id="category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} className={inp} />
+          </div>
         </div>
       </div>
 
       {/* Row 2: PLZ, Ort, Strasse, Nr */}
-      <div className="grid grid-cols-4 gap-3 mb-3">
+      <div className="grid grid-cols-4 gap-3">
         <div>
           <label htmlFor="plz" className={lbl}>PLZ</label>
           <input id="plz" type="text" value={plz} onChange={(e) => setPlz(e.target.value)} className={inp} />
@@ -431,7 +433,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       </div>
 
       {/* Row 3: Melder, Telefon, E-Mail, Zuständig */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div>
           <label htmlFor="reporter_name" className={lbl}>Melder</label>
           <input id="reporter_name" type="text" value={reporterName} onChange={(e) => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} />
@@ -468,13 +470,13 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       </div>
 
       {/* Row 4: Beschreibung full-width */}
-      <div className="mb-3">
+      <div>
         <label htmlFor="description" className={lbl}>Beschreibung</label>
         <textarea id="description" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className={inp} />
       </div>
 
       {/* Row 5: Termin (left) + Notizen (right) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="scheduled" className={lbl}>Termin</label>
           <input id="scheduled" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className={`${inp} mb-2`} />
@@ -482,14 +484,14 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
             <div className="flex rounded-lg border border-gray-200 overflow-hidden">
               {([0, 1] as const).map((d) => (
                 <button key={d} type="button" onClick={() => setQuickDay(d)}
-                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-slate-700 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-gray-800 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
                 >{d === 0 ? "Heute" : "Morgen"}</button>
               ))}
             </div>
             <div className="flex gap-1">
               {QUICK_TIMES.map((time) => (
                 <button key={time} type="button" onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
-                  className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-slate-500 hover:text-slate-600 transition-colors"
+                  className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-gray-400 hover:text-gray-700 transition-colors"
                 >{time}</button>
               ))}
             </div>
@@ -497,7 +499,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
           {scheduledAt && (
             <button onClick={handleSendInvite} disabled={!canSendInvite}
               className="mt-2 w-full rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >{inviteState === "sending" ? "Sende\u2026" : inviteState === "sent" ? "Einladung gesendet \u2713" : "Termin senden"}</button>
+            >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Einladung gesendet ✓" : "Termin senden"}</button>
           )}
         </div>
         <div>
@@ -506,17 +508,17 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
         </div>
       </div>
 
-      {/* Action bar — Speichern, Erledigt */}
+      {/* Action bar */}
       <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
         <button
           onClick={performSave}
           disabled={!isDirty || saveState === "saving"}
-          className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          {saveState === "saving" ? "Speichern\u2026" : "Speichern"}
+          {saveState === "saving" ? "Speichern…" : "Speichern"}
         </button>
 
-        {status !== "done" && (
+        {status !== "done" && status !== "archived" && (
           <button onClick={handleQuickDone} disabled={saveState === "saving"}
             className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
           >Erledigt</button>
@@ -527,21 +529,19 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
         {inviteState === "error" && <span className="text-red-600 text-xs ml-2">{inviteMsg}</span>}
       </div>
 
-      {/* Review Nachlauf (S1.9) — only when case is done */}
+      {/* Review Nachlauf — only when case is done */}
       {status === "done" && reviewInfo.status !== "nicht_bereit" && (
-        <div className="border-t border-gray-100 pt-3 mt-3">
+        <div className="border-t border-gray-100 pt-3">
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Review badge */}
             <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${reviewInfo.color}`}>
               {reviewInfo.label}
             </span>
 
-            {/* Actions based on derived state */}
             {canRequestReview && (
               <button onClick={handleRequestReview} disabled={reviewState === "sending"}
                 className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
               >
-                {reviewState === "sending" ? "Sende\u2026" :
+                {reviewState === "sending" ? "Sende…" :
                   reviewInfo.canResend ? "Nochmals anfragen" : "Review anfragen"}
               </button>
             )}

@@ -11,8 +11,7 @@ export interface CaseEvent {
 
 /** Status → next expected action hint (German). */
 const NEXT_STEP: Record<string, string> = {
-  new: "Kunden kontaktieren",
-  contacted: "Termin vereinbaren",
+  new: "Sichten und einordnen",
   scheduled: "Einsatz durchführen",
 };
 

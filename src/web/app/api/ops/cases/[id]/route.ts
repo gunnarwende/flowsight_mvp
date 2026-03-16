@@ -7,15 +7,16 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 // Allowed values for ops fields
 // ---------------------------------------------------------------------------
 
-const VALID_STATUSES = ["new", "contacted", "scheduled", "done", "archived"] as const;
+const VALID_STATUSES = ["new", "scheduled", "done", "archived"] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   new: "Neu",
-  contacted: "Kontaktiert",
   scheduled: "Geplant",
   done: "Erledigt",
-  archived: "Archiviert",
+  archived: "Abgeschlossen",
 };
+
+const VALID_WAITING_FOR = ["niemand", "kunde", "material", "partner", "intern"] as const;
 
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
 
@@ -34,6 +35,7 @@ const OPS_UPDATABLE_FIELDS = [
   "street",
   "house_number",
   "reporter_name",
+  "waiting_for",
 ] as const;
 
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
@@ -153,6 +155,20 @@ export async function PATCH(
     );
   }
 
+  // Validate waiting_for value
+  if (
+    "waiting_for" in update &&
+    !VALID_WAITING_FOR.includes(update.waiting_for as (typeof VALID_WAITING_FOR)[number])
+  ) {
+    return NextResponse.json(
+      {
+        error: `Invalid waiting_for. Allowed: ${VALID_WAITING_FOR.join(", ")}`,
+        allowed_values: { waiting_for: VALID_WAITING_FOR },
+      },
+      { status: 400 }
+    );
+  }
+
   try {
     const supabase = getServiceClient();
 
@@ -173,7 +189,7 @@ export async function PATCH(
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
+        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, waiting_for, updated_at"
       )
       .single();
 

@@ -39,7 +39,7 @@ export default async function OpsCasesPage({
   let casesQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, scheduled_at"
+      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, scheduled_at, waiting_for"
     )
     .eq("is_demo", showDemo)
     .neq("status", "archived")
