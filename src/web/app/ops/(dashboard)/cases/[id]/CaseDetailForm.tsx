@@ -517,10 +517,10 @@ export function CaseDetailForm({
       </div>
 
       {/* ── 2-LANE BODY ──────────────────────────────────────────── */}
-      <div className="md:grid md:grid-cols-[1fr_320px] print:block">
+      <div className="md:flex print:block">
 
         {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
-        <div className="md:border-r md:border-gray-100">
+        <div className="flex-1 min-w-0 md:border-r md:border-gray-100">
           {/* Beschreibung */}
           <div className={sectionPad}>
             {editingSection === "beschreibung" ? (
@@ -538,7 +538,7 @@ export function CaseDetailForm({
                 <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
                 {description ? (
                   <div className="overflow-hidden">
-                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
+                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-all ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
                     {(description.split("\n").length > 3 || description.length > 200) && (
                       <button onClick={() => setDescExpanded(p => !p)}
                         className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 mt-2 transition-colors min-h-[44px] sm:min-h-0">
@@ -577,7 +577,7 @@ export function CaseDetailForm({
         </div>
 
         {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white">
+        <div className="border-t border-gray-100 md:border-t-0 md:w-80 lg:w-[340px] flex-shrink-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white">
 
           {/* Kontakt mini-card */}
           <div className="bg-white rounded-xl border border-gray-200/80 p-4">
