@@ -5,7 +5,6 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { CaseDetailForm } from "./CaseDetailForm";
-import { AttachmentsSection } from "./AttachmentsSection";
 import { PrintButton } from "./PrintButton";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
@@ -96,21 +95,23 @@ export default async function CaseDetailPage({
     <>
       {/* Header: back + category + meta + actions */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <Link href="/ops/faelle" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-            </svg>
-            <span className="text-xs hidden sm:inline">Fallübersicht</span>
-          </Link>
-          <h1 className="text-lg font-bold text-gray-900 truncate">{caseData.category}</h1>
-          <span className="text-xs text-gray-400 flex-shrink-0 hidden sm:inline">
+        <div className="min-w-0">
+          <div className="flex items-center gap-3">
+            <Link href="/ops/faelle" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 flex-shrink-0">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+              </svg>
+              <span className="text-xs hidden sm:inline">Fallübersicht</span>
+            </Link>
+            <h1 className="text-lg font-bold text-gray-900 truncate">{caseData.category}</h1>
+          </div>
+          <p className="text-xs text-gray-400 ml-9 sm:ml-[52px] mt-0.5">
             {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
-          </span>
+          </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <PrintButton />
-          <span className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm font-semibold">
+          <span className="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-full text-sm font-semibold">
             {caseId}
           </span>
         </div>
@@ -122,18 +123,7 @@ export default async function CaseDetailPage({
         isProspect={isProspect}
         caseEvents={caseEvents}
         brandColor={brandColor}
-        hasAttachments={!isProspect}
       />
-
-      {/* Attachments — visual continuation of case card */}
-      {!isProspect && (
-        <div className={`bg-white border border-gray-200 border-t-gray-100 rounded-b-2xl border-l-[4px] ${
-          caseData.urgency === "notfall" ? "border-l-red-500" :
-          caseData.urgency === "dringend" ? "border-l-amber-400" : "border-l-gray-200"
-        } -mt-[1px] px-5 py-4`}>
-          <AttachmentsSection caseId={caseData.id} />
-        </div>
-      )}
 
     </>
   );

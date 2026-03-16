@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { CaseDetail } from "./page";
 import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
+import { AttachmentsSection } from "./AttachmentsSection";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -119,7 +120,7 @@ const inp = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm
 const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
 const sectionTitle = "text-xs font-bold text-gray-700 uppercase tracking-wider";
 const sectionPad = "px-5 py-4";
-const editBtnClass = "p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
+const editBtnClass = "p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
 // ---------------------------------------------------------------------------
 // Section type
@@ -136,13 +137,11 @@ export function CaseDetailForm({
   isProspect = false,
   caseEvents = [],
   brandColor = "#64748b",
-  hasAttachments = false,
 }: {
   initialData: CaseDetail;
   isProspect?: boolean;
   caseEvents?: CaseEvent[];
   brandColor?: string;
-  hasAttachments?: boolean;
 }) {
   // ── Field state ──────────────────────────────────────────────────────
   const [status, setStatus] = useState(initialData.status);
@@ -414,8 +413,8 @@ export function CaseDetailForm({
   // FULL CASE SURFACE
   // ════════════════════════════════════════════════════════════════════
   return (
-    <div className={`bg-white border border-gray-200 ${hasAttachments ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"} border-l-[4px] ${urgencyBorder} shadow-sm divide-y divide-gray-100 print:shadow-none print:border-gray-300`}>
-      {/* ── STEUERUNG (full width) ──────────────────────────────── */}
+    <div className={`bg-white border border-gray-200 rounded-2xl border-l-[4px] ${urgencyBorder} shadow-sm print:shadow-none print:border-gray-300`}>
+      {/* ── ÜBERSICHT (full width top band) ─────────────────────── */}
       <div className={sectionPad}>
         {editingSection === "steuerung" ? (
           <div className="bg-gray-50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
@@ -479,7 +478,7 @@ export function CaseDetailForm({
             <EditActions onSave={saveSteuerung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={steuerungDirty} error={saveState === "error" ? errorMsg : ""} />
           </div>
         ) : (
-          <>
+          <div className="bg-gray-50/60 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
               <KV label="Status">
@@ -488,7 +487,11 @@ export function CaseDetailForm({
                 </span>
               </KV>
               <KV label="Priorität">
-                <span className="text-gray-900">{URGENCY_LABELS[urgency] ?? urgency}</span>
+                <span className={
+                  urgency === "notfall" ? "text-red-600 font-semibold" :
+                  urgency === "dringend" ? "text-amber-600 font-medium" :
+                  "text-gray-900"
+                }>{URGENCY_LABELS[urgency] ?? urgency}</span>
               </KV>
               <KV label="Zuständig">
                 {assigneeText
@@ -509,106 +512,133 @@ export function CaseDetailForm({
                 {saveState === "error" && <span className="text-red-600 text-xs">{errorMsg}</span>}
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 
-      {/* ── DESKTOP: 2-column (Beschreibung left, Kontakt+Notizen right) ── */}
-      <div className={`${sectionPad} md:flex md:gap-6`}>
-        {/* LEFT: Beschreibung */}
-        <div className="flex-1 min-w-0 md:border-r md:border-gray-100 md:pr-6">
-          {editingSection === "beschreibung" ? (
-            <div className="bg-gray-50 -mx-5 md:-ml-0 md:-mr-6 -my-4 px-5 py-4 md:rounded-none">
-              <SectionHead title="Beschreibung" editing onClose={cancelEdit} />
-              <div className="space-y-3">
-                <div><label className={lbl}>Kategorie</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} /></div>
-                <div><label className={lbl}>Beschreibung</label><textarea rows={5} value={description} onChange={e => setDescription(e.target.value)} className={`${inp} max-h-60 overflow-y-auto`} /></div>
-              </div>
-              <EditActions onSave={saveBeschreibung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={beschreibungDirty} error={saveState === "error" ? errorMsg : ""} />
-            </div>
-          ) : (
-            <>
-              <SectionHead title="Beschreibung" onEdit={() => startEdit("beschreibung")} canEdit={canEditSection("beschreibung")} />
-              <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
-              {description ? (
-                <div className="overflow-hidden">
-                  <p className={`text-sm text-gray-600 leading-normal whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-3" : ""}`}>{description}</p>
-                  {(description.split("\n").length > 3 || description.length > 200) && (
-                    <button onClick={() => setDescExpanded(p => !p)}
-                      className="text-xs font-medium text-gray-500 hover:text-gray-700 hover:underline mt-2 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
-                      {descExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
-                    </button>
-                  )}
+      {/* ── 2-LANE BODY ──────────────────────────────────────────── */}
+      <div className="md:grid md:grid-cols-[1fr_320px] print:block">
+
+        {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
+        <div className="md:border-r md:border-gray-100">
+          {/* Beschreibung */}
+          <div className={sectionPad}>
+            {editingSection === "beschreibung" ? (
+              <div className="bg-gray-50 -mx-5 -my-4 px-5 py-4">
+                <SectionHead title="Beschreibung" editing onClose={cancelEdit} />
+                <div className="space-y-3">
+                  <div><label className={lbl}>Kategorie</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} /></div>
+                  <div><label className={lbl}>Beschreibung</label><textarea rows={5} value={description} onChange={e => setDescription(e.target.value)} className={`${inp} max-h-60 overflow-y-auto`} /></div>
                 </div>
-              ) : (
-                <p className="text-sm text-gray-400">—</p>
-              )}
-            </>
-          )}
+                <EditActions onSave={saveBeschreibung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={beschreibungDirty} error={saveState === "error" ? errorMsg : ""} />
+              </div>
+            ) : (
+              <>
+                <SectionHead title="Beschreibung" onEdit={() => startEdit("beschreibung")} canEdit={canEditSection("beschreibung")} />
+                <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
+                {description ? (
+                  <div className="overflow-hidden">
+                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
+                    {(description.split("\n").length > 3 || description.length > 200) && (
+                      <button onClick={() => setDescExpanded(p => !p)}
+                        className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 mt-2 transition-colors min-h-[44px] sm:min-h-0">
+                        {descExpanded ? "Weniger" : "Mehr anzeigen"}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400">—</p>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Verlauf + Bewertung */}
+          <div className={`${sectionPad} border-t border-gray-100`}>
+            <h3 className={`${sectionTitle} mb-3`}>Verlauf</h3>
+            <CompactTimeline
+              events={localEvents}
+              status={status}
+              expanded={timelineExpanded}
+              onToggle={() => setTimelineExpanded(p => !p)}
+            />
+            <BewertungEndCap
+              status={status}
+              reviewInfo={reviewInfo}
+              canRequestReview={canRequestReview}
+              reviewState={reviewState}
+              reviewMsg={reviewMsg}
+              onRequest={handleRequestReview}
+              onSkip={handleSkipReview}
+              brandColor={brandColor}
+              hasEvents={localEvents.length > 0}
+            />
+          </div>
         </div>
 
-        {/* RIGHT: Kontakt + Notizen — reference rail */}
-        <div className="md:w-72 lg:w-80 flex-shrink-0 mt-5 md:mt-0">
-         <div className="md:bg-gray-50/50 md:rounded-xl md:p-4 space-y-4">
-          {/* ── KONTAKT ─────────────────────────────────────────── */}
-          {editingSection === "kontakt" ? (
-            <div className="bg-gray-50 -mx-5 md:mx-0 px-5 md:px-4 py-4 md:rounded-lg">
-              <SectionHead title="Kontakt" editing onClose={cancelEdit} />
-              <div className="space-y-3">
-                <div><label className={lbl}>Melder</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
-                <div><label className={lbl}>Telefon</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} /></div>
-                <div><label className={lbl}>E-Mail</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} /></div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-2"><label className={lbl}>Strasse</label><input type="text" value={street} onChange={e => setStreet(e.target.value)} className={inp} /></div>
-                  <div><label className={lbl}>Nr</label><input type="text" value={houseNumber} onChange={e => setHouseNumber(e.target.value)} className={inp} /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><label className={lbl}>PLZ</label><input type="text" value={plz} onChange={e => setPlz(e.target.value)} className={inp} /></div>
-                  <div><label className={lbl}>Ort</label><input type="text" value={city} onChange={e => setCity(e.target.value)} className={inp} /></div>
-                </div>
-              </div>
-              <EditActions onSave={saveKontakt} onCancel={cancelEdit} saving={saveState === "saving"} dirty={kontaktDirty} error={saveState === "error" ? errorMsg : ""} />
-            </div>
-          ) : (
-            <>
-              <SectionHead title="Kontakt" onEdit={() => startEdit("kontakt")} canEdit={canEditSection("kontakt")} />
-              <div className="space-y-1 text-sm">
-                {reporterName && <p className="font-medium text-gray-900">{reporterName}</p>}
-                {contactPhone && (
-                  <a href={`tel:${contactPhone}`} className="block text-blue-600 hover:underline min-h-[44px] sm:min-h-0 flex items-center">{contactPhone}</a>
-                )}
-                {contactEmail && (
-                  <a href={`mailto:${contactEmail}`} className="block text-blue-600 hover:underline break-all min-h-[44px] sm:min-h-0 flex items-center">{contactEmail}</a>
-                )}
-                {!reporterName && !contactPhone && !contactEmail && (
-                  <p className="text-gray-400">Kein Kontakt hinterlegt</p>
-                )}
-                {/* Address */}
-                <div className="flex items-center gap-1.5 pt-1">
-                  <span className="text-gray-600">
-                    {[street, houseNumber].filter(Boolean).join(" ")}
-                    {(street || houseNumber) && ", "}
-                    {plz} {city}
-                  </span>
-                  <a href={googleMapsUrl(street, houseNumber, plz, city)} target="_blank" rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-gray-600 flex-shrink-0 min-h-[44px] sm:min-h-0 flex items-center" title="Google Maps">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </>
-          )}
+        {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
+        <div className="border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white">
 
-          {/* ── NOTIZEN (in right rail) ────────────────────────── */}
-          <div className="pt-3 border-t border-gray-200/60">
+          {/* Kontakt mini-card */}
+          <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+            {editingSection === "kontakt" ? (
+              <>
+                <SectionHead title="Kontakt" editing onClose={cancelEdit} />
+                <div className="space-y-3">
+                  <div><label className={lbl}>Melder</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
+                  <div><label className={lbl}>Telefon</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} /></div>
+                  <div><label className={lbl}>E-Mail</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} /></div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2"><label className={lbl}>Strasse</label><input type="text" value={street} onChange={e => setStreet(e.target.value)} className={inp} /></div>
+                    <div><label className={lbl}>Nr</label><input type="text" value={houseNumber} onChange={e => setHouseNumber(e.target.value)} className={inp} /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><label className={lbl}>PLZ</label><input type="text" value={plz} onChange={e => setPlz(e.target.value)} className={inp} /></div>
+                    <div><label className={lbl}>Ort</label><input type="text" value={city} onChange={e => setCity(e.target.value)} className={inp} /></div>
+                  </div>
+                </div>
+                <EditActions onSave={saveKontakt} onCancel={cancelEdit} saving={saveState === "saving"} dirty={kontaktDirty} error={saveState === "error" ? errorMsg : ""} />
+              </>
+            ) : (
+              <>
+                <SectionHead title="Kontakt" onEdit={() => startEdit("kontakt")} canEdit={canEditSection("kontakt")} />
+                <div className="space-y-1 text-sm">
+                  {reporterName && <p className="font-medium text-gray-900">{reporterName}</p>}
+                  {contactPhone && (
+                    <a href={`tel:${contactPhone}`} className="block text-blue-600 hover:underline min-h-[44px] sm:min-h-0 flex items-center">{contactPhone}</a>
+                  )}
+                  {contactEmail && (
+                    <a href={`mailto:${contactEmail}`} className="block text-blue-600 hover:underline break-all min-h-[44px] sm:min-h-0 flex items-center">{contactEmail}</a>
+                  )}
+                  {!reporterName && !contactPhone && !contactEmail && (
+                    <p className="text-gray-400">Kein Kontakt hinterlegt</p>
+                  )}
+                  <div className="flex items-center gap-1.5 pt-1">
+                    <span className="text-gray-600">
+                      {[street, houseNumber].filter(Boolean).join(" ")}
+                      {(street || houseNumber) && ", "}
+                      {plz} {city}
+                    </span>
+                    <a href={googleMapsUrl(street, houseNumber, plz, city)} target="_blank" rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-gray-600 flex-shrink-0 min-h-[44px] sm:min-h-0 flex items-center" title="Google Maps">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Interne Notizen mini-card */}
+          <div className="bg-white rounded-xl border border-gray-200/80 p-4">
             {editingSection === "notizen" ? (
-              <div className="bg-gray-50 -mx-5 md:mx-0 px-5 md:px-4 py-4 md:rounded-lg">
+              <>
                 <SectionHead title="Interne Notizen" editing onClose={cancelEdit} />
                 <textarea rows={4} value={internalNotes} onChange={e => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar…" className={`${inp} max-h-40 overflow-y-auto`} />
                 <EditActions onSave={saveNotizen} onCancel={cancelEdit} saving={saveState === "saving"} dirty={notizenDirty} error={saveState === "error" ? errorMsg : ""} />
-              </div>
+              </>
             ) : (
               <>
                 <SectionHead title="Interne Notizen" onEdit={() => startEdit("notizen")} canEdit={canEditSection("notizen")} />
@@ -628,32 +658,14 @@ export function CaseDetailForm({
               </>
             )}
           </div>
-         </div>
+
+          {/* Anhänge mini-card */}
+          {!isProspect && (
+            <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+              <AttachmentsSection caseId={initialData.id} />
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* ── VERLAUF + BEWERTUNG ──────────────────────────────────── */}
-      <div className={sectionPad}>
-        <h3 className={`${sectionTitle} mb-3`}>Verlauf</h3>
-        <CompactTimeline
-          events={localEvents}
-          status={status}
-          expanded={timelineExpanded}
-          onToggle={() => setTimelineExpanded(p => !p)}
-        />
-
-        {/* Bewertung end-cap — always visible, final goal post */}
-        <BewertungEndCap
-          status={status}
-          reviewInfo={reviewInfo}
-          canRequestReview={canRequestReview}
-          reviewState={reviewState}
-          reviewMsg={reviewMsg}
-          onRequest={handleRequestReview}
-          onSkip={handleSkipReview}
-          brandColor={brandColor}
-          hasEvents={localEvents.length > 0}
-        />
       </div>
     </div>
   );
@@ -740,7 +752,7 @@ function CompactTimeline({
 
   if (events.length === 0) {
     return nextStep
-      ? <p className="text-sm text-amber-600 font-medium">→ {nextStep}</p>
+      ? <p className="text-sm text-amber-700 font-semibold">→ {nextStep}</p>
       : <p className="text-sm text-gray-400">Noch keine Einträge</p>;
   }
 
@@ -773,7 +785,7 @@ function CompactTimeline({
         {nextStep && (
           <div className="relative flex items-center gap-2">
             <div className="relative z-10 w-[10px] h-[10px] rounded-full border-2 border-dashed border-amber-400 bg-white flex-shrink-0" />
-            <span className="text-sm text-amber-600 font-medium">→ {nextStep}</span>
+            <span className="text-sm text-amber-700 font-semibold">→ {nextStep}</span>
           </div>
         )}
       </div>
@@ -794,7 +806,7 @@ function TimelineItem({ event }: { event: CaseEvent }) {
         <div className="w-[10px] h-[10px] rounded-full border-2 border-white bg-slate-400" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-700 leading-snug truncate">{humanizeTitle(event.title)}</p>
+        <p className="text-sm text-gray-800 leading-snug truncate">{humanizeTitle(event.title)}</p>
         <p className="text-[11px] text-gray-400">{formatEventDate(event.created_at)}</p>
       </div>
     </div>
@@ -807,10 +819,10 @@ function TimelineItem({ event }: { event: CaseEvent }) {
 
 function StarIcon({ filled, brandColor, muted }: { filled: boolean; brandColor: string; muted?: boolean }) {
   return (
-    <svg className="w-6 h-6" viewBox="0 0 24 24"
-      fill={filled ? "#f59e0b" : "none"}
+    <svg className="w-4 h-4" viewBox="0 0 24 24"
+      fill={filled ? "#f59e0b" : "rgba(245,158,11,0.15)"}
       strokeWidth={1.5}
-      stroke={filled ? brandColor : brandColor}
+      stroke={brandColor}
       style={muted ? { opacity: 0.35 } : undefined}
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
