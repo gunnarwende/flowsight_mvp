@@ -12,6 +12,8 @@ import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 const STATUSES = [
   { value: "new", label: "Neu" },
   { value: "scheduled", label: "Geplant" },
+  { value: "in_arbeit", label: "In Arbeit" },
+  { value: "warten", label: "Warten" },
   { value: "done", label: "Erledigt" },
   { value: "archived", label: "Abgeschlossen" },
 ] as const;
@@ -20,14 +22,6 @@ const URGENCIES = [
   { value: "notfall", label: "Notfall" },
   { value: "dringend", label: "Dringend" },
   { value: "normal", label: "Normal" },
-] as const;
-
-const WAITING_FOR_OPTIONS = [
-  { value: "niemand", label: "Niemand" },
-  { value: "kunde", label: "Kunde" },
-  { value: "material", label: "Material" },
-  { value: "partner", label: "Partner" },
-  { value: "intern", label: "Intern" },
 ] as const;
 
 const QUICK_TIMES = ["08:00", "11:00", "15:00"] as const;
@@ -54,7 +48,6 @@ function quickDateTime(dayOffset: number, time: string): string {
 export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [] }: { initialData: CaseDetail; isProspect?: boolean; caseEvents?: CaseEvent[] }) {
   const [status, setStatus] = useState(initialData.status);
   const [urgency, setUrgency] = useState(initialData.urgency);
-  const [waitingFor, setWaitingFor] = useState(initialData.waiting_for ?? "niemand");
   const [category, setCategory] = useState(initialData.category);
   const [plz, setPlz] = useState(initialData.plz);
   const [city, setCity] = useState(initialData.city);
@@ -74,7 +67,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const [baseline, setBaseline] = useState({
     status: initialData.status,
     urgency: initialData.urgency,
-    waiting_for: initialData.waiting_for ?? "niemand",
     category: initialData.category,
     plz: initialData.plz,
     city: initialData.city,
@@ -109,7 +101,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const isDirty =
     status !== baseline.status ||
     urgency !== baseline.urgency ||
-    waitingFor !== baseline.waiting_for ||
     category !== baseline.category ||
     plz !== baseline.plz ||
     city !== baseline.city ||
@@ -144,7 +135,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
         : {
             status,
             urgency,
-            waiting_for: waitingFor,
             category: category.trim(),
             plz: plz.trim(),
             city: city.trim(),
@@ -172,7 +162,6 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
       setBaseline({
         status,
         urgency,
-        waiting_for: waitingFor,
         category: category.trim(),
         plz: plz.trim(),
         city: city.trim(),
@@ -295,6 +284,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
   const inpReadonly =
     "w-full rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm text-gray-600";
   const lbl = "block text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1";
+  const sectionTitle = "text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3";
 
   // ── Prospect view: clean, focused, only status + review ────────────
   if (isProspect) {
@@ -381,12 +371,16 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
     );
   }
 
-  // ── Full admin/tenant view ─────────────────────────────────────────
+  // ── Full admin/tenant view — structured in sections ──────────────────
   return (
-    <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
-      {/* ── Führungsblock: Status, Priorität, Wartet auf ─────────── */}
-      <div className="bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3.5">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="space-y-4">
+      {/* ════════════════════════════════════════════════════════════════
+          SECTION 1: STEUERUNG — Status, Priorität, Zuständig, Termin
+         ════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <h3 className={sectionTitle}>Steuerung</h3>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
           <div>
             <label htmlFor="status" className={lbl}>Status</label>
             <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className={inp}>
@@ -400,87 +394,33 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
             </select>
           </div>
           <div>
-            <label htmlFor="waiting_for" className={lbl}>Wartet auf</label>
-            <select id="waiting_for" value={waitingFor} onChange={(e) => setWaitingFor(e.target.value)} className={inp}>
-              {WAITING_FOR_OPTIONS.map((w) => <option key={w.value} value={w.value}>{w.label}</option>)}
-            </select>
+            <label htmlFor="assignee" className={lbl}>Zuständig</label>
+            {staffMembers.length > 0 ? (
+              <select
+                id="assignee"
+                value={assigneeText}
+                onChange={(e) => setAssigneeText(e.target.value)}
+                className={inp}
+              >
+                <option value="">— Nicht zugewiesen —</option>
+                {staffMembers.map((s) => (
+                  <option key={s.display_name} value={s.display_name}>{s.display_name}</option>
+                ))}
+                {assigneeText && !staffMembers.some((s) => s.display_name === assigneeText) && (
+                  <option value={assigneeText}>{assigneeText} (manuell)</option>
+                )}
+              </select>
+            ) : (
+              <input id="assignee" type="text" value={assigneeText} onChange={(e) => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
+            )}
           </div>
-          <div>
-            <label htmlFor="category" className={lbl}>Kategorie</label>
-            <input id="category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} className={inp} />
-          </div>
         </div>
-      </div>
 
-      {/* Row 2: PLZ, Ort, Strasse, Nr */}
-      <div className="grid grid-cols-4 gap-3">
-        <div>
-          <label htmlFor="plz" className={lbl}>PLZ</label>
-          <input id="plz" type="text" value={plz} onChange={(e) => setPlz(e.target.value)} className={inp} />
-        </div>
-        <div>
-          <label htmlFor="city" className={lbl}>Ort</label>
-          <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} className={inp} />
-        </div>
-        <div>
-          <label htmlFor="street" className={lbl}>Strasse</label>
-          <input id="street" type="text" value={street} onChange={(e) => setStreet(e.target.value)} className={inp} />
-        </div>
-        <div>
-          <label htmlFor="house_number" className={lbl}>Nr</label>
-          <input id="house_number" type="text" value={houseNumber} onChange={(e) => setHouseNumber(e.target.value)} className={inp} />
-        </div>
-      </div>
-
-      {/* Row 3: Melder, Telefon, E-Mail, Zuständig */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div>
-          <label htmlFor="reporter_name" className={lbl}>Melder</label>
-          <input id="reporter_name" type="text" value={reporterName} onChange={(e) => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} />
-        </div>
-        <div>
-          <label htmlFor="contact_phone" className={lbl}>Telefon</label>
-          <input id="contact_phone" type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} />
-        </div>
-        <div>
-          <label htmlFor="contact_email" className={lbl}>E-Mail</label>
-          <input id="contact_email" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} />
-        </div>
-        <div>
-          <label htmlFor="assignee" className={lbl}>Zuständig</label>
-          {staffMembers.length > 0 ? (
-            <select
-              id="assignee"
-              value={assigneeText}
-              onChange={(e) => setAssigneeText(e.target.value)}
-              className={inp}
-            >
-              <option value="">— Nicht zugewiesen —</option>
-              {staffMembers.map((s) => (
-                <option key={s.display_name} value={s.display_name}>{s.display_name}</option>
-              ))}
-              {assigneeText && !staffMembers.some((s) => s.display_name === assigneeText) && (
-                <option value={assigneeText}>{assigneeText} (manuell)</option>
-              )}
-            </select>
-          ) : (
-            <input id="assignee" type="text" value={assigneeText} onChange={(e) => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
-          )}
-        </div>
-      </div>
-
-      {/* Row 4: Beschreibung full-width */}
-      <div>
-        <label htmlFor="description" className={lbl}>Beschreibung</label>
-        <textarea id="description" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className={inp} />
-      </div>
-
-      {/* Row 5: Termin (left) + Notizen (right) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
+        {/* Termin — promoted to Steuerung, prominent */}
+        <div className="bg-gray-50/80 border border-gray-200/60 rounded-lg p-3.5">
           <label htmlFor="scheduled" className={lbl}>Termin</label>
-          <input id="scheduled" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className={`${inp} mb-2`} />
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <input id="scheduled" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} className={`${inp} max-w-[220px]`} />
             <div className="flex rounded-lg border border-gray-200 overflow-hidden">
               {([0, 1] as const).map((d) => (
                 <button key={d} type="button" onClick={() => setQuickDay(d)}
@@ -498,41 +438,106 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
           </div>
           {scheduledAt && (
             <button onClick={handleSendInvite} disabled={!canSendInvite}
-              className="mt-2 w-full rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="mt-2.5 rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Einladung gesendet ✓" : "Termin senden"}</button>
           )}
+          {inviteState === "error" && <span className="text-red-600 text-xs ml-2">{inviteMsg}</span>}
         </div>
+
+        {/* Action bar */}
+        <div className="flex items-center gap-2 flex-wrap mt-4 pt-3 border-t border-gray-100">
+          <button
+            onClick={performSave}
+            disabled={!isDirty || saveState === "saving"}
+            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {saveState === "saving" ? "Speichern…" : "Speichern"}
+          </button>
+
+          {status !== "done" && status !== "archived" && (
+            <button onClick={handleQuickDone} disabled={saveState === "saving"}
+              className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
+            >Erledigt</button>
+          )}
+
+          {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
+          {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          SECTION 2: FALLDATEN — Kategorie, Adresse, Beschreibung
+         ════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <h3 className={sectionTitle}>Falldaten</h3>
+
+        <div className="space-y-3">
+          <div>
+            <label htmlFor="category" className={lbl}>Kategorie</label>
+            <input id="category" type="text" value={category} onChange={(e) => setCategory(e.target.value)} className={inp} />
+          </div>
+
+          <div className="grid grid-cols-4 gap-3">
+            <div>
+              <label htmlFor="plz" className={lbl}>PLZ</label>
+              <input id="plz" type="text" value={plz} onChange={(e) => setPlz(e.target.value)} className={inp} />
+            </div>
+            <div>
+              <label htmlFor="city" className={lbl}>Ort</label>
+              <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} className={inp} />
+            </div>
+            <div>
+              <label htmlFor="street" className={lbl}>Strasse</label>
+              <input id="street" type="text" value={street} onChange={(e) => setStreet(e.target.value)} className={inp} />
+            </div>
+            <div>
+              <label htmlFor="house_number" className={lbl}>Nr</label>
+              <input id="house_number" type="text" value={houseNumber} onChange={(e) => setHouseNumber(e.target.value)} className={inp} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="description" className={lbl}>Beschreibung</label>
+            <textarea id="description" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className={inp} />
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          SECTION 3: KONTAKT & NOTIZEN
+         ════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <h3 className={sectionTitle}>Kontakt & Notizen</h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+          <div>
+            <label htmlFor="reporter_name" className={lbl}>Melder</label>
+            <input id="reporter_name" type="text" value={reporterName} onChange={(e) => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} />
+          </div>
+          <div>
+            <label htmlFor="contact_phone" className={lbl}>Telefon</label>
+            <input id="contact_phone" type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} />
+          </div>
+          <div>
+            <label htmlFor="contact_email" className={lbl}>E-Mail</label>
+            <input id="contact_email" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} />
+          </div>
+        </div>
+
         <div>
           <label htmlFor="notes" className={lbl}>Interne Notizen</label>
-          <textarea id="notes" rows={5} value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar..." className={inp} />
+          <textarea id="notes" rows={4} value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar…" className={inp} />
         </div>
-      </div>
+      </section>
 
-      {/* Action bar */}
-      <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
-        <button
-          onClick={performSave}
-          disabled={!isDirty || saveState === "saving"}
-          className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          {saveState === "saving" ? "Speichern…" : "Speichern"}
-        </button>
-
-        {status !== "done" && status !== "archived" && (
-          <button onClick={handleQuickDone} disabled={saveState === "saving"}
-            className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
-          >Erledigt</button>
-        )}
-
-        {saveState === "saved" && <span className="text-emerald-600 text-xs ml-2">Gespeichert</span>}
-        {saveState === "error" && <span className="text-red-600 text-xs ml-2">{errorMsg}</span>}
-        {inviteState === "error" && <span className="text-red-600 text-xs ml-2">{inviteMsg}</span>}
-      </div>
-
-      {/* Review Nachlauf — only when case is done */}
+      {/* ════════════════════════════════════════════════════════════════
+          SECTION 4: WIRKUNG / REVIEW — only when done
+         ════════════════════════════════════════════════════════════════ */}
       {status === "done" && reviewInfo.status !== "nicht_bereit" && (
-        <div className="border-t border-gray-100 pt-3">
-          <div className="flex items-center gap-2 flex-wrap">
+        <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+          <h3 className={sectionTitle}>Wirkung</h3>
+
+          <div className="flex items-center gap-3 flex-wrap">
             <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${reviewInfo.color}`}>
               {reviewInfo.label}
             </span>
@@ -542,7 +547,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
                 className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
               >
                 {reviewState === "sending" ? "Sende…" :
-                  reviewInfo.canResend ? "Nochmals anfragen" : "Review anfragen"}
+                  reviewInfo.canResend ? "Nochmals anfragen" : "Bewertung anfragen"}
               </button>
             )}
 
@@ -550,7 +555,7 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
               <button onClick={handleSkipReview}
                 className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"
               >
-                Kein Review
+                Keine Anfrage senden
               </button>
             )}
 
@@ -560,8 +565,8 @@ export function CaseDetailForm({ initialData, isProspect = false, caseEvents = [
               <span className="text-gray-400 text-xs">{reviewInfo.reviewCount}/2 Anfragen</span>
             )}
           </div>
-        </div>
+        </section>
       )}
-    </section>
+    </div>
   );
 }

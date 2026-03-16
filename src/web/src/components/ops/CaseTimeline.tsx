@@ -13,6 +13,8 @@ export interface CaseEvent {
 const NEXT_STEP: Record<string, string> = {
   new: "Sichten und einordnen",
   scheduled: "Einsatz durchführen",
+  in_arbeit: "Einsatz abschliessen",
+  warten: "Rückmeldung prüfen",
 };
 
 function formatEventDate(iso: string): string {

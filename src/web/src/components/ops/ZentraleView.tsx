@@ -26,7 +26,6 @@ export interface ZentraleCase {
   reporter_name: string | null;
   review_sent_at: string | null;
   scheduled_at: string | null;
-  waiting_for: string;
 }
 
 export interface TodayAppointment {
@@ -83,6 +82,8 @@ function formatTime(iso: string): string {
 function computeNextStep(c: ZentraleCase): string {
   if (c.status === "new") return "Sichten und einordnen";
   if (c.status === "scheduled") return "Einsatz durchführen";
+  if (c.status === "in_arbeit") return "Einsatz abschliessen";
+  if (c.status === "warten") return "Rückmeldung prüfen";
   if (c.status === "done" && !c.review_sent_at) return "Review anfragen";
   if (c.status === "done") return "Abgeschlossen";
   return "";
@@ -92,13 +93,6 @@ function computeNextStep(c: ZentraleCase): string {
 // Grouping — Cases → Leitsystem modules
 // ---------------------------------------------------------------------------
 
-const WAITING_FOR_LABELS: Record<string, string> = {
-  kunde: "Kunde",
-  material: "Material",
-  partner: "Partner",
-  intern: "Intern",
-};
-
 interface LeitsystemGroups {
   aktive: number;
   kritisch: number;
@@ -107,8 +101,6 @@ interface LeitsystemGroups {
   wartet: ZentraleCase[];
   scheduled: ZentraleCase[];
   abschluss: ZentraleCase[];
-  // Waiting breakdown
-  waitingBreakdown: Record<string, number>;
   oldestWartetDays: number;
   oldestAbschlussDays: number;
 }
@@ -122,7 +114,6 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
   const wartet: ZentraleCase[] = [];
   const scheduled: ZentraleCase[] = [];
   const abschluss: ZentraleCase[] = [];
-  const waitingBreakdown: Record<string, number> = {};
 
   for (const c of cases) {
     if (c.status === "archived") continue;
@@ -138,20 +129,20 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
       notfallCases.push(c);
     }
 
-    // Wartet: any active case with waiting_for != niemand
-    if (isActive && c.waiting_for && c.waiting_for !== "niemand") {
+    // Wartet: status = warten
+    if (c.status === "warten") {
       wartet.push(c);
-      waitingBreakdown[c.waiting_for] = (waitingBreakdown[c.waiting_for] ?? 0) + 1;
+      continue;
     }
 
     // Neu (Eingänge)
-    if (c.status === "new" && (!c.waiting_for || c.waiting_for === "niemand")) {
+    if (c.status === "new") {
       eingaenge.push(c);
       continue;
     }
 
-    // Scheduled (for Heute)
-    if (c.status === "scheduled") {
+    // Scheduled + In Arbeit (for Heute)
+    if (c.status === "scheduled" || c.status === "in_arbeit") {
       scheduled.push(c);
       continue;
     }
@@ -194,7 +185,6 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
     wartet,
     scheduled,
     abschluss,
-    waitingBreakdown,
     oldestWartetDays: wartet.length > 0 ? daysAgo(wartet[0].updated_at) : 0,
     oldestAbschlussDays: abschluss.length > 0 ? daysAgo(abschluss[0].updated_at) : 0,
   };
@@ -262,10 +252,6 @@ export function ZentraleView({
   const dringendCount = g.eingaenge.filter((c) => c.urgency === "dringend" || c.urgency === "notfall").length;
   const normalCount = g.eingaenge.length - dringendCount;
 
-  // Waiting breakdown as readable text
-  const waitingContext = Object.entries(g.waitingBreakdown)
-    .map(([key, count]) => `${count} ${WAITING_FOR_LABELS[key] ?? key}`)
-    .join(" · ");
 
   return (
     <div className="space-y-5">
@@ -370,23 +356,23 @@ export function ZentraleView({
         />
 
         <ModuleCard
-          href="/ops/faelle?waiting_for=active"
-          label="Wartet"
+          href="/ops/faelle?status=warten"
+          label="Warten"
           accentColor="border-l-amber-500"
           count={g.wartet.length}
           tinted={g.oldestWartetDays > 2 || g.wartet.length > 3}
           tintClass="bg-amber-50/40"
           context={
             g.wartet.length === 0
-              ? "Niemand wartet"
-              : waitingContext
+              ? "Nichts blockiert"
+              : `${g.wartet.length} Fälle warten`
           }
           subSignal={
             g.oldestWartetDays > 0
               ? `Ältester seit ${g.oldestWartetDays} Tagen`
               : undefined
           }
-          emptyText="Niemand wartet"
+          emptyText="Nichts blockiert"
         />
       </div>
 

@@ -27,6 +27,8 @@ interface PulsGroup {
 const STATUS_LABELS: Record<string, string> = {
   new: "Neu",
   scheduled: "Geplant",
+  in_arbeit: "In Arbeit",
+  warten: "Warten",
   done: "Erledigt",
   archived: "Abgeschlossen",
 };

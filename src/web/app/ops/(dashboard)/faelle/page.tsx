@@ -14,6 +14,8 @@ const STATUS_FILTERS = [
   { value: "", label: "Alle" },
   { value: "new", label: "Neu" },
   { value: "scheduled", label: "Geplant" },
+  { value: "in_arbeit", label: "In Arbeit" },
+  { value: "warten", label: "Warten" },
   { value: "done", label: "Erledigt" },
   { value: "archived", label: "Abgeschlossen" },
 ] as const;
@@ -38,7 +40,7 @@ export default async function FaellePage({
 
   const filterStatus = params.status ?? "";
   const filterUrgency = params.urgency ?? "";
-  const filterWaitingFor = params.waiting_for ?? "";
+  const _filterWaitingFor = params.waiting_for ?? ""; // dormant — kept for URL backwards-compat
   const filterTenantSlug = params.tenant;
   const filterQuery = params.q ?? "";
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
@@ -65,7 +67,7 @@ export default async function FaellePage({
   let listQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, waiting_for",
+      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at",
       { count: "exact" }
     )
     .eq("is_demo", false)
@@ -78,12 +80,6 @@ export default async function FaellePage({
   }
   if (filterUrgency) {
     listQuery = listQuery.eq("urgency", filterUrgency);
-  }
-  // waiting_for=active: all cases where waiting_for != niemand (drilldown from Leitzentrale)
-  if (filterWaitingFor === "active") {
-    listQuery = listQuery.neq("waiting_for", "niemand");
-  } else if (filterWaitingFor) {
-    listQuery = listQuery.eq("waiting_for", filterWaitingFor);
   }
 
   // Text search
@@ -136,10 +132,6 @@ export default async function FaellePage({
     if (status) p.set("status", status);
     if (urgency) p.set("urgency", urgency);
     if (q) p.set("q", q);
-    // Preserve waiting_for unless a status/urgency filter change clears context
-    if (!("status" in overrides) && !("urgency" in overrides) && filterWaitingFor) {
-      p.set("waiting_for", filterWaitingFor);
-    }
     // Reset page when changing filters
     if (!("status" in overrides) && !("urgency" in overrides) && overrides.page) {
       p.set("page", overrides.page);
@@ -149,24 +141,12 @@ export default async function FaellePage({
     return `/ops/faelle${qs ? `?${qs}` : ""}`;
   }
 
-  // Active waiting_for filter label for display
-  const waitingForLabel = filterWaitingFor === "active" ? "Wartend" :
-    filterWaitingFor === "kunde" ? "Wartet auf Kunde" :
-    filterWaitingFor === "material" ? "Wartet auf Material" :
-    filterWaitingFor === "partner" ? "Wartet auf Partner" :
-    filterWaitingFor === "intern" ? "Wartet intern" : "";
 
   return (
     <>
       {/* Page title */}
       <h1 className="text-xl font-semibold text-gray-900 mb-5">
         Fallübersicht
-        {waitingForLabel && (
-          <span className="ml-3 inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1 align-middle">
-            {waitingForLabel}
-            <Link href={buildHref({ status: filterStatus, urgency: filterUrgency })} className="text-amber-400 hover:text-amber-600 ml-0.5">&times;</Link>
-          </span>
-        )}
       </h1>
 
       {/* Filter rows */}

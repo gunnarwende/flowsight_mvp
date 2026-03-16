@@ -36,7 +36,6 @@ export interface CaseDetail {
   scheduled_at: string | null;
   internal_notes: string | null;
   review_sent_at: string | null;
-  waiting_for: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -58,21 +57,17 @@ const URGENCY_LABELS: Record<string, { text: string; className: string }> = {
 const STATUS_LABELS_BETRIEB: Record<string, string> = {
   new: "Neu",
   scheduled: "Geplant",
+  in_arbeit: "In Arbeit",
+  warten: "Warten",
   done: "Erledigt",
   archived: "Abgeschlossen",
-};
-
-const WAITING_FOR_LABELS: Record<string, string> = {
-  niemand: "",
-  kunde: "Wartet auf Kunde",
-  material: "Wartet auf Material",
-  partner: "Wartet auf Partner",
-  intern: "Wartet intern",
 };
 
 function computeNextStep(c: CaseDetail): string {
   if (c.status === "new") return "Sichten und einordnen";
   if (c.status === "scheduled") return "Einsatz durchführen";
+  if (c.status === "in_arbeit") return "Einsatz abschliessen";
+  if (c.status === "warten") return "Rückmeldung prüfen";
   if (c.status === "done" && !c.review_sent_at) return "Review anfragen";
   if (c.status === "done") return "Abgeschlossen";
   return "";
@@ -146,16 +141,13 @@ export default async function CaseDetailPage({
           <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
             caseData.status === "new" ? "bg-blue-100 text-blue-700" :
             caseData.status === "scheduled" ? "bg-violet-100 text-violet-700" :
+            caseData.status === "in_arbeit" ? "bg-indigo-100 text-indigo-700" :
+            caseData.status === "warten" ? "bg-amber-100 text-amber-700" :
             caseData.status === "done" ? "bg-emerald-100 text-emerald-700" :
             "bg-gray-100 text-gray-500"
           }`}>
             {STATUS_LABELS_BETRIEB[caseData.status] ?? caseData.status}
           </span>
-          {caseData.waiting_for && caseData.waiting_for !== "niemand" && (
-            <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-              {WAITING_FOR_LABELS[caseData.waiting_for] ?? caseData.waiting_for}
-            </span>
-          )}
           <span className="text-xs text-gray-400">
             {formatDate(caseData.created_at)} &middot; {SOURCE_LABELS[caseData.source] ?? caseData.source}
           </span>
