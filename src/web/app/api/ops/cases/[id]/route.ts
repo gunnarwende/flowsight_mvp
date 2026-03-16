@@ -7,14 +7,31 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 // Allowed values for ops fields
 // ---------------------------------------------------------------------------
 
-const VALID_STATUSES = ["new", "contacted", "scheduled", "done", "archived"] as const;
+const VALID_STATUSES = ["new", "scheduled", "in_arbeit", "warten", "done", "archived"] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   new: "Neu",
-  contacted: "Kontaktiert",
   scheduled: "Geplant",
+  in_arbeit: "In Arbeit",
+  warten: "Warten",
   done: "Erledigt",
-  archived: "Archiviert",
+  archived: "Abgeschlossen",
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  urgency: "Priorität",
+  category: "Kategorie",
+  description: "Beschreibung",
+  plz: "PLZ",
+  city: "Ort",
+  street: "Strasse",
+  house_number: "Hausnummer",
+  assignee_text: "Zuständig",
+  scheduled_at: "Termin",
+  internal_notes: "Notizen",
+  contact_email: "E-Mail",
+  contact_phone: "Telefon",
+  reporter_name: "Melder",
 };
 
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
@@ -153,6 +170,7 @@ export async function PATCH(
     );
   }
 
+
   try {
     const supabase = getServiceClient();
 
@@ -200,10 +218,14 @@ export async function PATCH(
 
     const nonStatusFields = Object.keys(update).filter((f) => f !== "status");
     if (nonStatusFields.length > 0) {
+      const humanFields = nonStatusFields.map(f => FIELD_LABELS[f] ?? f);
+      const title = humanFields.length === 1
+        ? `${humanFields[0]} aktualisiert`
+        : `${humanFields.join(", ")} aktualisiert`;
       await supabase.from("case_events").insert({
         case_id: id,
         event_type: "fields_updated",
-        title: `Felder aktualisiert: ${nonStatusFields.join(", ")}`,
+        title,
         metadata: { fields: nonStatusFields, user_id: scope.userId },
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }

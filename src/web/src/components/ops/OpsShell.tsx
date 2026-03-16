@@ -16,7 +16,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Leitsystem",
+    label: "Leitzentrale",
     href: "/ops/cases",
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -25,7 +25,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "F\u00e4lle",
+    label: "Fallübersicht",
     href: "/ops/faelle",
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -76,8 +76,12 @@ export function OpsShell({
 
   function isNavActive(href: string): boolean {
     if (href === "/ops/cases") {
-      // Active for Leitsystem main AND case detail views
-      return pathname === "/ops/cases" || pathname === "/ops/cases/" || pathname.startsWith("/ops/cases/");
+      // Leitsystem: only exact match (not case detail pages)
+      return pathname === "/ops/cases" || pathname === "/ops/cases/";
+    }
+    if (href === "/ops/faelle") {
+      // Fallübersicht: /ops/faelle/* AND individual case pages /ops/cases/[id]
+      return pathname.startsWith("/ops/faelle") || (pathname.startsWith("/ops/cases/") && pathname !== "/ops/cases/");
     }
     return pathname.startsWith(href);
   }
@@ -99,7 +103,7 @@ export function OpsShell({
           <span className="text-white font-bold text-lg tracking-tight">{initials}</span>
         </div>
         <div className="min-w-0">
-          <span className="block text-[15px] font-semibold text-white leading-tight">
+          <span className="block text-[14px] font-semibold text-white leading-tight">
             {displayName}
           </span>
           <span className="block text-[11px] text-white/50 mt-0.5">Leitsystem</span>
@@ -166,7 +170,7 @@ export function OpsShell({
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-56 bg-gray-950 border-r border-gray-800/50">
+      <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-64 bg-gray-950 border-r border-gray-800/50">
         {sidebarContent}
       </aside>
 
@@ -177,7 +181,7 @@ export function OpsShell({
       >
         <button
           onClick={() => setSidebarOpen(true)}
-          aria-label="Men\u00fc \u00f6ffnen"
+          aria-label="Menü öffnen"
           className="flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -206,7 +210,7 @@ export function OpsShell({
           <aside className="relative w-64 max-w-[80%] h-full bg-gray-950 flex flex-col shadow-2xl">
             <button
               onClick={() => setSidebarOpen(false)}
-              aria-label="Men\u00fc schliessen"
+              aria-label="Menü schliessen"
               className="absolute top-4 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/10"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -219,7 +223,7 @@ export function OpsShell({
       )}
 
       {/* Main content */}
-      <main className="md:ml-56">
+      <main className="md:ml-64">
         <div className="max-w-6xl mx-auto px-4 py-6">
           {children}
         </div>

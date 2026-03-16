@@ -81,9 +81,9 @@ function formatTime(iso: string): string {
 
 function computeNextStep(c: ZentraleCase): string {
   if (c.status === "new") return "Sichten und einordnen";
-  if (c.status === "contacted" && !c.scheduled_at) return "Termin vereinbaren";
-  if (c.status === "contacted" && c.scheduled_at) return "Termin bestätigen";
   if (c.status === "scheduled") return "Einsatz durchführen";
+  if (c.status === "in_arbeit") return "Einsatz abschliessen";
+  if (c.status === "warten") return "Rückmeldung prüfen";
   if (c.status === "done" && !c.review_sent_at) return "Review anfragen";
   if (c.status === "done") return "Abgeschlossen";
   return "";
@@ -94,17 +94,13 @@ function computeNextStep(c: ZentraleCase): string {
 // ---------------------------------------------------------------------------
 
 interface LeitsystemGroups {
-  // Counts for Betriebspuls
   aktive: number;
   kritisch: number;
-  // Module data
   notfallCases: ZentraleCase[];
   eingaenge: ZentraleCase[];
   wartet: ZentraleCase[];
   scheduled: ZentraleCase[];
   abschluss: ZentraleCase[];
-  // Derived signals
-  unassignedWartet: number;
   oldestWartetDays: number;
   oldestAbschlussDays: number;
 }
@@ -133,20 +129,20 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
       notfallCases.push(c);
     }
 
+    // Wartet: status = warten
+    if (c.status === "warten") {
+      wartet.push(c);
+      continue;
+    }
+
     // Neu (Eingänge)
     if (c.status === "new") {
       eingaenge.push(c);
       continue;
     }
 
-    // Wartet auf uns: contacted, no appointment
-    if (c.status === "contacted" && !c.scheduled_at) {
-      wartet.push(c);
-      continue;
-    }
-
-    // Scheduled / with appointment (for Heute)
-    if ((c.status === "contacted" && c.scheduled_at) || c.status === "scheduled") {
+    // Scheduled + In Arbeit (for Heute)
+    if (c.status === "scheduled" || c.status === "in_arbeit") {
       scheduled.push(c);
       continue;
     }
@@ -189,7 +185,6 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
     wartet,
     scheduled,
     abschluss,
-    unassignedWartet: wartet.filter((c) => !c.assignee_text).length,
     oldestWartetDays: wartet.length > 0 ? daysAgo(wartet[0].updated_at) : 0,
     oldestAbschlussDays: abschluss.length > 0 ? daysAgo(abschluss[0].updated_at) : 0,
   };
@@ -212,7 +207,7 @@ function derivePulsSignal(g: LeitsystemGroups): {
     };
   }
   const stuckCount = g.wartet.filter((c) => isStuck48h(c.updated_at)).length;
-  if (stuckCount > 0 || g.unassignedWartet > 3) {
+  if (stuckCount > 0 || g.wartet.length > 3) {
     return {
       color: "text-amber-700",
       dotClass: "bg-amber-500",
@@ -257,14 +252,15 @@ export function ZentraleView({
   const dringendCount = g.eingaenge.filter((c) => c.urgency === "dringend" || c.urgency === "notfall").length;
   const normalCount = g.eingaenge.length - dringendCount;
 
+
   return (
     <div className="space-y-5">
       {/* ═══════════════════════════════════════════════════════════════
-          NOTFALL EVENT OVERLAY — conditional, focused, calm-but-clear
+          NOTFALL EVENT OVERLAY
          ═══════════════════════════════════════════════════════════════ */}
       {g.notfallCases.length > 0 && (
         <Link
-          href="/ops/faelle?view=neu&urgency=notfall"
+          href="/ops/faelle?urgency=notfall"
           className="block bg-red-50/80 border border-red-200/60 rounded-2xl px-5 py-4 hover:bg-red-50 transition-colors group"
         >
           <div className="flex items-center justify-between">
@@ -273,11 +269,11 @@ export function ZentraleView({
               <span className="text-sm font-semibold text-red-800">
                 {g.notfallCases.length === 1
                   ? "Notfall"
-                  : `${g.notfallCases.length} Notf\u00e4lle`}
+                  : `${g.notfallCases.length} Notfälle`}
               </span>
               <span className="text-sm text-red-600/70">
                 {g.notfallCases[0].category}
-                {g.notfallCases[0].city && ` \u2014 ${g.notfallCases[0].city}`}
+                {g.notfallCases[0].city && ` — ${g.notfallCases[0].city}`}
               </span>
             </div>
             <svg className="w-4 h-4 text-red-400 group-hover:text-red-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -293,36 +289,33 @@ export function ZentraleView({
       )}
 
       {/* ═══════════════════════════════════════════════════════════════
-          BETRIEBSPULS — system status in one calm line
+          BETRIEBSPULS
          ═══════════════════════════════════════════════════════════════ */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm flex-wrap">
-          {/* Signal */}
           <span className={`inline-flex items-center gap-1.5 font-medium ${puls.color}`}>
             <span className={`w-2 h-2 rounded-full ${puls.dotClass}`} />
             {puls.text}
           </span>
 
-          <span className="text-gray-300 select-none">\u00b7</span>
+          <span className="text-gray-300 select-none">·</span>
 
-          {/* Pipeline flow — mirrors the modules below */}
           <span className="text-gray-500">
             {g.aktive} aktiv
           </span>
           {g.wartet.length > 0 && (
             <span className="text-gray-400">
-              \u00b7 {g.wartet.length} warten auf euch
+              · {g.wartet.length} wartend
             </span>
           )}
           {heuteCount > 0 && (
             <span className="text-gray-400">
-              \u00b7 {heuteCount} heute
+              · {heuteCount} heute
             </span>
           )}
 
-          <span className="text-gray-300 select-none">\u00b7</span>
+          <span className="text-gray-300 select-none">·</span>
 
-          {/* Week summary */}
           <span className="text-gray-400 text-xs">
             {weekStats.neue} neu, {weekStats.erledigt} erledigt diese Woche
           </span>
@@ -337,14 +330,13 @@ export function ZentraleView({
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          MODULE GRID — 5 high-end cards
+          MODULE GRID — 5 cards
          ═══════════════════════════════════════════════════════════════ */}
 
-      {/* Row 1: Neu + Wartet auf uns */}
+      {/* Row 1: Neu + Wartet */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* ── NEU ──────────────────────────────────────────────────── */}
         <ModuleCard
-          href="/ops/faelle?view=neu"
+          href="/ops/faelle?status=new"
           label="Neu"
           accentColor="border-l-blue-500"
           count={g.eingaenge.length}
@@ -352,58 +344,55 @@ export function ZentraleView({
             g.eingaenge.length === 0
               ? "Alles gesichtet"
               : dringendCount > 0
-                ? `${dringendCount} dringend \u00b7 ${normalCount} normal`
-                : `${normalCount} neue Eing\u00e4nge`
+                ? `${dringendCount} dringend · ${normalCount} normal`
+                : `${normalCount} neue Eingänge`
           }
           subSignal={
             g.eingaenge.length > 0 && daysAgo(g.eingaenge[g.eingaenge.length - 1].created_at) > 1
-              ? `\u00c4ltester vor ${daysAgo(g.eingaenge[g.eingaenge.length - 1].created_at)} Tagen`
+              ? `Ältester vor ${daysAgo(g.eingaenge[g.eingaenge.length - 1].created_at)} Tagen`
               : undefined
           }
-          emptyText="Keine neuen Eing\u00e4nge"
+          emptyText="Keine neuen Eingänge"
         />
 
-        {/* ── WARTET AUF UNS ──────────────────────────────────────── */}
         <ModuleCard
-          href="/ops/faelle?view=wartet"
-          label="Wartet auf euch"
+          href="/ops/faelle?status=warten"
+          label="Warten"
           accentColor="border-l-amber-500"
           count={g.wartet.length}
           tinted={g.oldestWartetDays > 2 || g.wartet.length > 3}
           tintClass="bg-amber-50/40"
           context={
             g.wartet.length === 0
-              ? "Alles versorgt"
-              : g.oldestWartetDays > 0
-                ? `\u00c4ltester seit ${g.oldestWartetDays} Tagen`
-                : "Alle von heute"
+              ? "Nichts blockiert"
+              : `${g.wartet.length} Fälle warten`
           }
           subSignal={
-            g.unassignedWartet > 0
-              ? `${g.unassignedWartet} unzugewiesen`
+            g.oldestWartetDays > 0
+              ? `Ältester seit ${g.oldestWartetDays} Tagen`
               : undefined
           }
-          emptyText="Alles versorgt"
+          emptyText="Nichts blockiert"
         />
       </div>
 
       {/* Row 2: Heute (full width) */}
       <ModuleCard
-        href="/ops/faelle?view=heute"
+        href="/ops/faelle?status=scheduled"
         label="Heute"
         accentColor="border-l-blue-600"
         count={heuteCount}
         context={
           heuteCount === 0
-            ? "Keine Termine oder Eins\u00e4tze geplant"
+            ? "Keine Termine oder Einsätze geplant"
             : todayFiltered.length > 0
               ? todayFiltered
                   .slice(0, 3)
                   .map((a) => formatTime(a.scheduled_at))
-                  .join(" \u00b7 ") +
+                  .join(" · ") +
                 (todayFiltered.length > 3 ? ` +${todayFiltered.length - 3}` : "") +
-                (g.scheduled.length > 0 ? ` \u00b7 ${g.scheduled.length} geplant` : "")
-              : `${g.scheduled.length} F\u00e4lle mit Termin`
+                (g.scheduled.length > 0 ? ` · ${g.scheduled.length} geplant` : "")
+              : `${g.scheduled.length} Fälle mit Termin`
         }
         subSignal={
           heuteCount === 0
@@ -416,9 +405,8 @@ export function ZentraleView({
 
       {/* Row 3: Abschluss + Wirkung */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* ── ABSCHLUSS ───────────────────────────────────────────── */}
         <ModuleCard
-          href="/ops/faelle?view=abschluss"
+          href="/ops/faelle?status=done"
           label="Abschluss"
           accentColor="border-l-emerald-500"
           count={g.abschluss.length}
@@ -429,15 +417,14 @@ export function ZentraleView({
           }
           subSignal={
             g.oldestAbschlussDays > 3
-              ? `\u00c4ltester seit ${g.oldestAbschlussDays} Tagen`
+              ? `Ältester seit ${g.oldestAbschlussDays} Tagen`
               : undefined
           }
           emptyText="Alles nachgefasst"
         />
 
-        {/* ── WIRKUNG ─────────────────────────────────────────────── */}
         <ModuleCard
-          href="/ops/faelle?view=wirkung"
+          href="/ops/faelle?status=done"
           label="Wirkung"
           accentColor="border-l-emerald-600"
           count={reviewStats.sent}
@@ -446,8 +433,8 @@ export function ZentraleView({
             reviewStats.sent === 0 && reviewStats.pending === 0
               ? "Noch keine Bewertungsanfragen"
               : reviewStats.pending > 0
-                ? `${reviewStats.pending} F\u00e4lle bereit f\u00fcr Anfrage`
-                : "Alle angefragten F\u00e4lle versorgt"
+                ? `${reviewStats.pending} Fälle bereit für Anfrage`
+                : "Alle angefragten Fälle versorgt"
           }
           subSignal="Letzte 30 Tage"
           emptyText="Noch keine Bewertungsanfragen"
@@ -460,7 +447,7 @@ export function ZentraleView({
 }
 
 // ---------------------------------------------------------------------------
-// ModuleCard — shared anatomy for all 5 Leitsystem modules
+// ModuleCard
 // ---------------------------------------------------------------------------
 
 function ModuleCard({
@@ -497,7 +484,6 @@ function ModuleCard({
         tinted && !isEmpty ? tintClass ?? "" : "bg-white"
       } ${isEmpty ? "bg-white" : "bg-white"}`}
     >
-      {/* Module identity */}
       <div className="flex items-center justify-between mb-3">
         <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
           {label}
@@ -507,7 +493,6 @@ function ModuleCard({
         </svg>
       </div>
 
-      {/* Primary metric */}
       <div className="mb-1.5">
         {countSuffix ? (
           <span className="text-gray-900">
@@ -521,16 +506,13 @@ function ModuleCard({
         )}
       </div>
 
-      {/* Context line */}
       <p className={`text-sm ${isEmpty ? "text-gray-400" : "text-gray-600"}`}>
         {isEmpty ? emptyText : context}
       </p>
 
-      {/* Sub-signal */}
       {subSignal && !isEmpty && (
         <p className="text-xs text-gray-400 mt-1">{subSignal}</p>
       )}
-      {/* Wirkung: show sub-signal even when empty for time-scope clarity */}
       {subSignal && isEmpty && label === "Wirkung" && (
         <p className="text-xs text-gray-400 mt-1">{subSignal}</p>
       )}

@@ -7,46 +7,25 @@ import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
 
 // ---------------------------------------------------------------------------
-// Constants
+// Filter definitions
 // ---------------------------------------------------------------------------
 
-const STATUS_OPTIONS = [
-  { value: "", label: "Alle Status" },
-  { value: "new", label: "Neu eingegangen" },
-  { value: "contacted", label: "In Bearbeitung" },
-  { value: "scheduled", label: "Termin steht" },
+const STATUS_FILTERS = [
+  { value: "", label: "Alle" },
+  { value: "new", label: "Neu" },
+  { value: "scheduled", label: "Geplant" },
+  { value: "in_arbeit", label: "In Arbeit" },
+  { value: "warten", label: "Warten" },
   { value: "done", label: "Erledigt" },
   { value: "archived", label: "Abgeschlossen" },
-];
+] as const;
 
-const URGENCY_OPTIONS = [
-  { value: "", label: "Alle Dringlichkeiten" },
+const URGENCY_FILTERS = [
+  { value: "", label: "Alle" },
   { value: "notfall", label: "Notfall" },
   { value: "dringend", label: "Dringend" },
   { value: "normal", label: "Normal" },
-];
-
-const SOURCE_OPTIONS = [
-  { value: "", label: "Alle Quellen" },
-  { value: "voice", label: "Anruf" },
-  { value: "wizard", label: "Website" },
-  { value: "manual", label: "Manuell" },
-];
-
-// ---------------------------------------------------------------------------
-// Semantic view definitions — mirror Leitsystem modules 1:1
-// ---------------------------------------------------------------------------
-
-type SemanticView = "neu" | "wartet" | "heute" | "abschluss" | "wirkung" | "alle" | "";
-
-const QUICK_CHIPS: { label: string; view: SemanticView }[] = [
-  { label: "Offen", view: "" },
-  { label: "Neu", view: "neu" },
-  { label: "Wartet", view: "wartet" },
-  { label: "Heute", view: "heute" },
-  { label: "Abschluss", view: "abschluss" },
-  { label: "Alle", view: "alle" },
-];
+] as const;
 
 // ---------------------------------------------------------------------------
 // Page
@@ -59,14 +38,11 @@ export default async function FaellePage({
 }) {
   const params = await searchParams;
 
-  // Filters from URL
-  const view = (params.view ?? "") as SemanticView;
   const filterStatus = params.status ?? "";
   const filterUrgency = params.urgency ?? "";
-  const filterSource = params.source ?? "";
+  const _filterWaitingFor = params.waiting_for ?? ""; // dormant — kept for URL backwards-compat
   const filterTenantSlug = params.tenant;
   const filterQuery = params.q ?? "";
-  const showDemo = params.tab === "demo";
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const PAGE_SIZE = 15;
 
@@ -94,38 +70,17 @@ export default async function FaellePage({
       "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at",
       { count: "exact" }
     )
-    .eq("is_demo", showDemo)
+    .eq("is_demo", false)
     .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 
-  // ── Apply semantic view filter ────────────────────────────────────
-  if (view === "neu") {
-    listQuery = listQuery.eq("status", "new");
-  } else if (view === "wartet") {
-    // Contacted + no appointment yet = ball stuck with us
-    listQuery = listQuery.eq("status", "contacted").is("scheduled_at", null);
-  } else if (view === "heute") {
-    // Day-relevant: scheduled cases + cases with today's appointments
-    // Broad definition: anything with status=scheduled OR contacted with scheduled_at
-    listQuery = listQuery.in("status", ["scheduled", "contacted"]).not("scheduled_at", "is", null);
-  } else if (view === "abschluss") {
-    listQuery = listQuery.eq("status", "done").is("review_sent_at", null);
-  } else if (view === "wirkung") {
-    listQuery = listQuery.eq("status", "done").not("review_sent_at", "is", null);
-  } else if (view === "alle") {
-    listQuery = listQuery.neq("status", "archived");
-  } else if (filterStatus === "in_progress") {
-    // Legacy filter support
-    listQuery = listQuery.in("status", ["contacted", "scheduled"]);
-  } else if (filterStatus) {
+  // ── Apply filters (AND combination) ─────────────────────────────
+  if (filterStatus) {
     listQuery = listQuery.eq("status", filterStatus);
-  } else {
-    // Default: open cases (not done, not archived)
-    listQuery = listQuery.not("status", "in", "(done,archived)");
   }
-
-  if (filterUrgency) listQuery = listQuery.eq("urgency", filterUrgency);
-  if (filterSource) listQuery = listQuery.eq("source", filterSource);
+  if (filterUrgency) {
+    listQuery = listQuery.eq("urgency", filterUrgency);
+  }
 
   // Text search
   if (filterQuery) {
@@ -152,7 +107,6 @@ export default async function FaellePage({
   const totalCount = count ?? rows.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-  // Resolve tenant identity for case ID prefix
   let caseIdPrefix = "FS";
   let tenantShortName: string | undefined;
   try {
@@ -167,98 +121,87 @@ export default async function FaellePage({
     }
   } catch { /* fallback to defaults */ }
 
-  // Chip URL builder
-  function chipHref(chipView: SemanticView): string {
+  function buildHref(overrides: Record<string, string>): string {
     const p = new URLSearchParams();
     if (filterTenantSlug) p.set("tenant", filterTenantSlug);
-    if (showDemo) p.set("tab", "demo");
-    if (chipView) p.set("view", chipView);
-    if (filterQuery) p.set("q", filterQuery);
+
+    const status = overrides.status ?? filterStatus;
+    const urgency = overrides.urgency ?? filterUrgency;
+    const q = overrides.q ?? filterQuery;
+
+    if (status) p.set("status", status);
+    if (urgency) p.set("urgency", urgency);
+    if (q) p.set("q", q);
+    // Reset page when changing filters
+    if (!("status" in overrides) && !("urgency" in overrides) && overrides.page) {
+      p.set("page", overrides.page);
+    }
+
     const qs = p.toString();
     return `/ops/faelle${qs ? `?${qs}` : ""}`;
   }
 
-  // Detail filter URL builder
-  function filterHref(key: string, value: string): string {
-    const p = new URLSearchParams();
-    if (filterTenantSlug) p.set("tenant", filterTenantSlug);
-    if (showDemo) p.set("tab", "demo");
-    if (view) p.set("view", view);
-    if (key === "urgency") { if (value) p.set("urgency", value); }
-    else if (filterUrgency) p.set("urgency", filterUrgency);
-    if (key === "source") { if (value) p.set("source", value); }
-    else if (filterSource) p.set("source", filterSource);
-    if (filterQuery) p.set("q", filterQuery);
-    const qs = p.toString();
-    return `/ops/faelle${qs ? `?${qs}` : ""}`;
-  }
-
-  const hasDetailFilters = !!(filterUrgency || filterSource);
 
   return (
     <>
-      {/* Quickfilter chips — mirror Leitsystem modules 1:1 */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        {QUICK_CHIPS.map((chip) => {
-          const isActive = view === chip.view && !filterStatus;
-          return (
-            <Link
-              key={chip.label}
-              href={chipHref(chip.view)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                isActive
-                  ? "bg-gray-900 text-white"
-                  : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              {chip.label}
-            </Link>
-          );
-        })}
-      </div>
+      {/* Page title */}
+      <h1 className="text-xl font-semibold text-gray-900 mb-5">
+        Fallübersicht
+      </h1>
 
-      {/* Secondary filters */}
-      <div className="bg-white border border-gray-200 rounded-xl p-3 mb-5">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Demo/Real tab toggle */}
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-            <Link
-              href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}` : "/ops/faelle"}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                !showDemo
-                  ? "bg-gray-800 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Ihre F\u00e4lle
-            </Link>
-            <Link
-              href={filterTenantSlug ? `/ops/faelle?tenant=${filterTenantSlug}&tab=demo` : "/ops/faelle?tab=demo"}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                showDemo
-                  ? "bg-gray-800 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Demo
-            </Link>
+      {/* Filter rows */}
+      <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4 mb-5 space-y-3">
+        {/* Row 1: Status */}
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider w-16 shrink-0">
+            Status
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {STATUS_FILTERS.map((f) => {
+              const isActive = filterStatus === f.value;
+              return (
+                <Link
+                  key={f.value || "__all"}
+                  href={buildHref({ status: f.value })}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isActive
+                      ? "bg-gray-900 text-white shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  }`}
+                >
+                  {f.label}
+                </Link>
+              );
+            })}
           </div>
+        </div>
 
-          <span className="border-l border-gray-200 h-6 inline-block" />
+        {/* Divider */}
+        <div className="border-t border-gray-100" />
 
-          {/* Detail filters */}
-          <FilterSelect options={URGENCY_OPTIONS} value={filterUrgency} paramKey="urgency" filterHref={filterHref} />
-          <FilterSelect options={SOURCE_OPTIONS} value={filterSource} paramKey="source" filterHref={filterHref} />
-
-          {/* Reset */}
-          {hasDetailFilters && (
-            <Link
-              href={chipHref(view)}
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors ml-1"
-            >
-              Zur\u00fccksetzen
-            </Link>
-          )}
+        {/* Row 2: Priorität */}
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider w-16 shrink-0">
+            Priorität
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {URGENCY_FILTERS.map((f) => {
+              const isActive = filterUrgency === f.value;
+              return (
+                <Link
+                  key={f.value || "__all"}
+                  href={buildHref({ urgency: f.value })}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isActive
+                      ? "bg-gray-900 text-white shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  }`}
+                >
+                  {f.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -273,58 +216,5 @@ export default async function FaellePage({
         basePath="/ops/faelle"
       />
     </>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Filter dropdown
-// ---------------------------------------------------------------------------
-
-function FilterSelect({
-  options,
-  value,
-  paramKey,
-  filterHref,
-}: {
-  options: { value: string; label: string }[];
-  value: string;
-  paramKey: string;
-  filterHref: (key: string, value: string) => string;
-}) {
-  const current = options.find((o) => o.value === value);
-  const isActive = !!value;
-
-  return (
-    <div className="relative group">
-      <button
-        className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
-          isActive
-            ? "border-gray-700 bg-gray-800 text-white"
-            : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-        }`}
-      >
-        {current?.label ?? options[0].label}
-        <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-        </svg>
-      </button>
-      <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block group-focus-within:block">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[160px]">
-          {options.map((opt) => (
-            <Link
-              key={opt.value}
-              href={filterHref(paramKey, opt.value)}
-              className={`block px-3 py-1.5 text-xs transition-colors ${
-                opt.value === value
-                  ? "bg-gray-50 text-gray-900 font-medium"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-              }`}
-            >
-              {opt.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
