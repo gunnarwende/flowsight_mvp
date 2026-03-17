@@ -60,29 +60,35 @@ function formatEventDate(iso: string): string {
   });
 }
 
+/** Strip trailing period from weekday abbreviation (de-CH: "Mo." → "Mo") */
+function shortDay(d: Date): string {
+  return d.toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
+}
+
+function fmtDate(d: Date): string {
+  return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
+}
+
+function fmtTime(d: Date): string {
+  return d.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
+}
+
 function formatTerminRange(startIso: string, endIso: string | null): string {
   const s = new Date(startIso);
-  const dayFmt: Intl.DateTimeFormatOptions = {
-    weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich",
-  };
-  const timeFmt: Intl.DateTimeFormatOptions = {
-    hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich",
-  };
 
   if (!endIso) {
-    // Legacy single-point
-    return `${s.toLocaleDateString("de-CH", dayFmt)}, ${s.toLocaleTimeString("de-CH", timeFmt)}`;
+    return `${shortDay(s)} ${fmtDate(s)}, ${fmtTime(s)}`;
   }
 
   const e = new Date(endIso);
-  const sameDay =
-    s.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" }) ===
-    e.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" });
+  const sameDay = fmtDate(s) === fmtDate(e) &&
+    s.getFullYear() === e.getFullYear();
 
   if (sameDay) {
-    return `${s.toLocaleDateString("de-CH", dayFmt)} · ${s.toLocaleTimeString("de-CH", timeFmt)}–${e.toLocaleTimeString("de-CH", timeFmt)}`;
+    return `${shortDay(s)} ${fmtDate(s)} · ${fmtTime(s)}–${fmtTime(e)}`;
   }
-  return `${s.toLocaleDateString("de-CH", dayFmt)} ${s.toLocaleTimeString("de-CH", timeFmt)} – ${e.toLocaleDateString("de-CH", dayFmt)} ${e.toLocaleTimeString("de-CH", timeFmt)}`;
+  // Multi-day: "Mo 02.03. 11:00 – Fr 06.03. 09:00"
+  return `${shortDay(s)} ${fmtDate(s)} ${fmtTime(s)} – ${shortDay(e)} ${fmtDate(e)} ${fmtTime(e)}`;
 }
 
 function googleMapsUrl(street: string | null, houseNumber: string | null, plz: string, city: string): string {
@@ -534,7 +540,7 @@ export function CaseDetailForm({
         ) : (
           <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1.5fr] gap-x-6 gap-y-3">
               <KV label="Status">
                 <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
                   {STATUS_LABELS[status] ?? status}
@@ -554,7 +560,7 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt
-                  ? <span className="text-[15px] font-semibold text-gray-900">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
+                  ? <span className="text-[15px] font-semibold text-gray-900 whitespace-nowrap">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
                   : <span className="text-sm text-gray-500">Offen</span>}
               </KV>
             </div>
