@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
     const identity = await resolveTenantIdentity(user);
     const tabLabel = identity?.leitsystemName ?? "Leitsystem";
-    return { title: { absolute: `${tabLabel} Leitsystem` } };
+    return { title: { absolute: "Leitsystem" } };
   } catch {
     return { title: { absolute: "Leitsystem" } };
   }
