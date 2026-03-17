@@ -111,7 +111,6 @@ export function LoginForm() {
       setErrorMsg("");
 
       try {
-        // Step 1: Verify code against our DB
         const res = await fetch("/api/ops/auth/verify-code", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -123,11 +122,11 @@ export function LoginForm() {
         if (!res.ok) {
           setStatus("error");
           if (data.error === "invalid_code") {
-            setErrorMsg("Code ungültig. Bitte prüfen oder neuen Code anfordern.");
+            setErrorMsg("Code ungültig oder bereits verwendet.");
           } else if (data.error === "expired_code") {
             setErrorMsg("Code abgelaufen. Bitte neuen Code anfordern.");
           } else {
-            setErrorMsg("Verifizierung fehlgeschlagen. Bitte erneut versuchen.");
+            setErrorMsg("Anmeldung fehlgeschlagen. Bitte neuen Code anfordern.");
           }
           return;
         }
@@ -146,21 +145,17 @@ export function LoginForm() {
 
   // ── Code input handlers ────────────────────────────────────────────
   function handleCodeChange(index: number, value: string) {
-    // Only allow digits
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...code];
     next[index] = digit;
     setCode(next);
 
-    // Clear error on input
     if (status === "error") setStatus("idle");
 
-    // Auto-advance to next field
     if (digit && index < 5) {
       codeRefs.current[index + 1]?.focus();
     }
 
-    // Auto-submit when all 6 digits entered
     if (digit && index === 5) {
       const fullCode = next.join("");
       if (fullCode.length === 6) {
@@ -230,12 +225,25 @@ export function LoginForm() {
   // ── Success state ──────────────────────────────────────────────────
   if (status === "success") {
     return (
-      <div className="bg-emerald-900/30 border border-emerald-700 rounded-lg p-4 text-center">
-        <p className="text-emerald-300 text-sm font-medium">
-          Anmeldung erfolgreich
-        </p>
-        <p className="text-emerald-400/70 text-sm mt-1">
-          Sie werden weitergeleitet&hellip;
+      <div className="text-center py-6">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-3">
+          <svg
+            className="w-5 h-5 text-emerald-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
+          </svg>
+        </div>
+        <p className="text-white text-sm font-medium">Anmeldung erfolgreich</p>
+        <p className="text-slate-500 text-xs mt-1">
+          Weiterleitung&hellip;
         </p>
       </div>
     );
@@ -245,26 +253,36 @@ export function LoginForm() {
   if (step === "code") {
     return (
       <div className="space-y-5">
-        <div>
-          <p className="text-slate-300 text-sm">
-            Wir haben einen 6-stelligen Code an
-          </p>
+        {/* Email confirmation */}
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-800 border border-slate-700 mb-3">
+            <svg
+              className="w-5 h-5 text-slate-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+              />
+            </svg>
+          </div>
+          <p className="text-slate-400 text-sm">Code gesendet an</p>
           <p className="text-white text-sm font-medium mt-0.5">{email}</p>
-          <p className="text-slate-400 text-xs mt-1">
-            gesendet. Bitte prüfen Sie Ihr Postfach.
-          </p>
         </div>
 
         {/* 6-digit code input */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            Code eingeben
-          </label>
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2.5 justify-center">
             {code.map((digit, i) => (
               <input
                 key={i}
-                ref={(el) => { codeRefs.current[i] = el; }}
+                ref={(el) => {
+                  codeRefs.current[i] = el;
+                }}
                 type="text"
                 inputMode="numeric"
                 autoComplete="one-time-code"
@@ -274,11 +292,13 @@ export function LoginForm() {
                 onKeyDown={(e) => handleCodeKeyDown(i, e)}
                 onPaste={i === 0 ? handleCodePaste : undefined}
                 disabled={status === "verifying"}
-                className={`w-11 h-12 text-center text-lg font-bold rounded-lg border bg-slate-900 text-white focus:outline-none focus:ring-2 transition-colors ${
+                className={`w-11 h-13 text-center text-lg font-semibold rounded-xl border-2 bg-slate-950 text-white transition-all duration-150 focus:outline-none focus:ring-0 ${
                   status === "error"
-                    ? "border-red-500 focus:ring-red-500/30"
-                    : "border-slate-700 focus:border-blue-500 focus:ring-blue-500/30"
-                } disabled:opacity-50`}
+                    ? "border-red-500/60"
+                    : digit
+                      ? "border-slate-600"
+                      : "border-slate-800 focus:border-slate-500"
+                } disabled:opacity-40`}
               />
             ))}
           </div>
@@ -286,14 +306,30 @@ export function LoginForm() {
 
         {/* Error */}
         {status === "error" && errorMsg && (
-          <p className="text-red-400 text-sm text-center">{errorMsg}</p>
+          <div className="flex items-start gap-2 bg-red-500/5 border border-red-500/10 rounded-lg px-3 py-2.5">
+            <svg
+              className="w-4 h-4 text-red-400 mt-0.5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            <p className="text-red-400 text-sm">{errorMsg}</p>
+          </div>
         )}
 
         {/* Verifying indicator */}
         {status === "verifying" && (
-          <p className="text-slate-400 text-sm text-center">
-            Wird geprüft&hellip;
-          </p>
+          <div className="flex items-center justify-center gap-2 py-1">
+            <div className="w-3.5 h-3.5 border-2 border-slate-600 border-t-white rounded-full animate-spin" />
+            <p className="text-slate-400 text-sm">Wird geprüft&hellip;</p>
+          </div>
         )}
 
         {/* Resend + back */}
@@ -306,7 +342,7 @@ export function LoginForm() {
               setErrorMsg("");
               setCode(["", "", "", "", "", ""]);
             }}
-            className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
           >
             &larr; Andere E-Mail
           </button>
@@ -314,7 +350,7 @@ export function LoginForm() {
             type="button"
             onClick={handleResend}
             disabled={cooldown > 0 || status === "sending"}
-            className="text-xs text-blue-400 hover:text-blue-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
+            className="text-xs text-slate-400 hover:text-white disabled:text-slate-700 disabled:cursor-not-allowed transition-colors"
           >
             {status === "sending"
               ? "Sende\u2026"
@@ -333,9 +369,9 @@ export function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-slate-300 mb-1"
+          className="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wider"
         >
-          E-Mail
+          E-Mail-Adresse
         </label>
         <input
           id="email"
@@ -347,24 +383,44 @@ export function LoginForm() {
             if (status === "error") setStatus("idle");
           }}
           placeholder="name@firma.ch"
-          className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-xl border-2 border-slate-800 bg-slate-950 px-3.5 py-2.5 text-white text-sm placeholder:text-slate-600 focus:border-slate-600 focus:outline-none focus:ring-0 transition-colors"
         />
       </div>
 
-      {(status === "error" || (urlError && status === "idle")) && (
-        <p className="text-red-400 text-sm">{errorMsg}</p>
+      {(status === "error" || (urlError && status === "idle")) && errorMsg && (
+        <div className="flex items-start gap-2 bg-red-500/5 border border-red-500/10 rounded-lg px-3 py-2.5">
+          <svg
+            className="w-4 h-4 text-red-400 mt-0.5 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+            />
+          </svg>
+          <p className="text-red-400 text-sm">{errorMsg}</p>
+        </div>
       )}
 
       <button
         type="submit"
         disabled={status === "sending" || cooldown > 0}
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-slate-950 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
       >
-        {status === "sending"
-          ? "Code wird gesendet\u2026"
-          : cooldown > 0
-            ? `Neuer Versuch in ${cooldown}s`
-            : "Code senden"}
+        {status === "sending" ? (
+          <span className="inline-flex items-center gap-2">
+            <span className="w-3.5 h-3.5 border-2 border-slate-400 border-t-slate-900 rounded-full animate-spin" />
+            Code wird gesendet
+          </span>
+        ) : cooldown > 0 ? (
+          `Neuer Versuch in ${cooldown}s`
+        ) : (
+          "Anmeldecode senden"
+        )}
       </button>
     </form>
   );
