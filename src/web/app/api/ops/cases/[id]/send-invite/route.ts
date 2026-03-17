@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 
 // ---------------------------------------------------------------------------
 // ICS helpers
@@ -31,7 +32,7 @@ function buildIcs(opts: {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//FlowSight//Termin//DE",
+    "PRODID:-//Leitsystem//Termin//DE",
     "CALSCALE:GREGORIAN",
     "METHOD:REQUEST",
     "BEGIN:VEVENT",
@@ -196,9 +197,14 @@ export async function POST(
     });
   }
 
+  // ── Resolve tenant identity for branding ──────────────────────────────
+  const identity = await resolveTenantIdentityById(row.tenant_id);
+  const tenantName = identity?.shortName ?? "Leitsystem";
+  const casePrefix = identity?.caseIdPrefix ?? "FS";
+
   // ── Build ICS ─────────────────────────────────────────────────────────
   const caseLabel = row.seq_number != null
-    ? `FS-${String(row.seq_number).padStart(4, "0")}`
+    ? `${casePrefix}-${String(row.seq_number).padStart(4, "0")}`
     : id.slice(0, 8);
   const dtStart = new Date(row.scheduled_at);
   const dtEnd = row.scheduled_end_at
@@ -219,7 +225,7 @@ export async function POST(
     uid: `${id}@flowsight.ch`,
     dtStart,
     dtEnd,
-    summary: `FlowSight Termin – Fall ${caseLabel}`,
+    summary: `Termin ${caseLabel} – ${tenantName}`,
     description: `Fall öffnen: ${opsLink}`,
     url: opsLink,
     organizerEmail,
@@ -236,9 +242,9 @@ export async function POST(
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject: `Termin – FlowSight Fall ${caseLabel}`,
+      subject: `Termin ${caseLabel} – ${tenantName}`,
       text: [
-        `FlowSight Termin`,
+        `${tenantName} — Termin`,
         `──────────────────────`,
         `Fall:    ${caseLabel}`,
         `Termin:  ${formatTerminRange(dtStart, dtEnd)}`,
@@ -248,7 +254,7 @@ export async function POST(
       ].join("\n"),
       attachments: [
         {
-          filename: "flowsight-termin.ics",
+          filename: `termin-${caseLabel.toLowerCase()}.ics`,
           content: Buffer.from(ics, "utf-8").toString("base64"),
           contentType: 'text/calendar; method=REQUEST; charset="UTF-8"',
         },
