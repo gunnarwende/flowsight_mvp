@@ -13,7 +13,7 @@
  * 4. Future: push notification handling (Phase 2)
  */
 
-const CACHE_NAME = "flowsight-v1";
+const CACHE_NAME = "flowsight-v2";
 const OFFLINE_URL = "/ops/offline";
 
 // ── Install ────────────────────────────────────────────────────────────────
