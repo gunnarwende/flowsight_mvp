@@ -141,11 +141,17 @@ export function CaseDetailForm({
   isProspect = false,
   caseEvents = [],
   brandColor = "#64748b",
+  currentStaffName,
+  staffRole,
 }: {
   initialData: CaseDetail;
   isProspect?: boolean;
   caseEvents?: CaseEvent[];
   brandColor?: string;
+  /** Staff display_name matching logged-in user's email (for self-send guard) */
+  currentStaffName?: string | null;
+  /** Role-based access: "admin" | "techniker" | undefined (full access) */
+  staffRole?: "admin" | "techniker";
 }) {
   // ── Field state ──────────────────────────────────────────────────────
   const [status, setStatus] = useState(initialData.status);
@@ -190,6 +196,8 @@ export function CaseDetailForm({
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [inviteState, setInviteState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [melderNotifyState, setMelderNotifyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [selfSendConfirm, setSelfSendConfirm] = useState(false);
   const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewMsg, setReviewMsg] = useState("");
   const [localEvents, setLocalEvents] = useState(caseEvents);
@@ -327,7 +335,7 @@ export function CaseDetailForm({
   }
 
   // ── Invite ───────────────────────────────────────────────────────────
-  async function handleSendInvite() {
+  async function doSendInvite() {
     if (steuerungDirty) {
       const ok = await saveSteuerung();
       if (!ok) return;
@@ -341,6 +349,33 @@ export function CaseDetailForm({
       setTimeout(() => setInviteState("idle"), 3000);
     } catch {
       setInviteState("error");
+    }
+  }
+
+  function handleSendInvite() {
+    // Self-send guard: if assigned to yourself, confirm first
+    if (currentStaffName && assigneeText === currentStaffName && !selfSendConfirm) {
+      setSelfSendConfirm(true);
+      return;
+    }
+    setSelfSendConfirm(false);
+    doSendInvite();
+  }
+
+  // ── Melder benachrichtigen ──────────────────────────────────────────
+  async function handleNotifyMelder() {
+    setMelderNotifyState("sending");
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/notify-melder`, { method: "POST" });
+      if (!res.ok) throw new Error("Fehler");
+      setMelderNotifyState("sent");
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(), event_type: "melder_termin_notified",
+        title: "Terminbestätigung an Meldende/n gesendet", created_at: new Date().toISOString(),
+      }]);
+      setTimeout(() => setMelderNotifyState("idle"), 3000);
+    } catch {
+      setMelderNotifyState("error");
     }
   }
 
@@ -444,7 +479,9 @@ export function CaseDetailForm({
               </div>
               <div>
                 <label className={lbl}>Zuständig</label>
-                {staffMembers.length > 0 ? (
+                {staffRole === "techniker" ? (
+                  <p className={`${inp} bg-gray-50 text-gray-500`}>{assigneeText || "—"}</p>
+                ) : staffMembers.length > 0 ? (
                   <select value={assigneeText} onChange={e => setAssigneeText(e.target.value)} className={inp}>
                     <option value="">— Offen —</option>
                     {staffMembers.map(s => <option key={s.display_name} value={s.display_name}>{s.display_name}</option>)}
@@ -486,12 +523,35 @@ export function CaseDetailForm({
               />
             )}
 
-            {/* Send invite button — after picker closes, if termin is set */}
+            {/* Send invite + notify melder buttons — after picker closes, if termin is set */}
             {scheduledAt && !pickerOpen && (
-              <div className="flex items-center justify-end mt-2 pt-2 border-t border-gray-200/60 mb-3">
-                <button onClick={handleSendInvite} disabled={inviteState === "sending"}
-                  className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
-                >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden →"}</button>
+              <div className="space-y-2 mt-2 pt-2 border-t border-gray-200/60 mb-3">
+                <div className="flex items-center justify-end gap-2">
+                  {/* Melder benachrichtigen — visible when contact info exists */}
+                  {(contactEmail || contactPhone) && (
+                    <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
+                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-40 transition-colors"
+                    >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Gesendet ✓" : "Meldende/n benachrichtigen"}</button>
+                  )}
+                  <button onClick={handleSendInvite} disabled={inviteState === "sending"}
+                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
+                  >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden →"}</button>
+                </div>
+                {/* Self-send confirmation */}
+                {selfSendConfirm && (
+                  <div className="flex items-center justify-end gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-xs text-amber-800 mr-auto">Du bist selbst zugewiesen. Trotzdem senden?</p>
+                    <button onClick={() => { setSelfSendConfirm(false); doSendInvite(); }}
+                      className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
+                    >Ja, senden</button>
+                    <button onClick={() => setSelfSendConfirm(false)}
+                      className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                    >Abbrechen</button>
+                  </div>
+                )}
+                {melderNotifyState === "error" && (
+                  <p className="text-xs text-red-600 text-right">Benachrichtigung fehlgeschlagen.</p>
+                )}
               </div>
             )}
 

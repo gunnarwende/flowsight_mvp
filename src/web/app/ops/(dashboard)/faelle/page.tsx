@@ -5,6 +5,7 @@ import { CaseListClient } from "@/src/components/ops/CaseListClient";
 import type { CaseRow } from "@/src/components/ops/CaseListClient";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 
 // ---------------------------------------------------------------------------
 // Filter definitions
@@ -73,6 +74,20 @@ export default async function FaellePage({
     .eq("is_demo", false)
     .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
+
+  // ── RBAC: Techniker sees only assigned cases ──────────────────────
+  if (scope && !scope.isAdmin && scope.tenantId) {
+    try {
+      const authClient = await getAuthClient();
+      const { data: { user: authUser } } = await authClient.auth.getUser();
+      if (authUser?.email) {
+        const ctx = await resolveStaffRole(authUser.email, scope.tenantId);
+        if (ctx?.role === "techniker") {
+          listQuery = listQuery.eq("assignee_text", ctx.displayName);
+        }
+      }
+    } catch { /* fallback: no filter */ }
+  }
 
   // ── Apply filters (AND combination) ─────────────────────────────
   if (filterStatus) {

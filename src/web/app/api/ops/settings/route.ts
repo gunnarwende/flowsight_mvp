@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
+import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 
 /**
  * GET /api/ops/settings — Current tenant settings (modules JSONB subset)
@@ -14,14 +16,34 @@ const EDITABLE_KEYS = [
   "default_appointment_duration_min",
   "notify_reporter_email",
   "notify_reporter_sms",
+  "notify_termin_email",
+  "notify_termin_sms",
+  "notify_termin_reminder_sms",
+  "notify_staff_assignment",
   "business_calendar_email",
 ] as const;
 
 type EditableKey = (typeof EDITABLE_KEYS)[number];
 
+async function checkTechnikerBlock(scope: { tenantId?: string | null; isProspect?: boolean }) {
+  if (scope.tenantId && !scope.isProspect) {
+    const authClient = await getAuthClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (user?.email) {
+      const ctx = await resolveStaffRole(user.email, scope.tenantId);
+      if (ctx?.role === "techniker") return true;
+    }
+  }
+  return false;
+}
+
 export async function GET() {
   const scope = await resolveTenantScope();
   if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await checkTechnikerBlock(scope)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const supabase = getServiceClient();
 
@@ -47,6 +69,10 @@ export async function GET() {
       default_appointment_duration_min: (modules.default_appointment_duration_min as number) ?? 60,
       notify_reporter_email: modules.notify_reporter_email !== false,
       notify_reporter_sms: modules.notify_reporter_sms !== false,
+      notify_termin_email: modules.notify_termin_email !== false,
+      notify_termin_sms: modules.notify_termin_sms !== false,
+      notify_termin_reminder_sms: modules.notify_termin_reminder_sms !== false,
+      notify_staff_assignment: modules.notify_staff_assignment !== false,
       business_calendar_email: (modules.business_calendar_email as string) ?? "",
     },
   });
@@ -55,6 +81,10 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   const scope = await resolveTenantScope();
   if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await checkTechnikerBlock(scope)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   let body: Record<string, unknown>;
   try {
@@ -82,7 +112,11 @@ export async function PATCH(request: NextRequest) {
       } else if (key === "default_appointment_duration_min") {
         const num = Number(val);
         modules[key] = Number.isFinite(num) && num > 0 && num <= 480 ? num : 60;
-      } else if (key === "notify_reporter_email" || key === "notify_reporter_sms") {
+      } else if (
+        key === "notify_reporter_email" || key === "notify_reporter_sms" ||
+        key === "notify_termin_email" || key === "notify_termin_sms" ||
+        key === "notify_termin_reminder_sms" || key === "notify_staff_assignment"
+      ) {
         modules[key] = val === true;
       }
     }

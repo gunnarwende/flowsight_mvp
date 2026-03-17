@@ -2,6 +2,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 import { ZentraleView } from "@/src/components/ops/ZentraleView";
 import type { ZentraleCase, TodayAppointment } from "@/src/components/ops/ZentraleView";
 
@@ -46,6 +47,20 @@ export default async function OpsCasesPage({
     .order("created_at", { ascending: false })
     .limit(200);
   if (filterTenantId) casesQuery = casesQuery.eq("tenant_id", filterTenantId);
+
+  // ── RBAC: Techniker sees only assigned cases ──────────────────────
+  if (scope && !scope.isAdmin && scope.tenantId) {
+    try {
+      const authClient2 = await getAuthClient();
+      const { data: { user: authUser2 } } = await authClient2.auth.getUser();
+      if (authUser2?.email) {
+        const ctx = await resolveStaffRole(authUser2.email, scope.tenantId);
+        if (ctx?.role === "techniker") {
+          casesQuery = casesQuery.eq("assignee_text", ctx.displayName);
+        }
+      }
+    } catch { /* fallback: no filter */ }
+  }
 
   // ── Query 2: Today's appointments with staff + case join ───────────
   const todayZurich = new Intl.DateTimeFormat("en-CA", {
