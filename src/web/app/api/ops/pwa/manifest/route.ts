@@ -39,22 +39,30 @@ export async function GET() {
     scope: "/ops/",
     display: "standalone" as const,
     display_override: ["standalone"],
-    background_color: "#020617",
-    theme_color: "#020617",
+    background_color: "#0f1d32",
+    theme_color: "#0f1d32",
     orientation: "portrait-primary" as const,
     icons: [
       {
         src: "/api/ops/pwa/icon?size=192",
         sizes: "192x192",
         type: "image/png",
+        purpose: "any",
       },
       {
         src: "/api/ops/pwa/icon?size=512",
         sizes: "512x512",
         type: "image/png",
+        purpose: "any",
       },
       {
-        src: "/api/ops/pwa/icon?size=512",
+        src: "/api/ops/pwa/icon?size=192&maskable=1",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/api/ops/pwa/icon?size=512&maskable=1",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
