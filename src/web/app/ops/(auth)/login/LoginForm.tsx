@@ -9,7 +9,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   config: "Auth ist nicht konfiguriert. Bitte Admin kontaktieren.",
 };
 
-/** Sanitize next param: must be a relative path, no open-redirect vectors. */
 function safeNext(raw: string | null): string | null {
   if (!raw) return null;
   let v: string;
@@ -23,9 +22,15 @@ function safeNext(raw: string | null): string | null {
   return v;
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+// Brand colors from brand_system.md
+const GOLD = "#c8965a";
+const GOLD_HOVER = "#d4a96e";
+const NAVY = "#1a2744";
+const NAVY_800 = "#243352";
+const NAVY_700 = "#2e4066";
+const NAVY_400 = "#7b8fb3";
+const TEXT_SEC = "#64645f";
+const STATUS_ERR = "#c45c4a";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -58,7 +63,7 @@ export function LoginForm() {
     }
   }, [step]);
 
-  // ── Step 1: Send OTP code ──────────────────────────────────────────
+  // ── Step 1: Send code ──────────────────────────────────────────────
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault();
     setStatus("sending");
@@ -217,13 +222,16 @@ export function LoginForm() {
     }
   }
 
-  // ── Shared: Error box ──────────────────────────────────────────────
+  // ── Error box ──────────────────────────────────────────────────────
   const errorBox = errorMsg ? (
-    <div className="flex items-start gap-2.5 bg-red-500/[0.07] border border-red-500/15 rounded-xl px-3.5 py-3">
+    <div
+      className="flex items-start gap-2.5 rounded-xl px-3.5 py-3"
+      style={{ backgroundColor: `${STATUS_ERR}08`, border: `1px solid ${STATUS_ERR}20` }}
+    >
       <svg
-        className="w-4 h-4 text-red-400 mt-0.5 shrink-0"
+        className="w-4 h-4 mt-0.5 shrink-0"
         fill="none"
-        stroke="currentColor"
+        stroke={STATUS_ERR}
         viewBox="0 0 24 24"
         strokeWidth={1.5}
       >
@@ -233,7 +241,9 @@ export function LoginForm() {
           d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
         />
       </svg>
-      <p className="text-red-300 text-sm leading-snug">{errorMsg}</p>
+      <p className="text-sm leading-snug" style={{ color: STATUS_ERR }}>
+        {errorMsg}
+      </p>
     </div>
   ) : null;
 
@@ -241,11 +251,14 @@ export function LoginForm() {
   if (status === "success") {
     return (
       <div className="text-center py-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
+        <div
+          className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-4"
+          style={{ backgroundColor: "#4a9d6e15", border: "1px solid #4a9d6e30" }}
+        >
           <svg
-            className="w-6 h-6 text-emerald-400"
+            className="w-6 h-6"
             fill="none"
-            stroke="currentColor"
+            stroke="#4a9d6e"
             viewBox="0 0 24 24"
             strokeWidth={2}
           >
@@ -256,8 +269,10 @@ export function LoginForm() {
             />
           </svg>
         </div>
-        <p className="text-white font-medium">Anmeldung erfolgreich</p>
-        <p className="text-slate-500 text-sm mt-1">
+        <p className="font-medium" style={{ color: NAVY }}>
+          Anmeldung erfolgreich
+        </p>
+        <p className="text-sm mt-1" style={{ color: NAVY_400 }}>
           Weiterleitung&hellip;
         </p>
       </div>
@@ -268,25 +283,13 @@ export function LoginForm() {
   if (step === "code") {
     return (
       <div className="space-y-6">
-        {/* Email confirmation */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-amber-500/10 border border-amber-500/20 mb-3">
-            <svg
-              className="w-5 h-5 text-amber-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-              />
-            </svg>
-          </div>
-          <p className="text-slate-400 text-sm">Code gesendet an</p>
-          <p className="text-white text-sm font-medium mt-0.5">{email}</p>
+          <p className="text-sm" style={{ color: TEXT_SEC }}>
+            Code gesendet an
+          </p>
+          <p className="text-sm font-medium mt-0.5" style={{ color: NAVY }}>
+            {email}
+          </p>
         </div>
 
         {/* 6-digit code input */}
@@ -306,29 +309,37 @@ export function LoginForm() {
               onKeyDown={(e) => handleCodeKeyDown(i, e)}
               onPaste={i === 0 ? handleCodePaste : undefined}
               disabled={status === "verifying"}
-              className={`w-12 h-14 text-center text-xl font-semibold rounded-xl border-2 bg-slate-950/80 text-white transition-all duration-150 focus:outline-none ${
-                status === "error"
-                  ? "border-red-500/50"
-                  : digit
-                    ? "border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.08)]"
-                    : "border-slate-700/60 focus:border-amber-500/40 focus:shadow-[0_0_8px_rgba(245,158,11,0.08)]"
-              } disabled:opacity-40`}
+              className="w-12 h-14 text-center text-xl font-semibold rounded-xl transition-all duration-150 focus:outline-none disabled:opacity-40"
+              style={{
+                color: NAVY,
+                backgroundColor: "#f0f3f7",
+                border: `2px solid ${
+                  status === "error"
+                    ? STATUS_ERR + "60"
+                    : digit
+                      ? GOLD
+                      : "#c4cfdf"
+                }`,
+                ...(digit ? { boxShadow: `0 0 0 1px ${GOLD}30` } : {}),
+              }}
             />
           ))}
         </div>
 
-        {/* Error */}
         {status === "error" && errorBox}
 
-        {/* Verifying indicator */}
         {status === "verifying" && (
           <div className="flex items-center justify-center gap-2.5 py-1">
-            <div className="w-4 h-4 border-2 border-amber-500/30 border-t-amber-400 rounded-full animate-spin" />
-            <p className="text-slate-400 text-sm">Wird geprüft&hellip;</p>
+            <div
+              className="w-4 h-4 rounded-full animate-spin"
+              style={{ border: `2px solid ${GOLD}40`, borderTopColor: GOLD }}
+            />
+            <p className="text-sm" style={{ color: NAVY_400 }}>
+              Wird geprüft&hellip;
+            </p>
           </div>
         )}
 
-        {/* Resend + back */}
         <div className="flex items-center justify-between pt-1">
           <button
             type="button"
@@ -338,7 +349,8 @@ export function LoginForm() {
               setErrorMsg("");
               setCode(["", "", "", "", "", ""]);
             }}
-            className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            className="text-xs transition-colors"
+            style={{ color: NAVY_400 }}
           >
             &larr; Andere E-Mail
           </button>
@@ -346,7 +358,8 @@ export function LoginForm() {
             type="button"
             onClick={handleResend}
             disabled={cooldown > 0 || status === "sending"}
-            className="text-xs text-amber-400/70 hover:text-amber-300 disabled:text-slate-700 disabled:cursor-not-allowed transition-colors"
+            className="text-xs disabled:cursor-not-allowed transition-colors"
+            style={{ color: cooldown > 0 ? "#c4cfdf" : GOLD }}
           >
             {status === "sending"
               ? "Sende\u2026"
@@ -365,7 +378,8 @@ export function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider"
+          className="block text-xs font-medium mb-2 uppercase tracking-wider"
+          style={{ color: NAVY_400 }}
         >
           E-Mail-Adresse
         </label>
@@ -379,7 +393,21 @@ export function LoginForm() {
             if (status === "error") setStatus("idle");
           }}
           placeholder="name@firma.ch"
-          className="w-full rounded-xl border-2 border-slate-700/60 bg-slate-950/80 px-4 py-3 text-white text-sm placeholder:text-slate-600 focus:border-amber-500/40 focus:shadow-[0_0_12px_rgba(245,158,11,0.06)] focus:outline-none transition-all duration-200"
+          className="w-full rounded-xl px-4 py-3 text-sm transition-all duration-200 focus:outline-none"
+          style={{
+            color: NAVY,
+            backgroundColor: "#f0f3f7",
+            border: "2px solid #c4cfdf",
+            ...(status === "idle" ? {} : {}),
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = GOLD;
+            e.target.style.boxShadow = `0 0 0 1px ${GOLD}30`;
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "#c4cfdf";
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
@@ -388,11 +416,26 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={status === "sending" || cooldown > 0}
-        className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-3 text-sm font-semibold text-slate-950 hover:from-amber-400 hover:to-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-amber-500/10"
+        className="w-full rounded-xl px-4 py-3 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+        style={{
+          backgroundColor: GOLD,
+          color: NAVY,
+        }}
+        onMouseEnter={(e) => {
+          if (!(e.target as HTMLButtonElement).disabled) {
+            (e.target as HTMLElement).style.backgroundColor = GOLD_HOVER;
+          }
+        }}
+        onMouseLeave={(e) => {
+          (e.target as HTMLElement).style.backgroundColor = GOLD;
+        }}
       >
         {status === "sending" ? (
           <span className="inline-flex items-center gap-2">
-            <span className="w-4 h-4 border-2 border-amber-800/40 border-t-slate-900 rounded-full animate-spin" />
+            <span
+              className="w-4 h-4 rounded-full animate-spin"
+              style={{ border: `2px solid ${NAVY}30`, borderTopColor: NAVY }}
+            />
             Code wird gesendet
           </span>
         ) : cooldown > 0 ? (
