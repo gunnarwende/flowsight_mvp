@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-11
+> Letzte Aktualisierung: 2026-03-17
 
 ---
 
@@ -88,12 +88,12 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **Template-System:** Agent-Configs als JSON-Schablone (~20 Min pro Kunde)
 
 ### 3.4 Ops Dashboard
-- Web-App unter /ops (Login via Supabase Auth)
+- Web-App unter /ops (Login via Custom OTP: 6-Digit Code per E-Mail, server-side Session, keine Supabase Rate Limits. Sender: noreply@send.flowsight.ch)
 - **Fallliste:** Alle Fälle mit Status, Quelle (voice/wizard/manual), Datum, seq_number (FS-XXXX)
 - **Filter:** Status, Quelle, Kategorie, Zeitraum, Tenant
 - **Fall-Detailansicht:** Kontaktdaten, Fallbeschreibung, Fotos, Timeline (case_events), Notizen
 - **Aktionen:** Status ändern, Termin senden (E-Mail an Melder), Review anfragen, manueller Fall erstellen
-- **KPI-Cards:** Click-to-Filter (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done)
+- **KPI-Cards:** Click-to-Filter (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done). Status-Kette: Neu → Geplant → In Arbeit → Warten → Erledigt (kein "Abgeschlossen")
 - **CSV-Export** für Buchhaltung/Reporting
 - **Light Theme**, Sidebar-Navigation, responsive
 
@@ -117,7 +117,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - Provider: Resend (SPF/DKIM/DMARC verifiziert)
 
 ### 3.8 SMS Channel
-- Post-call SMS mit Korrekturlink an Melder (Twilio alphanumeric sender)
+- Post-call SMS mit Korrekturlink an Melder (eCall.ch Swiss Gateway, Business Account Typ A)
 - Kurzlink `/v/[caseId]?t=<16hex>` (~85 Zeichen), HMAC-gesichert
 - Foto-Upload via Verify-Seite (Supabase Storage)
 - Akzeptiert sowohl Full-Token (64-hex) als auch Short-Token (16-hex)
@@ -189,7 +189,7 @@ OUTPUT:
   → case_events Eintrag ("Benachrichtigung gesendet")
 
 NACH ERLEDIGUNG:
-  → Status → "resolved" (im Dashboard)
+  → Status → "Erledigt" (im Dashboard). Kette: Neu → Geplant → In Arbeit → Warten → Erledigt
   → Optional: Review-Anfrage per E-Mail
 ```
 
@@ -266,7 +266,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 ### Was der Prospect bekommt (Trial, 14 Tage)
 - **Eigene Schweizer Nummer** (Twilio Festnetz)
 - **Lisa (B-Full)** — personalisiert mit seinen Services, PLZ, Firmenname
-- **Dashboard** via Magic-Link (Prospect-View: Status + Review)
+- **Dashboard** via OTP-Login (6-Digit Code per E-Mail, Prospect-View: Status + Review)
 - **15 Demo-Cases** (realistische Schweizer Daten)
 - **SMS-Flow** (Post-Call Korrekturlink)
 - **Review-Surface** (Google-Style mit Firmenname)
@@ -274,7 +274,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 ### Trial-Timeline
 | Tag | Was |
 |-----|-----|
-| 0 | Trial Start + Welcome-Mail mit Magic-Link |
+| 0 | Trial Start + Welcome-Mail mit OTP-Login-Link |
 | 0-2 | **First-Call-Moment** (Pflicht) — Founder ruft Prospect-Nummer an |
 | 10 | **Follow-up** (Pflicht) — Founder ruft persönlich an |
 | 14 | **Decision Day** — Convert / Live-Dock / Offboard |
