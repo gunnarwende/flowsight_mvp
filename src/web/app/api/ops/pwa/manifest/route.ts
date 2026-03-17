@@ -39,8 +39,8 @@ export async function GET() {
     scope: "/ops/",
     display: "standalone" as const,
     display_override: ["standalone"],
-    background_color: "#0f1d32",
-    theme_color: "#0f1d32",
+    background_color: "#1a2744",
+    theme_color: "#1a2744",
     orientation: "portrait-primary" as const,
     icons: [
       {
