@@ -13,7 +13,7 @@
  * 4. Future: push notification handling (Phase 2)
  */
 
-const CACHE_NAME = "flowsight-v2";
+const CACHE_NAME = "flowsight-v3";
 const OFFLINE_URL = "/ops/offline";
 
 // ── Install ────────────────────────────────────────────────────────────────
@@ -43,6 +43,13 @@ self.addEventListener("activate", (event) => {
   );
   // Take control of all open tabs immediately
   self.clients.claim();
+});
+
+// ── Message handler (for UpdatePrompt "SKIP_WAITING" trigger) ──────────────
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 // ── Fetch ──────────────────────────────────────────────────────────────────
