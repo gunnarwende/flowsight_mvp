@@ -286,38 +286,56 @@ export async function PATCH(
       update.assignee_text &&
       update.assignee_text !== existing.assignee_text
     ) {
-      // Look up staff email + tenant identity
-      const [{ data: staffMatch }, identity, { data: tenantRow }] = await Promise.all([
-        supabase
-          .from("staff")
-          .select("email")
-          .eq("tenant_id", existing.tenant_id)
-          .eq("display_name", update.assignee_text as string)
-          .eq("is_active", true)
-          .limit(1)
-          .maybeSingle(),
-        resolveTenantIdentityById(existing.tenant_id),
-        supabase.from("tenants").select("modules").eq("id", existing.tenant_id).single(),
-      ]);
+      // Parse comma-separated assignee names (supports multi-select)
+      const assigneeNames = (update.assignee_text as string)
+        .split(",")
+        .map((n: string) => n.trim())
+        .filter(Boolean);
+      const oldNames = (existing.assignee_text ?? "")
+        .split(",")
+        .map((n: string) => n.trim())
+        .filter(Boolean);
+      // Only notify newly added assignees
+      const newNames = assigneeNames.filter((n: string) => !oldNames.includes(n));
 
-      const modules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
-      const notifyEnabled = modules.notify_staff_assignment !== false;
+      if (newNames.length > 0) {
+        const [{ data: staffMatches }, identity, { data: tenantRow }] = await Promise.all([
+          supabase
+            .from("staff")
+            .select("display_name, email")
+            .eq("tenant_id", existing.tenant_id)
+            .in("display_name", newNames)
+            .eq("is_active", true),
+          resolveTenantIdentityById(existing.tenant_id),
+          supabase.from("tenants").select("modules").eq("id", existing.tenant_id).single(),
+        ]);
 
-      if (staffMatch?.email && notifyEnabled && identity) {
-        const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
-        const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
-        assignmentSent = await sendAssignmentNotification({
-          caseId: id,
-          caseLabel,
-          tenantDisplayName: identity.displayName,
-          staffName: update.assignee_text as string,
-          staffEmail: staffMatch.email,
-          category: row.category,
-          city: row.city,
-          urgency: row.urgency,
-          description: row.description,
-          deepLink: `${baseUrl}/ops/cases/${id}`,
-        });
+        const modules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
+        const notifyEnabled = modules.notify_staff_assignment !== false;
+
+        if (notifyEnabled && identity && staffMatches && staffMatches.length > 0) {
+          const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
+          const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
+          const results = await Promise.all(
+            staffMatches
+              .filter((s: { email: string | null }) => s.email)
+              .map((s: { display_name: string; email: string }) =>
+                sendAssignmentNotification({
+                  caseId: id,
+                  caseLabel,
+                  tenantDisplayName: identity.displayName,
+                  staffName: s.display_name,
+                  staffEmail: s.email,
+                  category: row.category,
+                  city: row.city,
+                  urgency: row.urgency,
+                  description: row.description,
+                  deepLink: `${baseUrl}/ops/cases/${id}`,
+                })
+              )
+          );
+          assignmentSent = results.some(Boolean);
+        }
       }
     }
 
