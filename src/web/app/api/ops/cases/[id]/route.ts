@@ -28,6 +28,7 @@ const FIELD_LABELS: Record<string, string> = {
   house_number: "Hausnummer",
   assignee_text: "Zuständig",
   scheduled_at: "Termin",
+  scheduled_end_at: "Termin-Ende",
   internal_notes: "Notizen",
   contact_email: "E-Mail",
   contact_phone: "Telefon",
@@ -45,6 +46,7 @@ const OPS_UPDATABLE_FIELDS = [
   "description",
   "assignee_text",
   "scheduled_at",
+  "scheduled_end_at",
   "internal_notes",
   "contact_email",
   "contact_phone",
@@ -191,7 +193,7 @@ export async function PATCH(
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
+        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, scheduled_end_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
       )
       .single();
 
