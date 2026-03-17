@@ -195,13 +195,13 @@ export default function SettingsPage() {
                 <Toggle
                   checked={notifyTerminEmail}
                   onChange={setNotifyTerminEmail}
-                  label="Terminbestätigung an Meldende (E-Mail)"
+                  label="E-Mail-Terminbestätigung an Meldende"
                   description="Meldende erhalten eine E-Mail wenn ein Termin eingeplant wird"
                 />
                 <Toggle
                   checked={notifyTerminSms}
                   onChange={setNotifyTerminSms}
-                  label="Terminbestätigung an Meldende (SMS)"
+                  label="SMS-Terminbestätigung an Meldende"
                   description="Meldende erhalten eine SMS mit den Termindetails"
                 />
                 <Toggle
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                 <Toggle
                   checked={notifyTerminReminderSms}
                   onChange={setNotifyTerminReminderSms}
-                  label="24h-Erinnerung an Meldende (SMS)"
+                  label="24h-Erinnerung an Meldende per SMS"
                   description="Meldende erhalten am Vortag eine SMS-Erinnerung an den Termin"
                 />
               </div>
@@ -232,6 +232,14 @@ export default function SettingsPage() {
               saved={notifySaved}
               error={notifyError}
               onSave={saveNotify}
+              onCancel={() => {
+                setNotifyEmail(notifyBaseline.email);
+                setNotifySms(notifyBaseline.sms);
+                setNotifyTerminEmail(notifyBaseline.terminEmail);
+                setNotifyTerminSms(notifyBaseline.terminSms);
+                setNotifyTerminReminderSms(notifyBaseline.terminReminderSms);
+                setNotifyStaffAssignment(notifyBaseline.staffAssignment);
+              }}
             />
           )}
         </Section>
@@ -258,6 +266,7 @@ export default function SettingsPage() {
               saved={reviewSaved}
               error={reviewError}
               onSave={saveReview}
+              onCancel={() => setGoogleReviewUrl(reviewBaseline)}
             />
           )}
         </Section>
@@ -293,11 +302,13 @@ function CardSaveBar({
   saved,
   error,
   onSave,
+  onCancel,
 }: {
   saving: boolean;
   saved: boolean;
   error: string | null;
   onSave: () => void;
+  onCancel?: () => void;
 }) {
   return (
     <div className="mt-4 pt-3 border-t border-gray-100 flex items-center gap-3">
@@ -308,6 +319,15 @@ function CardSaveBar({
       >
         {saving ? "Speichern…" : "Speichern"}
       </button>
+      {onCancel && (
+        <button
+          onClick={onCancel}
+          disabled={saving}
+          className="rounded-lg border border-gray-200 bg-white px-5 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors disabled:opacity-50"
+        >
+          Abbrechen
+        </button>
+      )}
       {saved && (
         <span className="text-xs text-emerald-600 font-medium">Gespeichert</span>
       )}

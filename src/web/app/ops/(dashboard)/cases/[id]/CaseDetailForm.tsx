@@ -523,69 +523,65 @@ export function CaseDetailForm({
               />
             )}
 
-            {/* Send invite + notify melder buttons — after picker closes, if termin is set */}
-            {scheduledAt && !pickerOpen && (
-              <div className="space-y-2 mt-2 pt-2 border-t border-gray-200/60 mb-3">
-                <div className="flex items-center justify-end gap-2">
-                  {/* Melder benachrichtigen — visible when contact info exists */}
-                  {(contactEmail || contactPhone) && (
-                    <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
-                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-40 transition-colors"
-                    >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Gesendet ✓" : "Meldende/n benachrichtigen"}</button>
-                  )}
-                  <button onClick={handleSendInvite} disabled={inviteState === "sending"}
-                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
-                  >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden →"}</button>
-                </div>
-                {/* Self-send confirmation */}
-                {selfSendConfirm && (
-                  <div className="flex items-center justify-end gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p className="text-xs text-amber-800 mr-auto">Du bist selbst zugewiesen. Trotzdem senden?</p>
-                    <button onClick={() => { setSelfSendConfirm(false); doSendInvite(); }}
-                      className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
-                    >Ja, senden</button>
-                    <button onClick={() => setSelfSendConfirm(false)}
-                      className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-                    >Abbrechen</button>
-                  </div>
-                )}
-                {melderNotifyState === "error" && (
-                  <p className="text-xs text-red-600 text-right">Benachrichtigung fehlgeschlagen.</p>
-                )}
-              </div>
-            )}
-
             {/* Warning banner: Termin changed but not sent */}
             {showTerminWarning && (
-              <div className="flex items-center justify-between gap-3 mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-800">
-                  Termin eingetragen, aber noch nicht an den Kunden gesendet.
+              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800 mb-2">
+                  Termin geändert. Beteiligte benachrichtigen?
                 </p>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={async () => {
                       setShowTerminWarning(false);
-                      await handleSendInvite();
+                      await saveSteuerung();
+                      // Send ICS to staff
+                      await doSendInvite();
+                      // Notify melder if contact exists
+                      if (contactEmail || contactPhone) {
+                        await handleNotifyMelder();
+                      }
                     }}
-                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
-                  >Jetzt senden</button>
+                    className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition-colors"
+                  >Speichern &amp; alle benachrichtigen</button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowTerminWarning(false);
+                      await saveSteuerung();
+                      await doSendInvite();
+                    }}
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >Nur Mitarbeiter benachrichtigen</button>
                   <button
                     type="button"
                     onClick={async () => {
                       setShowTerminWarning(false);
                       await saveSteuerung();
                     }}
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
                   >Nur speichern</button>
                 </div>
+                {/* Self-send notice */}
+                {currentStaffName && assigneeText === currentStaffName && (
+                  <p className="text-[11px] text-amber-700 mt-2">Hinweis: Du bist selbst zugewiesen — die Mitarbeiter-E-Mail geht an dich.</p>
+                )}
               </div>
+            )}
+
+            {/* Status feedback for melder notification */}
+            {melderNotifyState === "sent" && (
+              <p className="text-xs text-emerald-600 text-right mt-1">Meldende/r benachrichtigt ✓</p>
+            )}
+            {melderNotifyState === "error" && (
+              <p className="text-xs text-red-600 text-right mt-1">Benachrichtigung fehlgeschlagen.</p>
             )}
 
             <EditActions
               onSave={() => {
                 const terminChanged = scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at;
-                if (terminChanged && !terminSentForCurrent) {
+                const hasTermin = !!scheduledAt;
+                if (terminChanged && hasTermin && !terminSentForCurrent) {
                   setShowTerminWarning(true);
                 } else {
                   saveSteuerung();
@@ -624,6 +620,19 @@ export function CaseDetailForm({
                   : <span className="text-sm text-gray-500">Offen</span>}
               </KV>
             </div>
+
+            {/* Quick actions (read-only view) */}
+            {scheduledAt && (contactEmail || contactPhone) && (
+              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
+                <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
+                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Meldende/r benachrichtigt ✓" : "Meldende/n über Termin benachrichtigen"}</button>
+                <span className="text-gray-300">|</span>
+                <button onClick={handleSendInvite} disabled={inviteState === "sending"}
+                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Termin gesendet ✓" : "Termin an Mitarbeiter senden"}</button>
+              </div>
+            )}
 
             {/* Save state feedback */}
             {(saveState === "saved" || saveState === "error") && (
