@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { getBrowserClient } from "@/src/lib/supabase/browser";
 
 const ERROR_MESSAGES: Record<string, string> = {
   invalid_link:
@@ -133,20 +132,8 @@ export function LoginForm() {
           return;
         }
 
-        // Step 2: Create Supabase session using the token hash
-        const supabase = getBrowserClient();
-        const { error: sessionError } = await supabase.auth.verifyOtp({
-          token_hash: data.token_hash,
-          type: "magiclink",
-        });
-
-        if (sessionError) {
-          setStatus("error");
-          setErrorMsg("Sitzung konnte nicht erstellt werden. Bitte erneut anmelden.");
-          console.error("[LoginForm] verifyOtp session error:", sessionError.message);
-          return;
-        }
-
+        // Session cookies are set server-side by verify-code route.
+        // Just redirect to the dashboard.
         setStatus("success");
         router.push(nextPath);
       } catch {
