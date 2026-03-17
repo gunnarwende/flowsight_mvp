@@ -82,20 +82,27 @@ export function LoginForm() {
       if (error) {
         setStatus("error");
         const msg = error.message?.toLowerCase() ?? "";
-        // User-friendly error for non-existent accounts
+        // Rate limit check FIRST — Supabase says "For security purposes,
+        // you can only request this once every X seconds"
         if (
+          msg.includes("security purposes") ||
+          msg.includes("rate limit") ||
+          msg.includes("too many")
+        ) {
+          // Parse wait seconds from Supabase message if possible
+          const match = error.message?.match(/every\s+(\d+)\s+seconds/i);
+          const wait = match ? Math.max(parseInt(match[1], 10), 60) : 60;
+          setErrorMsg(
+            `Bitte ${wait} Sekunden warten und erneut versuchen.`
+          );
+          setCooldown(wait);
+        } else if (
           msg.includes("user not found") ||
-          msg.includes("signups not allowed") ||
-          msg.includes("for security purposes")
+          msg.includes("signups not allowed")
         ) {
           setErrorMsg(
             "Kein Konto mit dieser E-Mail-Adresse. Bitte Admin kontaktieren."
           );
-        } else if (msg.includes("rate limit") || msg.includes("too many")) {
-          setErrorMsg(
-            "Zu viele Anmeldeversuche. Bitte 60 Sekunden warten und erneut versuchen."
-          );
-          setCooldown(60);
         } else {
           setErrorMsg(error.message);
         }
