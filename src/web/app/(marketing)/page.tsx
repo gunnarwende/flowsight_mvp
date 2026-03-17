@@ -320,7 +320,7 @@ export default function HomePage() {
               {
                 icon: <CalendarIcon className="h-5 w-5" />,
                 title: "Terminplanung",
-                desc: "Termin direkt aus dem Fall setzen — der Melder erhält eine ICS-Einladung per E-Mail.",
+                desc: "Termin direkt aus dem Fall setzen — der Melder erhält eine Kalendereinladung per E-Mail.",
               },
               {
                 icon: <CameraIcon className="h-5 w-5" />,

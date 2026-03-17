@@ -116,11 +116,11 @@ export async function POST(
     });
   }
 
-  // ── Load case ─────────────────────────────────────────────────────────
+  // ── Load case + tenant ────────────────────────────────────────────────
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, seq_number, scheduled_at, scheduled_end_at, category, city")
+    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, city")
     .eq("id", id)
     .single();
 
@@ -143,12 +143,22 @@ export async function POST(
     });
   }
 
-  // ── Validate recipient ────────────────────────────────────────────────
-  const to = process.env.MAIL_REPLY_TO;
+  // ── Resolve recipient: tenant calendar email → fallback env var ──────
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("modules")
+    .eq("id", row.tenant_id)
+    .single();
+  const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+  const calendarEmail = typeof modules.business_calendar_email === "string"
+    ? modules.business_calendar_email.trim()
+    : "";
+  const to = calendarEmail || process.env.MAIL_REPLY_TO;
+
   if (!to) {
-    return respond(400, { ok: false, error: "missing_mail_reply_to" }, {
+    return respond(400, { ok: false, error: "missing_calendar_email" }, {
       decision: "skipped",
-      error_code: "missing_mail_reply_to",
+      error_code: "missing_calendar_email",
       scheduled_at_present: true,
       recipient_present: false,
     });
