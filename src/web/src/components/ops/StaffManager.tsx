@@ -19,7 +19,9 @@ interface StaffManagerProps {
 }
 
 const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
   techniker: "Techniker",
+  // Legacy roles (display only, no longer selectable)
   projektleiter: "Projektleiter",
   buero: "Büro",
   inhaber: "Inhaber",
@@ -35,7 +37,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
 
   // Form state
   const [name, setName] = useState("");
-  const [role, setRole] = useState("techniker");
+  const [role, setRole] = useState("admin");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
@@ -56,7 +58,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
 
   function resetForm() {
     setName("");
-    setRole("techniker");
+    setRole("admin");
     setPhone("");
     setEmail("");
     setEditingId(null);
@@ -176,11 +178,8 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400/30"
               >
+                <option value="admin">Admin</option>
                 <option value="techniker">Techniker</option>
-                <option value="projektleiter">Projektleiter</option>
-                <option value="buero">Büro</option>
-                <option value="inhaber">Inhaber</option>
-                <option value="lernender">Lernender</option>
               </select>
             </div>
             <div>

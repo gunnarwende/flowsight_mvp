@@ -18,14 +18,21 @@ interface SettingsData {
 export default function SettingsPage() {
   const [data, setData] = useState<SettingsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Form state
-  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
+  // Form state — Benachrichtigungen
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [notifySms, setNotifySms] = useState(true);
+  const [notifyBaseline, setNotifyBaseline] = useState({ email: true, sms: true });
+  const [notifySaving, setNotifySaving] = useState(false);
+  const [notifySaved, setNotifySaved] = useState(false);
+  const [notifyError, setNotifyError] = useState<string | null>(null);
+
+  // Form state — Google Review
+  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
+  const [reviewBaseline, setReviewBaseline] = useState("");
+  const [reviewSaving, setReviewSaving] = useState(false);
+  const [reviewSaved, setReviewSaved] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/ops/settings")
@@ -34,38 +41,70 @@ export default function SettingsPage() {
         if (d) {
           setData(d);
           setGoogleReviewUrl(d.settings.google_review_url);
+          setReviewBaseline(d.settings.google_review_url);
           setNotifyEmail(d.settings.notify_reporter_email);
           setNotifySms(d.settings.notify_reporter_sms);
+          setNotifyBaseline({
+            email: d.settings.notify_reporter_email,
+            sms: d.settings.notify_reporter_sms,
+          });
         }
       })
-      .catch(() => setError("Einstellungen konnten nicht geladen werden."))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleSave() {
-    setSaving(true);
-    setSaved(false);
-    setError(null);
+  const notifyDirty =
+    notifyEmail !== notifyBaseline.email || notifySms !== notifyBaseline.sms;
+  const reviewDirty = googleReviewUrl !== reviewBaseline;
+
+  async function saveNotify() {
+    setNotifySaving(true);
+    setNotifySaved(false);
+    setNotifyError(null);
     try {
       const res = await fetch("/api/ops/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          google_review_url: googleReviewUrl,
           notify_reporter_email: notifyEmail,
           notify_reporter_sms: notifySms,
         }),
       });
       if (res.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        setNotifyBaseline({ email: notifyEmail, sms: notifySms });
+        setNotifySaved(true);
+        setTimeout(() => setNotifySaved(false), 3000);
       } else {
-        setError("Speichern fehlgeschlagen.");
+        setNotifyError("Speichern fehlgeschlagen.");
       }
     } catch {
-      setError("Netzwerkfehler.");
+      setNotifyError("Netzwerkfehler.");
     }
-    setSaving(false);
+    setNotifySaving(false);
+  }
+
+  async function saveReview() {
+    setReviewSaving(true);
+    setReviewSaved(false);
+    setReviewError(null);
+    try {
+      const res = await fetch("/api/ops/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ google_review_url: googleReviewUrl }),
+      });
+      if (res.ok) {
+        setReviewBaseline(googleReviewUrl);
+        setReviewSaved(true);
+        setTimeout(() => setReviewSaved(false), 3000);
+      } else {
+        setReviewError("Speichern fehlgeschlagen.");
+      }
+    } catch {
+      setReviewError("Netzwerkfehler.");
+    }
+    setReviewSaving(false);
   }
 
   if (loading) {
@@ -82,7 +121,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-5">
-        {/* Team */}
+        {/* Team — StaffManager handles its own save */}
         <Section
           title="Team"
           description="Mitarbeiter verwalten. Die E-Mail-Adresse wird für Kalendereinladungen bei Terminzuweisung verwendet."
@@ -90,7 +129,7 @@ export default function SettingsPage() {
           <StaffManager tenantId={data?.tenant_id} embedded />
         </Section>
 
-        {/* Benachrichtigungen */}
+        {/* Benachrichtigungen — per-card save */}
         <Section
           title="Benachrichtigungen"
           description="Automatische Rückmeldung an Meldende nach Fallerfassung."
@@ -109,9 +148,17 @@ export default function SettingsPage() {
               description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
             />
           </div>
+          {notifyDirty && (
+            <CardSaveBar
+              saving={notifySaving}
+              saved={notifySaved}
+              error={notifyError}
+              onSave={saveNotify}
+            />
+          )}
         </Section>
 
-        {/* Google Review */}
+        {/* Google Review — per-card save */}
         <Section
           title="Google-Bewertungen"
           description="Link zu Ihrem Google-Bewertungsprofil. Wird in Review-Anfragen verwendet."
@@ -127,24 +174,15 @@ export default function SettingsPage() {
             Suchen Sie Ihren Betrieb auf Google Maps &rarr; &quot;Rezension
             schreiben&quot; &rarr; Link kopieren
           </p>
+          {reviewDirty && (
+            <CardSaveBar
+              saving={reviewSaving}
+              saved={reviewSaved}
+              error={reviewError}
+              onSave={saveReview}
+            />
+          )}
         </Section>
-      </div>
-
-      {/* Save bar */}
-      <div className="mt-8 flex items-center gap-3">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-slate-800 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-50"
-        >
-          {saving ? "Speichern…" : "Speichern"}
-        </button>
-        {saved && (
-          <span className="text-sm text-emerald-600 font-medium">
-            Gespeichert
-          </span>
-        )}
-        {error && <span className="text-sm text-red-600">{error}</span>}
       </div>
     </div>
   );
@@ -168,6 +206,34 @@ function Section({
       <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{title}</h3>
       <p className="text-xs text-gray-400 mb-4">{description}</p>
       {children}
+    </div>
+  );
+}
+
+function CardSaveBar({
+  saving,
+  saved,
+  error,
+  onSave,
+}: {
+  saving: boolean;
+  saved: boolean;
+  error: string | null;
+  onSave: () => void;
+}) {
+  return (
+    <div className="mt-4 pt-3 border-t border-gray-100 flex items-center gap-3">
+      <button
+        onClick={onSave}
+        disabled={saving}
+        className="rounded-lg bg-slate-800 px-5 py-2 text-xs font-semibold text-white transition hover:bg-slate-700 disabled:opacity-50"
+      >
+        {saving ? "Speichern…" : "Speichern"}
+      </button>
+      {saved && (
+        <span className="text-xs text-emerald-600 font-medium">Gespeichert</span>
+      )}
+      {error && <span className="text-xs text-red-600">{error}</span>}
     </div>
   );
 }
