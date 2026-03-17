@@ -19,6 +19,9 @@ export async function getAuthClient() {
   }
 
   return createServerClient(url, key, {
+    cookieOptions: {
+      maxAge: 7 * 24 * 60 * 60,
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll();

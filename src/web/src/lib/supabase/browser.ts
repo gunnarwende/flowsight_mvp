@@ -21,5 +21,9 @@ export function getBrowserClient() {
 
   return createBrowserClient(url, key, {
     auth: { flowType: "implicit" },
+    cookieOptions: {
+      // Persist session across browser restarts (7 days = refresh token lifetime)
+      maxAge: 7 * 24 * 60 * 60,
+    },
   });
 }

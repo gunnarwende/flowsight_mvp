@@ -21,6 +21,9 @@ export async function middleware(request: NextRequest) {
   if (!url || !key) return supabaseResponse;
 
   const supabase = createServerClient(url, key, {
+    cookieOptions: {
+      maxAge: 7 * 24 * 60 * 60,
+    },
     cookies: {
       getAll() {
         return request.cookies.getAll();
