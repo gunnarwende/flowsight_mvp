@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { InstallPrompt } from "./InstallPrompt";
+import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
 
 // ---------------------------------------------------------------------------
 // Navigation — 3 items only, mirroring the Leitsystem architecture
@@ -232,10 +234,12 @@ export function OpsShell({
 
       {/* Main content */}
       <main className="md:ml-64">
+        <InstallPrompt />
         <div className="max-w-6xl mx-auto px-4 py-6">
           {children}
         </div>
       </main>
+      <ServiceWorkerRegistration />
     </div>
   );
 }
