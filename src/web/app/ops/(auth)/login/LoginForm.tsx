@@ -6,7 +6,7 @@ import { getBrowserClient } from "@/src/lib/supabase/browser";
 
 const ERROR_MESSAGES: Record<string, string> = {
   invalid_link:
-    "Ung\u00fcltiger oder abgelaufener Link. Bitte erneut anfordern.",
+    "Ungültiger oder abgelaufener Link. Bitte erneut anfordern.",
   config: "Auth ist nicht konfiguriert. Bitte Admin kontaktieren.",
 };
 
@@ -62,61 +62,42 @@ export function LoginForm() {
     }
   }, [step]);
 
-  // ── Step 1: Send OTP code ──────────────────────────────────────────
+  // ── Step 1: Send OTP code via our own API (bypasses Supabase rate limit) ──
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault();
     setStatus("sending");
     setErrorMsg("");
 
     try {
-      const supabase = getBrowserClient();
-
-      // No emailRedirectTo → Supabase sends 6-digit OTP code, not a magic link
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: false,
-        },
+      const res = await fetch("/api/ops/auth/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-      if (error) {
-        setStatus("error");
-        const msg = error.message?.toLowerCase() ?? "";
+      const data = await res.json();
 
-        // "user not found" = genuinely no account (rare, Supabase explicit)
-        if (msg.includes("user not found")) {
+      if (!res.ok) {
+        setStatus("error");
+        if (data.error === "not_found") {
           setErrorMsg(
             "Kein Konto mit dieser E-Mail-Adresse. Bitte Admin kontaktieren."
           );
-        } else if (
-          // Rate limit — Supabase returns "For security purposes..." OR
-          // "Signups not allowed for otp" (ambiguous: could be rate limit
-          // OR missing user with shouldCreateUser:false — treat as rate limit
-          // to avoid false "Kein Konto" for existing users)
-          msg.includes("security purposes") ||
-          msg.includes("rate limit") ||
-          msg.includes("too many") ||
-          msg.includes("signups not allowed") ||
-          msg.includes("email rate limit")
-        ) {
-          const match = error.message?.match(/every\s+(\d+)\s+seconds/i);
-          const wait = match ? Math.max(parseInt(match[1], 10), 60) : 60;
-          setErrorMsg(
-            `Bitte ${wait} Sekunden warten und erneut versuchen.`
-          );
+        } else if (data.error === "rate_limit") {
+          const wait = data.wait ?? 30;
+          setErrorMsg(`Bitte ${wait} Sekunden warten und erneut versuchen.`);
           setCooldown(wait);
+        } else if (data.error === "email_failed") {
+          setErrorMsg("E-Mail konnte nicht gesendet werden. Bitte erneut versuchen.");
         } else {
-          // Unknown error — show with retry hint
-          setErrorMsg(
-            `${error.message} — Bitte in 60 Sekunden erneut versuchen.`
-          );
-          setCooldown(60);
+          setErrorMsg("Ein Fehler ist aufgetreten. Bitte erneut versuchen.");
+          setCooldown(30);
         }
       } else {
         setStatus("idle");
         setStep("code");
         setCode(["", "", "", "", "", ""]);
-        setCooldown(60);
+        setCooldown(30);
       }
     } catch {
       setStatus("error");
@@ -124,36 +105,50 @@ export function LoginForm() {
     }
   }
 
-  // ── Step 2: Verify OTP code ────────────────────────────────────────
+  // ── Step 2: Verify OTP code via our own API + create Supabase session ──
   const handleVerify = useCallback(
     async (fullCode: string) => {
       setStatus("verifying");
       setErrorMsg("");
 
       try {
-        const supabase = getBrowserClient();
-        const { error } = await supabase.auth.verifyOtp({
-          email,
-          token: fullCode,
-          type: "email",
+        // Step 1: Verify code against our DB
+        const res = await fetch("/api/ops/auth/verify-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, code: fullCode }),
         });
 
-        if (error) {
+        const data = await res.json();
+
+        if (!res.ok) {
           setStatus("error");
-          if (
-            error.message?.toLowerCase().includes("expired") ||
-            error.message?.toLowerCase().includes("invalid")
-          ) {
-            setErrorMsg(
-              "Code ung\u00fcltig oder abgelaufen. Bitte neuen Code anfordern."
-            );
+          if (data.error === "invalid_code") {
+            setErrorMsg("Code ungültig. Bitte prüfen oder neuen Code anfordern.");
+          } else if (data.error === "expired_code") {
+            setErrorMsg("Code abgelaufen. Bitte neuen Code anfordern.");
           } else {
-            setErrorMsg(error.message);
+            setErrorMsg("Verifizierung fehlgeschlagen. Bitte erneut versuchen.");
           }
-        } else {
-          setStatus("success");
-          router.push(nextPath);
+          return;
         }
+
+        // Step 2: Create Supabase session using the token hash
+        const supabase = getBrowserClient();
+        const { error: sessionError } = await supabase.auth.verifyOtp({
+          token_hash: data.token_hash,
+          type: "magiclink",
+        });
+
+        if (sessionError) {
+          setStatus("error");
+          setErrorMsg("Sitzung konnte nicht erstellt werden. Bitte erneut anmelden.");
+          console.error("[LoginForm] verifyOtp session error:", sessionError.message);
+          return;
+        }
+
+        setStatus("success");
+        router.push(nextPath);
       } catch {
         setStatus("error");
         setErrorMsg("Netzwerkfehler. Bitte erneut versuchen.");
@@ -217,27 +212,26 @@ export function LoginForm() {
     setErrorMsg("");
 
     try {
-      const supabase = getBrowserClient();
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { shouldCreateUser: false },
+      const res = await fetch("/api/ops/auth/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-      if (error) {
+      const data = await res.json();
+
+      if (!res.ok) {
         setStatus("error");
-        const msg = error.message?.toLowerCase() ?? "";
-        if (msg.includes("user not found")) {
-          setErrorMsg("Kein Konto mit dieser E-Mail-Adresse.");
+        if (data.error === "rate_limit") {
+          setErrorMsg(`Bitte ${data.wait ?? 30} Sekunden warten.`);
+          setCooldown(data.wait ?? 30);
         } else {
-          const match = error.message?.match(/every\s+(\d+)\s+seconds/i);
-          const wait = match ? Math.max(parseInt(match[1], 10), 60) : 60;
-          setErrorMsg(`Bitte ${wait} Sekunden warten.`);
-          setCooldown(wait);
+          setErrorMsg("Code konnte nicht gesendet werden.");
         }
       } else {
         setStatus("idle");
         setCode(["", "", "", "", "", ""]);
-        setCooldown(60);
+        setCooldown(30);
         codeRefs.current[0]?.focus();
       }
     } catch {
@@ -270,7 +264,7 @@ export function LoginForm() {
           </p>
           <p className="text-white text-sm font-medium mt-0.5">{email}</p>
           <p className="text-slate-400 text-xs mt-1">
-            gesendet. Bitte pr\u00fcfen Sie Ihr Postfach.
+            gesendet. Bitte prüfen Sie Ihr Postfach.
           </p>
         </div>
 
@@ -311,7 +305,7 @@ export function LoginForm() {
         {/* Verifying indicator */}
         {status === "verifying" && (
           <p className="text-slate-400 text-sm text-center">
-            Wird gepr\u00fcft&hellip;
+            Wird geprüft&hellip;
           </p>
         )}
 
