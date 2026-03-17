@@ -18,7 +18,6 @@ export async function GET() {
     .from("cases")
     .select("id, status, urgency, source, created_at, updated_at")
     .eq("is_demo", false)
-    .neq("status", "archived")
     .limit(5000);
 
   if (scope.tenantId) query = query.eq("tenant_id", scope.tenantId);

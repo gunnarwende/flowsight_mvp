@@ -158,7 +158,7 @@ export default function SettingsPage() {
         {/* Team — StaffManager handles its own save */}
         <Section
           title="Team"
-          description="Mitarbeiter verwalten. Die E-Mail-Adresse wird für Kalendereinladungen bei Terminzuweisung verwendet."
+          description="Mitarbeiter verwalten. Die E-Mail-Adresse wird für Kalendereinladungen bei Terminvergabe verwendet."
         >
           <StaffManager tenantId={data?.tenant_id} embedded />
         </Section>
@@ -166,7 +166,7 @@ export default function SettingsPage() {
         {/* Benachrichtigungen — per-card save */}
         <Section
           title="Benachrichtigungen"
-          description="Automatische Benachrichtigungen an Meldende und Mitarbeiter."
+          description="Automatische Benachrichtigungen an Kunden und Mitarbeiter."
         >
           <div className="space-y-5">
             {/* Sub-section: Bei Fallerfassung */}
@@ -176,38 +176,38 @@ export default function SettingsPage() {
                 <Toggle
                   checked={notifyEmail}
                   onChange={setNotifyEmail}
-                  label="E-Mail-Bestätigung an Meldende"
-                  description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
+                  label="E-Mail-Bestätigung an Kunden"
+                  description="Kunden erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
                 />
                 <Toggle
                   checked={notifySms}
                   onChange={setNotifySms}
-                  label="SMS-Bestätigung an Meldende"
-                  description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
+                  label="SMS-Bestätigung an Kunden"
+                  description="Kunden erhalten eine SMS-Bestätigung nach der Meldung"
                 />
               </div>
             </div>
 
-            {/* Sub-section: Bei Terminzuweisung */}
+            {/* Sub-section: Bei Terminvergabe */}
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Bei Terminzuweisung</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Bei Terminvergabe</p>
               <div className="space-y-3">
                 <Toggle
                   checked={notifyTerminEmail}
                   onChange={setNotifyTerminEmail}
-                  label="E-Mail-Terminbestätigung an Meldende"
-                  description="Meldende erhalten eine E-Mail wenn ein Termin eingeplant wird"
+                  label="E-Mail-Terminbestätigung an Kunden"
+                  description="Kunden erhalten eine E-Mail wenn ein Termin eingeplant wird"
                 />
                 <Toggle
                   checked={notifyTerminSms}
                   onChange={setNotifyTerminSms}
-                  label="SMS-Terminbestätigung an Meldende"
-                  description="Meldende erhalten eine SMS mit den Termindetails"
+                  label="SMS-Terminbestätigung an Kunden"
+                  description="Kunden erhalten eine SMS mit den Termindetails"
                 />
                 <Toggle
                   checked={notifyStaffAssignment}
                   onChange={setNotifyStaffAssignment}
-                  label="E-Mail an Mitarbeiter bei Zuweisung"
+                  label="E-Mail an Mitarbeiter bei Vergabe"
                   description="Mitarbeiter erhalten eine E-Mail wenn ihnen ein Fall zugewiesen wird"
                 />
               </div>
@@ -220,8 +220,8 @@ export default function SettingsPage() {
                 <Toggle
                   checked={notifyTerminReminderSms}
                   onChange={setNotifyTerminReminderSms}
-                  label="24h-Erinnerung an Meldende per SMS"
-                  description="Meldende erhalten am Vortag eine SMS-Erinnerung an den Termin"
+                  label="24h-Erinnerung an Kunden per SMS"
+                  description="Kunden erhalten am Vortag eine SMS-Erinnerung an den Termin"
                 />
               </div>
             </div>

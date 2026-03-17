@@ -95,13 +95,13 @@ function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string
 
   // Data rows
   const rows: [string, string][] = [
-    ["Quelle", sourceLabel],
+    ["Herkunft", sourceLabel],
     ["Kategorie", p.category],
-    ["Dringlichkeit", p.urgency.charAt(0).toUpperCase() + p.urgency.slice(1)],
+    ["Priorität", p.urgency.charAt(0).toUpperCase() + p.urgency.slice(1)],
     ["PLZ / Ort", `${p.plz} ${p.city}`],
   ];
   if (addressParts.length > 0) rows.push(["Adresse", addressParts[0]]);
-  if (p.reporterName) rows.push(["Melder", p.reporterName]);
+  if (p.reporterName) rows.push(["Kunde", p.reporterName]);
   if (p.contactPhone) rows.push(["Telefon", p.contactPhone]);
   if (p.contactEmail) rows.push(["E-Mail", p.contactEmail]);
 
@@ -287,12 +287,12 @@ export async function sendCaseNotification(
         `Neuer Fall erstellt`,
         `──────────────────────`,
         `Fall-Nr:   ${formatCaseLabel(payload.caseId, payload.seqNumber, payload.caseIdPrefix)}`,
-        `Quelle:    ${sourceLabel}`,
+        `Herkunft:  ${sourceLabel}`,
         `Kategorie: ${payload.category}`,
-        `Dringend:  ${payload.urgency}`,
+        `Priorität: ${payload.urgency}`,
         `PLZ/Ort:   ${payload.plz} ${payload.city}`,
         ...(addressLine ? [addressLine] : []),
-        ...(payload.reporterName ? [`Melder:    ${payload.reporterName}`] : []),
+        ...(payload.reporterName ? [`Kunde:     ${payload.reporterName}`] : []),
         ...(contactLines.length > 0 ? contactLines : []),
         `──────────────────────`,
         `Beschreibung:`,
@@ -731,7 +731,7 @@ export async function sendAssignmentNotification(
         `Fall-Nr:     ${payload.caseLabel}`,
         `Kategorie:   ${payload.category}`,
         `Ort:         ${payload.city}`,
-        `Dringlichkeit: ${urgencyLabel}`,
+        `Priorität:   ${urgencyLabel}`,
         `──────────────────────`,
         `Beschreibung:`,
         payload.description,

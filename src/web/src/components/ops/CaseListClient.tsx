@@ -38,7 +38,6 @@ const STATUS_LABELS: Record<string, string> = {
   in_arbeit: "In Arbeit",
   warten: "Warten",
   done: "Erledigt",
-  archived: "Abgeschlossen",
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -47,7 +46,6 @@ const STATUS_COLORS: Record<string, string> = {
   in_arbeit: "bg-indigo-100 text-indigo-700",
   warten: "bg-amber-100 text-amber-700",
   done: "bg-emerald-100 text-emerald-700",
-  archived: "bg-gray-100 text-gray-500",
 };
 
 const URGENCY_DOT: Record<string, string> = {
@@ -98,7 +96,7 @@ function truncate(s: string, max: number): string {
 }
 
 function exportCsv(rows: CaseRow[], prefix: string, tenantName?: string) {
-  const headers = ["Fall-ID", "Kunde", "Adresse", "Kategorie", "Beschreibung", "Quelle", "Dringlichkeit", "Status", "Erstellt"];
+  const headers = ["Fall-ID", "Kunde", "Adresse", "Kategorie", "Beschreibung", "Herkunft", "Priorität", "Status", "Erstellt"];
   const lines = rows.map((r) => [
     formatCaseId(r.seq_number, prefix),
     r.reporter_name ?? "",
@@ -246,8 +244,8 @@ export function CaseListClient({
                   <th className="px-4 py-3 font-medium">Kunde</th>
                   <th className="px-4 py-3 font-medium">Adresse</th>
                   <th className="px-4 py-3 font-medium">Problem</th>
-                  <th className="px-4 py-3 font-medium">Quelle</th>
-                  <th className="px-4 py-3 font-medium">Dringlichkeit</th>
+                  <th className="px-4 py-3 font-medium">Herkunft</th>
+                  <th className="px-4 py-3 font-medium">Priorität</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Erstellt</th>
                 </tr>

@@ -17,7 +17,6 @@ const STATUSES = [
   { value: "in_arbeit", label: "In Arbeit" },
   { value: "warten", label: "Warten" },
   { value: "done", label: "Erledigt" },
-  { value: "archived", label: "Abgeschlossen" },
 ] as const;
 
 const STATUS_LABELS: Record<string, string> = Object.fromEntries(STATUSES.map(s => [s.value, s.label]));
@@ -28,7 +27,6 @@ const STATUS_COLORS: Record<string, string> = {
   in_arbeit: "bg-indigo-100 text-indigo-700",
   warten: "bg-amber-100 text-amber-700",
   done: "bg-emerald-100 text-emerald-700",
-  archived: "bg-gray-100 text-gray-500",
 };
 
 const URGENCIES = [
@@ -42,7 +40,7 @@ const URGENCY_LABELS: Record<string, string> = Object.fromEntries(URGENCIES.map(
 const NEXT_STEP: Record<string, string> = {
   new: "Sichten und einordnen",
   scheduled: "Einsatz durchführen",
-  in_arbeit: "Einsatz abschliessen",
+  in_arbeit: "Arbeit erledigen",
   warten: "Rückmeldung prüfen",
 };
 
@@ -101,7 +99,7 @@ const LEGACY_FIELD_MAP: Record<string, string> = {
   urgency: "Priorität", category: "Kategorie", description: "Beschreibung",
   plz: "PLZ", city: "Ort", street: "Strasse", house_number: "Hausnummer",
   assignee_text: "Zuständig", scheduled_at: "Termin", internal_notes: "Notizen",
-  contact_email: "E-Mail", contact_phone: "Telefon", reporter_name: "Melder",
+  contact_email: "E-Mail", contact_phone: "Telefon", reporter_name: "Kunde",
 };
 
 function humanizeTitle(title: string): string {
@@ -371,7 +369,7 @@ export function CaseDetailForm({
       setMelderNotifyState("sent");
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "melder_termin_notified",
-        title: "Terminbestätigung an Meldende/n gesendet", created_at: new Date().toISOString(),
+        title: "Terminbestätigung an Kunden gesendet", created_at: new Date().toISOString(),
       }]);
       setTimeout(() => setMelderNotifyState("idle"), 3000);
     } catch {
@@ -571,7 +569,7 @@ export function CaseDetailForm({
 
             {/* Status feedback for melder notification */}
             {melderNotifyState === "sent" && (
-              <p className="text-xs text-emerald-600 text-right mt-1">Meldende/r benachrichtigt ✓</p>
+              <p className="text-xs text-emerald-600 text-right mt-1">Kunde benachrichtigt ✓</p>
             )}
             {melderNotifyState === "error" && (
               <p className="text-xs text-red-600 text-right mt-1">Benachrichtigung fehlgeschlagen.</p>
@@ -626,7 +624,7 @@ export function CaseDetailForm({
               <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
                 <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
                   className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Meldende/r benachrichtigt ✓" : "Meldende/n über Termin benachrichtigen"}</button>
+                >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Kunde benachrichtigt ✓" : "Kunden über Termin benachrichtigen"}</button>
                 <span className="text-gray-300">|</span>
                 <button onClick={handleSendInvite} disabled={inviteState === "sending"}
                   className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
@@ -714,7 +712,7 @@ export function CaseDetailForm({
               <>
                 <SectionHead title="Kontakt" editing onClose={cancelEdit} />
                 <div className="space-y-3">
-                  <div><label className={lbl}>Melder</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
+                  <div><label className={lbl}>Kunde</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
                   <div><label className={lbl}>Telefon</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} /></div>
                   <div><label className={lbl}>E-Mail</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} /></div>
                   <div className="grid grid-cols-3 gap-2">
@@ -977,7 +975,7 @@ function BewertungEndCap({
   brandColor: string;
   hasEvents: boolean;
 }) {
-  const isActive = status === "done" || status === "archived";
+  const isActive = status === "done";
   const reviewSent = reviewInfo.status === "angefragt" || reviewInfo.status === "geoeffnet" || reviewInfo.status === "geklickt";
   const starsMuted = !isActive; // muted when case not yet done
 
@@ -990,8 +988,6 @@ function BewertungEndCap({
   } else if (reviewInfo.status === "kein_kontakt") {
     label = "Kein Kontakt hinterlegt";
   } else if (reviewInfo.status === "uebersprungen") {
-    label = "Keine Bewertung angefragt";
-  } else if (status === "archived" && !reviewSent) {
     label = "Keine Bewertung angefragt";
   } else if (isActive) {
     label = "Bewertung möglich";

@@ -30,7 +30,6 @@ const STATUS_LABELS: Record<string, string> = {
   in_arbeit: "In Arbeit",
   warten: "Warten",
   done: "Erledigt",
-  archived: "Abgeschlossen",
 };
 
 const URGENCY_DOT: Record<string, string> = {
@@ -83,6 +82,7 @@ function groupCases(cases: CaseRow[]): PulsGroup[] {
   const abschluss: CaseRow[] = [];
 
   for (const c of cases) {
+    // "archived" status eliminated — skip for safety if still in DB
     if (c.status === "archived") continue;
 
     // Achtung: Notfälle (any status except done) + stuck >48h

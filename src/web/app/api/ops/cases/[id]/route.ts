@@ -12,7 +12,7 @@ import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 // Allowed values for ops fields
 // ---------------------------------------------------------------------------
 
-const VALID_STATUSES = ["new", "scheduled", "in_arbeit", "warten", "done", "archived"] as const;
+const VALID_STATUSES = ["new", "scheduled", "in_arbeit", "warten", "done"] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   new: "Neu",
@@ -20,7 +20,6 @@ const STATUS_LABELS: Record<string, string> = {
   in_arbeit: "In Arbeit",
   warten: "Warten",
   done: "Erledigt",
-  archived: "Abgeschlossen",
 };
 
 const FIELD_LABELS: Record<string, string> = {
@@ -37,7 +36,7 @@ const FIELD_LABELS: Record<string, string> = {
   internal_notes: "Notizen",
   contact_email: "E-Mail",
   contact_phone: "Telefon",
-  reporter_name: "Melder",
+  reporter_name: "Kunde",
 };
 
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
