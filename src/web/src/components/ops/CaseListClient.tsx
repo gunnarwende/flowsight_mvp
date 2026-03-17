@@ -172,10 +172,10 @@ export function CaseListClient({
   return (
     <>
       {/* Action bar */}
-      <div className="flex items-center justify-between mb-4 gap-3">
-        <div className="flex items-center gap-3">
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
-            <div className="relative">
+      <div className="flex flex-wrap items-center justify-between mb-4 gap-3 min-w-0">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <form onSubmit={handleSearch} className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+            <div className="relative min-w-0 flex-1 sm:flex-initial">
               <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
@@ -184,7 +184,7 @@ export function CaseListClient({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Name, Adresse, Kategorie…"
-                className="rounded-lg border border-gray-300 bg-white pl-8 pr-3 py-2 text-xs text-gray-700 placeholder:text-gray-400 w-52 focus:outline-none focus:ring-2 focus:ring-slate-400/30 focus:border-slate-400"
+                className="rounded-lg border border-gray-300 bg-white pl-8 pr-3 py-2 text-xs text-gray-700 placeholder:text-gray-400 w-full sm:w-52 focus:outline-none focus:ring-2 focus:ring-slate-400/30 focus:border-slate-400"
               />
             </div>
             {search !== searchQuery && (
@@ -212,10 +212,10 @@ export function CaseListClient({
             {totalCount} {totalCount === 1 ? "Fall" : "Fälle"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => exportCsv(rows, caseIdPrefix, tenantShortName)}
-            className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors"
+            className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors hidden sm:block"
           >
             Exportieren
           </button>
@@ -326,10 +326,10 @@ export function CaseListClient({
               <Link
                 key={c.id}
                 href={`/ops/cases/${c.id}`}
-                className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-colors"
+                className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-colors overflow-hidden"
               >
-                <div className="flex items-start justify-between mb-2">
-                  <div>
+                <div className="flex items-start justify-between mb-2 gap-2">
+                  <div className="min-w-0 truncate">
                     <span className="text-slate-700 font-medium text-sm">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </span>
@@ -338,13 +338,16 @@ export function CaseListClient({
                     )}
                   </div>
                   <span
-                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"}`}
+                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"}`}
                   >
                     {STATUS_LABELS[c.status] ?? c.status}
                   </span>
                 </div>
-                <p className="text-gray-900 text-sm font-medium mb-1">
+                <p className="text-gray-900 text-sm font-medium mb-1 truncate">
                   {c.category} — {truncate(c.description, 60)}
+                </p>
+                <p className="text-gray-500 text-xs mb-1 truncate">
+                  {formatAddress(c)}
                 </p>
                 <div className="flex items-center gap-3 text-xs text-gray-500">
                   <span className="inline-flex items-center gap-1">

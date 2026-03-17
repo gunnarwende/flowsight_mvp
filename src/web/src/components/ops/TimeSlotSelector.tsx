@@ -11,6 +11,8 @@ export interface TimeSlotSelectorProps {
   value: string; // "15:00"
   brandColor: string;
   onChange: (time: string) => void;
+  /** Minimum selectable time slot (inclusive). Slots before this are greyed out and disabled. */
+  minTime?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -28,7 +30,7 @@ for (let h = 6; h <= 20; h++) {
 // Component
 // ---------------------------------------------------------------------------
 
-export function TimeSlotSelector({ label, value, brandColor, onChange }: TimeSlotSelectorProps) {
+export function TimeSlotSelector({ label, value, brandColor, onChange, minTime }: TimeSlotSelectorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
 
@@ -53,23 +55,27 @@ export function TimeSlotSelector({ label, value, brandColor, onChange }: TimeSlo
       >
         {SLOTS.map(slot => {
           const isSelected = slot === value;
+          const isDisabled = !!minTime && slot < minTime;
           return (
             <button
               key={slot}
               ref={isSelected ? selectedRef : undefined}
               type="button"
-              onClick={() => onChange(slot)}
+              disabled={isDisabled}
+              onClick={() => { if (!isDisabled) onChange(slot); }}
               className="w-full px-3 py-1.5 text-xs font-medium text-left transition-colors"
               style={{
                 backgroundColor: isSelected ? brandColor : undefined,
-                color: isSelected ? "#fff" : "#374151",
+                color: isDisabled ? "#d1d5db" : isSelected ? "#fff" : "#374151",
                 borderRadius: isSelected ? "0.5rem" : undefined,
+                cursor: isDisabled ? "not-allowed" : "pointer",
+                opacity: isDisabled ? 0.5 : 1,
               }}
               onMouseEnter={(e) => {
-                if (!isSelected) e.currentTarget.style.backgroundColor = `${brandColor}14`;
+                if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = `${brandColor}14`;
               }}
               onMouseLeave={(e) => {
-                if (!isSelected) e.currentTarget.style.backgroundColor = "";
+                if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = "";
               }}
             >
               {slot}
