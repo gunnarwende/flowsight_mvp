@@ -578,7 +578,7 @@ export async function POST(req: Request) {
           await supabase.from("case_events").insert({
             case_id: caseId,
             event_type: "sms_verification_sent",
-            title: "SMS-Bestätigung an Melder gesendet",
+            title: "SMS-Bestätigung an Kunden gesendet",
             metadata: { sms_sid: smsResult.messageSid },
           }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
         } else {

@@ -110,7 +110,7 @@ export async function POST(
   await supabase.from("case_events").insert({
     case_id: id,
     event_type: "melder_termin_notified",
-    title: "Terminbestätigung an Meldende/n gesendet",
+    title: "Terminbestätigung an Kunden gesendet",
     metadata: { email_sent: emailSent, sms_sent: smsSent, user_id: user.id },
   }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
 

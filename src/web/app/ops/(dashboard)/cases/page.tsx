@@ -43,7 +43,6 @@ export default async function OpsCasesPage({
       "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, scheduled_at"
     )
     .eq("is_demo", showDemo)
-    .neq("status", "archived")
     .order("created_at", { ascending: false })
     .limit(200);
   if (filterTenantId) casesQuery = casesQuery.eq("tenant_id", filterTenantId);

@@ -131,7 +131,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Team</h2>
-            <p className="text-sm text-gray-500">Team verwalten — für Fall-Zuweisung und Einsatzplanung</p>
+            <p className="text-sm text-gray-500">Team verwalten — für Fall-Vergabe und Einsatzplanung</p>
           </div>
           {!showForm && (
             <button
@@ -205,7 +205,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
                         <li>Sieht alle Fälle im Betrieb</li>
                         <li>Kann Fälle zuweisen und Mitarbeiter verwalten</li>
                         <li>Zugriff auf Einstellungen und Benachrichtigungen</li>
-                        <li>Kann Termine versenden und Meldende benachrichtigen</li>
+                        <li>Kann Termine versenden und Kunden benachrichtigen</li>
                       </ul>
                     </div>
                     <div className="p-2.5 bg-slate-50 rounded-lg">
@@ -230,7 +230,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
                 placeholder="max@firma.ch"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400/30"
               />
-              <p className="mt-1 text-[11px] text-gray-400">Für Kalendereinladungen bei Terminzuweisung</p>
+              <p className="mt-1 text-[11px] text-gray-400">Für Kalendereinladungen bei Terminvergabe</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Telefon</label>
