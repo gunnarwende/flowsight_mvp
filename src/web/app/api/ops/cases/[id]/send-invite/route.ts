@@ -53,6 +53,29 @@ function buildIcs(opts: {
 }
 
 // ---------------------------------------------------------------------------
+// Termin range formatting
+// ---------------------------------------------------------------------------
+
+const dateFmt: Intl.DateTimeFormatOptions = {
+  weekday: "short", day: "2-digit", month: "2-digit",
+  timeZone: "Europe/Zurich",
+};
+const timeFmt: Intl.DateTimeFormatOptions = {
+  hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich",
+};
+
+function formatTerminRange(start: Date, end: Date): string {
+  const sameDay =
+    start.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" }) ===
+    end.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" });
+
+  if (sameDay) {
+    return `${start.toLocaleDateString("de-CH", dateFmt)}, ${start.toLocaleTimeString("de-CH", timeFmt)}–${end.toLocaleTimeString("de-CH", timeFmt)}`;
+  }
+  return `${start.toLocaleDateString("de-CH", dateFmt)} ${start.toLocaleTimeString("de-CH", timeFmt)} – ${end.toLocaleDateString("de-CH", dateFmt)} ${end.toLocaleTimeString("de-CH", timeFmt)}`;
+}
+
+// ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/send-invite
 // ---------------------------------------------------------------------------
 
@@ -97,7 +120,7 @@ export async function POST(
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, seq_number, scheduled_at, category, city")
+    .select("id, seq_number, scheduled_at, scheduled_end_at, category, city")
     .eq("id", id)
     .single();
 
@@ -147,7 +170,9 @@ export async function POST(
     ? `FS-${String(row.seq_number).padStart(4, "0")}`
     : id.slice(0, 8);
   const dtStart = new Date(row.scheduled_at);
-  const dtEnd = new Date(dtStart.getTime() + 60 * 60 * 1000); // +60 min
+  const dtEnd = row.scheduled_end_at
+    ? new Date(row.scheduled_end_at)
+    : new Date(dtStart.getTime() + 60 * 60 * 1000);
 
   const fromEnvValue = process.env.MAIL_FROM;
   const from = fromEnvValue ?? "noreply@send.flowsight.ch";
@@ -185,7 +210,7 @@ export async function POST(
         `FlowSight Termin`,
         `──────────────────────`,
         `Fall:    ${caseLabel}`,
-        `Termin:  ${dtStart.toLocaleDateString("de-CH", { timeZone: "Europe/Zurich", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}`,
+        `Termin:  ${formatTerminRange(dtStart, dtEnd)}`,
         ``,
         `Fall öffnen: ${opsLink}`,
         `(Login erforderlich)`,

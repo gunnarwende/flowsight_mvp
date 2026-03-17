@@ -5,6 +5,7 @@ import type { CaseDetail } from "./page";
 import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 import { AttachmentsSection } from "./AttachmentsSection";
+import { AppointmentPicker } from "@/src/components/ops/AppointmentPicker";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -38,8 +39,6 @@ const URGENCIES = [
 
 const URGENCY_LABELS: Record<string, string> = Object.fromEntries(URGENCIES.map(u => [u.value, u.label]));
 
-const QUICK_TIMES = ["08:00", "11:00", "15:00"] as const;
-
 const NEXT_STEP: Record<string, string> = {
   new: "Sichten und einordnen",
   scheduled: "Einsatz durchführen",
@@ -51,21 +50,6 @@ const NEXT_STEP: Record<string, string> = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function toDatetimeLocal(iso: string): string {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function quickDateTime(dayOffset: number, time: string): string {
-  const d = new Date();
-  d.setDate(d.getDate() + dayOffset);
-  const [h, m] = time.split(":").map(Number);
-  d.setHours(h, m, 0, 0);
-  return toDatetimeLocal(d.toISOString());
-}
-
 function formatEventDate(iso: string): string {
   return new Date(iso).toLocaleDateString("de-CH", {
     day: "2-digit",
@@ -76,15 +60,29 @@ function formatEventDate(iso: string): string {
   });
 }
 
-function formatTermin(iso: string): string {
-  return new Date(iso).toLocaleDateString("de-CH", {
-    weekday: "short",
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Zurich",
-  });
+function formatTerminRange(startIso: string, endIso: string | null): string {
+  const s = new Date(startIso);
+  const dayFmt: Intl.DateTimeFormatOptions = {
+    weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich",
+  };
+  const timeFmt: Intl.DateTimeFormatOptions = {
+    hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich",
+  };
+
+  if (!endIso) {
+    // Legacy single-point
+    return `${s.toLocaleDateString("de-CH", dayFmt)}, ${s.toLocaleTimeString("de-CH", timeFmt)}`;
+  }
+
+  const e = new Date(endIso);
+  const sameDay =
+    s.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" }) ===
+    e.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" });
+
+  if (sameDay) {
+    return `${s.toLocaleDateString("de-CH", dayFmt)} · ${s.toLocaleTimeString("de-CH", timeFmt)}–${e.toLocaleTimeString("de-CH", timeFmt)}`;
+  }
+  return `${s.toLocaleDateString("de-CH", dayFmt)} ${s.toLocaleTimeString("de-CH", timeFmt)} – ${e.toLocaleDateString("de-CH", dayFmt)} ${e.toLocaleTimeString("de-CH", timeFmt)}`;
 }
 
 function googleMapsUrl(street: string | null, houseNumber: string | null, plz: string, city: string): string {
@@ -151,16 +149,17 @@ export function CaseDetailForm({
   const [city, setCity] = useState(initialData.city);
   const [description, setDescription] = useState(initialData.description);
   const [assigneeText, setAssigneeText] = useState(initialData.assignee_text ?? "");
-  const [scheduledAt, setScheduledAt] = useState(
-    initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "",
-  );
+  const [scheduledAt, setScheduledAt] = useState(initialData.scheduled_at ?? "");
+  const [scheduledEndAt, setScheduledEndAt] = useState(initialData.scheduled_end_at ?? "");
   const [internalNotes, setInternalNotes] = useState(initialData.internal_notes ?? "");
   const [reporterName, setReporterName] = useState(initialData.reporter_name ?? "");
   const [contactPhone, setContactPhone] = useState(initialData.contact_phone ?? "");
   const [contactEmail, setContactEmail] = useState(initialData.contact_email ?? "");
   const [street, setStreet] = useState(initialData.street ?? "");
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
-  const [quickDay, setQuickDay] = useState<0 | 1>(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [showTerminWarning, setShowTerminWarning] = useState(false);
+  const [terminSentForCurrent, setTerminSentForCurrent] = useState(false);
 
   const [baseline, setBaseline] = useState({
     status: initialData.status,
@@ -170,7 +169,8 @@ export function CaseDetailForm({
     city: initialData.city,
     description: initialData.description,
     assignee_text: initialData.assignee_text ?? "",
-    scheduled_at: initialData.scheduled_at ? toDatetimeLocal(initialData.scheduled_at) : "",
+    scheduled_at: initialData.scheduled_at ?? "",
+    scheduled_end_at: initialData.scheduled_end_at ?? "",
     internal_notes: initialData.internal_notes ?? "",
     reporter_name: initialData.reporter_name ?? "",
     contact_phone: initialData.contact_phone ?? "",
@@ -203,7 +203,8 @@ export function CaseDetailForm({
   // ── Per-section dirty checks ─────────────────────────────────────────
   const steuerungDirty =
     status !== baseline.status || urgency !== baseline.urgency ||
-    assigneeText !== baseline.assignee_text || scheduledAt !== baseline.scheduled_at;
+    assigneeText !== baseline.assignee_text || scheduledAt !== baseline.scheduled_at ||
+    scheduledEndAt !== baseline.scheduled_end_at;
 
   const kontaktDirty =
     street !== baseline.street || houseNumber !== baseline.house_number ||
@@ -248,8 +249,7 @@ export function CaseDetailForm({
         for (const [k, v] of Object.entries(fields)) {
           const key = k as keyof typeof next;
           if (key in next) {
-            (next as Record<string, unknown>)[key] = key === "scheduled_at" && v
-              ? toDatetimeLocal(v as string) : v ?? "";
+            (next as Record<string, unknown>)[key] = v ?? "";
           }
         }
         return next;
@@ -269,7 +269,8 @@ export function CaseDetailForm({
     return saveFields({
       status, urgency,
       assignee_text: assigneeText || null,
-      scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+      scheduled_at: scheduledAt || null,
+      scheduled_end_at: scheduledEndAt || null,
     });
   }
 
@@ -300,6 +301,8 @@ export function CaseDetailForm({
     setUrgency(baseline.urgency);
     setAssigneeText(baseline.assignee_text);
     setScheduledAt(baseline.scheduled_at);
+    setScheduledEndAt(baseline.scheduled_end_at);
+    setPickerOpen(false);
     setStreet(baseline.street);
     setHouseNumber(baseline.house_number);
     setPlz(baseline.plz);
@@ -328,6 +331,7 @@ export function CaseDetailForm({
       const res = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, { method: "POST" });
       if (!res.ok) throw new Error("Fehler");
       setInviteState("sent");
+      setTerminSentForCurrent(true);
       setTimeout(() => setInviteState("idle"), 3000);
     } catch {
       setInviteState("error");
@@ -448,36 +452,84 @@ export function CaseDetailForm({
               </div>
               <div>
                 <label className={lbl}>Termin</label>
-                <input type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} className={inp} />
+                <button
+                  type="button"
+                  onClick={() => setPickerOpen(p => !p)}
+                  className={`${inp} text-left`}
+                >
+                  {scheduledAt
+                    ? formatTerminRange(scheduledAt, scheduledEndAt || null)
+                    : <span className="text-gray-400">Termin wählen</span>}
+                </button>
               </div>
             </div>
 
-            {/* Termin quick-pick */}
-            <div className="flex items-center gap-2 flex-wrap mb-3">
-              <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-                {([0, 1] as const).map(d => (
-                  <button key={d} type="button" onClick={() => setQuickDay(d)}
-                    className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${quickDay === d ? "bg-gray-800 text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
-                  >{d === 0 ? "Heute" : "Morgen"}</button>
-                ))}
-              </div>
-              <div className="flex gap-1">
-                {QUICK_TIMES.map(time => (
-                  <button key={time} type="button" onClick={() => setScheduledAt(quickDateTime(quickDay, time))}
-                    className="rounded border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 hover:border-gray-400 transition-colors"
-                  >{time}</button>
-                ))}
-              </div>
-            </div>
-            {scheduledAt && (
-              <div className="mt-2 pt-2 border-t border-gray-200/60 mb-3">
+            {/* Appointment Picker (inline) */}
+            {pickerOpen && (
+              <AppointmentPicker
+                initialStart={scheduledAt || null}
+                initialEnd={scheduledEndAt || null}
+                brandColor={brandColor}
+                onConfirm={(startIso, endIso) => {
+                  setScheduledAt(startIso);
+                  setScheduledEndAt(endIso);
+                  setPickerOpen(false);
+                  setTerminSentForCurrent(false);
+                }}
+                onCancel={() => setPickerOpen(false)}
+              />
+            )}
+
+            {/* Send invite button — after picker closes, if termin is set */}
+            {scheduledAt && !pickerOpen && (
+              <div className="flex items-center justify-end mt-2 pt-2 border-t border-gray-200/60 mb-3">
                 <button onClick={handleSendInvite} disabled={inviteState === "sending"}
                   className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
-                >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden"}</button>
+                >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden →"}</button>
               </div>
             )}
 
-            <EditActions onSave={saveSteuerung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={steuerungDirty} error={saveState === "error" ? errorMsg : ""} />
+            {/* Warning banner: Termin changed but not sent */}
+            {showTerminWarning && (
+              <div className="flex items-center justify-between gap-3 mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800">
+                  Termin eingetragen, aber noch nicht an den Kunden gesendet.
+                </p>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowTerminWarning(false);
+                      await handleSendInvite();
+                    }}
+                    className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
+                  >Jetzt senden</button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowTerminWarning(false);
+                      await saveSteuerung();
+                    }}
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >Nur speichern</button>
+                </div>
+              </div>
+            )}
+
+            <EditActions
+              onSave={() => {
+                const terminChanged = scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at;
+                if (terminChanged && !terminSentForCurrent) {
+                  setShowTerminWarning(true);
+                } else {
+                  saveSteuerung();
+                }
+              }}
+              onCancel={() => { setShowTerminWarning(false); cancelEdit(); }}
+              saving={saveState === "saving"}
+              dirty={steuerungDirty}
+              error={saveState === "error" ? errorMsg : ""}
+            />
           </div>
         ) : (
           <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
@@ -502,7 +554,7 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt
-                  ? <span className="text-[15px] font-semibold text-gray-900">{formatTermin(new Date(scheduledAt).toISOString())}</span>
+                  ? <span className="text-[15px] font-semibold text-gray-900">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
                   : <span className="text-sm text-gray-500">Offen</span>}
               </KV>
             </div>
