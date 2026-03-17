@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Leitsystem <noreply@flowsight.ch>",
+        from: process.env.MAIL_FROM ?? "Leitsystem <noreply@send.flowsight.ch>",
         to: [normalizedEmail],
         subject: `${codeFormatted} — Ihr Anmeldecode`,
         text: [
