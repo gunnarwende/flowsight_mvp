@@ -46,13 +46,13 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | # | Task | Detail | Priorität |
 |---|------|--------|-----------|
 | 1.1 | **Status vereinfachen** | "Abgeschlossen" entfernen. Status-Kette: Neu → Geplant → In Arbeit → Warten → Erledigt. Dropdown + Badges + Farben anpassen. | **DONE** (PR #246) |
-| 1.2 | **Termin-Validierung** | Ende muss nach Start liegen. Client-side + Server-side Validierung. | hoch |
+| 1.2 | **Termin-Validierung** | "Bis"-Zeitpunkt frühestens "Von" + 15min. Alles davor ausgegraut/nicht wählbar. Server-side Validierung zusätzlich. | **DONE** (PR #248) |
 | 1.3 | **"Zuständig" = Multi-Select aus Staff** | Freitext-Feld ersetzen durch Dropdown der aktiven Mitarbeiter (aus staff-Tabelle). Mehrfachauswahl möglich (Chips-UI). Bei Zuweisung: optionale E-Mail an zugewiesene(n) Mitarbeiter (gesteuert via Einstellungen). | hoch |
 | 1.4 | **Termin-Benachrichtigung neu** | Buttons "Meldenden benachrichtigen" + "Termin an Mitarbeiter senden" ELIMINIEREN. Stattdessen: Nach Termin-Eingabe → "Übernehmen" klicken → dann erscheint EIN Button "Termin versenden" → sendet an BEIDE (Kunde + zugewiesene Mitarbeiter). Bestätigung im Verlauf sichtbar, nicht als separater Status. | hoch |
 | 1.5 | **Layout-Rebalance Falldetail** | Links (Beschreibung + Verlauf): ca. 1/3 Breite. Rechts (Übersicht/Kontakt/Notizen/Anhänge): ca. 2/3 Breite. Beschreibung + Verlauf visuell aufwerten auf Niveau der rechten Sektionen (gleiche Card-Qualität, gleiche Typografie-Hierarchie). | mittel |
 | 1.6 | **Bewertungs-Flow** | "Bewertung anfragen"-Button nur sichtbar wenn Status = Erledigt. Verlauf zeigt den Fluss: Erstellt → ... → Erledigt → Bewertung angefragt → ★ Bewertung erhalten. Wenn Kunde nicht reagiert = egal, Fall bleibt "Erledigt". Kein Nachhaken-Zwang. | hoch |
 | 1.7 | **Wording-Sweep Falldetail** | Durchgehend Handwerkersprache: "Meldende/n" → "Kunde", "Dringlichkeit" → "Priorität", "Einsatz abgeschlossen" → "Arbeit erledigt", "Zuweisung" → "Vergabe", "Quelle" → "Herkunft". | **DONE** (PR #246, 17 Dateien, 30+ Edits) |
-| 1.8 | **Mobile Overflow fixen** | M8-Bug: Zahlen/Text gehen rechts aus dem Viewport raus. Responsive Checks auf allen Sektionen (Einstellungen, Falldetail, Termine). Truncation + Wrapping sicherstellen. | hoch |
+| 1.8 | **Mobile Overflow fixen** | M8-Bug: Zahlen/Text gehen rechts aus dem Viewport raus. Responsive Checks auf allen Sektionen (Einstellungen, Falldetail, Termine). Truncation + Wrapping sicherstellen. | **DONE** (PR #248) |
 
 **Definition of Done Phase 1:** Falldetail ist auf Desktop UND Mobile High-End. Jeder Handwerker versteht sofort: Was ist das Problem? Wo? Wer kümmert sich? Wann? Was ist der nächste Schritt?
 
