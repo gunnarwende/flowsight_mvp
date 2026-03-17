@@ -38,8 +38,9 @@ export async function GET() {
     start_url: "/ops/cases",
     scope: "/ops/",
     display: "standalone" as const,
-    background_color: "#1a2744",
-    theme_color: "#1a2744",
+    display_override: ["standalone"],
+    background_color: "#020617",
+    theme_color: "#020617",
     orientation: "portrait-primary" as const,
     icons: [
       {
@@ -64,7 +65,7 @@ export async function GET() {
   return new Response(JSON.stringify(manifest), {
     headers: {
       "Content-Type": "application/manifest+json",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "no-cache, must-revalidate",
     },
   });
 }
