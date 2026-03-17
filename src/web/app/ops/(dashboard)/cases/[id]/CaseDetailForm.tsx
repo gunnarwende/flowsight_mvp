@@ -535,71 +535,68 @@ export function CaseDetailForm({
             />
           </div>
         ) : (
-          <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
+          <div className="bg-gray-50/80 -mx-5 -my-4 px-5 py-5 rounded-t-2xl">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
-            <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1.5fr] gap-x-6 gap-y-3 min-w-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 min-w-0">
               <KV label="Status">
-                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-sm font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
                   {STATUS_LABELS[status] ?? status}
                 </span>
               </KV>
               <KV label="Priorität">
-                <span className={`text-[15px] font-semibold ${
-                  urgency === "notfall" ? "text-red-600" :
-                  urgency === "dringend" ? "text-amber-600" :
-                  "text-gray-900"
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-sm font-medium ${
+                  urgency === "notfall" ? "bg-red-100 text-red-700" :
+                  urgency === "dringend" ? "bg-amber-100 text-amber-700" :
+                  "bg-gray-100 text-gray-600"
                 }`}>{URGENCY_LABELS[urgency] ?? urgency}</span>
               </KV>
               <KV label="Zuständig">
                 {selectedAssignees.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5 mt-0.5">
                     {selectedAssignees.map(name => (
-                      <span key={name} className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+                      <span key={name} className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-700">
                         {name}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-500">Nicht zugewiesen</span>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-500">Offen</span>
                 )}
               </KV>
               <KV label="Termin">
-                {scheduledAt
-                  ? <span className="text-[15px] font-semibold text-gray-900 sm:whitespace-nowrap break-words">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
-                  : <span className="text-sm text-gray-500">Offen</span>}
+                {scheduledAt ? (
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
+                    {scheduledAt && !terminSentForCurrent && terminSendState !== "sent" && (
+                      <button
+                        onClick={handleSendTermin}
+                        disabled={terminSendState === "sending"}
+                        className="w-7 h-7 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors print:hidden inline-flex items-center justify-center flex-shrink-0"
+                        title="Termin versenden"
+                      >
+                        {terminSendState === "sending" ? (
+                          <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                          </svg>
+                        )}
+                      </button>
+                    )}
+                    {(terminSentForCurrent || terminSendState === "sent") && (
+                      <svg className="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                      </svg>
+                    )}
+                  </div>
+                ) : (
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-500">Offen</span>
+                )}
               </KV>
             </div>
-
-            {/* Termin versenden — single unified button, visible when termin exists and hasn't been sent yet */}
-            {scheduledAt && !terminSentForCurrent && terminSendState !== "sent" && (
-              <div className="flex flex-wrap items-center gap-3 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
-                <button
-                  onClick={handleSendTermin}
-                  disabled={terminSendState === "sending"}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                >
-                  {terminSendState === "sending" && (
-                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  )}
-                  {terminSendState === "sending" ? "Wird versendet…" : "Termin versenden"}
-                </button>
-                {terminSendState === "error" && (
-                  <span className="text-red-600 text-xs">Versand fehlgeschlagen</span>
-                )}
-              </div>
-            )}
-            {/* Success confirmation after termin sent */}
-            {(terminSentForCurrent || terminSendState === "sent") && (
-              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
-                <svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                <span className="text-sm font-medium text-emerald-700">Termin versendet</span>
-              </div>
-            )}
 
             {/* Save state feedback */}
             {(saveState === "saved" || saveState === "error") && (
@@ -613,10 +610,10 @@ export function CaseDetailForm({
       </div>
 
       {/* ── 2-LANE BODY ──────────────────────────────────────────── */}
-      <div className="flex flex-col-reverse md:flex-row print:block">
+      <div className="flex flex-col md:flex-row print:block">
 
         {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
-        <div className="md:w-1/3 min-w-0 md:border-r md:border-gray-100 p-3 space-y-3">
+        <div className="md:w-2/3 min-w-0 md:border-r md:border-gray-100 p-3 space-y-3">
           {/* Beschreibung card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             {editingSection === "beschreibung" ? (
@@ -673,7 +670,7 @@ export function CaseDetailForm({
         </div>
 
         {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="md:w-2/3 border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
+        <div className="md:w-1/3 border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
 
           {/* Kontakt mini-card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
