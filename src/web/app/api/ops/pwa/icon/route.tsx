@@ -17,9 +17,9 @@ export async function GET(request: Request) {
   const isMaskable = searchParams.get("maskable") === "1";
 
   const radius = isMaskable ? 0 : Math.round(size * 0.22);
-  // ~12% of icon area → diameter ≈ 35% of width
-  // Maskable: smaller (28%) to stay within 80% safe zone
-  const dotSize = Math.round(size * (isMaskable ? 0.28 : 0.35));
+  // Small, elegant dot: ~13% diameter (~1.3% area) — minimalist brand mark
+  // Maskable: slightly smaller to stay within 80% safe zone
+  const dotSize = Math.round(size * (isMaskable ? 0.10 : 0.13));
 
   return new ImageResponse(
     (
