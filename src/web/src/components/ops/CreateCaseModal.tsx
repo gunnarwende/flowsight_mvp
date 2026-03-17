@@ -122,7 +122,7 @@ export function CreateCaseModal({
         <form id="create-case-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           {/* Reporter name */}
           <div>
-            <label htmlFor="mc-name" className={labelClasses}>Name des Melders</label>
+            <label htmlFor="mc-name" className={labelClasses}>Name des Kunden</label>
             <input
               id="mc-name"
               type="text"
@@ -151,7 +151,7 @@ export function CreateCaseModal({
 
             {/* Urgency */}
             <div>
-              <label htmlFor="mc-urg" className={labelClasses}>Dringlichkeit</label>
+              <label htmlFor="mc-urg" className={labelClasses}>Priorität</label>
               <select
                 id="mc-urg"
                 value={urgency}

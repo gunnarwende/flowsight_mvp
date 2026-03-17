@@ -82,10 +82,10 @@ function formatTime(iso: string): string {
 function computeNextStep(c: ZentraleCase): string {
   if (c.status === "new") return "Sichten und einordnen";
   if (c.status === "scheduled") return "Einsatz durchführen";
-  if (c.status === "in_arbeit") return "Einsatz abschliessen";
+  if (c.status === "in_arbeit") return "Arbeit erledigen";
   if (c.status === "warten") return "Rückmeldung prüfen";
   if (c.status === "done" && !c.review_sent_at) return "Review anfragen";
-  if (c.status === "done") return "Abgeschlossen";
+  if (c.status === "done") return "Erledigt";
   return "";
 }
 
@@ -116,8 +116,9 @@ function groupForLeitsystem(cases: ZentraleCase[]): LeitsystemGroups {
   const abschluss: ZentraleCase[] = [];
 
   for (const c of cases) {
+    // "archived" status eliminated — skip for safety if still in DB
     if (c.status === "archived") continue;
-    const isActive = c.status !== "done" && c.status !== "archived";
+    const isActive = c.status !== "done";
 
     if (isActive) {
       aktive++;

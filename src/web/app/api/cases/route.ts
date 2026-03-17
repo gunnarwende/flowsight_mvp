@@ -310,7 +310,7 @@ export async function POST(request: NextRequest) {
       await supabase.from("case_events").insert({
         case_id: row.id,
         event_type: "reporter_confirmation_sent",
-        title: "Bestätigung an Melder gesendet",
+        title: "Bestätigung an Kunden gesendet",
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
           await supabase.from("case_events").insert({
             case_id: row.id,
             event_type: "sms_sent",
-            title: "Bestätigungs-SMS an Melder gesendet",
+            title: "Bestätigungs-SMS an Kunden gesendet",
             metadata: { to: data.contact_phone, message_sid: smsResult.messageSid },
           }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
         }

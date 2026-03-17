@@ -355,7 +355,7 @@ async function processTerminReminders(
     await supabase.from("case_events").insert({
       case_id: c.id,
       event_type: "termin_reminder_sent",
-      title: "24h-Erinnerung an Meldende/n gesendet",
+      title: "24h-Erinnerung an Kunden gesendet",
       metadata: { sms_sent: smsResult.sent, reason: smsResult.reason ?? null },
     });
 

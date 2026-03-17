@@ -18,7 +18,6 @@ const STATUS_FILTERS = [
   { value: "in_arbeit", label: "In Arbeit" },
   { value: "warten", label: "Warten" },
   { value: "done", label: "Erledigt" },
-  { value: "archived", label: "Abgeschlossen" },
 ] as const;
 
 const URGENCY_FILTERS = [
