@@ -34,6 +34,7 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showRoleInfo, setShowRoleInfo] = useState(false);
 
   // Form state
   const [name, setName] = useState("");
@@ -172,7 +173,15 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Rolle</label>
+              <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600 mb-1">
+                Rolle
+                <button
+                  type="button"
+                  onClick={() => setShowRoleInfo(p => !p)}
+                  className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-gray-300 text-gray-400 hover:text-gray-600 hover:border-gray-400 transition-colors text-[10px] font-bold leading-none"
+                  title="Was bedeuten die Rollen?"
+                >i</button>
+              </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -181,6 +190,36 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
                 <option value="admin">Admin</option>
                 <option value="techniker">Techniker</option>
               </select>
+              {showRoleInfo && (
+                <div className="mt-2 p-3 bg-white border border-gray-200 rounded-lg shadow-sm text-xs text-gray-600 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-gray-900 text-sm">Rollen im Leitsystem</span>
+                    <button onClick={() => setShowRoleInfo(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="p-2.5 bg-slate-50 rounded-lg">
+                      <p className="font-semibold text-gray-800 mb-1">Admin (Inhaber / Büroleitung)</p>
+                      <ul className="space-y-0.5 text-gray-500">
+                        <li>Sieht alle Fälle im Betrieb</li>
+                        <li>Kann Fälle zuweisen und Mitarbeiter verwalten</li>
+                        <li>Zugriff auf Einstellungen und Benachrichtigungen</li>
+                        <li>Kann Termine versenden und Meldende benachrichtigen</li>
+                      </ul>
+                    </div>
+                    <div className="p-2.5 bg-slate-50 rounded-lg">
+                      <p className="font-semibold text-gray-800 mb-1">Techniker (Monteur / Servicemitarbeiter)</p>
+                      <ul className="space-y-0.5 text-gray-500">
+                        <li>Sieht nur Fälle, die ihm zugewiesen sind</li>
+                        <li>Kann Status, Priorität und Termin ändern</li>
+                        <li>Kann keine Fälle zuweisen oder umverteilen</li>
+                        <li>Kein Zugriff auf Einstellungen</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">E-Mail</label>
