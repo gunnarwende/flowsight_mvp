@@ -156,20 +156,49 @@ export function OpsShell({
   // ── Footer ──────────────────────────────────────────────────────────
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  // User initials for avatar
+  const userInitials = userEmail
+    .split("@")[0]
+    .split(".")
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("")
+    .slice(0, 2);
+
   const footer = (
     <div className="px-4 py-4 border-t border-gray-800">
-      <p className="text-[11px] text-gray-500 truncate mb-2">{userEmail}</p>
+      {/* User info row */}
+      <div className="flex items-center gap-3 mb-3">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-semibold"
+          style={{ backgroundColor: `${color}33`, color }}
+        >
+          {userInitials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] text-gray-300 font-medium truncate leading-tight">
+            {userEmail.split("@")[0].replace(".", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+          </p>
+          <p className="text-[10px] text-gray-600 truncate leading-tight mt-0.5">
+            {userEmail}
+          </p>
+        </div>
+      </div>
+
+      {/* Logout */}
       {showLogoutConfirm ? (
-        <div className="space-y-2">
-          <p className="text-[11px] text-amber-400">
+        <div className="bg-gray-900 rounded-lg p-3 space-y-2">
+          <p className="text-[11px] text-amber-400/90">
             Nach Abmeldung ist ein neuer E-Mail-Code nötig.
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <form action="/api/ops/logout" method="POST">
               <button
                 type="submit"
-                className="text-[11px] text-red-400 hover:text-red-300 transition-colors font-medium"
+                className="flex items-center gap-1.5 text-[11px] text-red-400 hover:text-red-300 transition-colors font-medium"
               >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+                </svg>
                 Ja, abmelden
               </button>
             </form>
@@ -186,8 +215,11 @@ export function OpsShell({
         <button
           type="button"
           onClick={() => setShowLogoutConfirm(true)}
-          className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-gray-500 hover:text-gray-300 hover:bg-gray-800/50 transition-colors"
         >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+          </svg>
           Abmelden
         </button>
       )}
