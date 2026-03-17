@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 import { OpsShell } from "@/src/components/ops/OpsShell";
 
 /**
@@ -37,11 +38,19 @@ export default async function DashboardLayout({
 
   const identity = await resolveTenantIdentity(user);
 
+  // Resolve staff role for RBAC
+  let staffRole: "admin" | "techniker" | undefined;
+  if (identity?.tenantId && user.email) {
+    const ctx = await resolveStaffRole(user.email, identity.tenantId);
+    if (ctx) staffRole = ctx.role;
+  }
+
   return (
     <OpsShell
       userEmail={user.email ?? ""}
       tenantName={identity?.displayName ?? undefined}
       brandColor={identity?.primaryColor ?? undefined}
+      staffRole={staffRole}
     >
       {children}
     </OpsShell>

@@ -686,6 +686,170 @@ export async function sendSalesLeadNotification(
 }
 
 // ---------------------------------------------------------------------------
+// Assignment notification email (staff gets notified when assigned to a case)
+// ---------------------------------------------------------------------------
+
+interface AssignmentNotificationPayload {
+  caseId: string;
+  caseLabel: string;
+  tenantDisplayName: string;
+  staffName: string;
+  staffEmail: string;
+  category: string;
+  city: string;
+  urgency: string;
+  description: string;
+  deepLink: string;
+}
+
+/**
+ * Send an email to a staff member when they are assigned to a case.
+ * Identity Contract E4: From = "{tenant} via FlowSight".
+ * No console.log — caller merges into existing log line.
+ */
+export async function sendAssignmentNotification(
+  payload: AssignmentNotificationPayload
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+
+  const from = buildFromAddress(payload.tenantDisplayName);
+
+  const urgencyLabel =
+    payload.urgency === "notfall" ? "NOTFALL" :
+    payload.urgency === "dringend" ? "Dringend" : "Normal";
+
+  try {
+    const { error } = await getResend().emails.send({
+      from,
+      to: payload.staffEmail,
+      subject: `Neuer Fall zugewiesen — ${payload.caseLabel} ${payload.category}`,
+      text: [
+        `Hallo ${payload.staffName}`,
+        ``,
+        `Dir wurde ein neuer Fall zugewiesen:`,
+        `──────────────────────`,
+        `Fall-Nr:     ${payload.caseLabel}`,
+        `Kategorie:   ${payload.category}`,
+        `Ort:         ${payload.city}`,
+        `Dringlichkeit: ${urgencyLabel}`,
+        `──────────────────────`,
+        `Beschreibung:`,
+        payload.description,
+        ``,
+        `Fall öffnen: ${payload.deepLink}`,
+        `(Login erforderlich)`,
+      ].join("\n"),
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: {
+          _tag: "resend", area: "email", provider: "resend",
+          email_type: "assignment_notification", case_id: payload.caseId,
+          decision: "failed", error_code: "RESEND_API_ERROR",
+        },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: {
+        _tag: "resend", area: "email", provider: "resend",
+        email_type: "assignment_notification", case_id: payload.caseId,
+        decision: "failed", error_code: "RESEND_EXCEPTION",
+      },
+    });
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Termin confirmation to reporter (Melder)
+// ---------------------------------------------------------------------------
+
+interface TerminConfirmationPayload {
+  caseLabel: string;
+  tenantDisplayName: string;
+  reporterName?: string;
+  category: string;
+  scheduledAt: string;
+  scheduledEndAt?: string | null;
+  tenantPhone?: string;
+}
+
+/**
+ * Send a termin confirmation email to the Melder.
+ * Identity Contract R4: NO "FlowSight" visible. From = tenant name only.
+ * No console.log — caller owns the log.
+ */
+export async function sendTerminConfirmationToMelder(
+  payload: TerminConfirmationPayload,
+  recipientEmail: string,
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+
+  // R4: No "FlowSight" visible to end users — use tenant name directly
+  const addr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const safe = payload.tenantDisplayName.replace(/[<>"]/g, "");
+  const from = `${safe} <${addr}>`;
+
+  const start = new Date(payload.scheduledAt);
+  const dateFmt: Intl.DateTimeFormatOptions = { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" };
+  const timeFmt: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" };
+
+  let terminStr = `${start.toLocaleDateString("de-CH", dateFmt)}, ${start.toLocaleTimeString("de-CH", timeFmt)}`;
+  if (payload.scheduledEndAt) {
+    const end = new Date(payload.scheduledEndAt);
+    terminStr += `–${end.toLocaleTimeString("de-CH", timeFmt)}`;
+  }
+
+  const greeting = payload.reporterName ? `Guten Tag ${payload.reporterName}` : "Guten Tag";
+  const phoneLine = payload.tenantPhone ? `Bei Fragen erreichen Sie uns unter ${payload.tenantPhone}.` : "";
+
+  try {
+    const { error } = await getResend().emails.send({
+      from,
+      to: recipientEmail,
+      subject: `Ihr Termin — ${payload.tenantDisplayName}`,
+      text: [
+        greeting,
+        ``,
+        `Wir haben Ihren Termin eingeplant:`,
+        ``,
+        `Termin:    ${terminStr}`,
+        `Kategorie: ${payload.category}`,
+        ``,
+        ...(phoneLine ? [phoneLine, ``] : []),
+        `Freundliche Grüsse`,
+        `Ihr Service-Team`,
+      ].join("\n"),
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: {
+          _tag: "resend", area: "email", provider: "resend",
+          email_type: "termin_confirmation_melder",
+          decision: "failed", error_code: "RESEND_API_ERROR",
+        },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: {
+        _tag: "resend", area: "email", provider: "resend",
+        email_type: "termin_confirmation_melder",
+        decision: "failed", error_code: "RESEND_EXCEPTION",
+      },
+    });
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // ICS Appointment Email (L9: ICS v2 per E-Mail)
 // ---------------------------------------------------------------------------
 

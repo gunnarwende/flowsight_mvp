@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
+import { sendAssignmentNotification } from "@/src/lib/email/resend";
+import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
+import { formatCaseId } from "@/src/lib/cases/formatCaseId";
+import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 
 // ---------------------------------------------------------------------------
 // Allowed values for ops fields
@@ -56,6 +61,17 @@ const OPS_UPDATABLE_FIELDS = [
 ] as const;
 
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
+
+/** Techniker can update these fields but NOT assignee_text */
+const TECHNIKER_UPDATABLE_FIELDS = [
+  "status",
+  "urgency",
+  "category",
+  "description",
+  "scheduled_at",
+  "scheduled_end_at",
+  "internal_notes",
+] as const;
 
 // ---------------------------------------------------------------------------
 // GET /api/ops/cases/[id] — fetch single case (authenticated)
@@ -125,8 +141,23 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  // Allowlist: prospects get restricted fields, others get full ops fields
-  const allowedFields = scope.isProspect ? PROSPECT_ALLOWED_FIELDS : OPS_UPDATABLE_FIELDS;
+  // Resolve staff role for RBAC
+  let staffRole: "admin" | "techniker" | null = null;
+  if (scope.tenantId && !scope.isProspect) {
+    const authClient = await getAuthClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (user?.email) {
+      const ctx = await resolveStaffRole(user.email, scope.tenantId);
+      if (ctx) staffRole = ctx.role;
+    }
+  }
+
+  // Allowlist: prospects get restricted fields, techniker limited, others get full ops fields
+  const allowedFields: readonly string[] = scope.isProspect
+    ? PROSPECT_ALLOWED_FIELDS
+    : staffRole === "techniker"
+      ? TECHNIKER_UPDATABLE_FIELDS
+      : OPS_UPDATABLE_FIELDS;
   const update: Record<string, unknown> = {};
   for (const field of allowedFields) {
     if (field in body) {
@@ -177,7 +208,7 @@ export async function PATCH(
     const supabase = getServiceClient();
 
     // Tenant isolation check: read case first to verify tenant ownership
-    const { data: existing } = await supabase.from("cases").select("status, tenant_id").eq("id", id).single();
+    const { data: existing } = await supabase.from("cases").select("status, tenant_id, assignee_text").eq("id", id).single();
     if (!existing) {
       return NextResponse.json({ error: "Case not found." }, { status: 404 });
     }
@@ -193,7 +224,7 @@ export async function PATCH(
       .update(update)
       .eq("id", id)
       .select(
-        "id, status, urgency, category, plz, city, description, assignee_text, scheduled_at, scheduled_end_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
+        "id, seq_number, status, urgency, category, plz, city, description, assignee_text, scheduled_at, scheduled_end_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
       )
       .single();
 
@@ -232,6 +263,48 @@ export async function PATCH(
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
+    // ── Assignment notification (fire-and-forget) ───────────────────
+    let assignmentSent = false;
+    if (
+      "assignee_text" in update &&
+      update.assignee_text &&
+      update.assignee_text !== existing.assignee_text
+    ) {
+      // Look up staff email + tenant identity
+      const [{ data: staffMatch }, identity, { data: tenantRow }] = await Promise.all([
+        supabase
+          .from("staff")
+          .select("email")
+          .eq("tenant_id", existing.tenant_id)
+          .eq("display_name", update.assignee_text as string)
+          .eq("is_active", true)
+          .limit(1)
+          .maybeSingle(),
+        resolveTenantIdentityById(existing.tenant_id),
+        supabase.from("tenants").select("modules").eq("id", existing.tenant_id).single(),
+      ]);
+
+      const modules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
+      const notifyEnabled = modules.notify_staff_assignment !== false;
+
+      if (staffMatch?.email && notifyEnabled && identity) {
+        const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
+        const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
+        assignmentSent = await sendAssignmentNotification({
+          caseId: id,
+          caseLabel,
+          tenantDisplayName: identity.displayName,
+          staffName: update.assignee_text as string,
+          staffEmail: staffMatch.email,
+          category: row.category,
+          city: row.city,
+          urgency: row.urgency,
+          description: row.description,
+          deepLink: `${baseUrl}/ops/cases/${id}`,
+        });
+      }
+    }
+
     // Structured log — no PII
     const updatedFields = Object.keys(update) as OpsField[];
     console.log(
@@ -241,6 +314,7 @@ export async function PATCH(
         case_id: id,
         user_id: scope.userId,
         fields: updatedFields,
+        ...(assignmentSent && { assignment_sent: true }),
       })
     );
 

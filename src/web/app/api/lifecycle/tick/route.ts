@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { sendSms } from "@/src/lib/sms/sendSms";
 
 // ---------------------------------------------------------------------------
 // POST /api/lifecycle/tick
@@ -101,10 +102,15 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── 24h Termin reminders ──────────────────────────────────────────────
+  const reminderResults = await processTerminReminders(supabase, now);
+
   return NextResponse.json({
     processed: trials.length,
     actions: results.length,
     results,
+    reminders_sent: reminderResults.length,
+    reminders: reminderResults,
   });
 }
 
@@ -257,6 +263,106 @@ async function executeMilestone(
       error: err instanceof Error ? err.message : String(err),
     };
   }
+}
+
+// ---------------------------------------------------------------------------
+// 24h Termin reminders — SMS to Melder before scheduled appointments
+// ---------------------------------------------------------------------------
+
+interface ReminderResult {
+  case_id: string;
+  sent: boolean;
+  reason?: string;
+}
+
+async function processTerminReminders(
+  supabase: ReturnType<typeof getServiceClient>,
+  now: Date,
+): Promise<ReminderResult[]> {
+  const results: ReminderResult[] = [];
+
+  // Cases with scheduled_at in next 36h (handles cron timing variance)
+  const windowEnd = new Date(now.getTime() + 36 * 60 * 60 * 1000);
+
+  const { data: cases } = await supabase
+    .from("cases")
+    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, contact_phone, reporter_name")
+    .gte("scheduled_at", now.toISOString())
+    .lte("scheduled_at", windowEnd.toISOString())
+    .in("status", ["scheduled", "in_arbeit"])
+    .not("contact_phone", "is", null);
+
+  if (!cases || cases.length === 0) return results;
+
+  // Check which cases already have a termin_reminder_sent event (idempotency)
+  const caseIds = cases.map(c => c.id);
+  const { data: existingEvents } = await supabase
+    .from("case_events")
+    .select("case_id")
+    .in("case_id", caseIds)
+    .eq("event_type", "termin_reminder_sent");
+
+  const alreadySent = new Set((existingEvents ?? []).map(e => e.case_id));
+
+  // Group cases by tenant to batch-check modules
+  const tenantIds = [...new Set(cases.map(c => c.tenant_id))];
+  const { data: tenants } = await supabase
+    .from("tenants")
+    .select("id, name, phone, modules")
+    .in("id", tenantIds);
+
+  const tenantMap = new Map(
+    (tenants ?? []).map(t => [t.id, t])
+  );
+
+  for (const c of cases) {
+    if (alreadySent.has(c.id)) continue;
+    if (!c.contact_phone) continue;
+
+    const tenant = tenantMap.get(c.tenant_id);
+    if (!tenant) continue;
+
+    const modules = (tenant.modules ?? {}) as Record<string, unknown>;
+    if (modules.notify_termin_reminder_sms === false) {
+      results.push({ case_id: c.id, sent: false, reason: "toggle_off" });
+      continue;
+    }
+    if (modules.sms !== true) {
+      results.push({ case_id: c.id, sent: false, reason: "sms_disabled" });
+      continue;
+    }
+
+    const senderName = typeof modules.sms_sender_name === "string" ? modules.sms_sender_name : tenant.name;
+    const tenantPhone = typeof tenant.phone === "string" ? tenant.phone : "";
+
+    const start = new Date(c.scheduled_at);
+    const day = start.toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
+    const date = start.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
+    const time = start.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
+
+    let endTime = "";
+    if (c.scheduled_end_at) {
+      const end = new Date(c.scheduled_end_at);
+      endTime = `–${end.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" })}`;
+    }
+
+    const phoneStr = tenantPhone ? ` Bei Fragen: ${tenantPhone}.` : "";
+    const smsBody = `${senderName}: Erinnerung — Ihr Termin morgen ${day} ${date}, ${time}${endTime}.${phoneStr}`;
+
+    const smsResult = await sendSms(c.contact_phone, smsBody, senderName);
+
+    // Insert idempotency guard event
+    await supabase.from("case_events").insert({
+      case_id: c.id,
+      event_type: "termin_reminder_sent",
+      title: "24h-Erinnerung an Meldende/n gesendet",
+      metadata: { sms_sent: smsResult.sent, reason: smsResult.reason ?? null },
+    });
+
+    results.push({ case_id: c.id, sent: smsResult.sent, reason: smsResult.reason });
+  }
+
+  return results;
 }
 
 // ---------------------------------------------------------------------------
