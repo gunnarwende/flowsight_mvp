@@ -644,14 +644,14 @@ export function CaseDetailForm({
       </div>
 
       {/* ── 2-LANE BODY ──────────────────────────────────────────── */}
-      <div className="md:flex print:block">
+      <div className="flex flex-col-reverse md:flex-row print:block">
 
         {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
-        <div className="flex-1 min-w-0 md:border-r md:border-gray-100">
-          {/* Beschreibung */}
-          <div className={sectionPad}>
+        <div className="md:w-1/3 min-w-0 md:border-r md:border-gray-100 p-3 space-y-3">
+          {/* Beschreibung card */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             {editingSection === "beschreibung" ? (
-              <div className="bg-gray-50 -mx-5 -my-4 px-5 py-4">
+              <div className="bg-gray-50 -m-4 p-4 rounded-xl">
                 <SectionHead title="Beschreibung" editing onClose={cancelEdit} />
                 <div className="space-y-3">
                   <div><label className={lbl}>Kategorie</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} /></div>
@@ -680,8 +680,8 @@ export function CaseDetailForm({
             )}
           </div>
 
-          {/* Verlauf + Bewertung */}
-          <div className={`${sectionPad} border-t border-gray-100`}>
+          {/* Verlauf + Bewertung card */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             <h3 className={`${sectionTitle} mb-3`}>Verlauf</h3>
             <CompactTimeline
               events={localEvents}
@@ -704,7 +704,7 @@ export function CaseDetailForm({
         </div>
 
         {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="border-t border-gray-100 md:border-t-0 md:w-80 lg:w-[340px] flex-shrink-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
+        <div className="md:w-2/3 border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
 
           {/* Kontakt mini-card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
