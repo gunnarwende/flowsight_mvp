@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default:
-      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
+      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
     template: "%s — FlowSight",
   },
   description:
-    "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
+    "24/7 Anrufannahme, strukturierte Falllisten und Einsatzplanung. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
   metadataBase: new URL("https://flowsight.ch"),
   icons: {
     icon: "/favicon.svg",
@@ -29,17 +29,17 @@ export const metadata: Metadata = {
     locale: "de_CH",
     siteName: "FlowSight",
     title:
-      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
+      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
     description:
-      "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
+      "24/7 Anrufannahme, strukturierte Falllisten und Einsatzplanung. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
     url: "https://flowsight.ch",
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "FlowSight – KI-Telefonassistent & Ops-Dashboard für Sanitär & Heizung",
+      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
     description:
-      "24/7 Anrufannahme mit KI, strukturierte Fälle im Dashboard, Website + Online-Auftragsformular. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
+      "24/7 Anrufannahme, strukturierte Falllisten und Einsatzplanung. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
   },
   other: {
     "theme-color": "#1a2744",
