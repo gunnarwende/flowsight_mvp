@@ -120,7 +120,7 @@ export async function POST(
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, city")
+    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, city, assignee_text")
     .eq("id", id)
     .single();
 
@@ -143,17 +143,38 @@ export async function POST(
     });
   }
 
-  // ── Resolve recipient: tenant calendar email → fallback env var ──────
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("modules")
-    .eq("id", row.tenant_id)
-    .single();
-  const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
-  const calendarEmail = typeof modules.business_calendar_email === "string"
-    ? modules.business_calendar_email.trim()
-    : "";
-  const to = calendarEmail || process.env.MAIL_REPLY_TO;
+  // ── Resolve recipient: assigned staff email → tenant calendar email → env var
+  let recipientEmail: string | undefined;
+
+  // 1. Try assigned staff member's email
+  if (row.assignee_text) {
+    const { data: staffMatch } = await supabase
+      .from("staff")
+      .select("email")
+      .eq("tenant_id", row.tenant_id)
+      .eq("display_name", row.assignee_text)
+      .eq("is_active", true)
+      .limit(1)
+      .maybeSingle();
+    if (staffMatch?.email) recipientEmail = staffMatch.email;
+  }
+
+  // 2. Fallback: tenant calendar email
+  if (!recipientEmail) {
+    const { data: tenant } = await supabase
+      .from("tenants")
+      .select("modules")
+      .eq("id", row.tenant_id)
+      .single();
+    const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+    const calendarEmail = typeof modules.business_calendar_email === "string"
+      ? modules.business_calendar_email.trim()
+      : "";
+    if (calendarEmail) recipientEmail = calendarEmail;
+  }
+
+  // 3. Fallback: global env var
+  const to = recipientEmail || process.env.MAIL_REPLY_TO;
 
   if (!to) {
     return respond(400, { ok: false, error: "missing_calendar_email" }, {

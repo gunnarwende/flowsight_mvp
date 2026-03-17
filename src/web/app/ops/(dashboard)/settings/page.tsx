@@ -7,12 +7,11 @@ interface Settings {
   google_review_url: string;
   notify_reporter_email: boolean;
   notify_reporter_sms: boolean;
-  business_calendar_email: string;
 }
 
 interface SettingsData {
+  tenant_id: string;
   tenant_name: string;
-  case_id_prefix: string;
   settings: Settings;
 }
 
@@ -27,7 +26,6 @@ export default function SettingsPage() {
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [notifySms, setNotifySms] = useState(true);
-  const [calendarEmail, setCalendarEmail] = useState("");
 
   useEffect(() => {
     fetch("/api/ops/settings")
@@ -38,7 +36,6 @@ export default function SettingsPage() {
           setGoogleReviewUrl(d.settings.google_review_url);
           setNotifyEmail(d.settings.notify_reporter_email);
           setNotifySms(d.settings.notify_reporter_sms);
-          setCalendarEmail(d.settings.business_calendar_email);
         }
       })
       .catch(() => setError("Einstellungen konnten nicht geladen werden."))
@@ -57,7 +54,6 @@ export default function SettingsPage() {
           google_review_url: googleReviewUrl,
           notify_reporter_email: notifyEmail,
           notify_reporter_sms: notifySms,
-          business_calendar_email: calendarEmail,
         }),
       });
       if (res.ok) {
@@ -85,55 +81,34 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* Betriebsinformationen — prominent, read-only */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Betrieb
-        </h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-400 text-xs mb-0.5">Betriebsname</p>
-            <p className="text-gray-900 font-medium">
-              {data?.tenant_name ?? "—"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-400 text-xs mb-0.5">Fall-Präfix</p>
-            <p className="text-gray-900 font-medium">
-              {data?.case_id_prefix ?? "—"}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Editable settings */}
       <div className="space-y-5">
-        {/* Team — inline StaffManager */}
+        {/* Team */}
         <Section
           title="Team"
-          description="Mitarbeiter für Fall-Zuweisung und Kalendereinladungen."
+          description="Mitarbeiter verwalten. Die E-Mail-Adresse wird für Kalendereinladungen bei Terminzuweisung verwendet."
         >
-          <StaffManager />
+          <StaffManager tenantId={data?.tenant_id} embedded />
         </Section>
 
-        {/* Kalender-E-Mail */}
+        {/* Benachrichtigungen */}
         <Section
-          title="Kalender"
-          description="E-Mail-Adresse für Termineinladungen an den Betrieb."
+          title="Benachrichtigungen"
+          description="Automatische Rückmeldung an Meldende nach Fallerfassung."
         >
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Kalender-E-Mail
-          </label>
-          <input
-            type="email"
-            value={calendarEmail}
-            onChange={(e) => setCalendarEmail(e.target.value)}
-            placeholder="betrieb@example.ch"
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-          />
-          <p className="mt-1.5 text-xs text-gray-400">
-            Termineinladungen werden an diese Adresse gesendet und erscheinen direkt in Ihrem Kalender (Outlook, Google, etc.)
-          </p>
+          <div className="space-y-3">
+            <Toggle
+              checked={notifyEmail}
+              onChange={setNotifyEmail}
+              label="E-Mail-Bestätigung"
+              description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
+            />
+            <Toggle
+              checked={notifySms}
+              onChange={setNotifySms}
+              label="SMS-Bestätigung"
+              description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
+            />
+          </div>
         </Section>
 
         {/* Google Review */}
@@ -152,27 +127,6 @@ export default function SettingsPage() {
             Suchen Sie Ihren Betrieb auf Google Maps &rarr; &quot;Rezension
             schreiben&quot; &rarr; Link kopieren
           </p>
-        </Section>
-
-        {/* Bestätigungen */}
-        <Section
-          title="Bestätigungen an Meldende"
-          description="Automatische Rückmeldung nach Fallerfassung."
-        >
-          <div className="space-y-3">
-            <Toggle
-              checked={notifyEmail}
-              onChange={setNotifyEmail}
-              label="E-Mail-Bestätigung"
-              description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
-            />
-            <Toggle
-              checked={notifySms}
-              onChange={setNotifySms}
-              label="SMS-Bestätigung"
-              description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
-            />
-          </div>
         </Section>
       </div>
 
