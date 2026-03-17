@@ -23,8 +23,8 @@ export async function GET() {
     if (user) {
       const identity = await resolveTenantIdentity(user);
       if (identity) {
-        shortName = identity.shortName;
-        name = `${identity.shortName} Leitsystem`;
+        shortName = identity.leitsystemName;
+        name = `${identity.leitsystemName} Leitsystem`;
       }
     }
   } catch {
