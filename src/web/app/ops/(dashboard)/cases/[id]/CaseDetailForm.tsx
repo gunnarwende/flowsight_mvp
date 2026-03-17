@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CaseDetail } from "./page";
 import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
@@ -204,13 +204,36 @@ export function CaseDetailForm({
   const [notesExpanded, setNotesExpanded] = useState(false);
 
   // ── Staff for assignee dropdown ──────────────────────────────────────
-  const [staffMembers, setStaffMembers] = useState<{ display_name: string }[]>([]);
+  const [staffMembers, setStaffMembers] = useState<{ display_name: string; role: string }[]>([]);
   useEffect(() => {
     fetch("/api/ops/staff")
       .then((r) => (r.ok ? r.json() : []))
-      .then((data: { display_name: string }[]) => setStaffMembers(Array.isArray(data) ? data : []))
+      .then((data: { display_name: string; role: string }[]) => setStaffMembers(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, []);
+
+  // ── Assignee multi-select helpers ────────────────────────────────────
+  /** Parse comma-separated assignee_text into an array of names */
+  function parseAssignees(text: string): string[] {
+    return text.split(",").map(s => s.trim()).filter(Boolean);
+  }
+  const selectedAssignees = parseAssignees(assigneeText);
+
+  function addAssignee(name: string) {
+    if (!name || selectedAssignees.includes(name)) return;
+    const next = [...selectedAssignees, name];
+    setAssigneeText(next.join(", "));
+  }
+
+  function removeAssignee(name: string) {
+    const next = selectedAssignees.filter(n => n !== name);
+    setAssigneeText(next.join(", "));
+  }
+
+  const ROLE_LABELS: Record<string, string> = {
+    admin: "Admin",
+    techniker: "Techniker",
+  };
 
   // ── Per-section dirty checks ─────────────────────────────────────────
   const steuerungDirty =
@@ -475,18 +498,18 @@ export function CaseDetailForm({
                   {URGENCIES.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
                 </select>
               </div>
-              <div>
+              <div className="sm:col-span-2 md:col-span-1">
                 <label className={lbl}>Zuständig</label>
                 {staffRole === "techniker" ? (
                   <p className={`${inp} bg-gray-50 text-gray-500`}>{assigneeText || "—"}</p>
                 ) : staffMembers.length > 0 ? (
-                  <select value={assigneeText} onChange={e => setAssigneeText(e.target.value)} className={inp}>
-                    <option value="">— Offen —</option>
-                    {staffMembers.map(s => <option key={s.display_name} value={s.display_name}>{s.display_name}</option>)}
-                    {assigneeText && !staffMembers.some(s => s.display_name === assigneeText) && (
-                      <option value={assigneeText}>{assigneeText}</option>
-                    )}
-                  </select>
+                  <StaffMultiSelect
+                    staffMembers={staffMembers}
+                    selected={selectedAssignees}
+                    onAdd={addAssignee}
+                    onRemove={removeAssignee}
+                    roleLabels={ROLE_LABELS}
+                  />
                 ) : (
                   <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
                 )}
@@ -608,9 +631,17 @@ export function CaseDetailForm({
                 }`}>{URGENCY_LABELS[urgency] ?? urgency}</span>
               </KV>
               <KV label="Zuständig">
-                {assigneeText
-                  ? <span className="text-[15px] font-medium text-gray-900">{assigneeText}</span>
-                  : <span className="text-sm text-gray-500">Nicht zugewiesen</span>}
+                {selectedAssignees.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 mt-0.5">
+                    {selectedAssignees.map(name => (
+                      <span key={name} className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-500">Nicht zugewiesen</span>
+                )}
               </KV>
               <KV label="Termin">
                 {scheduledAt
@@ -862,6 +893,115 @@ function EditActions({
         className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
       >Abbrechen</button>
       {error && <span className="text-red-600 text-xs">{error}</span>}
+    </div>
+  );
+}
+
+/** Multi-select staff dropdown with chips */
+function StaffMultiSelect({
+  staffMembers,
+  selected,
+  onAdd,
+  onRemove,
+  roleLabels,
+}: {
+  staffMembers: { display_name: string; role: string }[];
+  selected: string[];
+  onAdd: (name: string) => void;
+  onRemove: (name: string) => void;
+  roleLabels: Record<string, string>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }
+  }, [open]);
+
+  const available = staffMembers.filter(
+    s => !selected.includes(s.display_name) &&
+      (search === "" || s.display_name.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  return (
+    <div ref={containerRef} className="relative">
+      {/* Selected chips + input field */}
+      <div
+        className="w-full rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm text-gray-900 focus-within:border-gray-400 focus-within:ring-1 focus-within:ring-gray-400/30 transition-colors cursor-text flex flex-wrap gap-1.5 min-h-[38px] items-center"
+        onClick={() => { setOpen(true); inputRef.current?.focus(); }}
+      >
+        {selected.map(name => (
+          <span
+            key={name}
+            className="inline-flex items-center gap-1 rounded-full bg-gray-100 pl-2.5 pr-1 py-0.5 text-xs font-medium text-gray-700 animate-in fade-in duration-150"
+          >
+            {name}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onRemove(name); }}
+              className="rounded-full p-0.5 hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label={`${name} entfernen`}
+            >
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          type="text"
+          value={search}
+          onChange={e => { setSearch(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          placeholder={selected.length === 0 ? "Mitarbeiter auswählen…" : ""}
+          className="flex-1 min-w-[100px] bg-transparent outline-none text-sm placeholder:text-gray-400 py-0.5"
+        />
+      </div>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+          {available.length === 0 ? (
+            <p className="px-3 py-2.5 text-sm text-gray-400">
+              {search ? "Kein Treffer" : "Alle zugewiesen"}
+            </p>
+          ) : (
+            available.map(s => (
+              <button
+                key={s.display_name}
+                type="button"
+                onClick={() => {
+                  onAdd(s.display_name);
+                  setSearch("");
+                  inputRef.current?.focus();
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-left text-sm hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              >
+                {/* Avatar circle */}
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-[10px] font-bold uppercase">
+                  {s.display_name.charAt(0)}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="font-medium text-gray-900">{s.display_name}</span>
+                  <span className="text-gray-400 ml-1.5 text-xs">{roleLabels[s.role] ?? s.role}</span>
+                </span>
+              </button>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
