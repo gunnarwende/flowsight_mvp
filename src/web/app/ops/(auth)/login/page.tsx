@@ -49,6 +49,9 @@ export default function OpsLoginPage() {
         {/* ── Swiss trust footer ────────────────────────────── */}
         <div className="mt-8 text-center space-y-2">
           <div className="flex items-center justify-center gap-1.5">
+            <span className="text-xs" style={{ color: "#64645f" }}>
+              Verschlüsselt. DSGVO-konform. Entwickelt für die Schweiz.
+            </span>
             <svg
               width="14"
               height="14"
@@ -60,9 +63,6 @@ export default function OpsLoginPage() {
               <rect x="3.5" y="5.5" width="7" height="3" rx="0.5" fill="white" />
               <rect x="5.5" y="3.5" width="3" height="7" rx="0.5" fill="white" />
             </svg>
-            <span className="text-xs" style={{ color: "#64645f" }}>
-              Entwickelt in der Schweiz. Verschlüsselt. DSGVO-konform.
-            </span>
           </div>
           <p className="text-xs" style={{ color: "#7b8fb3" }}>
             Nur autorisierte Nutzer. Kein Zugang? Admin kontaktieren.
