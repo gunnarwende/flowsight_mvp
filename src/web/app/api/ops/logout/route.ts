@@ -1,13 +1,38 @@
-import { NextResponse } from "next/server";
-import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-export async function POST() {
-  const supabase = await getAuthClient();
-  // scope: 'local' — only clears this session's cookies, doesn't call
-  // Supabase auth server. Faster logout, no side effects on rate limits.
-  await supabase.auth.signOut({ scope: "local" });
+export async function POST(req: NextRequest) {
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.APP_URL ??
+    "http://localhost:3000";
 
-  return NextResponse.redirect(new URL("/ops/login", process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? "http://localhost:3000"), {
-    status: 303, // POST → GET redirect
+  const redirectResponse = NextResponse.redirect(new URL("/ops/login", appUrl), {
+    status: 303,
   });
+
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
+
+  if (url && key) {
+    const supabase = createServerClient(url, key, {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          // Write cookie deletions directly onto the redirect response
+          cookiesToSet.forEach(({ name, value, options }) => {
+            redirectResponse.cookies.set(name, value, options);
+          });
+        },
+      },
+    });
+
+    await supabase.auth.signOut({ scope: "local" });
+  }
+
+  return redirectResponse;
 }

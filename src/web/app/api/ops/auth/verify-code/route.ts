@@ -80,7 +80,9 @@ export async function POST(req: NextRequest) {
     const authClient = createServerClient(url, key, {
       cookies: {
         getAll() {
-          return req.cookies.getAll();
+          // Return empty — we're creating a fresh session, stale cookies
+          // from a previous login would cause verifyOtp to fail.
+          return [];
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
