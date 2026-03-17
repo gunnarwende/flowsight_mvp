@@ -103,9 +103,14 @@ export default async function CaseDetailPage({
               </svg>
               <span className="text-xs hidden sm:inline">Fallübersicht</span>
             </Link>
-            <h1 className="text-lg font-bold text-gray-900 truncate">{caseData.category}</h1>
+            <div className="flex items-baseline gap-2 min-w-0">
+              <h1 className="text-lg font-bold text-gray-900 truncate">{caseData.category}</h1>
+              <span className="text-xs text-gray-400 whitespace-nowrap hidden sm:inline">
+                {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
+              </span>
+            </div>
           </div>
-          <p className="text-xs text-gray-400 ml-9 sm:ml-[52px] mt-0.5">
+          <p className="text-xs text-gray-400 ml-9 mt-0.5 sm:hidden">
             {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
           </p>
         </div>

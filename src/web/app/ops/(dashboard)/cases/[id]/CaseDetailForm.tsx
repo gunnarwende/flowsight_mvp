@@ -468,40 +468,42 @@ export function CaseDetailForm({
                   >{time}</button>
                 ))}
               </div>
-              {scheduledAt && (
+            </div>
+            {scheduledAt && (
+              <div className="mt-2 pt-2 border-t border-gray-200/60 mb-3">
                 <button onClick={handleSendInvite} disabled={inviteState === "sending"}
                   className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
                 >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Gesendet ✓" : "Termin senden"}</button>
-              )}
-            </div>
+              </div>
+            )}
 
             <EditActions onSave={saveSteuerung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={steuerungDirty} error={saveState === "error" ? errorMsg : ""} />
           </div>
         ) : (
-          <div className="bg-gray-50/60 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
+          <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3">
               <KV label="Status">
-                <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
                   {STATUS_LABELS[status] ?? status}
                 </span>
               </KV>
               <KV label="Priorität">
-                <span className={
-                  urgency === "notfall" ? "text-red-600 font-semibold" :
-                  urgency === "dringend" ? "text-amber-600 font-medium" :
+                <span className={`text-[15px] font-semibold ${
+                  urgency === "notfall" ? "text-red-600" :
+                  urgency === "dringend" ? "text-amber-600" :
                   "text-gray-900"
-                }>{URGENCY_LABELS[urgency] ?? urgency}</span>
+                }`}>{URGENCY_LABELS[urgency] ?? urgency}</span>
               </KV>
               <KV label="Zuständig">
                 {assigneeText
-                  ? <span className="text-gray-900">→ {assigneeText}</span>
-                  : <span className="text-gray-500">Nicht zugewiesen</span>}
+                  ? <span className="text-[15px] font-medium text-gray-900">{assigneeText}</span>
+                  : <span className="text-sm text-gray-500">Nicht zugewiesen</span>}
               </KV>
               <KV label="Termin">
                 {scheduledAt
-                  ? <span className="text-gray-900 font-medium">{formatTermin(new Date(scheduledAt).toISOString())}</span>
-                  : <span className="text-gray-500">Offen</span>}
+                  ? <span className="text-[15px] font-semibold text-gray-900">{formatTermin(new Date(scheduledAt).toISOString())}</span>
+                  : <span className="text-sm text-gray-500">Offen</span>}
               </KV>
             </div>
 
@@ -580,7 +582,7 @@ export function CaseDetailForm({
         <div className="border-t border-gray-100 md:border-t-0 md:w-80 lg:w-[340px] flex-shrink-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white">
 
           {/* Kontakt mini-card */}
-          <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             {editingSection === "kontakt" ? (
               <>
                 <SectionHead title="Kontakt" editing onClose={cancelEdit} />
@@ -632,7 +634,7 @@ export function CaseDetailForm({
           </div>
 
           {/* Interne Notizen mini-card */}
-          <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             {editingSection === "notizen" ? (
               <>
                 <SectionHead title="Interne Notizen" editing onClose={cancelEdit} />
@@ -661,7 +663,7 @@ export function CaseDetailForm({
 
           {/* Anhänge mini-card */}
           {!isProspect && (
-            <div className="bg-white rounded-xl border border-gray-200/80 p-4">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
               <AttachmentsSection caseId={initialData.id} />
             </div>
           )}
@@ -710,7 +712,7 @@ function SectionHead({
 function KV({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <span className="text-gray-400 text-[11px] font-medium uppercase tracking-wide">{label}</span>
+      <span className="text-gray-500 text-[11px] font-medium uppercase tracking-wide">{label}</span>
       <div className="mt-0.5">{children}</div>
     </div>
   );
@@ -727,12 +729,12 @@ function EditActions({
   error?: string;
 }) {
   return (
-    <div className="flex items-center gap-2 mt-3">
+    <div className="flex items-center gap-3 mt-3">
       <button onClick={onSave} disabled={!dirty || saving}
-        className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >{saving ? "Speichern…" : "Speichern"}</button>
       <button onClick={onCancel}
-        className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
       >Abbrechen</button>
       {error && <span className="text-red-600 text-xs">{error}</span>}
     </div>
@@ -817,13 +819,13 @@ function TimelineItem({ event }: { event: CaseEvent }) {
 // Stars SVG
 // ---------------------------------------------------------------------------
 
-function StarIcon({ filled, brandColor, muted }: { filled: boolean; brandColor: string; muted?: boolean }) {
+function StarIcon({ filled, muted }: { filled: boolean; brandColor?: string; muted?: boolean }) {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24"
-      fill={filled ? "#f59e0b" : "rgba(245,158,11,0.15)"}
+      fill={filled ? "#f59e0b" : "rgba(245,158,11,0.35)"}
       strokeWidth={1.5}
-      stroke={brandColor}
-      style={muted ? { opacity: 0.35 } : undefined}
+      stroke={filled ? "#b45309" : "#d97706"}
+      style={muted ? { opacity: 0.5 } : undefined}
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
     </svg>
