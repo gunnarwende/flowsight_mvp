@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { StaffManager } from "@/src/components/ops/StaffManager";
 
 interface Settings {
   google_review_url: string;
-  default_appointment_duration_min: number;
   notify_reporter_email: boolean;
   notify_reporter_sms: boolean;
   business_calendar_email: string;
@@ -25,7 +25,6 @@ export default function SettingsPage() {
 
   // Form state
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
-  const [appointmentDuration, setAppointmentDuration] = useState(60);
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [notifySms, setNotifySms] = useState(true);
   const [calendarEmail, setCalendarEmail] = useState("");
@@ -37,7 +36,6 @@ export default function SettingsPage() {
         if (d) {
           setData(d);
           setGoogleReviewUrl(d.settings.google_review_url);
-          setAppointmentDuration(d.settings.default_appointment_duration_min);
           setNotifyEmail(d.settings.notify_reporter_email);
           setNotifySms(d.settings.notify_reporter_sms);
           setCalendarEmail(d.settings.business_calendar_email);
@@ -57,7 +55,6 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           google_review_url: googleReviewUrl,
-          default_appointment_duration_min: appointmentDuration,
           notify_reporter_email: notifyEmail,
           notify_reporter_sms: notifySms,
           business_calendar_email: calendarEmail,
@@ -111,6 +108,34 @@ export default function SettingsPage() {
 
       {/* Editable settings */}
       <div className="space-y-5">
+        {/* Team — inline StaffManager */}
+        <Section
+          title="Team"
+          description="Mitarbeiter für Fall-Zuweisung und Kalendereinladungen."
+        >
+          <StaffManager />
+        </Section>
+
+        {/* Kalender-E-Mail */}
+        <Section
+          title="Kalender"
+          description="E-Mail-Adresse für Termineinladungen an den Betrieb."
+        >
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Kalender-E-Mail
+          </label>
+          <input
+            type="email"
+            value={calendarEmail}
+            onChange={(e) => setCalendarEmail(e.target.value)}
+            placeholder="betrieb@example.ch"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
+          <p className="mt-1.5 text-xs text-gray-400">
+            Termineinladungen werden an diese Adresse gesendet und erscheinen direkt in Ihrem Kalender (Outlook, Google, etc.)
+          </p>
+        </Section>
+
         {/* Google Review */}
         <Section
           title="Google-Bewertungen"
@@ -127,45 +152,6 @@ export default function SettingsPage() {
             Suchen Sie Ihren Betrieb auf Google Maps &rarr; &quot;Rezension
             schreiben&quot; &rarr; Link kopieren
           </p>
-        </Section>
-
-        {/* Termine */}
-        <Section
-          title="Termine"
-          description="Standard-Einstellungen für neue Termine."
-        >
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Standard-Termindauer
-          </label>
-          <select
-            value={appointmentDuration}
-            onChange={(e) => setAppointmentDuration(Number(e.target.value))}
-            className="w-full sm:w-48 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-          >
-            <option value={30}>30 Minuten</option>
-            <option value={45}>45 Minuten</option>
-            <option value={60}>60 Minuten (Standard)</option>
-            <option value={90}>90 Minuten</option>
-            <option value={120}>2 Stunden</option>
-            <option value={180}>3 Stunden</option>
-            <option value={240}>4 Stunden</option>
-          </select>
-
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Kalender-E-Mail
-            </label>
-            <input
-              type="email"
-              value={calendarEmail}
-              onChange={(e) => setCalendarEmail(e.target.value)}
-              placeholder="betrieb@example.ch"
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-            />
-            <p className="mt-1.5 text-xs text-gray-400">
-              Termine werden als ICS-Einladung an diese Adresse gesendet
-            </p>
-          </div>
         </Section>
 
         {/* Bestätigungen */}
