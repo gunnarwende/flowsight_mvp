@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-14 (QA Sweep Machine + OPS Visual Block: Brand Header, Puls Overhaul, Color Consistency)
+**Datum:** 2026-03-17 (Leitsystem Phase 1 komplett, Login High-End, PWA Auto-Update)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -15,7 +15,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Frontend + API | Next.js App Router (Vercel) | Hobby (Free) |
 | Datenbank | Supabase (PostgreSQL + Storage + Auth) | Free |
 | Voice | Retell AI (Dual-Agent DE/INTL) → Twilio SIP → Peoplefone | Pay-as-you-go |
-| Email | Resend (Transaktional) | Free |
+| Email | Resend (Transaktional, Domain: send.flowsight.ch) | Free |
+| SMS | eCall.ch Swiss Gateway (Business Account Typ A, CHF 40/Mo + Punkte) | Pay-as-you-go |
 | Monitoring | Sentry (Error Tracking + Alerts) | Free |
 | Ops Alerts | Telegram + E-Mail (primary), WhatsApp (optional) | GH Actions + Resend |
 
@@ -55,6 +56,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **Leitsystem Phase 1 (17.03.):** PRs #238-#256. Login High-End (OTP, Swiss Trust, warm-white). PWA Auto-Update-Prompt. Falldetail komplett: Status vereinfacht (kein Abgeschlossen), Wording Handwerkersprache (17 Dateien), Termin-Validierung (+15min), Multi-Select Staff, Inline Termin-Sende-Icon, Bewertungs-Flow, Layout 50/50, Mobile Overflow gefixt, einheitliche Pill-Badges.
 - **17 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard). +1 Modul: Review Surface.
 - **50+ Commits seit 04.03.** (PRs #53–#128).
 - **Architecture Wave (10.03.):** PR #128. RLS Migration applied (tenant isolation at DB level). Tenant scoping in Dashboard + API (`resolveTenantScope.ts`). 3-Tier SMS Routing. Review Surface (Google-style). 15 Demo-Cases seeded (Weinberger). Architecture Document (22 Sections). 3-Modi GTM Logic. Ops Scripts (seed_demo_data, setup_rls_and_admin).

@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.2 | **Datum:** 2026-03-11
+**Version:** 1.3 | **Datum:** 2026-03-17
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.2 — D12 ELIMINATED (kein B-Quick, immer B-Full), D16 Trial Machine (11.03.)
+**Status:** v1.3 — D12 ELIMINATED, D16 Trial Machine, D9 OTP-Login (17.03.), eCall Business Account (17.03.)
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -20,7 +20,7 @@
 | D6 | Demo-Modi: 3 klar getrennte Welten (Internal/Prospect/Production) | **EMPFOHLEN** | Founder + CC | §8 |
 | D7 | Prospect Experience Layer als eigene Architekturschicht | **EMPFOHLEN** | Founder + CC | §8 |
 | D8 | Tenant-scoped Case List → **RLS** | **ENTSCHIEDEN** ✅ | Founder | §9, §15 |
-| D9 | Demo-Zugang → **Magic-Link via Supabase OTP** | **ENTSCHIEDEN** ✅ | Founder | §11 |
+| D9 | Login → **Custom OTP (6-Digit Code per E-Mail, server-side Session)** | **ENTSCHIEDEN** ✅ | Founder | §11 |
 | D10 | Demo-Dataset → **is_demo Boolean auf Cases** | **ENTSCHIEDEN** ✅ | Founder | §16 |
 | D11 | SMS-Zielrouting → **tenant.demo_sms_target** | **ENTSCHIEDEN** ✅ | Founder | §12 |
 | D12 | ~~G2 B-Quick Agent~~ → **ELIMINATED**. Immer B-Full. Jeder Prospect bekommt eigenen dedizierten Agent. | **ENTSCHIEDEN** ✅ | Founder | §5, operating_model |
@@ -489,8 +489,8 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 
 #### SMS
 - **Rolle:** Brücke zwischen Voice und Korrektur. Einziger Post-Call-Kontakt zum Melder.
-- **Provider:** eCall.ch (Schweizer SMS-Gateway). Twilio = nur Voice/SIP, kein SMS.
-- **Sender-Logik (2-Tier):** (1) Alphanumerischer Sender pro Tenant (z.B. "Weinberger") — muss im eCall-Portal freigeschaltet sein. (2) Fallback: ECALL_SENDER_NUMBER (FlowSight-Servicenummer, global).
+- **Provider:** eCall.ch (Schweizer SMS-Gateway, Business Account Typ A, CHF 40/Mo + 1.2-1.7 Punkte/SMS, 160 Zeichen). Twilio = nur Voice/SIP, kein SMS.
+- **Sender-Logik (2-Tier):** (1) Alphanumerischer Sender pro Tenant (z.B. "Weinberger", max 11 Zeichen). (2) Fallback: ECALL_SENDER_NUMBER (FlowSight-Servicenummer, global).
 - **Qualitätsanspruch:** Muss von Firmenname kommen (alphanumeric sender). Muss Korrekturlink enthalten. Muss unter 160 Chars (~85 Chars aktuell). Muss auf Handy funktionieren.
 - **Typische Risiken:** Alphanumerischer Sender nicht im eCall-Portal freigeschaltet → 400 → Fallback auf Servicenummer. eCall-Env-Vars nicht gesetzt → SMS-Versand komplett blockiert.
 - **Zielzustand:** Melder erhält SMS innerhalb 10s nach Anruf. Korrekturlink funktioniert. Foto-Upload möglich. Absender = Firmenname (nach eCall-Freischaltung).
@@ -514,33 +514,34 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 
 ---
 
-## 11. Demo-Zugang / Auth / Sessions
+## 11. Auth / Sessions (Custom OTP seit 17.03.)
+
+### Login-Architektur (Custom OTP)
+
+**Seit PRs #238-#240:** Custom OTP ersetzt Magic-Link. Kein Supabase Auth OTP (Rate Limits), sondern eigener Flow:
+1. User gibt E-Mail ein → `POST /api/ops/auth/send-code` → 6-Digit Code per E-Mail (Resend, Sender: noreply@send.flowsight.ch)
+2. User gibt Code ein → `POST /api/ops/auth/verify-code` → Server-side Session Cookie
+3. Session = httpOnly Cookie, kein JWT im Client. Supabase service-role für DB-Zugriffe.
+
+**Login-UI:** High-End (warm-white, gold CTA, Swiss Trust Footer mit Datenschutz + Impressum).
 
 ### Arten von Zugängen
 
 | Zugangsart | Wer | Wie | Was sichtbar | Schreibrechte |
 |------------|-----|-----|-------------|---------------|
-| **Founder-Login** | Founder | E-Mail + Passwort (Supabase Auth) | Alle Tenants, alle Cases | Voll |
-| **Kunden-Login** | Zahlender Kunde | E-Mail + Passwort, tenant_id in app_metadata | Nur eigener Tenant | Voll (eigene Cases) |
-| **Prospect Demo-Link** | Prospect | Magic-Link oder tokenisierte URL | Nur Demo-Tenant, Demo-Dataset | Read-Only + eigener Test-Call |
+| **Founder-Login** | Founder | OTP per E-Mail (6-Digit Code) | Alle Tenants, alle Cases | Voll |
+| **Kunden-Login** | Zahlender Kunde | OTP per E-Mail, tenant_id in DB | Nur eigener Tenant | Voll (eigene Cases) |
+| **Prospect Demo-Link** | Prospect | OTP per E-Mail (prospect_email aus Trial) | Nur Demo-Tenant, Demo-Dataset | Read-Only + eigener Test-Call |
 | **Review Surface** | Melder (Endkunde) | HMAC-Token in URL (/review/[caseId]?token=xxx) | Nur eine Review-Card | Keine (externer Link) |
 | **SMS Korrekturlink** | Melder (Endkunde) | HMAC-Token in URL (/v/[id]?t=xxx) | Nur ein Case (Korrektur) | Begrenzt (Korrekturfelder) |
 
-### Empfohlene Zielarchitektur für Prospect Demo-Link (D9)
+### Implementierte Auth-Architektur (seit 17.03.)
 
-**Option A: Magic-Link (empfohlen)**
-- Founder sendet Prospect eine URL: `flowsight.ch/demo/weinberger-ag?token=<signed>`
-- Token enthält: tenant_id, expires_at, permissions (read-only)
-- Prospect öffnet Link → sieht Dashboard mit Demo-Dataset + eigenen Test-Cases
-- Kein Passwort nötig. Kein Supabase-User nötig.
-- Ablauf nach 7 Tagen.
-
-**Option B: Temporärer Supabase-User**
-- Founder erstellt Prospect-Account mit read-only Rolle
-- Prospect loggt sich ein wie ein Kunde
-- Aufwändiger, aber natürlicher für "wie fühlt sich das System an"
-
-**Empfehlung:** Option A für MVP. Niedrigerer Aufwand, kein Account-Management, saubere Isolation. Option B erst wenn Kunden-Login ohnehin steht.
+**Custom OTP (implementiert):**
+- Prospect erhält Welcome-Mail mit Login-Link → `/ops` → gibt E-Mail ein → erhält 6-Digit Code → einloggen
+- Server-side Session Cookie (httpOnly, secure). Kein JWT im Client.
+- Tenant-Scope via prospect_email → tenants DB-Lookup
+- Kein Supabase Auth OTP (hatte Rate Limits bei 50+ Tenants). Eigener Code-Generierung + Resend-Versand.
 
 **Risiken beider Optionen:**
 - Token-Leak (Prospect teilt Link) → TTL + Single-Use mitigieren
@@ -570,14 +571,20 @@ Grund: Twilio-SMS via internationale Carrier verursachen Spam-Friktion bei Schwe
 └──────────────────────────────────────────────────┘
 ```
 
-### Sender-Logik (1-Tier, direkt)
+### Account & Kosten (seit 17.03.2026)
+
+**eCall Business Account Typ A** (aktiv):
+- Grundgebühr: CHF 40/Monat
+- SMS-Kosten: 1.2–1.7 Punkte pro SMS (160 Zeichen Limit)
+- Alphanumerischer Sender: max 11 Zeichen (z.B. "Weinberger", "BrunnerHT")
+
+### Sender-Logik (2-Tier)
 
 ```
-ECALL_SENDER_NUMBER = +41766012739 (FlowSight-Servicenummer)
-→ Immer als Absender verwendet (keine alphanumerische Sender-Registrierung nötig)
-→ Empfänger sieht: +41766012739 + Text "Weinberger: Ihre Meldung..."
-→ Firmenname steht im SMS-Text, nicht im Absender-Feld
-→ Skaliert: Ein Sender für alle Tenants, kein Setup pro Betrieb
+Tier 1: Alphanumerischer Sender pro Tenant (z.B. "Weinberger") — max 11 Zeichen
+Tier 2 (Fallback): ECALL_SENDER_NUMBER = +41766012739 (FlowSight-Servicenummer)
+→ Firmenname steht im SMS-Text UND im Absender-Feld (wenn Tier 1 aktiv)
+→ 160-Zeichen-Limit pro SMS (eCall Business Account)
 ```
 
 Bewusste Entscheidung (14.03.): Alphanumerische Sender (z.B. "Weinberger" als Absendername)
@@ -775,7 +782,7 @@ Seed-Script Logik:
 1. Input: tenant_id, tenant_slug, gewerk
 2. Generiere 15 Cases:
    - created_at: heute -1d bis heute -14d (verteilt)
-   - status: 8x done, 4x open, 3x in_progress
+   - status: 8x erledigt, 4x neu, 3x in_arbeit (Kette: Neu → Geplant → In Arbeit → Warten → Erledigt)
    - urgency: 3x emergency, 7x normal, 5x low
    - source: 8x voice, 5x wizard, 2x manual
    - category: gewerk-spezifisch (aus Prospect Card)
