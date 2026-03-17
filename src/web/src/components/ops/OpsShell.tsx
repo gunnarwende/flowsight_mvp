@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InstallPrompt } from "./InstallPrompt";
 import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
+import { UpdatePrompt } from "./UpdatePrompt";
 
 // ---------------------------------------------------------------------------
 // Navigation — 3 items only, mirroring the Leitsystem architecture
@@ -298,6 +299,7 @@ export function OpsShell({
         </div>
       </main>
       <ServiceWorkerRegistration />
+      <UpdatePrompt />
     </div>
   );
 }
