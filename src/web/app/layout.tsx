@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default:
-      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
+      "FlowSight – Ihr eigenes Leitsystem.",
     template: "%s — FlowSight",
   },
   description:
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     locale: "de_CH",
     siteName: "FlowSight",
     title:
-      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
+      "FlowSight – Ihr eigenes Leitsystem.",
     description:
       "24/7 Anrufannahme, strukturierte Falllisten und Einsatzplanung. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
     url: "https://flowsight.ch",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "FlowSight – Telefonassistent & Leitsystem für Sanitär & Heizung",
+      "FlowSight – Ihr eigenes Leitsystem.",
     description:
       "24/7 Anrufannahme, strukturierte Falllisten und Einsatzplanung. Für Sanitär- und Heizungsbetriebe im Raum Zürich.",
   },
