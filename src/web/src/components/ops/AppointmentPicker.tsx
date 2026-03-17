@@ -90,9 +90,13 @@ export function AppointmentPicker({
 
   // Date click state machine
   function handleDateClick(dateStr: string) {
+    setValidationError(null);
     if (!startDate) {
       setStartDate(dateStr);
       setEndDate(null);
+      // Same day: ensure endTime >= startTime + 15
+      const minEnd = bumpTime(startTime, 15);
+      if (endTime < minEnd) setEndTime(minEnd);
     } else if (!endDate) {
       if (dateStr === startDate) {
         setStartDate(null);
@@ -105,23 +109,52 @@ export function AppointmentPicker({
     } else {
       setStartDate(dateStr);
       setEndDate(null);
+      // Reset to same-day: ensure endTime >= startTime + 15
+      const minEnd = bumpTime(startTime, 15);
+      if (endTime < minEnd) setEndTime(minEnd);
     }
   }
 
-  // Time validation: single day → endTime must be > startTime
+  // Validation error message
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Compute minimum "Bis" time: Von + 15 min on the same day
+  const minEndTime = (() => {
+    if (!startDate) return undefined;
+    const effEndDate = endDate ?? startDate;
+    // Only constrain when same day
+    if (effEndDate === startDate) {
+      return bumpTime(startTime, 15);
+    }
+    return undefined;
+  })();
+
+  // Time validation: single day → endTime must be >= startTime + 15min
   function handleStartTimeChange(t: string) {
     setStartTime(t);
-    if (startDate && !endDate && t >= endTime) {
-      setEndTime(bumpTime(t, 15));
+    setValidationError(null);
+    const effEndDate = endDate ?? startDate;
+    // Auto-adjust "Bis" if it would be before Von + 15min
+    if (startDate && effEndDate === startDate) {
+      const minEnd = bumpTime(t, 15);
+      if (endTime < minEnd) {
+        setEndTime(minEnd);
+      }
     }
   }
 
   function handleEndTimeChange(t: string) {
-    if (startDate && !endDate && t <= startTime) {
-      setEndTime(bumpTime(startTime, 15));
-    } else {
-      setEndTime(t);
+    setValidationError(null);
+    const effEndDate = endDate ?? startDate;
+    if (startDate && effEndDate === startDate) {
+      const minEnd = bumpTime(startTime, 15);
+      if (t < minEnd) {
+        // Auto-correct to minimum
+        setEndTime(minEnd);
+        return;
+      }
     }
+    setEndTime(t);
   }
 
   // Confirm
@@ -129,7 +162,17 @@ export function AppointmentPicker({
   const handleConfirm = () => {
     if (!startDate) return;
     const effEndDate = endDate ?? startDate;
-    onConfirm(toIso(startDate, startTime), toIso(effEndDate, endTime));
+    const startIso = toIso(startDate, startTime);
+    const endIso = toIso(effEndDate, endTime);
+    // Final validation: end must be > start + 15min
+    const startMs = new Date(startIso).getTime();
+    const endMs = new Date(endIso).getTime();
+    if (endMs - startMs < 15 * 60 * 1000) {
+      setValidationError("Bis-Zeitpunkt muss nach Von + 15 Min. liegen");
+      return;
+    }
+    setValidationError(null);
+    onConfirm(startIso, endIso);
   };
 
   return (
@@ -165,23 +208,29 @@ export function AppointmentPicker({
               value={endTime}
               brandColor={brandColor}
               onChange={handleEndTimeChange}
+              minTime={minEndTime}
             />
           </div>
         </div>
       </div>
 
+      {/* Validation error */}
+      {validationError && (
+        <p className="mt-2 text-xs text-red-600 font-medium">{validationError}</p>
+      )}
+
       {/* Summary + Actions */}
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-        <div className="text-sm text-gray-600">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-3 border-t border-gray-100 gap-2">
+        <div className="text-sm text-gray-600 min-w-0">
           {startDate ? (
-            <span className="font-medium text-gray-800">
+            <span className="font-medium text-gray-800 break-words">
               {formatPickerSummary(startDate, endDate, startTime, endTime)}
             </span>
           ) : (
             <span className="text-gray-400">Tag wählen</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
             type="button"
             onClick={onCancel}

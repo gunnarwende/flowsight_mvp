@@ -269,43 +269,45 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
         </div>
       ) : (
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 bg-slate-50/80">
-                <th className="px-4 py-3 font-medium">Name</th>
-                <th className="px-4 py-3 font-medium">Rolle</th>
-                <th className="px-4 py-3 font-medium hidden sm:table-cell">E-Mail</th>
-                <th className="px-4 py-3 font-medium hidden sm:table-cell">Telefon</th>
-                <th className="px-4 py-3 font-medium w-24"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {staff.map((s) => (
-                <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-900">{s.display_name}</td>
-                  <td className="px-4 py-3 text-gray-600">{ROLE_LABELS[s.role] ?? s.role}</td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{s.email ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{s.phone ?? "—"}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => startEdit(s)}
-                        className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                      >
-                        Bearbeiten
-                      </button>
-                      <button
-                        onClick={() => handleDeactivate(s.id)}
-                        className="text-xs text-red-400 hover:text-red-600 transition-colors ml-2"
-                      >
-                        Entfernen
-                      </button>
-                    </div>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 bg-slate-50/80">
+                  <th className="px-4 py-3 font-medium">Name</th>
+                  <th className="px-4 py-3 font-medium">Rolle</th>
+                  <th className="px-4 py-3 font-medium hidden sm:table-cell">E-Mail</th>
+                  <th className="px-4 py-3 font-medium hidden sm:table-cell">Telefon</th>
+                  <th className="px-4 py-3 font-medium w-24"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {staff.map((s) => (
+                  <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-gray-900 max-w-[140px] truncate">{s.display_name}</td>
+                    <td className="px-4 py-3 text-gray-600">{ROLE_LABELS[s.role] ?? s.role}</td>
+                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell max-w-[180px] truncate">{s.email ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell max-w-[140px] truncate">{s.phone ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => startEdit(s)}
+                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          Bearbeiten
+                        </button>
+                        <button
+                          onClick={() => handleDeactivate(s.id)}
+                          className="text-xs text-red-400 hover:text-red-600 transition-colors ml-2"
+                        >
+                          Entfernen
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

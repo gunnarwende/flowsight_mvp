@@ -292,9 +292,9 @@ export function OpsShell({
       )}
 
       {/* Main content */}
-      <main className="md:ml-64">
+      <main className="md:ml-64 overflow-x-hidden">
         <InstallPrompt />
-        <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
           {children}
         </div>
       </main>

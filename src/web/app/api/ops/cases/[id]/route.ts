@@ -202,6 +202,23 @@ export async function PATCH(
     );
   }
 
+  // Validate appointment: scheduled_end_at must be > scheduled_at + 15min
+  if ("scheduled_at" in update && "scheduled_end_at" in update && update.scheduled_at && update.scheduled_end_at) {
+    const startMs = new Date(update.scheduled_at as string).getTime();
+    const endMs = new Date(update.scheduled_end_at as string).getTime();
+    if (isNaN(startMs) || isNaN(endMs)) {
+      return NextResponse.json(
+        { error: "Ungültige Termin-Daten." },
+        { status: 400 }
+      );
+    }
+    if (endMs - startMs < 15 * 60 * 1000) {
+      return NextResponse.json(
+        { error: "Bis-Zeitpunkt muss mindestens 15 Minuten nach Von liegen." },
+        { status: 400 }
+      );
+    }
+  }
 
   try {
     const supabase = getServiceClient();
