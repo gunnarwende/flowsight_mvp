@@ -44,6 +44,18 @@ export async function GET() {
     orientation: "portrait-primary" as const,
     icons: [
       {
+        src: "/api/ops/pwa/icon?size=48",
+        sizes: "48x48",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/api/ops/pwa/icon?size=96",
+        sizes: "96x96",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
         src: "/api/ops/pwa/icon?size=192",
         sizes: "192x192",
         type: "image/png",

@@ -17,11 +17,13 @@ export async function GET(request: Request) {
   const isMaskable = searchParams.get("maskable") === "1";
 
   const radius = isMaskable ? 0 : Math.round(size * 0.22);
-  // Responsive dot: larger % at small sizes so it stays visible.
-  // Mobile homescreen (192px): 13% = 25px — good.
-  // Desktop taskbar/favicon (≤64px): 28% = ~14-18px — visible.
-  // Large (512px): 13% = 67px — elegant.
-  const baseRatio = size <= 64 ? 0.28 : size <= 128 ? 0.20 : 0.13;
+  // Responsive dot: must be clearly visible even at 32px taskbar size.
+  // 48px icon (taskbar): 38% = 18px dot — unmissable
+  // 96px icon (small UI): 30% = 29px dot — clear
+  // 192px icon (homescreen): 15% = 29px dot — elegant
+  // 512px icon (splash): 12% = 61px dot — refined
+  const baseRatio =
+    size <= 64 ? 0.38 : size <= 128 ? 0.30 : size <= 256 ? 0.15 : 0.12;
   const dotSize = Math.round(size * (isMaskable ? baseRatio * 0.8 : baseRatio));
 
   return new ImageResponse(
