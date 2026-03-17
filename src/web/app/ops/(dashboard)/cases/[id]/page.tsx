@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
@@ -92,6 +93,29 @@ export default async function CaseDetailPage({
   const isProspect = scope?.isProspect ?? false;
   const brandColor = identity?.primaryColor ?? "#64748b";
 
+  // Resolve logged-in user for self-send guard + RBAC
+  const authClient = await getAuthClient();
+  const { data: { user } } = await authClient.auth.getUser();
+  const userEmail = user?.email ?? "";
+
+  // Look up staff record matching user's email for this tenant
+  let currentStaffName: string | null = null;
+  let staffRole: "admin" | "techniker" | undefined;
+  if (userEmail && caseData.tenant_id) {
+    const { data: staffMatch } = await supabase
+      .from("staff")
+      .select("display_name, role")
+      .eq("tenant_id", caseData.tenant_id)
+      .eq("email", userEmail)
+      .eq("is_active", true)
+      .limit(1)
+      .maybeSingle();
+    if (staffMatch) {
+      currentStaffName = staffMatch.display_name;
+      staffRole = staffMatch.role === "techniker" ? "techniker" : "admin";
+    }
+  }
+
   return (
     <>
       {/* Header: back + category + meta + actions */}
@@ -129,6 +153,8 @@ export default async function CaseDetailPage({
         isProspect={isProspect}
         caseEvents={caseEvents}
         brandColor={brandColor}
+        currentStaffName={currentStaffName}
+        staffRole={staffRole}
       />
 
     </>

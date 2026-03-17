@@ -53,12 +53,15 @@ export function OpsShell({
   userEmail,
   tenantName,
   brandColor,
+  staffRole,
   children,
 }: {
   userEmail: string;
   tenantName?: string;
   /** Tenant brand color hex (e.g. "#004994"). Falls back to neutral slate if not set. */
   brandColor?: string;
+  /** Staff role for RBAC — techniker sees limited nav */
+  staffRole?: "admin" | "techniker";
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -73,6 +76,11 @@ export function OpsShell({
   const color = brandColor ?? "#64748b";
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+
+  // RBAC: hide Einstellungen for techniker
+  const visibleNavItems = staffRole === "techniker"
+    ? NAV_ITEMS.filter(item => item.href !== "/ops/settings")
+    : NAV_ITEMS;
 
   function isNavActive(href: string): boolean {
     if (href === "/ops/cases") {
@@ -116,7 +124,7 @@ export function OpsShell({
   const navLinks = (
     <nav className="flex-1 px-3 py-5">
       <div className="space-y-1">
-        {NAV_ITEMS.map((item) => {
+        {visibleNavItems.map((item) => {
           const active = isNavActive(item.href);
           return (
             <Link

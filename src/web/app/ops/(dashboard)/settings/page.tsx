@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { StaffManager } from "@/src/components/ops/StaffManager";
 
 interface Settings {
   google_review_url: string;
   notify_reporter_email: boolean;
   notify_reporter_sms: boolean;
+  notify_termin_email: boolean;
+  notify_termin_sms: boolean;
+  notify_termin_reminder_sms: boolean;
+  notify_staff_assignment: boolean;
 }
 
 interface SettingsData {
@@ -16,13 +21,21 @@ interface SettingsData {
 }
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [data, setData] = useState<SettingsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Form state — Benachrichtigungen
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [notifySms, setNotifySms] = useState(true);
-  const [notifyBaseline, setNotifyBaseline] = useState({ email: true, sms: true });
+  const [notifyTerminEmail, setNotifyTerminEmail] = useState(true);
+  const [notifyTerminSms, setNotifyTerminSms] = useState(true);
+  const [notifyTerminReminderSms, setNotifyTerminReminderSms] = useState(true);
+  const [notifyStaffAssignment, setNotifyStaffAssignment] = useState(true);
+  const [notifyBaseline, setNotifyBaseline] = useState({
+    email: true, sms: true,
+    terminEmail: true, terminSms: true, terminReminderSms: true, staffAssignment: true,
+  });
   const [notifySaving, setNotifySaving] = useState(false);
   const [notifySaved, setNotifySaved] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
@@ -36,7 +49,10 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch("/api/ops/settings")
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => {
+        if (res.status === 403) { router.replace("/ops/cases"); return null; }
+        return res.ok ? res.json() : null;
+      })
       .then((d: SettingsData | null) => {
         if (d) {
           setData(d);
@@ -44,18 +60,28 @@ export default function SettingsPage() {
           setReviewBaseline(d.settings.google_review_url);
           setNotifyEmail(d.settings.notify_reporter_email);
           setNotifySms(d.settings.notify_reporter_sms);
+          setNotifyTerminEmail(d.settings.notify_termin_email);
+          setNotifyTerminSms(d.settings.notify_termin_sms);
+          setNotifyTerminReminderSms(d.settings.notify_termin_reminder_sms);
+          setNotifyStaffAssignment(d.settings.notify_staff_assignment);
           setNotifyBaseline({
             email: d.settings.notify_reporter_email,
             sms: d.settings.notify_reporter_sms,
+            terminEmail: d.settings.notify_termin_email,
+            terminSms: d.settings.notify_termin_sms,
+            terminReminderSms: d.settings.notify_termin_reminder_sms,
+            staffAssignment: d.settings.notify_staff_assignment,
           });
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   const notifyDirty =
-    notifyEmail !== notifyBaseline.email || notifySms !== notifyBaseline.sms;
+    notifyEmail !== notifyBaseline.email || notifySms !== notifyBaseline.sms ||
+    notifyTerminEmail !== notifyBaseline.terminEmail || notifyTerminSms !== notifyBaseline.terminSms ||
+    notifyTerminReminderSms !== notifyBaseline.terminReminderSms || notifyStaffAssignment !== notifyBaseline.staffAssignment;
   const reviewDirty = googleReviewUrl !== reviewBaseline;
 
   async function saveNotify() {
@@ -69,10 +95,18 @@ export default function SettingsPage() {
         body: JSON.stringify({
           notify_reporter_email: notifyEmail,
           notify_reporter_sms: notifySms,
+          notify_termin_email: notifyTerminEmail,
+          notify_termin_sms: notifyTerminSms,
+          notify_termin_reminder_sms: notifyTerminReminderSms,
+          notify_staff_assignment: notifyStaffAssignment,
         }),
       });
       if (res.ok) {
-        setNotifyBaseline({ email: notifyEmail, sms: notifySms });
+        setNotifyBaseline({
+          email: notifyEmail, sms: notifySms,
+          terminEmail: notifyTerminEmail, terminSms: notifyTerminSms,
+          terminReminderSms: notifyTerminReminderSms, staffAssignment: notifyStaffAssignment,
+        });
         setNotifySaved(true);
         setTimeout(() => setNotifySaved(false), 3000);
       } else {
@@ -132,21 +166,65 @@ export default function SettingsPage() {
         {/* Benachrichtigungen — per-card save */}
         <Section
           title="Benachrichtigungen"
-          description="Automatische Rückmeldung an Meldende nach Fallerfassung."
+          description="Automatische Benachrichtigungen an Meldende und Mitarbeiter."
         >
-          <div className="space-y-3">
-            <Toggle
-              checked={notifyEmail}
-              onChange={setNotifyEmail}
-              label="E-Mail-Bestätigung"
-              description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
-            />
-            <Toggle
-              checked={notifySms}
-              onChange={setNotifySms}
-              label="SMS-Bestätigung"
-              description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
-            />
+          <div className="space-y-5">
+            {/* Sub-section: Bei Fallerfassung */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Bei Fallerfassung</p>
+              <div className="space-y-3">
+                <Toggle
+                  checked={notifyEmail}
+                  onChange={setNotifyEmail}
+                  label="E-Mail-Bestätigung an Meldende"
+                  description="Meldende erhalten eine E-Mail mit Fallnummer und Zusammenfassung"
+                />
+                <Toggle
+                  checked={notifySms}
+                  onChange={setNotifySms}
+                  label="SMS-Bestätigung an Meldende"
+                  description="Meldende erhalten eine SMS-Bestätigung nach der Meldung"
+                />
+              </div>
+            </div>
+
+            {/* Sub-section: Bei Terminzuweisung */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Bei Terminzuweisung</p>
+              <div className="space-y-3">
+                <Toggle
+                  checked={notifyTerminEmail}
+                  onChange={setNotifyTerminEmail}
+                  label="Terminbestätigung an Meldende (E-Mail)"
+                  description="Meldende erhalten eine E-Mail wenn ein Termin eingeplant wird"
+                />
+                <Toggle
+                  checked={notifyTerminSms}
+                  onChange={setNotifyTerminSms}
+                  label="Terminbestätigung an Meldende (SMS)"
+                  description="Meldende erhalten eine SMS mit den Termindetails"
+                />
+                <Toggle
+                  checked={notifyStaffAssignment}
+                  onChange={setNotifyStaffAssignment}
+                  label="E-Mail an Mitarbeiter bei Zuweisung"
+                  description="Mitarbeiter erhalten eine E-Mail wenn ihnen ein Fall zugewiesen wird"
+                />
+              </div>
+            </div>
+
+            {/* Sub-section: Erinnerungen */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Erinnerungen</p>
+              <div className="space-y-3">
+                <Toggle
+                  checked={notifyTerminReminderSms}
+                  onChange={setNotifyTerminReminderSms}
+                  label="24h-Erinnerung an Meldende (SMS)"
+                  description="Meldende erhalten am Vortag eine SMS-Erinnerung an den Termin"
+                />
+              </div>
+            </div>
           </div>
           {notifyDirty && (
             <CardSaveBar
