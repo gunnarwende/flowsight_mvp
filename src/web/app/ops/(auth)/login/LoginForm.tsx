@@ -82,29 +82,35 @@ export function LoginForm() {
       if (error) {
         setStatus("error");
         const msg = error.message?.toLowerCase() ?? "";
-        // Rate limit check FIRST — Supabase says "For security purposes,
-        // you can only request this once every X seconds"
-        if (
+
+        // "user not found" = genuinely no account (rare, Supabase explicit)
+        if (msg.includes("user not found")) {
+          setErrorMsg(
+            "Kein Konto mit dieser E-Mail-Adresse. Bitte Admin kontaktieren."
+          );
+        } else if (
+          // Rate limit — Supabase returns "For security purposes..." OR
+          // "Signups not allowed for otp" (ambiguous: could be rate limit
+          // OR missing user with shouldCreateUser:false — treat as rate limit
+          // to avoid false "Kein Konto" for existing users)
           msg.includes("security purposes") ||
           msg.includes("rate limit") ||
-          msg.includes("too many")
+          msg.includes("too many") ||
+          msg.includes("signups not allowed") ||
+          msg.includes("email rate limit")
         ) {
-          // Parse wait seconds from Supabase message if possible
           const match = error.message?.match(/every\s+(\d+)\s+seconds/i);
           const wait = match ? Math.max(parseInt(match[1], 10), 60) : 60;
           setErrorMsg(
             `Bitte ${wait} Sekunden warten und erneut versuchen.`
           );
           setCooldown(wait);
-        } else if (
-          msg.includes("user not found") ||
-          msg.includes("signups not allowed")
-        ) {
-          setErrorMsg(
-            "Kein Konto mit dieser E-Mail-Adresse. Bitte Admin kontaktieren."
-          );
         } else {
-          setErrorMsg(error.message);
+          // Unknown error — show with retry hint
+          setErrorMsg(
+            `${error.message} — Bitte in 60 Sekunden erneut versuchen.`
+          );
+          setCooldown(60);
         }
       } else {
         setStatus("idle");
@@ -219,7 +225,15 @@ export function LoginForm() {
 
       if (error) {
         setStatus("error");
-        setErrorMsg(error.message);
+        const msg = error.message?.toLowerCase() ?? "";
+        if (msg.includes("user not found")) {
+          setErrorMsg("Kein Konto mit dieser E-Mail-Adresse.");
+        } else {
+          const match = error.message?.match(/every\s+(\d+)\s+seconds/i);
+          const wait = match ? Math.max(parseInt(match[1], 10), 60) : 60;
+          setErrorMsg(`Bitte ${wait} Sekunden warten.`);
+          setCooldown(wait);
+        }
       } else {
         setStatus("idle");
         setCode(["", "", "", "", "", ""]);
