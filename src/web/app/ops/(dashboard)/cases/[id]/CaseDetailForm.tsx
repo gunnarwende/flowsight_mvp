@@ -594,7 +594,7 @@ export function CaseDetailForm({
         ) : (
           <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
-            <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1.5fr] gap-x-6 gap-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1.5fr] gap-x-6 gap-y-3 min-w-0">
               <KV label="Status">
                 <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
                   {STATUS_LABELS[status] ?? status}
@@ -614,14 +614,14 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt
-                  ? <span className="text-[15px] font-semibold text-gray-900 whitespace-nowrap">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
+                  ? <span className="text-[15px] font-semibold text-gray-900 sm:whitespace-nowrap break-words">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
                   : <span className="text-sm text-gray-500">Offen</span>}
               </KV>
             </div>
 
             {/* Quick actions (read-only view) */}
             {scheduledAt && (contactEmail || contactPhone) && (
-              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
+              <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
                 <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
                   className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                 >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Kunde benachrichtigt ✓" : "Kunden über Termin benachrichtigen"}</button>
@@ -665,7 +665,7 @@ export function CaseDetailForm({
                 <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
                 {description ? (
                   <div className="overflow-hidden">
-                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-all ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
+                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
                     {(description.split("\n").length > 3 || description.length > 200) && (
                       <button onClick={() => setDescExpanded(p => !p)}
                         className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 mt-2 transition-colors min-h-[44px] sm:min-h-0">
@@ -704,7 +704,7 @@ export function CaseDetailForm({
         </div>
 
         {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="border-t border-gray-100 md:border-t-0 md:w-80 lg:w-[340px] flex-shrink-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white">
+        <div className="border-t border-gray-100 md:border-t-0 md:w-80 lg:w-[340px] flex-shrink-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
 
           {/* Kontakt mini-card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
@@ -836,9 +836,9 @@ function SectionHead({
 /** Key-value display pair */
 function KV({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
+    <div className="min-w-0">
       <span className="text-gray-500 text-[11px] font-medium uppercase tracking-wide">{label}</span>
-      <div className="mt-0.5">{children}</div>
+      <div className="mt-0.5 min-w-0 break-words">{children}</div>
     </div>
   );
 }

@@ -146,11 +146,11 @@ export default function SettingsPage() {
   }
 
   return (
-    <div>
+    <div className="overflow-x-hidden min-w-0">
       <div className="mb-8">
         <h2 className="text-lg font-bold text-gray-900">Einstellungen</h2>
         {data?.tenant_name && (
-          <p className="text-sm text-gray-500">{data.tenant_name}</p>
+          <p className="text-sm text-gray-500 break-words">{data.tenant_name}</p>
         )}
       </div>
 
@@ -254,7 +254,7 @@ export default function SettingsPage() {
             value={googleReviewUrl}
             onChange={(e) => setGoogleReviewUrl(e.target.value)}
             placeholder="https://g.page/r/..."
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 truncate min-w-0"
           />
           <p className="mt-1.5 text-xs text-gray-400">
             Suchen Sie Ihren Betrieb auf Google Maps &rarr; &quot;Rezension
@@ -289,9 +289,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
+    <div className="bg-white border border-gray-200 rounded-xl p-5 min-w-0 overflow-hidden">
       <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{title}</h3>
-      <p className="text-xs text-gray-400 mb-4">{description}</p>
+      <p className="text-xs text-gray-400 mb-4 break-words">{description}</p>
       {children}
     </div>
   );
@@ -348,8 +348,8 @@ function Toggle({
   description: string;
 }) {
   return (
-    <label className="flex items-start gap-3 cursor-pointer">
-      <div className="pt-0.5">
+    <label className="flex items-start gap-3 cursor-pointer min-w-0">
+      <div className="pt-0.5 flex-shrink-0">
         <button
           type="button"
           role="switch"
@@ -366,9 +366,9 @@ function Toggle({
           />
         </button>
       </div>
-      <div>
-        <p className="text-sm font-medium text-gray-700">{label}</p>
-        <p className="text-xs text-gray-400">{description}</p>
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-gray-700 break-words">{label}</p>
+        <p className="text-xs text-gray-400 break-words">{description}</p>
       </div>
     </label>
   );
