@@ -81,15 +81,21 @@ export function LoginForm() {
 
       if (error) {
         setStatus("error");
+        const msg = error.message?.toLowerCase() ?? "";
         // User-friendly error for non-existent accounts
         if (
-          error.message?.toLowerCase().includes("user not found") ||
-          error.message?.toLowerCase().includes("signups not allowed") ||
-          error.message?.toLowerCase().includes("for security purposes")
+          msg.includes("user not found") ||
+          msg.includes("signups not allowed") ||
+          msg.includes("for security purposes")
         ) {
           setErrorMsg(
             "Kein Konto mit dieser E-Mail-Adresse. Bitte Admin kontaktieren."
           );
+        } else if (msg.includes("rate limit") || msg.includes("too many")) {
+          setErrorMsg(
+            "Zu viele Anmeldeversuche. Bitte 60 Sekunden warten und erneut versuchen."
+          );
+          setCooldown(60);
         } else {
           setErrorMsg(error.message);
         }
