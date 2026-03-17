@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { LoginForm } from "./LoginForm";
+import { InstallPrompt } from "@/src/components/ops/InstallPrompt";
 
 export default function OpsLoginPage() {
   return (
@@ -21,6 +22,10 @@ export default function OpsLoginPage() {
         <p className="text-slate-600 text-xs mt-8 text-center">
           Nur autorisierte Benutzer. Kein Konto? Admin kontaktieren.
         </p>
+
+        <div className="mt-6">
+          <InstallPrompt />
+        </div>
       </div>
     </div>
   );
