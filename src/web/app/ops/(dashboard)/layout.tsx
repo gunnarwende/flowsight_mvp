@@ -8,7 +8,7 @@ import { OpsShell } from "@/src/components/ops/OpsShell";
 /**
  * Tab title: "{short_name} Leitsystem" — Identity Contract E2.
  * Uses title.absolute to bypass root layout's " — FlowSight" template (R4).
- * PWA manifest + apple-touch-icon for homescreen installation.
+ * PWA manifest + meta tags inherited from parent ops/layout.tsx.
  */
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -20,18 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
     const identity = await resolveTenantIdentity(user);
     const tabLabel = identity?.shortName ?? "Leitsystem";
-    return {
-      title: { absolute: `${tabLabel} Leitsystem` },
-      manifest: "/api/ops/pwa/manifest",
-      icons: {
-        apple: "/api/ops/pwa/icon?size=180",
-      },
-      other: {
-        "mobile-web-app-capable": "yes",
-        "apple-mobile-web-app-capable": "yes",
-        "apple-mobile-web-app-status-bar-style": "black-translucent",
-      },
-    };
+    return { title: { absolute: `${tabLabel} Leitsystem` } };
   } catch {
     return { title: { absolute: "Leitsystem" } };
   }
