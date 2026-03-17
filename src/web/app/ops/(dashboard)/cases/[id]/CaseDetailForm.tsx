@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CaseDetail } from "./page";
 import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
@@ -139,6 +139,7 @@ export function CaseDetailForm({
   isProspect = false,
   caseEvents = [],
   brandColor = "#64748b",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   currentStaffName,
   staffRole,
 }: {
@@ -146,7 +147,7 @@ export function CaseDetailForm({
   isProspect?: boolean;
   caseEvents?: CaseEvent[];
   brandColor?: string;
-  /** Staff display_name matching logged-in user's email (for self-send guard) */
+  /** Staff display_name matching logged-in user's email (kept for future use) */
   currentStaffName?: string | null;
   /** Role-based access: "admin" | "techniker" | undefined (full access) */
   staffRole?: "admin" | "techniker";
@@ -168,7 +169,6 @@ export function CaseDetailForm({
   const [street, setStreet] = useState(initialData.street ?? "");
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [showTerminWarning, setShowTerminWarning] = useState(false);
   const [terminSentForCurrent, setTerminSentForCurrent] = useState(false);
 
   const [baseline, setBaseline] = useState({
@@ -193,9 +193,7 @@ export function CaseDetailForm({
   const [editingSection, setEditingSection] = useState<Section>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [inviteState, setInviteState] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [melderNotifyState, setMelderNotifyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [selfSendConfirm, setSelfSendConfirm] = useState(false);
+  const [terminSendState, setTerminSendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewMsg, setReviewMsg] = useState("");
   const [localEvents, setLocalEvents] = useState(caseEvents);
@@ -204,13 +202,36 @@ export function CaseDetailForm({
   const [notesExpanded, setNotesExpanded] = useState(false);
 
   // ── Staff for assignee dropdown ──────────────────────────────────────
-  const [staffMembers, setStaffMembers] = useState<{ display_name: string }[]>([]);
+  const [staffMembers, setStaffMembers] = useState<{ display_name: string; role: string }[]>([]);
   useEffect(() => {
     fetch("/api/ops/staff")
       .then((r) => (r.ok ? r.json() : []))
-      .then((data: { display_name: string }[]) => setStaffMembers(Array.isArray(data) ? data : []))
+      .then((data: { display_name: string; role: string }[]) => setStaffMembers(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, []);
+
+  // ── Assignee multi-select helpers ────────────────────────────────────
+  /** Parse comma-separated assignee_text into an array of names */
+  function parseAssignees(text: string): string[] {
+    return text.split(",").map(s => s.trim()).filter(Boolean);
+  }
+  const selectedAssignees = parseAssignees(assigneeText);
+
+  function addAssignee(name: string) {
+    if (!name || selectedAssignees.includes(name)) return;
+    const next = [...selectedAssignees, name];
+    setAssigneeText(next.join(", "));
+  }
+
+  function removeAssignee(name: string) {
+    const next = selectedAssignees.filter(n => n !== name);
+    setAssigneeText(next.join(", "));
+  }
+
+  const ROLE_LABELS: Record<string, string> = {
+    admin: "Admin",
+    techniker: "Techniker",
+  };
 
   // ── Per-section dirty checks ─────────────────────────────────────────
   const steuerungDirty =
@@ -332,48 +353,31 @@ export function CaseDetailForm({
     if (!editingSection) setEditingSection(section);
   }
 
-  // ── Invite ───────────────────────────────────────────────────────────
-  async function doSendInvite() {
-    if (steuerungDirty) {
-      const ok = await saveSteuerung();
-      if (!ok) return;
-    }
-    setInviteState("sending");
+  // ── Termin versenden (unified: staff invite + melder notification) ──
+  async function handleSendTermin() {
+    setTerminSendState("sending");
     try {
-      const res = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, { method: "POST" });
-      if (!res.ok) throw new Error("Fehler");
-      setInviteState("sent");
+      // 1. Send ICS calendar invite to staff
+      const inviteRes = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, { method: "POST" });
+      if (!inviteRes.ok) throw new Error("Mitarbeiter-Einladung fehlgeschlagen");
+
+      // 2. Notify melder (customer) if contact info exists
+      const hasContact = !!(contactEmail.trim() || contactPhone.trim());
+      if (hasContact) {
+        const melderRes = await fetch(`/api/ops/cases/${initialData.id}/notify-melder`, { method: "POST" });
+        if (!melderRes.ok) throw new Error("Kundenbenachrichtigung fehlgeschlagen");
+      }
+
+      setTerminSendState("sent");
       setTerminSentForCurrent(true);
-      setTimeout(() => setInviteState("idle"), 3000);
-    } catch {
-      setInviteState("error");
-    }
-  }
-
-  function handleSendInvite() {
-    // Self-send guard: if assigned to yourself, confirm first
-    if (currentStaffName && assigneeText === currentStaffName && !selfSendConfirm) {
-      setSelfSendConfirm(true);
-      return;
-    }
-    setSelfSendConfirm(false);
-    doSendInvite();
-  }
-
-  // ── Melder benachrichtigen ──────────────────────────────────────────
-  async function handleNotifyMelder() {
-    setMelderNotifyState("sending");
-    try {
-      const res = await fetch(`/api/ops/cases/${initialData.id}/notify-melder`, { method: "POST" });
-      if (!res.ok) throw new Error("Fehler");
-      setMelderNotifyState("sent");
       setLocalEvents(prev => [...prev, {
-        id: crypto.randomUUID(), event_type: "melder_termin_notified",
-        title: "Terminbestätigung an Kunden gesendet", created_at: new Date().toISOString(),
+        id: crypto.randomUUID(), event_type: "termin_versendet",
+        title: `Termin versendet${hasContact ? " (Mitarbeiter + Kunde)" : " (Mitarbeiter)"}`,
+        created_at: new Date().toISOString(),
       }]);
-      setTimeout(() => setMelderNotifyState("idle"), 3000);
     } catch {
-      setMelderNotifyState("error");
+      setTerminSendState("error");
+      setTimeout(() => setTerminSendState("idle"), 4000);
     }
   }
 
@@ -410,7 +414,7 @@ export function CaseDetailForm({
       await fetch(`/api/ops/cases/${initialData.id}/skip-review`, { method: "POST" });
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "review_skipped",
-        title: "Review übersprungen", created_at: new Date().toISOString(),
+        title: "Bewertung nicht angefragt", created_at: new Date().toISOString(),
       }]);
     } catch { /* silent */ }
   }
@@ -475,18 +479,18 @@ export function CaseDetailForm({
                   {URGENCIES.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
                 </select>
               </div>
-              <div>
+              <div className="sm:col-span-2 md:col-span-1">
                 <label className={lbl}>Zuständig</label>
                 {staffRole === "techniker" ? (
                   <p className={`${inp} bg-gray-50 text-gray-500`}>{assigneeText || "—"}</p>
                 ) : staffMembers.length > 0 ? (
-                  <select value={assigneeText} onChange={e => setAssigneeText(e.target.value)} className={inp}>
-                    <option value="">— Offen —</option>
-                    {staffMembers.map(s => <option key={s.display_name} value={s.display_name}>{s.display_name}</option>)}
-                    {assigneeText && !staffMembers.some(s => s.display_name === assigneeText) && (
-                      <option value={assigneeText}>{assigneeText}</option>
-                    )}
-                  </select>
+                  <StaffMultiSelect
+                    staffMembers={staffMembers}
+                    selected={selectedAssignees}
+                    onAdd={addAssignee}
+                    onRemove={removeAssignee}
+                    roleLabels={ROLE_LABELS}
+                  />
                 ) : (
                   <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
                 )}
@@ -516,76 +520,15 @@ export function CaseDetailForm({
                   setScheduledEndAt(endIso);
                   setPickerOpen(false);
                   setTerminSentForCurrent(false);
+                  setTerminSendState("idle");
                 }}
                 onCancel={() => setPickerOpen(false)}
               />
             )}
 
-            {/* Warning banner: Termin changed but not sent */}
-            {showTerminWarning && (
-              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-800 mb-2">
-                  Termin geändert. Beteiligte benachrichtigen?
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setShowTerminWarning(false);
-                      await saveSteuerung();
-                      // Send ICS to staff
-                      await doSendInvite();
-                      // Notify melder if contact exists
-                      if (contactEmail || contactPhone) {
-                        await handleNotifyMelder();
-                      }
-                    }}
-                    className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition-colors"
-                  >Speichern &amp; alle benachrichtigen</button>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setShowTerminWarning(false);
-                      await saveSteuerung();
-                      await doSendInvite();
-                    }}
-                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  >Nur Mitarbeiter benachrichtigen</button>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setShowTerminWarning(false);
-                      await saveSteuerung();
-                    }}
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
-                  >Nur speichern</button>
-                </div>
-                {/* Self-send notice */}
-                {currentStaffName && assigneeText === currentStaffName && (
-                  <p className="text-[11px] text-amber-700 mt-2">Hinweis: Du bist selbst zugewiesen — die Mitarbeiter-E-Mail geht an dich.</p>
-                )}
-              </div>
-            )}
-
-            {/* Status feedback for melder notification */}
-            {melderNotifyState === "sent" && (
-              <p className="text-xs text-emerald-600 text-right mt-1">Kunde benachrichtigt ✓</p>
-            )}
-            {melderNotifyState === "error" && (
-              <p className="text-xs text-red-600 text-right mt-1">Benachrichtigung fehlgeschlagen.</p>
-            )}
-
             <EditActions
-              onSave={() => {
-                const terminChanged = scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at;
-                const hasTermin = !!scheduledAt;
-                if (terminChanged && hasTermin && !terminSentForCurrent) {
-                  setShowTerminWarning(true);
-                } else {
-                  saveSteuerung();
-                }
-              }}
-              onCancel={() => { setShowTerminWarning(false); cancelEdit(); }}
+              onSave={() => saveSteuerung()}
+              onCancel={cancelEdit}
               saving={saveState === "saving"}
               dirty={steuerungDirty}
               error={saveState === "error" ? errorMsg : ""}
@@ -608,9 +551,17 @@ export function CaseDetailForm({
                 }`}>{URGENCY_LABELS[urgency] ?? urgency}</span>
               </KV>
               <KV label="Zuständig">
-                {assigneeText
-                  ? <span className="text-[15px] font-medium text-gray-900">{assigneeText}</span>
-                  : <span className="text-sm text-gray-500">Nicht zugewiesen</span>}
+                {selectedAssignees.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 mt-0.5">
+                    {selectedAssignees.map(name => (
+                      <span key={name} className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-500">Nicht zugewiesen</span>
+                )}
               </KV>
               <KV label="Termin">
                 {scheduledAt
@@ -619,16 +570,34 @@ export function CaseDetailForm({
               </KV>
             </div>
 
-            {/* Quick actions (read-only view) */}
-            {scheduledAt && (contactEmail || contactPhone) && (
-              <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
-                <button onClick={handleNotifyMelder} disabled={melderNotifyState === "sending"}
-                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                >{melderNotifyState === "sending" ? "Sende…" : melderNotifyState === "sent" ? "Kunde benachrichtigt ✓" : "Kunden über Termin benachrichtigen"}</button>
-                <span className="text-gray-300">|</span>
-                <button onClick={handleSendInvite} disabled={inviteState === "sending"}
-                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                >{inviteState === "sending" ? "Sende…" : inviteState === "sent" ? "Termin gesendet ✓" : "Termin an Mitarbeiter senden"}</button>
+            {/* Termin versenden — single unified button, visible when termin exists and hasn't been sent yet */}
+            {scheduledAt && !terminSentForCurrent && terminSendState !== "sent" && (
+              <div className="flex flex-wrap items-center gap-3 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
+                <button
+                  onClick={handleSendTermin}
+                  disabled={terminSendState === "sending"}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                >
+                  {terminSendState === "sending" && (
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  )}
+                  {terminSendState === "sending" ? "Wird versendet…" : "Termin versenden"}
+                </button>
+                {terminSendState === "error" && (
+                  <span className="text-red-600 text-xs">Versand fehlgeschlagen</span>
+                )}
+              </div>
+            )}
+            {/* Success confirmation after termin sent */}
+            {(terminSentForCurrent || terminSendState === "sent") && (
+              <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
+                <svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span className="text-sm font-medium text-emerald-700">Termin versendet</span>
               </div>
             )}
 
@@ -866,6 +835,115 @@ function EditActions({
   );
 }
 
+/** Multi-select staff dropdown with chips */
+function StaffMultiSelect({
+  staffMembers,
+  selected,
+  onAdd,
+  onRemove,
+  roleLabels,
+}: {
+  staffMembers: { display_name: string; role: string }[];
+  selected: string[];
+  onAdd: (name: string) => void;
+  onRemove: (name: string) => void;
+  roleLabels: Record<string, string>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }
+  }, [open]);
+
+  const available = staffMembers.filter(
+    s => !selected.includes(s.display_name) &&
+      (search === "" || s.display_name.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  return (
+    <div ref={containerRef} className="relative">
+      {/* Selected chips + input field */}
+      <div
+        className="w-full rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm text-gray-900 focus-within:border-gray-400 focus-within:ring-1 focus-within:ring-gray-400/30 transition-colors cursor-text flex flex-wrap gap-1.5 min-h-[38px] items-center"
+        onClick={() => { setOpen(true); inputRef.current?.focus(); }}
+      >
+        {selected.map(name => (
+          <span
+            key={name}
+            className="inline-flex items-center gap-1 rounded-full bg-gray-100 pl-2.5 pr-1 py-0.5 text-xs font-medium text-gray-700 animate-in fade-in duration-150"
+          >
+            {name}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onRemove(name); }}
+              className="rounded-full p-0.5 hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label={`${name} entfernen`}
+            >
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          type="text"
+          value={search}
+          onChange={e => { setSearch(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          placeholder={selected.length === 0 ? "Mitarbeiter auswählen…" : ""}
+          className="flex-1 min-w-[100px] bg-transparent outline-none text-sm placeholder:text-gray-400 py-0.5"
+        />
+      </div>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+          {available.length === 0 ? (
+            <p className="px-3 py-2.5 text-sm text-gray-400">
+              {search ? "Kein Treffer" : "Alle zugewiesen"}
+            </p>
+          ) : (
+            available.map(s => (
+              <button
+                key={s.display_name}
+                type="button"
+                onClick={() => {
+                  onAdd(s.display_name);
+                  setSearch("");
+                  inputRef.current?.focus();
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-left text-sm hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              >
+                {/* Avatar circle */}
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-[10px] font-bold uppercase">
+                  {s.display_name.charAt(0)}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="font-medium text-gray-900">{s.display_name}</span>
+                  <span className="text-gray-400 ml-1.5 text-xs">{roleLabels[s.role] ?? s.role}</span>
+                </span>
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Compact timeline — first, +N, second-to-last, last, next step */
 function CompactTimeline({
   events, status, expanded, onToggle,
@@ -1029,7 +1107,7 @@ function BewertungEndCap({
             {reviewInfo.canSkip && (
               <button onClick={onSkip}
                 className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors print:hidden"
-              >Überspringen</button>
+              >Nicht anfragen</button>
             )}
 
             {reviewState === "sent" && <span className="text-emerald-600 text-xs">Gesendet</span>}

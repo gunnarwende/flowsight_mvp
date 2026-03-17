@@ -87,7 +87,7 @@ export function deriveReviewStatus(opts: {
   if (reviewCount === 0) {
     return {
       status: "moeglich",
-      label: "Review m\u00f6glich",
+      label: "Bewertung m\u00f6glich",
       color: "bg-emerald-50 text-emerald-700 border-emerald-200",
       canRequest: true,
       canResend: false,
