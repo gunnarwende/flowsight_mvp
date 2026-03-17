@@ -154,17 +154,43 @@ export function OpsShell({
   );
 
   // ── Footer ──────────────────────────────────────────────────────────
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   const footer = (
     <div className="px-4 py-4 border-t border-gray-800">
       <p className="text-[11px] text-gray-500 truncate mb-2">{userEmail}</p>
-      <form action="/api/ops/logout" method="POST">
+      {showLogoutConfirm ? (
+        <div className="space-y-2">
+          <p className="text-[11px] text-amber-400">
+            Nach Abmeldung ist ein neuer E-Mail-Code nötig.
+          </p>
+          <div className="flex gap-2">
+            <form action="/api/ops/logout" method="POST">
+              <button
+                type="submit"
+                className="text-[11px] text-red-400 hover:text-red-300 transition-colors font-medium"
+              >
+                Ja, abmelden
+              </button>
+            </form>
+            <button
+              type="button"
+              onClick={() => setShowLogoutConfirm(false)}
+              className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              Abbrechen
+            </button>
+          </div>
+        </div>
+      ) : (
         <button
-          type="submit"
+          type="button"
+          onClick={() => setShowLogoutConfirm(true)}
           className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
         >
           Abmelden
         </button>
-      </form>
+      )}
     </div>
   );
 
