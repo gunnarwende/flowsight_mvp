@@ -170,6 +170,7 @@ export function CaseDetailForm({
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [terminSentForCurrent, setTerminSentForCurrent] = useState(false);
+  const [terminJustSaved, setTerminJustSaved] = useState(false);
 
   const [baseline, setBaseline] = useState({
     status: initialData.status,
@@ -298,13 +299,18 @@ export function CaseDetailForm({
     }
   }
 
-  function saveSteuerung() {
-    return saveFields({
+  async function saveSteuerung() {
+    const ok = await saveFields({
       status, urgency,
       assignee_text: assigneeText || null,
       scheduled_at: scheduledAt || null,
       scheduled_end_at: scheduledEndAt || null,
     });
+    if (ok && scheduledAt) {
+      setTerminJustSaved(true);
+      setTimeout(() => setTerminJustSaved(false), 30_000);
+    }
+    return ok;
   }
 
   function saveKontakt() {
@@ -370,6 +376,7 @@ export function CaseDetailForm({
 
       setTerminSendState("sent");
       setTerminSentForCurrent(true);
+      setTerminJustSaved(false);
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "termin_versendet",
         title: `Termin versendet${hasContact ? " (Mitarbeiter + Kunde)" : " (Mitarbeiter)"}`,
@@ -535,7 +542,7 @@ export function CaseDetailForm({
             />
           </div>
         ) : (
-          <div className="bg-gray-50 -mx-5 -my-4 px-5 py-5 rounded-t-2xl border-b border-gray-200/60">
+          <div className="bg-white -mx-5 -my-4 px-6 py-5 rounded-t-2xl border-b border-gray-200/60 border-l-4 border-l-amber-400 shadow-sm">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
             <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1.5fr] gap-x-6 gap-y-3 min-w-0">
               <KV label="Status">
@@ -571,7 +578,7 @@ export function CaseDetailForm({
             </div>
 
             {/* Termin versenden — single unified button, visible when termin exists and hasn't been sent yet */}
-            {scheduledAt && !terminSentForCurrent && terminSendState !== "sent" && (
+            {scheduledAt && terminJustSaved && !terminSentForCurrent && terminSendState !== "sent" && (
               <div className="flex flex-wrap items-center gap-3 mt-3 pt-2 border-t border-gray-200/40 print:hidden">
                 <button
                   onClick={handleSendTermin}
@@ -616,7 +623,7 @@ export function CaseDetailForm({
       <div className="flex flex-col-reverse md:flex-row print:block">
 
         {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
-        <div className="md:w-1/3 min-w-0 md:border-r md:border-gray-100 p-3 space-y-3">
+        <div className="md:w-1/2 min-w-0 md:border-r md:border-gray-100 p-3 space-y-3">
           {/* Beschreibung card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             {editingSection === "beschreibung" ? (
@@ -673,7 +680,7 @@ export function CaseDetailForm({
         </div>
 
         {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="md:w-2/3 border-t border-gray-100 md:border-t-0 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
+        <div className="md:w-1/2 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
 
           {/* Kontakt mini-card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
@@ -740,7 +747,7 @@ export function CaseDetailForm({
                 <SectionHead title="Interne Notizen" onEdit={() => startEdit("notizen")} canEdit={canEditSection("notizen")} />
                 {internalNotes ? (
                   <div>
-                    <p className={`text-sm text-gray-600 whitespace-pre-wrap ${!notesExpanded ? "line-clamp-2" : ""}`}>{internalNotes}</p>
+                    <p className={`text-sm text-gray-600 whitespace-pre-wrap break-words overflow-hidden ${!notesExpanded ? "line-clamp-2" : ""}`} style={{ overflowWrap: "anywhere" }}>{internalNotes}</p>
                     {(internalNotes.includes("\n") || internalNotes.length > 80) && (
                       <button onClick={() => setNotesExpanded(p => !p)}
                         className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
