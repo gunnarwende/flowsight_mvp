@@ -46,6 +46,32 @@ export function generateShortVerifyToken(caseId: string, createdAt: string): str
   return computeHmac(caseId, createdAt).subarray(0, 8).toString("hex");
 }
 
+// ---------------------------------------------------------------------------
+// Einsatz tokens (technician mobile surface) — separate HMAC namespace
+// ---------------------------------------------------------------------------
+
+function computeEinsatzHmac(caseId: string, createdAt: string): Buffer {
+  const payload = `einsatz:${caseId}:${createdAt}`;
+  return createHmac("sha256", getSecret()).update(payload).digest();
+}
+
+/** Generate a short einsatz token (16 hex chars). Separate namespace from correction tokens. */
+export function generateEinsatzToken(caseId: string, createdAt: string): string {
+  return computeEinsatzHmac(caseId, createdAt).subarray(0, 8).toString("hex");
+}
+
+/** Validate an einsatz token (timing-safe). */
+export function validateEinsatzToken(caseId: string, createdAt: string, token: string): boolean {
+  try {
+    const expected = computeEinsatzHmac(caseId, createdAt).subarray(0, 8);
+    const provided = Buffer.from(token, "hex");
+    if (expected.length !== provided.length) return false;
+    return timingSafeEqual(expected, provided);
+  } catch {
+    return false;
+  }
+}
+
 /** Validate a short token (first 8 bytes, timing-safe). */
 export function validateShortVerifyToken(
   caseId: string,
