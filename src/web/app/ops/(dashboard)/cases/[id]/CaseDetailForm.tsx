@@ -615,7 +615,7 @@ export function CaseDetailForm({
                 </button>
 
                 {/* Termin versenden — sofort bei Änderung */}
-                {liveTerminChanged && terminSendState !== "sent" && (
+                {liveTerminChanged && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && (
                   <button
                     onClick={handleSaveAndSendTermin}
                     disabled={terminSendState === "sending"}
@@ -638,6 +638,23 @@ export function CaseDetailForm({
                       </>
                     )}
                   </button>
+                )}
+                {/* Channel hint: what channel will be used for customer notification */}
+                {liveTerminChanged && terminSendState === "idle" && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {!contactEmail.trim() && !contactPhone.trim()
+                      ? "Keine Kontaktdaten — Kunde wird nicht benachrichtigt"
+                      : !contactEmail.trim()
+                        ? "Kunde wird per SMS benachrichtigt"
+                        : contactPhone.trim()
+                          ? "Kunde wird per E-Mail + SMS benachrichtigt"
+                          : "Kunde wird per E-Mail benachrichtigt"
+                    }
+                  </p>
+                )}
+                {/* No contact warning — shown instead of button */}
+                {liveTerminChanged && !contactEmail.trim() && !contactPhone.trim() && terminSendState !== "sent" && (
+                  <p className="text-xs text-amber-600 mt-1 font-medium">Termin wird nur an Zuständige gesendet</p>
                 )}
                 {terminSendState === "sent" && (
                   <div className="flex items-center gap-1.5 mt-2">
