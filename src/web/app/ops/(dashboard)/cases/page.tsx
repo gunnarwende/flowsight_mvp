@@ -3,8 +3,8 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
-import { ZentraleView } from "@/src/components/ops/ZentraleView";
-import type { ZentraleCase, TodayAppointment } from "@/src/components/ops/ZentraleView";
+import { LeitzentraleView } from "@/src/components/ops/LeitzentraleView";
+import type { LeitzentraleCase } from "@/src/components/ops/LeitzentraleView";
 
 // ---------------------------------------------------------------------------
 // Page (Server Component) — Leitsystem
@@ -61,25 +61,7 @@ export default async function OpsCasesPage({
     } catch { /* fallback: no filter */ }
   }
 
-  // ── Query 2: Today's appointments with staff + case join ───────────
-  const todayZurich = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Zurich",
-  }).format(new Date());
-  const todayStart = `${todayZurich}T00:00:00+00:00`;
-  const todayEnd = `${todayZurich}T23:59:59+00:00`;
-
-  let appointmentsQuery = supabase
-    .from("appointments")
-    .select(
-      "id, scheduled_at, duration_min, status, notes, staff:staff_id(display_name), case_info:case_id(id, seq_number, category, reporter_name, street, house_number, plz, city)"
-    )
-    .gte("scheduled_at", todayStart)
-    .lte("scheduled_at", todayEnd)
-    .in("status", ["scheduled", "confirmed"])
-    .order("scheduled_at", { ascending: true });
-  if (filterTenantId) appointmentsQuery = appointmentsQuery.eq("tenant_id", filterTenantId);
-
-  // ── Query 3: 7-day stats ──────────────────────────────────────────
+  // ── Query 2: 7-day stats ──────────────────────────────────────────
   const sevenDaysAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
   let statsNeueQuery = supabase
     .from("cases")
@@ -120,28 +102,19 @@ export default async function OpsCasesPage({
   // ── Execute all queries in parallel ────────────────────────────────
   const [
     { data: casesRaw },
-    { data: appointmentsRaw },
     { count: neueCount },
     { count: erledigtCount },
     { count: reviewSentCount },
     { count: reviewPendingCount },
   ] = await Promise.all([
     casesQuery,
-    appointmentsQuery,
     statsNeueQuery,
     statsErledigtQuery,
     reviewSentQuery,
     reviewPendingQuery,
   ]);
 
-  const cases = (casesRaw ?? []) as ZentraleCase[];
-
-  // Supabase returns joined relations as arrays — normalize to single objects
-  const todayAppointments: TodayAppointment[] = (appointmentsRaw ?? []).map((a: Record<string, unknown>) => ({
-    ...a,
-    staff: Array.isArray(a.staff) ? (a.staff[0] ?? null) : a.staff,
-    case_info: Array.isArray(a.case_info) ? (a.case_info[0] ?? null) : a.case_info,
-  })) as TodayAppointment[];
+  const cases = (casesRaw ?? []) as LeitzentraleCase[];
 
   // ── Resolve tenant identity for case ID prefix ─────────────────────
   let caseIdPrefix = "FS";
@@ -159,9 +132,8 @@ export default async function OpsCasesPage({
   }
 
   return (
-    <ZentraleView
+    <LeitzentraleView
       cases={cases}
-      todayAppointments={todayAppointments}
       caseIdPrefix={caseIdPrefix}
       weekStats={{
         neue: neueCount ?? 0,
