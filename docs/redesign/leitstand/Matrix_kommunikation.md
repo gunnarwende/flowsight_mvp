@@ -89,8 +89,9 @@ Ohne diese Matrix riskieren wir: doppelte Benachrichtigungen, fehlende Benachric
 | Termin gesetzt/geändert | Inhaber/Disponent | Alle Zuständigen | E-Mail (ICS) | Kalendereinladung (RFC 5545) mit Termin, Ort, Fall-Nr, Dashboard-Link | Manueller Klick auf "Termin versenden" im Leitstand |
 | Termin gesetzt/geändert | Inhaber/Disponent | Endkunde (Melder) | E-Mail | "Ihr Termin am {Datum}, {Uhrzeit}" + Kategorie + Betriebstelefon | Manueller Klick + E-Mail vorhanden |
 | Termin gesetzt/geändert | Inhaber/Disponent | Endkunde (Melder) | SMS | "Ihr Termin am {Tag} {Datum}, {Zeit}. Bei Fragen: {Tel}." | Manueller Klick + KEINE E-Mail + Telefon vorhanden + SMS aktiv |
-| Status geändert | System | (Verlauf-Eintrag) | Leitstand UI | "Status: Neu → Geplant" (sichtbar im Verlauf) | Automatisch bei jeder Statusänderung |
-| Felder aktualisiert | System | (Verlauf-Eintrag) | Leitstand UI | "Adresse aktualisiert" / "Priorität, Kategorie aktualisiert" | Automatisch |
+| Termin in 24h (Erinnerung) | System (automatisch) | Endkunde (Melder) | SMS | "{Firma}: Erinnerung — Ihr Termin morgen um {Zeit}." | Termin in nächsten 24h + Admin hat Erinnerung in Einstellungen aktiviert + Telefon vorhanden |
+| Status geändert | System | (Verlauf-Eintrag) | Leitstand UI | "Status: Neu → Geplant" (sichtbar im Verlauf) | Automatisch bei jeder Statusänderung. KEINE SMS/E-Mail an Kunden. |
+| Felder aktualisiert | System | (Verlauf-Eintrag) | Leitstand UI | "Adresse aktualisiert" / "Priorität, Kategorie aktualisiert" | Automatisch. KEINE externe Benachrichtigung. |
 
 ### 4.3 Bewertung (Review Engine)
 
@@ -352,13 +353,31 @@ Hat Mitarbeiter E-Mail in Staff-Tabelle?
 
 ## 12. Offene Entscheidungen
 
-| # | Frage | Optionen | Empfehlung |
-|---|-------|----------|------------|
-| **K1** | Soll der Inhaber eine Push-Notification (PWA) bei Notfall erhalten? | A) Ja, PWA Push. B) Nein, E-Mail reicht. | B für MVP. Push = Post-MVP. |
-| **K2** | Soll der Techniker SMS bei Zuweisung erhalten (zusätzlich zu E-Mail)? | A) Ja, immer. B) Nur wenn keine E-Mail. C) Nein. | B — gleiche Fallback-Logik wie Endkunde. |
-| **K3** | Soll die Post-Call SMS gekürzt werden (≤ 160) oder darf sie 2 SMS kosten? | A) Kürzen auf 160. B) 2 SMS akzeptieren. | A — Zeichenzähler + Template-Optimierung. |
-| **K4** | Soll der Endkunde eine SMS bei Status-Änderung erhalten? | A) Ja (Neu → Geplant). B) Nur bei Termin. C) Nein. | B — Nur bei Termin + Erledigt (kein Spam). |
-| **K5** | Lieferanten-Weiterleitung via Voice Agent? | A) Ja (Phase 3). B) Nein. | A, aber geparkt — erst wenn Bedarf. |
+| # | Frage | Entscheidung (18.03.) |
+|---|-------|----------------------|
+| **K1** | PWA Push bei Notfall? | **JA.** Inhaber erhält Push-Notification bei Notfall-Eingang. |
+| **K2** | Techniker SMS bei Zuweisung? | **NEIN.** E-Mail reicht. Kein SMS bei Zuweisung. |
+| **K3** | Post-Call SMS auf ≤ 160 kürzen? | **JA**, wenn High-End-Qualität erhalten bleibt. Template-Optimierung mit maximalem Effekt in minimalem Platz. |
+| **K4** | SMS an Kunde bei Status-Änderung? | **NEIN** bei Status-Änderungen. **JA** nur bei: (1) Meldungseingang (Bestätigung), (2) Termin-Erinnerung 24h vorher (wenn Admin in Einstellungen aktiviert), (3) Termin-Bestätigung, (4) Google-Bewertungsanfrage. |
+| **K5** | Voice Agent: Nicht-Service-Anrufe (Familie, Lieferanten, Bestandskunden...)? | **Phase 2 (Minimal):** Lisa nimmt Nachricht auf → E-Mail an Inhaber. **Phase 3 (Voll):** Rezeptionistin-Modell mit Nachricht-Bereich im Leitstand + Warm Transfer auf Inhaber-Handy. Siehe §K5 Detail. |
+
+### K5 Detail: Lisa als Rezeptionistin (Skalierbar)
+
+**Problem:** In der Realität rufen auf einer Handwerkernummer nicht nur Kunden mit Schäden an, sondern auch: Familie ("Wann holst du die Kinder ab?"), Lieferanten ("Lieferung morgen 8 Uhr"), Versicherungen, Bestandskunden (Follow-up), andere Betriebe, Falschanrufer. Lisa muss ALLE Anrufe professionell behandeln.
+
+**Zielbild (Phase 3):**
+```
+Anruf → Lisa erkennt Intent
+├── Service-Anfrage → INTAKE (wie heute, strukturierte Aufnahme → Fall)
+├── Sonstiges → NACHRICHT ("Ich richte das aus. Wer soll zurückrufen?")
+│   └── Erfasst: Name, Telefon, Nachricht, Dringlichkeit
+│   └── → E-Mail + optional SMS an Inhaber
+│   └── → Leitstand: eigener Bereich "Nachrichten"
+└── "Verbinden bitte" → WARM TRANSFER auf Inhaber-Handy
+    └── Falls nicht erreichbar → NACHRICHT (Fallback)
+```
+
+**Skalierung:** 2 MA (Meister bekommt SMS "Deine Frau hat angerufen") → 30 MA (Büro-Team sieht Nachrichten im Leitstand).
 
 ---
 
