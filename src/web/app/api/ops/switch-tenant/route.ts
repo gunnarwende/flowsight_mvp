@@ -3,6 +3,7 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 
 const COOKIE_NAME = "fs_active_tenant";
 const RECENT_COOKIE = "fs_recent_tenants";
+const ROLE_COOKIE = "fs_view_as_role";
 const MAX_RECENT = 3;
 
 /**
@@ -19,15 +20,16 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json().catch(() => ({}));
   const tenantId = body.tenantId as string | null;
+  const viewAsRole = body.viewAsRole as string | null; // "techniker" or null
 
-  const res = NextResponse.json({ ok: true, tenantId });
+  const res = NextResponse.json({ ok: true, tenantId, viewAsRole });
 
   if (tenantId && /^[0-9a-f-]{36}$/i.test(tenantId)) {
     // Set active tenant cookie
     res.cookies.set(COOKIE_NAME, tenantId, {
       httpOnly: true,
       sameSite: "lax",
-      path: "/ops",
+      path: "/",
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
 
@@ -39,12 +41,24 @@ export async function POST(request: NextRequest) {
     res.cookies.set(RECENT_COOKIE, JSON.stringify(recent), {
       httpOnly: true,
       sameSite: "lax",
-      path: "/ops",
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
   } else {
     // Clear → reset to home tenant (JWT)
-    res.cookies.delete({ name: COOKIE_NAME, path: "/ops" });
+    res.cookies.delete({ name: COOKIE_NAME, path: "/" });
+  }
+
+  // Role override cookie (admin can view as techniker for testing)
+  if (viewAsRole === "techniker") {
+    res.cookies.set(ROLE_COOKIE, "techniker", {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  } else {
+    res.cookies.delete({ name: ROLE_COOKIE, path: "/" });
   }
 
   return res;

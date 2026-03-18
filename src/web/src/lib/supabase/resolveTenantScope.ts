@@ -9,6 +9,7 @@ import { getAuthClient } from "./server-auth";
 // ---------------------------------------------------------------------------
 
 const TENANT_COOKIE = "fs_active_tenant";
+const ROLE_COOKIE = "fs_view_as_role";
 
 export interface TenantScope {
   /** Active tenant ID for scoping queries, branding, settings. */
@@ -23,6 +24,8 @@ export interface TenantScope {
   isImpersonating: boolean;
   /** Admin's own tenant_id from JWT (for "Mein Betrieb" reset). */
   homeTenantId: string | null;
+  /** Role override for testing: "techniker" when admin views as techniker. */
+  viewAsRole: "techniker" | null;
 }
 
 /**
@@ -51,6 +54,7 @@ export async function resolveTenantScope(): Promise<TenantScope | null> {
   // Admin cookie override — only trusted when JWT proves admin role
   let activeTenantId = jwtTenantId ?? null;
   let isImpersonating = false;
+  let viewAsRole: "techniker" | null = null;
 
   if (isAdmin) {
     const cookieStore = await cookies();
@@ -59,6 +63,9 @@ export async function resolveTenantScope(): Promise<TenantScope | null> {
       activeTenantId = cookieVal;
       isImpersonating = cookieVal !== (jwtTenantId ?? "");
     }
+    // Role override cookie — admin can test as techniker
+    const roleCookie = cookieStore.get(ROLE_COOKIE)?.value;
+    if (roleCookie === "techniker") viewAsRole = "techniker";
   }
 
   return {
@@ -68,5 +75,6 @@ export async function resolveTenantScope(): Promise<TenantScope | null> {
     userId: user.id,
     isImpersonating,
     homeTenantId: jwtTenantId ?? null,
+    viewAsRole,
   };
 }
