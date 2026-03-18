@@ -71,11 +71,11 @@ function fmtTime(d: Date): string {
   return d.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
 }
 
-function formatTerminRange(startIso: string, endIso: string | null): string {
+function formatTerminRange(startIso: string, endIso: string | null): { line1: string; line2?: string } {
   const s = new Date(startIso);
 
   if (!endIso) {
-    return `${shortDay(s)} ${fmtDate(s)}, ${fmtTime(s)}`;
+    return { line1: `${shortDay(s)} ${fmtDate(s)}, ${fmtTime(s)}` };
   }
 
   const e = new Date(endIso);
@@ -83,10 +83,19 @@ function formatTerminRange(startIso: string, endIso: string | null): string {
     s.getFullYear() === e.getFullYear();
 
   if (sameDay) {
-    return `${shortDay(s)} ${fmtDate(s)} · ${fmtTime(s)}–${fmtTime(e)}`;
+    return { line1: `${shortDay(s)} ${fmtDate(s)}`, line2: `${fmtTime(s)}–${fmtTime(e)}` };
   }
-  // Multi-day: "Mo 02.03. 11:00 – Fr 06.03. 09:00"
-  return `${shortDay(s)} ${fmtDate(s)} ${fmtTime(s)} – ${shortDay(e)} ${fmtDate(e)} ${fmtTime(e)}`;
+  // Multi-day: two lines for mobile readability
+  return {
+    line1: `${shortDay(s)} ${fmtDate(s)}, ${fmtTime(s)}`,
+    line2: `– ${shortDay(e)} ${fmtDate(e)}, ${fmtTime(e)}`,
+  };
+}
+
+/** Flat string version for inputs and edit fields */
+function formatTerminFlat(startIso: string, endIso: string | null): string {
+  const r = formatTerminRange(startIso, endIso);
+  return r.line2 ? `${r.line1} ${r.line2}` : r.line1;
 }
 
 function googleMapsUrl(street: string | null, houseNumber: string | null, plz: string, city: string): string {
@@ -245,6 +254,7 @@ export function CaseDetailForm({
   // ── Live dirty: new assignees + termin changed (for inline notification buttons)
   const liveNewAssignees = selectedAssignees.filter(a => !parseAssignees(baseline.assignee_text).includes(a));
   const liveTerminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+  const terminInPast = !!scheduledAt && new Date(scheduledAt).getTime() < Date.now();
 
   const kontaktDirty =
     street !== baseline.street || houseNumber !== baseline.house_number ||
@@ -369,6 +379,12 @@ export function CaseDetailForm({
 
   /** Save + send termin to all assignees + customer in one step */
   async function handleSaveAndSendTermin() {
+    // Block sending past appointments
+    if (scheduledAt && new Date(scheduledAt).getTime() < Date.now()) {
+      setTerminSendState("error");
+      setTimeout(() => setTerminSendState("idle"), 4000);
+      return;
+    }
     setTerminSendState("sending");
     const ok = await saveFields({
       status, urgency,
@@ -610,12 +626,16 @@ export function CaseDetailForm({
                   className={`${inp} text-left`}
                 >
                   {scheduledAt
-                    ? formatTerminRange(scheduledAt, scheduledEndAt || null)
+                    ? formatTerminFlat(scheduledAt, scheduledEndAt || null)
                     : <span className="text-gray-400">Termin wählen</span>}
                 </button>
 
+                {/* Past termin warning */}
+                {liveTerminChanged && terminInPast && (
+                  <p className="text-xs text-red-600 font-medium mt-2">Termin liegt in der Vergangenheit — Versand nicht möglich</p>
+                )}
                 {/* Termin versenden — sofort bei Änderung */}
-                {liveTerminChanged && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && (
+                {liveTerminChanged && !terminInPast && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && (
                   <button
                     onClick={handleSaveAndSendTermin}
                     disabled={terminSendState === "sending"}
@@ -740,7 +760,9 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt ? (
-                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700 text-center leading-snug">
+                    {(() => { const r = formatTerminRange(scheduledAt, scheduledEndAt || null); return r.line2 ? <>{r.line1}<br className="sm:hidden" /><span className="hidden sm:inline"> </span>{r.line2}</> : r.line1; })()}
+                  </span>
                 ) : (
                   <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-500">Offen</span>
                 )}
@@ -781,11 +803,11 @@ export function CaseDetailForm({
                 <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
                 {description ? (
                   <div className="overflow-hidden flex-1">
-                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
-                    {(description.split("\n").length > 3 || description.length > 200) && (
+                    <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`} style={{ hyphens: "auto", WebkitHyphens: "auto" }} lang="de">{description}</p>
+                    {(description.split("\n").length > 2 || description.length > 80) && (
                       <button onClick={() => setDescExpanded(p => !p)}
                         className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 mt-2 transition-colors min-h-[44px] sm:min-h-0">
-                        {descExpanded ? "Weniger" : "Mehr anzeigen"}
+                        {descExpanded ? "Weniger" : "Alles anzeigen"}
                       </button>
                     )}
                   </div>

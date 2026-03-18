@@ -1,7 +1,7 @@
 # Plan Leitsystem — High-End Umsetzung
 
 **Erstellt:** 2026-03-17
-**Letztes Update:** 2026-03-18 (Feedback-Runde 3 umgesetzt — F12-F14)
+**Letztes Update:** 2026-03-18 (Phase 4 — Leitzentrale merged, 6 Systemfluss-Karten)
 **Owner:** Founder + CC
 **Nordstern:** `leitsystem_leitzentrale_super_high_end_plan.md`
 **Referenz:** `leitstand.md` (Grundvertrag), `leitstand_renovation.md` (Implementierungs-Brücke)
@@ -115,7 +115,7 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 
 ## Next Steps
 
-**Phase 3 (Rollen & Einstellungen) starten.**
+**Phase 4 DONE.** Leitzentrale + Fallübersicht auf einer Seite. 6 Systemfluss-Karten, Click-to-Filter, Suche, Pagination, Notfall-Markierung.
 
 ---
 
@@ -130,15 +130,15 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | 3.3 | **Einstellungen-UX** | Neue Section "Termine": Kalender-E-Mail + Standard-Termindauer. 6 Benachrichtigungs-Toggles. Mobile-responsive. | **DONE** (PR #266) |
 | 3.4 | **Techniker-Micro-Surface** | `/einsatz/[caseRef]?t=[hmac]` — Adresse + Maps-Navi, Problem, Kunde + Anruf-Link, "Bin vor Ort" + "Erledigt" Buttons. HMAC-gesichert, kein Login. Mobile-first. | **DONE** (PR #267) |
 
-### Phase 4: Leitzentrale (merged)
+### Phase 4: Leitzentrale (merged) — KOMPLETT (18.03.)
 
-| # | Task | Detail | Priorität |
-|---|------|--------|-----------|
-| 4.1 | **Systemfluss-Karten** | ~6 Karten: Eingang → Bei uns → Wartet → Heute → Erledigt → Bewertungen ★ | hoch |
-| 4.2 | **Click-to-Filter** | Klick auf Karte filtert Fallliste darunter | hoch |
-| 4.3 | **Notfälle integriert** | Rote Markierung, zuoberst sortiert | hoch |
-| 4.4 | **Navigation reduzieren** | Nur 2 Punkte: Leitzentrale + Einstellungen | mittel |
-| 4.5 | **Quiet High-End Ästhetik** | Ruhig, klar, hierarchisch, handlungsorientiert | hoch |
+| # | Task | Detail | Status |
+|---|------|--------|--------|
+| 4.1 | **Systemfluss-Karten** | 6 Karten: Eingang → Bei uns → Wartet → Heute → Erledigt → Bewertungen ★. Responsive Grid (2 cols mobile, 6 cols desktop). | **DONE** |
+| 4.2 | **Click-to-Filter** | Klick auf Karte filtert Fallliste darunter. Nochmal klicken = deselect (alle zeigen). | **DONE** |
+| 4.3 | **Notfälle integriert** | Rote border-l-4 + bg-red-50/30 auf Zeile, Notfälle zuoberst sortiert. | **DONE** |
+| 4.4 | **Navigation reduzieren** | Nur 2 Nav-Punkte: Leitzentrale + Einstellungen. Fallübersicht eliminiert. | **DONE** |
+| 4.5 | **Quiet High-End Ästhetik** | Ruhig, klar, hierarchisch. Suche + Tabelle + Pagination. Mobile-first (weniger Spalten). | **DONE** |
 
 ---
 

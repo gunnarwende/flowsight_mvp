@@ -28,15 +28,6 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Fallübersicht",
-    href: "/ops/faelle",
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-      </svg>
-    ),
-  },
-  {
     label: "Einstellungen",
     href: "/ops/settings",
     icon: (
@@ -78,6 +69,7 @@ export function OpsShell({
     : "LS";
   const color = brandColor ?? "#64748b";
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobilePreview, setMobilePreview] = useState(false);
   const pathname = usePathname();
 
   // RBAC: hide Einstellungen for techniker
@@ -87,12 +79,8 @@ export function OpsShell({
 
   function isNavActive(href: string): boolean {
     if (href === "/ops/cases") {
-      // Leitsystem: only exact match (not case detail pages)
-      return pathname === "/ops/cases" || pathname === "/ops/cases/";
-    }
-    if (href === "/ops/faelle") {
-      // Fallübersicht: /ops/faelle/* AND individual case pages /ops/cases/[id]
-      return pathname.startsWith("/ops/faelle") || (pathname.startsWith("/ops/cases/") && pathname !== "/ops/cases/");
+      // Leitzentrale: exact match + case detail pages /ops/cases/[id]
+      return pathname === "/ops/cases" || pathname === "/ops/cases/" || pathname.startsWith("/ops/cases/");
     }
     return pathname.startsWith(href);
   }
@@ -291,10 +279,23 @@ export function OpsShell({
         </div>
       )}
 
+
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
         <InstallPrompt />
-        <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
+        {/* Dev: Mobile Preview Toggle (top-right, desktop only) */}
+        <div className="hidden md:flex justify-end px-4 pt-2">
+          <button
+            onClick={() => setMobilePreview(p => !p)}
+            className={`p-1.5 rounded-md text-xs transition-colors ${mobilePreview ? "bg-gray-900 text-white" : "text-gray-400 hover:text-gray-600 hover:bg-gray-200"}`}
+            title={mobilePreview ? "Desktop-Ansicht" : "Mobile-Vorschau"}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+          </button>
+        </div>
+        <div className={`mx-auto px-4 py-6 min-w-0 transition-all duration-300 ${mobilePreview ? "max-w-[390px] border-x border-gray-300 bg-white min-h-screen shadow-lg" : "max-w-6xl"}`}>
           {children}
         </div>
       </main>

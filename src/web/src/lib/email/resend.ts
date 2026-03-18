@@ -871,7 +871,10 @@ interface AppointmentEmailPayload {
 }
 
 export async function sendAppointmentIcsEmail(payload: AppointmentEmailPayload): Promise<boolean> {
-  const from = `${payload.tenantDisplayName ?? "Ihr Servicebetrieb"} <${process.env.RESEND_FROM ?? "noreply@flowsight.ch"}>`;
+  // R4: tenant-branded sender — consistent with all other email functions
+  const addr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const safeName = (payload.tenantDisplayName ?? "Ihr Servicebetrieb").replace(/[<>"]/g, "");
+  const from = `${safeName} <${addr}>`;
   const recipientEmail = payload.staffEmail || process.env.MAIL_REPLY_TO;
   if (!recipientEmail) return false;
 

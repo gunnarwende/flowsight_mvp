@@ -49,6 +49,12 @@ export async function POST(
     return NextResponse.json({ error: "No termin scheduled" }, { status: 400 });
   }
 
+  // Block sending past appointments — prevent accidental wrong-date notifications
+  if (new Date(row.scheduled_at).getTime() < Date.now()) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "termin_in_past" }));
+    return NextResponse.json({ error: "Termin liegt in der Vergangenheit" }, { status: 400 });
+  }
+
   if (!row.contact_email && !row.contact_phone) {
     console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_contact" }));
     return NextResponse.json({ error: "No contact info" }, { status: 400 });
