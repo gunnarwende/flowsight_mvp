@@ -128,7 +128,7 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | 3.1 | **Rollen-Beschreibung** | Admin + Techniker Beschreibungen verifiziert. Stimmen mit Code überein. | **DONE** (bestätigt 18.03.) |
 | 3.2 | **Kalender-Konzept** | ICS-Einladungen + Appointments-Tabelle existieren. Google Calendar FreeBusy = Post-MVP (API-Integration). | GEPARKT |
 | 3.3 | **Einstellungen-UX** | Neue Section "Termine": Kalender-E-Mail + Standard-Termindauer. 6 Benachrichtigungs-Toggles. Mobile-responsive. | **DONE** (PR #266) |
-| 3.4 | **Techniker-Micro-Surface** | SMS-Link `/einsatz/[token]` — Adresse, Problem, Navi, Erledigt-Button, Foto. HMAC-gesichert. | **NÄCHSTER SCHRITT** |
+| 3.4 | **Techniker-Micro-Surface** | `/einsatz/[caseRef]?t=[hmac]` — Adresse + Maps-Navi, Problem, Kunde + Anruf-Link, "Bin vor Ort" + "Erledigt" Buttons. HMAC-gesichert, kein Login. Mobile-first. | **DONE** (PR #267) |
 
 ### Phase 4: Leitzentrale (merged)
 
