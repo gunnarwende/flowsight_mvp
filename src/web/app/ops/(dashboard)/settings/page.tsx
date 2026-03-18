@@ -6,6 +6,8 @@ import { StaffManager } from "@/src/components/ops/StaffManager";
 
 interface Settings {
   google_review_url: string;
+  business_calendar_email: string;
+  default_appointment_duration_min: number;
   notify_reporter_email: boolean;
   notify_reporter_sms: boolean;
   notify_termin_email: boolean;
@@ -40,6 +42,15 @@ export default function SettingsPage() {
   const [notifySaved, setNotifySaved] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
 
+  // Form state — Termin-Einstellungen
+  const [calendarEmail, setCalendarEmail] = useState("");
+  const [calendarEmailBaseline, setCalendarEmailBaseline] = useState("");
+  const [appointmentDuration, setAppointmentDuration] = useState(60);
+  const [appointmentDurationBaseline, setAppointmentDurationBaseline] = useState(60);
+  const [terminSettingsSaving, setTerminSettingsSaving] = useState(false);
+  const [terminSettingsSaved, setTerminSettingsSaved] = useState(false);
+  const [terminSettingsError, setTerminSettingsError] = useState<string | null>(null);
+
   // Form state — Google Review
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   const [reviewBaseline, setReviewBaseline] = useState("");
@@ -58,6 +69,10 @@ export default function SettingsPage() {
           setData(d);
           setGoogleReviewUrl(d.settings.google_review_url);
           setReviewBaseline(d.settings.google_review_url);
+          setCalendarEmail(d.settings.business_calendar_email ?? "");
+          setCalendarEmailBaseline(d.settings.business_calendar_email ?? "");
+          setAppointmentDuration(d.settings.default_appointment_duration_min ?? 60);
+          setAppointmentDurationBaseline(d.settings.default_appointment_duration_min ?? 60);
           setNotifyEmail(d.settings.notify_reporter_email);
           setNotifySms(d.settings.notify_reporter_sms);
           setNotifyTerminEmail(d.settings.notify_termin_email);
@@ -82,6 +97,7 @@ export default function SettingsPage() {
     notifyEmail !== notifyBaseline.email || notifySms !== notifyBaseline.sms ||
     notifyTerminEmail !== notifyBaseline.terminEmail || notifyTerminSms !== notifyBaseline.terminSms ||
     notifyTerminReminderSms !== notifyBaseline.terminReminderSms || notifyStaffAssignment !== notifyBaseline.staffAssignment;
+  const terminSettingsDirty = calendarEmail !== calendarEmailBaseline || appointmentDuration !== appointmentDurationBaseline;
   const reviewDirty = googleReviewUrl !== reviewBaseline;
 
   async function saveNotify() {
@@ -116,6 +132,33 @@ export default function SettingsPage() {
       setNotifyError("Netzwerkfehler.");
     }
     setNotifySaving(false);
+  }
+
+  async function saveTerminSettings() {
+    setTerminSettingsSaving(true);
+    setTerminSettingsSaved(false);
+    setTerminSettingsError(null);
+    try {
+      const res = await fetch("/api/ops/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_calendar_email: calendarEmail.trim() || null,
+          default_appointment_duration_min: appointmentDuration,
+        }),
+      });
+      if (res.ok) {
+        setCalendarEmailBaseline(calendarEmail);
+        setAppointmentDurationBaseline(appointmentDuration);
+        setTerminSettingsSaved(true);
+        setTimeout(() => setTerminSettingsSaved(false), 3000);
+      } else {
+        setTerminSettingsError("Speichern fehlgeschlagen.");
+      }
+    } catch {
+      setTerminSettingsError("Netzwerkfehler.");
+    }
+    setTerminSettingsSaving(false);
   }
 
   async function saveReview() {
@@ -239,6 +282,57 @@ export default function SettingsPage() {
                 setNotifyTerminSms(notifyBaseline.terminSms);
                 setNotifyTerminReminderSms(notifyBaseline.terminReminderSms);
                 setNotifyStaffAssignment(notifyBaseline.staffAssignment);
+              }}
+            />
+          )}
+        </Section>
+
+        {/* Termine — per-card save */}
+        <Section
+          title="Termine"
+          description="Kalender-E-Mail und Standard-Termindauer."
+        >
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Kalender-E-Mail</label>
+              <input
+                type="email"
+                value={calendarEmail}
+                onChange={(e) => setCalendarEmail(e.target.value)}
+                placeholder="kalender@mein-betrieb.ch"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 truncate min-w-0"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                ICS-Kalendereinladungen werden an diese Adresse gesendet (z.B. Outlook oder Google Kalender).
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Standard-Termindauer</label>
+              <select
+                value={appointmentDuration}
+                onChange={(e) => setAppointmentDuration(Number(e.target.value))}
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+              >
+                <option value={30}>30 Minuten</option>
+                <option value={45}>45 Minuten</option>
+                <option value={60}>60 Minuten</option>
+                <option value={90}>90 Minuten</option>
+                <option value={120}>2 Stunden</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                Wird bei neuen Terminen als Vorgabe verwendet.
+              </p>
+            </div>
+          </div>
+          {terminSettingsDirty && (
+            <CardSaveBar
+              saving={terminSettingsSaving}
+              saved={terminSettingsSaved}
+              error={terminSettingsError}
+              onSave={saveTerminSettings}
+              onCancel={() => {
+                setCalendarEmail(calendarEmailBaseline);
+                setAppointmentDuration(appointmentDurationBaseline);
               }}
             />
           )}
