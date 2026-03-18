@@ -279,6 +279,7 @@ export function OpsShell({
         </div>
       )}
 
+
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
         <InstallPrompt />

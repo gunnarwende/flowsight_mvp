@@ -144,6 +144,16 @@ export async function POST(
     });
   }
 
+  // Block sending past appointments — prevent accidental wrong-date notifications
+  if (new Date(row.scheduled_at).getTime() < Date.now()) {
+    return respond(400, { ok: false, error: "termin_in_past" }, {
+      decision: "skipped",
+      error_code: "termin_in_past",
+      scheduled_at_present: true,
+      recipient_present: false,
+    });
+  }
+
   // ── Resolve recipient: assigned staff email → tenant calendar email → env var
   let recipientEmail: string | undefined;
 
