@@ -4,6 +4,10 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
+import { SystemflussBar } from "./SystemflussBar";
+import { HandlungsbedarfZone } from "./HandlungsbedarfZone";
+import { WirkungZone } from "./WirkungZone";
+import { TechnikerView } from "./TechnikerView";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -34,6 +38,15 @@ export interface LeitzentraleProps {
   caseIdPrefix: string;
   weekStats: { neue: number; erledigt: number };
   reviewStats: { sent: number; pending: number };
+  /** Extended stats for v2 zones */
+  reviewSent7d?: number;
+  reviewSentTotal?: number;
+  erledigt30d?: number;
+  avgRating?: number | null;
+  featuredReview?: string | null;
+  /** Staff context for role-based rendering */
+  staffName?: string | null;
+  staffRole?: "admin" | "techniker";
 }
 
 // ---------------------------------------------------------------------------
@@ -175,7 +188,7 @@ function formatDate(iso: string): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }: LeitzentraleProps) {
+export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, reviewSent7d, reviewSentTotal, erledigt30d, avgRating, featuredReview, staffName, staffRole }: LeitzentraleProps) {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<FilterKey | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -245,48 +258,73 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
     setCurrentPage(1);
   };
 
+  // ── Source counts ─────────────────────────────────────────────────────
+  const sourceCounts = useMemo(() => {
+    const counts = { voice: 0, wizard: 0, manual: 0 };
+    for (const c of cases) {
+      if (c.source === "voice") counts.voice++;
+      else if (c.source === "wizard" || c.source === "website") counts.wizard++;
+      else counts.manual++;
+    }
+    return counts;
+  }, [cases]);
+
+  // ── Techniker view ──────────────────────────────────────────────────
+  if (staffRole === "techniker" && staffName) {
+    return (
+      <TechnikerView
+        staffName={staffName}
+        cases={cases}
+        caseIdPrefix={caseIdPrefix}
+        allCasesCount={{
+          eingang: cardCounts.eingang,
+          beiUns: cardCounts.bei_uns + cardCounts.wartet,
+          erledigt: cardCounts.erledigt,
+        }}
+        sources={sourceCounts}
+        reviewAvg={avgRating ?? null}
+        reviewStats={{
+          sent7d: reviewSent7d ?? 0,
+          sent30d: reviewStats.sent,
+          sentTotal: reviewSentTotal ?? reviewStats.sent,
+          erledigt30d: erledigt30d ?? weekStats.erledigt,
+        }}
+      />
+    );
+  }
+
+  // ── Admin/Inhaber view ──────────────────────────────────────────────
   return (
     <div className="space-y-3">
       {/* ═══════════════════════════════════════════════════════════════
-          SYSTEMFLUSS-KARTEN
+          SYSTEMFLUSS — Verbundener Flow: Eingang → Bei uns → Erledigt → ★
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-        {FLUSS_CARDS.map((card) => {
-          const isActive = activeFilter === card.key;
-          const count = cardCounts[card.key];
-          return (
-            <button
-              key={card.key}
-              onClick={() => handleFilterClick(card.key)}
-              className={`text-left border-l-4 ${card.accentColor} bg-white rounded-xl px-3 py-2.5 shadow-sm hover:shadow transition border border-gray-200 ${
-                isActive ? `ring-2 ring-offset-2 ${card.ringColor}` : ""
-              }`}
-            >
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                {card.label}
-              </p>
-              <p className={`text-xl font-bold mt-0.5 ${count === 0 ? "text-gray-300" : "text-gray-900"}`}>
-                {count}
-              </p>
-            </button>
-          );
-        })}
-      </div>
+      <SystemflussBar
+        eingang={cardCounts.eingang}
+        beiUns={cardCounts.bei_uns + cardCounts.wartet}
+        erledigt={cardCounts.erledigt}
+        reviewAvg={avgRating ?? null}
+        sources={sourceCounts}
+      />
 
-      {/* Active filter or total indicator */}
-      {!activeFilter && (
-        <p className="text-xs text-gray-400">
-          {cases.length} Fälle insgesamt
-          <span className="mx-1.5 text-gray-300">·</span>
-          {weekStats.neue} neu, {weekStats.erledigt} erledigt diese Woche
-          {reviewStats.sent > 0 && (
-            <>
-              <span className="mx-1.5 text-gray-300">·</span>
-              {reviewStats.sent} Bewertungsanfragen (30 Tage)
-            </>
-          )}
-        </p>
-      )}
+      {/* ═══════════════════════════════════════════════════════════════
+          HANDLUNGSBEDARF — Was braucht Aufmerksamkeit?
+         ═══════════════════════════════════════════════════════════════ */}
+      <HandlungsbedarfZone cases={cases} caseIdPrefix={caseIdPrefix} />
+
+      {/* ═══════════════════════════════════════════════════════════════
+          WIRKUNG — Gold-Zone: Bewertungen, Fortschritt, Stolz
+         ═══════════════════════════════════════════════════════════════ */}
+      <WirkungZone
+        reviewStats={{
+          sent7d: reviewSent7d ?? 0,
+          sent30d: reviewStats.sent,
+          sentTotal: reviewSentTotal ?? reviewStats.sent,
+          erledigt30d: erledigt30d ?? weekStats.erledigt,
+        }}
+        avgRating={avgRating ?? null}
+        featuredReview={featuredReview}
+      />
 
       {/* ═══════════════════════════════════════════════════════════════
           SEARCH + NEW CASE
