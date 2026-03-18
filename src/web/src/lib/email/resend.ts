@@ -148,7 +148,7 @@ function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string
 </td></tr>
 <!-- CTA button -->
 <tr><td style="padding:24px 24px 8px" align="center">
-  <a href="${escapeHtml(deepLink)}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:12px 32px;border-radius:6px">Fall im Dashboard &ouml;ffnen</a>
+  <a href="${escapeHtml(deepLink)}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:12px 32px;border-radius:6px">Fall im Leitstand &ouml;ffnen</a>
 </td></tr>
 <!-- Footer -->
 <tr><td style="padding:20px 24px;border-top:1px solid #1e293b;margin-top:16px">
@@ -871,7 +871,7 @@ interface AppointmentEmailPayload {
 }
 
 export async function sendAppointmentIcsEmail(payload: AppointmentEmailPayload): Promise<boolean> {
-  const from = `${payload.tenantDisplayName ?? "Leitstand"} <${process.env.RESEND_FROM ?? "noreply@flowsight.ch"}>`;
+  const from = `${payload.tenantDisplayName ?? "Ihr Servicebetrieb"} <${process.env.RESEND_FROM ?? "noreply@flowsight.ch"}>`;
   const recipientEmail = payload.staffEmail || process.env.MAIL_REPLY_TO;
   if (!recipientEmail) return false;
 
