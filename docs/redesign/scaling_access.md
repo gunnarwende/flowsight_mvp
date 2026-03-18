@@ -152,3 +152,66 @@ FlowSight skaliert in 2-3 Wochen auf 5-10 Betriebe/Tag Outreach. Dieses Dokument
 | 20-50 | Dropdown + Suche | Textfilter |
 | 50-100 | Eigene Seite + Health | Tenant-Liste-Seite |
 | 100+ | Suche + Favoriten + Teams | Erweiterte Verwaltung |
+
+---
+
+## Founder Steps — Was sich geändert hat und wie du jetzt arbeitest
+
+### Was wir erreicht haben
+
+Du hast jetzt **eine App für alles**. Vorher warst du an einen einzigen Betrieb (Weinberger) gebunden. Jetzt kannst du mit einem Fingertipp zwischen allen Betrieben wechseln — Weinberger, Brunner, Dörfler, und jedem neuen Betrieb den wir provisionieren. Branding, Farben, Fälle, Einstellungen, Mitarbeiter — alles wechselt sofort mit.
+
+Das bedeutet konkret:
+- **Kein Logout/Login mehr** um einen anderen Betrieb zu prüfen
+- **Kein zweites Gerät nötig** — alles in einer App
+- **Wenn du morgens 5 neue Betriebe provisionierst**, tauchen sie sofort im Dropdown auf
+- **Betriebe selbst sehen davon nichts** — ihr System ist sauber, isoliert, nur für sie
+- **Support ist eingebaut** — Betriebe können direkt aus ihrem Leitsystem Hilfe anfragen
+
+### Wie du es ab jetzt nutzt
+
+**Schritt 1 — Deine bestehende App bleibt.**
+Öffne deine PWA-App wie gewohnt (Handy oder Desktop). Du musst nichts neu installieren. Nach dem nächsten App-Start siehst du den neuen Dropdown automatisch.
+
+**Schritt 2 — Betrieb wechseln.**
+In der Sidebar (links auf Desktop, Hamburger-Menü auf Handy) siehst du direkt unter dem Firmennamen einen kleinen Dropdown mit allen Betrieben. Tippe drauf → wähle den Betrieb den du prüfen willst. Alles lädt sofort in dessen Kontext.
+
+**Schritt 3 — Erkennen wo du bist.**
+Wenn du einen fremden Betrieb ansiehst (nicht Weinberger), erscheint oben ein dezenter Amber-Balken: *"Ansicht: Brunner Haustechnik AG — Nicht Ihr Betrieb"*. So weisst du immer, in welchem Kontext du gerade arbeitest.
+
+**Schritt 4 — Zurück zu deinem Betrieb.**
+Im Dropdown: "Mein Betrieb" antippen. Amber-Balken verschwindet. Du bist wieder bei Weinberger.
+
+**Schritt 5 — Support nutzen.**
+In der Sidebar findest du neu "Hilfe" (Fragezeichen-Icon). Dort sind die häufigsten Fragen beantwortet und ein Kontaktformular. Wenn ein Betrieb ein Problem meldet, landet es automatisch als GitHub Issue bei CC — mit vollem Kontext (Betriebsname, Seite, Zeitpunkt). CC kann sofort loslegen ohne Rückfragen.
+
+**Schritt 6 — Deploy-Status prüfen.**
+Ganz unten in der Sidebar siehst du eine kleine Build-Nummer (z.B. `v3a8f2c1`). Das ist der letzte Deploy. Wenn CC einen Fix deployed hat, ändert sich diese Nummer — so weisst du, dass der Fix live ist.
+
+### Täglicher Workflow (ab Pipeline-Start)
+
+```
+Morgens:
+1. Morning Report prüfen (Telegram/E-Mail)
+2. App öffnen → Dropdown → neue Betriebe vom Vortag prüfen
+3. Pro Betrieb: Cases, Branding, Settings kurz checken
+4. Zurück zu "Mein Betrieb" für den eigenen Tagesbetrieb
+
+Bei Support-Ticket:
+1. Benachrichtigung kommt als GitHub Issue (E-Mail/Telegram)
+2. CC analysiert und fixt autonom
+3. Du prüfst: Dropdown → betroffener Betrieb → Fix verifizieren
+
+Beim Onboarding:
+1. provision_trial.mjs ausführen (CC macht das)
+2. App öffnen → Dropdown → neuer Betrieb erscheint
+3. Durchklicken: Cases, Wizard, Voice, SMS → alles prüfen
+4. Fertig → nächster Betrieb
+```
+
+### Was sich NICHT geändert hat
+
+- Betriebe sehen nur ihr eigenes System (kein Dropdown, kein Banner, kein FlowSight)
+- E-Mails werden immer im Namen des richtigen Betriebs versendet (unabhängig von deinem aktiven Dropdown)
+- Morning Report, Sentry, Telegram-Alerts funktionieren wie bisher
+- Die PWA-App muss nicht neu installiert werden
