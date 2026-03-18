@@ -125,12 +125,30 @@ function matchesFilter(c: LeitzentraleCase, filter: FilterKey): boolean {
 
 function matchesSearch(c: LeitzentraleCase, query: string): boolean {
   const q = query.toLowerCase();
-  return (
-    (c.reporter_name ?? "").toLowerCase().includes(q) ||
-    c.city.toLowerCase().includes(q) ||
-    c.category.toLowerCase().includes(q) ||
-    c.description.toLowerCase().includes(q)
-  );
+  // Search across ALL visible fields — scalable, comprehensive
+  const fields = [
+    c.reporter_name,
+    c.city,
+    c.plz,
+    c.street,
+    c.house_number,
+    c.category,
+    c.description,
+    c.assignee_text,
+    c.source,
+    // Labels (so users can search "dringend", "notfall", "erledigt", etc.)
+    STATUS_LABELS[c.status],
+    c.status,
+    URGENCY_LABEL[c.urgency],
+    c.urgency,
+    // Case ID
+    c.seq_number != null ? String(c.seq_number) : null,
+    // Date (multiple formats: "14.03", "14.03.2026", "März")
+    new Date(c.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" }),
+    new Date(c.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" }),
+    new Date(c.created_at).toLocaleDateString("de-CH", { day: "numeric", month: "long", timeZone: "Europe/Zurich" }),
+  ];
+  return fields.some(f => f && f.toLowerCase().includes(q));
 }
 
 function formatDate(iso: string): string {
@@ -290,7 +308,7 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
           </svg>
           <input
             type="text"
-            placeholder="Suche nach Kunde, Ort, Kategorie..."
+            placeholder="Suche nach Kunde, Ort, Datum, Status..."
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
