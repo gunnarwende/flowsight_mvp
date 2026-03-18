@@ -102,34 +102,9 @@ export async function resolveTenantIdentity(
       }
     }
 
-    // Fallback: pick first tenant (admin without tenant_id, or single-tenant MVP).
-    // Admin sees all cases via RLS anyway — this just provides branding context.
-    const { data: tenants } = await supabase
-      .from("tenants")
-      .select("id, name, slug, case_id_prefix, modules")
-      .order("created_at", { ascending: true })
-      .limit(1);
-
-    if (tenants && tenants.length === 1) {
-      const t = tenants[0];
-      const modules = t.modules as Record<string, unknown> | null;
-      const shortName =
-        typeof modules?.sms_sender_name === "string"
-          ? modules.sms_sender_name
-          : t.name;
-      return {
-        tenantId: t.id,
-        displayName: t.name,
-        shortName,
-        leitsystemName: deriveLeitsystemName(modules, shortName),
-        caseIdPrefix: t.case_id_prefix ?? "FS",
-        primaryColor:
-          typeof modules?.primary_color === "string"
-            ? modules.primary_color
-            : FALLBACK.primaryColor,
-      };
-    }
-
+    // SAFETY: No fallback to "first tenant" — this caused Brunner HT to leak
+    // into Weinberger contexts. Admin without tenant_id gets neutral branding.
+    // Email routes use resolveTenantIdentityById(case.tenant_id) which is always correct.
     return null;
   } catch {
     return null;
