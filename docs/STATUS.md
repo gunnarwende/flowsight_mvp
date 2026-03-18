@@ -56,32 +56,16 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **Leitsystem Phase 1-4 komplett (18.03.):** PRs #238-#275. Login High-End. PWA Auto-Update. Falldetail komplett. Kommunikation & SMS (160-Char-Audit, Kanal-Hinweise). Rollen & Einstellungen (Staff CRUD, Techniker-Micro-Surface). Leitzentrale (6 Systemfluss-Karten, Click-to-Filter, Volltext-Suche, Pagination, Notfall-Markierung).
-- **Tenant-Scope-Hardening (18.03.):** PRs #270-#275. Admin behält tenant_id (kein Fallback auf ältesten Tenant). Leitzentrale zeigt nur eigenen Tenant. Amber-Warnung bei Cross-Tenant-Cases. Brand Color Pipeline (CustomerSite → DB → Leitsystem). Dynamische Kanal-Hinweise aus Einstellungen. Unabhängige Send-Buttons. Kompaktes Layout (100% Zoom). PWA Deep Linking. Termin-Card aus Einstellungen entfernt. Einsatzplanung als disabled Nav.
-- **Feedback-Runden FB1-FB21 abgearbeitet.** Kritische Tenant-Bugs (Brunner HT / Dörfler AG Leak) behoben.
-- **17 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard). +1 Modul: Review Surface.
-- **50+ Commits seit 04.03.** (PRs #53–#128).
-- **Architecture Wave (10.03.):** PR #128. RLS Migration applied (tenant isolation at DB level). Tenant scoping in Dashboard + API (`resolveTenantScope.ts`). 3-Tier SMS Routing. Review Surface (Google-style). 15 Demo-Cases seeded (Weinberger). Architecture Document (22 Sections). 3-Modi GTM Logic. Ops Scripts (seed_demo_data, setup_rls_and_admin).
-- **Quality Wave (10.03.):** PR #126 + #127. Voice fixes, PLZ Lookup, Dashboard Branding, Review Engine.
-- **Web-Engine Abschluss (08.03.):** Alle 6 Customer-Websites auf einheitlichem Standard. Template: teamPhoto-Support, Careers-Gradient, Reviews-Centering.
-- **Website-Template v3 (08.03.):** ServiceDetailOverlay + Bullets + per-Service Galleries + Lightbox z-[200] + Mobile Gallery Arrows.
-- **Wizard Restructure (09.03.):** "Anliegen melden" statt "Schaden melden", Top-3 + fixe Reihe, Photo Upload in Step 3.
-- **Voice Agent v4 (07.03.):** reporter_name, deterministic ß→ss, farewell no-repeat, end_call tool, dynamic SIP routing.
-- **Weinberger AG (09.03.):** GTM Goldstandard. 5 Services, 17 Bilder, 24h Notdienst, 4.4★/20 Reviews. PR #116.
-- **GTM Foundation (09.03.):** 9/10 Building Blocks done. Weinberger D+B-Full live.
-- **Trial Machine (11.03.):** PR #131. Operating Model (6 Phasen), Trial Lifecycle DB-Felder, provision_trial.mjs, offboard_tenant.mjs. B-Quick eliminiert — immer B-Full.
-- **Trial Lifecycle Emails (11.03.):** PR #134. Welcome-Mail (auto via provision_trial.mjs), Offboarding-Mail (auto via offboard_tenant.mjs), Morning Report mit Trial-Awareness (active/follow-up/expiring/zombie).
-- **Scout v3 (11.03.):** PR #135. Module 2 (Voice Fit) Scoring: Emergency + Hours Gap + Service Breadth. Tier-Thresholds mit Einsatzlogik aligned (HOT >= 8, WARM >= 6).
-- **Trial Lifecycle Runner (11.03.):** PR #136. Idempotent Tick-Route (`/api/lifecycle/tick`), per-Milestone Timestamps (day7/10/13/14), Day 13 Trial-Expiry E-Mail, GitHub Actions Cron (daily 07:00 UTC), Morning Report tick_stale detection. Prospect Welcome Page (`/ops/welcome`) mit Primary CTA = Testnummer anrufen.
-- **Monitoring-Härtung (11.03.):** PR #138. Morning Report als GH Actions Cron (daily 07:30 UTC, Telegram + E-Mail bei RED/YELLOW). Lifecycle-Tick Failure → Telegram-Alert. Health Check mit DB-Ping + Resend-Key-Validation.
-- **Reise-Härtung (11.03.):** PR #139. Reise-Runbook (Vor/Während/Nach Checkliste, Trial-Timing-Regel, Signal-Übersicht). Morning Report Deep Health (DB/Email/Resend-API-Status einzeln sichtbar). Resend API Key Validation im Morning Report.
-- **GTM SSOT Hygiene (11.03.):** PR #141. B-Quick komplett eliminiert (Einsatzlogik, Tracker, Outreach). GTM Tracker auf aktuellen Stand (G11+G12 DONE, Weinberger B=DONE C=testbar). ICP-Scoring aligned (0-11 Skala, HOT ≥8 / WARM 6-7). Modus 3 zurückgestellt.
-- **Weinberger E2E Ready (11.03.):** PR #143. SMS-Modul + Google Review URL aktiviert. INTL Agent Firmenname korrigiert. Weinberger C = TESTBAR.
-- **QA Sweep Machine (14.03.):** `scripts/_ops/qa_sweep.mjs` — Phase A (DOM checks) + Phase B (Claude Vision API). Automated delta analysis against Identity Contract + Leitstand Zielbild. Output: STOPP/SYSTEM/FOUNDER/POLISH severity report with screenshots.
-- **OPS Visual Block (14.03.):** PRs #208-#210. Full Brand Header (sidebar + mobile in tenant color), Website Nav accent bar + phone visibility, Puls overhaul (group headers always visible, empty states, white cards with colored borders), amber purge (all amber→slate for brand-agnostic consistency), case list readability (truncation, assignee visibility). QA Sweep: 0 STOPP. Weinberger ready for Founder-Run.
-- **Gold Contact (11.03.):** PR #145. Nordstern-Dokument für Sales/Trial/Product/Go-Live. 5-Stufen-Kaufmodell, Spiegel-Effekt, 7 WOW-Momente, Meister/Betrieb-Profile, Phase 0-3 Journey mit konkretem High-Touch-Handover.
-- **299 Flat Pricing (11.03.):** PR #147. Ein Produkt, ein Preis: CHF 299/Monat. 3-Tier Packages eliminiert. Pre-Contact Quality Gate (`pre_contact_check.mjs`). Gold Contact + alle Docs aligned.
-- **Demo→Test Flow (11.03.):** PR #148. "Demo buchen" → "Kostenlos testen". Neue /testen Page ("Wir bauen Lisa für Ihren Betrieb"), /demo redirect, DemoForm mit PLZ+Website, Qualify-orientierte Bestätigung. Stage 1 von 3.
+- **Leitzentrale v2 High-End (18.03.):** PRs #268-#280. Kompletter Neuaufbau: Systemfluss-Pipeline (📞→⚡→✅→★★★★★) mit Quellen-Aufschlüsselung, Handlungsbedarfs-Zone (intelligent priorisiert: Notfall→Überfällig→Wartet>48h→Neu), Wirkungs-Zone (Gold-Sterne, Bewertungstexte, Progress-Bar, Zeitfilter). Techniker-Ansicht: persönliche Begrüssung, Tages-Termine mit Navigation, nur eigene Fälle.
+- **Scaling & Access (18.03.):** PRs #277-#280. Tenant-Switcher (Admin wechselt per Dropdown zwischen Betrieben). Support-System ("Hilfe"-Seite → GitHub Issue). Rollen-Switch (Admin↔Techniker für Testing). Deploy-Status im Sidebar-Footer. Cookie-basiert, HttpOnly, skalierbar bis 100+ Tenants.
+- **Tenant-Scope-Hardening (18.03.):** PRs #270-#276. Admin behält tenant_id (kein Fallback auf ältesten Tenant). Brand Color Pipeline (CustomerSite → DB → Leitsystem). Alle E-Mails R4-konform. Dynamische Kanal-Hinweise aus Einstellungen.
+- **Leitsystem Phase 1-4 (17.-18.03.):** PRs #238-#267. Login High-End (OTP, Swiss Trust). PWA Auto-Update. Falldetail komplett (Status, Termin, Staff, Bewertungen). Kommunikation & SMS (160-Char-Audit). Rollen & Einstellungen (Staff CRUD, Techniker-Micro-Surface).
+- **Feedback-Runden FB1-FB21 (18.03.):** Alle Founder-Feedbacks abgearbeitet. Kritische Tenant-Bugs behoben.
+- **17 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard.
+
+### Kondensierte Historie (04.-14.03.)
+
+Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundation → Trial Machine → Monitoring → Gold Contact → Renovation → S1-S4 Build-Blocks. Details: `docs/archive/wave_log.md` + git log.
 - **Lisa Interest Capture (11.03.):** PR #150. Sales Agent → Interest Capture Agent. Kein Pricing, kein Feature-Pitch, kein Demo-Buchen. Stattdessen: warm empfangen, Interesse erfassen, Founder-Rückruf vorbereiten. Gold-Contact-aligned.
 - **Block A: Identity + Lifecycle (13.03.):** PR #168 + #169. Identity Contract auf alle 7 E-Mail-Templates angewendet (Sender = `{name} via FlowSight`, kein `[FlowSight]` Prefix). Day-5 Engagement-Nudge (mit Suppression bei >=3 Cases). Day-7 Engagement-Snapshot (JSONB). Welcome-Page Trial-Countdown. Demo-Case-Tabs im Leitstand ("Ihre Fälle" / "Demo"). Tab-Titel = `{short_name} OPS`.
 - **Block B: Wizard + Review Gold (13.03.):** PR #171. Wizard Notfall-Logik (N1-N7): Phone-CTA-Screen bei Notfall. Review Surface komplett neu (editierbares Textarea, Auftrags-Block, Clipboard+Google-CTA, Tenant-Branding, Event-Tracking). Nachlauf-System (6 Review-Status aus case_events, max 2 Anfragen, 7d-Cooldown, Skip-Action). Leitstand Review-Badges + Aktionen.
