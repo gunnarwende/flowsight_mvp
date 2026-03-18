@@ -280,8 +280,11 @@ export async function PATCH(
     }
 
     // ── Assignment notification (fire-and-forget) ───────────────────
+    // Skip auto-notification when frontend uses manual notify-assignees flow
+    const skipAssigneeNotify = !!body._skip_assignee_notify;
     let assignmentSent = false;
     if (
+      !skipAssigneeNotify &&
       "assignee_text" in update &&
       update.assignee_text &&
       update.assignee_text !== existing.assignee_text
