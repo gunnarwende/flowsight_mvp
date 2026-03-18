@@ -156,14 +156,8 @@ export async function POST(
     channel = "sms";
     const smsConfig = await getTenantSmsConfig(row.tenant_id);
     const senderName = smsConfig?.senderName ?? "FlowSight";
-    const smsBody = [
-      `${senderName}: Wie war unser Service?`,
-      ``,
-      `Wir hoffen, Sie waren zufrieden. Über eine kurze Bewertung würden wir uns sehr freuen:`,
-      reviewSurfaceUrl,
-      ``,
-      `Vielen Dank für Ihr Vertrauen — Ihr Service-Team`,
-    ].join("\n");
+    // ≤ 160 chars: warm, direct, professional
+    const smsBody = `${senderName}: Wie war unser Service? Wir freuen uns über Ihre Bewertung:\n${reviewSurfaceUrl}`;
     const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
     sent = smsResult.sent;
   }

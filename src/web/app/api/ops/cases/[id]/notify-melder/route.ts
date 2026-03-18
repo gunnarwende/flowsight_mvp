@@ -87,7 +87,10 @@ export async function POST(
   }
 
   // ── Send SMS ──────────────────────────────────────────────────────────
-  if (row.contact_phone && smsEnabled && modules.notify_termin_sms !== false) {
+  // If no email was sent (e.g. voice cases without email), SMS is the primary channel
+  // and should send even without the general sms module flag.
+  const smsAsPrimary = !emailSent && !!row.contact_phone;
+  if (row.contact_phone && (smsAsPrimary || (smsEnabled && modules.notify_termin_sms !== false))) {
     const start = new Date(row.scheduled_at);
     const day = start.toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
     const date = start.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
