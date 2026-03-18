@@ -92,6 +92,8 @@ export default async function CaseDetailPage({
   const caseId = formatCaseId(caseData.seq_number, identity?.caseIdPrefix);
   const isProspect = scope?.isProspect ?? false;
   const brandColor = identity?.primaryColor ?? "#64748b";
+  // Tenant mismatch detection — admin viewing another tenant's case
+  const isForeignTenant = scope?.isAdmin && scope.tenantId && caseData.tenant_id !== scope.tenantId;
 
   // Load tenant modules for notification settings (channel hints)
   const { data: tenantRow } = await supabase
@@ -154,6 +156,13 @@ export default async function CaseDetailPage({
           </span>
         </div>
       </div>
+
+      {/* Tenant mismatch warning — prevents accidentally emailing from wrong tenant */}
+      {isForeignTenant && identity && (
+        <div className="mb-3 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium">
+          ⚠️ Dieser Fall gehört zu <strong>{identity.displayName}</strong>, nicht zum aktuell eingeloggten Betrieb. E-Mails werden im Namen von {identity.displayName} versendet.
+        </div>
+      )}
 
       {/* Case surface */}
       <CaseDetailForm

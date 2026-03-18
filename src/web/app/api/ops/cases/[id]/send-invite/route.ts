@@ -221,9 +221,11 @@ export async function POST(
     ? new Date(row.scheduled_end_at)
     : new Date(dtStart.getTime() + 60 * 60 * 1000);
 
-  const fromEnvValue = process.env.MAIL_FROM;
-  const from = fromEnvValue ?? "noreply@send.flowsight.ch";
-  const organizerEmail = from;
+  // R4: tenant-branded sender — tenant name in From header
+  const addr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const safeTenantName = tenantName.replace(/[<>"]/g, "");
+  const from = `${safeTenantName} <${addr}>`;
+  const organizerEmail = addr;
 
   const baseUrl =
     process.env.APP_URL ??
