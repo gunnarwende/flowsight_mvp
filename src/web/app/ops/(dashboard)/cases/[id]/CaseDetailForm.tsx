@@ -151,6 +151,7 @@ export function CaseDetailForm({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   currentStaffName,
   staffRole,
+  notifySettings,
 }: {
   initialData: CaseDetail;
   isProspect?: boolean;
@@ -160,7 +161,14 @@ export function CaseDetailForm({
   currentStaffName?: string | null;
   /** Role-based access: "admin" | "techniker" | undefined (full access) */
   staffRole?: "admin" | "techniker";
+  /** Tenant notification settings from modules — controls channel hint text */
+  notifySettings?: {
+    terminEmail: boolean;
+    terminSms: boolean;
+    staffAssignment: boolean;
+  };
 }) {
+  const ns = notifySettings ?? { terminEmail: true, terminSms: true, staffAssignment: true };
   // ── Field state ──────────────────────────────────────────────────────
   const [status, setStatus] = useState(initialData.status);
   const [urgency, setUrgency] = useState(initialData.urgency);
@@ -182,6 +190,9 @@ export function CaseDetailForm({
   // ── Steuerung notification state (edit-mode inline buttons) ────────
   const [assigneeNotifyState, setAssigneeNotifyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [terminSendState, setTerminSendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // FB10: Track pending sends independently — prevents one save from hiding the other button
+  const [terminPendingSend, setTerminPendingSend] = useState(false);
+  const [assigneePendingNotify, setAssigneePendingNotify] = useState(false);
   const [showCloseWarning, setShowCloseWarning] = useState(false);
 
   const [baseline, setBaseline] = useState({
@@ -252,8 +263,11 @@ export function CaseDetailForm({
     scheduledEndAt !== baseline.scheduled_end_at;
 
   // ── Live dirty: new assignees + termin changed (for inline notification buttons)
+  // FB10: Use pending flags so that saving one notification doesn't hide the other button
   const liveNewAssignees = selectedAssignees.filter(a => !parseAssignees(baseline.assignee_text).includes(a));
-  const liveTerminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+  const liveTerminDirty = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+  const liveTerminChanged = liveTerminDirty || terminPendingSend;
+  const showAssigneeButton = liveNewAssignees.length > 0 || assigneePendingNotify;
   const terminInPast = !!scheduledAt && new Date(scheduledAt).getTime() < Date.now();
 
   const kontaktDirty =
@@ -347,7 +361,9 @@ export function CaseDetailForm({
 
   /** Save + notify new assignees in one step */
   async function handleSaveAndNotifyAssignees() {
-    const namesToNotify = [...liveNewAssignees]; // capture before save updates baseline
+    const namesToNotify = liveNewAssignees.length > 0 ? [...liveNewAssignees] : [...selectedAssignees]; // capture before save updates baseline
+    // FB10: preserve termin pending state across save
+    if (liveTerminDirty) setTerminPendingSend(true);
     setAssigneeNotifyState("sending");
     const ok = await saveFields({
       status, urgency,
@@ -365,6 +381,7 @@ export function CaseDetailForm({
       });
       if (!res.ok) throw new Error("Benachrichtigung fehlgeschlagen");
       setAssigneeNotifyState("sent");
+      setAssigneePendingNotify(false);
       setTimeout(() => setAssigneeNotifyState("idle"), 3000);
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "assignee_notified",
@@ -379,6 +396,8 @@ export function CaseDetailForm({
 
   /** Save + send termin to all assignees + customer in one step */
   async function handleSaveAndSendTermin() {
+    // FB10: preserve assignee pending state across save
+    if (liveNewAssignees.length > 0) setAssigneePendingNotify(true);
     // Block sending past appointments
     if (scheduledAt && new Date(scheduledAt).getTime() < Date.now()) {
       setTerminSendState("error");
@@ -403,6 +422,7 @@ export function CaseDetailForm({
         if (!melderRes.ok) throw new Error("Kundenbenachrichtigung fehlgeschlagen");
       }
       setTerminSendState("sent");
+      setTerminPendingSend(false);
       setTimeout(() => setTerminSendState("idle"), 3000);
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "termin_versendet",
@@ -579,7 +599,7 @@ export function CaseDetailForm({
                 )}
 
                 {/* Zuständige benachrichtigen — sofort bei Änderung */}
-                {liveNewAssignees.length > 0 && assigneeNotifyState !== "sent" && (
+                {showAssigneeButton && assigneeNotifyState !== "sent" && (
                   <button
                     onClick={handleSaveAndNotifyAssignees}
                     disabled={assigneeNotifyState === "sending"}
@@ -603,8 +623,11 @@ export function CaseDetailForm({
                     )}
                   </button>
                 )}
-                {liveNewAssignees.length > 0 && assigneeNotifyState === "idle" && (
-                  <p className="text-xs text-gray-500 mt-1">Neu: {liveNewAssignees.join(", ")}</p>
+                {showAssigneeButton && assigneeNotifyState === "idle" && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {liveNewAssignees.length > 0 ? `Neu: ${liveNewAssignees.join(", ")}` : "Benachrichtigung ausstehend"}
+                    {ns.staffAssignment ? " — wird per E-Mail benachrichtigt" : ""}
+                  </p>
                 )}
                 {assigneeNotifyState === "sent" && (
                   <div className="flex items-center gap-1.5 mt-2">
@@ -659,17 +682,16 @@ export function CaseDetailForm({
                     )}
                   </button>
                 )}
-                {/* Channel hint: what channel will be used for customer notification */}
+                {/* Channel hint: dynamic based on contact data + tenant notification settings */}
                 {liveTerminChanged && terminSendState === "idle" && (
                   <p className="text-xs text-gray-500 mt-1">
-                    {!contactEmail.trim() && !contactPhone.trim()
-                      ? "Keine Kontaktdaten — Kunde wird nicht benachrichtigt"
-                      : !contactEmail.trim()
-                        ? "Kunde wird per SMS benachrichtigt"
-                        : contactPhone.trim()
-                          ? "Kunde wird per E-Mail + SMS benachrichtigt"
-                          : "Kunde wird per E-Mail benachrichtigt"
-                    }
+                    {(() => {
+                      const hasEmail = !!contactEmail.trim() && ns.terminEmail;
+                      const hasSms = !!contactPhone.trim() && ns.terminSms;
+                      if (!hasEmail && !hasSms) return "Kunde wird nicht benachrichtigt";
+                      const channels = [hasEmail && "E-Mail", hasSms && "SMS"].filter(Boolean).join(" + ");
+                      return `Kunde wird per ${channels} benachrichtigt`;
+                    })()}
                   </p>
                 )}
                 {/* No contact warning — shown instead of button */}

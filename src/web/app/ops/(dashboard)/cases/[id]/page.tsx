@@ -93,6 +93,14 @@ export default async function CaseDetailPage({
   const isProspect = scope?.isProspect ?? false;
   const brandColor = identity?.primaryColor ?? "#64748b";
 
+  // Load tenant modules for notification settings (channel hints)
+  const { data: tenantRow } = await supabase
+    .from("tenants")
+    .select("modules")
+    .eq("id", caseData.tenant_id)
+    .single();
+  const tenantModules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
+
   // Resolve logged-in user for self-send guard + RBAC
   const authClient = await getAuthClient();
   const { data: { user } } = await authClient.auth.getUser();
@@ -155,6 +163,11 @@ export default async function CaseDetailPage({
         brandColor={brandColor}
         currentStaffName={currentStaffName}
         staffRole={staffRole}
+        notifySettings={{
+          terminEmail: tenantModules.notify_termin_email !== false,
+          terminSms: tenantModules.notify_termin_sms !== false,
+          staffAssignment: tenantModules.notify_staff_assignment !== false,
+        }}
       />
 
     </>
