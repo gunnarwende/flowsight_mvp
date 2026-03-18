@@ -170,7 +170,14 @@ export function CaseDetailForm({
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [terminSentForCurrent, setTerminSentForCurrent] = useState(false);
-  const [terminJustSaved, setTerminJustSaved] = useState(false);
+
+  // ── Steuerung edit-mode notification state ─────────────────────────
+  const [steuerungSaved, setSteuerungSaved] = useState(false);
+  const [savedNewAssignees, setSavedNewAssignees] = useState<string[]>([]);
+  const [savedTerminChanged, setSavedTerminChanged] = useState(false);
+  const [assigneeNotifySent, setAssigneeNotifySent] = useState(false);
+  const [assigneeNotifyState, setAssigneeNotifyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [showCloseWarning, setShowCloseWarning] = useState(false);
 
   const [baseline, setBaseline] = useState({
     status: initialData.status,
@@ -265,7 +272,7 @@ export function CaseDetailForm({
   }, [onBeforeUnload]);
 
   // ── Save helpers ─────────────────────────────────────────────────────
-  async function saveFields(fields: Record<string, unknown>): Promise<boolean> {
+  async function saveFields(fields: Record<string, unknown>, opts?: { keepEditing?: boolean }): Promise<boolean> {
     setSaveState("saving");
     setErrorMsg("");
     try {
@@ -288,7 +295,7 @@ export function CaseDetailForm({
         }
         return next;
       });
-      setEditingSection(null);
+      if (!opts?.keepEditing) setEditingSection(null);
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 2000);
       return true;
@@ -300,17 +307,29 @@ export function CaseDetailForm({
   }
 
   async function saveSteuerung() {
+    // Calculate diff BEFORE saving (baseline = old values)
+    const oldAssignees = parseAssignees(baseline.assignee_text);
+    const newAssignees = selectedAssignees.filter(a => !oldAssignees.includes(a));
+    const terminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+
+    // Save with keepEditing (stay in edit mode) + skip auto-notification
     const ok = await saveFields({
       status, urgency,
       assignee_text: assigneeText || null,
       scheduled_at: scheduledAt || null,
       scheduled_end_at: scheduledEndAt || null,
-    });
-    // Show "Termin versenden" button after saving (persistent until sent)
-    if (ok && scheduledAt) {
-      setTerminJustSaved(true);
+      _skip_assignee_notify: true,
+    }, { keepEditing: true });
+
+    if (ok) {
+      setSteuerungSaved(true);
+      setSavedNewAssignees(newAssignees);
+      setSavedTerminChanged(terminChanged);
+      setAssigneeNotifySent(false);
+      setAssigneeNotifyState("idle");
       setTerminSentForCurrent(false);
       setTerminSendState("idle");
+      setShowCloseWarning(false);
     }
   }
 
@@ -353,7 +372,36 @@ export function CaseDetailForm({
     setCategory(baseline.category);
     setDescription(baseline.description);
     setInternalNotes(baseline.internal_notes);
+    resetSteuerungNotifyState();
     setEditingSection(null);
+  }
+
+  /** Close steuerung edit mode — warn if notifications pending */
+  function closeSteuerungEdit() {
+    const hasPending = (savedNewAssignees.length > 0 && !assigneeNotifySent) ||
+                       (savedTerminChanged && !terminSentForCurrent);
+    if (hasPending) {
+      setShowCloseWarning(true);
+      return;
+    }
+    resetSteuerungNotifyState();
+    setEditingSection(null);
+  }
+
+  function forceCloseSteuerungEdit() {
+    resetSteuerungNotifyState();
+    setEditingSection(null);
+  }
+
+  function resetSteuerungNotifyState() {
+    setSteuerungSaved(false);
+    setSavedNewAssignees([]);
+    setSavedTerminChanged(false);
+    setAssigneeNotifySent(false);
+    setAssigneeNotifyState("idle");
+    setTerminSentForCurrent(false);
+    setTerminSendState("idle");
+    setShowCloseWarning(false);
   }
 
   function startEdit(section: Section) {
@@ -385,6 +433,29 @@ export function CaseDetailForm({
     } catch {
       setTerminSendState("error");
       setTimeout(() => setTerminSendState("idle"), 4000);
+    }
+  }
+
+  // ── Zuständige benachrichtigen (manual trigger) ─────────────────────
+  async function handleNotifyAssignees() {
+    setAssigneeNotifyState("sending");
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/notify-assignees`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ names: savedNewAssignees }),
+      });
+      if (!res.ok) throw new Error("Benachrichtigung fehlgeschlagen");
+      setAssigneeNotifyState("sent");
+      setAssigneeNotifySent(true);
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(), event_type: "assignee_notified",
+        title: `Zuständige benachrichtigt: ${savedNewAssignees.join(", ")}`,
+        created_at: new Date().toISOString(),
+      }]);
+    } catch {
+      setAssigneeNotifyState("error");
+      setTimeout(() => setAssigneeNotifyState("idle"), 4000);
     }
   }
 
@@ -472,17 +543,17 @@ export function CaseDetailForm({
       <div className={sectionPad}>
         {editingSection === "steuerung" ? (
           <div className="bg-gradient-to-b from-stone-50/80 to-gray-50/50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
-            <SectionHead title="Übersicht" editing onClose={cancelEdit} />
+            <SectionHead title="Übersicht" editing onClose={steuerungSaved ? closeSteuerungEdit : cancelEdit} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div>
                 <label className={lbl}>Status</label>
-                <select value={status} onChange={e => setStatus(e.target.value)} className={inp}>
+                <select value={status} onChange={e => setStatus(e.target.value)} className={inp} disabled={steuerungSaved}>
                   {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className={lbl}>Priorität</label>
-                <select value={urgency} onChange={e => setUrgency(e.target.value)} className={inp}>
+                <select value={urgency} onChange={e => setUrgency(e.target.value)} className={inp} disabled={steuerungSaved}>
                   {URGENCIES.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
                 </select>
               </div>
@@ -494,30 +565,107 @@ export function CaseDetailForm({
                   <StaffMultiSelect
                     staffMembers={staffMembers}
                     selected={selectedAssignees}
-                    onAdd={addAssignee}
-                    onRemove={removeAssignee}
+                    onAdd={steuerungSaved ? () => {} : addAssignee}
+                    onRemove={steuerungSaved ? () => {} : removeAssignee}
                     roleLabels={ROLE_LABELS}
                   />
                 ) : (
-                  <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
+                  <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} disabled={steuerungSaved} />
+                )}
+
+                {/* Zuständige benachrichtigen — nach Speichern */}
+                {steuerungSaved && savedNewAssignees.length > 0 && !assigneeNotifySent && (
+                  <button
+                    onClick={handleNotifyAssignees}
+                    disabled={assigneeNotifyState === "sending"}
+                    className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors print:hidden"
+                  >
+                    {assigneeNotifyState === "sending" ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        <span>Wird benachrichtigt…</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                        </svg>
+                        <span>Benachrichtigen</span>
+                      </>
+                    )}
+                  </button>
+                )}
+                {steuerungSaved && savedNewAssignees.length > 0 && !assigneeNotifySent && assigneeNotifyState !== "sending" && (
+                  <p className="text-xs text-gray-500 mt-1">Neu: {savedNewAssignees.join(", ")}</p>
+                )}
+                {steuerungSaved && assigneeNotifySent && (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span className="text-xs text-emerald-700 font-medium">Benachrichtigt</span>
+                  </div>
+                )}
+                {assigneeNotifyState === "error" && (
+                  <p className="text-xs text-red-600 mt-1">Benachrichtigung fehlgeschlagen</p>
                 )}
               </div>
               <div>
                 <label className={lbl}>Termin</label>
                 <button
                   type="button"
-                  onClick={() => setPickerOpen(p => !p)}
-                  className={`${inp} text-left`}
+                  onClick={() => !steuerungSaved && setPickerOpen(p => !p)}
+                  className={`${inp} text-left ${steuerungSaved ? "opacity-60 cursor-default" : ""}`}
                 >
                   {scheduledAt
                     ? formatTerminRange(scheduledAt, scheduledEndAt || null)
                     : <span className="text-gray-400">Termin wählen</span>}
                 </button>
+
+                {/* Termin versenden — nach Speichern */}
+                {steuerungSaved && savedTerminChanged && !terminSentForCurrent && terminSendState !== "sent" && (
+                  <button
+                    onClick={handleSendTermin}
+                    disabled={terminSendState === "sending"}
+                    className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors print:hidden"
+                  >
+                    {terminSendState === "sending" ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        <span>Wird versendet…</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                        </svg>
+                        <span>Termin versenden</span>
+                      </>
+                    )}
+                  </button>
+                )}
+                {steuerungSaved && (terminSentForCurrent || terminSendState === "sent") && (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span className="text-xs text-emerald-700 font-medium">Termin versendet</span>
+                  </div>
+                )}
+                {terminSendState === "error" && (
+                  <p className="text-xs text-red-600 mt-1">Versand fehlgeschlagen</p>
+                )}
               </div>
             </div>
 
             {/* Appointment Picker (inline) */}
-            {pickerOpen && (
+            {pickerOpen && !steuerungSaved && (
               <AppointmentPicker
                 initialStart={scheduledAt || null}
                 initialEnd={scheduledEndAt || null}
@@ -533,13 +681,45 @@ export function CaseDetailForm({
               />
             )}
 
-            <EditActions
-              onSave={() => saveSteuerung()}
-              onCancel={cancelEdit}
-              saving={saveState === "saving"}
-              dirty={steuerungDirty}
-              error={saveState === "error" ? errorMsg : ""}
-            />
+            {/* Action buttons: Speichern/Gespeichert + Abbrechen/Schliessen */}
+            {steuerungSaved ? (
+              <div className="mt-3">
+                {/* Close warning */}
+                {showCloseWarning && (
+                  <div className="mb-3 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
+                    <p className="font-medium">Benachrichtigungen noch nicht versendet</p>
+                    <p className="text-xs mt-0.5">Zuständige und/oder Termindaten wurden geändert, aber noch nicht verschickt.</p>
+                    <div className="flex gap-2 mt-2">
+                      <button onClick={forceCloseSteuerungEdit}
+                        className="rounded-md border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors"
+                      >Trotzdem schliessen</button>
+                      <button onClick={() => setShowCloseWarning(false)}
+                        className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 transition-colors"
+                      >Zurück</button>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-1.5 text-sm text-emerald-700 font-medium">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    Gespeichert
+                  </span>
+                  <button onClick={closeSteuerungEdit}
+                    className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                  >Schliessen</button>
+                </div>
+              </div>
+            ) : (
+              <EditActions
+                onSave={() => saveSteuerung()}
+                onCancel={cancelEdit}
+                saving={saveState === "saving"}
+                dirty={steuerungDirty}
+                error={saveState === "error" ? errorMsg : ""}
+              />
+            )}
           </div>
         ) : (
           <div className="bg-gradient-to-b from-stone-50/80 to-white -mx-5 -my-4 px-6 py-5 rounded-t-2xl">
@@ -578,47 +758,6 @@ export function CaseDetailForm({
                 )}
               </KV>
             </div>
-
-            {/* Termin versenden — appears after save */}
-            {scheduledAt && terminJustSaved && !terminSentForCurrent && terminSendState !== "sent" && (
-              <div className="flex justify-end mt-4 print:hidden">
-                <button
-                  onClick={handleSendTermin}
-                  disabled={terminSendState === "sending"}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors"
-                >
-                  {terminSendState === "sending" ? (
-                    <>
-                      <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      <span>Wird versendet…</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                      </svg>
-                      <span>Termin versenden</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-            {scheduledAt && (terminSentForCurrent || terminSendState === "sent") && (
-              <div className="flex items-center justify-end gap-2 mt-3 print:hidden">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                <span className="text-sm text-emerald-700 font-medium">Termin versendet</span>
-              </div>
-            )}
-            {terminSendState === "error" && (
-              <div className="flex items-center justify-end gap-2 mt-3 print:hidden">
-                <span className="text-sm text-red-600 font-medium">Versand fehlgeschlagen — bitte erneut versuchen</span>
-              </div>
-            )}
 
             {/* Save state feedback */}
             {(saveState === "saved" || saveState === "error") && (
