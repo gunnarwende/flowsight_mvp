@@ -78,6 +78,7 @@ export function OpsShell({
     : "LS";
   const color = brandColor ?? "#64748b";
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobilePreview, setMobilePreview] = useState(false);
   const pathname = usePathname();
 
   // RBAC: hide Einstellungen for techniker
@@ -87,12 +88,12 @@ export function OpsShell({
 
   function isNavActive(href: string): boolean {
     if (href === "/ops/cases") {
-      // Leitsystem: only exact match (not case detail pages)
-      return pathname === "/ops/cases" || pathname === "/ops/cases/";
+      // Leitzentrale: exact match AND individual case detail pages
+      return pathname === "/ops/cases" || pathname === "/ops/cases/" || (pathname.startsWith("/ops/cases/") && pathname !== "/ops/cases/");
     }
     if (href === "/ops/faelle") {
-      // Fallübersicht: /ops/faelle/* AND individual case pages /ops/cases/[id]
-      return pathname.startsWith("/ops/faelle") || (pathname.startsWith("/ops/cases/") && pathname !== "/ops/cases/");
+      // Fallübersicht: only /ops/faelle/*
+      return pathname.startsWith("/ops/faelle");
     }
     return pathname.startsWith(href);
   }
@@ -291,12 +292,57 @@ export function OpsShell({
         </div>
       )}
 
+      {/* Dev Preview Toggle — desktop only, temporary for testing phase */}
+      <button
+        type="button"
+        onClick={() => setMobilePreview(p => !p)}
+        className="hidden md:flex fixed top-3 right-3 z-50 items-center justify-center w-9 h-9 rounded-lg bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 shadow-lg transition-colors"
+        title={mobilePreview ? "Desktop-Ansicht" : "Mobile-Vorschau"}
+      >
+        {mobilePreview ? (
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+          </svg>
+        )}
+      </button>
+
       {/* Main content */}
-      <main className="md:ml-64 overflow-x-hidden">
-        <InstallPrompt />
-        <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
-          {children}
-        </div>
+      <main className={`overflow-x-hidden ${mobilePreview ? "" : "md:ml-64"}`}>
+        {mobilePreview ? (
+          <div className="flex justify-center py-8 bg-gray-200 min-h-screen">
+            <div className="w-[375px] bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-gray-800" style={{ maxHeight: "812px", overflowY: "auto" }}>
+              {/* Simulated mobile header */}
+              <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: color }}>
+                <button onClick={() => setSidebarOpen(true)} className="flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                  </svg>
+                </button>
+                <Link href="/ops/cases" className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/20" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+                    <span className="text-white font-bold text-sm">{initials}</span>
+                  </div>
+                  <span className="font-semibold text-white text-sm truncate max-w-[160px]">{displayName}</span>
+                </Link>
+                <div className="w-9" />
+              </div>
+              <div className="px-4 py-4">
+                {children}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <InstallPrompt />
+            <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
+              {children}
+            </div>
+          </>
+        )}
       </main>
       <ServiceWorkerRegistration />
       <UpdatePrompt />
