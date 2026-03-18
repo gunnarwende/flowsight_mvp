@@ -30,12 +30,16 @@ export default async function DashboardLayout({
     ? await resolveTenantIdentityById(scope.tenantId)
     : null;
 
-  // Resolve staff role for RBAC
+  // Resolve staff role for RBAC (respects viewAsRole override)
   let staffRole: "admin" | "techniker" | undefined;
   const effectiveTenantId = scope?.tenantId ?? identity?.tenantId;
   if (effectiveTenantId && user.email) {
     const ctx = await resolveStaffRole(user.email, effectiveTenantId);
     if (ctx) staffRole = ctx.role;
+  }
+  // Admin can override role for testing
+  if (scope?.isAdmin && scope.viewAsRole === "techniker") {
+    staffRole = "techniker";
   }
 
   return (
@@ -48,6 +52,7 @@ export default async function DashboardLayout({
       isImpersonating={scope?.isImpersonating}
       activeTenantId={scope?.tenantId}
       homeTenantId={scope?.homeTenantId}
+      viewAsRole={scope?.viewAsRole}
     >
       {children}
     </OpsShell>
