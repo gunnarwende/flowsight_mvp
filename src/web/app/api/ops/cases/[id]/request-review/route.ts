@@ -156,8 +156,8 @@ export async function POST(
     channel = "sms";
     const smsConfig = await getTenantSmsConfig(row.tenant_id);
     const senderName = smsConfig?.senderName ?? "FlowSight";
-    // ≤ 160 chars: warm, direct, professional
-    const smsBody = `${senderName}: Wie war unser Service? Wir freuen uns über Ihre Bewertung:\n${reviewSurfaceUrl}`;
+    // ≤ 160 chars: personal thanks + clear CTA
+    const smsBody = `${senderName}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns:\n${reviewSurfaceUrl}`;
     const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
     sent = smsResult.sent;
   }

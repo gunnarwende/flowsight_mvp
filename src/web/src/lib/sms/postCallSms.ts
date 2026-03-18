@@ -35,14 +35,8 @@ export async function sendPostCallSms(
   const caseRef = `${p.caseIdPrefix}-${p.seqNumber}`;
   const correctionUrl = `${baseUrl}/v/${caseRef}?t=${shortToken}`;
 
-  const hasStreet = p.street && p.street.length > 0;
-
-  const addressLine = hasStreet
-    ? `${p.street}${p.houseNumber ? ` ${p.houseNumber}` : ""}, ${p.plz} ${p.city}`
-    : `${p.plz} ${p.city}`;
-
-  // ≤ 160 chars: compact but professional. Correction link is the key element.
-  const body = `${p.smsSenderName}: Meldung ${p.category} erfasst. Daten prüfen & Fotos ergänzen:\n${correctionUrl}`;
+  // ≤ 160 chars: explicit about what the customer can do (correct voice-agent errors + upload photos)
+  const body = `${p.smsSenderName}: Ihre Meldung ${p.category} wurde erfasst. Bitte Name & Adresse prüfen und Fotos hochladen:\n${correctionUrl}`;
 
   return sendSms(p.callerPhone, body, p.smsSenderName);
 }
