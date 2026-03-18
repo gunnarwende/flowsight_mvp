@@ -169,14 +169,10 @@ export function CaseDetailForm({
   const [street, setStreet] = useState(initialData.street ?? "");
   const [houseNumber, setHouseNumber] = useState(initialData.house_number ?? "");
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [terminSentForCurrent, setTerminSentForCurrent] = useState(false);
 
-  // ── Steuerung edit-mode notification state ─────────────────────────
-  const [steuerungSaved, setSteuerungSaved] = useState(false);
-  const [savedNewAssignees, setSavedNewAssignees] = useState<string[]>([]);
-  const [savedTerminChanged, setSavedTerminChanged] = useState(false);
-  const [assigneeNotifySent, setAssigneeNotifySent] = useState(false);
+  // ── Steuerung notification state (edit-mode inline buttons) ────────
   const [assigneeNotifyState, setAssigneeNotifyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [terminSendState, setTerminSendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [showCloseWarning, setShowCloseWarning] = useState(false);
 
   const [baseline, setBaseline] = useState({
@@ -201,7 +197,6 @@ export function CaseDetailForm({
   const [editingSection, setEditingSection] = useState<Section>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [terminSendState, setTerminSendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [reviewMsg, setReviewMsg] = useState("");
   const [localEvents, setLocalEvents] = useState(caseEvents);
@@ -246,6 +241,10 @@ export function CaseDetailForm({
     status !== baseline.status || urgency !== baseline.urgency ||
     assigneeText !== baseline.assignee_text || scheduledAt !== baseline.scheduled_at ||
     scheduledEndAt !== baseline.scheduled_end_at;
+
+  // ── Live dirty: new assignees + termin changed (for inline notification buttons)
+  const liveNewAssignees = selectedAssignees.filter(a => !parseAssignees(baseline.assignee_text).includes(a));
+  const liveTerminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
 
   const kontaktDirty =
     street !== baseline.street || houseNumber !== baseline.house_number ||
@@ -306,13 +305,40 @@ export function CaseDetailForm({
     }
   }
 
-  async function saveSteuerung() {
-    // Calculate diff BEFORE saving (baseline = old values)
-    const oldAssignees = parseAssignees(baseline.assignee_text);
-    const newAssignees = selectedAssignees.filter(a => !oldAssignees.includes(a));
-    const terminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+  /** Save steuerung and close — warns if notification-worthy changes exist */
+  async function saveSteuerungAndClose() {
+    if (liveNewAssignees.length > 0 || liveTerminChanged) {
+      setShowCloseWarning(true);
+      return;
+    }
+    const ok = await saveFields({
+      status, urgency,
+      assignee_text: assigneeText || null,
+      scheduled_at: scheduledAt || null,
+      scheduled_end_at: scheduledEndAt || null,
+    });
+    if (ok) {
+      setAssigneeNotifyState("idle");
+      setTerminSendState("idle");
+    }
+  }
 
-    // Save with keepEditing (stay in edit mode) + skip auto-notification
+  /** Force-save without sending notifications */
+  async function forceSaveSteuerung() {
+    setShowCloseWarning(false);
+    await saveFields({
+      status, urgency,
+      assignee_text: assigneeText || null,
+      scheduled_at: scheduledAt || null,
+      scheduled_end_at: scheduledEndAt || null,
+      _skip_assignee_notify: true,
+    });
+  }
+
+  /** Save + notify new assignees in one step */
+  async function handleSaveAndNotifyAssignees() {
+    const namesToNotify = [...liveNewAssignees]; // capture before save updates baseline
+    setAssigneeNotifyState("sending");
     const ok = await saveFields({
       status, urgency,
       assignee_text: assigneeText || null,
@@ -320,16 +346,56 @@ export function CaseDetailForm({
       scheduled_end_at: scheduledEndAt || null,
       _skip_assignee_notify: true,
     }, { keepEditing: true });
+    if (!ok) { setAssigneeNotifyState("error"); setTimeout(() => setAssigneeNotifyState("idle"), 4000); return; }
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/notify-assignees`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ names: namesToNotify }),
+      });
+      if (!res.ok) throw new Error("Benachrichtigung fehlgeschlagen");
+      setAssigneeNotifyState("sent");
+      setTimeout(() => setAssigneeNotifyState("idle"), 3000);
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(), event_type: "assignee_notified",
+        title: `Zuständige benachrichtigt: ${namesToNotify.join(", ")}`,
+        created_at: new Date().toISOString(),
+      }]);
+    } catch {
+      setAssigneeNotifyState("error");
+      setTimeout(() => setAssigneeNotifyState("idle"), 4000);
+    }
+  }
 
-    if (ok) {
-      setSteuerungSaved(true);
-      setSavedNewAssignees(newAssignees);
-      setSavedTerminChanged(terminChanged);
-      setAssigneeNotifySent(false);
-      setAssigneeNotifyState("idle");
-      setTerminSentForCurrent(false);
-      setTerminSendState("idle");
-      setShowCloseWarning(false);
+  /** Save + send termin to all assignees + customer in one step */
+  async function handleSaveAndSendTermin() {
+    setTerminSendState("sending");
+    const ok = await saveFields({
+      status, urgency,
+      assignee_text: assigneeText || null,
+      scheduled_at: scheduledAt || null,
+      scheduled_end_at: scheduledEndAt || null,
+      _skip_assignee_notify: true,
+    }, { keepEditing: true });
+    if (!ok) { setTerminSendState("error"); setTimeout(() => setTerminSendState("idle"), 4000); return; }
+    try {
+      const inviteRes = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, { method: "POST" });
+      if (!inviteRes.ok) throw new Error("Mitarbeiter-Einladung fehlgeschlagen");
+      const hasContact = !!(contactEmail.trim() || contactPhone.trim());
+      if (hasContact) {
+        const melderRes = await fetch(`/api/ops/cases/${initialData.id}/notify-melder`, { method: "POST" });
+        if (!melderRes.ok) throw new Error("Kundenbenachrichtigung fehlgeschlagen");
+      }
+      setTerminSendState("sent");
+      setTimeout(() => setTerminSendState("idle"), 3000);
+      setLocalEvents(prev => [...prev, {
+        id: crypto.randomUUID(), event_type: "termin_versendet",
+        title: `Termin versendet${hasContact ? " (Mitarbeiter + Kunde)" : " (Mitarbeiter)"}`,
+        created_at: new Date().toISOString(),
+      }]);
+    } catch {
+      setTerminSendState("error");
+      setTimeout(() => setTerminSendState("idle"), 4000);
     }
   }
 
@@ -372,91 +438,14 @@ export function CaseDetailForm({
     setCategory(baseline.category);
     setDescription(baseline.description);
     setInternalNotes(baseline.internal_notes);
-    resetSteuerungNotifyState();
-    setEditingSection(null);
-  }
-
-  /** Close steuerung edit mode — warn if notifications pending */
-  function closeSteuerungEdit() {
-    const hasPending = (savedNewAssignees.length > 0 && !assigneeNotifySent) ||
-                       (savedTerminChanged && !terminSentForCurrent);
-    if (hasPending) {
-      setShowCloseWarning(true);
-      return;
-    }
-    resetSteuerungNotifyState();
-    setEditingSection(null);
-  }
-
-  function forceCloseSteuerungEdit() {
-    resetSteuerungNotifyState();
-    setEditingSection(null);
-  }
-
-  function resetSteuerungNotifyState() {
-    setSteuerungSaved(false);
-    setSavedNewAssignees([]);
-    setSavedTerminChanged(false);
-    setAssigneeNotifySent(false);
     setAssigneeNotifyState("idle");
-    setTerminSentForCurrent(false);
     setTerminSendState("idle");
     setShowCloseWarning(false);
+    setEditingSection(null);
   }
 
   function startEdit(section: Section) {
     if (!editingSection) setEditingSection(section);
-  }
-
-  // ── Termin versenden (unified: staff invite + melder notification) ──
-  async function handleSendTermin() {
-    setTerminSendState("sending");
-    try {
-      // 1. Send ICS calendar invite to staff
-      const inviteRes = await fetch(`/api/ops/cases/${initialData.id}/send-invite`, { method: "POST" });
-      if (!inviteRes.ok) throw new Error("Mitarbeiter-Einladung fehlgeschlagen");
-
-      // 2. Notify melder (customer) if contact info exists
-      const hasContact = !!(contactEmail.trim() || contactPhone.trim());
-      if (hasContact) {
-        const melderRes = await fetch(`/api/ops/cases/${initialData.id}/notify-melder`, { method: "POST" });
-        if (!melderRes.ok) throw new Error("Kundenbenachrichtigung fehlgeschlagen");
-      }
-
-      setTerminSendState("sent");
-      setTerminSentForCurrent(true);
-      setLocalEvents(prev => [...prev, {
-        id: crypto.randomUUID(), event_type: "termin_versendet",
-        title: `Termin versendet${hasContact ? " (Mitarbeiter + Kunde)" : " (Mitarbeiter)"}`,
-        created_at: new Date().toISOString(),
-      }]);
-    } catch {
-      setTerminSendState("error");
-      setTimeout(() => setTerminSendState("idle"), 4000);
-    }
-  }
-
-  // ── Zuständige benachrichtigen (manual trigger) ─────────────────────
-  async function handleNotifyAssignees() {
-    setAssigneeNotifyState("sending");
-    try {
-      const res = await fetch(`/api/ops/cases/${initialData.id}/notify-assignees`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ names: savedNewAssignees }),
-      });
-      if (!res.ok) throw new Error("Benachrichtigung fehlgeschlagen");
-      setAssigneeNotifyState("sent");
-      setAssigneeNotifySent(true);
-      setLocalEvents(prev => [...prev, {
-        id: crypto.randomUUID(), event_type: "assignee_notified",
-        title: `Zuständige benachrichtigt: ${savedNewAssignees.join(", ")}`,
-        created_at: new Date().toISOString(),
-      }]);
-    } catch {
-      setAssigneeNotifyState("error");
-      setTimeout(() => setAssigneeNotifyState("idle"), 4000);
-    }
   }
 
   // ── Review ───────────────────────────────────────────────────────────
@@ -543,17 +532,17 @@ export function CaseDetailForm({
       <div className={sectionPad}>
         {editingSection === "steuerung" ? (
           <div className="bg-gradient-to-b from-stone-50/80 to-gray-50/50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
-            <SectionHead title="Übersicht" editing onClose={steuerungSaved ? closeSteuerungEdit : cancelEdit} />
+            <SectionHead title="Übersicht" editing onClose={cancelEdit} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div>
                 <label className={lbl}>Status</label>
-                <select value={status} onChange={e => setStatus(e.target.value)} className={inp} disabled={steuerungSaved}>
+                <select value={status} onChange={e => setStatus(e.target.value)} className={inp}>
                   {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
               <div>
                 <label className={lbl}>Priorität</label>
-                <select value={urgency} onChange={e => setUrgency(e.target.value)} className={inp} disabled={steuerungSaved}>
+                <select value={urgency} onChange={e => setUrgency(e.target.value)} className={inp}>
                   {URGENCIES.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
                 </select>
               </div>
@@ -565,18 +554,18 @@ export function CaseDetailForm({
                   <StaffMultiSelect
                     staffMembers={staffMembers}
                     selected={selectedAssignees}
-                    onAdd={steuerungSaved ? () => {} : addAssignee}
-                    onRemove={steuerungSaved ? () => {} : removeAssignee}
+                    onAdd={addAssignee}
+                    onRemove={removeAssignee}
                     roleLabels={ROLE_LABELS}
                   />
                 ) : (
-                  <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} disabled={steuerungSaved} />
+                  <input type="text" value={assigneeText} onChange={e => setAssigneeText(e.target.value)} placeholder="z.B. Ramon D." className={inp} />
                 )}
 
-                {/* Zuständige benachrichtigen — nach Speichern */}
-                {steuerungSaved && savedNewAssignees.length > 0 && !assigneeNotifySent && (
+                {/* Zuständige benachrichtigen — sofort bei Änderung */}
+                {liveNewAssignees.length > 0 && assigneeNotifyState !== "sent" && (
                   <button
-                    onClick={handleNotifyAssignees}
+                    onClick={handleSaveAndNotifyAssignees}
                     disabled={assigneeNotifyState === "sending"}
                     className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors print:hidden"
                   >
@@ -598,10 +587,10 @@ export function CaseDetailForm({
                     )}
                   </button>
                 )}
-                {steuerungSaved && savedNewAssignees.length > 0 && !assigneeNotifySent && assigneeNotifyState !== "sending" && (
-                  <p className="text-xs text-gray-500 mt-1">Neu: {savedNewAssignees.join(", ")}</p>
+                {liveNewAssignees.length > 0 && assigneeNotifyState === "idle" && (
+                  <p className="text-xs text-gray-500 mt-1">Neu: {liveNewAssignees.join(", ")}</p>
                 )}
-                {steuerungSaved && assigneeNotifySent && (
+                {assigneeNotifyState === "sent" && (
                   <div className="flex items-center gap-1.5 mt-2">
                     <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -617,18 +606,18 @@ export function CaseDetailForm({
                 <label className={lbl}>Termin</label>
                 <button
                   type="button"
-                  onClick={() => !steuerungSaved && setPickerOpen(p => !p)}
-                  className={`${inp} text-left ${steuerungSaved ? "opacity-60 cursor-default" : ""}`}
+                  onClick={() => setPickerOpen(p => !p)}
+                  className={`${inp} text-left`}
                 >
                   {scheduledAt
                     ? formatTerminRange(scheduledAt, scheduledEndAt || null)
                     : <span className="text-gray-400">Termin wählen</span>}
                 </button>
 
-                {/* Termin versenden — nach Speichern */}
-                {steuerungSaved && savedTerminChanged && !terminSentForCurrent && terminSendState !== "sent" && (
+                {/* Termin versenden — sofort bei Änderung */}
+                {liveTerminChanged && terminSendState !== "sent" && (
                   <button
-                    onClick={handleSendTermin}
+                    onClick={handleSaveAndSendTermin}
                     disabled={terminSendState === "sending"}
                     className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors print:hidden"
                   >
@@ -650,7 +639,7 @@ export function CaseDetailForm({
                     )}
                   </button>
                 )}
-                {steuerungSaved && (terminSentForCurrent || terminSendState === "sent") && (
+                {terminSendState === "sent" && (
                   <div className="flex items-center gap-1.5 mt-2">
                     <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -665,7 +654,7 @@ export function CaseDetailForm({
             </div>
 
             {/* Appointment Picker (inline) */}
-            {pickerOpen && !steuerungSaved && (
+            {pickerOpen && (
               <AppointmentPicker
                 initialStart={scheduledAt || null}
                 initialEnd={scheduledEndAt || null}
@@ -674,52 +663,34 @@ export function CaseDetailForm({
                   setScheduledAt(startIso);
                   setScheduledEndAt(endIso);
                   setPickerOpen(false);
-                  setTerminSentForCurrent(false);
-                  setTerminSendState("idle");
                 }}
                 onCancel={() => setPickerOpen(false)}
               />
             )}
 
-            {/* Action buttons: Speichern/Gespeichert + Abbrechen/Schliessen */}
-            {steuerungSaved ? (
-              <div className="mt-3">
-                {/* Close warning */}
-                {showCloseWarning && (
-                  <div className="mb-3 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
-                    <p className="font-medium">Benachrichtigungen noch nicht versendet</p>
-                    <p className="text-xs mt-0.5">Zuständige und/oder Termindaten wurden geändert, aber noch nicht verschickt.</p>
-                    <div className="flex gap-2 mt-2">
-                      <button onClick={forceCloseSteuerungEdit}
-                        className="rounded-md border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors"
-                      >Trotzdem schliessen</button>
-                      <button onClick={() => setShowCloseWarning(false)}
-                        className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 transition-colors"
-                      >Zurück</button>
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center gap-1.5 text-sm text-emerald-700 font-medium">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    Gespeichert
-                  </span>
-                  <button onClick={closeSteuerungEdit}
-                    className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                  >Schliessen</button>
+            {/* Close warning */}
+            {showCloseWarning && (
+              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
+                <p className="font-medium">Benachrichtigungen noch nicht versendet</p>
+                <p className="text-xs mt-0.5">Zuständige und/oder Termindaten wurden geändert, aber noch nicht verschickt.</p>
+                <div className="flex gap-2 mt-2">
+                  <button onClick={forceSaveSteuerung}
+                    className="rounded-md border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors"
+                  >Trotzdem speichern</button>
+                  <button onClick={() => setShowCloseWarning(false)}
+                    className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 transition-colors"
+                  >Zurück</button>
                 </div>
               </div>
-            ) : (
-              <EditActions
-                onSave={() => saveSteuerung()}
-                onCancel={cancelEdit}
-                saving={saveState === "saving"}
-                dirty={steuerungDirty}
-                error={saveState === "error" ? errorMsg : ""}
-              />
             )}
+
+            <EditActions
+              onSave={saveSteuerungAndClose}
+              onCancel={cancelEdit}
+              saving={saveState === "saving"}
+              dirty={steuerungDirty}
+              error={saveState === "error" ? errorMsg : ""}
+            />
           </div>
         ) : (
           <div className="bg-gradient-to-b from-stone-50/80 to-white -mx-5 -my-4 px-6 py-5 rounded-t-2xl">
