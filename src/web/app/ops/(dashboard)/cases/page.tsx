@@ -21,11 +21,12 @@ export default async function OpsCasesPage({
   const supabase = getServiceClient();
   const scope = await resolveTenantScope();
 
-  // ── Tenant scope ──────────────────────────────────────────────────
+  // ── Tenant scope (ALWAYS filter when tenantId present — even for admins)
+  // Prevents tenant identity leak: Weinberger Leitstand must never show Brunner cases.
   let filterTenantId: string | undefined;
   const filterTenantSlug = params.tenant;
 
-  if (scope && !scope.isAdmin && scope.tenantId) {
+  if (scope?.tenantId) {
     filterTenantId = scope.tenantId;
   } else if (filterTenantSlug) {
     const { data: t } = await supabase
