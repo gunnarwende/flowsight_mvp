@@ -41,25 +41,8 @@ export async function sendPostCallSms(
     ? `${p.street}${p.houseNumber ? ` ${p.houseNumber}` : ""}, ${p.plz} ${p.city}`
     : `${p.plz} ${p.city}`;
 
-  const lines: string[] = [
-    `${p.smsSenderName}: Ihre Meldung (${p.category}) wurde aufgenommen.`,
-    ``,
-  ];
+  // ≤ 160 chars: compact but professional. Correction link is the key element.
+  const body = `${p.smsSenderName}: Meldung ${p.category} erfasst. Daten prüfen & Fotos ergänzen:\n${correctionUrl}`;
 
-  if (p.reporterName) {
-    lines.push(`Name: ${p.reporterName}`);
-  }
-  lines.push(`Adresse: ${addressLine}`);
-  lines.push(``);
-
-  if (!hasStreet || !p.reporterName) {
-    lines.push(`Bitte prüfen und ggf. ergänzen:`);
-  } else {
-    lines.push(`Stimmt alles? Fotos helfen uns:`);
-  }
-  lines.push(correctionUrl);
-  lines.push(``);
-  lines.push(`Ihr Service-Team meldet sich schnellstmöglich.`);
-
-  return sendSms(p.callerPhone, lines.join("\n"), p.smsSenderName);
+  return sendSms(p.callerPhone, body, p.smsSenderName);
 }
