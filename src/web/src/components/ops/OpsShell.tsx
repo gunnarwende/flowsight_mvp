@@ -310,7 +310,7 @@ export function OpsShell({
             </div>
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
+          <div className="max-w-6xl mx-auto px-4 py-4 min-w-0">
             {children}
           </div>
         )}

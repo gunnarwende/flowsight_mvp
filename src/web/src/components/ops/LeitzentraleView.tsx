@@ -228,11 +228,11 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       {/* ═══════════════════════════════════════════════════════════════
           SYSTEMFLUSS-KARTEN
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
         {FLUSS_CARDS.map((card) => {
           const isActive = activeFilter === card.key;
           const count = cardCounts[card.key];
@@ -240,14 +240,14 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
             <button
               key={card.key}
               onClick={() => handleFilterClick(card.key)}
-              className={`text-left border-l-4 ${card.accentColor} bg-white rounded-xl p-4 shadow-sm hover:shadow transition border border-gray-200 ${
+              className={`text-left border-l-4 ${card.accentColor} bg-white rounded-xl px-3 py-2.5 shadow-sm hover:shadow transition border border-gray-200 ${
                 isActive ? `ring-2 ring-offset-2 ${card.ringColor}` : ""
               }`}
             >
-              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 {card.label}
               </p>
-              <p className={`text-2xl font-bold mt-1 ${count === 0 ? "text-gray-300" : "text-gray-900"}`}>
+              <p className={`text-xl font-bold mt-0.5 ${count === 0 ? "text-gray-300" : "text-gray-900"}`}>
                 {count}
               </p>
             </button>
@@ -313,25 +313,25 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Nr
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Kunde
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Kat.
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Ort
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Priorität
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Status
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
                   Datum
                 </th>
               </tr>
@@ -354,15 +354,15 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
                       isNotfall ? "border-l-4 border-l-red-500 bg-red-50/30" : ""
                     }`}
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-gray-500 whitespace-nowrap">
+                    <td className="px-3 py-2 font-mono text-xs text-gray-500 whitespace-nowrap">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </td>
-                    <td className="px-4 py-3 text-gray-900 truncate max-w-[180px]">
+                    <td className="px-3 py-2 text-gray-900 truncate max-w-[180px]">
                       {c.reporter_name || <span className="text-gray-400">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-gray-700 truncate max-w-[140px]">{c.category}</td>
-                    <td className="px-4 py-3 text-gray-600 truncate max-w-[120px]">{c.city || "—"}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2 text-gray-700 truncate max-w-[140px]">{c.category}</td>
+                    <td className="px-3 py-2 text-gray-600 truncate max-w-[120px]">{c.city || "—"}</td>
+                    <td className="px-3 py-2">
                       <span className="inline-flex items-center gap-1.5">
                         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-400"}`} />
                         <span className="text-xs text-gray-600">
@@ -370,7 +370,7 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
                         </span>
                       </span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2">
                       <span
                         className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
                           STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-700"
@@ -379,7 +379,7 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats }
                         {STATUS_LABELS[c.status] ?? c.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                    <td className="px-3 py-2 text-xs text-gray-500 whitespace-nowrap">
                       {formatDate(c.created_at)}
                     </td>
                   </tr>
