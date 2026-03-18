@@ -85,7 +85,7 @@ function formatTerminRange(startIso: string, endIso: string | null): { line1: st
   if (sameDay) {
     return { line1: `${shortDay(s)} ${fmtDate(s)}`, line2: `${fmtTime(s)}–${fmtTime(e)}` };
   }
-  // Multi-day: two lines for readability
+  // Multi-day: two lines for mobile readability
   return {
     line1: `${shortDay(s)} ${fmtDate(s)}, ${fmtTime(s)}`,
     line2: `– ${shortDay(e)} ${fmtDate(e)}, ${fmtTime(e)}`,
@@ -254,6 +254,7 @@ export function CaseDetailForm({
   // ── Live dirty: new assignees + termin changed (for inline notification buttons)
   const liveNewAssignees = selectedAssignees.filter(a => !parseAssignees(baseline.assignee_text).includes(a));
   const liveTerminChanged = (scheduledAt !== baseline.scheduled_at || scheduledEndAt !== baseline.scheduled_end_at) && !!scheduledAt;
+  const terminInPast = !!scheduledAt && new Date(scheduledAt).getTime() < Date.now();
 
   const kontaktDirty =
     street !== baseline.street || houseNumber !== baseline.house_number ||
@@ -629,11 +630,12 @@ export function CaseDetailForm({
                     : <span className="text-gray-400">Termin wählen</span>}
                 </button>
 
-                {/* Termin versenden — sofort bei Änderung */}
-                {liveTerminChanged && terminSendState !== "sent" && scheduledAt && new Date(scheduledAt).getTime() < Date.now() && (
-                  <p className="mt-2 text-xs text-red-600 print:hidden">Termin liegt in der Vergangenheit — Versand nicht möglich.</p>
+                {/* Past termin warning */}
+                {liveTerminChanged && terminInPast && (
+                  <p className="text-xs text-red-600 font-medium mt-2">Termin liegt in der Vergangenheit — Versand nicht möglich</p>
                 )}
-                {liveTerminChanged && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && !(scheduledAt && new Date(scheduledAt).getTime() < Date.now()) && (
+                {/* Termin versenden — sofort bei Änderung */}
+                {liveTerminChanged && !terminInPast && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && (
                   <button
                     onClick={handleSaveAndSendTermin}
                     disabled={terminSendState === "sending"}

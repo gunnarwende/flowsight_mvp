@@ -1,0 +1,10 @@
+{
+  "source": "https://walter-leuthold.ch/",
+  "crawledAt": "2026-03-06T13:16:47.369Z",
+  "pagesVisited": 11,
+  "totalImageUrls": 103,
+  "downloaded": 101,
+  "duplicates": 0,
+  "skipped": 2,
+  "outputDir": ".crawl-images/walter-leuthold.ch"
+}
