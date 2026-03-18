@@ -300,16 +300,17 @@ export function CaseDetailForm({
   }
 
   async function saveSteuerung() {
-    await saveFields({
+    const ok = await saveFields({
       status, urgency,
       assignee_text: assigneeText || null,
       scheduled_at: scheduledAt || null,
       scheduled_end_at: scheduledEndAt || null,
     });
-    // F7: Show termin send icon only after saving a termin
-    if (scheduledAt) {
+    // Show "Termin versenden" button after saving (persistent until sent)
+    if (ok && scheduledAt) {
       setTerminJustSaved(true);
-      setTimeout(() => setTerminJustSaved(false), 30_000);
+      setTerminSentForCurrent(false);
+      setTerminSendState("idle");
     }
   }
 
@@ -470,7 +471,7 @@ export function CaseDetailForm({
       {/* ── ÜBERSICHT (full width top band) ─────────────────────── */}
       <div className={sectionPad}>
         {editingSection === "steuerung" ? (
-          <div className="bg-gray-50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
+          <div className="bg-gradient-to-b from-stone-50/80 to-gray-50/50 -mx-5 -my-4 px-5 py-4 rounded-t-2xl">
             <SectionHead title="Übersicht" editing onClose={cancelEdit} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div>
@@ -541,7 +542,7 @@ export function CaseDetailForm({
             />
           </div>
         ) : (
-          <div className="bg-white shadow-sm border-l-4 border-l-amber-400 -mx-5 -my-4 px-6 py-5 rounded-t-2xl">
+          <div className="bg-gradient-to-b from-stone-50/80 to-white -mx-5 -my-4 px-6 py-5 rounded-t-2xl">
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 min-w-0">
               <KV label="Status">
@@ -571,38 +572,53 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt ? (
-                  <div className="flex items-center gap-2">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
-                    {scheduledAt && terminJustSaved && !terminSentForCurrent && terminSendState !== "sent" && (
-                      <button
-                        onClick={handleSendTermin}
-                        disabled={terminSendState === "sending"}
-                        className="w-7 h-7 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors print:hidden inline-flex items-center justify-center flex-shrink-0"
-                        title="Termin versenden"
-                      >
-                        {terminSendState === "sending" ? (
-                          <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                          </svg>
-                        )}
-                      </button>
-                    )}
-                    {(terminSentForCurrent || terminSendState === "sent") && (
-                      <svg className="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                    )}
-                  </div>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{formatTerminRange(scheduledAt, scheduledEndAt || null)}</span>
                 ) : (
                   <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-500">Offen</span>
                 )}
               </KV>
             </div>
+
+            {/* Termin versenden — appears after save */}
+            {scheduledAt && terminJustSaved && !terminSentForCurrent && terminSendState !== "sent" && (
+              <div className="flex justify-end mt-4 print:hidden">
+                <button
+                  onClick={handleSendTermin}
+                  disabled={terminSendState === "sending"}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-60 transition-colors"
+                >
+                  {terminSendState === "sending" ? (
+                    <>
+                      <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      <span>Wird versendet…</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                      </svg>
+                      <span>Termin versenden</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+            {scheduledAt && (terminSentForCurrent || terminSendState === "sent") && (
+              <div className="flex items-center justify-end gap-2 mt-3 print:hidden">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span className="text-sm text-emerald-700 font-medium">Termin versendet</span>
+              </div>
+            )}
+            {terminSendState === "error" && (
+              <div className="flex items-center justify-end gap-2 mt-3 print:hidden">
+                <span className="text-sm text-red-600 font-medium">Versand fehlgeschlagen — bitte erneut versuchen</span>
+              </div>
+            )}
 
             {/* Save state feedback */}
             {(saveState === "saved" || saveState === "error") && (
@@ -616,14 +632,15 @@ export function CaseDetailForm({
       </div>
 
       {/* ── 2-LANE BODY ──────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row print:block">
+      {/* ── BODY ──────────────────────────────────────────────── */}
+      <div className="p-3 space-y-3 print:block">
 
-        {/* ── LEFT LANE: Beschreibung + Verlauf ──────────────────── */}
-        <div className="md:w-1/2 min-w-0 md:border-r md:border-gray-100/60 p-3 space-y-3">
+        {/* ── Row 1: Beschreibung + Kontakt (equal height) ───────── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {/* Beschreibung card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex flex-col">
             {editingSection === "beschreibung" ? (
-              <div className="bg-gray-50 -m-4 p-4 rounded-xl">
+              <div className="bg-gray-50 -m-4 p-4 rounded-xl flex-1">
                 <SectionHead title="Beschreibung" editing onClose={cancelEdit} />
                 <div className="space-y-3">
                   <div><label className={lbl}>Kategorie</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} /></div>
@@ -632,11 +649,11 @@ export function CaseDetailForm({
                 <EditActions onSave={saveBeschreibung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={beschreibungDirty} error={saveState === "error" ? errorMsg : ""} />
               </div>
             ) : (
-              <>
+              <div className="flex-1 flex flex-col">
                 <SectionHead title="Beschreibung" onEdit={() => startEdit("beschreibung")} canEdit={canEditSection("beschreibung")} />
                 <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
                 {description ? (
-                  <div className="overflow-hidden">
+                  <div className="overflow-hidden flex-1">
                     <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`}>{description}</p>
                     {(description.split("\n").length > 3 || description.length > 200) && (
                       <button onClick={() => setDescExpanded(p => !p)}
@@ -646,42 +663,16 @@ export function CaseDetailForm({
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400">—</p>
+                  <p className="text-sm text-gray-400 flex-1">—</p>
                 )}
-              </>
+              </div>
             )}
           </div>
 
-          {/* Verlauf + Bewertung card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <h3 className={`${sectionTitle} mb-3`}>Verlauf</h3>
-            <CompactTimeline
-              events={localEvents}
-              status={status}
-              expanded={timelineExpanded}
-              onToggle={() => setTimelineExpanded(p => !p)}
-            />
-            <BewertungEndCap
-              status={status}
-              reviewInfo={reviewInfo}
-              canRequestReview={canRequestReview}
-              reviewState={reviewState}
-              reviewMsg={reviewMsg}
-              onRequest={handleRequestReview}
-              onSkip={handleSkipReview}
-              brandColor={brandColor}
-              hasEvents={localEvents.length > 0}
-            />
-          </div>
-        </div>
-
-        {/* ── RIGHT RAIL: Kontakt + Notizen + Anhänge ────────────── */}
-        <div className="md:w-1/2 bg-gray-50/40 md:rounded-br-2xl p-3 space-y-3 print:bg-white min-w-0 overflow-hidden">
-
-          {/* Kontakt mini-card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+          {/* Kontakt card */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex flex-col">
             {editingSection === "kontakt" ? (
-              <>
+              <div className="flex-1">
                 <SectionHead title="Kontakt" editing onClose={cancelEdit} />
                 <div className="space-y-3">
                   <div><label className={lbl}>Kunde</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
@@ -697,11 +688,11 @@ export function CaseDetailForm({
                   </div>
                 </div>
                 <EditActions onSave={saveKontakt} onCancel={cancelEdit} saving={saveState === "saving"} dirty={kontaktDirty} error={saveState === "error" ? errorMsg : ""} />
-              </>
+              </div>
             ) : (
-              <>
+              <div className="flex-1 flex flex-col">
                 <SectionHead title="Kontakt" onEdit={() => startEdit("kontakt")} canEdit={canEditSection("kontakt")} />
-                <div className="space-y-1 text-sm">
+                <div className="space-y-1 text-sm flex-1">
                   {reporterName && <p className="font-medium text-gray-900">{reporterName}</p>}
                   {contactPhone && (
                     <a href={`tel:${contactPhone}`} className="block text-blue-600 hover:underline min-h-[44px] sm:min-h-0 flex items-center">{contactPhone}</a>
@@ -726,44 +717,72 @@ export function CaseDetailForm({
                     </a>
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
+        </div>
 
-          {/* Interne Notizen mini-card */}
+        {/* ── Row 2: Verlauf + Notizen/Anhänge ───────────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Verlauf + Bewertung card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            {editingSection === "notizen" ? (
-              <>
-                <SectionHead title="Interne Notizen" editing onClose={cancelEdit} />
-                <textarea rows={4} value={internalNotes} onChange={e => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar…" className={`${inp} max-h-40 overflow-y-auto`} />
-                <EditActions onSave={saveNotizen} onCancel={cancelEdit} saving={saveState === "saving"} dirty={notizenDirty} error={saveState === "error" ? errorMsg : ""} />
-              </>
-            ) : (
-              <>
-                <SectionHead title="Interne Notizen" onEdit={() => startEdit("notizen")} canEdit={canEditSection("notizen")} />
-                {internalNotes ? (
-                  <div>
-                    <p className={`text-sm text-gray-600 whitespace-pre-wrap break-words ${!notesExpanded ? "line-clamp-2" : ""}`} style={{ overflowWrap: "anywhere" }}>{internalNotes}</p>
-                    {(internalNotes.includes("\n") || internalNotes.length > 80) && (
-                      <button onClick={() => setNotesExpanded(p => !p)}
-                        className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
-                        {notesExpanded ? "Weniger" : "Alles anzeigen"}
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-400">Keine Notizen</p>
-                )}
-              </>
-            )}
+            <h3 className={`${sectionTitle} mb-3`}>Verlauf</h3>
+            <CompactTimeline
+              events={localEvents}
+              status={status}
+              expanded={timelineExpanded}
+              onToggle={() => setTimelineExpanded(p => !p)}
+            />
+            <BewertungEndCap
+              status={status}
+              reviewInfo={reviewInfo}
+              canRequestReview={canRequestReview}
+              reviewState={reviewState}
+              reviewMsg={reviewMsg}
+              onRequest={handleRequestReview}
+              onSkip={handleSkipReview}
+              brandColor={brandColor}
+              hasEvents={localEvents.length > 0}
+            />
           </div>
 
-          {/* Anhänge mini-card */}
-          {!isProspect && (
+          {/* Notizen + Anhänge */}
+          <div className="space-y-3">
+            {/* Interne Notizen card */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-              <AttachmentsSection caseId={initialData.id} />
+              {editingSection === "notizen" ? (
+                <>
+                  <SectionHead title="Interne Notizen" editing onClose={cancelEdit} />
+                  <textarea rows={4} value={internalNotes} onChange={e => setInternalNotes(e.target.value)} placeholder="Nur intern sichtbar…" className={`${inp} max-h-40 overflow-y-auto`} />
+                  <EditActions onSave={saveNotizen} onCancel={cancelEdit} saving={saveState === "saving"} dirty={notizenDirty} error={saveState === "error" ? errorMsg : ""} />
+                </>
+              ) : (
+                <>
+                  <SectionHead title="Interne Notizen" onEdit={() => startEdit("notizen")} canEdit={canEditSection("notizen")} />
+                  {internalNotes ? (
+                    <div>
+                      <p className={`text-sm text-gray-600 whitespace-pre-wrap break-words ${!notesExpanded ? "line-clamp-2" : ""}`} style={{ overflowWrap: "anywhere" }}>{internalNotes}</p>
+                      {(internalNotes.includes("\n") || internalNotes.length > 80) && (
+                        <button onClick={() => setNotesExpanded(p => !p)}
+                          className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
+                          {notesExpanded ? "Weniger" : "Alles anzeigen"}
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-400">Keine Notizen</p>
+                  )}
+                </>
+              )}
             </div>
-          )}
+
+            {/* Anhänge card */}
+            {!isProspect && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+                <AttachmentsSection caseId={initialData.id} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
