@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { InstallPrompt } from "./InstallPrompt";
 import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
 import { UpdatePrompt } from "./UpdatePrompt";
+import { TenantSwitcher } from "./TenantSwitcher";
 
 // ---------------------------------------------------------------------------
 // Navigation — 3 items only, mirroring the Leitsystem architecture
@@ -39,6 +40,15 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    label: "Hilfe",
+    href: "/ops/hilfe",
+    icon: (
+      <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+      </svg>
+    ),
+  },
+  {
     label: "Einstellungen",
     href: "/ops/settings",
     icon: (
@@ -59,6 +69,10 @@ export function OpsShell({
   tenantName,
   brandColor,
   staffRole,
+  isAdmin,
+  isImpersonating,
+  activeTenantId,
+  homeTenantId,
   children,
 }: {
   userEmail: string;
@@ -67,6 +81,14 @@ export function OpsShell({
   brandColor?: string;
   /** Staff role for RBAC — techniker sees limited nav */
   staffRole?: "admin" | "techniker";
+  /** True if user is admin (show tenant switcher) */
+  isAdmin?: boolean;
+  /** True when admin views a different tenant (show impersonation banner) */
+  isImpersonating?: boolean;
+  /** Currently active tenant ID (for switcher) */
+  activeTenantId?: string | null;
+  /** Admin's own JWT tenant ID (for "Mein Betrieb" reset) */
+  homeTenantId?: string | null;
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -196,6 +218,13 @@ export function OpsShell({
         </div>
       </div>
 
+      {/* Deploy status — only visible to admin */}
+      {isAdmin && process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA && (
+        <p className="text-[9px] text-gray-700 mb-2 font-mono truncate" title={`Build: ${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7)}`}>
+          v{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7)}
+        </p>
+      )}
+
       {/* Logout */}
       {showLogoutConfirm ? (
         <div className="bg-gray-900 rounded-lg p-3 space-y-2">
@@ -242,6 +271,9 @@ export function OpsShell({
   const sidebarContent = (
     <>
       {brandHeader}
+      {isAdmin && (
+        <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} />
+      )}
       {navLinks}
       {footer}
     </>
@@ -305,6 +337,12 @@ export function OpsShell({
 
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
+        {/* Impersonation banner — admin viewing another tenant */}
+        {isImpersonating && (
+          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-center text-amber-800 text-xs font-medium sticky top-0 z-20 md:top-0">
+            Ansicht: <strong>{tenantName}</strong> — Nicht Ihr Betrieb
+          </div>
+        )}
         <InstallPrompt />
         {/* Dev: Mobile Preview Toggle (top-right, desktop only) */}
         <div className="hidden md:flex justify-end px-4 pt-2">
