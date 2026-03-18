@@ -257,6 +257,14 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
             >
               Abbrechen
             </button>
+            {editingId && (
+              <button
+                onClick={() => { handleDeactivate(editingId); resetForm(); }}
+                className="rounded-lg border border-red-200 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors ml-auto"
+              >
+                Entfernen
+              </button>
+            )}
             {errorMsg && <span className="text-xs text-red-600">{errorMsg}</span>}
           </div>
         </div>
@@ -273,35 +281,37 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 bg-slate-50/80">
-                  <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Rolle</th>
-                  <th className="px-4 py-3 font-medium hidden sm:table-cell">E-Mail</th>
-                  <th className="px-4 py-3 font-medium hidden sm:table-cell">Telefon</th>
-                  <th className="px-4 py-3 font-medium w-24"></th>
+                  <th className="px-3 py-2.5 font-medium">Name</th>
+                  <th className="px-3 py-2.5 font-medium">
+                    <span className="flex items-center gap-1">
+                      Rolle
+                      <button
+                        type="button"
+                        onClick={() => setShowRoleInfo(p => !p)}
+                        className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-gray-300 text-gray-400 hover:text-gray-600 hover:border-gray-400 transition-colors text-[10px] font-bold leading-none"
+                        title="Was bedeuten die Rollen?"
+                      >i</button>
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 font-medium hidden sm:table-cell">E-Mail</th>
+                  <th className="px-3 py-2.5 font-medium hidden sm:table-cell">Telefon</th>
+                  <th className="px-3 py-2.5 font-medium w-20"></th>
                 </tr>
               </thead>
               <tbody>
                 {staff.map((s) => (
                   <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900 max-w-[140px] truncate">{s.display_name}</td>
-                    <td className="px-4 py-3 text-gray-600">{ROLE_LABELS[s.role] ?? s.role}</td>
-                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell max-w-[180px] truncate">{s.email ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell max-w-[140px] truncate">{s.phone ?? "—"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => startEdit(s)}
-                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                        >
-                          Bearbeiten
-                        </button>
-                        <button
-                          onClick={() => handleDeactivate(s.id)}
-                          className="text-xs text-red-400 hover:text-red-600 transition-colors ml-2"
-                        >
-                          Entfernen
-                        </button>
-                      </div>
+                    <td className="px-3 py-2.5 font-medium text-gray-900 text-[13px] sm:text-sm max-w-[120px] sm:max-w-[140px] truncate">{s.display_name}</td>
+                    <td className="px-3 py-2.5 text-gray-600 text-[13px] sm:text-sm">{ROLE_LABELS[s.role] ?? s.role}</td>
+                    <td className="px-3 py-2.5 text-gray-500 hidden sm:table-cell max-w-[180px] truncate">{s.email ?? "—"}</td>
+                    <td className="px-3 py-2.5 text-gray-500 hidden sm:table-cell max-w-[140px] truncate">{s.phone ?? "—"}</td>
+                    <td className="px-3 py-2.5">
+                      <button
+                        onClick={() => startEdit(s)}
+                        className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        Bearbeiten
+                      </button>
                     </td>
                   </tr>
                 ))}

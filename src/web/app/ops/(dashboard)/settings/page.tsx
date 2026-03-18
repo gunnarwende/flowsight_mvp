@@ -287,57 +287,6 @@ export default function SettingsPage() {
           )}
         </Section>
 
-        {/* Termine — per-card save */}
-        <Section
-          title="Termine"
-          description="Kalender-E-Mail und Standard-Termindauer."
-        >
-          <div className="space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kalender-E-Mail</label>
-              <input
-                type="email"
-                value={calendarEmail}
-                onChange={(e) => setCalendarEmail(e.target.value)}
-                placeholder="kalender@mein-betrieb.ch"
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 truncate min-w-0"
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                ICS-Kalendereinladungen werden an diese Adresse gesendet (z.B. Outlook oder Google Kalender).
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Standard-Termindauer</label>
-              <select
-                value={appointmentDuration}
-                onChange={(e) => setAppointmentDuration(Number(e.target.value))}
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-              >
-                <option value={30}>30 Minuten</option>
-                <option value={45}>45 Minuten</option>
-                <option value={60}>60 Minuten</option>
-                <option value={90}>90 Minuten</option>
-                <option value={120}>2 Stunden</option>
-              </select>
-              <p className="mt-1 text-xs text-gray-400">
-                Wird bei neuen Terminen als Vorgabe verwendet.
-              </p>
-            </div>
-          </div>
-          {terminSettingsDirty && (
-            <CardSaveBar
-              saving={terminSettingsSaving}
-              saved={terminSettingsSaved}
-              error={terminSettingsError}
-              onSave={saveTerminSettings}
-              onCancel={() => {
-                setCalendarEmail(calendarEmailBaseline);
-                setAppointmentDuration(appointmentDurationBaseline);
-              }}
-            />
-          )}
-        </Section>
-
         {/* Google Review — per-card save */}
         <Section
           title="Google-Bewertungen"

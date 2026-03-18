@@ -43,7 +43,9 @@ export async function resolveTenantScope(): Promise<TenantScope | null> {
   const isProspect = role === "prospect";
 
   return {
-    tenantId: isAdmin ? null : (tenantId ?? null),
+    // Admin keeps their tenant_id for branding/settings, but isAdmin=true
+    // allows viewing all tenants' cases via RLS bypass
+    tenantId: tenantId ?? null,
     isAdmin,
     isProspect,
     userId: user.id,
