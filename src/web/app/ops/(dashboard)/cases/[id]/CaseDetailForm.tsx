@@ -782,8 +782,8 @@ export function CaseDetailForm({
               </KV>
               <KV label="Termin">
                 {scheduledAt ? (
-                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-700 text-center leading-snug">
-                    {(() => { const r = formatTerminRange(scheduledAt, scheduledEndAt || null); return r.line2 ? <>{r.line1}<br className="sm:hidden" /><span className="hidden sm:inline"> </span>{r.line2}</> : r.line1; })()}
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-[11px] sm:text-sm font-medium text-gray-700 leading-tight sm:leading-snug max-w-full">
+                    {(() => { const r = formatTerminRange(scheduledAt, scheduledEndAt || null); return r.line2 ? <>{r.line1}<br />{r.line2}</> : r.line1; })()}
                   </span>
                 ) : (
                   <span className="inline-block px-2.5 py-0.5 rounded-full bg-gray-100 text-sm font-medium text-gray-500">Offen</span>
@@ -828,7 +828,7 @@ export function CaseDetailForm({
                     <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`} style={{ hyphens: "auto", WebkitHyphens: "auto" }} lang="de">{description}</p>
                     {(description.split("\n").length > 2 || description.length > 80) && (
                       <button onClick={() => setDescExpanded(p => !p)}
-                        className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 mt-2 transition-colors min-h-[44px] sm:min-h-0">
+                        className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors min-h-[44px] sm:min-h-0 flex items-center">
                         {descExpanded ? "Weniger" : "Alles anzeigen"}
                       </button>
                     )}
