@@ -13,9 +13,10 @@ interface Tenant {
 interface TenantSwitcherProps {
   activeTenantId: string | null;
   homeTenantId: string | null;
+  viewAsRole?: "techniker" | null;
 }
 
-export function TenantSwitcher({ activeTenantId, homeTenantId }: TenantSwitcherProps) {
+export function TenantSwitcher({ activeTenantId, homeTenantId, viewAsRole }: TenantSwitcherProps) {
   const router = useRouter();
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [open, setOpen] = useState(false);
@@ -39,16 +40,28 @@ export function TenantSwitcher({ activeTenantId, homeTenantId }: TenantSwitcherP
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  async function switchTo(tenantId: string | null) {
+  async function switchTo(tenantId: string | null, role?: "techniker" | null) {
     setSwitching(true);
     setOpen(false);
     await fetch("/api/ops/switch-tenant", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tenantId }),
+      body: JSON.stringify({ tenantId, viewAsRole: role ?? null }),
     });
     router.refresh();
-    // Small delay to let server re-render with new cookie
+    setTimeout(() => setSwitching(false), 500);
+  }
+
+  async function toggleRole() {
+    const newRole = viewAsRole === "techniker" ? null : "techniker";
+    setSwitching(true);
+    setOpen(false);
+    await fetch("/api/ops/switch-tenant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tenantId: activeTenantId, viewAsRole: newRole }),
+    });
+    router.refresh();
     setTimeout(() => setSwitching(false), 500);
   }
 
@@ -130,6 +143,19 @@ export function TenantSwitcher({ activeTenantId, homeTenantId }: TenantSwitcherP
               </button>
             );
           })}
+
+          {/* Role toggle — test as techniker */}
+          <button
+            onClick={toggleRole}
+            className="w-full flex items-center gap-2.5 px-3 py-3 hover:bg-white/[0.06] transition-colors border-t border-gray-800 min-h-[44px]"
+          >
+            <svg className="w-4 h-4 text-violet-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+            <span className="text-[12px] text-violet-400 font-medium">
+              {viewAsRole === "techniker" ? "Zurück zu Admin" : "Als Techniker ansehen"}
+            </span>
+          </button>
         </div>
       )}
     </div>

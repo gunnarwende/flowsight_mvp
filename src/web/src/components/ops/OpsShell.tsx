@@ -73,6 +73,7 @@ export function OpsShell({
   isImpersonating,
   activeTenantId,
   homeTenantId,
+  viewAsRole,
   children,
 }: {
   userEmail: string;
@@ -89,6 +90,8 @@ export function OpsShell({
   activeTenantId?: string | null;
   /** Admin's own JWT tenant ID (for "Mein Betrieb" reset) */
   homeTenantId?: string | null;
+  /** Role override for testing (admin views as techniker) */
+  viewAsRole?: "techniker" | null;
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -272,7 +275,7 @@ export function OpsShell({
     <>
       {brandHeader}
       {isAdmin && (
-        <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} />
+        <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} viewAsRole={viewAsRole} />
       )}
       {navLinks}
       {footer}
@@ -337,10 +340,12 @@ export function OpsShell({
 
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
-        {/* Impersonation banner — admin viewing another tenant */}
-        {isImpersonating && (
+        {/* Impersonation banner — admin viewing another tenant or role */}
+        {(isImpersonating || viewAsRole) && (
           <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-center text-amber-800 text-xs font-medium sticky top-0 z-20 md:top-0">
-            Ansicht: <strong>{tenantName}</strong> — Nicht Ihr Betrieb
+            {isImpersonating && <>Ansicht: <strong>{tenantName}</strong></>}
+            {isImpersonating && viewAsRole && <> · </>}
+            {viewAsRole && <>Rolle: <strong>Techniker</strong></>}
           </div>
         )}
         <InstallPrompt />
