@@ -79,8 +79,36 @@ export default async function OpsCasesPage({
     .gte("updated_at", sevenDaysAgo);
   if (filterTenantId) statsErledigtQuery = statsErledigtQuery.eq("tenant_id", filterTenantId);
 
-  // ── Query 5+6: Review stats (server-side, last 30 days) ──────────
+  // ── Query 3b: Erledigt 30 days ───────────────────────────────────
   const thirtyDaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  let erledigt30dQuery = supabase
+    .from("cases")
+    .select("id", { count: "exact", head: true })
+    .eq("is_demo", showDemo)
+    .eq("status", "done")
+    .gte("updated_at", thirtyDaysAgo);
+  if (filterTenantId) erledigt30dQuery = erledigt30dQuery.eq("tenant_id", filterTenantId);
+
+  // ── Query 4: Review sent 7 days ────────────────────────────────────
+  let reviewSent7dQuery = supabase
+    .from("cases")
+    .select("id", { count: "exact", head: true })
+    .eq("is_demo", showDemo)
+    .eq("status", "done")
+    .not("review_sent_at", "is", null)
+    .gte("updated_at", sevenDaysAgo);
+  if (filterTenantId) reviewSent7dQuery = reviewSent7dQuery.eq("tenant_id", filterTenantId);
+
+  // ── Query 4b: Review sent total ─────────────────────────────────────
+  let reviewSentTotalQuery = supabase
+    .from("cases")
+    .select("id", { count: "exact", head: true })
+    .eq("is_demo", showDemo)
+    .eq("status", "done")
+    .not("review_sent_at", "is", null);
+  if (filterTenantId) reviewSentTotalQuery = reviewSentTotalQuery.eq("tenant_id", filterTenantId);
+
+  // ── Query 5+6: Review stats (server-side, last 30 days) ──────────
 
   let reviewSentQuery = supabase
     .from("cases")
@@ -105,20 +133,29 @@ export default async function OpsCasesPage({
     { data: casesRaw },
     { count: neueCount },
     { count: erledigtCount },
+    { count: erledigt30dCount },
+    { count: reviewSent7dCount },
+    { count: reviewSentTotalCount },
     { count: reviewSentCount },
     { count: reviewPendingCount },
   ] = await Promise.all([
     casesQuery,
     statsNeueQuery,
     statsErledigtQuery,
+    erledigt30dQuery,
+    reviewSent7dQuery,
+    reviewSentTotalQuery,
     reviewSentQuery,
     reviewPendingQuery,
   ]);
 
   const cases = (casesRaw ?? []) as LeitzentraleCase[];
 
-  // ── Resolve tenant identity for case ID prefix ─────────────────────
+  // ── Resolve tenant identity + staff context ────────────────────────
   let caseIdPrefix = "FS";
+  let currentStaffName: string | null = null;
+  let currentStaffRole: "admin" | "techniker" | undefined;
+  let featuredReview: string | null = null;
   try {
     const authClient = await getAuthClient();
     const {
@@ -127,6 +164,28 @@ export default async function OpsCasesPage({
     if (user) {
       const identity = await resolveTenantIdentity(user);
       if (identity) caseIdPrefix = identity.caseIdPrefix;
+
+      // Staff context for Techniker view
+      if (scope?.tenantId && user.email) {
+        const ctx = await resolveStaffRole(user.email, scope.tenantId);
+        if (ctx) {
+          currentStaffName = ctx.displayName;
+          currentStaffRole = ctx.role;
+        }
+      }
+
+      // Featured review from tenant modules
+      if (scope?.tenantId) {
+        const { data: tenant } = await supabase
+          .from("tenants")
+          .select("modules")
+          .eq("id", scope.tenantId)
+          .single();
+        const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+        if (typeof modules.featured_review === "string") {
+          featuredReview = modules.featured_review;
+        }
+      }
     }
   } catch {
     /* fallback to defaults */
@@ -144,6 +203,13 @@ export default async function OpsCasesPage({
         sent: reviewSentCount ?? 0,
         pending: reviewPendingCount ?? 0,
       }}
+      reviewSent7d={reviewSent7dCount ?? 0}
+      reviewSentTotal={reviewSentTotalCount ?? 0}
+      erledigt30d={erledigt30dCount ?? 0}
+      avgRating={null}
+      featuredReview={featuredReview}
+      staffName={currentStaffName}
+      staffRole={currentStaffRole}
     />
   );
 }
