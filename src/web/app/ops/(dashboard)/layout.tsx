@@ -1,29 +1,16 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
-import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 import { OpsShell } from "@/src/components/ops/OpsShell";
 
 /**
- * Tab title: "{short_name} Leitsystem" — Identity Contract E2.
- * Uses title.absolute to bypass root layout's " — FlowSight" template (R4).
- * PWA manifest + meta tags inherited from parent ops/layout.tsx.
+ * Tab title: "Leitsystem" — Identity Contract R4.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const authClient = await getAuthClient();
-    const {
-      data: { user },
-    } = await authClient.auth.getUser();
-    if (!user) return { title: { absolute: "Leitsystem" } };
-
-    const identity = await resolveTenantIdentity(user);
-    const tabLabel = identity?.leitsystemName ?? "Leitsystem";
-    return { title: { absolute: "Leitsystem" } };
-  } catch {
-    return { title: { absolute: "Leitsystem" } };
-  }
+  return { title: { absolute: "Leitsystem" } };
 }
 
 export default async function DashboardLayout({
@@ -37,12 +24,17 @@ export default async function DashboardLayout({
   } = await authClient.auth.getUser();
   if (!user) redirect("/ops/login");
 
-  const identity = await resolveTenantIdentity(user);
+  // Scope-based identity resolution (respects admin cookie override)
+  const scope = await resolveTenantScope();
+  const identity = scope?.tenantId
+    ? await resolveTenantIdentityById(scope.tenantId)
+    : null;
 
   // Resolve staff role for RBAC
   let staffRole: "admin" | "techniker" | undefined;
-  if (identity?.tenantId && user.email) {
-    const ctx = await resolveStaffRole(user.email, identity.tenantId);
+  const effectiveTenantId = scope?.tenantId ?? identity?.tenantId;
+  if (effectiveTenantId && user.email) {
+    const ctx = await resolveStaffRole(user.email, effectiveTenantId);
     if (ctx) staffRole = ctx.role;
   }
 
@@ -52,6 +44,10 @@ export default async function DashboardLayout({
       tenantName={identity?.displayName ?? undefined}
       brandColor={identity?.primaryColor ?? undefined}
       staffRole={staffRole}
+      isAdmin={scope?.isAdmin}
+      isImpersonating={scope?.isImpersonating}
+      activeTenantId={scope?.tenantId}
+      homeTenantId={scope?.homeTenantId}
     >
       {children}
     </OpsShell>

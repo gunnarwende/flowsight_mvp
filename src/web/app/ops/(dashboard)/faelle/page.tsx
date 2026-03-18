@@ -52,7 +52,8 @@ export default async function FaellePage({
   const scope = await resolveTenantScope();
   let filterTenantId: string | undefined;
 
-  if (scope && !scope.isAdmin && scope.tenantId) {
+  // Respect tenant scope for all users (admin cookie override included)
+  if (scope?.tenantId) {
     filterTenantId = scope.tenantId;
   } else if (filterTenantSlug) {
     const { data: t } = await supabase
