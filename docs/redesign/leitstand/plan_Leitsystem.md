@@ -1,6 +1,7 @@
 # Plan Leitsystem — High-End Umsetzung
 
 **Erstellt:** 2026-03-17
+**Letztes Update:** 2026-03-18 (Feedback-Runde 3 umgesetzt — F12-F14)
 **Owner:** Founder + CC
 **Nordstern:** `leitsystem_leitzentrale_super_high_end_plan.md`
 **Referenz:** `leitstand.md` (Grundvertrag), `leitstand_renovation.md` (Implementierungs-Brücke)
@@ -27,36 +28,73 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | **E1** | Status "Abgeschlossen" eliminiert. Nur: Neu → Geplant → In Arbeit → Warten → Erledigt | Einfacher. Erledigt = Arbeit getan. Danach optional Bewertung anfragen. |
 | **E2** | Leitzentrale + Fallübersicht = EINE Seite (nur 2 Nav-Punkte: Leitzentrale + Einstellungen) | Oben: Systemfluss-KPIs (klickbar). Unten: gefilterte Fallliste. Kein Hin-und-Her. |
 | **E3** | Notfälle NICHT separat, sondern integriert in Gesamtliste mit roter Prioritäts-Markierung | Kein eigener Banner, keine eigene Seite. Höchste Priorität = oben in der Liste. |
-| **E4** | Termin-Benachrichtigungen: EIN Button "Termin versenden" (an Kunde + Mitarbeiter). Erst sichtbar nach "Übernehmen". | Kein versehentliches Senden. Keine getrennten Buttons für Kunde/Mitarbeiter. |
+| **E4** | Termin-Sende-Icon nur nach Edit-Save sichtbar (30s Timeout). Sendet an Kunde + Mitarbeiter. | Kein versehentliches Senden. Papierflieger-Icon inline neben Termin-Badge. |
 | **E5** | SMS immer ≤ 160 Zeichen (eCall: ab 161 = doppelter Preis) | Kosten + Zustellbarkeit. Jedes Template wird auf 160 Zeichen geprüft. |
 | **E6** | Kalender-Sync nötig (Read-Only: Outlook/Google) beim Zuweisen | Keine Termin-Überschneidungen. Skalierbar für 2–30 MA. |
 | **E7** | "Zuständig" = Multi-Select-Dropdown aus Staff-Tabelle (nicht Freitext) | Grössere Projekte haben mehrere Mitarbeiter. |
 | **E8** | Bewertungs-Button erst sichtbar wenn Status = Erledigt | Logischer Fluss: Erst Arbeit, dann Lohn. |
-| **E9** | Beschreibung/Verlauf schmaler (ca. 1/3), Kontakt/Notizen/Anhänge breiter (ca. 2/3) | Übersicht zuerst, Details bei Bedarf. Klare Abgrenzung zum Scan-Kopf oben. |
+| **E9** | Layout aktuell 50/50 (Founder testet). Beschreibung/Verlauf links, Kontakt/Notizen rechts. | Feedback-Runde 2: 50/50 zum Testen deployed. Founder entscheidet ob final. |
 | **E10** | Verlauf-Struktur bleibt: Schritt 1 → nächster Schritt → komprimiert → letzter Schritt → Zieleinlauf (Bewertung) | Bewährt, logisch, platzsparend. |
+| **E11** | Übersicht-Bereich: weisser Hintergrund + Shadow + goldener Akzent-Balken links | Stärkste visuelle Präsenz für die wichtigste Area. Einheitliche Pill-Badges für alle 4 Werte. |
 
 ---
 
-## Umsetzungs-Plan: Bottom-Up in 4 Phasen
+## Session 17.03. — Was wurde gemacht
 
-### Phase 1: Der Fall (Basis)
+### Vor Phase 1: Login + PWA Fixes (PRs #238–#245)
+- **Login-Bug gefixt:** Session-Cookies server-side gesetzt (Re-Login nach Logout funktioniert)
+- **Spam-Fix:** E-Mail-Sender auf `send.flowsight.ch` (verifizierte Resend-Domain)
+- **Login High-End Redesign:** Brand-System-konform (warm-white, gold CTA, Signal Dot, Swiss Trust Footer)
+- **PWA Icon:** Signal Dot (goldener Punkt auf Navy), responsiv pro Grösse
+- **PWA Update-Prompt:** "Neue Version verfügbar" Banner für automatische Updates (kritisch für 50+ Betriebe)
+- **PWA Titel:** Nur "Leitsystem" (kein doppeltes "Leitsystem - Weinberger Leitsystem")
 
-> Ohne sauberes Falldetail macht die Leitzentrale keinen Sinn.
+### Phase 1: Der Fall — KOMPLETT (8/8 Tasks, PRs #246–#252)
 
-| # | Task | Detail | Priorität |
-|---|------|--------|-----------|
-| 1.1 | **Status vereinfachen** | "Abgeschlossen" entfernen. Status-Kette: Neu → Geplant → In Arbeit → Warten → Erledigt. Dropdown + Badges + Farben anpassen. | **DONE** (PR #246) |
-| 1.2 | **Termin-Validierung** | "Bis"-Zeitpunkt frühestens "Von" + 15min. Alles davor ausgegraut/nicht wählbar. Server-side Validierung zusätzlich. | **DONE** (PR #248) |
-| 1.3 | **"Zuständig" = Multi-Select aus Staff** | Freitext-Feld ersetzen durch Dropdown der aktiven Mitarbeiter (aus staff-Tabelle). Mehrfachauswahl möglich (Chips-UI). Bei Zuweisung: optionale E-Mail an zugewiesene(n) Mitarbeiter (gesteuert via Einstellungen). | hoch |
-| 1.4 | **Termin-Benachrichtigung neu** | Buttons "Meldenden benachrichtigen" + "Termin an Mitarbeiter senden" ELIMINIEREN. Stattdessen: Nach Termin-Eingabe → "Übernehmen" klicken → dann erscheint EIN Button "Termin versenden" → sendet an BEIDE (Kunde + zugewiesene Mitarbeiter). Bestätigung im Verlauf sichtbar, nicht als separater Status. | hoch |
-| 1.5 | **Layout-Rebalance Falldetail** | Links (Beschreibung + Verlauf): ca. 1/3 Breite. Rechts (Übersicht/Kontakt/Notizen/Anhänge): ca. 2/3 Breite. Beschreibung + Verlauf visuell aufwerten auf Niveau der rechten Sektionen (gleiche Card-Qualität, gleiche Typografie-Hierarchie). | mittel |
-| 1.6 | **Bewertungs-Flow** | "Bewertung anfragen"-Button nur sichtbar wenn Status = Erledigt. Verlauf zeigt den Fluss: Erstellt → ... → Erledigt → Bewertung angefragt → ★ Bewertung erhalten. Wenn Kunde nicht reagiert = egal, Fall bleibt "Erledigt". Kein Nachhaken-Zwang. | hoch |
-| 1.7 | **Wording-Sweep Falldetail** | Durchgehend Handwerkersprache: "Meldende/n" → "Kunde", "Dringlichkeit" → "Priorität", "Einsatz abgeschlossen" → "Arbeit erledigt", "Zuweisung" → "Vergabe", "Quelle" → "Herkunft". | **DONE** (PR #246, 17 Dateien, 30+ Edits) |
-| 1.8 | **Mobile Overflow fixen** | M8-Bug: Zahlen/Text gehen rechts aus dem Viewport raus. Responsive Checks auf allen Sektionen (Einstellungen, Falldetail, Termine). Truncation + Wrapping sicherstellen. | **DONE** (PR #248) |
+| # | Task | PR | Highlights |
+|---|------|----|------------|
+| 1.1 | Status vereinfachen | #246 | "Abgeschlossen" entfernt. Kette: Neu → Geplant → In Arbeit → Warten → Erledigt. |
+| 1.2 | Termin-Validierung | #248 | "Bis" frühestens "Von" + 15min. Ausgegraute Slots. Server-Validierung. |
+| 1.3 | Multi-Select Staff | #252 | Chips-UI mit Suchfilter + Initialen-Avatar. Diff-basierte E-Mail-Benachrichtigung. |
+| 1.4 | Termin-Benachrichtigung | #251 | 2 Buttons → 1 inline Papierflieger-Icon. -62 Zeilen netto. |
+| 1.5 | Layout-Rebalance | #250 | Card-wrapped Sections. Mobile: wichtige Info zuerst. |
+| 1.6 | Bewertungs-Flow | #251 | Nur bei Status=Erledigt. Labels: "Bewertung möglich", "Nicht anfragen". |
+| 1.7 | Wording-Sweep | #246 | 17 Dateien, 30+ Edits. Meldende→Kunde, Dringlichkeit→Priorität, etc. |
+| 1.8 | Mobile Overflow | #248 | overflow-x-hidden global, truncate, break-words, min-w-0. |
 
-**Definition of Done Phase 1:** Falldetail ist auf Desktop UND Mobile High-End. Jeder Handwerker versteht sofort: Was ist das Problem? Wo? Wer kümmert sich? Wann? Was ist der nächste Schritt?
+### Feedback-Runde 1 (PR #254) — nach Phase 1
+- F1+F2: "Termin versenden" von Standalone-Button zu inline Papierflieger-Icon neben Termin-Badge
+- F3: Layout getauscht (Beschreibung links gross, Kontakt rechts klein)
+- F4: Übergang Übersicht → Content geglättet (kein harter Border mehr)
+- F5: Einheitliche Pill-Badges für Status, Priorität, Zuständig, Termin
+- F6: Mobile-Reihenfolge: Beschreibung vor Notizen
+
+### Feedback-Runde 2 (PR #256) — Feinschliff
+- F7: Termin-Icon NUR sichtbar nach Edit-Save (terminJustSaved Gate, 30s Timeout)
+- F8: Übersicht visuell stärker (bg-white, shadow-sm, amber Akzent-Balken links)
+- F9: Notizen-Overflow gefixt (break-words + overflowWrap: anywhere)
+- F10: Trennlinien zwischen Right-Rail Cards entfernt
+- F11: Layout auf 50/50 gesetzt (Founder testet)
 
 ---
+
+### Feedback-Runde 3 (18.03.) — Layout + Übersicht + Termin
+
+- F12: Layout 50/50 bestätigt. Beschreibung + Kontakt Cards jetzt IMMER gleiche Höhe (CSS Grid statt Flex-Lanes).
+- F13: Amber Akzent-Balken links entfernt. Stattdessen: subtiler stone-to-white Gradient (konsistent in Read + Edit Mode).
+- F14: Termin-Papierflieger-Icon entfernt. Jetzt: voller "Termin versenden" Button unter dem KV-Grid nach Speichern. Mit Lade-State + Erfolgs-Indikator. Kein 30s-Timeout (persistent bis gesendet).
+
+---
+
+## Next Steps
+
+**Founder-Action:** F12-F14 auf Desktop + Mobile testen.
+
+**Danach:** Phase 2 (Kommunikation & SMS) starten.
+
+---
+
+## Umsetzungs-Plan: Verbleibende Phasen
 
 ### Phase 2: Kommunikation & SMS
 
@@ -70,38 +108,24 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | 2.4 | **eCall-Integration härten** | API-Anbindung verifizieren: Alphanumerischer Sender, Zeichenlimit-Enforcement (reject > 160), Zustellberichte auswerten. Kosten-Monitoring (1.2–1.7 Punkte pro SMS). | mittel |
 | 2.5 | **E-Mail-Templates audit** | Alle E-Mail-Templates auf Identity Contract prüfen: Sender = "{Firma} via FlowSight", kein FlowSight im Body, Handwerker-Wording, Responsive HTML. | mittel |
 
-**Definition of Done Phase 2:** Jede ausgehende Nachricht (SMS + E-Mail) hat einen klar definierten Trigger, Empfänger, Inhalt. Alles ≤ 160 Zeichen (SMS). Kein Spam. Matrix dokumentiert.
-
----
-
 ### Phase 3: Rollen & Einstellungen
-
-> Admin und Techniker haben klar getrennte Welten.
 
 | # | Task | Detail | Priorität |
 |---|------|--------|-----------|
-| 3.1 | **Rollen-Beschreibung verifizieren** | Info-Button-Text in Einstellungen auf Korrektheit prüfen. Stimmt die Beschreibung mit der tatsächlichen Implementierung überein? Abgleich Code ↔ Text. | hoch |
-| 3.2 | **Kalender-Konzept** | Read-Only Abfrage: Beim Termin-Setzen zeigen, ob Mitarbeiter frei/belegt ist. MVP: Google Calendar API (FreeBusy). Später: Outlook/Exchange. Skalierbar für 2–30 MA. Kein Schreib-Zugriff nötig (nur Lesen). | hoch |
-| 3.3 | **Einstellungen-UX aufwerten** | Toggles mit kontextbezogener Empfehlung ("Empfohlen für Betriebe ab 5 MA"). Mobile Overflow fixen (M8-Bug). Sections klar trennen mit visueller Hierarchie. | mittel |
-| 3.4 | **Techniker-Micro-Surface** | SMS-Link post-Zuweisung: `/einsatz/[token]` — Adresse, Problem, Navigation (1-Tap Maps), Status-Button ("Erledigt"), Foto-Upload. Kein Login, kein Account. HMAC-gesichert. | hoch (Post-Phase-1) |
-
-**Definition of Done Phase 3:** Jede Rolle hat genau die Rechte und Informationen, die sie braucht. Kalender-Konflikte werden beim Zuweisen sichtbar. Techniker brauchen keinen Login.
-
----
+| 3.1 | **Rollen-Beschreibung verifizieren** | Info-Button-Text in Einstellungen auf Korrektheit prüfen. Abgleich Code ↔ Text. | hoch |
+| 3.2 | **Kalender-Konzept** | Read-Only Abfrage (Google Calendar FreeBusy). Skalierbar für 2–30 MA. | hoch |
+| 3.3 | **Einstellungen-UX aufwerten** | Toggles mit kontextbezogener Empfehlung. Mobile-optimiert. | mittel |
+| 3.4 | **Techniker-Micro-Surface** | SMS-Link `/einsatz/[token]` — Adresse, Problem, Navi, Erledigt-Button, Foto. HMAC-gesichert. | hoch |
 
 ### Phase 4: Leitzentrale (merged)
 
-> Eine Seite zeigt den ganzen Systemfluss — von Eingang bis Bewertung.
-
 | # | Task | Detail | Priorität |
 |---|------|--------|-----------|
-| 4.1 | **Systemfluss-Karten** | ~6 Karten in logischer Reihenfolge: Eingang (Neu) → Bei uns (In Arbeit/Geplant) → Wartet (auf Rückmeldung) → Heute (Termine) → Erledigt → Bewertungen ★. Jede Karte = KPI-Zahl + Kurzinfo. | hoch |
-| 4.2 | **Click-to-Filter** | Klick auf Karte filtert die Fallliste darunter. Aktive Karte visuell hervorgehoben. "Alle" als Reset. | hoch |
-| 4.3 | **Notfälle integriert** | Rote Markierung in der Gesamtliste (Priorität = Notfall → rote Zeile/Badge). Kein separater Banner. Notfälle immer zuoberst sortiert. | hoch |
-| 4.4 | **Navigation reduzieren** | Nur 2 Punkte: Leitzentrale (Systemfluss + Fallliste) + Einstellungen. Sidebar vereinfachen. | mittel |
-| 4.5 | **Quiet High-End Ästhetik** | Nicht "Dashboard". Nicht "viele bunte Karten". Ruhig, klar, hierarchisch. Handlungsorientiert, nicht analytisch. Nordstern: `leitsystem_leitzentrale_super_high_end_plan.md` §11. | hoch |
-
-**Definition of Done Phase 4:** Ein Handwerker öffnet morgens die App und sieht in 3 Sekunden: Was ist neu? Was muss ich heute tun? Wo stehe ich insgesamt? Der Systemfluss von Eingang bis Bewertung ist auf einen Blick sichtbar.
+| 4.1 | **Systemfluss-Karten** | ~6 Karten: Eingang → Bei uns → Wartet → Heute → Erledigt → Bewertungen ★ | hoch |
+| 4.2 | **Click-to-Filter** | Klick auf Karte filtert Fallliste darunter | hoch |
+| 4.3 | **Notfälle integriert** | Rote Markierung, zuoberst sortiert | hoch |
+| 4.4 | **Navigation reduzieren** | Nur 2 Punkte: Leitzentrale + Einstellungen | mittel |
+| 4.5 | **Quiet High-End Ästhetik** | Ruhig, klar, hierarchisch, handlungsorientiert | hoch |
 
 ---
 
@@ -116,19 +140,17 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | Einsatzplan | Nicht nötig | Nice-to-have | Wichtig | Zwingend |
 | Bewertungen | Meister fragt persönlich | Systematisch per System | Systematisch per System | Systematisch per System |
 
-**Design-Regel:** Alles muss für 2 MA funktionieren (einfachster Fall). Features für 10+ MA dürfen die UX für 2 MA nicht verkomplizieren (progressive disclosure).
-
 ---
 
 ## SMS-Constraint (eCall)
 
 | Regel | Detail |
 |-------|--------|
-| **Max 160 Zeichen** | Ab 161 = 2 SMS = doppelter Preis (2.4–3.4 Punkte statt 1.2–1.7) |
-| **Sender** | Alphanumerisch (max 11 Zeichen): z.B. "Weinberger", "BrunnerHT" |
-| **Fallback** | Wenn Firmenname > 11 Zeichen → eCall-Servicenummer als Sender |
-| **Kosten** | CHF 0.096–0.136 pro SMS (Swisscom/Sunrise vs. Salt) |
-| **API** | REST + HTTPS, bereits integriert via `sendSmsEcall.ts` |
+| **Max 160 Zeichen** | Ab 161 = 2 SMS = doppelter Preis |
+| **Sender** | Alphanumerisch (max 11 Zeichen) |
+| **Kosten** | CHF 0.096–0.136 pro SMS |
+| **API** | REST + HTTPS via `sendSmsEcall.ts` |
+| **Vertrag** | Business Account Typ A, CHF 40/Monat Basis + Punkte |
 
 ---
 
@@ -136,36 +158,11 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 
 | Idee | Warum geparkt |
 |------|---------------|
-| Tages-Briefing SMS (07:00) | Gute Idee, aber erst wenn Basis steht |
+| Tages-Briefing SMS (07:00) | Gute Idee, erst wenn Basis steht |
 | Einsatz-SMS an Techniker | Abhängig von Micro-Surface (Phase 3.4) |
 | Einsatzplan als 3. Nav-Punkt | Erst ab Kunde 5+ relevant |
 | Offline-Cache für Falldaten | PWA-Shell steht, Daten-Cache = Phase 5 |
 | Wochenübersicht (30 MA) | Erst nach Einsatzplan-Grundlage |
-
----
-
-## Reihenfolge der Umsetzung
-
-```
-Phase 1: Der Fall ← JETZT
-  └── 1.1 Status vereinfachen
-  └── 1.2 Termin-Validierung
-  └── 1.3 Zuständig = Multi-Select Staff
-  └── 1.4 Termin-Benachrichtigung (1 Button)
-  └── 1.5 Layout-Rebalance (1/3 : 2/3)
-  └── 1.6 Bewertungs-Flow
-  └── 1.7 Wording-Sweep
-  └── 1.8 Mobile Overflow fixen
-
-Phase 2: Kommunikation ← nach Phase 1
-  └── 2.1–2.5
-
-Phase 3: Rollen & Einstellungen ← parallel möglich
-  └── 3.1–3.4
-
-Phase 4: Leitzentrale ← wenn Basis steht
-  └── 4.1–4.5
-```
 
 ---
 
@@ -179,3 +176,5 @@ Phase 4: Leitzentrale ← wenn Basis steht
 | `identity_contract.md` | Branding-Regeln (R1–R7, FlowSight unsichtbar) |
 | `brand_system.md` | Farben, Typografie, Logo (Signal Dot) |
 | `case_contract.md` | Datenmodell (Pflichtfelder, Lifecycle) |
+| `docs/gtm/gold_contact.md` | GTM Nordstern (5-Stufen-Kaufpsychologie, 7 WOW-Momente) |
+| `docs/gtm/operating_model.md` | Trial-Lifecycle (14 Tage, 5 Phasen) |
