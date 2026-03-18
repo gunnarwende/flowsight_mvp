@@ -295,9 +295,25 @@ export function OpsShell({
             </svg>
           </button>
         </div>
-        <div className={`mx-auto px-4 py-6 min-w-0 transition-all duration-300 ${mobilePreview ? "max-w-[390px] border-x border-gray-300 bg-white min-h-screen shadow-lg" : "max-w-6xl"}`}>
-          {children}
-        </div>
+        {mobilePreview ? (
+          <div className="flex justify-center py-6 bg-gray-200 min-h-screen">
+            <div className="relative">
+              {/* Phone frame */}
+              <div className="w-[410px] h-[820px] bg-gray-900 rounded-[3rem] p-[10px] shadow-2xl">
+                <iframe
+                  src={pathname}
+                  className="w-[390px] h-[800px] rounded-[2.4rem] bg-white"
+                  style={{ border: "none" }}
+                  title="Mobile-Vorschau"
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-6xl mx-auto px-4 py-6 min-w-0">
+            {children}
+          </div>
+        )}
       </main>
       <ServiceWorkerRegistration />
       <UpdatePrompt />

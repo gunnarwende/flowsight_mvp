@@ -41,6 +41,7 @@ const name = getArg("--name")[0];
 const slug = getArg("--slug")[0];
 const phones = getArg("--phone");
 const modulesArg = getArg("--modules")[0] ?? "voice,website_wizard,ops,reviews";
+const colorArg = getArg("--color")[0]; // e.g. "#004994"
 const dryRun = getFlag("--dry-run");
 
 if (!name || !slug) {
@@ -55,6 +56,7 @@ Required:
 Optional:
   --phone    Phone number (E.164), repeatable
   --modules  Comma-separated: voice,website_wizard,ops,reviews (default: all)
+  --color    Brand color hex (e.g. "#004994") — used in Leitsystem calendar, buttons, etc.
   --dry-run  Preview without DB writes
 `);
   process.exit(1);
@@ -80,6 +82,8 @@ const modules = {};
 for (const m of ALL_MODULES) {
   modules[m] = modulesArg.split(",").map((s) => s.trim()).includes(m);
 }
+// Brand color → stored in modules.primary_color
+if (colorArg) modules.primary_color = colorArg;
 
 // ── Env ─────────────────────────────────────────────────────────────────
 const url = process.env.SUPABASE_URL;
