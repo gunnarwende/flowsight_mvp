@@ -341,13 +341,13 @@ Hat Mitarbeiter E-Mail in Staff-Tabelle?
 
 | # | Deliverable | Priorität | Abhängigkeit |
 |---|-------------|-----------|--------------|
-| **P2.1** | SMS-Audit: Alle Templates auf ≤ 160 Zeichen | HOCH | — |
-| **P2.2** | Termin per SMS an Melder (FB10: Voice-Fälle ohne E-Mail) | HOCH | — |
-| **P2.3** | Kanal-Fallback im Leitstand: Hinweis wenn kein Kontakt für Versand | HOCH | — |
-| **P2.4** | E-Mail-Templates Audit (Identity Contract, Handwerker-Wording) | MITTEL | — |
-| **P2.5** | eCall Enforcement: Server-Reject bei > 160 Zeichen | MITTEL | P2.1 |
-| **P2.6** | Zustellberichte (eCall) auswerten + loggen | NIEDRIG | — |
-| **P2.7** | Anti-Spam: SPF/DKIM/DMARC Monitoring + Zustellbarkeits-Check | NIEDRIG | — |
+| **P2.1** | SMS-Audit: Alle Templates auf ≤ 160 Zeichen | HOCH | **DONE** (PR #262, #263) |
+| **P2.2** | Termin per SMS an Melder (FB10: Voice-Fälle ohne E-Mail) | HOCH | **DONE** (PR #262) |
+| **P2.3** | Kanal-Fallback im Leitstand: Hinweis wenn kein Kontakt für Versand | HOCH | **DONE** (PR #264) |
+| **P2.4** | E-Mail-Templates Audit (Identity Contract, Handwerker-Wording) | MITTEL | **DONE** (PR #264) |
+| **P2.5** | 160-Char Sentry-Warning (Safety Net, kein Reject) | MITTEL | **DONE** (PR #265) |
+| **P2.6** | Zustellberichte (eCall) auswerten + loggen | NIEDRIG | GEPARKT — eCall liefert message_id, Delivery-Status-Abfrage = Post-MVP |
+| **P2.7** | Anti-Spam: SPF/DKIM/DMARC | NIEDRIG | **DONE** — Resend-Domain `send.flowsight.ch` verifiziert, SPF/DKIM/DMARC aktiv |
 
 ---
 
