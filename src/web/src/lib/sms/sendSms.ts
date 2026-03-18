@@ -1,5 +1,6 @@
 import "server-only";
 
+import * as Sentry from "@sentry/nextjs";
 import { sendSmsEcall } from "./sendSmsEcall";
 
 /**
@@ -14,9 +15,15 @@ import { sendSmsEcall } from "./sendSmsEcall";
  * - SMS_ALLOWED_NUMBERS (optional) — comma-separated E.164 whitelist.
  *   When set, only these numbers receive SMS. Empty/unset = send to all.
  *
+ * 160-char guard: eCall charges double for >160 chars (2 SMS segments).
+ * Does NOT reject — sends anyway but logs a Sentry warning for dev visibility.
+ *
  * Never throws — returns result with sent:false on any error.
  * No console.log — caller owns the log line.
  */
+
+/** eCall single-SMS limit. >160 = 2 segments = double cost. */
+const SMS_CHAR_LIMIT = 160;
 
 export interface SendSmsResult {
   sent: boolean;
@@ -29,6 +36,15 @@ export async function sendSms(
   body: string,
   from: string,
 ): Promise<SendSmsResult> {
+  // 160-char guard: warn on overshoot (don't reject — SMS must still go out)
+  if (body.length > SMS_CHAR_LIMIT) {
+    Sentry.captureMessage(`SMS exceeds ${SMS_CHAR_LIMIT} chars (${body.length})`, {
+      level: "warning",
+      tags: { area: "sms", provider: "ecall" },
+      extra: { char_count: body.length, from, body_preview: body.slice(0, 80) },
+    });
+  }
+
   // Whitelist guard: when SMS_ALLOWED_NUMBERS is set, only send to listed numbers.
   const allowList = process.env.SMS_ALLOWED_NUMBERS;
   if (allowList) {
