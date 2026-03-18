@@ -78,44 +78,57 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 
 ---
 
-### Feedback-Runde 3 (18.03.) — Layout + Übersicht + Termin
+### Feedback-Runde 3 (18.03.) — Layout + Übersicht + Termin + Benachrichtigungen
 
-- F12: Layout 50/50 bestätigt. Beschreibung + Kontakt Cards jetzt IMMER gleiche Höhe (CSS Grid statt Flex-Lanes).
-- F13: Amber Akzent-Balken links entfernt. Stattdessen: subtiler stone-to-white Gradient (konsistent in Read + Edit Mode).
-- F14: Termin-Papierflieger-Icon entfernt. Jetzt: voller "Termin versenden" Button unter dem KV-Grid nach Speichern. Mit Lade-State + Erfolgs-Indikator. Kein 30s-Timeout (persistent bis gesendet).
+- F12: Layout 50/50 bestätigt. Beschreibung + Kontakt Cards gleiche Höhe (CSS Grid). **DONE** (PR #258)
+- F13: Amber Akzent-Balken weg → subtiler stone-to-white Gradient. **DONE** (PR #258)
+- F14→F15: Benachrichtigungs-Buttons NUR im Edit-Mode, sofort bei Änderung. Button = speichert + sendet. **DONE** (PRs #259, #260)
+- Neue API: `POST /api/ops/cases/[id]/notify-assignees` — manueller Versand an neue Zuständige.
+- PATCH Route: `_skip_assignee_notify` Flag für manuellen Flow.
+
+---
+
+### Phase 2: Kommunikation & SMS — KOMPLETT (18.03., PRs #261–#265)
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 2.1 | **SMS-Audit** | **DONE** | Alle 4 Templates ≤ 160 Chars. Post-Call: 251→130, Review: 268→110. PRs #262, #263. |
+| 2.2 | **Termin-SMS Fallback** | **DONE** | Voice-Fälle ohne E-Mail: SMS als Primärkanal. PR #262. |
+| 2.3 | **Kanal-Hinweise Leitstand** | **DONE** | "per SMS", "per E-Mail + SMS", "Keine Kontaktdaten" unter Termin-Button. PR #264. |
+| 2.4 | **E-Mail-Audit** | **DONE** | "Dashboard"→"Leitstand", ICS Sender-Fallback korrigiert. PR #264. |
+| 2.5 | **160-Char Sentry Guard** | **DONE** | Warning bei >160 Chars (kein Reject). PR #265. |
+| 2.6 | **Zustellberichte** | GEPARKT | eCall liefert message_id. Delivery-Status-Abfrage = Post-MVP. |
+| 2.7 | **Anti-Spam** | **DONE** | Resend SPF/DKIM/DMARC verifiziert auf send.flowsight.ch. |
+
+**Kommunikationsmatrix:** `docs/redesign/leitstand/Matrix_kommunikation.md` — SSOT für alle Benachrichtigungen (25+ Trigger, 5 Kanäle, 5 Akteure). K1–K5 Entscheidungen fixiert.
+
+**SMS-Templates final:**
+
+| Template | Chars | Text |
+|----------|-------|------|
+| Post-Call | ~130 | `{Firma}: Ihre Meldung {Kat} wurde erfasst. Bitte Name & Adresse prüfen und Fotos hochladen: {URL}` |
+| Termin | ~81 | `{Firma}: Ihr Termin am {Tag} {Datum}, {Zeit}–{Ende}. Bei Fragen: {Tel}.` |
+| Review | ~110 | `{Firma}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns: {URL}` |
+| 24h Reminder | ~100 | `{Firma}: Erinnerung — Ihr Termin morgen {Tag} {Datum}, {Zeit}–{Ende}. Bei Fragen: {Tel}.` |
 
 ---
 
 ## Next Steps
 
-**Founder-Action:** F12-F14 auf Desktop + Mobile testen.
-
-**Danach:** Phase 2 (Kommunikation & SMS) starten.
+**Phase 3 (Rollen & Einstellungen) starten.**
 
 ---
 
 ## Umsetzungs-Plan: Verbleibende Phasen
 
-### Phase 2: Kommunikation & SMS
-
-> Jede Nachricht hat einen Zweck. Keine Informationsflut. ≤ 160 Zeichen.
-
-| # | Task | Detail | Priorität |
-|---|------|--------|-----------|
-| 2.1 | **SMS-Audit** | Alle bestehenden SMS-Templates inventarisieren. Jedes auf ≤ 160 Zeichen prüfen + kürzen. Zeichenzähler als Dev-Tool. | hoch |
-| 2.2 | **Benachrichtigungs-Matrix** | Tabelle: Trigger × Kanal × Empfänger × Inhalt × Zeichenlimit. Für jede Betriebsgrösse (2/5/10/30 MA) durchdenken. Ziel: Kein Spam, kein Informationsverlust. | hoch |
-| 2.3 | **Anti-Spam Massnahmen** | E-Mail: SPF/DKIM/DMARC via Resend (bereits aktiv). Sender-Domain = `send.flowsight.ch` (verifiziert). SMS: eCall alphanumerischer Sender (Firmenname, nicht Nummer). Regelmässig Zustellbarkeit prüfen. | mittel |
-| 2.4 | **eCall-Integration härten** | API-Anbindung verifizieren: Alphanumerischer Sender, Zeichenlimit-Enforcement (reject > 160), Zustellberichte auswerten. Kosten-Monitoring (1.2–1.7 Punkte pro SMS). | mittel |
-| 2.5 | **E-Mail-Templates audit** | Alle E-Mail-Templates auf Identity Contract prüfen: Sender = "{Firma} via FlowSight", kein FlowSight im Body, Handwerker-Wording, Responsive HTML. | mittel |
-
 ### Phase 3: Rollen & Einstellungen
 
-| # | Task | Detail | Priorität |
-|---|------|--------|-----------|
-| 3.1 | **Rollen-Beschreibung verifizieren** | Info-Button-Text in Einstellungen auf Korrektheit prüfen. Abgleich Code ↔ Text. | hoch |
-| 3.2 | **Kalender-Konzept** | Read-Only Abfrage (Google Calendar FreeBusy). Skalierbar für 2–30 MA. | hoch |
-| 3.3 | **Einstellungen-UX aufwerten** | Toggles mit kontextbezogener Empfehlung. Mobile-optimiert. | mittel |
-| 3.4 | **Techniker-Micro-Surface** | SMS-Link `/einsatz/[token]` — Adresse, Problem, Navi, Erledigt-Button, Foto. HMAC-gesichert. | hoch |
+| # | Task | Detail | Status |
+|---|------|--------|--------|
+| 3.1 | **Rollen-Beschreibung** | Admin + Techniker Beschreibungen verifiziert. Stimmen mit Code überein. | **DONE** (bestätigt 18.03.) |
+| 3.2 | **Kalender-Konzept** | ICS-Einladungen + Appointments-Tabelle existieren. Google Calendar FreeBusy = Post-MVP (API-Integration). | GEPARKT |
+| 3.3 | **Einstellungen-UX** | Neue Section "Termine": Kalender-E-Mail + Standard-Termindauer. 6 Benachrichtigungs-Toggles. Mobile-responsive. | **DONE** (PR #266) |
+| 3.4 | **Techniker-Micro-Surface** | SMS-Link `/einsatz/[token]` — Adresse, Problem, Navi, Erledigt-Button, Foto. HMAC-gesichert. | **NÄCHSTER SCHRITT** |
 
 ### Phase 4: Leitzentrale (merged)
 
