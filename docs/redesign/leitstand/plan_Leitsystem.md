@@ -1,7 +1,7 @@
 # Plan Leitsystem — High-End Umsetzung
 
 **Erstellt:** 2026-03-17
-**Letztes Update:** 2026-03-18 (Phase 4 — Leitzentrale merged, 6 Systemfluss-Karten)
+**Letztes Update:** 2026-03-18 (Phase 1-4 komplett, FB1-FB21, Tenant-Scope-Hardening)
 **Owner:** Founder + CC
 **Nordstern:** `leitsystem_leitzentrale_super_high_end_plan.md`
 **Referenz:** `leitstand.md` (Grundvertrag), `leitstand_renovation.md` (Implementierungs-Brücke)
@@ -115,7 +115,17 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 
 ## Next Steps
 
-**Phase 4 DONE.** Leitzentrale + Fallübersicht auf einer Seite. 6 Systemfluss-Karten, Click-to-Filter, Suche, Pagination, Notfall-Markierung.
+**Phasen 1-4 DONE.** Alle Feedback-Runden FB1-FB21 abgearbeitet. Nächst: Thema A (Tenant-Skalierung) + Thema B (Leitzentrale High-End Visualisierung).
+
+### Feedback-Runden (18.03.) — PRs #268-#275
+
+| Runde | Fixes | PRs |
+|-------|-------|-----|
+| FB1-FB4 | Kalender-Farbe (DB-Sync), Vergangenheits-Termine blockiert, "Leitzentrale" Back-Link, Silbentrennung, "Alles anzeigen", Mobile-Termin, Dev-Preview-Toggle | #268-#271 |
+| FB7-FB10 | Kompakte Leitzentrale (100% Zoom), dynamische Kanal-Hinweise aus Einstellungen, unabhängige Send-Buttons | #272 |
+| FB11-FB14 | Button-Style (plain text), Termin-Anzeige Mobile, Volltext-Suche (Datum/Status/PLZ/...), PWA Deep Linking | #273 |
+| FB15-FB17 | Tenant-Isolation: Admin-Fallback entfernt, Mismatch-Warnung, send-invite From-Header | #274 |
+| FB19-FB21 | **KRITISCH:** resolveTenantScope Admin behält tenant_id (Dörfler-Leak gefixt). Staff-Tabelle Mobile. Termin-Card weg. Einsatzplanung Nav (disabled). | #275 |
 
 ---
 
@@ -127,7 +137,7 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 |---|------|--------|--------|
 | 3.1 | **Rollen-Beschreibung** | Admin + Techniker Beschreibungen verifiziert. Stimmen mit Code überein. | **DONE** (bestätigt 18.03.) |
 | 3.2 | **Kalender-Konzept** | ICS-Einladungen + Appointments-Tabelle existieren. Google Calendar FreeBusy = Post-MVP (API-Integration). | GEPARKT |
-| 3.3 | **Einstellungen-UX** | Neue Section "Termine": Kalender-E-Mail + Standard-Termindauer. 6 Benachrichtigungs-Toggles. Mobile-responsive. | **DONE** (PR #266) |
+| 3.3 | **Einstellungen-UX** | 6 Benachrichtigungs-Toggles. Termin-Card entfernt (FB20). Staff-Tabelle Mobile optimiert (FB19). Mobile-responsive. | **DONE** (PRs #266, #275) |
 | 3.4 | **Techniker-Micro-Surface** | `/einsatz/[caseRef]?t=[hmac]` — Adresse + Maps-Navi, Problem, Kunde + Anruf-Link, "Bin vor Ort" + "Erledigt" Buttons. HMAC-gesichert, kein Login. Mobile-first. | **DONE** (PR #267) |
 
 ### Phase 4: Leitzentrale (merged) — KOMPLETT (18.03.)
@@ -137,8 +147,12 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | 4.1 | **Systemfluss-Karten** | 6 Karten: Eingang → Bei uns → Wartet → Heute → Erledigt → Bewertungen ★. Responsive Grid (2 cols mobile, 6 cols desktop). | **DONE** |
 | 4.2 | **Click-to-Filter** | Klick auf Karte filtert Fallliste darunter. Nochmal klicken = deselect (alle zeigen). | **DONE** |
 | 4.3 | **Notfälle integriert** | Rote border-l-4 + bg-red-50/30 auf Zeile, Notfälle zuoberst sortiert. | **DONE** |
-| 4.4 | **Navigation reduzieren** | Nur 2 Nav-Punkte: Leitzentrale + Einstellungen. Fallübersicht eliminiert. | **DONE** |
+| 4.4 | **Navigation reduzieren** | 3 Nav-Punkte: Leitzentrale + Einsatzplanung (disabled, "Bald") + Einstellungen. | **DONE** |
 | 4.5 | **Quiet High-End Ästhetik** | Ruhig, klar, hierarchisch. Suche + Tabelle + Pagination. Mobile-first (weniger Spalten). | **DONE** |
+| 4.6 | **Tenant-Scope-Hardening** | Admin behält tenant_id, Leitzentrale zeigt nur eigenen Tenant. Kein Cross-Tenant-Leak. | **DONE** (PR #275) |
+| 4.7 | **Volltext-Suche** | Suche über alle Felder: Datum, Status, Priorität, PLZ, Strasse, Zuständig, Fall-Nr. | **DONE** (PR #273) |
+| 4.8 | **Dynamische Kanal-Hinweise** | "Kunde wird per E-Mail + SMS benachrichtigt" — abhängig von Einstellungen. | **DONE** (PR #272) |
+| 4.9 | **Kompaktes Layout** | Cards + 15 Zeilen + Pagination auf 100% Zoom ohne Scrollen. | **DONE** (PR #272) |
 
 ---
 
@@ -173,7 +187,7 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 |------|---------------|
 | Tages-Briefing SMS (07:00) | Gute Idee, erst wenn Basis steht |
 | Einsatz-SMS an Techniker | Abhängig von Micro-Surface (Phase 3.4) |
-| Einsatzplan als 3. Nav-Punkt | Erst ab Kunde 5+ relevant |
+| ~~Einsatzplan als 3. Nav-Punkt~~ | Nav-Punkt existiert (disabled, "Bald"-Badge). Inhalt ab Kunde 5+. |
 | Offline-Cache für Falldaten | PWA-Shell steht, Daten-Cache = Phase 5 |
 | Wochenübersicht (30 MA) | Erst nach Einsatzplan-Grundlage |
 

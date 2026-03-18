@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-17 (Leitsystem Phase 1 komplett, Login High-End, PWA Auto-Update)
+**Datum:** 2026-03-18 (Leitsystem Phase 1-4 komplett, Tenant-Scope-Hardening, Feedback-Runden FB1-FB21)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -56,7 +56,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **Leitsystem Phase 1 (17.03.):** PRs #238-#256. Login High-End (OTP, Swiss Trust, warm-white). PWA Auto-Update-Prompt. Falldetail komplett: Status vereinfacht (kein Abgeschlossen), Wording Handwerkersprache (17 Dateien), Termin-Validierung (+15min), Multi-Select Staff, Inline Termin-Sende-Icon, Bewertungs-Flow, Layout 50/50, Mobile Overflow gefixt, einheitliche Pill-Badges.
+- **Leitsystem Phase 1-4 komplett (18.03.):** PRs #238-#275. Login High-End. PWA Auto-Update. Falldetail komplett. Kommunikation & SMS (160-Char-Audit, Kanal-Hinweise). Rollen & Einstellungen (Staff CRUD, Techniker-Micro-Surface). Leitzentrale (6 Systemfluss-Karten, Click-to-Filter, Volltext-Suche, Pagination, Notfall-Markierung).
+- **Tenant-Scope-Hardening (18.03.):** PRs #270-#275. Admin behält tenant_id (kein Fallback auf ältesten Tenant). Leitzentrale zeigt nur eigenen Tenant. Amber-Warnung bei Cross-Tenant-Cases. Brand Color Pipeline (CustomerSite → DB → Leitsystem). Dynamische Kanal-Hinweise aus Einstellungen. Unabhängige Send-Buttons. Kompaktes Layout (100% Zoom). PWA Deep Linking. Termin-Card aus Einstellungen entfernt. Einsatzplanung als disabled Nav.
+- **Feedback-Runden FB1-FB21 abgearbeitet.** Kritische Tenant-Bugs (Brunner HT / Dörfler AG Leak) behoben.
 - **17 Module LIVE.** +1 Kunde: Jul. Weinberger AG (GTM Goldstandard). +1 Modul: Review Surface.
 - **50+ Commits seit 04.03.** (PRs #53–#128).
 - **Architecture Wave (10.03.):** PR #128. RLS Migration applied (tenant isolation at DB level). Tenant scoping in Dashboard + API (`resolveTenantScope.ts`). 3-Tier SMS Routing. Review Surface (Google-style). 15 Demo-Cases seeded (Weinberger). Architecture Document (22 Sections). 3-Modi GTM Logic. Ops Scripts (seed_demo_data, setup_rls_and_admin).

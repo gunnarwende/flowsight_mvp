@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.3 | **Datum:** 2026-03-17
+**Version:** 1.4 | **Datum:** 2026-03-18
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.3 — D12 ELIMINATED, D16 Trial Machine, D9 OTP-Login (17.03.), eCall Business Account (17.03.)
+**Status:** v1.4 — D17 Tenant Scope Hardening (18.03.), D18 Brand Color Pipeline (18.03.)
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -24,10 +24,12 @@
 | D10 | Demo-Dataset → **is_demo Boolean auf Cases** | **ENTSCHIEDEN** ✅ | Founder | §16 |
 | D11 | SMS-Zielrouting → **tenant.demo_sms_target** | **ENTSCHIEDEN** ✅ | Founder | §12 |
 | D12 | ~~G2 B-Quick Agent~~ → **ELIMINATED**. Immer B-Full. Jeder Prospect bekommt eigenen dedizierten Agent. | **ENTSCHIEDEN** ✅ | Founder | §5, operating_model |
-| D13 | Multi-Tenant Dashboard UI (>1 Kunde) | **OFFEN** | CC (Vorschlag), Founder (Go) | §9, §15 |
+| D13 | Multi-Tenant Dashboard UI (>1 Kunde) | **ENTSCHIEDEN** ✅ | Founder | §9, §15 — Admin behält tenant_id, sieht nur eigenen Tenant in Leitzentrale |
 | D14 | Review-Surface Personalisierung (Name, Foto, Stars) | **OFFEN** | CC (Vorschlag) | §13 |
 | D15 | Mobile-First als explizites Proof-Kriterium in Quality Gates | **EMPFOHLEN** | CC | §14 |
 | D16 | Product-Led Trial Machine (14-Tage Trial, provision_trial.mjs, offboard_tenant.mjs) | **ENTSCHIEDEN** ✅ | Founder | operating_model.md |
+| D17 | Tenant Scope: Admin behält tenant_id + isAdmin=true. Kein Fallback auf ältesten Tenant. | **ENTSCHIEDEN** ✅ | Founder + CC | resolveTenantScope.ts |
+| D18 | Brand Color Pipeline: CustomerSite → DB modules.primary_color → Leitsystem (Kalender, Buttons, Sidebar) | **ENTSCHIEDEN** ✅ | Founder + CC | sync_brand_colors.mjs |
 
 ---
 
