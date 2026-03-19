@@ -1,8 +1,8 @@
 # Machine Manifest — Gold-Contact Proof-Capture-Maschine
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
-**Version:** 1.0 — End-to-End Pipeline
-**Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`
+**Version:** 1.1 — End-to-End Pipeline (Updated 18.03.: Tenant-Switcher + Brand Color Sync integriert)
+**Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
 
 ---
 
@@ -177,7 +177,7 @@ Alle 4 Pfade koennen parallel laufen. Engpass: Voice Agent (~8 Min).
 ### Was der Generator macht
 
 1. Template mit prospect_card-Daten befuellen (Name, Services, Team, Kontakt)
-2. Brand Color aus prospect_card uebernehmen
+2. Brand Color aus prospect_card uebernehmen → `sync_brand_colors.mjs` synct in DB → Leitsystem nutzt automatisch
 3. Gecrawlte Bilder zuordnen (Service-Mapping)
 4. Wizard-Kategorien aus prospect_card.services ableiten
 5. Emergency-Banner wenn emergency.enabled === true
