@@ -103,6 +103,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
       defaultText={defaultReviewText}
       googleReviewUrl={googleReviewUrl}
       trackUrl={`/api/review/${caseId}/track`}
+      caseId={caseId}
     />
   );
 }

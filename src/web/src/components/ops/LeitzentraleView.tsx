@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
@@ -59,7 +59,8 @@ export interface LeitzentraleProps {
 // Constants
 // ---------------------------------------------------------------------------
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE_DESKTOP = 15;
+const PAGE_SIZE_MOBILE = 8;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline, no extra deps)
@@ -231,6 +232,14 @@ export function LeitzentraleView({
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [period, setPeriod] = useState<PeriodValue>("7d");
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
+
+  useEffect(() => {
+    const update = () => setPageSize(window.innerWidth < 768 ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   // ── ALL hooks MUST be above early returns (React rules of hooks) ────
   const categories = useMemo(() => {
@@ -304,11 +313,11 @@ export function LeitzentraleView({
   }
 
   // ── Admin-only derived state (no hooks below) ─────────────────────
-  const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filteredCases.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedCases = filteredCases.slice(
-    (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE,
+    (safePage - 1) * pageSize,
+    safePage * pageSize,
   );
 
   function handleNodeClick(node: string | null) {

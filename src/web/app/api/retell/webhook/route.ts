@@ -8,6 +8,7 @@ import { sendCaseNotification } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
+import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 
 // ---------------------------------------------------------------------------
 // Retell webhook payload types (from retell-sdk analysis)
@@ -64,35 +65,7 @@ function nonEmptyStr(v: unknown): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// PLZ → City auto-correction (fixes STT errors like "Talwil" → "Thalwil")
-// ---------------------------------------------------------------------------
-
-const PLZ_CITY_MAP: Record<string, string> = {
-  "8800": "Thalwil",
-  "8942": "Oberrieden",
-  "8810": "Horgen",
-  "8802": "Kilchberg",
-  "8803": "Rüschlikon",
-  "8134": "Adliswil",
-  "8135": "Langnau am Albis",
-  "8820": "Wädenswil",
-  "8805": "Richterswil",
-  "8804": "Au ZH",
-  "8038": "Zürich",
-  "8001": "Zürich",
-  "8002": "Zürich",
-  "8003": "Zürich",
-  "8004": "Zürich",
-  "8005": "Zürich",
-  "8006": "Zürich",
-  "8008": "Zürich",
-  "8032": "Zürich",
-  "8037": "Zürich",
-  "8041": "Zürich",
-  "8045": "Zürich",
-  "8048": "Zürich",
-  "8055": "Zürich",
-};
+// PLZ → City auto-correction: imported from shared plzCityMap.ts
 
 // ---------------------------------------------------------------------------
 // House number text→digit normalization (STT often produces words)
