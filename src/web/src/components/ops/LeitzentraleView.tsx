@@ -203,7 +203,36 @@ export function LeitzentraleView({
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // ── Techniker view ──────────────────────────────────────────────────
+  // ── ALL hooks MUST be above early returns (React rules of hooks) ────
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of cases) if (c.category) set.add(c.category);
+    return Array.from(set).sort();
+  }, [cases]);
+
+  const filteredCases = useMemo(() => {
+    let result = cases;
+
+    if (activeNode) {
+      result = result.filter((c) => matchesNode(c, activeNode));
+    }
+    if (statusFilter) {
+      result = result.filter((c) => c.status === statusFilter);
+    }
+    if (urgencyFilter) {
+      result = result.filter((c) => c.urgency === urgencyFilter);
+    }
+    if (categoryFilter) {
+      result = result.filter((c) => c.category === categoryFilter);
+    }
+    if (searchQuery.trim()) {
+      result = result.filter((c) => matchesSearch(c, searchQuery.trim()));
+    }
+
+    return smartSort(result);
+  }, [cases, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
+
+  // ── Techniker view (after all hooks) ────────────────────────────────
   if (staffRole === "techniker" && staffName) {
     return (
       <TechnikerView
@@ -214,41 +243,6 @@ export function LeitzentraleView({
       />
     );
   }
-
-  // ── Categories (dynamic from cases) ────────────────────────────────
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    for (const c of cases) if (c.category) set.add(c.category);
-    return Array.from(set).sort();
-  }, [cases]);
-
-  // ── Filtered + sorted cases ────────────────────────────────────────
-  const filteredCases = useMemo(() => {
-    let result = cases;
-
-    // Node filter from SystemCard
-    if (activeNode) {
-      result = result.filter((c) => matchesNode(c, activeNode));
-    }
-
-    // Column filters
-    if (statusFilter) {
-      result = result.filter((c) => c.status === statusFilter);
-    }
-    if (urgencyFilter) {
-      result = result.filter((c) => c.urgency === urgencyFilter);
-    }
-    if (categoryFilter) {
-      result = result.filter((c) => c.category === categoryFilter);
-    }
-
-    // Search
-    if (searchQuery.trim()) {
-      result = result.filter((c) => matchesSearch(c, searchQuery.trim()));
-    }
-
-    return smartSort(result);
-  }, [cases, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
 
   // ── Pagination ───────────────────────────────────────────────────────
   const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
