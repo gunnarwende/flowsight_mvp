@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-18 (Leitzentrale v2 + Scaling & Access deployed)
+**Updated:** 2026-03-19 (Leitzentrale v3 FlowBar + Review Pre-Filter + FB1-FB6 deployed)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,10 +9,10 @@
 
 ## Snapshot
 
-- **Produkt:** 17 Module LIVE + Tenant-Switcher + Support-System + Leitzentrale v2
+- **Produkt:** 17 Module LIVE + Leitzentrale v3 (FlowBar, Gold-Sterne, Review Pre-Filter)
 - **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
 - **BLOCKER:** 0
-- **Phase:** Leitzentrale v2 deployed (18.03.). Scaling & Access live. Go-Live-Vorbereitung.
+- **Phase:** Leitzentrale v3 deployed (19.03.). Review Pre-Filter live. Kalender-Integration wartet auf Founder-Setup.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
@@ -33,20 +33,28 @@ Keine.
 
 ---
 
-## OFFEN — Founder-Feedback (Session 19.03.)
-
-> RM1-RM7 Feedback-Runde. RM1-RM6 in Bearbeitung (PR in Arbeit). RM7 = Konzept.
+## OFFEN — Founder-Actions
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|
-| RM1 | **Nav-Reihenfolge** | Leitzentrale → Einstellungen → Support → Einsatzplanung. Techniker ohne Einstellungen/Support. | IN ARBEIT |
 | RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | OFFEN — Founder |
 | RM2.2 | **Lisa auf Support-Tickets trainieren** | Voice Agent soll Support-Anfragen sauber verarbeiten | OFFEN |
-| RM3 | **Info-Button (i) hinter Rolle** | Klick zeigt nichts → Fix: Info-Panel auch ausserhalb Form | IN ARBEIT |
-| RM4 | **Settings zeigt falschen Tenant** | KRITISCH: Brunner-Switch → Weinberger in Settings. SAFETY guards eingebaut. | IN ARBEIT |
-| RM5 | **Techniker-View nicht aktiv** | Admin→Techniker-Switch zeigt Admin-View statt TechnikerView | IN ARBEIT |
-| RM6 | **Admin = Techniker identisch** | Folge von RM5: viewAsRole wird in cases/page.tsx nicht respektiert | IN ARBEIT |
-| RM7 | **Bewertungs-Weiche (≤3★ intern, ≥4★ → Google)** | Konzept-Frage: technisch machbar, rechtlich prüfen | KONZEPT |
+| KAL1 | **Outlook OAuth App anlegen** | Azure App Registration für Kalender-Integration (Phase 2). Anleitung: `docs/runbooks/founder_kalender_setup.md` | OFFEN — Founder |
+| KAL2 | **Google Calendar OAuth App anlegen** | Google Cloud Console für Kalender-Integration (Phase 2). Gleiche Anleitung. | OFFEN — Founder |
+
+## ERLEDIGT — Feedback Session 19.03. (PRs #286-#290)
+
+| # | Titel | Status |
+|---|-------|--------|
+| RM1 | Nav-Reihenfolge + Techniker-Nav aufgeräumt | DONE (PR #286) |
+| RM3-RM6 | Role Toggle, Settings Tenant, Techniker-View, hooks crash | DONE (PR #286) |
+| RM7 | Bewertungs-Weiche (≤3★ intern, ≥4★ → Google) | DONE (PR #288) — Review Pre-Filter live |
+| FB1 | FlowBar: Grid, YTD, Quellen, Badge, Gold-Sterne | DONE (PR #287) |
+| FB2/FB4 | Mobile 2x2 Grid | DONE (PR #287) |
+| FB3 | Techniker Pagination + Icons + Period-Toggle | DONE (PR #287) |
+| FB5 | "Kategorie" ausgeschrieben | DONE (PR #287) |
+| FB6 | Status-Farben (orange/grau/gold) | DONE (PR #287) |
+| 6a-6g | PLZ-Lookup, Pflichtfelder, Kollision, Mobile PageSize, Ramon | DONE (PR #288) |
 
 ---
 
