@@ -175,7 +175,7 @@ export function FlowBar({
           })}
 
           {/* Arrow to stars */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 min-w-0">
             <svg
               className="w-5 h-5 text-gray-300 flex-shrink-0"
               fill="none"
@@ -190,13 +190,13 @@ export function FlowBar({
               />
             </svg>
 
-            {/* Star step */}
+            {/* Star step — same flex-1 as other steps */}
             <button
               onClick={() => toggle("bewertung")}
               className={`
-                flex flex-col items-center justify-center
+                flex-1 flex flex-col items-center justify-center
                 rounded-xl border-t-[3px] border border-gray-200
-                px-2 py-3 sm:px-4 sm:py-4 min-w-[72px] sm:min-w-[90px]
+                px-2 py-3 sm:px-4 sm:py-4
                 transition-all duration-200 cursor-pointer
                 border-t-amber-400
                 ${

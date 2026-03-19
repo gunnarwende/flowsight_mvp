@@ -334,20 +334,62 @@ export function OpsShell({
 
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
-        {/* Impersonation indicator — subtle, no amber banner */}
-        {(isImpersonating || viewAsRole) && (
-          <div className="px-4 py-1.5 text-right text-gray-400 text-[10px] sticky top-0 z-20 md:top-0">
-            {isImpersonating && <>Ansicht: {tenantName}</>}
-            {isImpersonating && viewAsRole && <> · </>}
-            {viewAsRole && <>Rolle: Techniker</>}
-          </div>
-        )}
         <InstallPrompt />
-        {/* Dev: Mobile Preview Toggle (top-right, desktop only) */}
-        <div className="hidden md:flex justify-end px-4 pt-2">
+        {/* Top bar: Role toggle (admin only) + mobile preview */}
+        <div className="flex items-center justify-end gap-2 px-4 pt-2">
+          {/* Tenant indicator */}
+          {isImpersonating && (
+            <span className="text-[10px] text-gray-400 mr-auto">
+              Ansicht: {tenantName}
+            </span>
+          )}
+          {/* Role toggle — admin can switch between Admin/Techniker */}
+          {isAdmin && (
+            <div className="flex gap-0.5 bg-gray-100 rounded-lg p-0.5">
+              <button
+                onClick={async () => {
+                  if (viewAsRole) {
+                    await fetch("/api/ops/switch-tenant", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ tenantId: activeTenantId, viewAsRole: null }),
+                    });
+                    window.location.reload();
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+                  !viewAsRole
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700 cursor-pointer"
+                }`}
+              >
+                Rolle: Admin
+              </button>
+              <button
+                onClick={async () => {
+                  if (!viewAsRole) {
+                    await fetch("/api/ops/switch-tenant", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ tenantId: activeTenantId, viewAsRole: "techniker" }),
+                    });
+                    window.location.reload();
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+                  viewAsRole === "techniker"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700 cursor-pointer"
+                }`}
+              >
+                Rolle: Techniker
+              </button>
+            </div>
+          )}
+          {/* Mobile Preview Toggle (desktop only) */}
           <button
             onClick={() => setMobilePreview(p => !p)}
-            className={`p-1.5 rounded-md text-xs transition-colors ${mobilePreview ? "bg-gray-900 text-white" : "text-gray-400 hover:text-gray-600 hover:bg-gray-200"}`}
+            className={`hidden md:block p-1.5 rounded-md text-xs transition-colors ${mobilePreview ? "bg-gray-900 text-white" : "text-gray-400 hover:text-gray-600 hover:bg-gray-200"}`}
             title={mobilePreview ? "Desktop-Ansicht" : "Mobile-Vorschau"}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
