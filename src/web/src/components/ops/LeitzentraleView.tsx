@@ -4,9 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
-import { SystemflussBar } from "./SystemflussBar";
-import { HandlungsbedarfZone } from "./HandlungsbedarfZone";
-import { WirkungZone } from "./WirkungZone";
+import { SystemCard } from "./SystemCard";
 import { TechnikerView } from "./TechnikerView";
 
 // ---------------------------------------------------------------------------
@@ -38,13 +36,11 @@ export interface LeitzentraleProps {
   caseIdPrefix: string;
   weekStats: { neue: number; erledigt: number };
   reviewStats: { sent: number; pending: number };
-  /** Extended stats for v2 zones */
   reviewSent7d?: number;
   reviewSentTotal?: number;
   erledigt30d?: number;
   avgRating?: number | null;
   featuredReview?: string | null;
-  /** Staff context for role-based rendering */
   staffName?: string | null;
   staffRole?: "admin" | "techniker";
 }
@@ -84,61 +80,36 @@ const URGENCY_LABEL: Record<string, string> = {
 const PAGE_SIZE = 15;
 
 // ---------------------------------------------------------------------------
-// Filter definitions for Systemfluss cards
-// ---------------------------------------------------------------------------
-
-type FilterKey = "eingang" | "bei_uns" | "wartet" | "heute" | "erledigt" | "bewertungen";
-
-interface FlussCard {
-  key: FilterKey;
-  label: string;
-  accentColor: string;
-  ringColor: string;
-}
-
-const FLUSS_CARDS: FlussCard[] = [
-  { key: "eingang", label: "Eingang", accentColor: "border-blue-500", ringColor: "ring-blue-500" },
-  { key: "bei_uns", label: "Bei uns", accentColor: "border-indigo-500", ringColor: "ring-indigo-500" },
-  { key: "wartet", label: "Wartet", accentColor: "border-amber-500", ringColor: "ring-amber-500" },
-  { key: "heute", label: "Heute", accentColor: "border-violet-500", ringColor: "ring-violet-500" },
-  { key: "erledigt", label: "Erledigt", accentColor: "border-emerald-500", ringColor: "ring-emerald-500" },
-  { key: "bewertungen", label: "Bewertungen", accentColor: "border-amber-400", ringColor: "ring-amber-400" },
-];
-
-// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function getTodayZurich(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" }).format(new Date());
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(new Date());
 }
 
-function isScheduledToday(scheduledAt: string | null | undefined): boolean {
-  if (!scheduledAt) return false;
-  const dateInZurich = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" }).format(new Date(scheduledAt));
-  return dateInZurich === getTodayZurich();
-}
-
-function matchesFilter(c: LeitzentraleCase, filter: FilterKey): boolean {
-  switch (filter) {
+function matchesNode(c: LeitzentraleCase, node: string): boolean {
+  switch (node) {
     case "eingang":
       return c.status === "new";
     case "bei_uns":
-      return c.status === "scheduled" || c.status === "in_arbeit";
-    case "wartet":
-      return c.status === "warten";
-    case "heute":
-      return isScheduledToday(c.scheduled_at);
+      return (
+        c.status === "scheduled" ||
+        c.status === "in_arbeit" ||
+        c.status === "warten"
+      );
     case "erledigt":
       return c.status === "done";
-    case "bewertungen":
+    case "bewertung":
       return c.status === "done" && !c.review_sent_at;
+    default:
+      return true;
   }
 }
 
 function matchesSearch(c: LeitzentraleCase, query: string): boolean {
   const q = query.toLowerCase();
-  // Search across ALL visible fields — scalable, comprehensive
   const fields = [
     c.reporter_name,
     c.city,
@@ -149,125 +120,88 @@ function matchesSearch(c: LeitzentraleCase, query: string): boolean {
     c.description,
     c.assignee_text,
     c.source,
-    // Labels (so users can search "dringend", "notfall", "erledigt", etc.)
     STATUS_LABELS[c.status],
     c.status,
     URGENCY_LABEL[c.urgency],
     c.urgency,
-    // Case ID
     c.seq_number != null ? String(c.seq_number) : null,
-    // Date (multiple formats: "14.03", "14.03.2026", "März")
-    new Date(c.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Zurich" }),
-    new Date(c.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" }),
-    new Date(c.created_at).toLocaleDateString("de-CH", { day: "numeric", month: "long", timeZone: "Europe/Zurich" }),
+    new Date(c.created_at).toLocaleDateString("de-CH", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "Europe/Zurich",
+    }),
   ];
-  return fields.some(f => f && f.toLowerCase().includes(q));
+  return fields.some((f) => f && f.toLowerCase().includes(q));
 }
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  const now = new Date();
   const todayStr = getTodayZurich();
-  const dateStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" }).format(d);
+  const dateStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(d);
 
   if (dateStr === todayStr) {
-    return "Heute " + d.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
+    return (
+      "Heute " +
+      d.toLocaleTimeString("de-CH", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Europe/Zurich",
+      })
+    );
   }
 
-  // Yesterday
-  const yesterday = new Date(now.getTime() - 86400000);
-  const yesterdayStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" }).format(yesterday);
-  if (dateStr === yesterdayStr) {
-    return "Gestern";
-  }
+  const yesterday = new Date(Date.now() - 86400000);
+  const yesterdayStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(yesterday);
+  if (dateStr === yesterdayStr) return "Gestern";
 
-  return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
+  return d.toLocaleDateString("de-CH", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Europe/Zurich",
+  });
+}
+
+// Smart sort: active Notfälle > active Dringende > active Normale > Erledigte
+function smartSort(cases: LeitzentraleCase[]): LeitzentraleCase[] {
+  return [...cases].sort((a, b) => {
+    const rank = (c: LeitzentraleCase): number => {
+      if (c.status === "done") return 4;
+      if (c.urgency === "notfall") return 0;
+      if (c.urgency === "dringend") return 1;
+      return 2;
+    };
+    const ra = rank(a);
+    const rb = rank(b);
+    if (ra !== rb) return ra - rb;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, reviewSent7d, reviewSentTotal, erledigt30d, avgRating, featuredReview, staffName, staffRole }: LeitzentraleProps) {
+export function LeitzentraleView({
+  cases,
+  caseIdPrefix,
+  weekStats,
+  avgRating,
+  staffName,
+  staffRole,
+}: LeitzentraleProps) {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState<FilterKey | null>(null);
+  const [activeNode, setActiveNode] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [urgencyFilter, setUrgencyFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-
-  // ── Card counts ──────────────────────────────────────────────────────
-  const cardCounts = useMemo(() => {
-    const counts: Record<FilterKey, number> = {
-      eingang: 0,
-      bei_uns: 0,
-      wartet: 0,
-      heute: 0,
-      erledigt: 0,
-      bewertungen: 0,
-    };
-    for (const c of cases) {
-      if (c.status === "new") counts.eingang++;
-      if (c.status === "scheduled" || c.status === "in_arbeit") counts.bei_uns++;
-      if (c.status === "warten") counts.wartet++;
-      if (isScheduledToday(c.scheduled_at)) counts.heute++;
-      if (c.status === "done") counts.erledigt++;
-      if (c.status === "done" && !c.review_sent_at) counts.bewertungen++;
-    }
-    return counts;
-  }, [cases]);
-
-  // ── Filtered + searched cases ────────────────────────────────────────
-  const filteredCases = useMemo(() => {
-    let result = cases;
-
-    // Apply card filter
-    if (activeFilter) {
-      result = result.filter((c) => matchesFilter(c, activeFilter));
-    }
-
-    // Apply search
-    if (searchQuery.trim()) {
-      result = result.filter((c) => matchesSearch(c, searchQuery.trim()));
-    }
-
-    // Sort: Notfälle to top, then by created_at desc
-    const urgencyRank: Record<string, number> = { notfall: 0, dringend: 1, normal: 2 };
-    result = [...result].sort((a, b) => {
-      const ra = urgencyRank[a.urgency] ?? 9;
-      const rb = urgencyRank[b.urgency] ?? 9;
-      if (ra !== rb) return ra - rb;
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-
-    return result;
-  }, [cases, activeFilter, searchQuery]);
-
-  // ── Pagination ───────────────────────────────────────────────────────
-  const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
-  const safePage = Math.min(currentPage, totalPages);
-  const paginatedCases = filteredCases.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
-  // Reset page when filter/search changes
-  const handleFilterClick = (key: FilterKey) => {
-    setActiveFilter((prev) => (prev === key ? null : key));
-    setCurrentPage(1);
-  };
-
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setCurrentPage(1);
-  };
-
-  // ── Source counts ─────────────────────────────────────────────────────
-  const sourceCounts = useMemo(() => {
-    const counts = { voice: 0, wizard: 0, manual: 0 };
-    for (const c of cases) {
-      if (c.source === "voice") counts.voice++;
-      else if (c.source === "wizard" || c.source === "website") counts.wizard++;
-      else counts.manual++;
-    }
-    return counts;
-  }, [cases]);
 
   // ── Techniker view ──────────────────────────────────────────────────
   if (staffRole === "techniker" && staffName) {
@@ -276,59 +210,97 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
         staffName={staffName}
         cases={cases}
         caseIdPrefix={caseIdPrefix}
-        allCasesCount={{
-          eingang: cardCounts.eingang,
-          beiUns: cardCounts.bei_uns + cardCounts.wartet,
-          erledigt: cardCounts.erledigt,
-        }}
-        sources={sourceCounts}
-        reviewAvg={avgRating ?? null}
-        reviewStats={{
-          sent7d: reviewSent7d ?? 0,
-          sent30d: reviewStats.sent,
-          sentTotal: reviewSentTotal ?? reviewStats.sent,
-          erledigt30d: erledigt30d ?? weekStats.erledigt,
-        }}
+        avgRating={avgRating ?? null}
       />
     );
   }
 
+  // ── Categories (dynamic from cases) ────────────────────────────────
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of cases) if (c.category) set.add(c.category);
+    return Array.from(set).sort();
+  }, [cases]);
+
+  // ── Filtered + sorted cases ────────────────────────────────────────
+  const filteredCases = useMemo(() => {
+    let result = cases;
+
+    // Node filter from SystemCard
+    if (activeNode) {
+      result = result.filter((c) => matchesNode(c, activeNode));
+    }
+
+    // Column filters
+    if (statusFilter) {
+      result = result.filter((c) => c.status === statusFilter);
+    }
+    if (urgencyFilter) {
+      result = result.filter((c) => c.urgency === urgencyFilter);
+    }
+    if (categoryFilter) {
+      result = result.filter((c) => c.category === categoryFilter);
+    }
+
+    // Search
+    if (searchQuery.trim()) {
+      result = result.filter((c) => matchesSearch(c, searchQuery.trim()));
+    }
+
+    return smartSort(result);
+  }, [cases, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
+
+  // ── Pagination ───────────────────────────────────────────────────────
+  const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedCases = filteredCases.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  function handleNodeClick(node: string | null) {
+    setActiveNode(node);
+    setCurrentPage(1);
+  }
+
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  }
+
+  function resetFilters() {
+    setActiveNode(null);
+    setStatusFilter("");
+    setUrgencyFilter("");
+    setCategoryFilter("");
+    setSearchQuery("");
+    setCurrentPage(1);
+  }
+
+  const hasFilters =
+    !!activeNode ||
+    !!statusFilter ||
+    !!urgencyFilter ||
+    !!categoryFilter ||
+    !!searchQuery;
+
+  // ── Dropdown helper ─────────────────────────────────────────────────
+  const selectClass =
+    "text-[10px] font-semibold uppercase tracking-wide bg-transparent border-none focus:outline-none cursor-pointer text-gray-500 appearance-none pr-3";
+
   // ── Admin/Inhaber view ──────────────────────────────────────────────
   return (
     <div className="space-y-3">
-      {/* ═══════════════════════════════════════════════════════════════
-          SYSTEMFLUSS — Verbundener Flow: Eingang → Bei uns → Erledigt → ★
-         ═══════════════════════════════════════════════════════════════ */}
-      <SystemflussBar
-        eingang={cardCounts.eingang}
-        beiUns={cardCounts.bei_uns + cardCounts.wartet}
-        erledigt={cardCounts.erledigt}
-        reviewAvg={avgRating ?? null}
-        sources={sourceCounts}
-      />
-
-      {/* ═══════════════════════════════════════════════════════════════
-          HANDLUNGSBEDARF — Was braucht Aufmerksamkeit?
-         ═══════════════════════════════════════════════════════════════ */}
-      <HandlungsbedarfZone cases={cases} caseIdPrefix={caseIdPrefix} />
-
-      {/* ═══════════════════════════════════════════════════════════════
-          WIRKUNG — Gold-Zone: Bewertungen, Fortschritt, Stolz
-         ═══════════════════════════════════════════════════════════════ */}
-      <WirkungZone
-        reviewStats={{
-          sent7d: reviewSent7d ?? 0,
-          sent30d: reviewStats.sent,
-          sentTotal: reviewSentTotal ?? reviewStats.sent,
-          erledigt30d: erledigt30d ?? weekStats.erledigt,
-        }}
+      {/* EINE Card — SystemCard Kreislauf */}
+      <SystemCard
+        cases={cases}
         avgRating={avgRating ?? null}
-        featuredReview={featuredReview}
+        weeklyDone={weekStats.erledigt}
+        onNodeClick={handleNodeClick}
+        activeNode={activeNode}
       />
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SEARCH + NEW CASE
-         ═══════════════════════════════════════════════════════════════ */}
+      {/* Search + New Case */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <svg
@@ -352,6 +324,14 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
           />
         </div>
+        {hasFilters && (
+          <button
+            onClick={resetFilters}
+            className="rounded-xl border border-gray-200 px-3 py-2.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors flex-shrink-0"
+          >
+            Filter zurücksetzen
+          </button>
+        )}
         <button
           onClick={() => setModalOpen(true)}
           className="rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors flex-shrink-0 whitespace-nowrap"
@@ -360,67 +340,133 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
         </button>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          CASE TABLE
-         ═══════════════════════════════════════════════════════════════ */}
+      {/* Case Table v2 */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Desktop table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Nr
+                <th className="text-left px-3 py-2">
+                  <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Nr
+                  </span>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Kunde
+                <th className="text-left px-3 py-2">
+                  <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Kunde
+                  </span>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Kat.
+                <th className="text-left px-3 py-2">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => {
+                      setCategoryFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className={selectClass}
+                    title="Kategorie filtern"
+                  >
+                    <option value="">Kat. ▾</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Ort
+                <th className="text-left px-3 py-2">
+                  <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Ort
+                  </span>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Priorität
+                <th className="text-left px-3 py-2">
+                  <select
+                    value={urgencyFilter}
+                    onChange={(e) => {
+                      setUrgencyFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className={selectClass}
+                    title="Priorität filtern"
+                  >
+                    <option value="">Priorität ▾</option>
+                    <option value="notfall">Hoch</option>
+                    <option value="dringend">Mittel</option>
+                    <option value="normal">Normal</option>
+                  </select>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Status
+                <th className="text-left px-3 py-2">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className={selectClass}
+                    title="Status filtern"
+                  >
+                    <option value="">Status ▾</option>
+                    <option value="new">Neu</option>
+                    <option value="scheduled">Geplant</option>
+                    <option value="in_arbeit">In Arbeit</option>
+                    <option value="warten">Warten</option>
+                    <option value="done">Erledigt</option>
+                  </select>
                 </th>
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
-                  Datum
+                <th className="text-left px-3 py-2">
+                  <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Datum
+                  </span>
                 </th>
               </tr>
             </thead>
             <tbody>
               {paginatedCases.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="text-center text-gray-400 py-12 text-sm">
+                  <td
+                    colSpan={7}
+                    className="text-center text-gray-400 py-12 text-sm"
+                  >
                     Keine Fälle gefunden.
                   </td>
                 </tr>
               )}
               {paginatedCases.map((c) => {
-                const isNotfall = c.urgency === "notfall";
+                const isNotfall =
+                  c.urgency === "notfall" && c.status !== "done";
+                const isDone = c.status === "done";
                 return (
                   <tr
                     key={c.id}
                     onClick={() => router.push(`/ops/cases/${c.id}`)}
                     className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
-                      isNotfall ? "border-l-4 border-l-red-500 bg-red-50/30" : ""
+                      isNotfall
+                        ? "border-l-4 border-l-red-500 bg-red-50/30"
+                        : isDone
+                          ? "opacity-60"
+                          : ""
                     }`}
                   >
                     <td className="px-3 py-2 font-mono text-xs text-gray-500 whitespace-nowrap">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </td>
                     <td className="px-3 py-2 text-gray-900 truncate max-w-[180px]">
-                      {c.reporter_name || <span className="text-gray-400">—</span>}
+                      {c.reporter_name || (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </td>
-                    <td className="px-3 py-2 text-gray-700 truncate max-w-[140px]">{c.category}</td>
-                    <td className="px-3 py-2 text-gray-600 truncate max-w-[120px]">{c.city || "—"}</td>
+                    <td className="px-3 py-2 text-gray-700 truncate max-w-[140px]">
+                      {c.category}
+                    </td>
+                    <td className="px-3 py-2 text-gray-600 truncate max-w-[120px]">
+                      {c.city || "—"}
+                    </td>
                     <td className="px-3 py-2">
                       <span className="inline-flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-400"}`} />
+                        <span
+                          className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-400"}`}
+                        />
                         <span className="text-xs text-gray-600">
                           {URGENCY_LABEL[c.urgency] ?? c.urgency}
                         </span>
@@ -429,7 +475,8 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
                     <td className="px-3 py-2">
                       <span
                         className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-700"
+                          STATUS_COLORS[c.status] ??
+                          "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
@@ -453,13 +500,18 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
             </div>
           )}
           {paginatedCases.map((c) => {
-            const isNotfall = c.urgency === "notfall";
+            const isNotfall = c.urgency === "notfall" && c.status !== "done";
+            const isDone = c.status === "done";
             return (
               <div
                 key={c.id}
                 onClick={() => router.push(`/ops/cases/${c.id}`)}
                 className={`px-4 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors ${
-                  isNotfall ? "border-l-4 border-l-red-500 bg-red-50/30" : ""
+                  isNotfall
+                    ? "border-l-4 border-l-red-500 bg-red-50/30"
+                    : isDone
+                      ? "opacity-60"
+                      : ""
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
@@ -474,9 +526,15 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
                     {STATUS_LABELS[c.status] ?? c.status}
                   </span>
                 </div>
-                <p className="text-sm text-gray-900 font-medium truncate">{c.category}</p>
+                <p className="text-sm text-gray-900 font-medium truncate">
+                  {c.category}
+                </p>
                 <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                  {c.reporter_name && <span className="truncate max-w-[120px]">{c.reporter_name}</span>}
+                  {c.reporter_name && (
+                    <span className="truncate max-w-[120px]">
+                      {c.reporter_name}
+                    </span>
+                  )}
                   {c.city && (
                     <>
                       <span className="text-gray-300">·</span>
@@ -492,9 +550,7 @@ export function LeitzentraleView({ cases, caseIdPrefix, weekStats, reviewStats, 
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          PAGINATION
-         ═══════════════════════════════════════════════════════════════ */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3">
           <button
