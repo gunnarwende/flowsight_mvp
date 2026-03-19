@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.5 | **Datum:** 2026-03-18
+**Version:** 1.6 | **Datum:** 2026-03-19
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.5 — 25 Decisions (D1-D25). Leitzentrale v2, Scaling & Access, Kommunikationsmatrix. Thema C geparkt.
+**Status:** v1.6 — 27 Decisions (D1-D27). Leitzentrale v3 FlowBar, Review Pre-Filter, Shared Status-Farben. Thema C geparkt.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -30,13 +30,15 @@
 | D16 | Product-Led Trial Machine (14-Tage Trial, provision_trial.mjs, offboard_tenant.mjs) | **ENTSCHIEDEN** ✅ | Founder | operating_model.md |
 | D17 | Tenant Scope: Admin behält tenant_id + isAdmin=true. Kein Fallback auf ältesten Tenant. | **ENTSCHIEDEN** ✅ | Founder + CC | resolveTenantScope.ts |
 | D18 | Brand Color Pipeline: CustomerSite → DB modules.primary_color → Leitsystem (Kalender, Buttons, Sidebar) | **ENTSCHIEDEN** ✅ | Founder + CC | sync_brand_colors.mjs |
-| D19 | Leitzentrale v2: 3-Zonen-Architektur (Systemfluss → Handlungsbedarf → Wirkung) statt 6 gleiche Cards | **ENTSCHIEDEN** ✅ | Founder + CC | plan_leitzentrale_v2.md |
+| D19 | Leitzentrale v2→v3: FlowBar (CSS Grid) statt 3-Zonen. v2 abgelehnt → v3: EINE Card, EIN geschlossenes System | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx |
 | D20 | Rollen-basierte Leitzentrale: Admin = "Mein Betrieb", Techniker = "Meine Arbeit" | **ENTSCHIEDEN** ✅ | Founder + CC | LeitzentraleView.tsx, TechnikerView.tsx |
 | D21 | Tenant-Switcher: HttpOnly Cookie `fs_active_tenant`, Admin-only, skalierbar | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D22 | Rollen-Switch: Admin kann als Techniker testen (Cookie `fs_view_as_role`) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D23 | Support-System: "Hilfe"-Seite → GitHub Issue (+ Resend Fallback) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D24 | Benachrichtigungs-Kommunikationsmatrix: 25+ Trigger, 5 Kanäle, 5 Akteure | **ENTSCHIEDEN** ✅ | Founder + CC | Matrix_kommunikation.md |
 | D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **GEPARKT** | Founder | Nach Go-Live |
+| D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
+| D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
 
 ---
 

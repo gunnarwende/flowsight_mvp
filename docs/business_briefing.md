@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-17
+> Letzte Aktualisierung: 2026-03-19
 
 ---
 
@@ -87,20 +87,25 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **24/7 erreichbar**, keine verpassten Anrufe
 - **Template-System:** Agent-Configs als JSON-Schablone (~20 Min pro Kunde)
 
-### 3.4 Ops Dashboard
-- Web-App unter /ops (Login via Custom OTP: 6-Digit Code per E-Mail, server-side Session, keine Supabase Rate Limits. Sender: noreply@send.flowsight.ch)
-- **Fallliste:** Alle Fälle mit Status, Quelle (voice/wizard/manual), Datum, seq_number (FS-XXXX)
-- **Filter:** Status, Quelle, Kategorie, Zeitraum, Tenant
-- **Fall-Detailansicht:** Kontaktdaten, Fallbeschreibung, Fotos, Timeline (case_events), Notizen
-- **Aktionen:** Status ändern, Termin senden (E-Mail an Melder), Review anfragen, manueller Fall erstellen
-- **KPI-Cards:** Click-to-Filter (Total→all, Neu→new, In Bearbeitung→default, Erledigt→done). Status-Kette: Neu → Geplant → In Arbeit → Warten → Erledigt (kein "Abgeschlossen")
-- **CSV-Export** für Buchhaltung/Reporting
-- **Light Theme**, Sidebar-Navigation, responsive
+### 3.4 Leitzentrale (Ops Dashboard)
+- Web-App unter /ops (Login via Custom OTP: 6-Digit Code per E-Mail, server-side Session. Sender: noreply@send.flowsight.ch)
+- **Leitzentrale v3 (FlowBar):** CSS Grid KPIs (Neu/Bei uns/Erledigt/Bewertung), gleiche Breiten, 7d/30d/YTD-Toggle
+- **Quellen-Aufschlüsselung:** "Neu" KPI zeigt 📞 Tel / 🌐 Web / ✏️ Stift mit Anzahl
+- **Gold-Sterne:** Bewertungs-KPI immer goldene Sterne, Durchschnitt + "erhalten / angefragt"
+- **Admin-Ansicht:** Begrüssung, alle Betrieb-Fälle, Smart Sort, Spaltenfilter
+- **Techniker-Ansicht:** "Meine Arbeit" (nur zugewiesene Fälle), nächster Einsatz mit Maps-Link, Pagination
+- **Fall-Detailansicht:** Status, Termin (mit Kollisions-Warnung), Staff-Zuweisung, Bewertungs-Workflow, Timeline
+- **Status-Farben:** Neu=blau, Geplant=violett, In Arbeit=orange, Warten=grau, Erledigt=grün, Erledigt+4★=gold
+- **Mobile:** 2x2 Grid KPIs, 8 Fälle/Seite, 48px Tap-Targets
+- **PLZ Auto-Fill:** Bei Fallerfassung → Stadt automatisch aus Schweizer PLZ-Map
+- **Light Theme**, Sidebar-Navigation, responsive, PWA-installierbar
 
-### 3.5 Google Review Engine
+### 3.5 Google Review Engine (mit Pre-Filter)
 - Nach erledigtem Fall: Button "Review anfragen" im Ops Dashboard
-- Sendet E-Mail an Melder mit direktem Link zur Google-Bewertungsseite
-- Tracking: review_sent_at Timestamp pro Fall
+- Sendet E-Mail an Melder mit Link zur Bewertungs-Landingpage `/review/[caseId]`
+- **Pre-Filter:** Kunde gibt 1-5 Sterne → ≥4★ sieht Google-Link, ≤3★ sieht nur "Danke" (kein Google-Redirect)
+- Tracking: `review_rating`, `review_received_at`, `review_sent_count` auf Case
+- **Gold-Status:** Fälle mit rating ≥ 4 werden gold markiert in der Leitzentrale
 - Google Review URL pro Tenant konfigurierbar
 
 ### 3.6 Morning Report
@@ -320,7 +325,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 
 ## 10. Bekannte Limitationen & offene Punkte
 
-- **Kein Kalender-Sync** — Termine werden manuell im Dashboard eingetragen (N3)
+- **Kalender Phase 1 intern aktiv** — Kollisions-Warnung gegen DB-Termine. Phase 2 (Outlook/Google OAuth) wartet auf Founder-Setup (`docs/runbooks/founder_kalender_setup.md`)
 - **Review-Anfrage manuell** — kein Auto-Trigger nach Fall-Abschluss
 - **Terminerinnerung fehlt** — 24h-Reminder an Melder geplant (N15)
 - **Kunden-Historie fehlt** — kein Matching bei wiederholtem Kontakt (N16)

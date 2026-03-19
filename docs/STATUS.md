@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-18 (Leitsystem Phase 1-4 komplett, Tenant-Scope-Hardening, Feedback-Runden FB1-FB21)
+**Datum:** 2026-03-19 (Leitzentrale v3 FlowBar, Review Pre-Filter, FB1-FB6 komplett)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -27,7 +27,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Wizard** (Website Intake) | LIVE ✅ | /kunden/[slug]/meldung — "Was ist Ihr Anliegen?", Top-3 dynamic + fixed row (Allgemein/Angebot/Kontakt), photo upload in Step 3, branded per customer |
 | **Voice** (Telefon Intake) | LIVE ✅ | Dual-Agent DE/INTL, PLZ→City auto-lookup (24 Orte), Language Gate, SMS+Photo mention, reporter_name, deterministic closing, Notfall-Empathie, FAQ-safe edge logic |
 | **SMS Channel** | LIVE ✅ | Post-call SMS with short correction link `/v/[id]?t=<16hex>` (~85 chars) + photo upload. eCall.ch Swiss gateway (2-tier sender: alphanumeric → FlowSight-Servicenummer). HMAC-secured. |
-| **Ops Dashboard** | LIVE ✅ | /ops — Case Detail (UX v2), Case List (search, pagination, KPI click-to-filter), CSV-Export, Timeline |
+| **Leitzentrale v3** | LIVE ✅ | /ops — FlowBar (CSS Grid, YTD-Toggle, Gold-Sterne, Quellen-Aufschlüsselung), Admin+Techniker-Ansicht, Pagination, Period-Filter, Termin-Kollisions-Warnung |
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 15 KPIs + Trial Status + Deep Health, GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail (RED/YELLOW) |
@@ -36,7 +36,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
 | **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, tenant-scoped GOOGLE_REVIEW_URL, SMS fallback |
-| **Review Surface** | LIVE ✅ | /review/[caseId] — Google Review-style UI, HMAC-validated, tenant-dynamic, mobile-first |
+| **Review Surface** | LIVE ✅ | /review/[caseId] — Pre-Filter (★-Picker → ≥4★ Google, ≤3★ intern), HMAC-validated, tenant-branded |
 | **Entitlements** | LIVE ✅ | hasModule() — per-tenant module gating |
 | **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (Voice→STT, Photo/Doc Attachments, /ticket, /status) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo + Voice Agent Intake+Info |
@@ -56,11 +56,12 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **Leitzentrale v2 High-End (18.03.):** PRs #268-#280. Kompletter Neuaufbau: Systemfluss-Pipeline (📞→⚡→✅→★★★★★) mit Quellen-Aufschlüsselung, Handlungsbedarfs-Zone (intelligent priorisiert: Notfall→Überfällig→Wartet>48h→Neu), Wirkungs-Zone (Gold-Sterne, Bewertungstexte, Progress-Bar, Zeitfilter). Techniker-Ansicht: persönliche Begrüssung, Tages-Termine mit Navigation, nur eigene Fälle.
-- **Scaling & Access (18.03.):** PRs #277-#280. Tenant-Switcher (Admin wechselt per Dropdown zwischen Betrieben). Support-System ("Hilfe"-Seite → GitHub Issue). Rollen-Switch (Admin↔Techniker für Testing). Deploy-Status im Sidebar-Footer. Cookie-basiert, HttpOnly, skalierbar bis 100+ Tenants.
-- **Tenant-Scope-Hardening (18.03.):** PRs #270-#276. Admin behält tenant_id (kein Fallback auf ältesten Tenant). Brand Color Pipeline (CustomerSite → DB → Leitsystem). Alle E-Mails R4-konform. Dynamische Kanal-Hinweise aus Einstellungen.
-- **Leitsystem Phase 1-4 (17.-18.03.):** PRs #238-#267. Login High-End (OTP, Swiss Trust). PWA Auto-Update. Falldetail komplett (Status, Termin, Staff, Bewertungen). Kommunikation & SMS (160-Char-Audit). Rollen & Einstellungen (Staff CRUD, Techniker-Micro-Surface).
-- **Feedback-Runden FB1-FB21 (18.03.):** Alle Founder-Feedbacks abgearbeitet. Kritische Tenant-Bugs behoben.
+- **Leitzentrale v3 FlowBar (19.03.):** PRs #287-#290. Kompletter Overhaul: CSS Grid (gleiche KPI-Breiten), 7d/30d/YTD-Toggle, Quellen-Aufschlüsselung (📞Tel/🌐Web/✏️Stift) ÜBER Zahl, 👷 Bauarbeiter + ✅ Häkchen Emojis, immer goldene Sterne, Mobile 2x2 Grid. Period filtert Tabelle (aktive Fälle immer sichtbar). Techniker: Pagination (15/8 Desktop/Mobile), eigener Period-Toggle, "Nächster Einsatz" immer sichtbar.
+- **Review Pre-Filter (19.03.):** PR #288. Sterne-Picker auf /review/[caseId] → ≥4★ zeigt Google-Link, ≤3★ nur "Danke" (kein Google). `review_rating` + `review_received_at` in DB. API: POST /api/review/[caseId]/rate. Gold-Status in Tabelle (rating ≥ 4).
+- **Shared Utilities (19.03.):** statusColors.ts (in_arbeit=orange, warten=grau, done+rating≥4=gold), getGreeting.ts, plzCityMap.ts (shared zwischen Webhook + CreateCaseModal).
+- **Quick Wins (19.03.):** PLZ→Stadt Auto-Fill, Pflichtfeld-Markierung (rotes *), Termin-Kollisions-Warnung, Sticky Case-ID, 48px Mobile Tap-Targets, Techniker-Nav aufgeräumt, Reset-Button bei "Keine Fälle".
+- **Scaling & Access (18.03.):** PRs #277-#280. Tenant-Switcher, Support-System, Rollen-Switch, Deploy-Status.
+- **Leitsystem Phase 1-4 (17.-18.03.):** PRs #238-#267. Login OTP, PWA, Falldetail, Kommunikation, Staff CRUD.
 - **17 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard.
 
 ### Kondensierte Historie (04.-14.03.)
