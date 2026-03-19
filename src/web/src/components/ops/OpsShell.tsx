@@ -222,13 +222,6 @@ export function OpsShell({
         </div>
       </div>
 
-      {/* Deploy status — only visible to admin */}
-      {isAdmin && process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA && (
-        <p className="text-[9px] text-gray-700 mb-2 font-mono truncate" title={`Build: ${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7)}`}>
-          v{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7)}
-        </p>
-      )}
-
       {/* Logout */}
       {showLogoutConfirm ? (
         <div className="bg-gray-900 rounded-lg p-3 space-y-2">
@@ -341,12 +334,12 @@ export function OpsShell({
 
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
-        {/* Impersonation banner — admin viewing another tenant or role */}
+        {/* Impersonation indicator — subtle, no amber banner */}
         {(isImpersonating || viewAsRole) && (
-          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-center text-amber-800 text-xs font-medium sticky top-0 z-20 md:top-0">
-            {isImpersonating && <>Ansicht: <strong>{tenantName}</strong></>}
+          <div className="px-4 py-1.5 text-right text-gray-400 text-[10px] sticky top-0 z-20 md:top-0">
+            {isImpersonating && <>Ansicht: {tenantName}</>}
             {isImpersonating && viewAsRole && <> · </>}
-            {viewAsRole && <>Rolle: <strong>Techniker</strong></>}
+            {viewAsRole && <>Rolle: Techniker</>}
           </div>
         )}
         <InstallPrompt />

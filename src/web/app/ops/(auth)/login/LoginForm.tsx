@@ -293,7 +293,7 @@ export function LoginForm() {
         </div>
 
         {/* 6-digit code input */}
-        <div className="flex gap-3 justify-center">
+        <div className="flex gap-2 sm:gap-3 justify-center">
           {code.map((digit, i) => (
             <input
               key={i}
@@ -309,7 +309,7 @@ export function LoginForm() {
               onKeyDown={(e) => handleCodeKeyDown(i, e)}
               onPaste={i === 0 ? handleCodePaste : undefined}
               disabled={status === "verifying"}
-              className="w-12 h-14 text-center text-xl font-semibold rounded-xl transition-all duration-150 focus:outline-none disabled:opacity-40"
+              className="w-10 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-xl font-semibold rounded-xl transition-all duration-150 focus:outline-none disabled:opacity-40"
               style={{
                 color: NAVY,
                 backgroundColor: "#f0f3f7",
