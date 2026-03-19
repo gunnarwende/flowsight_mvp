@@ -6,6 +6,7 @@ import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 import { AttachmentsSection } from "./AttachmentsSection";
 import { AppointmentPicker } from "@/src/components/ops/AppointmentPicker";
+import { getStatusColorClass } from "@/src/lib/cases/statusColors";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -21,11 +22,13 @@ const STATUSES = [
 
 const STATUS_LABELS: Record<string, string> = Object.fromEntries(STATUSES.map(s => [s.value, s.label]));
 
+// STATUS_COLORS: use shared getStatusColorClass() for dynamic rendering
+// Static fallback for non-dynamic contexts:
 const STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
   scheduled: "bg-violet-100 text-violet-700",
-  in_arbeit: "bg-indigo-100 text-indigo-700",
-  warten: "bg-amber-100 text-amber-700",
+  in_arbeit: "bg-orange-100 text-orange-700",
+  warten: "bg-gray-100 text-gray-600",
   done: "bg-emerald-100 text-emerald-700",
 };
 
@@ -194,6 +197,7 @@ export function CaseDetailForm({
   const [terminPendingSend, setTerminPendingSend] = useState(false);
   const [assigneePendingNotify, setAssigneePendingNotify] = useState(false);
   const [showCloseWarning, setShowCloseWarning] = useState(false);
+  const [collisionWarning, setCollisionWarning] = useState<string | null>(null);
 
   const [baseline, setBaseline] = useState({
     status: initialData.status,
@@ -712,16 +716,40 @@ export function CaseDetailForm({
               </div>
             </div>
 
+            {/* Collision warning */}
+            {collisionWarning && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800 mt-2">
+                <p className="font-medium">Terminüberschneidung</p>
+                <p className="text-xs mt-0.5">{collisionWarning}</p>
+              </div>
+            )}
+
             {/* Appointment Picker (inline) */}
             {pickerOpen && (
               <AppointmentPicker
                 initialStart={scheduledAt || null}
                 initialEnd={scheduledEndAt || null}
                 brandColor={brandColor}
-                onConfirm={(startIso, endIso) => {
+                onConfirm={async (startIso, endIso) => {
                   setScheduledAt(startIso);
                   setScheduledEndAt(endIso);
                   setPickerOpen(false);
+                  setCollisionWarning(null);
+                  // Check for appointment collisions
+                  if (assigneeText.trim()) {
+                    try {
+                      const res = await fetch(`/api/ops/appointments/check-collision?` + new URLSearchParams({
+                        start: startIso,
+                        end: endIso || "",
+                        assignee: assigneeText,
+                        exclude_case: initialData.id,
+                      }));
+                      if (res.ok) {
+                        const data = await res.json();
+                        if (data.collision) setCollisionWarning(data.message);
+                      }
+                    } catch { /* ignore — non-blocking */ }
+                  }
                 }}
                 onCancel={() => setPickerOpen(false)}
               />

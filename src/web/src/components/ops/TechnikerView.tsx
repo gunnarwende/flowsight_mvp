@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FlowBar } from "./FlowBar";
 import type { FlowStep, PeriodValue } from "./FlowBar";
@@ -26,7 +26,8 @@ interface TechnikerViewProps {
   avgRating: number | null;
 }
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE_DESKTOP = 15;
+const PAGE_SIZE_MOBILE = 8;
 
 // SVG Icons
 const WrenchIcon = (
@@ -134,6 +135,14 @@ export function TechnikerView({
   const [activeStep, setActiveStep] = useState<TechFilter>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [period, setPeriod] = useState<PeriodValue>("7d");
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
+
+  useEffect(() => {
+    const update = () => setPageSize(window.innerWidth < 768 ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
   const firstName = staffName.split(" ")[0];
   const todayStr = getTodayZurich();
   const cutoff = useMemo(() => computeCutoff(period), [period]);
@@ -220,11 +229,11 @@ export function TechnikerView({
   }, [cases, activeStep, todayStr, cutoff]);
 
   // Pagination
-  const totalPages = Math.max(1, Math.ceil(displayCases.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(displayCases.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedCases = displayCases.slice(
-    (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE,
+    (safePage - 1) * pageSize,
+    safePage * pageSize,
   );
 
   function handleStepClick(k: string | null) {

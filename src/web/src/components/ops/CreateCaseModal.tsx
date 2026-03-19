@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 
 const CATEGORIES = [
   "Sanitär",
@@ -27,6 +28,7 @@ export function CreateCaseModal({
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const [reporterName, setReporterName] = useState("");
   const [category, setCategory] = useState("Sanitär");
@@ -53,10 +55,20 @@ export function CreateCaseModal({
     setHouseNumber("");
     setDescription("");
     setError("");
+    setSubmitAttempted(false);
+  }
+
+  function handlePlzChange(value: string) {
+    setPlz(value);
+    // Auto-fill city when PLZ is 4 digits and found in map
+    if (value.length === 4 && PLZ_CITY_MAP[value]) {
+      setCity(PLZ_CITY_MAP[value]);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitAttempted(true);
     setSaving(true);
     setError("");
 
@@ -97,6 +109,14 @@ export function CreateCaseModal({
   const inputClasses =
     "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
   const labelClasses = "block text-xs font-medium text-gray-600 mb-1";
+  const requiredMark = <span className="text-red-500 ml-0.5">*</span>;
+
+  /** Red border + light bg on empty required fields after first submit attempt */
+  function reqClass(value: string) {
+    return submitAttempted && !value.trim()
+      ? "w-full rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+      : inputClasses;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -167,7 +187,7 @@ export function CreateCaseModal({
 
           {/* Phone (required) */}
           <div>
-            <label htmlFor="mc-phone" className={labelClasses}>Telefon *</label>
+            <label htmlFor="mc-phone" className={labelClasses}>Telefon{requiredMark}</label>
             <input
               id="mc-phone"
               type="tel"
@@ -175,7 +195,7 @@ export function CreateCaseModal({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+41 79 123 45 67"
-              className={inputClasses}
+              className={reqClass(phone)}
             />
           </div>
 
@@ -195,21 +215,22 @@ export function CreateCaseModal({
           <div className="grid grid-cols-2 gap-3">
             {/* PLZ */}
             <div>
-              <label htmlFor="mc-plz" className={labelClasses}>PLZ *</label>
+              <label htmlFor="mc-plz" className={labelClasses}>PLZ{requiredMark}</label>
               <input
                 id="mc-plz"
                 type="text"
                 required
                 value={plz}
-                onChange={(e) => setPlz(e.target.value)}
+                onChange={(e) => handlePlzChange(e.target.value)}
                 placeholder="8001"
-                className={inputClasses}
+                maxLength={4}
+                className={reqClass(plz)}
               />
             </div>
 
             {/* City */}
             <div>
-              <label htmlFor="mc-city" className={labelClasses}>Ort *</label>
+              <label htmlFor="mc-city" className={labelClasses}>Ort{requiredMark}</label>
               <input
                 id="mc-city"
                 type="text"
@@ -217,7 +238,7 @@ export function CreateCaseModal({
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Zürich"
-                className={inputClasses}
+                className={reqClass(city)}
               />
             </div>
           </div>
@@ -252,7 +273,7 @@ export function CreateCaseModal({
 
           {/* Description */}
           <div>
-            <label htmlFor="mc-desc" className={labelClasses}>Beschreibung *</label>
+            <label htmlFor="mc-desc" className={labelClasses}>Beschreibung{requiredMark}</label>
             <textarea
               id="mc-desc"
               rows={3}
@@ -260,7 +281,7 @@ export function CreateCaseModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Was ist das Problem?"
-              className={inputClasses}
+              className={reqClass(description)}
             />
           </div>
 
