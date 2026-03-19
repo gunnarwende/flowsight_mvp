@@ -47,14 +47,16 @@ export async function GET() {
 
   const supabase = getServiceClient();
 
-  let query = supabase
+  // SAFETY: ALWAYS require tenant scope — never fall back to "first tenant"
+  if (!scope.tenantId) {
+    return NextResponse.json({ error: "No tenant context" }, { status: 400 });
+  }
+
+  const { data } = await supabase
     .from("tenants")
     .select("id, name, slug, case_id_prefix, modules")
-    .limit(1);
-
-  if (scope.tenantId) query = query.eq("id", scope.tenantId);
-
-  const { data } = await query.single();
+    .eq("id", scope.tenantId)
+    .single();
   if (!data) return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
 
   const modules = (data.modules ?? {}) as Record<string, unknown>;
@@ -95,10 +97,17 @@ export async function PATCH(request: NextRequest) {
 
   const supabase = getServiceClient();
 
+  // SAFETY: ALWAYS require tenant scope
+  if (!scope.tenantId) {
+    return NextResponse.json({ error: "No tenant context" }, { status: 400 });
+  }
+
   // Fetch current modules
-  let tenantQuery = supabase.from("tenants").select("id, modules").limit(1);
-  if (scope.tenantId) tenantQuery = tenantQuery.eq("id", scope.tenantId);
-  const { data: tenant } = await tenantQuery.single();
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("id, modules")
+    .eq("id", scope.tenantId)
+    .single();
   if (!tenant) return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
 
   const modules = { ...((tenant.modules ?? {}) as Record<string, unknown>) };

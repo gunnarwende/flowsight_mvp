@@ -33,14 +33,20 @@ Keine.
 
 ---
 
-## OFFEN — Founder-Feedback (aus Session 18.03.)
+## OFFEN — Founder-Feedback (Session 19.03.)
 
-> Feedback B1/B2 zu Leitzentrale v2 steht noch aus (Founder testet morgen 19.03.)
+> RM1-RM7 Feedback-Runde. RM1-RM6 in Bearbeitung (PR in Arbeit). RM7 = Konzept.
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|
-| FB-OPEN | **Leitzentrale v2 Feedback** | Systemfluss, Handlungsbedarf, Wirkungszone, Techniker-View — Founder-Feedback ausstehend | READY TO TEST |
-| FB-OPEN | **Tenant-Switcher Feedback** | Settings bei Switch, Rollen-Switch — Founder-Feedback ausstehend | READY TO TEST |
+| RM1 | **Nav-Reihenfolge** | Leitzentrale → Einstellungen → Support → Einsatzplanung. Techniker ohne Einstellungen/Support. | IN ARBEIT |
+| RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | OFFEN — Founder |
+| RM2.2 | **Lisa auf Support-Tickets trainieren** | Voice Agent soll Support-Anfragen sauber verarbeiten | OFFEN |
+| RM3 | **Info-Button (i) hinter Rolle** | Klick zeigt nichts → Fix: Info-Panel auch ausserhalb Form | IN ARBEIT |
+| RM4 | **Settings zeigt falschen Tenant** | KRITISCH: Brunner-Switch → Weinberger in Settings. SAFETY guards eingebaut. | IN ARBEIT |
+| RM5 | **Techniker-View nicht aktiv** | Admin→Techniker-Switch zeigt Admin-View statt TechnikerView | IN ARBEIT |
+| RM6 | **Admin = Techniker identisch** | Folge von RM5: viewAsRole wird in cases/page.tsx nicht respektiert | IN ARBEIT |
+| RM7 | **Bewertungs-Weiche (≤3★ intern, ≥4★ → Google)** | Konzept-Frage: technisch machbar, rechtlich prüfen | KONZEPT |
 
 ---
 

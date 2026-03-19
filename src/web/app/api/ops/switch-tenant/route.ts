@@ -25,6 +25,8 @@ export async function POST(request: NextRequest) {
   const res = NextResponse.json({ ok: true, tenantId, viewAsRole });
 
   if (tenantId && /^[0-9a-f-]{36}$/i.test(tenantId)) {
+    // Clear any legacy cookie with old path "/ops" that might shadow the new one
+    res.cookies.delete({ name: COOKIE_NAME, path: "/ops" });
     // Set active tenant cookie
     res.cookies.set(COOKIE_NAME, tenantId, {
       httpOnly: true,
