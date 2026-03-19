@@ -298,6 +298,41 @@ export function StaffManager({ tenantId, embedded }: StaffManagerProps) {
                   <th className="px-3 py-2.5 font-medium w-20"></th>
                 </tr>
               </thead>
+              {/* Role info panel — shown when (i) clicked in table header */}
+              {showRoleInfo && !showForm && (
+                <tbody>
+                  <tr>
+                    <td colSpan={5} className="px-3 py-3">
+                      <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm text-xs text-gray-600 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-gray-900 text-sm">Rollen im Leitsystem</span>
+                          <button onClick={() => setShowRoleInfo(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="p-2.5 bg-slate-50 rounded-lg">
+                            <p className="font-semibold text-gray-800 mb-1">Admin (Inhaber / Büroleitung)</p>
+                            <ul className="space-y-0.5 text-gray-500">
+                              <li>Sieht alle Fälle im Betrieb</li>
+                              <li>Kann Fälle zuweisen und Mitarbeiter verwalten</li>
+                              <li>Zugriff auf Einstellungen und Benachrichtigungen</li>
+                            </ul>
+                          </div>
+                          <div className="p-2.5 bg-slate-50 rounded-lg">
+                            <p className="font-semibold text-gray-800 mb-1">Techniker (Monteur / Servicemitarbeiter)</p>
+                            <ul className="space-y-0.5 text-gray-500">
+                              <li>Sieht nur Fälle, die ihm zugewiesen sind</li>
+                              <li>Kann Status und Termin ändern</li>
+                              <li>Kein Zugriff auf Einstellungen</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              )}
               <tbody>
                 {staff.map((s) => (
                   <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
