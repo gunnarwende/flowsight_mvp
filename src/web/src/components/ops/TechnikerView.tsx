@@ -1,15 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FlowBar } from "./FlowBar";
-import type { FlowStep } from "./FlowBar";
+import type { FlowStep, PeriodValue } from "./FlowBar";
 import type { LeitzentraleCase } from "./LeitzentraleView";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
+import { getGreeting } from "@/src/lib/ui/getGreeting";
+import {
+  STATUS_LABELS,
+  URGENCY_DOT,
+  URGENCY_LABEL,
+  getStatusColorClass,
+} from "@/src/lib/cases/statusColors";
 
 // ---------------------------------------------------------------------------
 // TechnikerView — "Meine Arbeit"
-// FlowBar (klickbar) + vollständige Tabelle mit Spaltenüberschriften.
+// FlowBar (klickbar) + Pagination + Period Toggle + shared status colors.
 // ---------------------------------------------------------------------------
 
 interface TechnikerViewProps {
@@ -19,37 +26,30 @@ interface TechnikerViewProps {
   avgRating: number | null;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  new: "Neu",
-  scheduled: "Geplant",
-  in_arbeit: "In Arbeit",
-  warten: "Warten",
-  done: "Erledigt",
-};
-const STATUS_COLORS: Record<string, string> = {
-  new: "bg-blue-100 text-blue-700",
-  scheduled: "bg-violet-100 text-violet-700",
-  in_arbeit: "bg-indigo-100 text-indigo-700",
-  warten: "bg-amber-100 text-amber-700",
-  done: "bg-emerald-100 text-emerald-700",
-};
-const URGENCY_DOT: Record<string, string> = {
-  notfall: "bg-red-500",
-  dringend: "bg-amber-500",
-  normal: "bg-gray-400",
-};
-const URGENCY_LABEL: Record<string, string> = {
-  notfall: "Hoch",
-  dringend: "Mittel",
-  normal: "Normal",
-};
+const PAGE_SIZE = 15;
 
-function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return "Guten Morgen";
-  if (h < 17) return "Guten Tag";
-  return "Guten Abend";
-}
+// SVG Icons
+const WrenchIcon = (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+  </svg>
+);
+
+const CalendarIcon = (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+  </svg>
+);
+
+const CheckIcon = (
+  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+);
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 function getTodayZurich(): string {
   return new Intl.DateTimeFormat("en-CA", {
@@ -84,6 +84,19 @@ function formatDate(iso: string): string {
   });
 }
 
+function maskPhone(phone: string): string {
+  if (phone.length <= 6) return phone;
+  return phone.slice(0, -3) + "...";
+}
+
+function computeCutoff(period: PeriodValue): number {
+  if (period === "ytd") {
+    const now = new Date();
+    return new Date(now.getFullYear(), 0, 1).getTime();
+  }
+  return Date.now() - (period === "7d" ? 7 : 30) * 86400000;
+}
+
 type TechFilter = "bei_mir" | "heute" | "erledigt" | "bewertung" | null;
 
 function matchesTechFilter(c: LeitzentraleCase, f: TechFilter, todayStr: string): boolean {
@@ -107,6 +120,10 @@ function matchesTechFilter(c: LeitzentraleCase, f: TechFilter, todayStr: string)
   }
 }
 
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 export function TechnikerView({
   staffName,
   cases,
@@ -115,10 +132,13 @@ export function TechnikerView({
 }: TechnikerViewProps) {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState<TechFilter>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [period, setPeriod] = useState<PeriodValue>("7d");
   const firstName = staffName.split(" ")[0];
   const todayStr = getTodayZurich();
+  const cutoff = useMemo(() => computeCutoff(period), [period]);
 
-  // Counts
+  // Counts (period-filtered for erledigt, unfiltered for active)
   const beiMir = cases.filter((c) => c.status !== "done").length;
   const heute = cases.filter(
     (c) =>
@@ -128,26 +148,31 @@ export function TechnikerView({
         timeZone: "Europe/Zurich",
       }) === todayStr,
   ).length;
-  const erledigt = cases.filter((c) => c.status === "done").length;
+  const erledigt = cases.filter(
+    (c) => c.status === "done" && new Date(c.updated_at).getTime() >= cutoff,
+  ).length;
   const reviewCount = cases.filter(
-    (c) => c.status === "done" && c.review_sent_at,
+    (c) => c.status === "done" && c.review_rating != null,
   ).length;
 
-  // Next appointment
-  const todayAppointments = cases
-    .filter(
-      (c) =>
-        c.scheduled_at &&
-        c.status !== "done" &&
-        new Date(c.scheduled_at).toLocaleDateString("en-CA", {
-          timeZone: "Europe/Zurich",
-        }) === todayStr,
-    )
-    .sort(
-      (a, b) =>
-        new Date(a.scheduled_at!).getTime() -
-        new Date(b.scheduled_at!).getTime(),
-    );
+  // Next appointment — always computed, shown above FlowBar
+  const todayAppointments = useMemo(() =>
+    cases
+      .filter(
+        (c) =>
+          c.scheduled_at &&
+          c.status !== "done" &&
+          new Date(c.scheduled_at).toLocaleDateString("en-CA", {
+            timeZone: "Europe/Zurich",
+          }) === todayStr,
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.scheduled_at!).getTime() -
+          new Date(b.scheduled_at!).getTime(),
+      ),
+    [cases, todayStr],
+  );
   const next = todayAppointments[0] ?? null;
   const nextAppt = next
     ? {
@@ -163,19 +188,21 @@ export function TechnikerView({
       }
     : null;
 
-  // Steps
+  // Steps with proper icons
   const steps: FlowStep[] = [
-    { key: "bei_mir", icon: "📋", count: beiMir, label: "Bei mir", accent: "blue" },
-    { key: "heute", icon: "📅", count: heute, label: "Heute", accent: "indigo" },
-    { key: "erledigt", icon: "✅", count: erledigt, label: "Erledigt", accent: "emerald" },
+    { key: "bei_mir", icon: WrenchIcon, count: beiMir, label: "Bei mir", accent: "blue" },
+    { key: "heute", icon: CalendarIcon, count: heute, label: "Heute", accent: "orange" },
+    { key: "erledigt", icon: CheckIcon, count: erledigt, label: "Erledigt", accent: "emerald" },
   ];
 
-  // Filtered cases
+  // Filtered + sorted cases (period + tech filter)
   const displayCases = useMemo(() => {
     let result = cases.filter((c) =>
       matchesTechFilter(c, activeStep, todayStr),
     );
-    // Sort: active notfall > dringend > normal > done
+    // Period filter for table
+    result = result.filter((c) => new Date(c.created_at).getTime() >= cutoff);
+
     return [...result].sort((a, b) => {
       const rank = (c: LeitzentraleCase) => {
         if (c.status === "done") return 4;
@@ -190,7 +217,20 @@ export function TechnikerView({
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
     });
-  }, [cases, activeStep, todayStr]);
+  }, [cases, activeStep, todayStr, cutoff]);
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(displayCases.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedCases = displayCases.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  function handleStepClick(k: string | null) {
+    setActiveStep(k as TechFilter);
+    setCurrentPage(1);
+  }
 
   return (
     <div className="space-y-3">
@@ -201,8 +241,9 @@ export function TechnikerView({
         starRating={avgRating}
         starSub={`${reviewCount} Bew.`}
         activeStep={activeStep}
-        onStepClick={(k) => setActiveStep(k as TechFilter)}
+        onStepClick={handleStepClick}
         nextAppointment={nextAppt}
+        periodToggle={{ value: period, onChange: (v) => { setPeriod(v); setCurrentPage(1); } }}
       />
 
       {/* Case Table — with proper headers */}
@@ -213,7 +254,7 @@ export function TechnikerView({
           </h2>
           {activeStep && (
             <button
-              onClick={() => setActiveStep(null)}
+              onClick={() => { setActiveStep(null); setCurrentPage(1); }}
               className="text-[10px] text-gray-400 hover:text-gray-600 transition-colors"
             >
               Filter zurücksetzen
@@ -226,7 +267,7 @@ export function TechnikerView({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2 sticky left-0 z-10 bg-gray-50/50">
                   Nr
                 </th>
                 <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
@@ -250,17 +291,22 @@ export function TechnikerView({
               </tr>
             </thead>
             <tbody>
-              {displayCases.length === 0 && (
+              {paginatedCases.length === 0 && (
                 <tr>
                   <td
                     colSpan={7}
                     className="text-center text-gray-400 py-10 text-sm"
                   >
-                    Keine Fälle gefunden.
+                    Keine Fälle gefunden.{" "}
+                    {activeStep && (
+                      <button onClick={() => { setActiveStep(null); setCurrentPage(1); }} className="text-blue-500 hover:underline">
+                        Filter zurücksetzen
+                      </button>
+                    )}
                   </td>
                 </tr>
               )}
-              {displayCases.map((c) => {
+              {paginatedCases.map((c) => {
                 const isNotfall =
                   c.urgency === "notfall" && c.status !== "done";
                 const isDone = c.status === "done";
@@ -276,7 +322,7 @@ export function TechnikerView({
                           : ""
                     }`}
                   >
-                    <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
+                    <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap sticky left-0 z-10 bg-white">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </td>
                     <td className="px-3 py-2.5 text-gray-900 font-medium truncate max-w-[140px]">
@@ -284,7 +330,11 @@ export function TechnikerView({
                     </td>
                     <td className="px-3 py-2.5 text-gray-700 truncate max-w-[140px]">
                       {c.reporter_name || (
-                        <span className="text-gray-300">—</span>
+                        c.reporter_phone ? (
+                          <span className="text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )
                       )}
                     </td>
                     <td className="px-3 py-2.5 text-gray-600 truncate max-w-[180px]">
@@ -304,10 +354,7 @@ export function TechnikerView({
                     </td>
                     <td className="px-3 py-2.5">
                       <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          STATUS_COLORS[c.status] ??
-                          "bg-gray-100 text-gray-700"
-                        }`}
+                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColorClass(c.status, c.review_sent_at, c.review_rating)}`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
                       </span>
@@ -324,19 +371,24 @@ export function TechnikerView({
 
         {/* Mobile list */}
         <div className="md:hidden divide-y divide-gray-50">
-          {displayCases.length === 0 && (
+          {paginatedCases.length === 0 && (
             <div className="text-center text-gray-400 py-10 text-sm">
-              Keine Fälle gefunden.
+              Keine Fälle gefunden.{" "}
+              {activeStep && (
+                <button onClick={() => { setActiveStep(null); setCurrentPage(1); }} className="text-blue-500 hover:underline">
+                  Filter zurücksetzen
+                </button>
+              )}
             </div>
           )}
-          {displayCases.map((c) => {
+          {paginatedCases.map((c) => {
             const isNotfall = c.urgency === "notfall" && c.status !== "done";
             const isDone = c.status === "done";
             return (
               <div
                 key={c.id}
                 onClick={() => router.push(`/ops/cases/${c.id}`)}
-                className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${
+                className={`px-4 py-3 min-h-[48px] hover:bg-gray-50 cursor-pointer transition-colors ${
                   isNotfall
                     ? "border-l-4 border-l-red-500 bg-red-50/30"
                     : isDone
@@ -358,9 +410,7 @@ export function TechnikerView({
                       </span>
                     </span>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                        STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-700"
-                      }`}
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${getStatusColorClass(c.status, c.review_sent_at, c.review_rating)}`}
                     >
                       {STATUS_LABELS[c.status] ?? c.status}
                     </span>
@@ -370,12 +420,12 @@ export function TechnikerView({
                   {c.category}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
-                  {c.reporter_name && (
-                    <span className="truncate max-w-[100px]">
-                      {c.reporter_name}
-                    </span>
-                  )}
-                  {c.reporter_name && (c.street || c.city) && (
+                  {c.reporter_name ? (
+                    <span className="truncate max-w-[100px]">{c.reporter_name}</span>
+                  ) : c.reporter_phone ? (
+                    <span className="truncate max-w-[100px] text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                  ) : null}
+                  {(c.reporter_name || c.reporter_phone) && (c.street || c.city) && (
                     <span className="text-gray-300">·</span>
                   )}
                   {c.street ? (
@@ -393,6 +443,29 @@ export function TechnikerView({
           })}
         </div>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            &lt;
+          </button>
+          <span className="text-sm text-gray-500">
+            Seite {safePage} von {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            &gt;
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -110,8 +110,9 @@ export function OpsShell({
 
   // RBAC: hide Einstellungen for techniker
   // Techniker: only Leitzentrale (no Einstellungen, no Support)
+  // QW2: Techniker sees only Leitzentrale — no disabled "Bald" items
   const visibleNavItems = staffRole === "techniker"
-    ? NAV_ITEMS.filter(item => item.href === "/ops/cases" || item.disabled)
+    ? NAV_ITEMS.filter(item => item.href === "/ops/cases")
     : NAV_ITEMS;
 
   function isNavActive(href: string): boolean {

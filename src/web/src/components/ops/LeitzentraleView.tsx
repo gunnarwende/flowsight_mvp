@@ -1,12 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { FlowBar } from "./FlowBar";
-import type { FlowStep } from "./FlowBar";
+import type { FlowStep, PeriodValue } from "./FlowBar";
 import { TechnikerView } from "./TechnikerView";
+import { getGreeting } from "@/src/lib/ui/getGreeting";
+import {
+  STATUS_LABELS,
+  URGENCY_DOT,
+  URGENCY_LABEL,
+  getStatusColorClass,
+} from "@/src/lib/cases/statusColors";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -28,7 +35,9 @@ export interface LeitzentraleCase {
   source: string;
   assignee_text?: string | null;
   reporter_name?: string | null;
+  reporter_phone?: string | null;
   review_sent_at?: string | null;
+  review_rating?: number | null;
   scheduled_at?: string | null;
 }
 
@@ -50,35 +59,41 @@ export interface LeitzentraleProps {
 // Constants
 // ---------------------------------------------------------------------------
 
-const STATUS_LABELS: Record<string, string> = {
-  new: "Neu",
-  scheduled: "Geplant",
-  in_arbeit: "In Arbeit",
-  warten: "Warten",
-  done: "Erledigt",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  new: "bg-blue-100 text-blue-700",
-  scheduled: "bg-violet-100 text-violet-700",
-  in_arbeit: "bg-indigo-100 text-indigo-700",
-  warten: "bg-amber-100 text-amber-700",
-  done: "bg-emerald-100 text-emerald-700",
-};
-
-const URGENCY_DOT: Record<string, string> = {
-  notfall: "bg-red-500",
-  dringend: "bg-amber-500",
-  normal: "bg-gray-400",
-};
-
-const URGENCY_LABEL: Record<string, string> = {
-  notfall: "Hoch",
-  dringend: "Mittel",
-  normal: "Normal",
-};
-
 const PAGE_SIZE = 15;
+
+// ---------------------------------------------------------------------------
+// SVG Icons (inline, no extra deps)
+// ---------------------------------------------------------------------------
+
+const WrenchIcon = (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+  </svg>
+);
+
+const CheckIcon = (
+  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+);
+
+const PhoneIcon = (
+  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+  </svg>
+);
+
+const GlobeIcon = (
+  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+  </svg>
+);
+
+const PencilIcon = (
+  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+  </svg>
+);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -167,7 +182,6 @@ function formatDate(iso: string): string {
   });
 }
 
-// Smart sort: active Notfälle > active Dringende > active Normale > Erledigte
 function smartSort(cases: LeitzentraleCase[]): LeitzentraleCase[] {
   return [...cases].sort((a, b) => {
     const rank = (c: LeitzentraleCase): number => {
@@ -181,6 +195,19 @@ function smartSort(cases: LeitzentraleCase[]): LeitzentraleCase[] {
     if (ra !== rb) return ra - rb;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
+}
+
+function maskPhone(phone: string): string {
+  if (phone.length <= 6) return phone;
+  return phone.slice(0, -3) + "...";
+}
+
+function computeCutoff(period: PeriodValue): number {
+  if (period === "ytd") {
+    const now = new Date();
+    return new Date(now.getFullYear(), 0, 1).getTime();
+  }
+  return Date.now() - (period === "7d" ? 7 : 30) * 86400000;
 }
 
 // ---------------------------------------------------------------------------
@@ -203,7 +230,7 @@ export function LeitzentraleView({
   const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const [period, setPeriod] = useState<"7d" | "30d">("7d");
+  const [period, setPeriod] = useState<PeriodValue>("7d");
 
   // ── ALL hooks MUST be above early returns (React rules of hooks) ────
   const categories = useMemo(() => {
@@ -212,8 +239,11 @@ export function LeitzentraleView({
     return Array.from(set).sort();
   }, [cases]);
 
+  const cutoff = useMemo(() => computeCutoff(period), [period]);
+
+  // Period-filter FIRST, then other filters (FB5: period filtert auch Tabelle)
   const filteredCases = useMemo(() => {
-    let result = cases;
+    let result = cases.filter((c) => new Date(c.created_at).getTime() >= cutoff);
 
     if (activeNode) {
       result = result.filter((c) => matchesNode(c, activeNode));
@@ -232,15 +262,13 @@ export function LeitzentraleView({
     }
 
     return smartSort(result);
-  }, [cases, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
+  }, [cases, cutoff, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
 
   // ── Flow step data (MUST be above early return — hooks rule) ────────
-  const cutoff = useMemo(() => Date.now() - (period === "7d" ? 7 : 30) * 86400000, [period]);
-
   const flowStats = useMemo(() => {
     let eingang = 0, beiUns = 0, erledigt = 0, notfaelle = 0;
     let voice = 0, web = 0, manual = 0;
-    let reviewSent = 0, doneTotal = 0;
+    let reviewSent = 0, reviewReceived = 0;
     for (const c of cases) {
       const ct = new Date(c.created_at).getTime();
       const ut = new Date(c.updated_at).getTime();
@@ -256,15 +284,11 @@ export function LeitzentraleView({
       }
       if (c.status === "done" && ut >= cutoff) erledigt++;
       if (c.status === "done") {
-        doneTotal++;
         if (c.review_sent_at) reviewSent++;
+        if (c.review_rating != null) reviewReceived++;
       }
     }
-    const srcParts: string[] = [];
-    if (voice) srcParts.push(`${voice} Tel`);
-    if (web) srcParts.push(`${web} Web`);
-    if (manual) srcParts.push(`${manual} Man`);
-    return { eingang, beiUns, erledigt, notfaelle, srcText: srcParts.join(" · ") || undefined, reviewSent, doneTotal };
+    return { eingang, beiUns, erledigt, notfaelle, voice, web, manual, reviewSent, reviewReceived };
   }, [cases, cutoff]);
 
   // ── Techniker view (after ALL hooks) ──────────────────────────────
@@ -316,10 +340,41 @@ export function LeitzentraleView({
   const selectClass =
     "text-[10px] font-semibold uppercase tracking-wide bg-transparent border-none focus:outline-none cursor-pointer text-gray-500 appearance-none pr-3";
 
+  const greetingText = `${getGreeting()}, ${staffName?.split(" ")[0] ?? "Admin"}`;
+
   const adminSteps: FlowStep[] = [
-    { key: "eingang", icon: "📞", count: flowStats.eingang, label: "Eingang", accent: "blue", subLabel: flowStats.srcText },
-    { key: "bei_uns", icon: "⚡", count: flowStats.beiUns, label: "Bei uns", accent: "indigo", badge: flowStats.notfaelle > 0 ? flowStats.notfaelle : undefined },
-    { key: "erledigt", icon: "✅", count: flowStats.erledigt, label: "Erledigt", accent: "emerald", subLabel: `+${weekStats.erledigt} /Woche` },
+    {
+      key: "eingang",
+      icon: null,
+      count: flowStats.eingang,
+      label: "Neu",
+      accent: "blue",
+      sourceBreakdown: [
+        { icon: PhoneIcon, label: "Tel", count: flowStats.voice },
+        { icon: GlobeIcon, label: "Web", count: flowStats.web },
+        { icon: PencilIcon, label: "Stift", count: flowStats.manual },
+      ],
+    },
+    {
+      key: "bei_uns",
+      icon: WrenchIcon,
+      count: flowStats.beiUns,
+      label: "Bei uns",
+      accent: "orange",
+      badge: flowStats.notfaelle > 0 ? flowStats.notfaelle : undefined,
+      onBadgeClick: () => {
+        setUrgencyFilter("notfall");
+        setActiveNode("bei_uns");
+        setCurrentPage(1);
+      },
+    },
+    {
+      key: "erledigt",
+      icon: CheckIcon,
+      count: flowStats.erledigt,
+      label: "Erledigt",
+      accent: "emerald",
+    },
   ];
 
   // ── Admin/Inhaber view ──────────────────────────────────────────────
@@ -329,10 +384,11 @@ export function LeitzentraleView({
       <FlowBar
         steps={adminSteps}
         starRating={avgRating ?? null}
-        starSub={`${flowStats.reviewSent} von ${flowStats.doneTotal}`}
+        starSub={`${flowStats.reviewReceived} erhalten / ${flowStats.reviewSent} angefragt`}
         activeStep={activeNode}
         onStepClick={handleNodeClick}
-        periodToggle={{ value: period, onChange: setPeriod }}
+        greeting={greetingText}
+        periodToggle={{ value: period, onChange: (v) => { setPeriod(v); setCurrentPage(1); } }}
       />
 
       {/* Search + New Case */}
@@ -382,7 +438,7 @@ export function LeitzentraleView({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="text-left px-3 py-2">
+                <th className="text-left px-3 py-2 sticky left-0 z-10 bg-gray-50/50">
                   <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
                     Nr
                   </span>
@@ -402,7 +458,7 @@ export function LeitzentraleView({
                     className={selectClass}
                     title="Kategorie filtern"
                   >
-                    <option value="">Kat. ▾</option>
+                    <option value="">Kategorie ▾</option>
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
@@ -463,7 +519,12 @@ export function LeitzentraleView({
                     colSpan={7}
                     className="text-center text-gray-400 py-12 text-sm"
                   >
-                    Keine Fälle gefunden.
+                    Keine Fälle gefunden.{" "}
+                    {hasFilters && (
+                      <button onClick={resetFilters} className="text-blue-500 hover:underline">
+                        Filter zurücksetzen
+                      </button>
+                    )}
                   </td>
                 </tr>
               )}
@@ -483,12 +544,16 @@ export function LeitzentraleView({
                           : ""
                     }`}
                   >
-                    <td className="px-3 py-2 font-mono text-xs text-gray-500 whitespace-nowrap">
+                    <td className="px-3 py-2 font-mono text-xs text-gray-500 whitespace-nowrap sticky left-0 z-10 bg-white">
                       {formatCaseId(c.seq_number, caseIdPrefix)}
                     </td>
                     <td className="px-3 py-2 text-gray-900 truncate max-w-[180px]">
                       {c.reporter_name || (
-                        <span className="text-gray-400">—</span>
+                        c.reporter_phone ? (
+                          <span className="text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )
                       )}
                     </td>
                     <td className="px-3 py-2 text-gray-700 truncate max-w-[140px]">
@@ -511,10 +576,7 @@ export function LeitzentraleView({
                     </td>
                     <td className="px-3 py-2">
                       <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          STATUS_COLORS[c.status] ??
-                          "bg-gray-100 text-gray-700"
-                        }`}
+                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColorClass(c.status, c.review_sent_at, c.review_rating)}`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
                       </span>
@@ -533,7 +595,12 @@ export function LeitzentraleView({
         <div className="md:hidden divide-y divide-gray-50">
           {paginatedCases.length === 0 && (
             <div className="text-center text-gray-400 py-12 text-sm">
-              Keine Fälle gefunden.
+              Keine Fälle gefunden.{" "}
+              {hasFilters && (
+                <button onClick={resetFilters} className="text-blue-500 hover:underline">
+                  Filter zurücksetzen
+                </button>
+              )}
             </div>
           )}
           {paginatedCases.map((c) => {
@@ -543,7 +610,7 @@ export function LeitzentraleView({
               <div
                 key={c.id}
                 onClick={() => router.push(`/ops/cases/${c.id}`)}
-                className={`px-4 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors ${
+                className={`px-4 py-3.5 min-h-[48px] hover:bg-gray-50 cursor-pointer transition-colors ${
                   isNotfall
                     ? "border-l-4 border-l-red-500 bg-red-50/30"
                     : isDone
@@ -556,9 +623,7 @@ export function LeitzentraleView({
                     {formatCaseId(c.seq_number, caseIdPrefix)}
                   </span>
                   <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-700"
-                    }`}
+                    className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${getStatusColorClass(c.status, c.review_sent_at, c.review_rating)}`}
                   >
                     {STATUS_LABELS[c.status] ?? c.status}
                   </span>
@@ -567,11 +632,11 @@ export function LeitzentraleView({
                   {c.category}
                 </p>
                 <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                  {c.reporter_name && (
-                    <span className="truncate max-w-[120px]">
-                      {c.reporter_name}
-                    </span>
-                  )}
+                  {c.reporter_name ? (
+                    <span className="truncate max-w-[120px]">{c.reporter_name}</span>
+                  ) : c.reporter_phone ? (
+                    <span className="truncate max-w-[120px] text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                  ) : null}
                   {c.city && (
                     <>
                       <span className="text-gray-300">·</span>
