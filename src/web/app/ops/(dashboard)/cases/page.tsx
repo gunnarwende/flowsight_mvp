@@ -172,6 +172,22 @@ export default async function OpsCasesPage({
           currentStaffName = ctx.displayName;
           currentStaffRole = ctx.role;
         }
+        // Admin role override for testing (viewAsRole cookie)
+        if (scope.isAdmin && scope.viewAsRole === "techniker") {
+          currentStaffRole = "techniker";
+          // Use first staff member's name for demo if admin has no staff record here
+          if (!currentStaffName) {
+            const supabase2 = getServiceClient();
+            const { data: firstStaff } = await supabase2
+              .from("staff")
+              .select("display_name")
+              .eq("tenant_id", scope.tenantId)
+              .eq("is_active", true)
+              .limit(1)
+              .maybeSingle();
+            currentStaffName = firstStaff?.display_name ?? user.email?.split("@")[0] ?? "Techniker";
+          }
+        }
       }
 
       // Featured review from tenant modules
