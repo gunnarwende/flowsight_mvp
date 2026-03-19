@@ -41,7 +41,7 @@ export default async function OpsCasesPage({
   let casesQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, reporter_phone, review_sent_at, review_rating, scheduled_at"
+      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, contact_phone, review_sent_at, review_rating, scheduled_at"
     )
     .eq("is_demo", showDemo)
     .order("created_at", { ascending: false })

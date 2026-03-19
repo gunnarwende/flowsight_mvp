@@ -35,7 +35,7 @@ export interface LeitzentraleCase {
   source: string;
   assignee_text?: string | null;
   reporter_name?: string | null;
-  reporter_phone?: string | null;
+  contact_phone?: string | null;
   review_sent_at?: string | null;
   review_rating?: number | null;
   scheduled_at?: string | null;
@@ -555,8 +555,8 @@ export function LeitzentraleView({
                     </td>
                     <td className="px-3 py-2 text-gray-900 truncate max-w-[180px]">
                       {c.reporter_name || (
-                        c.reporter_phone ? (
-                          <span className="text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                        c.contact_phone ? (
+                          <span className="text-gray-400">{maskPhone(c.contact_phone)}</span>
                         ) : (
                           <span className="text-gray-400">—</span>
                         )
@@ -640,8 +640,8 @@ export function LeitzentraleView({
                 <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                   {c.reporter_name ? (
                     <span className="truncate max-w-[120px]">{c.reporter_name}</span>
-                  ) : c.reporter_phone ? (
-                    <span className="truncate max-w-[120px] text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                  ) : c.contact_phone ? (
+                    <span className="truncate max-w-[120px] text-gray-400">{maskPhone(c.contact_phone)}</span>
                   ) : null}
                   {c.city && (
                     <>

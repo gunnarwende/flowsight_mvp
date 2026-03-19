@@ -332,8 +332,8 @@ export function TechnikerView({
                     </td>
                     <td className="px-3 py-2.5 text-gray-700 truncate max-w-[140px]">
                       {c.reporter_name || (
-                        c.reporter_phone ? (
-                          <span className="text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                        c.contact_phone ? (
+                          <span className="text-gray-400">{maskPhone(c.contact_phone)}</span>
                         ) : (
                           <span className="text-gray-300">—</span>
                         )
@@ -424,10 +424,10 @@ export function TechnikerView({
                 <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
                   {c.reporter_name ? (
                     <span className="truncate max-w-[100px]">{c.reporter_name}</span>
-                  ) : c.reporter_phone ? (
-                    <span className="truncate max-w-[100px] text-gray-400">{maskPhone(c.reporter_phone)}</span>
+                  ) : c.contact_phone ? (
+                    <span className="truncate max-w-[100px] text-gray-400">{maskPhone(c.contact_phone)}</span>
                   ) : null}
-                  {(c.reporter_name || c.reporter_phone) && (c.street || c.city) && (
+                  {(c.reporter_name || c.contact_phone) && (c.street || c.city) && (
                     <span className="text-gray-300">·</span>
                   )}
                   {c.street ? (
