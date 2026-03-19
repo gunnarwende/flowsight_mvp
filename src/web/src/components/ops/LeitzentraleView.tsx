@@ -66,32 +66,21 @@ const PAGE_SIZE_MOBILE = 8;
 // SVG Icons (inline, no extra deps)
 // ---------------------------------------------------------------------------
 
-const WrenchIcon = (
-  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
-  </svg>
-);
-
-const CheckIcon = (
-  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>
-);
-
+// Colorful source icons for "Neu" KPI
 const PhoneIcon = (
-  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+  <svg className="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
   </svg>
 );
 
 const GlobeIcon = (
-  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+  <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
   </svg>
 );
 
 const PencilIcon = (
-  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+  <svg className="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
   </svg>
 );
@@ -231,7 +220,7 @@ export function LeitzentraleView({
   const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const [period, setPeriod] = useState<PeriodValue>("7d");
+  const [period, setPeriod] = useState<PeriodValue>("30d");
   const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
 
   useEffect(() => {
@@ -250,9 +239,17 @@ export function LeitzentraleView({
 
   const cutoff = useMemo(() => computeCutoff(period), [period]);
 
-  // Period-filter FIRST, then other filters (FB5: period filtert auch Tabelle)
+  // Period-filter: only exclude old DONE and old NEW cases.
+  // Active cases (scheduled, in_arbeit, warten) always show regardless of period.
   const filteredCases = useMemo(() => {
-    let result = cases.filter((c) => new Date(c.created_at).getTime() >= cutoff);
+    let result = cases.filter((c) => {
+      const isActive = c.status === "scheduled" || c.status === "in_arbeit" || c.status === "warten";
+      if (isActive) return true; // always show active cases
+      const t = c.status === "done"
+        ? new Date(c.updated_at).getTime()
+        : new Date(c.created_at).getTime();
+      return t >= cutoff;
+    });
 
     if (activeNode) {
       result = result.filter((c) => matchesNode(c, activeNode));
@@ -366,7 +363,7 @@ export function LeitzentraleView({
     },
     {
       key: "bei_uns",
-      icon: WrenchIcon,
+      icon: <span className="text-lg">👷</span>,
       count: flowStats.beiUns,
       label: "Bei uns",
       accent: "orange",
@@ -379,7 +376,7 @@ export function LeitzentraleView({
     },
     {
       key: "erledigt",
-      icon: CheckIcon,
+      icon: <span className="text-lg">✅</span>,
       count: flowStats.erledigt,
       label: "Erledigt",
       accent: "emerald",
