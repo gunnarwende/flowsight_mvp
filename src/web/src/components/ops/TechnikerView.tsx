@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { TechnikerCard } from "./TechnikerCard";
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { FlowBar } from "./FlowBar";
+import type { FlowStep } from "./FlowBar";
 import type { LeitzentraleCase } from "./LeitzentraleView";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 
 // ---------------------------------------------------------------------------
 // TechnikerView — "Meine Arbeit"
-// TechnikerCard (header) + case list below.
+// FlowBar (klickbar) + vollständige Tabelle mit Spaltenüberschriften.
 // ---------------------------------------------------------------------------
 
 interface TechnikerViewProps {
@@ -31,23 +33,78 @@ const STATUS_COLORS: Record<string, string> = {
   warten: "bg-amber-100 text-amber-700",
   done: "bg-emerald-100 text-emerald-700",
 };
+const URGENCY_DOT: Record<string, string> = {
+  notfall: "bg-red-500",
+  dringend: "bg-amber-500",
+  normal: "bg-gray-400",
+};
+const URGENCY_LABEL: Record<string, string> = {
+  notfall: "Hoch",
+  dringend: "Mittel",
+  normal: "Normal",
+};
 
-function formatTerminShort(iso: string): string {
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return "Guten Morgen";
+  if (h < 17) return "Guten Tag";
+  return "Guten Abend";
+}
+
+function getTodayZurich(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(new Date());
+}
+
+function formatDate(iso: string): string {
   const d = new Date(iso);
-  const day = d
-    .toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" })
-    .replace(/\.$/, "");
-  const date = d.toLocaleDateString("de-CH", {
+  const todayStr = getTodayZurich();
+  const dateStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(d);
+  if (dateStr === todayStr)
+    return (
+      "Heute " +
+      d.toLocaleTimeString("de-CH", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Europe/Zurich",
+      })
+    );
+  const yesterday = new Date(Date.now() - 86400000);
+  const yesterdayStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+  }).format(yesterday);
+  if (dateStr === yesterdayStr) return "Gestern";
+  return d.toLocaleDateString("de-CH", {
     day: "2-digit",
     month: "2-digit",
     timeZone: "Europe/Zurich",
   });
-  const time = d.toLocaleTimeString("de-CH", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Zurich",
-  });
-  return `${day} ${date}, ${time}`;
+}
+
+type TechFilter = "bei_mir" | "heute" | "erledigt" | "bewertung" | null;
+
+function matchesTechFilter(c: LeitzentraleCase, f: TechFilter, todayStr: string): boolean {
+  switch (f) {
+    case "bei_mir":
+      return c.status !== "done";
+    case "heute":
+      return (
+        !!c.scheduled_at &&
+        c.status !== "done" &&
+        new Date(c.scheduled_at).toLocaleDateString("en-CA", {
+          timeZone: "Europe/Zurich",
+        }) === todayStr
+      );
+    case "erledigt":
+      return c.status === "done";
+    case "bewertung":
+      return c.status === "done" && !c.review_sent_at;
+    default:
+      return true;
+  }
 }
 
 export function TechnikerView({
@@ -56,10 +113,27 @@ export function TechnikerView({
   caseIdPrefix,
   avgRating,
 }: TechnikerViewProps) {
-  // Today's appointments
-  const todayStr = new Date().toLocaleDateString("en-CA", {
-    timeZone: "Europe/Zurich",
-  });
+  const router = useRouter();
+  const [activeStep, setActiveStep] = useState<TechFilter>(null);
+  const firstName = staffName.split(" ")[0];
+  const todayStr = getTodayZurich();
+
+  // Counts
+  const beiMir = cases.filter((c) => c.status !== "done").length;
+  const heute = cases.filter(
+    (c) =>
+      c.scheduled_at &&
+      c.status !== "done" &&
+      new Date(c.scheduled_at).toLocaleDateString("en-CA", {
+        timeZone: "Europe/Zurich",
+      }) === todayStr,
+  ).length;
+  const erledigt = cases.filter((c) => c.status === "done").length;
+  const reviewCount = cases.filter(
+    (c) => c.status === "done" && c.review_sent_at,
+  ).length;
+
+  // Next appointment
   const todayAppointments = cases
     .filter(
       (c) =>
@@ -74,146 +148,251 @@ export function TechnikerView({
         new Date(a.scheduled_at!).getTime() -
         new Date(b.scheduled_at!).getTime(),
     );
+  const next = todayAppointments[0] ?? null;
+  const nextAppt = next
+    ? {
+        time: new Date(next.scheduled_at!).toLocaleTimeString("de-CH", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Europe/Zurich",
+        }),
+        location: [next.street, next.house_number, next.plz, next.city]
+          .filter(Boolean)
+          .join(" "),
+        mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([next.street, next.house_number, next.plz, next.city, "Schweiz"].filter(Boolean).join(" "))}`,
+      }
+    : null;
 
-  const nextAppointment = todayAppointments[0] ?? null;
+  // Steps
+  const steps: FlowStep[] = [
+    { key: "bei_mir", icon: "📋", count: beiMir, label: "Bei mir", accent: "blue" },
+    { key: "heute", icon: "📅", count: heute, label: "Heute", accent: "indigo" },
+    { key: "erledigt", icon: "✅", count: erledigt, label: "Erledigt", accent: "emerald" },
+  ];
 
-  // Review count for card
-  const reviewCount = cases.filter(
-    (c) => c.status === "done" && c.review_sent_at,
-  ).length;
-
-  // Open cases sorted: notfall > dringend > normal
-  const openCases = cases
-    .filter((c) => c.status !== "done")
-    .sort((a, b) => {
-      const rank = (u: string) =>
-        u === "notfall" ? 0 : u === "dringend" ? 1 : 2;
-      const ra = rank(a.urgency);
-      const rb = rank(b.urgency);
+  // Filtered cases
+  const displayCases = useMemo(() => {
+    let result = cases.filter((c) =>
+      matchesTechFilter(c, activeStep, todayStr),
+    );
+    // Sort: active notfall > dringend > normal > done
+    return [...result].sort((a, b) => {
+      const rank = (c: LeitzentraleCase) => {
+        if (c.status === "done") return 4;
+        if (c.urgency === "notfall") return 0;
+        if (c.urgency === "dringend") return 1;
+        return 2;
+      };
+      const ra = rank(a);
+      const rb = rank(b);
       if (ra !== rb) return ra - rb;
       return (
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
     });
-
-  // Week stats
-  const sevenDaysAgo = Date.now() - 7 * 86400000;
-  const doneThisWeek = cases.filter(
-    (c) =>
-      c.status === "done" &&
-      new Date(c.updated_at).getTime() >= sevenDaysAgo,
-  );
+  }, [cases, activeStep, todayStr]);
 
   return (
-    <div className="space-y-4">
-      {/* EINE Card — TechnikerCard */}
-      <TechnikerCard
-        staffName={staffName}
-        cases={cases}
-        avgRating={avgRating}
-        reviewCount={reviewCount}
-        nextAppointment={nextAppointment}
+    <div className="space-y-3">
+      {/* Flow Bar */}
+      <FlowBar
+        greeting={`${getGreeting()}, ${firstName}`}
+        steps={steps}
+        starRating={avgRating}
+        starSub={`${reviewCount} Bew.`}
+        activeStep={activeStep}
+        onStepClick={(k) => setActiveStep(k as TechFilter)}
+        nextAppointment={nextAppt}
       />
 
-      {/* Today's appointments */}
-      {todayAppointments.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-gray-100">
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Heute ({todayAppointments.length})
-            </h2>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {todayAppointments.map((c) => (
-              <div key={c.id} className="px-5 py-3">
-                <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs text-gray-500">
-                      {formatTerminShort(c.scheduled_at!)}
-                    </p>
-                    <p className="text-sm font-semibold text-gray-900">
+      {/* Case Table — with proper headers */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Meine Fälle ({displayCases.length})
+          </h2>
+          {activeStep && (
+            <button
+              onClick={() => setActiveStep(null)}
+              className="text-[10px] text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Filter zurücksetzen
+            </button>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Nr
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Kategorie
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Kunde
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Adresse
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Priorität
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Status
+                </th>
+                <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 py-2">
+                  Datum
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {displayCases.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center text-gray-400 py-10 text-sm"
+                  >
+                    Keine Fälle gefunden.
+                  </td>
+                </tr>
+              )}
+              {displayCases.map((c) => {
+                const isNotfall =
+                  c.urgency === "notfall" && c.status !== "done";
+                const isDone = c.status === "done";
+                return (
+                  <tr
+                    key={c.id}
+                    onClick={() => router.push(`/ops/cases/${c.id}`)}
+                    className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
+                      isNotfall
+                        ? "border-l-4 border-l-red-500 bg-red-50/30"
+                        : isDone
+                          ? "opacity-50"
+                          : ""
+                    }`}
+                  >
+                    <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
+                      {formatCaseId(c.seq_number, caseIdPrefix)}
+                    </td>
+                    <td className="px-3 py-2.5 text-gray-900 font-medium truncate max-w-[140px]">
                       {c.category}
-                    </p>
-                    <p className="text-xs text-gray-600 truncate">
-                      {c.reporter_name ? `${c.reporter_name} · ` : ""}
+                    </td>
+                    <td className="px-3 py-2.5 text-gray-700 truncate max-w-[140px]">
+                      {c.reporter_name || (
+                        <span className="text-gray-300">—</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2.5 text-gray-600 truncate max-w-[180px]">
                       {c.street
-                        ? `${c.street} ${c.house_number ?? ""}, `
-                        : ""}
-                      {c.plz} {c.city}
-                    </p>
-                  </div>
-                  <span className="text-xs font-mono text-gray-400">
+                        ? `${c.street} ${c.house_number ?? ""}, ${c.plz} ${c.city}`
+                        : c.city || "—"}
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span
+                          className={`w-2 h-2 rounded-full flex-shrink-0 ${URGENCY_DOT[c.urgency] ?? "bg-gray-400"}`}
+                        />
+                        <span className="text-xs text-gray-600">
+                          {URGENCY_LABEL[c.urgency] ?? c.urgency}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <span
+                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          STATUS_COLORS[c.status] ??
+                          "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {STATUS_LABELS[c.status] ?? c.status}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">
+                      {formatDate(c.created_at)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile list */}
+        <div className="md:hidden divide-y divide-gray-50">
+          {displayCases.length === 0 && (
+            <div className="text-center text-gray-400 py-10 text-sm">
+              Keine Fälle gefunden.
+            </div>
+          )}
+          {displayCases.map((c) => {
+            const isNotfall = c.urgency === "notfall" && c.status !== "done";
+            const isDone = c.status === "done";
+            return (
+              <div
+                key={c.id}
+                onClick={() => router.push(`/ops/cases/${c.id}`)}
+                className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${
+                  isNotfall
+                    ? "border-l-4 border-l-red-500 bg-red-50/30"
+                    : isDone
+                      ? "opacity-50"
+                      : ""
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-xs text-gray-400">
                     {formatCaseId(c.seq_number, caseIdPrefix)}
                   </span>
-                </div>
-                <div className="flex gap-2 mt-2">
-                  {c.street && (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([c.street, c.house_number, c.plz, c.city, "Schweiz"].filter(Boolean).join(" "))}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors min-h-[36px] flex items-center gap-1"
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${URGENCY_DOT[c.urgency] ?? "bg-gray-400"}`}
+                      />
+                      <span className="text-[10px] text-gray-500">
+                        {URGENCY_LABEL[c.urgency]}
+                      </span>
+                    </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                        STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-700"
+                      }`}
                     >
-                      📍 Navigieren
-                    </a>
+                      {STATUS_LABELS[c.status] ?? c.status}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-900 font-medium truncate">
+                  {c.category}
+                </p>
+                <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
+                  {c.reporter_name && (
+                    <span className="truncate max-w-[100px]">
+                      {c.reporter_name}
+                    </span>
                   )}
-                  <Link
-                    href={`/ops/cases/${c.id}`}
-                    className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition-colors min-h-[36px] flex items-center"
-                  >
-                    Fall öffnen
-                  </Link>
+                  {c.reporter_name && (c.street || c.city) && (
+                    <span className="text-gray-300">·</span>
+                  )}
+                  {c.street ? (
+                    <span className="truncate">
+                      {c.street} {c.house_number}, {c.city}
+                    </span>
+                  ) : c.city ? (
+                    <span>{c.city}</span>
+                  ) : null}
+                  <span className="text-gray-300">·</span>
+                  <span>{formatDate(c.created_at)}</span>
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
-
-      {/* Open cases */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-5 py-3 border-b border-gray-100">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            Meine Fälle ({openCases.length} offen)
-          </h2>
-        </div>
-        {openCases.length === 0 ? (
-          <div className="px-5 py-6 text-center text-sm text-gray-400">
-            Keine offenen Fälle.
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-50">
-            {openCases.slice(0, 10).map((c) => (
-              <Link
-                key={c.id}
-                href={`/ops/cases/${c.id}`}
-                className="flex items-center gap-3 px-5 py-2.5 hover:bg-gray-50 transition-colors min-h-[44px]"
-              >
-                <span className="text-xs font-mono text-gray-400 w-16 flex-shrink-0">
-                  {formatCaseId(c.seq_number, caseIdPrefix)}
-                </span>
-                <span className="text-sm text-gray-900 truncate flex-1">
-                  {c.category}
-                </span>
-                <span className="text-xs text-gray-500 truncate max-w-[80px]">
-                  {c.city}
-                </span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[11px] font-medium flex-shrink-0 ${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"}`}
-                >
-                  {STATUS_LABELS[c.status] ?? c.status}
-                </span>
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
-
-      {doneThisWeek.length > 0 && (
-        <p className="text-xs text-gray-400 text-center">
-          {doneThisWeek.length} Fälle diese Woche erledigt
-        </p>
-      )}
     </div>
   );
 }

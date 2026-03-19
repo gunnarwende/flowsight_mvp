@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreateCaseModal } from "./CreateCaseModal";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
-import { SystemCard } from "./SystemCard";
+import { FlowBar } from "./FlowBar";
+import type { FlowStep } from "./FlowBar";
 import { TechnikerView } from "./TechnikerView";
 
 // ---------------------------------------------------------------------------
@@ -202,6 +203,7 @@ export function LeitzentraleView({
   const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
+  const [period, setPeriod] = useState<"7d" | "30d">("7d");
 
   // ── ALL hooks MUST be above early returns (React rules of hooks) ────
   const categories = useMemo(() => {
@@ -282,16 +284,56 @@ export function LeitzentraleView({
   const selectClass =
     "text-[10px] font-semibold uppercase tracking-wide bg-transparent border-none focus:outline-none cursor-pointer text-gray-500 appearance-none pr-3";
 
+  // ── Flow step data ──────────────────────────────────────────────────
+  const cutoff = Date.now() - (period === "7d" ? 7 : 30) * 86400000;
+
+  const flowStats = useMemo(() => {
+    let eingang = 0, beiUns = 0, erledigt = 0, notfaelle = 0;
+    let voice = 0, web = 0, manual = 0;
+    let reviewSent = 0, doneTotal = 0;
+    for (const c of cases) {
+      const ct = new Date(c.created_at).getTime();
+      const ut = new Date(c.updated_at).getTime();
+      if (c.status === "new" && ct >= cutoff) {
+        eingang++;
+        if (c.source === "voice") voice++;
+        else if (c.source === "wizard" || c.source === "website") web++;
+        else manual++;
+      }
+      if (c.status === "scheduled" || c.status === "in_arbeit" || c.status === "warten") {
+        beiUns++;
+        if (c.urgency === "notfall") notfaelle++;
+      }
+      if (c.status === "done" && ut >= cutoff) erledigt++;
+      if (c.status === "done") {
+        doneTotal++;
+        if (c.review_sent_at) reviewSent++;
+      }
+    }
+    const srcParts: string[] = [];
+    if (voice) srcParts.push(`${voice} Tel`);
+    if (web) srcParts.push(`${web} Web`);
+    if (manual) srcParts.push(`${manual} Man`);
+    return { eingang, beiUns, erledigt, notfaelle, srcText: srcParts.join(" · ") || undefined, reviewSent, doneTotal };
+  }, [cases, cutoff]);
+
+  const adminSteps: FlowStep[] = [
+    { key: "eingang", icon: "📞", count: flowStats.eingang, label: "Eingang", accent: "blue", subLabel: flowStats.srcText },
+    { key: "bei_uns", icon: "⚡", count: flowStats.beiUns, label: "Bei uns", accent: "indigo", badge: flowStats.notfaelle > 0 ? flowStats.notfaelle : undefined },
+    { key: "erledigt", icon: "✅", count: flowStats.erledigt, label: "Erledigt", accent: "emerald", subLabel: `+${weekStats.erledigt} /Woche` },
+  ];
+
   // ── Admin/Inhaber view ──────────────────────────────────────────────
   return (
     <div className="space-y-3">
-      {/* EINE Card — SystemCard Kreislauf */}
-      <SystemCard
-        cases={cases}
-        avgRating={avgRating ?? null}
-        weeklyDone={weekStats.erledigt}
-        onNodeClick={handleNodeClick}
-        activeNode={activeNode}
+      {/* Flow Bar */}
+      <FlowBar
+        steps={adminSteps}
+        starRating={avgRating ?? null}
+        starSub={`${flowStats.reviewSent} von ${flowStats.doneTotal}`}
+        activeStep={activeNode}
+        onStepClick={handleNodeClick}
+        periodToggle={{ value: period, onChange: setPeriod }}
       />
 
       {/* Search + New Case */}
@@ -340,7 +382,7 @@ export function LeitzentraleView({
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-100 bg-gray-50/50">
                 <th className="text-left px-3 py-2">
                   <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
                     Nr
@@ -371,7 +413,7 @@ export function LeitzentraleView({
                 </th>
                 <th className="text-left px-3 py-2">
                   <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Ort
+                    Adresse
                   </span>
                 </th>
                 <th className="text-left px-3 py-2">
@@ -453,8 +495,10 @@ export function LeitzentraleView({
                     <td className="px-3 py-2 text-gray-700 truncate max-w-[140px]">
                       {c.category}
                     </td>
-                    <td className="px-3 py-2 text-gray-600 truncate max-w-[120px]">
-                      {c.city || "—"}
+                    <td className="px-3 py-2 text-gray-600 truncate max-w-[200px]">
+                      {c.street
+                        ? `${c.street} ${c.house_number ?? ""}, ${c.plz} ${c.city}`
+                        : c.city || "—"}
                     </td>
                     <td className="px-3 py-2">
                       <span className="inline-flex items-center gap-1.5">
