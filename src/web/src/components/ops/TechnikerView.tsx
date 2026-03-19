@@ -29,24 +29,10 @@ interface TechnikerViewProps {
 const PAGE_SIZE_DESKTOP = 15;
 const PAGE_SIZE_MOBILE = 8;
 
-// SVG Icons
-const WrenchIcon = (
-  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
-  </svg>
-);
-
-const CalendarIcon = (
-  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-  </svg>
-);
-
-const CheckIcon = (
-  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>
-);
+// Emoji icons for Techniker KPIs (colorful, consistent with Admin)
+const BeiMirIcon = <span className="text-lg">👷</span>;
+const HeuteIcon = <span className="text-lg">📅</span>;
+const ErledigtIcon = <span className="text-lg">✅</span>;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -134,7 +120,7 @@ export function TechnikerView({
   const router = useRouter();
   const [activeStep, setActiveStep] = useState<TechFilter>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [period, setPeriod] = useState<PeriodValue>("7d");
+  const [period, setPeriod] = useState<PeriodValue>("30d");
   const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
 
   useEffect(() => {
@@ -199,9 +185,9 @@ export function TechnikerView({
 
   // Steps with proper icons
   const steps: FlowStep[] = [
-    { key: "bei_mir", icon: WrenchIcon, count: beiMir, label: "Bei mir", accent: "blue" },
-    { key: "heute", icon: CalendarIcon, count: heute, label: "Heute", accent: "orange" },
-    { key: "erledigt", icon: CheckIcon, count: erledigt, label: "Erledigt", accent: "emerald" },
+    { key: "bei_mir", icon: BeiMirIcon, count: beiMir, label: "Bei mir", accent: "blue" },
+    { key: "heute", icon: HeuteIcon, count: heute, label: "Heute", accent: "orange" },
+    { key: "erledigt", icon: ErledigtIcon, count: erledigt, label: "Erledigt", accent: "emerald" },
   ];
 
   // Filtered + sorted cases (period + tech filter)
@@ -209,8 +195,15 @@ export function TechnikerView({
     let result = cases.filter((c) =>
       matchesTechFilter(c, activeStep, todayStr),
     );
-    // Period filter for table
-    result = result.filter((c) => new Date(c.created_at).getTime() >= cutoff);
+    // Period filter: active cases always show, only filter done/new by period
+    result = result.filter((c) => {
+      const isActive = c.status === "scheduled" || c.status === "in_arbeit" || c.status === "warten";
+      if (isActive) return true;
+      const t = c.status === "done"
+        ? new Date(c.updated_at).getTime()
+        : new Date(c.created_at).getTime();
+      return t >= cutoff;
+    });
 
     return [...result].sort((a, b) => {
       const rank = (c: LeitzentraleCase) => {

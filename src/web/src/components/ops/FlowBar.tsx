@@ -170,23 +170,25 @@ export function FlowBar({
                     }
                   `}
                 >
-                  {step.icon && <span className="text-base sm:text-lg">{step.icon}</span>}
+                  {/* Source breakdown ABOVE the count (for "Neu" KPI) */}
+                  {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
+                    <span className="flex items-center justify-between w-full px-1 sm:px-2 mb-1 text-[9px] sm:text-[10px] text-gray-500">
+                      {step.sourceBreakdown.map((s, si) => (
+                        <span key={s.label} className={`inline-flex items-center gap-1 ${si === 0 ? "" : si === step.sourceBreakdown!.length - 1 ? "" : ""}`}>
+                          <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">{s.icon}</span>
+                          <span className="font-semibold">{s.count}</span>
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                  {/* Icon (for steps like "Bei uns", "Erledigt") */}
+                  {step.icon && !step.sourceBreakdown && <span className="text-base sm:text-lg">{step.icon}</span>}
                   <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-none mt-0.5">
                     {step.count}
                   </span>
                   <span className="text-[9px] sm:text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
                     {step.label}
                   </span>
-                  {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
-                    <span className="flex items-center gap-1.5 mt-1 text-[8px] sm:text-[9px] text-gray-400">
-                      {step.sourceBreakdown.map((s) => (
-                        <span key={s.label} className="inline-flex items-center gap-0.5">
-                          <span className="w-3 h-3">{s.icon}</span>
-                          <span>{s.count}</span>
-                        </span>
-                      ))}
-                    </span>
-                  )}
                   {step.subLabel && !step.sourceBreakdown && (
                     <span className="text-[8px] sm:text-[9px] text-gray-400 mt-0.5">
                       {step.subLabel}
@@ -278,23 +280,24 @@ export function FlowBar({
                   }
                 `}
               >
-                {step.icon && <span className="text-base">{step.icon}</span>}
+                {/* Source breakdown ABOVE count on mobile too */}
+                {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
+                  <span className="flex items-center justify-between w-full px-1 mb-1 text-[9px] text-gray-500">
+                    {step.sourceBreakdown.map((s) => (
+                      <span key={s.label} className="inline-flex items-center gap-0.5">
+                        <span className="w-3.5 h-3.5 flex-shrink-0">{s.icon}</span>
+                        <span className="font-semibold">{s.count}</span>
+                      </span>
+                    ))}
+                  </span>
+                )}
+                {step.icon && !step.sourceBreakdown && <span className="text-base">{step.icon}</span>}
                 <span className="text-2xl font-extrabold text-gray-900 leading-none mt-0.5">
                   {step.count}
                 </span>
                 <span className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
                   {step.label}
                 </span>
-                {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
-                  <span className="flex items-center gap-1 mt-1 text-[8px] text-gray-400">
-                    {step.sourceBreakdown.map((s) => (
-                      <span key={s.label} className="inline-flex items-center gap-0.5">
-                        <span className="w-3 h-3">{s.icon}</span>
-                        <span>{s.count}</span>
-                      </span>
-                    ))}
-                  </span>
-                )}
                 {step.subLabel && !step.sourceBreakdown && (
                   <span className="text-[8px] text-gray-400 mt-0.5">{step.subLabel}</span>
                 )}
