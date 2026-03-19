@@ -234,7 +234,40 @@ export function LeitzentraleView({
     return smartSort(result);
   }, [cases, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
 
-  // ── Techniker view (after all hooks) ────────────────────────────────
+  // ── Flow step data (MUST be above early return — hooks rule) ────────
+  const cutoff = useMemo(() => Date.now() - (period === "7d" ? 7 : 30) * 86400000, [period]);
+
+  const flowStats = useMemo(() => {
+    let eingang = 0, beiUns = 0, erledigt = 0, notfaelle = 0;
+    let voice = 0, web = 0, manual = 0;
+    let reviewSent = 0, doneTotal = 0;
+    for (const c of cases) {
+      const ct = new Date(c.created_at).getTime();
+      const ut = new Date(c.updated_at).getTime();
+      if (c.status === "new" && ct >= cutoff) {
+        eingang++;
+        if (c.source === "voice") voice++;
+        else if (c.source === "wizard" || c.source === "website") web++;
+        else manual++;
+      }
+      if (c.status === "scheduled" || c.status === "in_arbeit" || c.status === "warten") {
+        beiUns++;
+        if (c.urgency === "notfall") notfaelle++;
+      }
+      if (c.status === "done" && ut >= cutoff) erledigt++;
+      if (c.status === "done") {
+        doneTotal++;
+        if (c.review_sent_at) reviewSent++;
+      }
+    }
+    const srcParts: string[] = [];
+    if (voice) srcParts.push(`${voice} Tel`);
+    if (web) srcParts.push(`${web} Web`);
+    if (manual) srcParts.push(`${manual} Man`);
+    return { eingang, beiUns, erledigt, notfaelle, srcText: srcParts.join(" · ") || undefined, reviewSent, doneTotal };
+  }, [cases, cutoff]);
+
+  // ── Techniker view (after ALL hooks) ──────────────────────────────
   if (staffRole === "techniker" && staffName) {
     return (
       <TechnikerView
@@ -246,7 +279,7 @@ export function LeitzentraleView({
     );
   }
 
-  // ── Pagination ───────────────────────────────────────────────────────
+  // ── Admin-only derived state (no hooks below) ─────────────────────
   const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedCases = filteredCases.slice(
@@ -280,42 +313,8 @@ export function LeitzentraleView({
     !!categoryFilter ||
     !!searchQuery;
 
-  // ── Dropdown helper ─────────────────────────────────────────────────
   const selectClass =
     "text-[10px] font-semibold uppercase tracking-wide bg-transparent border-none focus:outline-none cursor-pointer text-gray-500 appearance-none pr-3";
-
-  // ── Flow step data ──────────────────────────────────────────────────
-  const cutoff = Date.now() - (period === "7d" ? 7 : 30) * 86400000;
-
-  const flowStats = useMemo(() => {
-    let eingang = 0, beiUns = 0, erledigt = 0, notfaelle = 0;
-    let voice = 0, web = 0, manual = 0;
-    let reviewSent = 0, doneTotal = 0;
-    for (const c of cases) {
-      const ct = new Date(c.created_at).getTime();
-      const ut = new Date(c.updated_at).getTime();
-      if (c.status === "new" && ct >= cutoff) {
-        eingang++;
-        if (c.source === "voice") voice++;
-        else if (c.source === "wizard" || c.source === "website") web++;
-        else manual++;
-      }
-      if (c.status === "scheduled" || c.status === "in_arbeit" || c.status === "warten") {
-        beiUns++;
-        if (c.urgency === "notfall") notfaelle++;
-      }
-      if (c.status === "done" && ut >= cutoff) erledigt++;
-      if (c.status === "done") {
-        doneTotal++;
-        if (c.review_sent_at) reviewSent++;
-      }
-    }
-    const srcParts: string[] = [];
-    if (voice) srcParts.push(`${voice} Tel`);
-    if (web) srcParts.push(`${web} Web`);
-    if (manual) srcParts.push(`${manual} Man`);
-    return { eingang, beiUns, erledigt, notfaelle, srcText: srcParts.join(" · ") || undefined, reviewSent, doneTotal };
-  }, [cases, cutoff]);
 
   const adminSteps: FlowStep[] = [
     { key: "eingang", icon: "📞", count: flowStats.eingang, label: "Eingang", accent: "blue", subLabel: flowStats.srcText },
