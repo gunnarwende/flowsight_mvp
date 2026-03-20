@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-20 (CEO-App Thema C komplett, AI-Provider, 20+ Module)
+> Letzte Aktualisierung: 2026-03-20 (CEO-App + Sentry Digest + Web Push + PWA + Outlook Kalender. 23+ Module, alle Founder Tasks done.)
 
 ---
 
@@ -112,8 +112,9 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **E2E-Plan:** `docs/redesign/leitstand/plan_google_bewertungen.md`
 
 ### 3.6 Morning Report
-- Täglicher Statusbericht: 10 KPIs, Severity-Ampel (GREEN/YELLOW/RED)
-- Versand via WhatsApp (Twilio REST API, Sandbox, Founder-only)
+- Täglicher Statusbericht: 15 KPIs + Trial Status + Health, Severity-Ampel (GREEN/YELLOW/RED)
+- Versand via Telegram (primary) + E-Mail bei RED/YELLOW (Resend)
+- GH Actions Cron (daily 07:30 UTC)
 - Nur System-Alerts, keine Kundendaten (PII)
 
 ### 3.7 E-Mail-Notifications

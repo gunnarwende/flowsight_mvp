@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.8 | **Datum:** 2026-03-20
+**Version:** 1.9 | **Datum:** 2026-03-20
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.8 — 30 Decisions (D1-D30). CEO-App Thema C komplett umgesetzt (10 Phasen, PRs #304-#314). AI-Provider-Infrastruktur live.
+**Status:** v1.9 — 32 Decisions (D1-D32). CEO-App komplett (10 Phasen + Sentry Digest + Web Push + PWA). Outlook Kalender OAuth live. Alle Founder Tasks F1-F8 erledigt.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -39,6 +39,8 @@
 | D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/redesign/flowsight_ceo_app.md` |
 | D29 | CEO-App als Route Group im bestehenden App (`/ceo/*`), nicht separates Projekt | **ENTSCHIEDEN** ✅ | Founder + CC | Gleiche Auth, gleicher Deploy, gleiche DB |
 | D30 | AI-Provider model-agnostisch: Anthropic + OpenAI austauschbar pro Feature, graceful degradation | **ENTSCHIEDEN** ✅ | Founder + CC | `src/lib/ai/`, Feature→Model Config |
+| D31 | Web Push Notifications für CEO via VAPID + Service Worker. Push bei Notfall, Trial-Expiry, Health RED | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ceo/push/`, `sw.js`, VAPID Keys |
+| D32 | Outlook Kalender OAuth 2.0 Integration (Azure AD, Token in encrypted modules JSONB) | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ops/calendar/`, PRs #317-#321 |
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
 | D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
 | D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
