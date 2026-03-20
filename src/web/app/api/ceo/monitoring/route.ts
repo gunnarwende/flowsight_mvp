@@ -33,6 +33,36 @@ export async function GET() {
     .order("snapshot_at", { ascending: false })
     .limit(7);
 
+  // ── Sentry Digest (last 24h unresolved issues) ─────────────────────
+  let sentryIssues: { title: string; culprit: string; count: string; lastSeen: string; level: string }[] = [];
+  const sentryToken = process.env.SENTRY_API_TOKEN;
+  const sentryOrg = process.env.SENTRY_ORG;
+  const sentryProject = process.env.SENTRY_PROJECT;
+
+  if (sentryToken && sentryOrg && sentryProject) {
+    try {
+      const sentryRes = await fetch(
+        `https://sentry.io/api/0/projects/${sentryOrg}/${sentryProject}/issues/?query=is:unresolved&limit=25&sort=freq`,
+        {
+          headers: { Authorization: `Bearer ${sentryToken}` },
+          signal: AbortSignal.timeout(8000),
+        },
+      );
+      if (sentryRes.ok) {
+        const issues = await sentryRes.json();
+        sentryIssues = (issues as Array<Record<string, unknown>>).map((i) => ({
+          title: String(i.title ?? ""),
+          culprit: String(i.culprit ?? ""),
+          count: String(i.count ?? "0"),
+          lastSeen: String(i.lastSeen ?? ""),
+          level: String(i.level ?? "error"),
+        }));
+      }
+    } catch {
+      /* Sentry API not reachable — graceful */
+    }
+  }
+
   // ── System info ─────────────────────────────────────────────────────
   const systemInfo = {
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
@@ -43,6 +73,8 @@ export async function GET() {
   return NextResponse.json({
     health,
     snapshots: snapshots ?? [],
+    sentryIssues,
+    sentryConfigured: !!(sentryToken && sentryOrg && sentryProject),
     systemInfo,
     fetched_at: new Date().toISOString(),
   });

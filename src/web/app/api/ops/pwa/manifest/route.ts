@@ -36,7 +36,7 @@ export async function GET() {
     short_name: shortName,
     description: "Fälle, Termine und Team auf einen Blick.",
     start_url: "/ops/cases",
-    scope: "/",
+    scope: "/ops",
     display: "standalone" as const,
     display_override: ["standalone"],
     // Deep linking: prefer opening links in installed PWA instead of browser

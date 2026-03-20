@@ -26,9 +26,19 @@ interface SystemInfo {
   nodeVersion: string;
 }
 
+interface SentryIssue {
+  title: string;
+  culprit: string;
+  count: string;
+  lastSeen: string;
+  level: string;
+}
+
 interface MonitoringData {
   health: HealthData;
   snapshots: Snapshot[];
+  sentryIssues: SentryIssue[];
+  sentryConfigured: boolean;
   systemInfo: SystemInfo;
   fetched_at: string;
 }
@@ -87,7 +97,7 @@ export function MonitoringView() {
     );
   }
 
-  const { health, snapshots, systemInfo, fetched_at } = data;
+  const { health, snapshots, sentryIssues, sentryConfigured, systemInfo, fetched_at } = data;
   const healthOk = health.ok === true;
   const healthSeverity = healthOk ? "green" : "red";
 
@@ -172,6 +182,51 @@ export function MonitoringView() {
             <MiniStat label="Faelle (24h)" value={snapshots[0]?.cases_24h ?? 0} />
             <MiniStat label="Backlog" value={snapshots[0]?.backlog_new ?? 0} />
             <MiniStat label="Stuck >48h" value={snapshots[0]?.stuck_48h ?? 0} />
+          </div>
+        )}
+      </div>
+
+      {/* Sentry Digest */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <h2 className="text-sm font-semibold text-navy-800 mb-4">Sentry Error Digest</h2>
+        {!sentryConfigured ? (
+          <p className="text-sm text-gray-400">Sentry API nicht konfiguriert. Setze SENTRY_API_TOKEN, SENTRY_ORG und SENTRY_PROJECT auf Vercel.</p>
+        ) : sentryIssues.length === 0 ? (
+          <div className="flex items-center gap-3 text-emerald-600">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            <span className="text-sm font-medium">Keine offenen Fehler</span>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-2 py-2">Fehler</th>
+                  <th className="text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-2 py-2 hidden sm:table-cell">Ort</th>
+                  <th className="text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-2 py-2">Events</th>
+                  <th className="text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-2 py-2 hidden sm:table-cell">Zuletzt</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sentryIssues.map((issue, i) => (
+                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="px-2 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${issue.level === "error" ? "bg-red-500" : issue.level === "warning" ? "bg-amber-500" : "bg-gray-400"}`} />
+                        <span className="text-navy-900 font-medium truncate max-w-[250px]">{issue.title}</span>
+                      </div>
+                    </td>
+                    <td className="px-2 py-2.5 text-gray-500 truncate max-w-[180px] hidden sm:table-cell">{issue.culprit || "—"}</td>
+                    <td className="px-2 py-2.5 text-right font-mono text-navy-800">{issue.count}</td>
+                    <td className="px-2 py-2.5 text-right text-gray-500 text-xs hidden sm:table-cell">
+                      {issue.lastSeen ? new Date(issue.lastSeen).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
