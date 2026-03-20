@@ -44,9 +44,16 @@ export default function CeoLoginPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Code ungültig");
+        const errMap: Record<string, string> = {
+          invalid_code: "Code ungültig oder bereits verwendet. Bitte neuen Code anfordern.",
+          expired_code: "Code abgelaufen. Bitte neuen Code anfordern.",
+          session_error: "Sitzung konnte nicht erstellt werden. Bitte erneut versuchen.",
+          missing_fields: "E-Mail und Code erforderlich.",
+        };
+        throw new Error(errMap[data.error] ?? data.error ?? "Unbekannter Fehler");
       }
-      router.push("/ceo/pulse");
+      // Session cookies set by response — force full navigation (not client-side)
+      window.location.href = "/ceo/pulse";
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Code ungültig");
     }
