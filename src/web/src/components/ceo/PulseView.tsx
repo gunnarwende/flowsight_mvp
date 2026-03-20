@@ -135,6 +135,9 @@ export function PulseView() {
           <p className="text-sm font-medium text-emerald-800">Keine offenen Alerts. Alles läuft.</p>
         </div>
       )}
+
+      {/* AI Copilot Comment */}
+      <AiCommentCard />
     </div>
   );
 }
@@ -167,5 +170,83 @@ function MiniKpi({ label, value, warn }: { label: string; value: number; warn?: 
       <span className="text-xs text-gray-600">{label}</span>
       <span className={`text-sm font-bold ${warn ? "text-amber-700" : "text-gray-900"}`}>{value}</span>
     </div>
+  );
+}
+
+function AiCommentCard() {
+  const [comment, setComment] = useState<string | null>(null);
+  const [notConfigured, setNotConfigured] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/ceo/ai/pulse-comment");
+        if (!res.ok) { setLoading(false); return; }
+        const json = await res.json();
+        if (cancelled) return;
+        if (json.reason === "ai_not_configured") {
+          setNotConfigured(true);
+        } else if (json.comment) {
+          setComment(json.comment);
+        }
+      } catch {
+        // silent — AI comment is non-critical
+      }
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="bg-navy-900 rounded-2xl border border-navy-700 p-4 flex items-center gap-3"
+           style={{ backgroundColor: "#0f172a", borderColor: "#1e293b" }}>
+        <SparkleIcon />
+        <span className="text-sm text-amber-300 animate-pulse">AI analysiert...</span>
+      </div>
+    );
+  }
+
+  // Not configured — subtle hint
+  if (notConfigured) {
+    return (
+      <div className="rounded-xl px-4 py-2.5 text-center">
+        <p className="text-[11px] text-gray-400">AI-Assistent verfügbar mit API Key</p>
+      </div>
+    );
+  }
+
+  // No comment available (error or empty)
+  if (!comment) return null;
+
+  // AI comment card
+  return (
+    <div className="rounded-2xl border p-4 flex items-start gap-3"
+         style={{ backgroundColor: "#0f172a", borderColor: "#1e293b" }}>
+      <div className="flex-shrink-0 mt-0.5">
+        <SparkleIcon />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wider mb-1"
+           style={{ color: "#d4a853" }}>
+          AI-Assistent
+        </p>
+        <p className="text-sm leading-relaxed" style={{ color: "#e2e8f0" }}>
+          {comment}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" style={{ color: "#d4a853" }}>
+      <path d="M12 2L13.09 8.26L18 6L15.74 10.91L22 12L15.74 13.09L18 18L13.09 15.74L12 22L10.91 15.74L6 18L8.26 13.09L2 12L8.26 10.91L6 6L10.91 8.26L12 2Z"
+            fill="currentColor" />
+    </svg>
   );
 }
