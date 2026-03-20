@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 
 interface PulseData {
   severity: "green" | "yellow" | "red";
@@ -136,8 +137,83 @@ export function PulseView() {
         </div>
       )}
 
+      {/* Meine Aufgaben (Top 3) */}
+      <PulseTasksMini />
+
       {/* AI Copilot Comment */}
       <AiCommentCard />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Pulse Tasks Mini — top 3 undone tasks
+// ---------------------------------------------------------------------------
+
+interface MiniTask {
+  id: string;
+  title: string;
+  due_at: string | null;
+  priority: "low" | "normal" | "high";
+}
+
+const PRIO_DOT: Record<string, string> = {
+  high: "bg-red-500",
+  normal: "bg-navy-600",
+  low: "bg-gray-400",
+};
+
+function PulseTasksMini() {
+  const [tasks, setTasks] = useState<MiniTask[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/ceo/tasks");
+        if (!res.ok) return;
+        const json = await res.json();
+        if (cancelled) return;
+        // Filter undone, take top 3
+        const undone = (json.tasks ?? [])
+          .filter((t: { done_at: string | null }) => !t.done_at)
+          .slice(0, 3);
+        setTasks(undone);
+      } catch {
+        // silent
+      }
+      if (!cancelled) setLoaded(true);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!loaded) return null;
+  if (tasks.length === 0) return null;
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Meine Aufgaben</h2>
+        <Link href="/ceo/team" className="text-[11px] text-gold-600 hover:text-gold-700 font-medium">
+          Alle Aufgaben →
+        </Link>
+      </div>
+      <div className="divide-y divide-gray-50">
+        {tasks.map((task) => (
+          <div key={task.id} className="px-4 py-2.5 flex items-center gap-3">
+            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${PRIO_DOT[task.priority] ?? "bg-gray-400"}`} />
+            <span className="text-sm text-gray-800 flex-1 truncate">{task.title}</span>
+            {task.due_at && (
+              <span className={`text-[11px] flex-shrink-0 ${
+                new Date(task.due_at) < new Date() ? "text-red-500 font-medium" : "text-gray-400"
+              }`}>
+                {new Date(task.due_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
