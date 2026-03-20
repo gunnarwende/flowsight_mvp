@@ -121,6 +121,31 @@ export async function getAccessToken(
 }
 
 // ---------------------------------------------------------------------------
+// Timezone helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Convert a Graph API local datetime string (Europe/Zurich, no offset)
+ * to a UTC ISO string. Graph returns e.g. "2026-04-01T08:00:00.0000000"
+ * which is Zurich local time. We need UTC for consistent handling.
+ */
+function zurichToUtcIso(localDateTime: string): string {
+  if (!localDateTime) return "";
+  const trimmed = localDateTime.replace(/\.0+$/, "");
+  // Parse components to avoid system timezone interference
+  const match = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
+  if (!match) return localDateTime;
+  const [, yr, mo, dy, hh, mi, ss] = match;
+  // Treat the parsed time as UTC initially
+  const asUtc = new Date(Date.UTC(+yr, +mo - 1, +dy, +hh, +mi, +ss));
+  // Find the Zurich-UTC offset at this point in time
+  const zurichLocal = new Date(asUtc.toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
+  const diffMs = zurichLocal.getTime() - asUtc.getTime();
+  // Subtract the offset to convert Zurich local → real UTC
+  return new Date(asUtc.getTime() - diffMs).toISOString();
+}
+
+// ---------------------------------------------------------------------------
 // Free/Busy query via Microsoft Graph getSchedule
 // ---------------------------------------------------------------------------
 
@@ -178,9 +203,14 @@ export async function getFreeBusy(
     for (const item of schedule.scheduleItems ?? []) {
       // Include busy, tentative, oof — not free
       if (item.status !== "free") {
+        // Graph returns dateTime in the requested timeZone (Europe/Zurich)
+        // WITHOUT offset suffix. We must treat them as Zurich local time.
+        // Convert to UTC ISO for consistent downstream handling.
+        const startLocal = item.start?.dateTime ?? "";
+        const endLocal = item.end?.dateTime ?? "";
         busy.push({
-          start: item.start?.dateTime ?? "",
-          end: item.end?.dateTime ?? "",
+          start: zurichToUtcIso(startLocal),
+          end: zurichToUtcIso(endLocal),
         });
       }
     }
