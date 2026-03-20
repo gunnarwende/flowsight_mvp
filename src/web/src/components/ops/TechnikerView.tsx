@@ -101,7 +101,7 @@ function matchesTechFilter(c: LeitzentraleCase, f: TechFilter, todayStr: string)
     case "erledigt":
       return c.status === "done";
     case "bewertung":
-      return c.status === "done" && !c.review_sent_at;
+      return c.status === "done" && (c.review_sent_at != null || c.review_rating != null);
     default:
       return true;
   }
@@ -147,7 +147,7 @@ export function TechnikerView({
     (c) => c.status === "done" && new Date(c.updated_at).getTime() >= cutoff,
   ).length;
   const reviewCount = cases.filter(
-    (c) => c.status === "done" && c.review_rating != null,
+    (c) => c.status === "done" && (c.review_sent_at != null || c.review_rating != null),
   ).length;
 
   // Next appointment — always computed, shown above FlowBar
