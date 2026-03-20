@@ -298,6 +298,17 @@ export function CaseDetailForm({
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [onBeforeUnload]);
 
+  // ── Refresh timeline from server (FB4: auto-update after any save) ──
+  async function refreshTimeline() {
+    try {
+      const res = await fetch(`/api/ops/cases/${initialData.id}/events`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setLocalEvents(data);
+      }
+    } catch { /* silent — timeline will update on next page load */ }
+  }
+
   // ── Save helpers ─────────────────────────────────────────────────────
   async function saveFields(fields: Record<string, unknown>, opts?: { keepEditing?: boolean }): Promise<boolean> {
     setSaveState("saving");
@@ -325,6 +336,8 @@ export function CaseDetailForm({
       if (!opts?.keepEditing) setEditingSection(null);
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 2000);
+      // FB4: auto-refresh timeline after any save
+      refreshTimeline();
       return true;
     } catch (err) {
       setSaveState("error");

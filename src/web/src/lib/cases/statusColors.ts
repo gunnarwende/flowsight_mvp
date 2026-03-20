@@ -43,9 +43,9 @@ export function getStatusColorClass(
       return "bg-gray-100 text-gray-600";
     case "done":
       if (reviewRating != null && reviewRating >= 4)
-        return "bg-amber-100 text-amber-800 ring-1 ring-amber-400";
+        return "bg-amber-100 text-amber-800 ring-2 ring-amber-400";
       if (reviewSentAt)
-        return "bg-emerald-100 text-emerald-700 ring-1 ring-amber-400";
+        return "bg-emerald-100 text-emerald-700 ring-2 ring-amber-400";
       return "bg-emerald-100 text-emerald-700";
     default:
       return "bg-gray-100 text-gray-700";

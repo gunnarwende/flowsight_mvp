@@ -108,11 +108,9 @@ export function OpsShell({
   const [mobilePreview, setMobilePreview] = useState(false);
   const pathname = usePathname();
 
-  // RBAC: hide Einstellungen for techniker
-  // Techniker: only Leitzentrale (no Einstellungen, no Support)
-  // QW2: Techniker sees only Leitzentrale — no disabled "Bald" items
+  // RBAC: Techniker sees Leitzentrale + Support (for help/FAQ)
   const visibleNavItems = staffRole === "techniker"
-    ? NAV_ITEMS.filter(item => item.href === "/ops/cases")
+    ? NAV_ITEMS.filter(item => item.href === "/ops/cases" || item.href === "/ops/hilfe")
     : NAV_ITEMS;
 
   function isNavActive(href: string): boolean {
@@ -126,24 +124,24 @@ export function OpsShell({
   // ── Brand Header ────────────────────────────────────────────────────
   const brandHeader = (
     <div
-      className="px-5 py-6"
+      className="px-5 py-5"
       style={{
         backgroundColor: color,
-        backgroundImage: `linear-gradient(to bottom, ${color}, ${color}ee)`,
+        backgroundImage: `linear-gradient(135deg, ${color}, ${color}dd)`,
       }}
     >
-      <Link href="/ops/cases" className="flex items-center gap-3">
+      <Link href="/ops/cases" className="flex items-center gap-3.5">
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center border border-white/20 flex-shrink-0"
-          style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+          className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/20 flex-shrink-0 shadow-sm"
+          style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
         >
           <span className="text-white font-bold text-lg tracking-tight">{initials}</span>
         </div>
         <div className="min-w-0">
-          <span className="block text-[14px] font-semibold text-white leading-tight">
+          <span className="block text-[15px] font-bold text-white leading-tight tracking-tight">
             {displayName}
           </span>
-          <span className="block text-[11px] text-white/50 mt-0.5">Leitsystem</span>
+          <span className="block text-[11px] text-white/60 font-medium mt-0.5">Leitsystem</span>
         </div>
       </Link>
     </div>
@@ -151,18 +149,18 @@ export function OpsShell({
 
   // ── Nav Links ───────────────────────────────────────────────────────
   const navLinks = (
-    <nav className="flex-1 px-3 py-5">
-      <div className="space-y-1">
+    <nav className="flex-1 px-3 py-4">
+      <div className="space-y-0.5">
         {visibleNavItems.map((item) => {
           if (item.disabled) {
             return (
               <div
                 key={item.label}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 cursor-default opacity-50"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 cursor-default opacity-40"
               >
                 {item.icon}
                 <span>{item.label}</span>
-                <span className="ml-auto text-[10px] text-gray-600 bg-gray-800 px-1.5 py-0.5 rounded">Bald</span>
+                <span className="ml-auto text-[9px] text-gray-500 bg-gray-800/60 px-1.5 py-0.5 rounded-md">Bald</span>
               </div>
             );
           }
@@ -172,10 +170,10 @@ export function OpsShell({
               key={item.label}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                 active
-                  ? "text-white bg-white/[0.08]"
-                  : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.04]"
+                  ? "text-white bg-white/10 shadow-sm"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.05]"
               }`}
               style={
                 active

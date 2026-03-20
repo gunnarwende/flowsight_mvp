@@ -129,29 +129,29 @@ export default async function CaseDetailPage({
   return (
     <>
       {/* Header: back + category + meta + actions */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <Link href="/ops/cases" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 flex-shrink-0">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <Link href="/ops/cases" className="group flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0 rounded-lg px-2 py-1.5 -ml-2 hover:bg-gray-100">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
               </svg>
-              <span className="text-xs hidden sm:inline">Leitzentrale</span>
+              <span className="text-sm font-medium">Zurück</span>
             </Link>
-            <div className="flex items-baseline gap-2 min-w-0">
-              <h1 className="text-lg font-bold text-gray-900 truncate">{caseData.category}</h1>
-              <span className="text-xs text-gray-400 whitespace-nowrap hidden sm:inline">
+            <div className="flex items-baseline gap-2.5 min-w-0">
+              <h1 className="text-xl font-bold text-gray-900 truncate">{caseData.category}</h1>
+              <span className="text-sm text-gray-400 whitespace-nowrap hidden sm:inline">
                 {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
               </span>
             </div>
           </div>
-          <p className="text-xs text-gray-400 ml-9 mt-0.5 sm:hidden">
+          <p className="text-xs text-gray-400 ml-[52px] mt-0.5 sm:hidden">
             {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2.5 flex-shrink-0">
           <PrintButton />
-          <span className="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-full text-sm font-semibold">
+          <span className="bg-gray-900 text-white px-3.5 py-1.5 rounded-lg text-sm font-bold tracking-wide">
             {caseId}
           </span>
         </div>
