@@ -60,22 +60,36 @@ function toIso(dateStr: string, time: string): string {
   return new Date(`${dateStr}T${time}:00`).toISOString();
 }
 
-/** Convert busy slots (ISO ranges) into a Set of "HH:MM" time strings for a given date */
+/** Convert a UTC Date to Zurich local components */
+function toZurichComponents(utcDate: Date): { date: string; hh: string; mm: string } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Zurich",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(utcDate);
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? "00";
+  return {
+    date: `${get("year")}-${get("month")}-${get("day")}`,
+    hh: get("hour").padStart(2, "0"),
+    mm: get("minute").padStart(2, "0"),
+  };
+}
+
+/** Convert busy slots (UTC ISO ranges) into a Set of "HH:MM" Zurich-local time strings for a given date */
 function busySlotsToTimeSet(slots: BusySlot[], dateStr: string): Set<string> {
   const set = new Set<string>();
   for (const slot of slots) {
-    // Parse start/end — Graph returns ISO or datetime strings
-    const s = new Date(slot.start.endsWith("Z") ? slot.start : slot.start + "Z");
-    const e = new Date(slot.end.endsWith("Z") ? slot.end : slot.end + "Z");
+    if (!slot.start || !slot.end) continue;
+    const s = new Date(slot.start);
+    const e = new Date(slot.end);
+    if (isNaN(s.getTime()) || isNaN(e.getTime())) continue;
 
     // Walk in 15-min increments
     const cur = new Date(s);
     while (cur < e) {
-      const curDate = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}-${String(cur.getDate()).padStart(2, "0")}`;
-      if (curDate === dateStr) {
-        const hh = String(cur.getHours()).padStart(2, "0");
-        const mm = String(cur.getMinutes()).padStart(2, "0");
-        set.add(`${hh}:${mm}`);
+      const z = toZurichComponents(cur);
+      if (z.date === dateStr) {
+        set.add(`${z.hh}:${z.mm}`);
       }
       cur.setMinutes(cur.getMinutes() + 15);
     }

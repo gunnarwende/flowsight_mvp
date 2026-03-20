@@ -67,7 +67,9 @@ export async function GET(req: NextRequest) {
 
   // Query Microsoft Graph
   const emails = staffWithEmail.map((s) => s.email);
+  console.log("[freebusy] Querying Graph for:", emails, "window:", startTime, "→", endTime);
   const results = await getFreeBusy(auth.token, emails, startTime, endTime);
+  console.log("[freebusy] Results:", JSON.stringify(results));
 
   // Map back to display names
   const emailToName = new Map(staffWithEmail.map((s) => [s.email.toLowerCase(), s.display_name]));
