@@ -146,20 +146,21 @@ function zurichToUtcIso(localDateTime: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Free/Busy query via Microsoft Graph getSchedule
+// Free/Busy query — calendarView (works for all account types)
 // ---------------------------------------------------------------------------
 
-const GRAPH_SCHEDULE_URL =
-  "https://graph.microsoft.com/v1.0/me/calendar/getSchedule";
-
 /**
- * Query Outlook free/busy for one or more email addresses.
+ * Query Outlook calendar events for the signed-in user via calendarView.
  *
- * @param accessToken - Valid Microsoft Graph access token
- * @param emails - Outlook email addresses to query
- * @param startTime - Start of time window (ISO)
- * @param endTime - End of time window (ISO)
- * @returns FreeBusyResult per email
+ * Uses GET /me/calendarView which works for ALL Microsoft account types
+ * (Personal, Family, Business, Exchange Online). The older getSchedule
+ * endpoint requires Exchange Online and fails with MailboxNotEnabledForRESTAPI
+ * for personal/family accounts.
+ *
+ * Limitation: calendarView only reads the signed-in user's calendar.
+ * For multi-user (admin reads technician calendars), Exchange Online
+ * with getSchedule or application permissions would be needed.
+ * For MVP: the connected admin's calendar is checked for all matching staff.
  */
 export async function getFreeBusy(
   accessToken: string,
@@ -169,23 +170,31 @@ export async function getFreeBusy(
 ): Promise<FreeBusyResult[]> {
   if (emails.length === 0) return [];
 
-  const res = await fetch(GRAPH_SCHEDULE_URL, {
-    method: "POST",
+  // calendarView needs UTC ISO or datetime with timezone
+  // Our startTime/endTime are like "2026-04-01T06:00:00" (Zurich local)
+  const startUtc = zurichToUtcIso(startTime);
+  const endUtc = zurichToUtcIso(endTime);
+
+  const params = new URLSearchParams({
+    startDateTime: startUtc,
+    endDateTime: endUtc,
+    $select: "subject,start,end,showAs,isAllDay",
+    $top: "50",
+  });
+
+  const url = `https://graph.microsoft.com/v1.0/me/calendarView?${params}`;
+
+  const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
+      Prefer: 'outlook.timezone="Europe/Zurich"',
     },
-    body: JSON.stringify({
-      schedules: emails,
-      startTime: { dateTime: startTime, timeZone: "Europe/Zurich" },
-      endTime: { dateTime: endTime, timeZone: "Europe/Zurich" },
-      availabilityViewInterval: 15, // 15-min granularity
-    }),
   });
 
   if (!res.ok) {
     const body = await res.text();
-    console.error("[outlookClient] getSchedule failed:", res.status, body);
+    console.error("[outlookClient] calendarView failed:", res.status, body);
     return emails.map((email) => ({
       email,
       busy: [],
@@ -194,29 +203,30 @@ export async function getFreeBusy(
   }
 
   const data = await res.json();
-  const results: FreeBusyResult[] = [];
+  const busy: BusySlot[] = [];
 
-  for (const schedule of data.value ?? []) {
-    const email = schedule.scheduleId as string;
-    const busy: BusySlot[] = [];
+  for (const event of data.value ?? []) {
+    // showAs: free, tentative, busy, oof, workingElsewhere, unknown
+    // Skip events marked as "free"
+    const showAs = (event.showAs ?? "busy") as string;
+    if (showAs === "free") continue;
 
-    for (const item of schedule.scheduleItems ?? []) {
-      // Include busy, tentative, oof — not free
-      if (item.status !== "free") {
-        // Graph returns dateTime in the requested timeZone (Europe/Zurich)
-        // WITHOUT offset suffix. We must treat them as Zurich local time.
-        // Convert to UTC ISO for consistent downstream handling.
-        const startLocal = item.start?.dateTime ?? "";
-        const endLocal = item.end?.dateTime ?? "";
-        busy.push({
-          start: zurichToUtcIso(startLocal),
-          end: zurichToUtcIso(endLocal),
-        });
-      }
+    const startLocal = event.start?.dateTime ?? "";
+    const endLocal = event.end?.dateTime ?? "";
+
+    if (startLocal && endLocal) {
+      busy.push({
+        start: zurichToUtcIso(startLocal),
+        end: zurichToUtcIso(endLocal),
+      });
     }
-
-    results.push({ email, busy, error: null });
   }
 
-  return results;
+  // Return the same busy slots for all requested emails
+  // (calendarView = signed-in user's calendar, applied to matching staff)
+  return emails.map((email) => ({
+    email,
+    busy,
+    error: null,
+  }));
 }

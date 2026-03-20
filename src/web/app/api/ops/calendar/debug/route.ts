@@ -61,25 +61,28 @@ export async function GET(req: NextRequest) {
   const results = await getFreeBusy(auth.token, emails, startTime, endTime);
   steps.graph_results = results;
 
-  // Step 4: Also make raw Graph call for comparison
+  // Step 4: Also try raw calendarView for comparison
   try {
-    const rawRes = await fetch("https://graph.microsoft.com/v1.0/me/calendar/getSchedule", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${auth.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        schedules: emails,
-        startTime: { dateTime: startTime, timeZone: "Europe/Zurich" },
-        endTime: { dateTime: endTime, timeZone: "Europe/Zurich" },
-        availabilityViewInterval: 15,
-      }),
+    const params = new URLSearchParams({
+      startDateTime: `${startTime}Z`,
+      endDateTime: `${endTime}Z`,
+      $select: "subject,start,end,showAs,isAllDay",
+      $top: "50",
     });
-    steps.raw_graph_status = rawRes.status;
-    steps.raw_graph_body = await rawRes.json();
+    const rawRes = await fetch(
+      `https://graph.microsoft.com/v1.0/me/calendarView?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+          "Content-Type": "application/json",
+          Prefer: 'outlook.timezone="Europe/Zurich"',
+        },
+      },
+    );
+    steps.raw_calendarView_status = rawRes.status;
+    steps.raw_calendarView_body = await rawRes.json();
   } catch (e) {
-    steps.raw_graph_error = String(e);
+    steps.raw_calendarView_error = String(e);
   }
 
   return NextResponse.json(steps, { status: 200 });
