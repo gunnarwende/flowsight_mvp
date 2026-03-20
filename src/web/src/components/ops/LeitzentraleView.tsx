@@ -108,7 +108,11 @@ function matchesNode(c: LeitzentraleCase, node: string): boolean {
     case "erledigt":
       return c.status === "done";
     case "bewertung":
-      return c.status === "done" && !c.review_sent_at;
+      return c.status === "done" && !!c.review_sent_at;
+    case "bewertung_erhalten":
+      return c.status === "done" && c.review_rating != null;
+    case "bewertung_angefragt":
+      return c.status === "done" && !!c.review_sent_at && c.review_rating == null;
     default:
       return true;
   }
@@ -391,6 +395,10 @@ export function LeitzentraleView({
         steps={adminSteps}
         starRating={avgRating ?? null}
         starSub={`${flowStats.reviewReceived} erhalten / ${flowStats.reviewSent} angefragt`}
+        starSubLinks={[
+          { label: `${flowStats.reviewReceived} erhalten`, onClick: () => { setActiveNode("bewertung_erhalten"); setCurrentPage(1); } },
+          { label: `${flowStats.reviewSent} angefragt`, onClick: () => { setActiveNode("bewertung_angefragt"); setCurrentPage(1); } },
+        ]}
         activeStep={activeNode}
         onStepClick={handleNodeClick}
         greeting={greetingText}

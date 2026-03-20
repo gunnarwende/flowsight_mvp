@@ -31,6 +31,7 @@ interface FlowBarProps {
   steps: FlowStep[];
   starRating: number | null;
   starSub: string;
+  starSubLinks?: { label: string; onClick: () => void }[];
   activeStep: string | null;
   onStepClick: (key: string | null) => void;
   greeting?: string;
@@ -67,6 +68,7 @@ export function FlowBar({
   steps,
   starRating,
   starSub,
+  starSubLinks,
   activeStep,
   onStepClick,
   greeting,
@@ -253,9 +255,25 @@ export function FlowBar({
               <span className="text-[9px] sm:text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
                 Bewertung
               </span>
-              <span className="text-[8px] sm:text-[9px] text-gray-400 mt-0.5">
-                {starSub}
-              </span>
+              {starSubLinks && starSubLinks.length > 0 ? (
+                <span className="flex items-center gap-1 mt-0.5 text-[8px] sm:text-[9px]">
+                  {starSubLinks.map((link, li) => (
+                    <span key={link.label}>
+                      {li > 0 && <span className="text-gray-300 mx-0.5">/</span>}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); link.onClick(); }}
+                        className="text-gray-400 hover:text-gray-600 hover:underline transition-colors"
+                      >
+                        {link.label}
+                      </button>
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                <span className="text-[8px] sm:text-[9px] text-gray-400 mt-0.5">
+                  {starSub}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -348,7 +366,23 @@ export function FlowBar({
             <span className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
               Bewertung
             </span>
-            <span className="text-[8px] text-gray-400 mt-0.5">{starSub}</span>
+            {starSubLinks && starSubLinks.length > 0 ? (
+              <span className="flex items-center gap-1 mt-0.5 text-[8px]">
+                {starSubLinks.map((link, li) => (
+                  <span key={link.label}>
+                    {li > 0 && <span className="text-gray-300 mx-0.5">/</span>}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); link.onClick(); }}
+                      className="text-gray-400 hover:text-gray-600 hover:underline transition-colors"
+                    >
+                      {link.label}
+                    </button>
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="text-[8px] text-gray-400 mt-0.5">{starSub}</span>
+            )}
           </button>
         </div>
       </div>
