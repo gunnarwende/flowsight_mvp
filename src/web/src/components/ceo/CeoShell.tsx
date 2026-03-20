@@ -48,8 +48,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Betriebe", href: "/ceo/betriebe", icon: BetriebeIcon },
   { label: "Pipeline", href: "/ceo/pipeline", icon: PipelineIcon },
   { label: "Finanzen", href: "/ceo/finanzen", icon: FinanzenIcon },
-  { label: "Monitoring", href: "/ceo/monitoring", icon: MonitoringIcon, disabled: true },
-  { label: "Admin", href: "/ceo/admin", icon: AdminIcon, disabled: true },
+  { label: "Monitoring", href: "/ceo/monitoring", icon: MonitoringIcon },
+  { label: "Admin", href: "/ceo/admin", icon: AdminIcon },
 ];
 
 export function CeoShell({
