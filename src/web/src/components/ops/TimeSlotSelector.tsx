@@ -28,6 +28,9 @@ for (let h = 6; h <= 20; h++) {
   }
 }
 
+// Full-hour slots for condensed display
+const isFullHour = (slot: string) => slot.endsWith(":00");
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -46,6 +49,8 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
     }
   }, [value]);
 
+  const hasBusy = busySlots && busySlots.size > 0;
+
   return (
     <div className="flex flex-col">
       <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-1.5 px-1">
@@ -53,12 +58,14 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
       </span>
       <div
         ref={containerRef}
-        className="max-h-[200px] md:max-h-[200px] overflow-y-auto border border-gray-200 rounded-lg shadow-sm bg-white"
+        className="max-h-[260px] md:max-h-[260px] overflow-y-auto border border-gray-200 rounded-xl shadow-sm bg-white scrollbar-thin"
       >
         {SLOTS.map(slot => {
           const isSelected = slot === value;
           const isDisabled = !!minTime && slot < minTime;
           const isBusy = busySlots?.has(slot) ?? false;
+          const fullHour = isFullHour(slot);
+
           return (
             <button
               key={slot}
@@ -66,38 +73,61 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
               type="button"
               disabled={isDisabled}
               onClick={() => { if (!isDisabled) onChange(slot); }}
-              className="w-full px-3 py-1.5 text-xs font-medium text-left transition-colors flex items-center justify-between"
+              className={`
+                w-full text-left transition-all duration-100 flex items-center
+                ${fullHour ? "pt-1.5 pb-1 px-2.5" : "py-0.5 px-2.5"}
+                ${isSelected ? "rounded-lg my-0.5 shadow-sm" : ""}
+              `}
               style={{
                 backgroundColor: isSelected
                   ? brandColor
-                  : isBusy && !isDisabled
-                    ? "#fef2f2"
-                    : undefined,
-                color: isDisabled
-                  ? "#d1d5db"
-                  : isSelected
-                    ? "#fff"
-                    : isBusy
-                      ? "#dc2626"
-                      : "#374151",
-                borderRadius: isSelected ? "0.5rem" : undefined,
+                  : undefined,
                 cursor: isDisabled ? "not-allowed" : "pointer",
-                opacity: isDisabled ? 0.5 : 1,
+                opacity: isDisabled ? 0.35 : 1,
               }}
               onMouseEnter={(e) => {
                 if (!isSelected && !isDisabled) {
-                  e.currentTarget.style.backgroundColor = isBusy ? "#fee2e2" : `${brandColor}14`;
+                  e.currentTarget.style.backgroundColor = isBusy ? "#fee2e2" : `${brandColor}0d`;
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isSelected && !isDisabled) {
-                  e.currentTarget.style.backgroundColor = isBusy ? "#fef2f2" : "";
+                  e.currentTarget.style.backgroundColor = "";
                 }
               }}
             >
-              <span>{slot}</span>
-              {isBusy && !isSelected && !isDisabled && (
-                <span className="text-[9px] font-semibold text-red-500 uppercase tracking-wider">
+              {/* Time label */}
+              <span
+                className={`
+                  font-mono tabular-nums
+                  ${fullHour ? "text-xs font-semibold" : "text-[10px] font-normal"}
+                  ${isSelected ? "text-white" : isDisabled ? "text-gray-300" : isBusy ? "text-red-400" : "text-gray-700"}
+                `}
+                style={{ minWidth: "2.5rem" }}
+              >
+                {slot}
+              </span>
+
+              {/* Availability bar */}
+              {hasBusy && !isDisabled && (
+                <span className="flex-1 ml-2 flex items-center">
+                  <span
+                    className="h-2 rounded-full transition-all"
+                    style={{
+                      width: "100%",
+                      backgroundColor: isSelected
+                        ? "rgba(255,255,255,0.3)"
+                        : isBusy
+                          ? "#fca5a5"
+                          : "#d1fae5",
+                    }}
+                  />
+                </span>
+              )}
+
+              {/* Busy badge */}
+              {isBusy && !isSelected && !isDisabled && fullHour && (
+                <span className="ml-1.5 text-[8px] font-bold text-red-400 uppercase tracking-widest shrink-0">
                   belegt
                 </span>
               )}
