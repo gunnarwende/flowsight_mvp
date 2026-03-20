@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-20 (Review KPI live mit Google-Durchschnitt, klickbare Sub-Filter, 60 Demo-Cases, Timeline Auto-Refresh)
+**Datum:** 2026-03-20 (CEO-App Thema C komplett: 10 Phasen, 9 Seiten, AI-Provider, 27 Features)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -41,6 +41,9 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **CoreBot** | LIVE ✅ | Telegram → GitHub Issues (Voice→STT, Photo/Doc Attachments, /ticket, /status) |
 | **Demo-Strang** | LIVE ✅ | /brunner-haustechnik — High-End Demo + Voice Agent Intake+Info |
 | **BigBen Pub** | LIVE ✅ | /bigben-pub — Custom Demo (Reservierungen, Events, Galerie, Google Reviews) |
+| **CEO-App (Thema C)** | LIVE ✅ | /ceo — 9 Seiten: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, Benachrichtigungen, Wissen, Team, Admin. AI-Provider (Anthropic+OpenAI). Navy+Gold Design. PWA installierbar. |
+| **AI-Provider Infrastruktur** | LIVE ✅ | Model-agnostisch (Claude+GPT), graceful degradation, Cost Tracker, Pulse-Comment + Tenant-Insight Features |
+| **Support Foto-Upload** | LIVE ✅ | /ops/hilfe — Foto/PDF Upload, HTML-E-Mail mit inline Bildern, GitHub Issue mit Anhang-Links |
 
 ## Kunden (7 Websites live)
 
@@ -56,13 +59,15 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen in einer Session: Pulse (Ampel+KPIs+Alerts), Betriebe (Grid+Health Score+Deep-Dive), Pipeline (Funnel+Smart-Call-Liste+CEO-Kalender), Finanzen (MRR+P&L+Unit Economics+Forecast), Monitoring (Health+Tick+Env-Status), AI-Copilot (Anthropic+OpenAI Provider, Pulse-Comment, Tenant-Insight), Notifications (Feed+Comms-KPIs), Knowledge Base (37 Runbooks), Forecast (3 Szenarien+Churn Risk), Team (Tasks+Notes). 3 DB-Migrationen (ceo_costs, ceo_ai_usage, ceo_tasks+ceo_notes). Navy+Gold Design System. Founder-Tasks: API Keys setzen für AI-Aktivierung.
+- **Leitstand Feedback-Runde (20.03.):** PRs #295-#302. FB9-FB15: Techniker Bewertungs-KPI Fix, Gold-Ring-Logik ≤3★, Source-Breakdown auf Erledigt, Support Foto-Upload, HTML-E-Mail mit Inline-Bildern.
 - **Review KPI + Demo-Daten (20.03.):** PRs #292-#293. Bewertungs-KPI zeigt Google-Durchschnitt aus Tenant-Modules (Weinberger: 4.4★). 60 Done-Cases geseedet (20 mit Rating, 40 nur angefragt). Klickbare Sub-Filter "X erhalten" / "Y angefragt" filtern Tabelle. Timeline Auto-Refresh nach jedem Speichern. Header + Nav Polish. Google-Bewertungen E2E-Plan erstellt.
 - **Leitzentrale v3 FlowBar (19.03.):** PRs #287-#290. CSS Grid KPIs, 7d/30d/YTD-Toggle, Quellen-Aufschlüsselung ÜBER Zahl, 👷+✅ Emojis, Gold-Sterne, Mobile 2x2, Period filtert Tabelle (aktive Fälle immer sichtbar). Techniker: Pagination, Period-Toggle, "Nächster Einsatz" immer sichtbar.
 - **Review Pre-Filter (19.03.):** PR #288. ★-Picker → ≥4★ Google, ≤3★ intern. Gold-Status in Tabelle.
 - **Shared Utilities (19.03.):** statusColors.ts, getGreeting.ts, plzCityMap.ts. PLZ Auto-Fill, Pflichtfeld-Markierung, Termin-Kollision, Sticky Case-ID, 48px Tap-Targets.
 - **Scaling & Access (18.03.):** Tenant-Switcher, Support-System, Rollen-Switch.
 - **Leitsystem Phase 1-4 (17.-18.03.):** Login OTP, PWA, Falldetail, Staff CRUD.
-- **17 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard (60+ Demo-Cases + Review-Daten).
+- **20 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard. CEO-App = FlowSight-Nervenzentrum (9 Seiten, AI-ready).
 
 ### Kondensierte Historie (04.-14.03.)
 
@@ -102,7 +107,8 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 | `docs/business_briefing.md` | Vollständiger Business-Kontext (für ChatGPT/Partner) |
 | `docs/gtm/operating_model.md` | GTM Operating Model (6 Phasen, Trial Lifecycle, Quality Gates) |
 | `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G12 Building Blocks) |
-| `docs/architecture/zielarchitektur.md` | Zielarchitektur — 16 Decisions, Business + Produkt + GTM |
+| `docs/architecture/zielarchitektur.md` | Zielarchitektur — 30 Decisions, Business + Produkt + GTM + CEO-App |
+| `docs/redesign/flowsight_ceo_app.md` | **CEO-App Gesamtplan** — 27 Features, 10 Phasen, alle LIVE. Founder-Tasks, DB-Schema, AI-Architektur |
 | `docs/sales/pipeline.md` | Sales Pipeline Prozess + Tool-Referenz |
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |

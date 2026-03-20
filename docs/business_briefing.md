@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-20
+> Letzte Aktualisierung: 2026-03-20 (CEO-App Thema C komplett, AI-Provider, 20+ Module)
 
 ---
 
@@ -142,7 +142,17 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - Module: voice, wizard, ops, reviews, morning_report, sms
 - Konfiguration in Supabase tenants-Tabelle
 
-### 3.11 Sales Voice Agent "Lisa"
+### 3.11 FlowSight CEO-App (Thema C)
+- **Eigene PWA** unter /ceo — das Nervenzentrum des gesamten Business
+- **9 Seiten:** Pulse (Ampel+KPIs+Alerts), Betriebe (Grid+Health Score+Deep-Dive), Pipeline (Funnel+Smart-Call-Liste+CEO-Kalender), Finanzen (MRR+P&L+Unit Economics+Forecast), Monitoring (Health+Env-Status), Benachrichtigungen (Feed+Comms-KPIs), Wissen (37 Runbooks), Team (Tasks+Notes), Admin (Env-Vars+Quick-Links)
+- **AI-Copilot:** Model-agnostisch (Claude + GPT austauschbar pro Feature). Pulse-Kommentar, Tenant-Insights, Error-Triage (aktiviert mit API Keys)
+- **Revenue Forecast:** 3 Szenarien (Best/Expected/Worst), Churn-Risiko-Erkennung
+- **Design:** Navy+Gold (konsistent mit flowsight.ch), Mobile-first, PWA installierbar
+- **DB:** ceo_costs, ceo_ai_usage, ceo_tasks, ceo_notes
+- **Skalierbar für 500+ Betriebe:** Pagination, Search, Filter, Server-side Aggregation
+- **Gesamtplan:** `docs/redesign/flowsight_ceo_app.md` (27 Features, 10 Phasen, alle LIVE)
+
+### 3.12 Sales Voice Agent "Lisa"
 - Auf Geschäftsnummer +41 44 552 09 19
 - DE + INTL (auto language swap)
 - Beantwortet Fragen zu FlowSight, sammelt Demo-Anfragen

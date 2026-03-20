@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.7 | **Datum:** 2026-03-20
+**Version:** 1.8 | **Datum:** 2026-03-20
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.7 — 28 Decisions (D1-D28). Review KPI mit Google-Durchschnitt, klickbare Sub-Filter, Timeline Auto-Refresh. Thema C geparkt.
+**Status:** v1.8 — 30 Decisions (D1-D30). CEO-App Thema C komplett umgesetzt (10 Phasen, PRs #304-#314). AI-Provider-Infrastruktur live.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -36,7 +36,9 @@
 | D22 | Rollen-Switch: Admin kann als Techniker testen (Cookie `fs_view_as_role`) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D23 | Support-System: "Hilfe"-Seite → GitHub Issue (+ Resend Fallback) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D24 | Benachrichtigungs-Kommunikationsmatrix: 25+ Trigger, 5 Kanäle, 5 Akteure | **ENTSCHIEDEN** ✅ | Founder + CC | Matrix_kommunikation.md |
-| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **GEPARKT** | Founder | Nach Go-Live |
+| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/redesign/flowsight_ceo_app.md` |
+| D29 | CEO-App als Route Group im bestehenden App (`/ceo/*`), nicht separates Projekt | **ENTSCHIEDEN** ✅ | Founder + CC | Gleiche Auth, gleicher Deploy, gleiche DB |
+| D30 | AI-Provider model-agnostisch: Anthropic + OpenAI austauschbar pro Feature, graceful degradation | **ENTSCHIEDEN** ✅ | Founder + CC | `src/lib/ai/`, Feature→Model Config |
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
 | D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
 | D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
