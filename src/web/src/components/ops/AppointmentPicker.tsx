@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MiniCalendar } from "./MiniCalendar";
 import { TimeSlotSelector } from "./TimeSlotSelector";
 
@@ -8,12 +8,19 @@ import { TimeSlotSelector } from "./TimeSlotSelector";
 // Types
 // ---------------------------------------------------------------------------
 
+export interface BusySlot {
+  start: string;
+  end: string;
+}
+
 export interface AppointmentPickerProps {
   /** Pre-selected start (ISO string or null) */
   initialStart: string | null;
   /** Pre-selected end (ISO string or null) */
   initialEnd: string | null;
   brandColor: string;
+  /** Comma-separated assignee names — triggers Outlook free/busy fetch */
+  assignee?: string;
   onConfirm: (startIso: string, endIso: string) => void;
   onCancel: () => void;
 }
@@ -53,12 +60,35 @@ function toIso(dateStr: string, time: string): string {
   return new Date(`${dateStr}T${time}:00`).toISOString();
 }
 
+/** Convert busy slots (ISO ranges) into a Set of "HH:MM" time strings for a given date */
+function busySlotsToTimeSet(slots: BusySlot[], dateStr: string): Set<string> {
+  const set = new Set<string>();
+  for (const slot of slots) {
+    // Parse start/end — Graph returns ISO or datetime strings
+    const s = new Date(slot.start.endsWith("Z") ? slot.start : slot.start + "Z");
+    const e = new Date(slot.end.endsWith("Z") ? slot.end : slot.end + "Z");
+
+    // Walk in 15-min increments
+    const cur = new Date(s);
+    while (cur < e) {
+      const curDate = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}-${String(cur.getDate()).padStart(2, "0")}`;
+      if (curDate === dateStr) {
+        const hh = String(cur.getHours()).padStart(2, "0");
+        const mm = String(cur.getMinutes()).padStart(2, "0");
+        set.add(`${hh}:${mm}`);
+      }
+      cur.setMinutes(cur.getMinutes() + 15);
+    }
+  }
+  return set;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function AppointmentPicker({
-  initialStart, initialEnd, brandColor, onConfirm, onCancel,
+  initialStart, initialEnd, brandColor, assignee, onConfirm, onCancel,
 }: AppointmentPickerProps) {
   // Derive initial values
   const now = new Date();
@@ -77,6 +107,43 @@ export function AppointmentPicker({
   const initYear = initialStart ? new Date(initialStart).getFullYear() : now.getFullYear();
   const [calMonth, setCalMonth] = useState(initMonth);
   const [calYear, setCalYear] = useState(initYear);
+
+  // ── Outlook busy slots ──────────────────────────────────────────────
+  const [busyTimes, setBusyTimes] = useState<Set<string>>(new Set());
+  const [calendarConnected, setCalendarConnected] = useState(false);
+  const [loadingBusy, setLoadingBusy] = useState(false);
+
+  const fetchBusySlots = useCallback(async (dateStr: string) => {
+    if (!assignee?.trim()) return;
+    setLoadingBusy(true);
+    try {
+      const params = new URLSearchParams({ date: dateStr, staff: assignee });
+      const res = await fetch(`/api/ops/calendar/freebusy?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCalendarConnected(data.connected === true);
+        // Merge busy slots from all staff members
+        const allBusy: BusySlot[] = [];
+        for (const s of data.slots ?? []) {
+          allBusy.push(...(s.busy ?? []));
+        }
+        setBusyTimes(busySlotsToTimeSet(allBusy, dateStr));
+      }
+    } catch {
+      // Non-blocking
+    } finally {
+      setLoadingBusy(false);
+    }
+  }, [assignee]);
+
+  // Fetch when date is selected
+  useEffect(() => {
+    if (startDate) {
+      fetchBusySlots(startDate);
+    } else {
+      setBusyTimes(new Set());
+    }
+  }, [startDate, fetchBusySlots]);
 
   function prevMonth() {
     setCalMonth(m => m === 1 ? 12 : m - 1);
@@ -177,6 +244,15 @@ export function AppointmentPicker({
 
   return (
     <div className="border border-gray-200 rounded-xl bg-white shadow-sm p-4 mt-3">
+      {/* Outlook status indicator */}
+      {calendarConnected && startDate && (
+        <div className="flex items-center gap-1.5 mb-3 text-[11px] text-gray-500">
+          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+          Outlook-Kalender verbunden
+          {loadingBusy && <span className="text-gray-400 ml-1">— lade…</span>}
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row gap-4">
         {/* Calendar */}
         <div className="flex-1 min-w-[240px]">
@@ -200,6 +276,7 @@ export function AppointmentPicker({
               value={startTime}
               brandColor={brandColor}
               onChange={handleStartTimeChange}
+              busySlots={busyTimes}
             />
           </div>
           <div className="flex-1 md:w-20">
@@ -209,6 +286,7 @@ export function AppointmentPicker({
               brandColor={brandColor}
               onChange={handleEndTimeChange}
               minTime={minEndTime}
+              busySlots={busyTimes}
             />
           </div>
         </div>

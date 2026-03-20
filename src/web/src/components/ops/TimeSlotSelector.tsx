@@ -13,6 +13,8 @@ export interface TimeSlotSelectorProps {
   onChange: (time: string) => void;
   /** Minimum selectable time slot (inclusive). Slots before this are greyed out and disabled. */
   minTime?: string;
+  /** Set of "HH:MM" time strings that are busy in Outlook */
+  busySlots?: Set<string>;
 }
 
 // ---------------------------------------------------------------------------
@@ -30,7 +32,7 @@ for (let h = 6; h <= 20; h++) {
 // Component
 // ---------------------------------------------------------------------------
 
-export function TimeSlotSelector({ label, value, brandColor, onChange, minTime }: TimeSlotSelectorProps) {
+export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, busySlots }: TimeSlotSelectorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
 
@@ -56,6 +58,7 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime }
         {SLOTS.map(slot => {
           const isSelected = slot === value;
           const isDisabled = !!minTime && slot < minTime;
+          const isBusy = busySlots?.has(slot) ?? false;
           return (
             <button
               key={slot}
@@ -63,22 +66,41 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime }
               type="button"
               disabled={isDisabled}
               onClick={() => { if (!isDisabled) onChange(slot); }}
-              className="w-full px-3 py-1.5 text-xs font-medium text-left transition-colors"
+              className="w-full px-3 py-1.5 text-xs font-medium text-left transition-colors flex items-center justify-between"
               style={{
-                backgroundColor: isSelected ? brandColor : undefined,
-                color: isDisabled ? "#d1d5db" : isSelected ? "#fff" : "#374151",
+                backgroundColor: isSelected
+                  ? brandColor
+                  : isBusy && !isDisabled
+                    ? "#fef2f2"
+                    : undefined,
+                color: isDisabled
+                  ? "#d1d5db"
+                  : isSelected
+                    ? "#fff"
+                    : isBusy
+                      ? "#dc2626"
+                      : "#374151",
                 borderRadius: isSelected ? "0.5rem" : undefined,
                 cursor: isDisabled ? "not-allowed" : "pointer",
                 opacity: isDisabled ? 0.5 : 1,
               }}
               onMouseEnter={(e) => {
-                if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = `${brandColor}14`;
+                if (!isSelected && !isDisabled) {
+                  e.currentTarget.style.backgroundColor = isBusy ? "#fee2e2" : `${brandColor}14`;
+                }
               }}
               onMouseLeave={(e) => {
-                if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = "";
+                if (!isSelected && !isDisabled) {
+                  e.currentTarget.style.backgroundColor = isBusy ? "#fef2f2" : "";
+                }
               }}
             >
-              {slot}
+              <span>{slot}</span>
+              {isBusy && !isSelected && !isDisabled && (
+                <span className="text-[9px] font-semibold text-red-500 uppercase tracking-wider">
+                  belegt
+                </span>
+              )}
             </button>
           );
         })}

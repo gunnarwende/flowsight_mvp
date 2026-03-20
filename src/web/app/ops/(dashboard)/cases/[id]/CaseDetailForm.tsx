@@ -198,6 +198,7 @@ export function CaseDetailForm({
   const [assigneePendingNotify, setAssigneePendingNotify] = useState(false);
   const [showCloseWarning, setShowCloseWarning] = useState(false);
   const [collisionWarning, setCollisionWarning] = useState<string | null>(null);
+  const [collisionSource, setCollisionSource] = useState<"internal" | "outlook" | null>(null);
 
   const [baseline, setBaseline] = useState({
     status: initialData.status,
@@ -731,8 +732,14 @@ export function CaseDetailForm({
 
             {/* Collision warning */}
             {collisionWarning && (
-              <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800 mt-2">
-                <p className="font-medium">Terminüberschneidung</p>
+              <div className={`rounded-lg px-3 py-2 text-sm mt-2 ${
+                collisionSource === "outlook"
+                  ? "bg-red-50 border border-red-200 text-red-800"
+                  : "bg-amber-50 border border-amber-200 text-amber-800"
+              }`}>
+                <p className="font-medium">
+                  {collisionSource === "outlook" ? "Outlook-Kalender belegt" : "Terminüberschneidung"}
+                </p>
                 <p className="text-xs mt-0.5">{collisionWarning}</p>
               </div>
             )}
@@ -743,12 +750,14 @@ export function CaseDetailForm({
                 initialStart={scheduledAt || null}
                 initialEnd={scheduledEndAt || null}
                 brandColor={brandColor}
+                assignee={assigneeText}
                 onConfirm={async (startIso, endIso) => {
                   setScheduledAt(startIso);
                   setScheduledEndAt(endIso);
                   setPickerOpen(false);
                   setCollisionWarning(null);
-                  // Check for appointment collisions
+                  setCollisionSource(null);
+                  // Check for appointment collisions (internal + Outlook)
                   if (assigneeText.trim()) {
                     try {
                       const res = await fetch(`/api/ops/appointments/check-collision?` + new URLSearchParams({
@@ -759,7 +768,10 @@ export function CaseDetailForm({
                       }));
                       if (res.ok) {
                         const data = await res.json();
-                        if (data.collision) setCollisionWarning(data.message);
+                        if (data.collision) {
+                          setCollisionWarning(data.message);
+                          setCollisionSource(data.source ?? "internal");
+                        }
                       }
                     } catch { /* ignore — non-blocking */ }
                   }
