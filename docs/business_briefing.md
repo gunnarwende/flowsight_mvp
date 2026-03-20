@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-20 (CEO-App + Sentry Digest + Web Push + PWA + Outlook Kalender. 23+ Module, alle Founder Tasks done.)
+> Letzte Aktualisierung: 2026-03-20 (Outlook-Kalender Phase 1 LIVE + CEO-App + Sentry Digest + Web Push + PWA. 24+ Module.)
 
 ---
 
@@ -339,7 +339,7 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 
 ## 10. Bekannte Limitationen & offene Punkte
 
-- **Kalender Phase 1 intern aktiv** — Kollisions-Warnung gegen DB-Termine. Phase 2 (Outlook/Google OAuth) wartet auf Founder-Setup (`docs/runbooks/founder_kalender_setup.md`)
+- **Outlook-Kalender Phase 1 LIVE** — Free/Busy im Terminpicker (grün/rote Balken), Kollisionsprüfung intern + Outlook, Application Permissions (client_credentials). Exchange Online Postfach pro MA nötig. Runbook: `docs/runbooks/outlook_kalender_onboarding.md`
 - **Review-Anfrage manuell** — kein Auto-Trigger nach Fall-Abschluss
 - **Terminerinnerung fehlt** — 24h-Reminder an Melder geplant (N15)
 - **Kunden-Historie fehlt** — kein Matching bei wiederholtem Kontakt (N16)

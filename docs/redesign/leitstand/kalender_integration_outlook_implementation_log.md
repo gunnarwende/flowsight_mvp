@@ -1,5 +1,6 @@
 # Outlook Kalender-Integration — Implementation Log
 
+> **Status:** Phase 1 LIVE ✅ (2026-03-20)
 > **Verwandte Dokumente:**
 > - Technischer Plan: [`plan_kalender_integration.md`](plan_kalender_integration.md)
 > - Onboarding-Runbook: [`docs/runbooks/outlook_kalender_onboarding.md`](../../runbooks/outlook_kalender_onboarding.md)
@@ -8,116 +9,80 @@
 ## Ziel
 Outlook Business Kalender high-end in FlowSight PWA integrieren.
 
-## Scope heute
-- Outlook zuerst
-- real-life-fähiges Modell vorbereiten
-- Admin + spätere Techniker mitdenken
-- Free/Busy sichtbar machen
-- Konflikte in Terminvergabe sichtbar machen
-- Go-Live-/Onboarding-relevante Erkenntnisse laufend dokumentieren
+## Entschiedene Leitfragen
 
-## Entschiedene Leitfragen (2026-03-20)
-- **Wer verbindet?** Admin, einmalig pro Tenant (Admin-Consent)
-- **Consent-Modell?** Tenant-weit, `Calendars.Read` Scope
-- **Welche Daten?** Nur Free/Busy Status (free/busy/tentative/oof), keine Termindetails
-- **Mapping?** `staff.email` = Outlook-Adresse (1:1, kein Extra-Feld)
+| Frage | Entscheidung | Datum |
+|-------|-------------|-------|
+| Wer verbindet? | Admin, einmalig pro Tenant (Azure Portal) | 2026-03-20 |
+| Consent-Modell? | **Application Permissions** (client_credentials) | 2026-03-20 |
+| Permission? | `Calendars.Read` (Application, nicht Delegated) | 2026-03-20 |
+| Welche Daten? | Events mit showAs ≠ free, keine Termindetails im UI | 2026-03-20 |
+| Mapping? | `staff.email` = Outlook-Adresse (1:1) | 2026-03-20 |
+| API Endpoint? | `GET /users/{email}/calendarView` (pro Mitarbeiter) | 2026-03-20 |
 
-## Session Log
-- Start: 2026-03-20 07:44:24
-- Founder-Ziel: Outlook Business testweise als echter Vertical Slice
+## Architektur-Evolution (Learnings)
 
-## Architekturentscheidung — Outlook Integration (Stand heute)
+### Versuch 1: Delegated OAuth (prompt=consent) ❌
+- Problem: Admin-Consent überschreibt User-Token. Callback speichert immer Admin-Account.
+- Symptom: `jwt_claims.upn` zeigt Admin, nicht User.
 
-### Zielmodell
-FlowSight nutzt für Outlook-Kalender primär ein **tenant-weites Microsoft-Connect-Modell mit Admin-Consent**.
+### Versuch 2: Getrennter Admin-Consent + User-Connect ❌
+- Problem: Microsoft erzwingt trotzdem Admin-Redirect bei `Calendars.Read` in Multi-Tenant-Apps.
+- Auch mit `prompt=login` und `login_hint` nicht lösbar.
 
-### Begründung
-Dieses Modell passt besser zum realen Betriebsablauf als ein reines Per-User-/Self-Connect-Modell:
-- Büro / Dispo muss freie/belegte Zeiten von Technikern sehen
-- nicht jeder Techniker soll zuerst separat verbinden müssen
-- ein Betrieb soll zentral angebunden werden können
-- späteres Onboarding für echte Kundenbetriebe wird dadurch einfacher und robuster
+### Versuch 3: Application Permissions (client_credentials) ✅
+- Lösung: App authentifiziert sich selbst, kein User-Login nötig.
+- Admin erteilt einmalig Consent im Azure Portal.
+- App liest Kalender aller Mitarbeiter via `/users/{email}/calendarView`.
+- **Das ist die finale Architektur.**
 
-### Kalender-Mapping
-`staff.email` ist bereits vorhanden und dient als Outlook-Mailadresse.
-Kein zusätzliches Mapping-Feld notwendig, solange `staff.email` der echten Microsoft-365-Adresse entspricht.
+### Weiteres Learning: Exchange Online Pflicht
+- `MailboxNotEnabledForRESTAPI` = User hat kein Exchange Online Postfach
+- Tritt auch bei M365-Lizenzen auf, wenn Exchange-Komponente deaktiviert
+- Test: User muss sich auf outlook.office.com einloggen können
+- Provisionierung nach Lizenz-Aktivierung: 15 Min bis 24h
+
+## Technischer Stack (final)
 
 ### Token-Ablage
-Tokens werden in `tenants.modules` gespeichert (verschlüsselt).
+- `tenants.modules.calendar_ms_tenant_id` — Microsoft Tenant ID des Betriebs
+- `tenants.modules.calendar_app_token` — AES-256-GCM verschlüsselter App-Token (auto-cached)
+- `tenants.modules.calendar_app_token_expires_at` — Ablaufzeitpunkt
+- `tenants.modules.calendar_provider` — "microsoft"
 
-**Encryption (entschieden 2026-03-20):**
+### Encryption
 - **Methode:** AES-256-GCM (App-Layer, kein Supabase Vault)
 - **Key:** `CALENDAR_ENCRYPTION_KEY` Vercel Env Var (64 hex chars = 32 bytes)
-- **Utility:** `src/web/src/lib/crypto/tokenEncryption.ts` — `encryptToken()` / `decryptToken()`
-- **Format:** `iv:authTag:ciphertext` (hex), zufälliger IV pro Aufruf
-- **Kein** Plaintext-Token in Supabase
+- **Utility:** `src/web/src/lib/crypto/tokenEncryption.ts`
 
-### Technische Einstiegspunkte
-1. `src/web/app/api/ops/appointments/check-collision/route.ts`
-   - bestehender interner Collision-Check bleibt
-   - Outlook Free/Busy wird zusätzlich geprüft
-   - Ergebnis wird zusammengeführt
+### API-Routen (LIVE)
 
-2. `src/web/app/api/ops/calendar/connect/route.ts` ✅ implementiert
-   - GET → Admin-Auth-Check → Redirect zu Microsoft Consent Screen
-   - State-Parameter: `tenantId:nonce:hmacSignature` (CSRF-Schutz)
-   - Scopes: `offline_access Calendars.Read`
+| Route | Status | Zweck |
+|-------|--------|-------|
+| `src/web/src/lib/calendar/outlookClient.ts` | ✅ | Core: Token-Abruf (client_credentials) + FreeBusy (calendarView) |
+| `src/web/app/api/ops/calendar/freebusy/route.ts` | ✅ | UI-Abruf, staff.email Mapping, cached |
+| `src/web/app/api/ops/appointments/check-collision/route.ts` | ✅ | Intern + Outlook Kollisionsprüfung |
+| `src/web/app/api/ops/calendar/debug/route.ts` | ✅ | Temporäre Diagnose (JWT decode, raw Graph test) |
+| `src/web/app/api/ops/calendar/connect/route.ts` | Legacy | Delegated OAuth Start (nicht mehr primär) |
+| `src/web/app/api/ops/calendar/callback/route.ts` | Legacy | Delegated OAuth Callback (nicht mehr primär) |
+| `src/web/app/api/ops/calendar/admin-consent/route.ts` | Legacy | Admin-Consent Redirect (nicht mehr primär) |
 
-3. `src/web/app/api/ops/calendar/callback/route.ts` ✅ implementiert
-   - GET → state validieren → Code gegen Tokens tauschen
-   - Access + Refresh Token verschlüsselt in `tenants.modules`
-   - Connected-E-Mail via Graph `/me` geholt (für UI-Anzeige)
-   - Redirect → `/ops/settings?calendar_connected=true`
-   - Fehler → `/ops/settings?calendar_error=<reason>`
-   - Gespeicherte modules-Keys:
-     - `calendar_provider` ("microsoft")
-     - `calendar_connected_email` (Konto-Adresse)
-     - `calendar_connected_at` (ISO Timestamp)
-     - `calendar_access_token` (AES-256-GCM verschlüsselt)
-     - `calendar_refresh_token` (AES-256-GCM verschlüsselt)
-     - `calendar_token_expires_at` (ISO Timestamp)
-     - `calendar_scopes` (gewährte Scopes)
+### UI-Komponenten (LIVE)
 
-4. Neue Route `src/web/app/api/ops/calendar/freebusy/route.ts`
-   - UI-Abruf von Free/Busy-Daten (noch nicht implementiert)
-
-### Produktlogik
-Eine Kollision liegt vor, wenn
-- entweder interne appointments kollidieren
-- oder Outlook Free/Busy im gleichen Zeitfenster belegt meldet
-
-### Fallback
-Wenn kein Outlook verbunden ist:
-- Verhalten wie bisher
-- nur interne appointments-Tabelle
+| Komponente | Was es tut |
+|-----------|-----------|
+| `AppointmentPicker.tsx` | Fetcht FreeBusy bei Datumsauswahl, zeigt Outlook-Status |
+| `TimeSlotSelector.tsx` | Grün/rote Verfügbarkeitsbalken, "belegt" Badge |
+| `CaseDetailForm.tsx` | Übergibt assignee an Picker, zeigt Kollisionswarnung (intern vs. Outlook) |
 
 ## Produktprinzip — Kein Zwei-Tool-Gefühl
 
-### Grundsatz
-Der tägliche Betrieb darf niemals das Gefühl haben, zwischen FlowSight und Outlook parallel arbeiten zu müssen.
+FlowSight ist das führende Arbeitswerkzeug. Outlook ist angebundene Kalender-Infrastruktur im Hintergrund.
 
-### Bedeutet konkret
-- Termine werden in FlowSight im Fall angelegt
-- Termine werden von dort an Kunden verschickt
-- Outlook muss automatisch mitsynchronisiert werden
-- keine manuelle Doppelpflege in zwei Tools
+- Phase 1 (LIVE): Outlook Free/Busy lesen, Verfügbarkeit im Terminpicker sichtbar, Kollisionen vermeiden
+- Phase 2 (offen): Write-back nach Outlook — Termine in FlowSight erstellt → automatisch in Outlook
 
-### Produktlogik
-FlowSight ist das führende Arbeitswerkzeug.
-Outlook ist angebundene Kalender-Infrastruktur im Hintergrund.
-
-### Konsequenz für die Umsetzung
-Phase 1:
-- Outlook Free/Busy lesen
-- Verfügbarkeit im Leitstand sichtbar machen
-- Kollisionen vermeiden
-
-Phase 2:
-- Write-back nach Outlook
-- Wenn in FlowSight ein Termin erstellt / geändert / gelöscht wird, muss Outlook entsprechend mitziehen
-
-### Warum das kritisch ist
-Jede manuelle Nachpflege in Outlook erzeugt Reibung.
-Für Handwerksbetriebe ist Doppelpflege im Alltag nicht akzeptabel.
-Die Integration ist nur dann produktionsreif, wenn FlowSight operativ als zentrale Oberfläche genügt.
-
+## Session Log
+- Start: 2026-03-20 07:44:24
+- Phase 1 LIVE: 2026-03-20 ~21:00 (nach Architektur-Pivot auf Application Permissions)
+- PRs: #317 (Crypto + Connect), #319 (Callback), #321 (FreeBusy UI), #324 (TZ Fix), #326 (calendarView statt getSchedule), #328 (Application Permissions), #330 (Modern UI)

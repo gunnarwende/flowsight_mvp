@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-20 (CEO-App komplett + Sentry Digest + Web Push + PWA installierbar. Alle Founder Tasks F1-F8 done.)
+**Datum:** 2026-03-20 (CEO-App komplett + Outlook-Kalender Phase 1 LIVE + Sentry Digest + Web Push + PWA installierbar.)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -43,6 +43,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **BigBen Pub** | LIVE ✅ | /bigben-pub — Custom Demo (Reservierungen, Events, Galerie, Google Reviews) |
 | **CEO-App (Thema C)** | LIVE ✅ | /ceo — 9 Seiten: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, Benachrichtigungen, Wissen, Team, Admin. AI-Provider (Anthropic+OpenAI). Navy+Gold Design. PWA installierbar. |
 | **AI-Provider Infrastruktur** | LIVE ✅ | Model-agnostisch (Claude+GPT), graceful degradation, Cost Tracker, Pulse-Comment + Tenant-Insight Features |
+| **Outlook-Kalender** | LIVE ✅ | Free/Busy im Terminpicker (grün/rot Balken), Kollisionsprüfung intern+Outlook, Application Permissions (client_credentials), pro Mitarbeiter via staff.email |
 | **Support Foto-Upload** | LIVE ✅ | /ops/hilfe — Foto/PDF Upload, HTML-E-Mail mit inline Bildern, GitHub Issue mit Anhang-Links |
 
 ## Kunden (7 Websites live)
@@ -59,7 +60,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **Sentry Digest + Web Push + PWA (20.03.):** PR #322. Monitoring zeigt jetzt echte Sentry-Errors (25 Issues live). Web Push komplett (SW, Subscribe API, Send API, VAPID Keys). PWA installierbar auf Android/Windows (manifest mit screenshots, id, scope). Alle Founder Tasks F1-F8 erledigt. Outlook Kalender OAuth live (PRs #317-#321).
+- **Outlook-Kalender Phase 1 LIVE (20.03.):** PRs #317-#330. Outlook Free/Busy im Terminpicker. Grün/rote Verfügbarkeitsbalken, Kollisionsprüfung intern + Outlook, animierter Status-Indikator. Architektur: Application Permissions (client_credentials), kein User-OAuth. Learnings: Delegated OAuth funktioniert nicht für Multi-Tenant (Admin-Token-Hijacking), Exchange Online Postfach ist Pflicht. Runbook: `docs/runbooks/outlook_kalender_onboarding.md`.
+- **Sentry Digest + Web Push + PWA (20.03.):** PR #322. Monitoring zeigt jetzt echte Sentry-Errors (25 Issues live). Web Push komplett (SW, Subscribe API, Send API, VAPID Keys). PWA installierbar auf Android/Windows (manifest mit screenshots, id, scope). Alle Founder Tasks F1-F8 erledigt.
 - **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, AI-Copilot, Notifications, Knowledge Base (37 Runbooks), Forecast, Team. 4 DB-Migrationen. Navy+Gold Design. AI-Provider live (Anthropic+OpenAI).
 - **Leitstand Feedback-Runde (20.03.):** PRs #295-#302. FB9-FB15: Techniker Bewertungs-KPI Fix, Gold-Ring-Logik ≤3★, Source-Breakdown auf Erledigt, Support Foto-Upload, HTML-E-Mail mit Inline-Bildern.
 - **Review KPI + Demo-Daten (20.03.):** PRs #292-#293. Bewertungs-KPI zeigt Google-Durchschnitt aus Tenant-Modules (Weinberger: 4.4★). 60 Done-Cases geseedet (20 mit Rating, 40 nur angefragt). Klickbare Sub-Filter "X erhalten" / "Y angefragt" filtern Tabelle. Timeline Auto-Refresh nach jedem Speichern. Header + Nav Polish. Google-Bewertungen E2E-Plan erstellt.
@@ -131,6 +133,7 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 | `docs/customers/lessons-learned.md` | Intake-Prozess, Template-Learnings, Kunden-Learnings |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
 | `docs/compliance/` | Datenschutz, Subprocessors |
+| `docs/runbooks/outlook_kalender_onboarding.md` | **Outlook-Kalender Onboarding** — Setup, Go-Live-Checkliste, Learnings, Troubleshooting |
 | `docs/runbooks/` | Onboarding, Release, Incidents, Voice Config, Demo Script, CoreBot Setup, Sales Agent Brief |
 | `docs/briefings/` | Ad-hoc Inputs (aktive), archivierte → `docs/archive/briefings/` |
 | `docs/runbooks/reise_checklist.md` | Founder-Abwesenheit: Vor/Während/Nach, Trial-Timing, Signale |

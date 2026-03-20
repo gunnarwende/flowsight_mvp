@@ -1,6 +1,6 @@
 # Outlook-Kalender Onboarding — FlowSight
 
-> **Typ:** Runbook (operativ) | **Stand:** 2026-03-20
+> **Typ:** Runbook (operativ) | **Stand:** 2026-03-20 (Phase 1 LIVE)
 > **Verwandte Dokumente:**
 > - Technischer Plan + Phasen: [`plan_kalender_integration.md`](../redesign/leitstand/plan_kalender_integration.md)
 > - Architektur-Entscheidungen + Session-Log: [`kalender_integration_outlook_implementation_log.md`](../redesign/leitstand/kalender_integration_outlook_implementation_log.md)
@@ -8,7 +8,7 @@
 
 ## Zweck
 
-Dieses Runbook beschreibt den **operativen Onboarding-Ablauf** für die Outlook-Kalenderintegration — sowohl für den Founder-Testbetrieb als auch für echte Kundenbetriebe.
+Dieses Runbook beschreibt den **operativen Onboarding-Ablauf** für die Outlook-Kalenderintegration — sowohl für den Eigenbetrieb als auch für echte Kundenbetriebe.
 
 Es ist **kein** Architektur- oder Implementierungsdokument. Für technische Details → siehe verlinkte Dokumente oben.
 
@@ -35,41 +35,55 @@ FlowSight ist das führende Arbeitswerkzeug. Outlook ist angebundene Kalender-In
 
 | Aspekt | Entscheidung |
 |--------|-------------|
-| **Verbindungsmodell** | Tenant-weiter Admin-Consent (1× pro Betrieb) |
+| **Verbindungsmodell** | Application Permissions (client_credentials) — kein User-Login nötig |
 | **Kalender-Mapping** | `staff.email` = Outlook-Adresse (1:1) |
-| **Microsoft API** | `POST /me/calendar/getSchedule` (Graph API) |
-| **OAuth Scopes** | `Calendars.Read` (Phase 1), + `Calendars.ReadWrite` (Phase 2) |
-| **Token-Speicherung** | `tenants.modules.calendar_*` (verschlüsselt, App-Layer) |
-| **Caching** | 15 Min Server-side Cache für FreeBusy-Daten |
-| **Fallback** | Ohne Outlook-Verbindung → nur interne `appointments`-Tabelle |
+| **Microsoft API** | `GET /users/{email}/calendarView` (Graph API, Application Permission) |
+| **Permission** | `Calendars.Read` (Application, nicht Delegated) |
+| **Token** | App-Token via client_credentials, auto-cached + auto-refreshed |
+| **Speicherung** | `tenants.modules.calendar_ms_tenant_id` + verschlüsselter App-Token |
+| **Caching** | 5 Min Server-side Cache für FreeBusy-Daten |
+| **Fallback** | Ohne Verbindung → nur interne `appointments`-Tabelle |
+| **UI** | Grün/rote Verfügbarkeitsbalken im Terminpicker, animierter Outlook-Indikator |
 
-### API-Routen (geplant)
+### API-Routen (LIVE)
 
 | Route | Zweck |
 |-------|-------|
-| `GET /api/ops/calendar/connect` | OAuth-Redirect → Microsoft Consent Screen |
-| `GET /api/ops/calendar/callback` | OAuth-Callback → Token speichern |
 | `GET /api/ops/calendar/freebusy` | FreeBusy-Abruf für UI (cached) |
-| `GET /api/ops/appointments/check-collision` | Erweitert: intern + Outlook-Kollision |
+| `GET /api/ops/appointments/check-collision` | Intern + Outlook-Kollisionsprüfung |
+| `GET /api/ops/calendar/admin-consent` | Einmaliger Admin-Consent (Legacy, nicht mehr nötig) |
+| `GET /api/ops/calendar/connect` | User-Connect (Legacy, nicht mehr nötig) |
+| `GET /api/ops/calendar/debug` | Temporäre Diagnose-Route (wird entfernt) |
 
 ---
 
 ## Voraussetzungen
 
-### Technisch
-- Microsoft 365 / Outlook im Betrieb vorhanden
-- Microsoft Admin / Inhaber verfügbar
+### Technisch (KRITISCH — Learnings aus Founder-Test)
+- **Microsoft 365 Business** im Betrieb vorhanden (Basic, Standard oder Premium)
+- **Exchange Online Lizenz AKTIV** pro Mitarbeiter dessen Kalender gelesen werden soll
+- **Exchange Online Postfach PROVISIONIERT** (Test: User kann sich auf outlook.office.com einloggen)
 - FlowSight-Tenant existiert, Staff-Daten angelegt
-- `staff.email` pro Mitarbeiter korrekt und = Outlook-Adresse
+- `staff.email` pro Mitarbeiter korrekt und = echte Microsoft-365-Adresse
 
 ### Organisatorisch
-- Klar, wer Admin/Inhaber ist und wer Microsoft-Consent freigeben kann
+- Klar, wer Global Admin / IT-Admin ist (für Azure Portal Consent)
 - Klar, wer Termine disponiert und welche Mitarbeiter termingebunden arbeiten
 - Klar, ob persönliche Kalender oder zentrale Office-Kalender genutzt werden
 
 ### Produktseitig
 - Leitstand / Terminvergabe aktiv
 - Interne `appointments`-Logik + Collision Check funktionsfähig
+
+### ⚠️ Häufige Blocker beim Onboarding (Learnings)
+
+| Blocker | Symptom | Lösung |
+|---------|---------|--------|
+| **Kein Exchange Online** | Graph API 404 `MailboxNotEnabledForRESTAPI` | Exchange Online Lizenz im Admin Center aktivieren, 15-60 Min warten |
+| **Postfach noch nicht provisioniert** | outlook.office.com zeigt `UserHasNoMailboxAndNoLicenseAssignedError` | Warten (bis 24h nach Lizenz-Zuweisung). Test: outlook.office.com Login |
+| **Falscher Microsoft-Account** | JWT `upn` zeigt Admin-Account statt User | Application Permissions eliminieren dieses Problem komplett |
+| **Delegated OAuth + Admin-Consent** | Token gehört immer zum Admin, nicht zum User | **GELÖST:** Umstieg auf Application Permissions (client_credentials) |
+| **staff.email ≠ Outlook-Adresse** | FreeBusy leer, kein Fehler | Staff-E-Mail korrigieren auf echte M365-Adresse |
 
 ---
 
@@ -115,28 +129,37 @@ Zu klären:
 
 Ziel: Der Betrieb verbindet Microsoft 365 einmal zentral mit FlowSight.
 
-### Konkreter UI-Flow
+### Architektur-Entscheidung (Learnings aus Founder-Test)
 
-1. **Admin öffnet Einstellungen** im Leitstand (`/ops/settings`, vgl. `leitstand.md §5.5`)
-2. **Klickt "Microsoft Outlook verbinden"** — Button im Bereich "Kalender"
-3. **Redirect zu Microsoft:** FlowSight leitet an `login.microsoftonline.com` weiter (OAuth 2.0 Authorization Code Flow)
-   - Scope: `Calendars.Read` (Phase 1)
-   - Die Microsoft-Consent-Seite zeigt: "FlowSight möchte Kalenderverfügbarkeit lesen"
-4. **Admin meldet sich mit seinem Microsoft-365-Konto an** und bestätigt
-5. **Microsoft leitet zurück** an `/api/ops/calendar/callback`
-   - FlowSight empfängt Authorization Code
-   - Tauscht Code gegen Access Token + Refresh Token
-   - Verschlüsselt Tokens (App-Layer, AES-256) und speichert in `tenants.modules`
-6. **Erfolgssignal:** Admin sieht in den Einstellungen:
-   - Grüner Status "Microsoft Outlook verbunden"
-   - Verbundenes Konto (E-Mail-Adresse)
-   - Datum der Verbindung
-   - Button "Verbindung trennen"
+**Application Permissions statt Delegated OAuth.** Der ursprüngliche Ansatz (User-Login via OAuth) führte zu einem fundamentalen Problem: Microsoft erzwingt bei Multi-Tenant-Apps einen Admin-Consent-Redirect, der den User-Token durch einen Admin-Token ersetzt. Nach mehreren Iterationen wurde auf **Application Permissions (client_credentials)** umgestellt.
+
+**Vorteile:**
+- Kein User-Login nötig — Admin richtet einmalig im Azure Portal ein
+- Kann Kalender ALLER Mitarbeiter im Tenant lesen (nicht nur des angemeldeten Users)
+- Kein Token-Hijacking-Problem durch Admin-Consent
+- Robuster für echte Betriebe (kein Browser-Session-Problem)
+
+### Konkreter Setup-Flow (1× pro Betrieb)
+
+**Wer:** Microsoft Global Admin oder IT-Verantwortlicher des Betriebs.
+**Wo:** Azure Portal (portal.azure.com), NICHT im FlowSight UI.
+
+1. **Azure Portal öffnen** → App Registrations → **FlowSight Calendar** finden
+2. **API Permissions** → Add permission → Microsoft Graph → **Application permissions** → `Calendars.Read`
+3. **"Grant admin consent"** klicken → bestätigen
+4. **Overview** → **Directory (tenant) ID** kopieren
+5. **An FlowSight melden:** Tenant-ID wird in `tenants.modules.calendar_ms_tenant_id` gespeichert
+
+**Danach automatisch:**
+- FlowSight holt sich selbständig App-Tokens via client_credentials
+- Kalender aller Mitarbeiter mit Exchange Online Postfach werden lesbar
+- Kein weiterer Login oder Consent nötig
 
 ### Wichtig
-- Nicht jeder Techniker muss selbst etwas verbinden
-- Admin-Consent gilt tenant-weit: `getSchedule` kann FreeBusy für alle `staff.email`-Adressen im selben Microsoft-365-Tenant lesen
-- Bei Betrieben mit externem IT-Partner: ggf. muss dieser den Consent freigeben
+- Nicht jeder Techniker muss etwas tun
+- Kein Browser-Login, kein OAuth-Redirect, kein Session-Problem
+- Bei Betrieben mit externem IT-Partner: dieser erteilt den Consent im Azure Portal
+- **Voraussetzung:** Jeder Mitarbeiter, dessen Kalender gelesen werden soll, braucht ein aktives Exchange Online Postfach
 
 ---
 
@@ -336,31 +359,31 @@ Folge:
 
 ## Token-Lifecycle & Betriebssicherheit
 
-### Token-Lebensdauer
-- **Access Token:** ~1h (Microsoft Standard)
-- **Refresh Token:** 90 Tage (bei Inaktivität), unbegrenzt bei regelmässiger Nutzung
-- **Token-Refresh:** Automatisch bei jedem FreeBusy-Abruf — wenn Access Token abgelaufen, nutzt die App den Refresh Token für ein neues Paar
+### Token-Lebensdauer (Application Permissions)
+- **App-Token:** ~1h (Microsoft Standard für client_credentials)
+- **Kein Refresh Token nötig** — bei Ablauf wird automatisch ein neuer App-Token geholt (client_credentials = kein User-Involvement)
+- **Verschlüsselung:** AES-256-GCM, gespeichert in `tenants.modules.calendar_app_token`
 
-### Was passiert bei Token-Ablauf?
+### Was passiert bei Problemen?
 
 | Szenario | Auswirkung | Erkennung | Aktion |
 |----------|-----------|-----------|--------|
-| Access Token abgelaufen | Keiner — automatischer Refresh | Transparent | Automatisch |
-| Refresh Token abgelaufen (90 Tage Inaktivität) | FreeBusy-Abruf schlägt fehl | Morning Report → RED | Admin muss neu verbinden |
-| Microsoft-Passwort geändert | Alle Tokens invalidiert | FreeBusy-Abruf schlägt 401 | Admin muss neu verbinden |
-| Consent widerrufen (IT-Admin) | Alle Tokens invalidiert | FreeBusy-Abruf schlägt 403 | Admin muss neu consenten |
+| App-Token abgelaufen | Keiner — automatisch neuer Token | Transparent | Automatisch |
+| Client Secret abgelaufen | Token-Abruf schlägt fehl | Morning Report → RED | Neues Secret in Azure Portal + Vercel Env |
+| Admin-Consent widerrufen | Token-Abruf schlägt 403 | Morning Report → RED | Admin muss im Azure Portal re-consenten |
+| Exchange-Lizenz entfernt | Einzelner MA nicht lesbar | FreeBusy leer für diesen MA | Lizenz re-aktivieren |
+| Tenant-ID falsch | Alle Kalender-Abrufe 401 | Debug-Route zeigt Fehler | calendar_ms_tenant_id korrigieren |
 
 ### Monitoring-Integration
 
 Der **Morning Report** (GH Actions, täglich 07:30 UTC, vgl. `docs/runbooks/reise_checklist.md`) prüft bereits Health-Checks. Kalender-Health wird analog integriert:
 
-- **Health-Check:** `GET /api/health` bekommt zusätzlichen Check: "Kann Token für Tenants mit `calendar_provider=microsoft` refresht werden?"
-- **Severity:** Token-Fehler = **RED** (Betrieb verliert Outlook-Sichtbarkeit ohne Warnung)
+- **Health-Check:** "Kann App-Token für Tenants mit `calendar_ms_tenant_id` geholt werden?"
+- **Severity:** Token-Fehler = **RED**
 - **Alert:** Telegram + E-Mail an Founder
-- **Meldung:** "Outlook-Verbindung für [Betrieb] unterbrochen. Admin muss unter Einstellungen → Kalender neu verbinden."
 
-### Reconnect-Flow
-Identisch mit Schritt 3 (gleicher OAuth-Flow). Der Admin klickt erneut "Microsoft Outlook verbinden" — bestehende Tokens werden überschrieben.
+### Reconnect nicht nötig
+Application Permissions erneuern den Token automatisch. Kein manueller Reconnect. Einzig wenn das Client Secret abläuft, muss ein neues in Azure Portal erstellt und in Vercel gesetzt werden.
 
 ---
 
