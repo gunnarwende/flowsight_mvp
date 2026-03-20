@@ -5,10 +5,8 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
  * GET /api/ops/calendar/admin-consent
  *
  * One-time admin consent for the FlowSight Calendar app.
- * This grants Calendars.Read + User.Read for ALL users in the organization.
+ * Uses the v2 /adminconsent endpoint (not /authorize with prompt=admin_consent).
  * After this, individual users can connect without admin-consent redirect.
- *
- * Must be called ONCE by a Global Admin before /connect works for regular users.
  */
 export async function GET() {
   const scope = await resolveTenantScope();
@@ -22,17 +20,17 @@ export async function GET() {
     return NextResponse.json({ error: "Missing MICROSOFT_CLIENT_ID or APP_URL" }, { status: 500 });
   }
 
-  // Microsoft admin consent endpoint — grants permissions org-wide
+  const redirectUri = `${appUrl}/ops/settings`;
+
+  // v2 admin consent endpoint — separate from /authorize
   const params = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: `${appUrl}/api/ops/calendar/callback`,
+    redirect_uri: redirectUri,
     scope: "offline_access User.Read Calendars.Read",
-    state: "admin-consent",     // callback will recognize this and redirect to settings
-    response_type: "code",
-    prompt: "admin_consent",    // explicit admin consent for the organization
+    state: "admin-consent",
   });
 
-  const url = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params}`;
+  const url = `https://login.microsoftonline.com/common/adminconsent?${params}`;
 
   return NextResponse.redirect(url);
 }
