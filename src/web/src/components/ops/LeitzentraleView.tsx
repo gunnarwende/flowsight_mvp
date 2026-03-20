@@ -108,7 +108,7 @@ function matchesNode(c: LeitzentraleCase, node: string): boolean {
     case "erledigt":
       return c.status === "done";
     case "bewertung":
-      return c.status === "done" && !!c.review_sent_at;
+      return c.status === "done" && (c.review_sent_at != null || c.review_rating != null);
     case "bewertung_erhalten":
       return c.status === "done" && c.review_rating != null;
     case "bewertung_angefragt":
