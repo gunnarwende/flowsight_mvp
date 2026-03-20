@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-20 (Review KPI live, 60 Demo-Cases, klickbare Sub-Filter, Timeline Auto-Refresh)
+**Updated:** 2026-03-20 (CEO-App Thema C komplett: 10 Phasen, 12 PRs #304-#315)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,10 +9,11 @@
 
 ## Snapshot
 
-- **Produkt:** 17 Module LIVE + Leitzentrale v3 + Review KPI (Google 4.4★, klickbare Filter)
-- **Kunden:** 7 Websites live, Weinberger = 75+ Cases mit Review-Daten
+- **Produkt:** 20+ Module LIVE + Leitzentrale v3 + CEO-App (9 Seiten, AI-ready)
+- **Kunden:** 7 Websites live, Weinberger = GTM Goldstandard
+- **CEO-App:** Thema C komplett (Pulse, Betriebe, Pipeline, Finanzen, Monitoring, Notifications, Knowledge, Team, Admin)
 - **BLOCKER:** 0
-- **Phase:** Review-KPI + Demo-Daten deployed (20.03.). Nächste Schritte: Voice Agent finalisieren, Repo aufräumen, E2E-Tests.
+- **Phase:** CEO-App deployed (20.03.). Nächste Schritte: Founder API Keys setzen, Voice Agent finalisieren, Design-Polish.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
