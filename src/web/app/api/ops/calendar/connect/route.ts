@@ -23,8 +23,9 @@ const AUTHORIZE_URL =
 
 // Phase 1: read-only calendar availability
 const SCOPES = [
-  "offline_access", // needed for refresh tokens
-  "Calendars.Read", // read free/busy via getSchedule
+  "offline_access",  // needed for refresh tokens
+  "User.Read",       // read profile (connected email in callback)
+  "Calendars.Read",  // read calendar events via calendarView
 ].join(" ");
 
 function getRequiredEnv(name: string): string {
@@ -87,7 +88,7 @@ export async function GET() {
     response_mode: "query",
     scope: SCOPES,
     state,
-    prompt: "consent", // always show consent — ensures fresh refresh token
+    prompt: "select_account", // let user pick account — consent is auto for Calendars.Read
   });
 
   const authorizeUrl = `${AUTHORIZE_URL}?${params.toString()}`;
