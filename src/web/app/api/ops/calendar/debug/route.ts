@@ -29,6 +29,28 @@ export async function GET(req: NextRequest) {
 
   const token = auth.token;
 
+  // ── Test 0: Decode JWT to see who the token belongs to ───────────────
+  try {
+    const parts = token.split(".");
+    if (parts.length === 3) {
+      const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+      steps.jwt_claims = {
+        upn: payload.upn,           // user principal name
+        unique_name: payload.unique_name,
+        email: payload.email,
+        preferred_username: payload.preferred_username,
+        oid: payload.oid,           // object ID
+        tid: payload.tid,           // tenant ID
+        aud: payload.aud,           // audience (should be graph.microsoft.com)
+        scp: payload.scp,           // scopes granted
+        app_displayname: payload.app_displayname,
+        iss: payload.iss,           // issuer
+      };
+    }
+  } catch {
+    steps.jwt_decode_error = "Could not decode JWT";
+  }
+
   // ── Test A: /me profile — WHO is this token for? ─────────────────────
   try {
     const r = await fetch("https://graph.microsoft.com/v1.0/me", {
