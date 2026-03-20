@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-20 (CEO-App Thema C komplett: 10 Phasen, 12 PRs #304-#315)
+**Updated:** 2026-03-20 (CEO-App komplett + Sentry/Push/PWA + Outlook Kalender. Alle Founder Tasks done.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,11 +9,13 @@
 
 ## Snapshot
 
-- **Produkt:** 20+ Module LIVE + Leitzentrale v3 + CEO-App (9 Seiten, AI-ready)
+- **Produkt:** 23+ Module LIVE + CEO-App (9 Seiten + Sentry + Push + PWA) + Outlook Kalender
 - **Kunden:** 7 Websites live, Weinberger = GTM Goldstandard
-- **CEO-App:** Thema C komplett (Pulse, Betriebe, Pipeline, Finanzen, Monitoring, Notifications, Knowledge, Team, Admin)
+- **CEO-App:** Komplett (alle 10 Phasen + Blocks). AI live (Anthropic+OpenAI). PWA installierbar. Sentry Digest zeigt 25 echte Issues.
+- **Founder Tasks:** F1-F8 alle erledigt (API Keys, Upgrades, VAPID)
 - **BLOCKER:** 0
-- **Phase:** CEO-App deployed (20.03.). Nächste Schritte: Founder API Keys setzen, Voice Agent finalisieren, Design-Polish.
+- **Sentry-Bugs (sichtbar):** 1) starColor (historisch, resolved) 2) SMS_HMAC_SECRET fehlt auf Vercel 3) voice_case_missing_fields (68x, Voice Agent Tuning)
+- **Phase:** Stabilisierung + Voice Agent Tuning. Nächste Schritte: SMS_HMAC_SECRET setzen, Voice Agent Prompts schärfen, Design-Polish.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)

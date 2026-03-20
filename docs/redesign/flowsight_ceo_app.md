@@ -1,7 +1,7 @@
 # FlowSight CEO-App — Gesamtplan
 
-**Version:** 3.0 | **Datum:** 2026-03-20
-**Status:** ALLE 10 PHASEN LIVE (PRs #304-#314). 27 Feature-Bereiche deployed.
+**Version:** 4.0 | **Datum:** 2026-03-20
+**Status:** ALLE 10 PHASEN + Sentry Digest + Web Push + PWA LIVE (PRs #304-#322). Alle Founder Tasks F1-F8 erledigt.
 **Pfad:** `docs/redesign/flowsight_ceo_app.md`
 
 ### Fortschritt
@@ -18,6 +18,9 @@
 | 8 | Knowledge Base (37 Runbooks) | #312 | LIVE |
 | 9 | Forecast + AI Tenant Insights | #313 | LIVE |
 | 10 | Team, Tasks, Notes | #314 | LIVE |
+| — | Sentry Digest + Web Push + PWA Install | #322 | LIVE |
+| — | Outlook Kalender OAuth | #317-#321 | LIVE |
+| — | **Alle Founder Tasks F1-F8** | — | **DONE** |
 
 ---
 
