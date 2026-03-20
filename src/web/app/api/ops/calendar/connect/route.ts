@@ -51,7 +51,7 @@ function buildState(tenantId: string): string {
   return `${payload}:${sig}`;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   // 1. Auth check — admin only
   const scope = await resolveTenantScope();
   if (!scope?.tenantId) {
@@ -77,6 +77,10 @@ export async function GET() {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 
+  // Optional: login_hint from query param to pre-fill the email
+  const url = new URL(req.url);
+  const loginHint = url.searchParams.get("email");
+
   // 3. Build redirect URL
   const redirectUri = `${appUrl}/api/ops/calendar/callback`;
   const state = buildState(scope.tenantId);
@@ -88,8 +92,13 @@ export async function GET() {
     response_mode: "query",
     scope: SCOPES,
     state,
-    prompt: "select_account", // let user pick account — consent is auto for Calendars.Read
+    prompt: "login",  // force fresh login — no cached session, no admin redirect
   });
+
+  // Pre-fill email if provided (avoids wrong account selection)
+  if (loginHint) {
+    params.set("login_hint", loginHint);
+  }
 
   const authorizeUrl = `${AUTHORIZE_URL}?${params.toString()}`;
 

@@ -121,6 +121,13 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  // Handle admin-consent callback (no token exchange needed)
+  if (state === "admin-consent") {
+    return NextResponse.redirect(
+      `${settingsUrl}?admin_consent=granted`,
+    );
+  }
+
   if (!code || !state) {
     return NextResponse.redirect(
       `${settingsUrl}?calendar_error=missing_params`,
