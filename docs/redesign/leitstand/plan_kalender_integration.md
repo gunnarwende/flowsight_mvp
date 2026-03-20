@@ -4,55 +4,50 @@
 
 Terminüberschneidungen sichtbar machen. Outlook/Google-Kalender anbinden.
 
-## Phase 1: Interne Termine (MVP)
-
-**Status:** Appointments-Tabelle existiert (Phase 0 Renovation).
+## Phase 1: Interne Termine (MVP) ✅ DONE
 
 - Termine aus `appointments` Tabelle anzeigen
 - MiniCalendar im Leitstand: Tage mit Terminen markiert
 - Terminüberschneidungs-Check bei neuer Terminvergabe (CaseDetailForm)
 - Techniker-View: Tages-Termine aus eigener DB
 
-**Aufwand:** ~2h
-**Abhängigkeiten:** Keine (Tabelle existiert)
+## Phase 2: Outlook Free/Busy ✅ LIVE (2026-03-20)
 
-## Phase 2: Externe Kalender (Go-Live)
+**Architektur:** Application Permissions (client_credentials), nicht Delegated OAuth.
+**API:** `GET /users/{email}/calendarView` (Graph API)
+**Permission:** `Calendars.Read` (Application)
 
-**Ziel:** Outlook/Google FreeBusy → belegte Slots grau im MiniCalendar.
+### Was funktioniert
+- App-Token auto-cached + auto-refreshed (kein User-Login nötig)
+- FreeBusy pro Mitarbeiter via `staff.email` → Graph calendarView
+- Grün/rote Verfügbarkeitsbalken im Terminpicker
+- Kollisionsprüfung kombiniert intern + Outlook
+- Animierter Outlook-Status-Indikator
 
-### Google Calendar
+### Entschiedene Fragen
 
-- API: `freebusy.query` (Calendar API v3)
-- Auth: OAuth 2.0 (Service Account oder User Consent)
-- Scope: `https://www.googleapis.com/auth/calendar.freebusy`
-- Liefert: busy/free Zeitblöcke pro Kalender
-- Rate Limit: 10 requests/sec/user
-
-### Microsoft Outlook (Graph API)
-
-- API: `POST /me/calendar/getSchedule`
-- Auth: OAuth 2.0 (Delegated, `Calendars.Read` Scope)
-- Liefert: availability (free, busy, tentative, oof)
-- Tenant: Multi-Tenant App Registration nötig
-
-### Integration-Ansatz
-
-1. **OAuth Setup:** Admin verbindet Kalender in Einstellungen
-2. **Token Storage:** Encrypted refresh tokens in `tenants.modules.calendar_*`
-3. **FreeBusy Fetch:** Server-side, cached 15min
-4. **UI:** Belegte Slots grau im MiniCalendar + AppointmentPicker
-
-### Entschiedene Fragen (2026-03-20)
-
-- **Provider:** Outlook zuerst (CH-KMU-Standard). Google Workspace als zweiter Provider bei Bedarf.
-- **Consent-Modell:** Admin-Consent pro Tenant (nicht per-user). Begründung + Details: [`kalender_integration_outlook_implementation_log.md`](kalender_integration_outlook_implementation_log.md)
-- **Datenschutz:** Nur Free/Busy (availability status), keine Termindetails speichern. Tokens verschlüsselt (App-Layer).
+- **Provider:** Outlook zuerst (CH-KMU-Standard)
+- **Consent-Modell:** Application Permission + Admin-Consent im Azure Portal (1× pro Betrieb)
+- **Datenschutz:** Nur busy/free Status, keine Termindetails im UI. Token verschlüsselt (AES-256-GCM).
 - **Onboarding-Runbook:** [`docs/runbooks/outlook_kalender_onboarding.md`](../../runbooks/outlook_kalender_onboarding.md)
+- **Implementation Log:** [`kalender_integration_outlook_implementation_log.md`](kalender_integration_outlook_implementation_log.md)
 
-### Noch offen
+### Learnings aus Founder-Test
 
-- Google Workspace: Scope + App Registration (erst bei Bedarf)
-- Write-back (Phase 2): Scope-Erweiterung `Calendars.ReadWrite`, neuer Consent nötig
+1. **Delegated OAuth funktioniert nicht für Multi-Tenant:** Admin-Consent überschreibt User-Token → Application Permissions sind die richtige Architektur
+2. **Exchange Online Postfach ist Pflicht:** `MailboxNotEnabledForRESTAPI` wenn Lizenz fehlt/nicht provisioniert
+3. **Postfach-Provisionierung dauert:** 15 Min bis 24h nach Lizenz-Aktivierung
+4. **Graph gibt Zeiten in Request-Timezone zurück:** Muss serverseitig nach UTC konvertiert werden
 
-**Aufwand:** ~8h (Outlook Phase 1)
-**Abhängigkeiten:** Azure App Registration (Multi-Tenant)
+## Phase 3: Write-back nach Outlook (offen)
+
+- Scope-Erweiterung: `Calendars.ReadWrite` (Application Permission)
+- Graph API: `POST /users/{email}/events`, `PATCH`, `DELETE`
+- Mapping: `appointments.ics_uid` ↔ Outlook Event-ID
+- Neuer Admin-Consent nötig (für ReadWrite)
+
+## Phase 4: Google Workspace (bei Bedarf)
+
+- Gleiche Architektur (Application Credentials via Service Account)
+- `calendar_provider=google`, eigene Credentials
+- Erst wenn erster Kunde ohne M365
