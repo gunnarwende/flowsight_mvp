@@ -156,6 +156,7 @@ export default async function OpsCasesPage({
   let currentStaffName: string | null = null;
   let currentStaffRole: "admin" | "techniker" | undefined;
   let featuredReview: string | null = null;
+  let avgRatingFromTenant: number | null = null;
   try {
     const authClient = await getAuthClient();
     const {
@@ -201,6 +202,10 @@ export default async function OpsCasesPage({
         if (typeof modules.featured_review === "string") {
           featuredReview = modules.featured_review;
         }
+        // Google review stats from tenant modules
+        if (typeof modules.google_review_avg === "number") {
+          avgRatingFromTenant = modules.google_review_avg as number;
+        }
       }
     }
   } catch {
@@ -222,7 +227,7 @@ export default async function OpsCasesPage({
       reviewSent7d={reviewSent7dCount ?? 0}
       reviewSentTotal={reviewSentTotalCount ?? 0}
       erledigt30d={erledigt30dCount ?? 0}
-      avgRating={null}
+      avgRating={avgRatingFromTenant}
       featuredReview={featuredReview}
       staffName={currentStaffName}
       staffRole={currentStaffRole}
