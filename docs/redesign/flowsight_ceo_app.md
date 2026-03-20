@@ -1,8 +1,23 @@
 # FlowSight CEO-App — Gesamtplan
 
-**Version:** 1.0 | **Datum:** 2026-03-20
-**Status:** Plan fertig. Phase 1 bereit zur Umsetzung.
+**Version:** 3.0 | **Datum:** 2026-03-20
+**Status:** ALLE 10 PHASEN LIVE (PRs #304-#314). 27 Feature-Bereiche deployed.
 **Pfad:** `docs/redesign/flowsight_ceo_app.md`
+
+### Fortschritt
+
+| Phase | Bereich | PR | Status |
+|-------|---------|----|--------|
+| 1 | Foundation + Pulse | #304, #305 | LIVE |
+| 2 | Betriebe (Grid + Deep-Dive) | #306 | LIVE |
+| 3 | Pipeline + CEO-Kalender | #307 | LIVE |
+| 4 | Finanzen + Unit Economics | #308 | LIVE |
+| 5 | Monitoring + Admin | #309 | LIVE |
+| 6 | AI-Copilot (Provider + Pulse Comment) | #310 | LIVE (AI aktiv mit API Key) |
+| 7 | Notifications + Comms Hub | #311 | LIVE |
+| 8 | Knowledge Base (37 Runbooks) | #312 | LIVE |
+| 9 | Forecast + AI Tenant Insights | #313 | LIVE |
+| 10 | Team, Tasks, Notes | #314 | LIVE |
 
 ---
 
@@ -19,7 +34,9 @@
 | F7 | **Sentry API Token** | Phase 5 | Für Sentry-Digest in Monitoring. Project-scoped Read-Only Token. |
 | F8 | **Web Push VAPID Keys** | Phase 7 | Generiert CC automatisch. Founder muss nur Push-Berechtigung im Browser akzeptieren. |
 
-**Keine Founder-Action nötig für Phase 1-3.** Alles läuft mit bestehender Infrastruktur.
+**Phase 1-5:** Keine Founder-Action war nötig.
+**Phase 6:** Braucht F1 (Anthropic Key) + F2 (OpenAI Key). CC baut alles vor — AI-Features funktionieren sobald Keys auf Vercel liegen.
+**Phase 7:** F8 wird automatisch generiert.
 
 ---
 
