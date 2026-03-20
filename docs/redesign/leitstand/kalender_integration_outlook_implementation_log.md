@@ -62,10 +62,24 @@ Tokens werden in `tenants.modules` gespeichert (verschlüsselt).
    - GET → Admin-Auth-Check → Redirect zu Microsoft Consent Screen
    - State-Parameter: `tenantId:nonce:hmacSignature` (CSRF-Schutz)
    - Scopes: `offline_access Calendars.Read`
-   - Callback: `/api/ops/calendar/callback` (noch nicht implementiert)
 
-3. Neue Route `src/web/app/api/ops/calendar/freebusy/route.ts`
-   - UI-Abruf von Free/Busy-Daten
+3. `src/web/app/api/ops/calendar/callback/route.ts` ✅ implementiert
+   - GET → state validieren → Code gegen Tokens tauschen
+   - Access + Refresh Token verschlüsselt in `tenants.modules`
+   - Connected-E-Mail via Graph `/me` geholt (für UI-Anzeige)
+   - Redirect → `/ops/settings?calendar_connected=true`
+   - Fehler → `/ops/settings?calendar_error=<reason>`
+   - Gespeicherte modules-Keys:
+     - `calendar_provider` ("microsoft")
+     - `calendar_connected_email` (Konto-Adresse)
+     - `calendar_connected_at` (ISO Timestamp)
+     - `calendar_access_token` (AES-256-GCM verschlüsselt)
+     - `calendar_refresh_token` (AES-256-GCM verschlüsselt)
+     - `calendar_token_expires_at` (ISO Timestamp)
+     - `calendar_scopes` (gewährte Scopes)
+
+4. Neue Route `src/web/app/api/ops/calendar/freebusy/route.ts`
+   - UI-Abruf von Free/Busy-Daten (noch nicht implementiert)
 
 ### Produktlogik
 Eine Kollision liegt vor, wenn

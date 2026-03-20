@@ -14,7 +14,7 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
  *   APP_URL                   — Canonical app URL for callback
  *   CALENDAR_ENCRYPTION_KEY   — Used to HMAC-sign the state parameter
  *
- * Callback will land on: /api/ops/calendar/callback (not yet implemented)
+ * Callback: /api/ops/calendar/callback (exchanges code → encrypted tokens)
  */
 
 // Microsoft OAuth endpoints (multi-tenant = "common")
