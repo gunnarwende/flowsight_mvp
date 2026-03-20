@@ -65,6 +65,9 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
   const [data, setData] = useState<TenantDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiReason, setAiReason] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -78,9 +81,29 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
     setLoading(false);
   }, [tenantId]);
 
+  const fetchInsight = useCallback(async () => {
+    setAiLoading(true);
+    try {
+      const res = await fetch(`/api/ceo/ai/tenant-insight?tenant_id=${tenantId}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.insight) {
+          setAiInsight(json.insight);
+        } else if (json.reason) {
+          setAiReason(json.reason);
+        }
+      }
+    } catch {
+      // Non-critical
+    } finally {
+      setAiLoading(false);
+    }
+  }, [tenantId]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchInsight();
+  }, [fetchData, fetchInsight]);
 
   if (loading) {
     return (
@@ -160,6 +183,33 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
           </div>
         </div>
       </div>
+
+      {/* AI Insight */}
+      {(aiLoading || aiInsight) && (
+        <div className="bg-navy-900 rounded-2xl border border-navy-700 p-5 shadow-sm">
+          <div className="flex items-start gap-3">
+            {/* Sparkle icon */}
+            <div className="flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-semibold text-gold-500 uppercase tracking-wider mb-2">AI Insight</p>
+              {aiLoading ? (
+                <p className="text-sm text-navy-300 animate-pulse">AI analysiert Betrieb...</p>
+              ) : (
+                <p className="text-sm text-navy-100 leading-relaxed">{aiInsight}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {!aiLoading && !aiInsight && aiReason === "ai_not_configured" && (
+        <div className="bg-navy-50 rounded-2xl border border-navy-100 px-5 py-3">
+          <p className="text-xs text-navy-400">AI Insight verf&uuml;gbar wenn API-Key konfiguriert ist.</p>
+        </div>
+      )}
 
       {/* KPI Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

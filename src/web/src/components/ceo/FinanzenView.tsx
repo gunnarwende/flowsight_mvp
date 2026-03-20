@@ -29,6 +29,14 @@ interface FinanzenData {
   snapshot_at: string;
 }
 
+interface ForecastData {
+  current_mrr: number;
+  trial_count: number;
+  conversion_rate: number;
+  scenarios: { best: number; expected: number; worst: number };
+  churn_risk: { slug: string; name: string; days_since_last_case: number }[];
+}
+
 /* ---------- Vendor options ---------- */
 const VENDORS = [
   "Vercel",
@@ -77,6 +85,9 @@ export function FinanzenView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Forecast
+  const [forecast, setForecast] = useState<ForecastData | null>(null);
+
   // Cost entry form
   const [showForm, setShowForm] = useState(false);
   const [formMonth, setFormMonth] = useState(() => {
@@ -101,9 +112,19 @@ export function FinanzenView() {
     }
   }, []);
 
+  const fetchForecast = useCallback(async () => {
+    try {
+      const res = await fetch("/api/ceo/forecast");
+      if (res.ok) setForecast(await res.json());
+    } catch {
+      // Non-critical — forecast section just won't show
+    }
+  }, []);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchForecast();
+  }, [fetchData, fetchForecast]);
 
   async function handleSave() {
     if (!formAmount) return;
@@ -358,6 +379,79 @@ export function FinanzenView() {
           </table>
         </div>
       </div>
+
+      {/* ── Revenue Forecast ── */}
+      {forecast && (
+        <div className="space-y-4">
+          <h2 className="text-sm font-semibold text-navy-800">Umsatz-Prognose</h2>
+
+          {forecast.trial_count === 0 && forecast.churn_risk.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-navy-100 p-6 text-center">
+              <p className="text-sm text-navy-400">Noch nicht genug Daten f&uuml;r Prognose</p>
+            </div>
+          ) : (
+            <>
+              {/* Info line */}
+              <p className="text-xs text-navy-400">
+                {forecast.trial_count} aktive Trials &middot; Conversion Rate: {Math.round(forecast.conversion_rate * 100)}%
+              </p>
+
+              {/* 3 scenario cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Best */}
+                <div className="bg-white rounded-2xl border-2 border-gold-500 p-5">
+                  <p className="text-[11px] font-medium text-navy-400 uppercase tracking-wider">Best Case</p>
+                  <p className="text-3xl font-extrabold text-navy-900 mt-1">{chf(forecast.scenarios.best)}</p>
+                  <p className={`text-sm font-semibold mt-2 ${forecast.scenarios.best >= forecast.current_mrr ? "text-emerald-600" : "text-red-500"}`}>
+                    {forecast.scenarios.best >= forecast.current_mrr ? "+" : ""}{chf(forecast.scenarios.best - forecast.current_mrr)}
+                  </p>
+                  <p className="text-[10px] text-navy-400 mt-1">80% Trial-Conversion</p>
+                </div>
+
+                {/* Expected */}
+                <div className="bg-white rounded-2xl border-2 border-navy-400 p-5">
+                  <p className="text-[11px] font-medium text-navy-400 uppercase tracking-wider">Erwartet</p>
+                  <p className="text-3xl font-extrabold text-navy-900 mt-1">{chf(forecast.scenarios.expected)}</p>
+                  <p className={`text-sm font-semibold mt-2 ${forecast.scenarios.expected >= forecast.current_mrr ? "text-emerald-600" : "text-red-500"}`}>
+                    {forecast.scenarios.expected >= forecast.current_mrr ? "+" : ""}{chf(forecast.scenarios.expected - forecast.current_mrr)}
+                  </p>
+                  <p className="text-[10px] text-navy-400 mt-1">Historische Rate ({Math.round(forecast.conversion_rate * 100)}%)</p>
+                </div>
+
+                {/* Worst */}
+                <div className="bg-white rounded-2xl border-2 border-gray-300 p-5">
+                  <p className="text-[11px] font-medium text-navy-400 uppercase tracking-wider">Worst Case</p>
+                  <p className="text-3xl font-extrabold text-navy-900 mt-1">{chf(forecast.scenarios.worst)}</p>
+                  <p className="text-sm font-semibold mt-2 text-red-500">
+                    {chf(forecast.scenarios.worst - forecast.current_mrr)}
+                  </p>
+                  <p className="text-[10px] text-navy-400 mt-1">10% Churn-Annahme</p>
+                </div>
+              </div>
+
+              {/* Churn risk */}
+              {forecast.churn_risk.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-2">Churn-Risiko</h3>
+                  <div className="space-y-2">
+                    {forecast.churn_risk.map((t) => (
+                      <div
+                        key={t.slug}
+                        className="bg-white rounded-xl border border-navy-100 border-l-4 border-l-red-400 px-4 py-3 flex items-center justify-between"
+                      >
+                        <div>
+                          <span className="text-sm font-semibold text-navy-900">{t.name}</span>
+                          <span className="ml-2 text-xs text-red-500 font-medium">{t.days_since_last_case} Tage seit letztem Fall</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── Upgrade Triggers ── */}
       <div>
