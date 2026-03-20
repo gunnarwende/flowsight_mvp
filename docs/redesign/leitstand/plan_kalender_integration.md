@@ -42,11 +42,17 @@ Terminüberschneidungen sichtbar machen. Outlook/Google-Kalender anbinden.
 3. **FreeBusy Fetch:** Server-side, cached 15min
 4. **UI:** Belegte Slots grau im MiniCalendar + AppointmentPicker
 
-### Offene Fragen
+### Entschiedene Fragen (2026-03-20)
 
-- Welcher Provider zuerst? (Outlook wahrscheinlicher bei CH-KMU)
-- Soll der Techniker seinen eigenen Kalender verbinden oder der Admin für alle?
-- Datenschutz: Nur Free/Busy, keine Termindetails speichern
+- **Provider:** Outlook zuerst (CH-KMU-Standard). Google Workspace als zweiter Provider bei Bedarf.
+- **Consent-Modell:** Admin-Consent pro Tenant (nicht per-user). Begründung + Details: [`kalender_integration_outlook_implementation_log.md`](kalender_integration_outlook_implementation_log.md)
+- **Datenschutz:** Nur Free/Busy (availability status), keine Termindetails speichern. Tokens verschlüsselt (App-Layer).
+- **Onboarding-Runbook:** [`docs/runbooks/outlook_kalender_onboarding.md`](../../runbooks/outlook_kalender_onboarding.md)
 
-**Aufwand:** ~8h (pro Provider)
-**Abhängigkeiten:** OAuth App Registration, Datenschutz-Klärung
+### Noch offen
+
+- Google Workspace: Scope + App Registration (erst bei Bedarf)
+- Write-back (Phase 2): Scope-Erweiterung `Calendars.ReadWrite`, neuer Consent nötig
+
+**Aufwand:** ~8h (Outlook Phase 1)
+**Abhängigkeiten:** Azure App Registration (Multi-Tenant)
