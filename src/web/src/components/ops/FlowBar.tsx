@@ -11,6 +11,7 @@ export interface SourceItem {
   icon: React.ReactNode;
   label: string;
   count: number;
+  onClick?: () => void;
 }
 
 export interface FlowStep {
@@ -172,23 +173,31 @@ export function FlowBar({
                     }
                   `}
                 >
-                  {/* Source breakdown ABOVE the count (for "Neu" KPI) */}
+                  {/* Source breakdown ABOVE the count */}
                   {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
                     <span className="flex items-center justify-between w-full px-1 sm:px-2 mb-1 text-[9px] sm:text-[10px] text-gray-500">
-                      {step.sourceBreakdown.map((s, si) => (
-                        <span key={s.label} className={`inline-flex items-center gap-1 ${si === 0 ? "" : si === step.sourceBreakdown!.length - 1 ? "" : ""}`}>
-                          <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">{s.icon}</span>
-                          <span className="font-semibold">{s.count}</span>
-                        </span>
+                      {step.sourceBreakdown.map((s) => (
+                        s.onClick ? (
+                          <button key={s.label} onClick={(e) => { e.stopPropagation(); s.onClick!(); }} className="inline-flex items-center gap-1 hover:text-gray-700 transition-colors">
+                            <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">{s.icon}</span>
+                            <span className="font-semibold">{s.count}</span>
+                          </button>
+                        ) : (
+                          <span key={s.label} className="inline-flex items-center gap-1">
+                            <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">{s.icon}</span>
+                            <span className="font-semibold">{s.count}</span>
+                          </span>
+                        )
                       ))}
                     </span>
                   )}
-                  {/* Icon (for steps like "Bei uns", "Erledigt") */}
+                  {/* Icon (for steps like "Bei uns" — above count when no source breakdown) */}
                   {step.icon && !step.sourceBreakdown && <span className="text-base sm:text-lg">{step.icon}</span>}
                   <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-none mt-0.5">
                     {step.count}
                   </span>
-                  <span className="text-[9px] sm:text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
+                  <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
+                    {step.icon && step.sourceBreakdown && <span className="text-xs leading-none">{step.icon}</span>}
                     {step.label}
                   </span>
                   {step.subLabel && !step.sourceBreakdown && (
@@ -302,10 +311,17 @@ export function FlowBar({
                 {step.sourceBreakdown && step.sourceBreakdown.length > 0 && (
                   <span className="flex items-center justify-between w-full px-1 mb-1 text-[9px] text-gray-500">
                     {step.sourceBreakdown.map((s) => (
-                      <span key={s.label} className="inline-flex items-center gap-0.5">
-                        <span className="w-3.5 h-3.5 flex-shrink-0">{s.icon}</span>
-                        <span className="font-semibold">{s.count}</span>
-                      </span>
+                      s.onClick ? (
+                        <button key={s.label} onClick={(e) => { e.stopPropagation(); s.onClick!(); }} className="inline-flex items-center gap-0.5 hover:text-gray-700 transition-colors">
+                          <span className="w-3.5 h-3.5 flex-shrink-0">{s.icon}</span>
+                          <span className="font-semibold">{s.count}</span>
+                        </button>
+                      ) : (
+                        <span key={s.label} className="inline-flex items-center gap-0.5">
+                          <span className="w-3.5 h-3.5 flex-shrink-0">{s.icon}</span>
+                          <span className="font-semibold">{s.count}</span>
+                        </span>
+                      )
                     ))}
                   </span>
                 )}
@@ -313,7 +329,8 @@ export function FlowBar({
                 <span className="text-2xl font-extrabold text-gray-900 leading-none mt-0.5">
                   {step.count}
                 </span>
-                <span className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
+                <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-gray-500 uppercase tracking-wider mt-1">
+                  {step.icon && step.sourceBreakdown && <span className="text-xs leading-none">{step.icon}</span>}
                   {step.label}
                 </span>
                 {step.subLabel && !step.sourceBreakdown && (

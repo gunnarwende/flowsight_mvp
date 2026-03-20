@@ -113,6 +113,18 @@ function matchesNode(c: LeitzentraleCase, node: string): boolean {
       return c.status === "done" && c.review_rating != null;
     case "bewertung_angefragt":
       return c.status === "done" && !!c.review_sent_at && c.review_rating == null;
+    case "eingang_voice":
+      return c.status === "new" && c.source === "voice";
+    case "eingang_web":
+      return c.status === "new" && (c.source === "wizard" || c.source === "website");
+    case "eingang_manual":
+      return c.status === "new" && c.source !== "voice" && c.source !== "wizard" && c.source !== "website";
+    case "erledigt_voice":
+      return c.status === "done" && c.source === "voice";
+    case "erledigt_web":
+      return c.status === "done" && (c.source === "wizard" || c.source === "website");
+    case "erledigt_manual":
+      return c.status === "done" && c.source !== "voice" && c.source !== "wizard" && c.source !== "website";
     default:
       return true;
   }
@@ -278,6 +290,7 @@ export function LeitzentraleView({
   const flowStats = useMemo(() => {
     let eingang = 0, beiUns = 0, erledigt = 0, notfaelle = 0;
     let voice = 0, web = 0, manual = 0;
+    let doneVoice = 0, doneWeb = 0, doneManual = 0;
     let reviewSent = 0, reviewReceived = 0;
     for (const c of cases) {
       const ct = new Date(c.created_at).getTime();
@@ -292,13 +305,18 @@ export function LeitzentraleView({
         beiUns++;
         if (c.urgency === "notfall") notfaelle++;
       }
-      if (c.status === "done" && ut >= cutoff) erledigt++;
+      if (c.status === "done" && ut >= cutoff) {
+        erledigt++;
+        if (c.source === "voice") doneVoice++;
+        else if (c.source === "wizard" || c.source === "website") doneWeb++;
+        else doneManual++;
+      }
       if (c.status === "done") {
         if (c.review_sent_at) reviewSent++;
         if (c.review_rating != null) reviewReceived++;
       }
     }
-    return { eingang, beiUns, erledigt, notfaelle, voice, web, manual, reviewSent, reviewReceived };
+    return { eingang, beiUns, erledigt, notfaelle, voice, web, manual, doneVoice, doneWeb, doneManual, reviewSent, reviewReceived };
   }, [cases, cutoff]);
 
   // ── Techniker view (after ALL hooks) ──────────────────────────────
@@ -360,9 +378,9 @@ export function LeitzentraleView({
       label: "Neu",
       accent: "blue",
       sourceBreakdown: [
-        { icon: PhoneIcon, label: "Tel", count: flowStats.voice },
-        { icon: GlobeIcon, label: "Web", count: flowStats.web },
-        { icon: PencilIcon, label: "Stift", count: flowStats.manual },
+        { icon: PhoneIcon, label: "Tel", count: flowStats.voice, onClick: () => { setActiveNode("eingang_voice"); setCurrentPage(1); } },
+        { icon: GlobeIcon, label: "Web", count: flowStats.web, onClick: () => { setActiveNode("eingang_web"); setCurrentPage(1); } },
+        { icon: PencilIcon, label: "Stift", count: flowStats.manual, onClick: () => { setActiveNode("eingang_manual"); setCurrentPage(1); } },
       ],
     },
     {
@@ -380,10 +398,15 @@ export function LeitzentraleView({
     },
     {
       key: "erledigt",
-      icon: <span className="text-lg">✅</span>,
+      icon: <span className="text-sm">✅</span>,
       count: flowStats.erledigt,
       label: "Erledigt",
       accent: "emerald",
+      sourceBreakdown: [
+        { icon: PhoneIcon, label: "Tel", count: flowStats.doneVoice, onClick: () => { setActiveNode("erledigt_voice"); setCurrentPage(1); } },
+        { icon: GlobeIcon, label: "Web", count: flowStats.doneWeb, onClick: () => { setActiveNode("erledigt_web"); setCurrentPage(1); } },
+        { icon: PencilIcon, label: "Stift", count: flowStats.doneManual, onClick: () => { setActiveNode("erledigt_manual"); setCurrentPage(1); } },
+      ],
     },
   ];
 
