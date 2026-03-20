@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-19 (Leitzentrale v3 FlowBar, Review Pre-Filter, FB1-FB6 komplett)
+**Datum:** 2026-03-20 (Review KPI live mit Google-Durchschnitt, klickbare Sub-Filter, 60 Demo-Cases, Timeline Auto-Refresh)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -51,18 +51,18 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
 | Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
 | Widmer H. & Co. AG (Horgen) | widmer-sanitaer | wizard | Website LIVE |
-| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | voice, wizard, ops, reviews, sms | **GTM Goldstandard** — D+B LIVE, C READY, 15 Demo-Cases seeded |
+| **Jul. Weinberger AG (Thalwil)** | weinberger-ag | voice, wizard, ops, reviews, sms | **GTM Goldstandard** — D+B LIVE, C READY, 75+ Cases (60 done + Reviews), Google 4.4★ |
 | BigBen Pub (Zürich) | bigben-pub | — | Custom Demo |
 
 ## Aktueller Stand
 
-- **Leitzentrale v3 FlowBar (19.03.):** PRs #287-#290. Kompletter Overhaul: CSS Grid (gleiche KPI-Breiten), 7d/30d/YTD-Toggle, Quellen-Aufschlüsselung (📞Tel/🌐Web/✏️Stift) ÜBER Zahl, 👷 Bauarbeiter + ✅ Häkchen Emojis, immer goldene Sterne, Mobile 2x2 Grid. Period filtert Tabelle (aktive Fälle immer sichtbar). Techniker: Pagination (15/8 Desktop/Mobile), eigener Period-Toggle, "Nächster Einsatz" immer sichtbar.
-- **Review Pre-Filter (19.03.):** PR #288. Sterne-Picker auf /review/[caseId] → ≥4★ zeigt Google-Link, ≤3★ nur "Danke" (kein Google). `review_rating` + `review_received_at` in DB. API: POST /api/review/[caseId]/rate. Gold-Status in Tabelle (rating ≥ 4).
-- **Shared Utilities (19.03.):** statusColors.ts (in_arbeit=orange, warten=grau, done+rating≥4=gold), getGreeting.ts, plzCityMap.ts (shared zwischen Webhook + CreateCaseModal).
-- **Quick Wins (19.03.):** PLZ→Stadt Auto-Fill, Pflichtfeld-Markierung (rotes *), Termin-Kollisions-Warnung, Sticky Case-ID, 48px Mobile Tap-Targets, Techniker-Nav aufgeräumt, Reset-Button bei "Keine Fälle".
-- **Scaling & Access (18.03.):** PRs #277-#280. Tenant-Switcher, Support-System, Rollen-Switch, Deploy-Status.
-- **Leitsystem Phase 1-4 (17.-18.03.):** PRs #238-#267. Login OTP, PWA, Falldetail, Kommunikation, Staff CRUD.
-- **17 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard.
+- **Review KPI + Demo-Daten (20.03.):** PRs #292-#293. Bewertungs-KPI zeigt Google-Durchschnitt aus Tenant-Modules (Weinberger: 4.4★). 60 Done-Cases geseedet (20 mit Rating, 40 nur angefragt). Klickbare Sub-Filter "X erhalten" / "Y angefragt" filtern Tabelle. Timeline Auto-Refresh nach jedem Speichern. Header + Nav Polish. Google-Bewertungen E2E-Plan erstellt.
+- **Leitzentrale v3 FlowBar (19.03.):** PRs #287-#290. CSS Grid KPIs, 7d/30d/YTD-Toggle, Quellen-Aufschlüsselung ÜBER Zahl, 👷+✅ Emojis, Gold-Sterne, Mobile 2x2, Period filtert Tabelle (aktive Fälle immer sichtbar). Techniker: Pagination, Period-Toggle, "Nächster Einsatz" immer sichtbar.
+- **Review Pre-Filter (19.03.):** PR #288. ★-Picker → ≥4★ Google, ≤3★ intern. Gold-Status in Tabelle.
+- **Shared Utilities (19.03.):** statusColors.ts, getGreeting.ts, plzCityMap.ts. PLZ Auto-Fill, Pflichtfeld-Markierung, Termin-Kollision, Sticky Case-ID, 48px Tap-Targets.
+- **Scaling & Access (18.03.):** Tenant-Switcher, Support-System, Rollen-Switch.
+- **Leitsystem Phase 1-4 (17.-18.03.):** Login OTP, PWA, Falldetail, Staff CRUD.
+- **17 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard (60+ Demo-Cases + Review-Daten).
 
 ### Kondensierte Historie (04.-14.03.)
 
