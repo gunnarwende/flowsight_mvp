@@ -68,6 +68,11 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - FOUNDER_EMAIL -> Founder Outlook-Adresse. Empfängt Morning Report bei RED/YELLOW. GitHub Actions Secret.
 - (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, APP_URL -> bereits oben, müssen auch als GitHub Actions Secrets gesetzt sein)
 
+## Calendar Integration (Outlook/Graph API)
+- MICROSOFT_CLIENT_ID -> Azure Portal → App Registrations → FlowSight (multi-tenant). Application (client) ID.
+- MICROSOFT_CLIENT_SECRET -> Azure Portal → App Registrations → Certificates & secrets. Client secret value (nicht die ID).
+- CALENDAR_ENCRYPTION_KEY -> selbst generiert (Bitwarden). 64 hex chars (32 bytes). AES-256-GCM Key für Token-Verschlüsselung in tenants.modules + HMAC-Signatur OAuth State. Generieren: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
 ## App / Routing
 - APP_URL -> Canonical app URL (server-side, z.B. https://flowsight-mvp.vercel.app). Auch als GitHub Actions Secret (für lifecycle-tick + morning-report cron).
 - NEXT_PUBLIC_APP_URL -> Same, but client-accessible (NEXT_PUBLIC_ prefix)
