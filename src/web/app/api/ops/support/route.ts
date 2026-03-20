@@ -42,30 +42,33 @@ export async function POST(request: NextRequest) {
 
   // Generate signed download URLs for attachments
   const supabase = getServiceClient();
-  const attachmentLines: string[] = [];
+  const attachmentData: { name: string; url: string }[] = [];
   for (const path of attachments) {
     if (!path.startsWith("support/")) continue; // safety
     const { data } = await supabase.storage
       .from(BUCKET)
       .createSignedUrl(path, DOWNLOAD_URL_TTL);
     if (data?.signedUrl) {
-      const fileName = path.split("/").pop() ?? path;
-      attachmentLines.push(`- [${fileName}](${data.signedUrl})`);
+      const fileName = path.split("/").pop()?.replace(/^[a-f0-9]{8}-/, "") ?? path;
+      attachmentData.push({ name: fileName, url: data.signedUrl });
     }
   }
 
   const issueTitle = `[Support] ${subject} — ${tenantName}`;
+  const timestamp = new Date().toISOString();
+
+  // GitHub Issue body (Markdown)
   const issueBody = [
     `## Kontext`,
     `- **Betrieb:** ${tenantName}`,
     `- **Gemeldet von:** ${userEmail}`,
-    `- **Zeitpunkt:** ${new Date().toISOString()}`,
+    `- **Zeitpunkt:** ${timestamp}`,
     `- **Tenant-ID:** ${scope.tenantId ?? "—"}`,
     ``,
     `## Beschreibung`,
     message.trim(),
-    ...(attachmentLines.length > 0
-      ? [``, `## Anhänge (${attachmentLines.length})`, ...attachmentLines]
+    ...(attachmentData.length > 0
+      ? [``, `## Anhänge (${attachmentData.length})`, ...attachmentData.map((a) => `- [${a.name}](${a.url})`)]
       : []),
     ``,
     `---`,
@@ -123,16 +126,39 @@ export async function POST(request: NextRequest) {
         ? `${issueTitle} (#${issueNumber})`
         : issueTitle;
 
-      const emailText = [
-        issueBody,
-        ...(ghSuccess ? [``, `GitHub Issue: https://github.com/gunnarwende/flowsight_mvp/issues/${issueNumber}`] : []),
-      ].join("\n");
+      const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      const attachmentHtml = attachmentData.length > 0
+        ? `<h3>Anhänge (${attachmentData.length})</h3><ul>${attachmentData.map((a) =>
+            `<li><a href="${esc(a.url)}" style="color:#2563eb">${esc(a.name)}</a></li>`
+          ).join("")}</ul>`
+        : "";
+
+      const ghLink = ghSuccess
+        ? `<p><a href="https://github.com/gunnarwende/flowsight_mvp/issues/${issueNumber}" style="color:#2563eb">GitHub Issue #${issueNumber}</a></p>`
+        : "";
+
+      const emailHtml = `
+        <div style="font-family:sans-serif;max-width:600px;color:#1f2937">
+          <h2 style="margin-bottom:4px">${esc(issueTitle)}</h2>
+          <table style="font-size:14px;color:#6b7280;margin-bottom:16px">
+            <tr><td style="padding-right:12px"><strong>Betrieb:</strong></td><td>${esc(tenantName)}</td></tr>
+            <tr><td style="padding-right:12px"><strong>Von:</strong></td><td>${esc(userEmail)}</td></tr>
+            <tr><td style="padding-right:12px"><strong>Zeitpunkt:</strong></td><td>${esc(timestamp)}</td></tr>
+          </table>
+          <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:16px;white-space:pre-wrap;font-size:14px">${esc(message.trim())}</div>
+          ${attachmentHtml}
+          ${ghLink}
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0"/>
+          <p style="font-size:12px;color:#9ca3af">Erstellt aus dem Leitsystem via /ops/hilfe</p>
+        </div>
+      `;
 
       await resend.emails.send({
         from: process.env.MAIL_FROM ?? "noreply@send.flowsight.ch",
         to: founderEmail,
         subject: emailSubject,
-        text: emailText,
+        html: emailHtml,
       });
       emailSent = true;
     } catch (e) {
