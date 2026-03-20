@@ -129,9 +129,13 @@ export async function POST(request: NextRequest) {
       const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
       const attachmentHtml = attachmentData.length > 0
-        ? `<h3>Anhänge (${attachmentData.length})</h3><ul>${attachmentData.map((a) =>
-            `<li><a href="${esc(a.url)}" style="color:#2563eb">${esc(a.name)}</a></li>`
-          ).join("")}</ul>`
+        ? `<h3>Anhänge (${attachmentData.length})</h3>${attachmentData.map((a) => {
+            const isImage = /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(a.name);
+            if (isImage) {
+              return `<div style="margin-bottom:12px"><img src="${esc(a.url)}" alt="${esc(a.name)}" style="max-width:100%;max-height:400px;border-radius:8px;border:1px solid #e5e7eb"/><br/><a href="${esc(a.url)}" style="color:#2563eb;font-size:12px">${esc(a.name)}</a></div>`;
+            }
+            return `<div style="margin-bottom:8px"><a href="${esc(a.url)}" style="color:#2563eb">${esc(a.name)}</a></div>`;
+          }).join("")}`
         : "";
 
       const ghLink = ghSuccess
