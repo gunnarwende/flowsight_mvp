@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PushSubscribeButton } from "./PushSubscribeButton";
 
 interface NavItem {
   label: string;
@@ -155,6 +156,8 @@ export function CeoShell({
           <p className="text-[10px] text-gray-600 truncate leading-tight mt-0.5">{userEmail}</p>
         </div>
       </div>
+      {/* Push notifications */}
+      <PushSubscribeButton />
       {/* Quick link to Leitsystem */}
       <Link
         href="/ops/cases"

@@ -52,6 +52,50 @@ self.addEventListener("message", (event) => {
   }
 });
 
+// ── Push Notifications ─────────────────────────────────────────────────────
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  let payload;
+  try {
+    payload = event.data.json();
+  } catch {
+    payload = { title: "FlowSight", body: event.data.text() };
+  }
+
+  const options = {
+    body: payload.body ?? "",
+    icon: "/api/ceo/pwa/icon?size=192",
+    badge: "/api/ceo/pwa/icon?size=96",
+    tag: payload.tag ?? "flowsight-ceo",
+    data: { url: payload.url ?? "/ceo/pulse" },
+    vibrate: [100, 50, 100],
+  };
+
+  event.waitUntil(self.registration.showNotification(payload.title ?? "FlowSight CEO", options));
+});
+
+// ── Notification Click ─────────────────────────────────────────────────────
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url ?? "/ceo/pulse";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      // Focus existing CEO tab if open
+      for (const client of clients) {
+        if (client.url.includes("/ceo") && "focus" in client) {
+          client.navigate(url);
+          return client.focus();
+        }
+      }
+      // Open new tab
+      return self.clients.openWindow(url);
+    })
+  );
+});
+
 // ── Fetch ──────────────────────────────────────────────────────────────────
 self.addEventListener("fetch", (event) => {
   const { request } = event;
