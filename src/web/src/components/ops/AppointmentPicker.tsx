@@ -256,18 +256,38 @@ export function AppointmentPicker({
     onConfirm(startIso, endIso);
   };
 
+  // Count busy slots for legend
+  const busyCount = busyTimes.size;
+
   return (
-    <div className="border border-gray-200 rounded-xl bg-white shadow-sm p-4 mt-3">
-      {/* Outlook status indicator */}
+    <div className="border border-gray-200 rounded-2xl bg-white shadow-md p-5 mt-3">
+      {/* Header: Outlook status + legend */}
       {calendarConnected && startDate && (
-        <div className="flex items-center gap-1.5 mb-3 text-[11px] text-gray-500">
-          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
-          Outlook-Kalender verbunden
-          {loadingBusy && <span className="text-gray-400 ml-1">— lade…</span>}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 text-[11px] text-gray-500">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            <span className="font-medium">Outlook verbunden</span>
+            {loadingBusy && <span className="text-gray-400">— lade…</span>}
+          </div>
+          {busyCount > 0 && !loadingBusy && (
+            <div className="flex items-center gap-3 text-[10px]">
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-1.5 rounded-full bg-emerald-200" />
+                <span className="text-gray-400">frei</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-1.5 rounded-full bg-red-300" />
+                <span className="text-gray-400">belegt</span>
+              </span>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-5">
         {/* Calendar */}
         <div className="flex-1 min-w-[240px]">
           <MiniCalendar
@@ -283,8 +303,8 @@ export function AppointmentPicker({
         </div>
 
         {/* Time columns */}
-        <div className="flex gap-3 md:gap-2">
-          <div className="flex-1 md:w-20">
+        <div className="flex gap-2">
+          <div className="flex-1" style={{ minWidth: busyCount > 0 ? "7.5rem" : "5rem" }}>
             <TimeSlotSelector
               label="Von"
               value={startTime}
@@ -293,7 +313,7 @@ export function AppointmentPicker({
               busySlots={busyTimes}
             />
           </div>
-          <div className="flex-1 md:w-20">
+          <div className="flex-1" style={{ minWidth: busyCount > 0 ? "7.5rem" : "5rem" }}>
             <TimeSlotSelector
               label="Bis"
               value={endTime}
@@ -308,25 +328,30 @@ export function AppointmentPicker({
 
       {/* Validation error */}
       {validationError && (
-        <p className="mt-2 text-xs text-red-600 font-medium">{validationError}</p>
+        <div className="mt-3 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2">
+          <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-xs text-red-700 font-medium">{validationError}</p>
+        </div>
       )}
 
       {/* Summary + Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-3 border-t border-gray-100 gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-4 border-t border-gray-100 gap-3">
         <div className="text-sm text-gray-600 min-w-0">
           {startDate ? (
-            <span className="font-medium text-gray-800 break-words">
+            <span className="font-semibold text-gray-900 break-words">
               {formatPickerSummary(startDate, endDate, startTime, endTime)}
             </span>
           ) : (
-            <span className="text-gray-400">Tag wählen</span>
+            <span className="text-gray-400 italic">Tag wählen…</span>
           )}
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
           >
             Abbrechen
           </button>
@@ -334,7 +359,7 @@ export function AppointmentPicker({
             type="button"
             onClick={handleConfirm}
             disabled={!canConfirm}
-            className="rounded-lg px-4 py-1.5 text-xs font-semibold text-white shadow-sm disabled:opacity-40 transition-colors"
+            className="rounded-lg px-5 py-2 text-xs font-semibold text-white shadow-sm disabled:opacity-40 transition-all hover:shadow-md"
             style={{ backgroundColor: brandColor }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = canConfirm ? "1" : "0.4"; }}
