@@ -81,11 +81,23 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Review Engine (W12)
 - GOOGLE_REVIEW_URL -> Google Maps Review-URL des Kunden (single tenant, server-side)
 
-## Anthropic (QA Sweep Vision Layer — Phase B)
-- ANTHROPIC_API_KEY -> Anthropic Console (used by qa_sweep.mjs Phase B for screenshot analysis via Claude Vision API). Optional: Phase A (DOM checks) runs without it.
+## Anthropic (CEO-App AI + QA Sweep)
+- ANTHROPIC_API_KEY -> Anthropic Console (console.anthropic.com → API Keys)
+  - CEO-App: Pulse-Comment (claude-haiku-4-5-20251001), Triage (claude-haiku-4-5-20251001), Analysis (claude-opus-4-6), Tenant-Insights
+  - QA Sweep: qa_sweep.mjs Phase B (screenshot analysis via Claude Vision API)
+  - Optional: CEO-App AI features degrade gracefully (comment: null) without key. QA Phase A (DOM checks) runs without it.
 
-## OpenAI (Whisper STT for CoreBot voice tickets)
-- OPENAI_API_KEY -> OpenAI Dashboard (required for voice→issue transcription in CoreBot)
+## OpenAI (CEO-App AI + CoreBot STT)
+- OPENAI_API_KEY -> OpenAI Dashboard (platform.openai.com → API Keys)
+  - CEO-App: Outreach Drafts (gpt-4o), Revenue Forecast (gpt-4o)
+  - CoreBot: voice→issue transcription via Whisper STT
+  - Optional: CEO-App AI features degrade gracefully without key.
+
+## Sentry (CEO-App Digest)
+- SENTRY_API_TOKEN -> Sentry Dashboard → Settings → Auth Tokens → Project Read-Only Token
+  - Used by CEO-App Monitoring → Sentry Digest (letzte 24h Errors, gruppiert nach Area)
+  - Scope: project:read on flowsight_mvp project only
+  - Optional: Sentry Digest zeigt Platzhalter ohne Token.
 
 ## CoreBot (Telegram → GitHub Issues)
 - GITHUB_ISSUES_TOKEN -> GitHub Fine-grained PAT (Issues RW, flowsight_mvp only)

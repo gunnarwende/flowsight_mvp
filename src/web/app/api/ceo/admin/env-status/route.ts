@@ -14,6 +14,9 @@ const REQUIRED_VARS = [
   "LIFECYCLE_TICK_SECRET",
   "FOUNDER_EMAIL",
   "APP_URL",
+  "ANTHROPIC_API_KEY",
+  "OPENAI_API_KEY",
+  "SENTRY_API_TOKEN",
 ] as const;
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -24,11 +27,14 @@ const CATEGORY_MAP: Record<string, string> = {
   TWILIO_ACCOUNT_SID: "SMS",
   ECALL_API_USERNAME: "SMS",
   SENTRY_DSN: "Monitoring",
+  SENTRY_API_TOKEN: "Monitoring",
   TELEGRAM_BOT_TOKEN: "Monitoring",
   GITHUB_ISSUES_TOKEN: "Ops",
   LIFECYCLE_TICK_SECRET: "Ops",
   FOUNDER_EMAIL: "Ops",
   APP_URL: "Ops",
+  ANTHROPIC_API_KEY: "AI",
+  OPENAI_API_KEY: "AI",
 };
 
 export async function GET() {
