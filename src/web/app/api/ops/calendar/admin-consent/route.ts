@@ -20,7 +20,7 @@ export async function GET() {
     return NextResponse.json({ error: "Missing MICROSOFT_CLIENT_ID or APP_URL" }, { status: 500 });
   }
 
-  const redirectUri = `${appUrl}/ops/settings`;
+  const redirectUri = `${appUrl}/api/ops/calendar/callback`;
 
   // v2 admin consent endpoint — separate from /authorize
   const params = new URLSearchParams({
