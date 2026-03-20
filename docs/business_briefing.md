@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-19
+> Letzte Aktualisierung: 2026-03-20
 
 ---
 
@@ -106,7 +106,10 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 - **Pre-Filter:** Kunde gibt 1-5 Sterne → ≥4★ sieht Google-Link, ≤3★ sieht nur "Danke" (kein Google-Redirect)
 - Tracking: `review_rating`, `review_received_at`, `review_sent_count` auf Case
 - **Gold-Status:** Fälle mit rating ≥ 4 werden gold markiert in der Leitzentrale
+- **Review-KPI:** Google-Durchschnitt aus Tenant-Modules (z.B. 4.4★), "X erhalten / Y angefragt" klickbar als Filter
+- **Klickbare Sub-Filter:** "erhalten" filtert auf Fälle mit Rating, "angefragt" auf gesendet-ohne-Rating
 - Google Review URL pro Tenant konfigurierbar
+- **E2E-Plan:** `docs/redesign/leitstand/plan_google_bewertungen.md`
 
 ### 3.6 Morning Report
 - Täglicher Statusbericht: 10 KPIs, Severity-Ampel (GREEN/YELLOW/RED)

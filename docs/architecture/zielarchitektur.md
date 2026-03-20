@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 1.6 | **Datum:** 2026-03-19
+**Version:** 1.7 | **Datum:** 2026-03-20
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v1.6 — 27 Decisions (D1-D27). Leitzentrale v3 FlowBar, Review Pre-Filter, Shared Status-Farben. Thema C geparkt.
+**Status:** v1.7 — 28 Decisions (D1-D28). Review KPI mit Google-Durchschnitt, klickbare Sub-Filter, Timeline Auto-Refresh. Thema C geparkt.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -39,6 +39,7 @@
 | D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **GEPARKT** | Founder | Nach Go-Live |
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
 | D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
+| D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
 
 ---
 

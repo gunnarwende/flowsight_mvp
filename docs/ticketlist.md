@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-19 (Leitzentrale v3 FlowBar + Review Pre-Filter + FB1-FB6 deployed)
+**Updated:** 2026-03-20 (Review KPI live, 60 Demo-Cases, klickbare Sub-Filter, Timeline Auto-Refresh)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,10 +9,10 @@
 
 ## Snapshot
 
-- **Produkt:** 17 Module LIVE + Leitzentrale v3 (FlowBar, Gold-Sterne, Review Pre-Filter)
-- **Kunden:** 7 Websites live (Doerfler, Brunner HT, Walter Leuthold, Orlandini, Widmer, **Weinberger AG**, BigBen Pub)
+- **Produkt:** 17 Module LIVE + Leitzentrale v3 + Review KPI (Google 4.4★, klickbare Filter)
+- **Kunden:** 7 Websites live, Weinberger = 75+ Cases mit Review-Daten
 - **BLOCKER:** 0
-- **Phase:** Leitzentrale v3 deployed (19.03.). Review Pre-Filter live. Kalender-Integration wartet auf Founder-Setup.
+- **Phase:** Review-KPI + Demo-Daten deployed (20.03.). Nächste Schritte: Voice Agent finalisieren, Repo aufräumen, E2E-Tests.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
