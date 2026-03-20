@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-20 (CEO-App Thema C komplett: 10 Phasen, 9 Seiten, AI-Provider, 27 Features)
+**Datum:** 2026-03-20 (CEO-App komplett + Sentry Digest + Web Push + PWA installierbar. Alle Founder Tasks F1-F8 done.)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -59,7 +59,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
-- **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen in einer Session: Pulse (Ampel+KPIs+Alerts), Betriebe (Grid+Health Score+Deep-Dive), Pipeline (Funnel+Smart-Call-Liste+CEO-Kalender), Finanzen (MRR+P&L+Unit Economics+Forecast), Monitoring (Health+Tick+Env-Status), AI-Copilot (Anthropic+OpenAI Provider, Pulse-Comment, Tenant-Insight), Notifications (Feed+Comms-KPIs), Knowledge Base (37 Runbooks), Forecast (3 Szenarien+Churn Risk), Team (Tasks+Notes). 3 DB-Migrationen (ceo_costs, ceo_ai_usage, ceo_tasks+ceo_notes). Navy+Gold Design System. Founder-Tasks: API Keys setzen für AI-Aktivierung.
+- **Sentry Digest + Web Push + PWA (20.03.):** PR #322. Monitoring zeigt jetzt echte Sentry-Errors (25 Issues live). Web Push komplett (SW, Subscribe API, Send API, VAPID Keys). PWA installierbar auf Android/Windows (manifest mit screenshots, id, scope). Alle Founder Tasks F1-F8 erledigt. Outlook Kalender OAuth live (PRs #317-#321).
+- **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, AI-Copilot, Notifications, Knowledge Base (37 Runbooks), Forecast, Team. 4 DB-Migrationen. Navy+Gold Design. AI-Provider live (Anthropic+OpenAI).
 - **Leitstand Feedback-Runde (20.03.):** PRs #295-#302. FB9-FB15: Techniker Bewertungs-KPI Fix, Gold-Ring-Logik ≤3★, Source-Breakdown auf Erledigt, Support Foto-Upload, HTML-E-Mail mit Inline-Bildern.
 - **Review KPI + Demo-Daten (20.03.):** PRs #292-#293. Bewertungs-KPI zeigt Google-Durchschnitt aus Tenant-Modules (Weinberger: 4.4★). 60 Done-Cases geseedet (20 mit Rating, 40 nur angefragt). Klickbare Sub-Filter "X erhalten" / "Y angefragt" filtern Tabelle. Timeline Auto-Refresh nach jedem Speichern. Header + Nav Polish. Google-Bewertungen E2E-Plan erstellt.
 - **Leitzentrale v3 FlowBar (19.03.):** PRs #287-#290. CSS Grid KPIs, 7d/30d/YTD-Toggle, Quellen-Aufschlüsselung ÜBER Zahl, 👷+✅ Emojis, Gold-Sterne, Mobile 2x2, Period filtert Tabelle (aktive Fälle immer sichtbar). Techniker: Pagination, Period-Toggle, "Nächster Einsatz" immer sichtbar.
