@@ -291,4 +291,141 @@ Alles andere ist entweder plattformweit oder variabel.
 
 7. **Für die 10er-Betriebsprofilmatrix ist die sinnvollste Klassifikation:** Fixkosten pro Betrieb (CHF 1) + Plattform-Umlage (CHF 5-6 bei 10 Tenants) + Variable pro Fall (CHF 0.43-0.82 je nach Voice/Wizard und Optimierungsstufe).
 
-8. **Die Marge ist bei unserem ICP-Kern (4-20 MA) sehr gesund: 80-95%.** Das Risiko liegt ausschliesslich bei grossen Betrieben (30+ MA) mit hohem Voice-Volumen — und das löst das Overage-Modell.
+8. **KORREKTUR (nach 10er-Matrix): Die Marge kippt früher als gedacht.** Nicht erst bei 30+ MA, sondern bereits bei serviceintensiven 4-5-Mann-Betrieben (140 Fälle/Mo, Profil 6). Der Grund: SMS-Kosten über ALLE Fälle (nicht nur Voice) dominieren ab ~100 Fällen/Mo.
+
+---
+
+## 10 Realitätsprofile und Margenmatrix
+
+### Vorbemerkung: Kritische Korrektur an unserer bisherigen Denke
+
+**Die gefährlichste Annahme war: "Voice ist der Hauptkostentreiber (79%)."**
+
+Das stimmte für einen einzelnen isolierten Voice-Call. Aber wenn wir einen ganzen Betrieb modellieren (100-300 Fälle/Mo, davon 25-35% Voice, ALLE Fälle bekommen SMS), ergibt sich ein komplett anderes Bild:
+
+**SMS ist in ALLEN 10 Profilen der grösste Kostentreiber (57-84% der variablen Kosten).**
+
+Warum? Weil SMS an ALLE Fälle geht (Voice + Wizard), während Voice-Kosten nur Voice-Fälle betreffen. Bei einem 4-5-Mann-Betrieb mit 100 Fällen und 25 Voice-Calls:
+- Voice: 25 × CHF 0.46 = CHF 12
+- SMS: 100 × 3 SMS × CHF 0.12 = CHF 36
+- **SMS = 75% der variablen Kosten**
+
+Das verschiebt den Optimierungshebel: nicht LLM-Downgrade (spart CHF 4/Mo bei diesem Profil), sondern **SMS-Reduktion pro Fall** (E-Mail statt SMS wo möglich).
+
+### Annahmen für alle Profile
+
+| Parameter | Wert | Confidence |
+|-----------|------|------------|
+| Voice-Kosten IST | CHF 0.46/Call | **KNOWN** (gemessen) |
+| Voice-Kosten optimiert | CHF 0.31/Call | Assumption ±20% |
+| SMS-Kosten | CHF 0.12/SMS | Assumption ±30% |
+| Fix pro Betrieb | CHF 1/Mo | KNOWN |
+| Plattform-Fix (Umlage bei 10 Tenants) | CHF 6/Mo | Assumption |
+| Preis Standard (≤20 MA) | CHF 299 | — |
+| Preis Professional (21-30 MA) | CHF 799 | — |
+
+### A) Base Case (Retell IST, 10 Tenants)
+
+| # | Profil | MA | Fälle | Voice | SMS total | Voice CHF | SMS CHF | Fix CHF | **TOTAL** | **DB** | **Marge** | **70%?** |
+|---|--------|-----|-------|-------|-----------|-----------|---------|---------|-----------|--------|-----------|----------|
+| 1 | 1-Mann, ruhig | 1 | 15 | 3 | 15 | 1 | 2 | 7 | **10** | **289** | **97%** | JA |
+| 2 | 1-Mann, Baustelle | 1 | 30 | 10 | 60 | 5 | 7 | 7 | **19** | **280** | **94%** | JA |
+| 3 | 2-Mann, normal | 2 | 45 | 12 | 90 | 6 | 11 | 7 | **23** | **276** | **92%** | JA |
+| 4 | 2-3 Mann, Notfall | 3 | 70 | 20 | 210 | 9 | 25 | 7 | **41** | **258** | **86%** | JA |
+| 5 | 4-5 Mann, Standard | 5 | 100 | 25 | 300 | 12 | 36 | 7 | **55** | **245** | **82%** | JA |
+| 6 | 4-5 Mann, serviceintensiv | 5 | 140 | 35 | 560 | 16 | 67 | 7 | **90** | **209** | **70%** | GRENZE |
+| 7 | 6-8 Mann, organisiert | 7 | 180 | 40 | 540 | 18 | 65 | 7 | **90** | **209** | **70%** | GRENZE |
+| 8 | 6-10 Mann, Notdienst | 8 | 220 | 60 | 880 | 28 | 106 | 7 | **140** | **159** | **53%** | NEIN |
+| 9 | 10-15 Mann, Service | 12 | 300 | 70 | 1200 | 32 | 144 | 7 | **183** | **116** | **39%** | NEIN |
+| 10 | 20+ Mann, Durchsatz | 22 | 450 | 90 | 1800 | 41 | 216 | 7 | **264** | **535** | **67%** | NEIN |
+
+**Profil 10 mit CHF 799 (Professional) → DB CHF 535, Marge 67% — knapp unter 70%.**
+
+### B) Hard Reality Case (SMS +50%, Voice +20%, eCall Grundgebühr CHF 40)
+
+Konservativere Annahmen: eCall SMS tatsächlich CHF 0.18, Voice etwas teurer, eCall Grundgebühr real.
+
+| # | Profil | Fälle | Voice CHF | SMS CHF | Fix CHF | **TOTAL** | **DB** | **Marge** | **70%?** |
+|---|--------|-------|-----------|---------|---------|-----------|--------|-----------|----------|
+| 1 | 1-Mann, ruhig | 15 | 2 | 3 | 11 | **15** | **284** | **95%** | JA |
+| 2 | 1-Mann, Baustelle | 30 | 6 | 11 | 11 | **27** | **272** | **91%** | JA |
+| 3 | 2-Mann, normal | 45 | 7 | 16 | 11 | **34** | **265** | **89%** | JA |
+| 4 | 2-3 Mann, Notfall | 70 | 11 | 38 | 11 | **60** | **239** | **80%** | JA |
+| 5 | 4-5 Mann, Standard | 100 | 14 | 54 | 11 | **79** | **220** | **74%** | JA |
+| 6 | 4-5 Mann, serviceintensiv | 140 | 19 | 101 | 11 | **131** | **168** | **56%** | NEIN |
+| 7 | 6-8 Mann, organisiert | 180 | 22 | 97 | 11 | **130** | **169** | **56%** | NEIN |
+| 8 | 6-10 Mann, Notdienst | 220 | 33 | 158 | 11 | **202** | **97** | **32%** | NEIN |
+| 9 | 10-15 Mann, Service | 300 | 39 | 216 | 11 | **266** | **34** | **11%** | NEIN |
+| 10 | 20+ Mann, Durchsatz | 450 | 50 | 324 | 11 | **385** | **415** | **52%** | NEIN |
+
+**Profil 9 (10-15 Mann) hat im Hard Case nur 11% Marge bei CHF 299 — praktisch Break-Even.**
+
+### C) Optimized Case (GPT-4o-mini, SMS CHF 0.12)
+
+| # | Profil | Fälle | Voice CHF | SMS CHF | Fix CHF | **TOTAL** | **DB** | **Marge** | **70%?** |
+|---|--------|-------|-----------|---------|---------|-----------|--------|-----------|----------|
+| 1-5 | Kleine Betriebe | 15-100 | 1-8 | 2-36 | 7 | 10-51 | 248-289 | **83-97%** | JA |
+| 6 | 4-5 Mann, serviceintensiv | 140 | 11 | 67 | 7 | **85** | **214** | **72%** | JA (knapp) |
+| 7 | 6-8 Mann, organisiert | 180 | 12 | 65 | 7 | **84** | **215** | **72%** | JA (knapp) |
+| 8 | 6-10 Mann, Notdienst | 220 | 19 | 106 | 7 | **131** | **168** | **56%** | NEIN |
+| 9 | 10-15 Mann, Service | 300 | 22 | 144 | 7 | **173** | **126** | **42%** | NEIN |
+| 10 | 20+ Mann, Durchsatz | 450 | 28 | 216 | 7 | **251** | **548** | **69%** | NEIN |
+
+### SMS-Dominanz über alle Profile
+
+| Profil | Voice-Anteil | SMS-Anteil | Dominant |
+|--------|-------------|-----------|----------|
+| 1 (15 Fälle) | 43% | 57% | **SMS** |
+| 5 (100 Fälle) | 24% | 76% | **SMS** |
+| 8 (220 Fälle) | 21% | 79% | **SMS** |
+| 10 (450 Fälle) | 16% | 84% | **SMS** |
+
+→ **Je mehr Fälle, desto mehr dominiert SMS die Kosten.** Voice ist nur bei sehr wenigen Fällen (Profil 1) annähernd gleichauf.
+
+### Wo das Pricing kippt
+
+**70%-Marge-Grenze (Base Case, CHF 299):**
+- **Profile 1-5 (bis 100 Fälle/Mo): SICHER** — 82-97% Marge
+- **Profile 6-7 (140-180 Fälle/Mo): GRENZE** — genau 70%, jeder SMS mehr kippt es
+- **Profile 8-10 (220+ Fälle/Mo): UNGESUND** — 39-53% Marge bei CHF 299
+
+**Kipppunkt: ~130-150 Fälle/Monat bei CHF 299.**
+Alles darüber braucht höheres Pricing oder SMS-Reduktion.
+
+### Korrigierte Pricing-Empfehlung
+
+Die bisherige Empfehlung (§4: Standard CHF 299 ≤20 MA, Professional CHF 799 21-30 MA) muss verschärft werden:
+
+**Problem:** Ein 5-MA-Betrieb mit 140 Fällen (Profil 6) ist bei CHF 299 an der Grenze. Ein 8-MA-Betrieb mit Notdienst (Profil 8) hat nur 53% Marge. Die MA-Grenze von 20 ist **zu grosszügig**.
+
+**Korrigierte Empfehlung:**
+
+| Tier | Bedingung | Preis | Inkl. Fälle | Overage |
+|------|-----------|-------|-------------|---------|
+| **Standard** | ≤5 MA ODER ≤100 Fälle/Mo | **CHF 299** | 100 Fälle | CHF 2.00/Fall |
+| **Professional** | 6-15 MA ODER 101-250 Fälle/Mo | **CHF 499** | 200 Fälle | CHF 1.50/Fall |
+| **Enterprise** | 16+ MA ODER 250+ Fälle/Mo | **Custom** (ab CHF 799) | Custom | Custom |
+
+**Warum diese Änderung:**
+1. **100 inkludierte Fälle statt 200** — bei 200 sind serviceintensive Betriebe schon an der Marge-Grenze
+2. **CHF 499 statt CHF 799 für Professional** — der Sprung von 299 auf 799 war zu gross
+3. **MA ODER Fälle** — hybride Bedingung fängt den Notdienst-Multiplikator ab
+4. **Overage CHF 2.00/Fall** — Unsere Kosten sind ~CHF 0.50-0.80/Fall → 150-300% Marge auf Overage
+
+### Founder-Fazit (nach 10er-Matrix)
+
+1. **Der wahre Sweetspot sind Profile 1-5 (1-5 MA, bis 100 Fälle/Mo): 82-97% Marge bei CHF 299.** Das ist unser Kern-ICP und hier verdienen wir richtig.
+
+2. **SMS ist der grösste Kostentreiber (57-84%), nicht Voice.** Die vorherige Analyse ("Voice = 79%") betrachtete nur einen einzelnen Call, nicht das Gesamtprofil. Über alle Fälle eines Betriebs dominiert SMS massiv.
+
+3. **Das Pricing kippt bei ~130-150 Fällen/Monat.** Nicht bei einer bestimmten MA-Grösse, sondern beim Fallvolumen. Ein 5-MA-Betrieb mit Notdienst kann gefährlicher sein als ein 10-MA-Betrieb ohne.
+
+4. **200 inkludierte Fälle waren zu grosszügig.** Bei 200 Fällen und 3-4 SMS/Fall entstehen CHF 72-96 SMS-Kosten allein — das frisst bei CHF 299 Preis die Marge. 100 inkludierte Fälle mit Overage ist sicherer.
+
+5. **Der grösste Hebel ist NICHT LLM-Downgrade (spart ~CHF 4-7/Mo pro Betrieb), sondern SMS-Reduktion.** Jeder Kommunikationspfad, der von SMS auf E-Mail verlagert wird, spart CHF 0.12 × Fallvolumen. Bei 100 Fällen/Mo × 1 SMS weniger = CHF 12/Mo Ersparnis — mehr als der LLM-Downgrade.
+
+6. **Die 5 Sales-Fragen müssen um Fallvolumen erweitert werden:** "Wie viele Kundenanfragen bearbeiten Sie pro Woche?" ist wichtiger als "Wie viele Mitarbeiter?" für die Pricing-Zuordnung.
+
+7. **Guardrail nötig: Entweder inkludierte Fälle ODER SMS-Budget.** Das reine MA-Modell ohne Volume-Cap ist bei serviceintensiven Betrieben ein Margin-Killer.
+
+8. **Im Hard Reality Case (konservative Kosten) kippt die Marge noch früher:** Profil 6 (140 Fälle) hat nur 56% statt 70%. Wir brauchen den eCall-Preis SOFORT verifiziert — das ist die pricing-kritischste Lücke.
