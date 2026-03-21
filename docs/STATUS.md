@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-20 (CEO-App komplett + Outlook-Kalender Phase 1 LIVE + Sentry Digest + Web Push + PWA installierbar.)
+**Datum:** 2026-03-21 (Voice: Laura DE, Partial Cases Fix, Pricing-Strategie FINAL, End-to-End Kostenanalyse)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -60,6 +60,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **Voice Session (21.03.):** PRs #336-#345. Laura (ElevenLabs) als neue DE-Stimme auf allen 4 Intake-Agents (Juniper bleibt INTL). Partial Cases Fix: Voice-Fälle gehen nicht mehr verloren bei fehlenden Feldern (68 historische Verluste verhindert). Urgency-Normalisierung (Aliases: "Notfall"→"notfall", "emergency"→"notfall"). SMS-Sender jetzt alphanumerisch (Tenant-Markenname statt Nummer → weniger Spam). E-Mail-Button "Fall in der Leitzentrale öffnen". Kalender Belegt/Frei Balken entfernt (cleaner). PWA Deep-Links über Trampoline-Page.
+- **Pricing-Strategie FINAL (21.03.):** PRs #340-#345. End-to-End Kostenanalyse pro Fall (CHF 0.58 minimal, CHF 0.82 typisch). SMS = dominanter Kostentreiber (57-84%, nicht Voice). OpenAI Realtime 2.9× teurer als Retell (Audio-Tokens). Finales Pricing: Standard CHF 299 (120 Fälle inkl.) / Professional CHF 499 (250 Fälle) / Enterprise Custom. Sweetspot: 3-8 MA (85-95% Marge). Markt: ~970 Zürich, ~5'700 Deutschschweiz. Dokument: `docs/redesign/leitstand/pricing_und_marge.md`.
 - **Outlook-Kalender Phase 1 LIVE (20.03.):** PRs #317-#330. Outlook Free/Busy im Terminpicker. Grün/rote Verfügbarkeitsbalken, Kollisionsprüfung intern + Outlook, animierter Status-Indikator. Architektur: Application Permissions (client_credentials), kein User-OAuth. Learnings: Delegated OAuth funktioniert nicht für Multi-Tenant (Admin-Token-Hijacking), Exchange Online Postfach ist Pflicht. Runbook: `docs/runbooks/outlook_kalender_onboarding.md`.
 - **Sentry Digest + Web Push + PWA (20.03.):** PR #322. Monitoring zeigt jetzt echte Sentry-Errors (25 Issues live). Web Push komplett (SW, Subscribe API, Send API, VAPID Keys). PWA installierbar auf Android/Windows (manifest mit screenshots, id, scope). Alle Founder Tasks F1-F8 erledigt.
 - **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, AI-Copilot, Notifications, Knowledge Base (37 Runbooks), Forecast, Team. 4 DB-Migrationen. Navy+Gold Design. AI-Provider live (Anthropic+OpenAI).
@@ -70,7 +72,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Shared Utilities (19.03.):** statusColors.ts, getGreeting.ts, plzCityMap.ts. PLZ Auto-Fill, Pflichtfeld-Markierung, Termin-Kollision, Sticky Case-ID, 48px Tap-Targets.
 - **Scaling & Access (18.03.):** Tenant-Switcher, Support-System, Rollen-Switch.
 - **Leitsystem Phase 1-4 (17.-18.03.):** Login OTP, PWA, Falldetail, Staff CRUD.
-- **20 Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard. CEO-App = FlowSight-Nervenzentrum (9 Seiten, AI-ready).
+- **25+ Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard. CEO-App = FlowSight-Nervenzentrum. Voice: Laura (DE) + Juniper (INTL). Pricing FINAL: Standard CHF 299 / Professional CHF 499.
 
 ### Kondensierte Historie (04.-14.03.)
 

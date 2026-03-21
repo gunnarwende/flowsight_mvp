@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-20 (Outlook-Kalender Phase 1 LIVE + CEO-App + Sentry Digest + Web Push + PWA. 24+ Module.)
+> Letzte Aktualisierung: 2026-03-21 (Voice: Laura DE + Partial Cases Fix. Pricing FINAL: Standard CHF 299 / Professional CHF 499. 25+ Module.)
 
 ---
 
@@ -76,7 +76,7 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 ### 3.3 KI-Telefonassistent (Voice Agent)
 - **Technologie:** Retell AI (Conversational Voice AI)
 - **Flow:** Anruf → Peoplefone (Schweizer Nummer) → Twilio SIP → Retell Agent → Webhook → Supabase → E-Mail
-- **Dual-Agent:** Deutsch (Stimme "Susi") + International/Englisch (Stimme custom)
+- **Dual-Agent:** Deutsch (Stimme "Laura" / ElevenLabs, Sharp+Professional) + International (Stimme "Juniper" / Retell, EN/FR/IT)
 - **Language Gate:** Erkennt automatisch ob Deutsch oder andere Sprache
 - **Zwei Modi (automatische Erkennung):**
   - **Intake-Modus:** Schadensmeldung aufnehmen (max 7 Fragen: Name, Kategorie, PLZ/Ort, Adresse, Dringlichkeit, Beschreibung) → Fall in Supabase + E-Mails
@@ -161,16 +161,21 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 
 ---
 
-## 4. Pricing
+## 4. Pricing (FINAL, 21.03.2026)
 
-**Ein Produkt. Ein Preis. CHF 299/Monat.**
+| Tier | Preis/Mo | Zielgruppe | Inkl. Fälle | Overage |
+|------|----------|-----------|-------------|---------|
+| **Standard** | **CHF 299** | 1-5 MA, normaler Betrieb | 120 Fälle/Mo | CHF 1.50/Fall |
+| **Professional** | **CHF 499** | 6-15 MA oder serviceintensiv | 250 Fälle/Mo | CHF 1.00/Fall |
+| **Enterprise** | **ab CHF 799** | 16+ MA oder 250+ Fälle | Custom | Custom |
 
-Alles inklusive: Website, Telefonassistentin Lisa (24/7), Dashboard, SMS, Bewertungs-Engine, Mehrsprachig.
+Alles inklusive: Website, Telefonassistentin Lisa (24/7, Laura-Stimme DE + Juniper INTL), Dashboard (Leitzentrale), SMS, Bewertungs-Engine, Mehrsprachig (DE/EN/FR/IT).
 
-- Telefonminuten: pay-per-use, keine Grundgebühr. Typischer Anruf: 2-4 Minuten.
 - 14 Tage kostenlos testen. Monatlich kündbar, kein Lock-in.
-- Setup in einer Woche, persönliches Onboarding. Keine Setup-Kosten während Pilotphase.
-- Spezielle Anforderungen (grössere Betriebe): Auf Anfrage.
+- Setup in einer Woche, persönliches Onboarding. Keine Setup-Kosten.
+- **Sweetspot:** 3-8 MA Sanitär-/Heizungsbetriebe (85-95% Marge bei CHF 299).
+- **Adressierbarer Markt:** ~970 Betriebe Kanton Zürich, ~5'700 Deutschschweiz.
+- **Vollständige Pricing-Analyse:** `docs/redesign/leitstand/pricing_und_marge.md`
 
 Live auf flowsight.ch/pricing.
 
