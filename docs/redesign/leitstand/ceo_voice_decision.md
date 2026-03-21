@@ -453,7 +453,7 @@ Der einzig relevante Hebel ist **LLM-Downgrade von GPT-4.1 auf GPT-4o-mini inner
 - Kein Migrationsrisiko, Config-Änderung in den Agent JSONs
 
 **Ist Voice der Hauptkostentreiber oder SMS?**
-**Voice ist klar der Hauptkostentreiber** (79% des sicheren Minimums). Die vorherige Analyse überschätzte die SMS-Kosten (falsches 2-Segment-Annahme) und unterschätzte Voice. SMS wird nur relevant wenn alle optionalen Events ausgelöst werden.
+**Einzelner Voice-Call:** Voice dominiert (79%). **Gesamtes Betriebsprofil:** SMS dominiert (57-84%), weil SMS an ALLE Fälle geht (Voice + Wizard), während Voice nur Voice-Fälle betrifft. Siehe finale Analyse: `pricing_und_marge.md` §4 (10 Realitätsprofile).
 
 **Welche Architekturentscheidung folgt daraus heute?**
 **Option A (Retell optimieren) ist der richtige Weg — nicht Option C (Hybrid).**
