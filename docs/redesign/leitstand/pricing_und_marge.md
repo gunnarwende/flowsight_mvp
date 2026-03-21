@@ -1,6 +1,6 @@
 # FlowSight — Pricing, Marge & Sweetspot
 
-**Version:** 1.0 | **Datum:** 2026-03-21
+**Version:** 2.0 | **Datum:** 2026-03-21
 **Status:** Analyse fertig. Founder-Entscheidung nötig.
 **Abhängigkeit:** `ceo_voice_decision.md` (Kostenbasis, korrigiert 21.03.)
 
@@ -193,3 +193,102 @@ WENN Notdienst = ja UND MA > 10:
 | Notdienst-Zuschlag? | Könnte 30-50% mehr Fälle bedeuten | Nein — erst messen, dann reagieren. Overage fängt das ab. |
 | Professional-Tier ab wann aktiv? | Erst relevant wenn 21+ MA Betriebe in Pipeline | Pricing-Page vorbereiten, aber erst aktivieren bei Bedarf |
 | Jährliche Zahlung mit Rabatt? | Senkt Churn, verbessert Cash Flow | Ja — CHF 249/Mo bei Jahreszahlung (CHF 2'988/Jahr vs. CHF 3'588) |
+
+---
+
+## Kostenbasis für Pricing und Margenmodell
+
+### 1. Fixkosten pro Betrieb (monatlich, skaliert mit Anzahl Tenants)
+
+| Cost Item | Warum fix pro Betrieb | Betrag | Confidence |
+|-----------|----------------------|--------|------------|
+| **Twilio Telefonnummer** | Jeder Tenant bekommt eine dedizierte CH-Nummer für Voice-Routing (SIP Trunk → Retell) | ~$1.00/Mo | **Known** (Twilio CH number pricing) |
+| **Retell Agent-Paar (DE + INTL)** | 2 Agents pro Tenant, aber keine Storage-Gebühr | $0/Mo | **Known** (Retell = pay-per-minute only) |
+| **Supabase Tenant-Daten** | tenant-Row, staff-Rows, tenant_numbers | $0 (Free Tier) | **Known** (vernachlässigbar) |
+| **Kundenwebsite** | SSG unter `/kunden/[slug]`, kein separates Hosting | $0 | **Known** (Same Vercel deploy) |
+
+**Sicher fix pro Betrieb: ~CHF 1/Mo** (nur Twilio-Nummer).
+Alles andere ist entweder plattformweit oder variabel.
+
+**Challenge:** Peoplefone ist NICHT "pro Betrieb". Die Brand-Nummer gehört dem Kunden (z.B. Weinberger besitzt seine eigene Geschäftsnummer). FlowSight hat nur EINE Peoplefone-Nummer (044 552 09 19) für den eigenen Sales-Agent. Peoplefone-Kosten der Kunden sind DEREN Kosten, nicht unsere.
+
+### 2. Plattformweite Fixkosten (monatlich, unabhängig von Tenant-Anzahl)
+
+| Cost Item | Warum plattformweit | Betrag/Mo | Umlage bei 10 Tenants | Umlage bei 50 Tenants | Confidence |
+|-----------|--------------------|-----------|-----------------------|-----------------------|------------|
+| **eCall Grundgebühr** | Ein Account für alle Tenants, alle SMS laufen darüber | **CHF 40?** | CHF 4/Tenant | CHF 0.80/Tenant | **UNKNOWN — Founder muss verifizieren** |
+| **Twilio SIP Trunk** | Ein Trunk, alle Nummern routen darüber | ~$3-5 | $0.40/Tenant | $0.08/Tenant | Assumption (±50%) |
+| **Peoplefone FlowSight-Nr** | Nur unsere eigene Sales-Nummer, nicht kundenbezogen | ~CHF 8 | CHF 0.80/Tenant | CHF 0.16/Tenant | Assumption |
+| **Vercel** | Aktuell Hobby (Free). Upgrade bei ≥80% Usage | $0 (jetzt) → $20 (Pro) | $0–2/Tenant | $0–0.40/Tenant | **Known** (Upgrade-Trigger dokumentiert) |
+| **Supabase** | Aktuell Free. Upgrade bei ≥80% Storage/API | $0 (jetzt) → $25 (Pro) | $0–2.50/Tenant | $0–0.50/Tenant | **Known** |
+| **Resend** | Free Tier (3'000 E-Mails/Mo). Upgrade bei ~100 Tenants | $0 (jetzt) → ~$20 | $0 | $0–0.40/Tenant | **Known** |
+| **Sentry** | Free Tier (5k Events/Mo) | $0 | $0 | $0 | **Known** |
+| **GitHub Actions** | CI + Cron (Morning Report, Lifecycle Tick) | $0 | $0 | $0 | **Known** |
+| **AI Keys (CEO-App)** | Anthropic + OpenAI für Pulse-Comment, Tenant-Insight | ~$10 | $1/Tenant | $0.20/Tenant | Assumption |
+
+**Plattform-Fixkosten HEUTE: ~CHF 55-65/Mo** (inkl. eCall-Annahme)
+**Plattform-Fixkosten bei 50 Tenants: ~CHF 120-150/Mo** (nach Upgrades)
+
+**Challenge: Die eCall-Grundgebühr ist die grösste Unbekannte.** "CHF 40/Mo" steht in der Matrix_kommunikation.md als "Business Account Typ A, CHF 40/Mo + Punkte". Aber es ist unklar ob das eine Grundgebühr oder ein Guthaben ist. Dieser Punkt ist **pricing-kritisch** weil er die Fixkosten-Basis um ±CHF 40 verschiebt.
+
+### 3. Variable Kosten pro Fall / Nutzung
+
+| Cost Item | Trigger | Preislogik | Status | Confidence |
+|-----------|---------|-----------|--------|------------|
+| **Retell Voice (IST)** | Jeder Voice-Call | $0.15/min (gemessen: $0.50/3.34min) | LIVE | **KNOWN** (gemessen) |
+| **Retell Voice (optimiert)** | Jeder Voice-Call nach LLM-Downgrade | ~$0.10/min (geschätzt: $0.33/3.34min) | GEPLANT | Assumption (±20%) |
+| **eCall Post-Call SMS** | Automatisch nach jedem Voice-Case | CHF 0.12/SMS (1 Segment, 137-148 Chars) | LIVE | Assumption (±30%, eCall-Preis nicht vertraglich belegt) |
+| **eCall Termin-SMS** | Manuell, Button "Termin versenden", NUR wenn kein E-Mail | CHF 0.12/SMS | LIVE | Assumption |
+| **eCall Reminder-SMS** | Automatisch 24h vor Termin, wenn Modul aktiv | CHF 0.12/SMS | LIVE | Assumption |
+| **eCall Review-SMS** | Manuell, "Bewertung anfragen", NUR Voice-Fälle (kein E-Mail) | CHF 0.12/SMS | LIVE | Assumption |
+| **Twilio SIP-Routing** | Pro Minute eingehender Call (Peoplefone → Twilio → Retell) | ~$0.002/min | LIVE | Assumption (vernachlässigbar) |
+| **Resend E-Mails** | Ops-Notification, Melder-Bestätigung, Termin-ICS, Review | $0 (Free Tier) | LIVE | **KNOWN** |
+
+**Wichtigste variable Kosten pro Fall:**
+
+| Fall-Typ | Voice | SMS (sicher) | SMS (conditional) | E-Mail | Total (sicher) | Total (typisch) |
+|----------|-------|-------------|-------------------|--------|---------------|-----------------|
+| **Voice-Fall (IST)** | CHF 0.46 | CHF 0.12 | CHF 0.12-0.36 | CHF 0 | **CHF 0.58** | **CHF 0.82** |
+| **Voice-Fall (optimiert)** | CHF 0.31 | CHF 0.12 | CHF 0.12-0.36 | CHF 0 | **CHF 0.43** | **CHF 0.67** |
+| **Wizard-Fall** | CHF 0 | CHF 0.12 | CHF 0 | CHF 0 | **CHF 0.12** | **CHF 0.12** |
+
+### 4. Optional / Conditional Costs
+
+| Feature | Bedingung | Kosten | Wer trägt die Kosten |
+|---------|-----------|--------|---------------------|
+| **Peoplefone Brand-Nummer des Kunden** | Kunde will eigene Geschäftsnummer behalten | CHF 50-100/Jahr + Minutentarif | **Kunde** (nicht FlowSight) |
+| **Separate Domain** | Kunde will eigene Domain statt `/kunden/[slug]` | CHF 15-30/Jahr | Optional, heute nicht angeboten |
+| **24h-Notdienst Voice-Volumen** | Betrieb hat Pikett → 2-3× mehr Voice-Calls | Skaliert variabel (kein Zuschlag, aber höhere Kosten) | FlowSight (über Overage ab 200 Fälle) |
+| **AI CEO-App Features** | Founder aktiviert Anthropic/OpenAI | ~$10/Mo | FlowSight (plattformweit) |
+| **Outlook Kalender-Integration** | Tenant verbindet Outlook | $0 (Microsoft Free Tier) | $0 |
+| **Zusätzliche Twilio-Nummer** | Tenant braucht 2. Nummer (z.B. Notdienst-Linie) | +$1/Mo | FlowSight |
+
+### 5. Offene Punkte (pricing-kritisch)
+
+| Offener Punkt | Impact auf Rechnung | Pricing-kritisch? | Schnellster Klärungsweg |
+|---------------|--------------------|--------------------|------------------------|
+| **eCall exakter SMS-Preis pro SMS** | ±30% auf alle SMS-Kosten → bei 1'000 SMS/Mo = ±CHF 36 | **JA** | eCall-Portal → Preisliste oder letzte Rechnung |
+| **eCall Grundgebühr vs. Guthaben** | ±CHF 40 auf Fixkosten-Basis | **JA** | eCall-Portal → Rechnungen prüfen: steht da "Grundgebühr" oder "Guthaben"? |
+| **Retell GPT-4o-mini Real-World-Kosten** | ±20% auf Voice-Kosten nach Optimierung | **JA** (für "optimiert"-Szenarien) | LLM umstellen, 1 Woche messen, Dashboard prüfen |
+| **Retell Enterprise Volume Pricing** | -20-50% Platform-Fee ab 50k Min/Mo | Nein (erst bei Scale relevant) | sales@retellai.com |
+| **Twilio SIP exakte Rate** | ±$2/Mo gesamt (vernachlässigbar) | Nein | Twilio Dashboard → Billing |
+
+**Die 3 pricing-kritischen Lücken sind alle innerhalb einer Woche klärbar.** Danach haben wir eine 95%+ belastbare Kostenbasis.
+
+### 6. Founder Summary
+
+1. **Die sicher bekannten Fixkosten pro Betrieb sind minimal: ~CHF 1/Mo** (eine Twilio-Nummer). Alles andere ist plattformweit (~CHF 55-65/Mo total) oder variabel.
+
+2. **Der wichtigste variable Kostentreiber ist Retell Voice: CHF 0.46/Call (IST) bzw. CHF 0.31/Call (optimiert).** Das ist 79% der sicheren Kosten pro Voice-Fall.
+
+3. **SMS ist der zweitwichtigste Treiber: CHF 0.12/SMS.** Bei einem typischen Voice-Fall fallen 1 sichere + 1-3 optionale SMS an = CHF 0.12-0.48.
+
+4. **E-Mail kostet nichts** — Resend Free Tier reicht bis ~100 Tenants. Das ist ein massiver struktureller Vorteil: jeder Kommunikationspfad, den wir auf E-Mail statt SMS legen, spart CHF 0.12.
+
+5. **Vermutlich unterschätzt: die eCall-Grundgebühr.** Falls CHF 40/Mo real ist (nicht Guthaben), verschiebt das die Fixkosten-Basis signifikant — besonders bei wenigen Tenants (CHF 4/Tenant bei 10 vs. CHF 0.80 bei 50).
+
+6. **Vermutlich unterschätzt: Notdienst-Multiplikator.** Ein Betrieb mit 24h-Pikett kann 2-3× so viele Voice-Calls haben wie einer ohne. Das ist im aktuellen Flat-Pricing nicht reflektiert, wird aber durch das Overage-Modell (200 Fälle inkl.) aufgefangen.
+
+7. **Für die 10er-Betriebsprofilmatrix ist die sinnvollste Klassifikation:** Fixkosten pro Betrieb (CHF 1) + Plattform-Umlage (CHF 5-6 bei 10 Tenants) + Variable pro Fall (CHF 0.43-0.82 je nach Voice/Wizard und Optimierungsstufe).
+
+8. **Die Marge ist bei unserem ICP-Kern (4-20 MA) sehr gesund: 80-95%.** Das Risiko liegt ausschliesslich bei grossen Betrieben (30+ MA) mit hohem Voice-Volumen — und das löst das Overage-Modell.
