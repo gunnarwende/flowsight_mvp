@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-20 (CEO-App komplett + Sentry/Push/PWA + Outlook Kalender. Alle Founder Tasks done.)
+**Updated:** 2026-03-21 (Voice: Laura + Partial Cases Fix + Pricing FINAL. SMS = dominanter Kostentreiber.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,13 +9,14 @@
 
 ## Snapshot
 
-- **Produkt:** 23+ Module LIVE + CEO-App (9 Seiten + Sentry + Push + PWA) + Outlook Kalender
+- **Produkt:** 25+ Module LIVE. Voice: Laura (DE) + Juniper (INTL). CEO-App komplett. Outlook Kalender live.
 - **Kunden:** 7 Websites live, Weinberger = GTM Goldstandard
-- **CEO-App:** Komplett (alle 10 Phasen + Blocks). AI live (Anthropic+OpenAI). PWA installierbar. Sentry Digest zeigt 25 echte Issues.
-- **Founder Tasks:** F1-F8 alle erledigt (API Keys, Upgrades, VAPID)
+- **Voice:** Partial Cases Fix live (PR #336) — kein Fall geht mehr verloren. Laura als DE-Stimme auf 4 Agents. Urgency-Aliases normalisiert. SMS-Sender alphanumerisch.
+- **Pricing:** FINAL — Standard CHF 299 (120 Fälle), Professional CHF 499 (250 Fälle), Enterprise Custom. Sweetspot: 3-8 MA. Dokument: `pricing_und_marge.md`
 - **BLOCKER:** 0
-- **Sentry-Bugs (sichtbar):** 1) starColor (historisch, resolved) 2) SMS_HMAC_SECRET fehlt auf Vercel 3) voice_case_missing_fields (68x, Voice Agent Tuning)
-- **Phase:** Stabilisierung + Voice Agent Tuning. Nächste Schritte: SMS_HMAC_SECRET setzen, Voice Agent Prompts schärfen, Design-Polish.
+- **Sentry-Bugs:** voice_case_missing_fields durch Partial Cases Fix entschärft (Fälle werden jetzt mit Defaults angelegt statt verworfen). Historische Events (68x) werden abnehmen.
+- **Phase:** Pricing validieren + eCall SMS-Preis klären + LLM auf GPT-4o-mini umstellen.
+- **Nächste Schritte:** 1) eCall-Portal: SMS-Preis + Grundgebühr verifizieren 2) Retell LLM → GPT-4o-mini 3) Pricing-Page aktualisieren 4) Voice Agent V2-V6 Bugs testen
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
