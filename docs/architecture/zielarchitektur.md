@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 2.0 | **Datum:** 2026-03-20
+**Version:** 2.1 | **Datum:** 2026-03-21
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v2.0 — 33 Decisions (D1-D33). Outlook-Kalender Phase 1 LIVE (Application Permissions). CEO-App komplett. 24+ Module.
+**Status:** v2.1 — 36 Decisions (D1-D36). Voice: Laura DE + Partial Cases. Pricing FINAL (Standard/Professional/Enterprise). 25+ Module.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -42,6 +42,9 @@
 | D31 | Web Push Notifications für CEO via VAPID + Service Worker. Push bei Notfall, Trial-Expiry, Health RED | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ceo/push/`, `sw.js`, VAPID Keys |
 | D32 | Outlook Kalender Integration: **Application Permissions** (client_credentials), nicht Delegated OAuth. `GET /users/{email}/calendarView`. Free/Busy im Terminpicker (grün/rot Balken). | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ops/calendar/`, `outlookClient.ts`, PRs #317-#330 |
 | D33 | Kalender-Onboarding: Admin erteilt einmalig App-Consent im Azure Portal. Kein User-OAuth-Flow. Exchange Online Postfach pro MA ist Pflicht. | **ENTSCHIEDEN** ✅ | Founder + CC | `docs/runbooks/outlook_kalender_onboarding.md` |
+| D34 | Voice: Laura (ElevenLabs) als DE-Stimme, Juniper bleibt INTL. Partial Cases: fehlende Felder = Defaults statt Verwerfen. | **ENTSCHIEDEN** ✅ | Founder + CC | `retell/exports/*_agent.json`, `webhook/route.ts` PR #336-#337 |
+| D35 | Pricing: Fallvolumen als Hauptanker (nicht Mitarbeiterzahl). Standard CHF 299 (120 Fälle), Professional CHF 499 (250 Fälle), Enterprise Custom. | **ENTSCHIEDEN** ✅ | Founder + CC | `pricing_und_marge.md` FINAL |
+| D36 | SMS = dominanter Kostentreiber (57-84%), nicht Voice. E-Mail-Substitution maximieren. Retell bleiben, LLM → GPT-4o-mini. OpenAI Realtime NICHT pilotieren. | **ENTSCHIEDEN** ✅ | Founder + CC | `ceo_voice_decision.md` §8 |
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
 | D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
 | D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
