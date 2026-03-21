@@ -1,8 +1,8 @@
 # Voice AI — Strategische Entscheidung
 
-**Version:** 1.0 | **Datum:** 2026-03-21
+**Version:** 2.0 | **Datum:** 2026-03-21
 **Status:** Entscheidung OFFEN — Founder-Input nötig
-**Auslöser:** Testanruf 21.03. → 3 Min = $0.50 Retell-Kosten. Hochrechnung: ~$100/Monat/Betrieb bei 10 Calls/Tag.
+**Auslöser:** Testanruf 21.03. → 3 Min = $0.50 Retell-Kosten. Erweitert um vollständige End-to-End-Kostenstruktur pro Fall.
 
 ---
 
@@ -191,7 +191,179 @@ Bei CHF 299/Monat pro Betrieb und ~$100 Voice-Kosten/Monat bleibt zu wenig Marge
 
 ---
 
-## 7. Nächste Schritte
+---
+
+## 7. End-to-End Kostenstruktur pro Fall
+
+### 7.1 Die reale Kommunikationskette
+
+Ein Kundenfall durchläuft diese Kette — jeder Schritt verursacht variable Kosten:
+
+```
+Kunde ruft an
+  → [1] Voice Agent (Retell) nimmt auf                    VARIABLE — $0.15-0.20/min
+  → [2] Case wird in Supabase erstellt                    GRATIS (Free Tier)
+  → [3] E-Mail an Betrieb (Ops-Notification)              GRATIS (Resend Free Tier)
+  → [4] SMS an Melder (Bestätigung + Korrekturlink)       VARIABLE — CHF 0.20-0.28 (2 Segmente!)
+
+Betrieb bearbeitet im Leitstand
+  → [5] E-Mail an Techniker (Zuweisung)                   GRATIS
+  → [6] E-Mail+ICS an Techniker (Termin)                  GRATIS
+  → [7] E-Mail an Melder (Terminbestätigung)              GRATIS (wenn E-Mail vorhanden)
+  → [8] SMS an Melder (Terminbestätigung, Fallback)       CONDITIONAL — CHF 0.10-0.14
+  → [9] SMS an Melder (24h-Erinnerung)                    CONDITIONAL — CHF 0.10-0.14
+
+Fall erledigt
+  → [10] E-Mail an Melder (Review-Anfrage, primär)        GRATIS
+  → [11] SMS an Melder (Review-Anfrage, Fallback)         CONDITIONAL — CHF 0.10-0.14
+```
+
+### 7.2 Kostenbausteine
+
+| # | Baustein | Status | Quelle | Betrag | Confidence |
+|---|----------|--------|--------|--------|------------|
+| 1 | **Retell Platform Fee** | LIVE | retellai.com/pricing | $0.07/min | Known |
+| 2 | **Retell LLM (GPT-4.1)** | LIVE | Agent JSON `model: "gpt-4.1"` | ~$0.06-0.08/min | Assumption (Retell transparent pricing, aber exakter GPT-4.1 Preis = OpenAI-Rate) |
+| 3 | **Retell TTS (ElevenLabs Laura)** | LIVE | In Platform-Fee gebündelt | $0 separat | Known (bundled) |
+| 4 | **Post-Call SMS** | LIVE, AUTOMATISCH | `postCallSms.ts`, `webhook/route.ts:557` | CHF 0.20-0.28 (2 Segmente) | Known (Template > 160 Chars) |
+| 5 | **Termin-SMS an Melder** | LIVE, MANUELL | Matrix §4.2, Button "Termin versenden" | CHF 0.10-0.14 | Known |
+| 6 | **24h-Reminder-SMS** | LIVE, AUTOMATISCH | `lifecycle/tick` processTerminReminders | CHF 0.10-0.14 | Known (wenn Modul aktiv) |
+| 7 | **Review-SMS (Fallback)** | LIVE, MANUELL | `request-review/route.ts:154-163` | CHF 0.10-0.14 | Known (nur wenn keine E-Mail) |
+| 8 | **E-Mails (alle)** | LIVE | Resend Free Tier | $0.00 | Known (bis 3'000/Monat) |
+| 9 | **eCall Grundgebühr** | LIVE | eCall-Vertrag | **UNBEKANNT** | Unknown — Founder muss prüfen |
+| 10 | **eCall SMS-Preis exakt** | LIVE | eCall-Vertrag / Portal | CHF 0.10-0.14 | Assumption — aus Matrix_kommunikation.md, nicht vertraglich belegt |
+
+### 7.3 Wichtige Code-Fakten
+
+**Post-Call SMS Template (die teuerste SMS):**
+```
+"{Sender}: Ihre Meldung {Kategorie} wurde erfasst. Bitte Name & Adresse prüfen und Fotos hochladen:
+https://flowsight.ch/v/WB-0123?t=a7c8e2f1b3d4"
+```
+→ ~200-250 Zeichen → **2 SMS-Segmente** → doppelte Kosten.
+Quelle: `postCallSms.ts:39`
+
+**Review-Anfrage: E-Mail PRIMÄR, SMS nur Fallback:**
+```typescript
+// request-review/route.ts:141-163
+if (row.contact_email) {
+  sent = await sendReviewRequest({ ... }); // E-Mail primär
+}
+if (!sent && row.contact_phone) {
+  // SMS nur wenn E-Mail nicht vorhanden oder fehlgeschlagen
+  const smsBody = `${senderName}: Vielen Dank ...`;
+  const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
+}
+```
+→ Voice-Fälle haben KEINE E-Mail → Review geht IMMER per SMS bei Voice-Cases.
+→ Wizard-Fälle haben E-Mail → Review geht per E-Mail (gratis).
+
+**Termin-SMS: Nur wenn KEINE E-Mail vorhanden:**
+Matrix §4.2: "SMS → Manueller Klick + KEINE E-Mail + Telefon vorhanden + SMS aktiv"
+→ Voice-Fälle → Termin per SMS (kostenpflichtig)
+→ Wizard-Fälle → Termin per E-Mail (gratis)
+
+### 7.4 Szenariorechnung
+
+#### A) Minimalfall — Voice-Call, nur Bestätigung
+
+| Baustein | Betrag |
+|----------|--------|
+| Voice Call (2 min × $0.17/min) | $0.34 |
+| Post-Call SMS (2 Segmente) | CHF 0.24 |
+| Ops-E-Mail | $0.00 |
+| **TOTAL** | **$0.34 + CHF 0.24 ≈ CHF 0.55** |
+
+Kein Termin, keine Review-Anfrage, Fall wird direkt erledigt oder ignoriert.
+
+#### B) Typischer Fall — Voice + Termin + Review
+
+| Baustein | Betrag |
+|----------|--------|
+| Voice Call (2.5 min × $0.17/min) | $0.43 |
+| Post-Call SMS (2 Segmente) | CHF 0.24 |
+| Termin-SMS an Melder (1 Segment) | CHF 0.12 |
+| 24h-Reminder-SMS (1 Segment) | CHF 0.12 |
+| Review-SMS (1 Segment, Fallback weil Voice=kein Email) | CHF 0.12 |
+| E-Mails (Ops + Techniker + ICS) | $0.00 |
+| **TOTAL** | **$0.43 + CHF 0.60 ≈ CHF 1.00** |
+
+Der typische Voice-Fall kostet **~CHF 1.00** an variablen Kommunikationskosten.
+
+#### C) Erweiterter Fall — Voice + Termin-Änderung + Review + Alternativ-Pfade
+
+| Baustein | Betrag |
+|----------|--------|
+| Voice Call (3 min × $0.17/min) | $0.51 |
+| Post-Call SMS (2 Segmente) | CHF 0.24 |
+| Termin-SMS an Melder (1×) | CHF 0.12 |
+| Termin-Änderung SMS (2×) | CHF 0.24 |
+| 24h-Reminder-SMS (1×) | CHF 0.12 |
+| Review-SMS (1×) | CHF 0.12 |
+| Nochmals-Anfragen SMS (2. Review, 7d später) | CHF 0.12 |
+| E-Mails (Ops + Techniker + ICS + Reminder) | $0.00 |
+| **TOTAL** | **$0.51 + CHF 0.96 ≈ CHF 1.45** |
+
+#### Wizard-Vergleich: Typischer Wizard-Fall
+
+| Baustein | Betrag |
+|----------|--------|
+| Voice Call | $0.00 (kein Anruf) |
+| Post-Call SMS (Bestätigung) | CHF 0.24 |
+| Termin per E-Mail (Wizard hat E-Mail) | $0.00 |
+| Reminder per E-Mail | $0.00 |
+| Review per E-Mail (Wizard hat E-Mail) | $0.00 |
+| **TOTAL** | **CHF 0.24** |
+
+→ Wizard-Fälle kosten **75-80% weniger** als Voice-Fälle, weil die meiste Kommunikation per E-Mail läuft.
+
+### 7.5 Fixkosten-Umlage
+
+| Fixkosten (monatlich) | Betrag |
+|----------------------|--------|
+| eCall Grundgebühr | **UNBEKANNT** (Founder-Check) |
+| Retell (kein Minimum) | $0 |
+| Twilio SIP | ~$3-5 |
+| Vercel/Supabase/Resend | $0 (Free Tier) |
+| **Geschätzte Fixkosten** | **~$5 + eCall** |
+
+| Umlage pro Fall | 100 Fälle/Mo | 300 Fälle/Mo | 1'000 Fälle/Mo |
+|-----------------|-------------|-------------|----------------|
+| $5 Fixkosten | $0.05/Fall | $0.02/Fall | $0.005/Fall |
+| Falls eCall CHF 40/Mo | CHF 0.40/Fall | CHF 0.13/Fall | CHF 0.04/Fall |
+
+→ Fixkosten sind bei Scale vernachlässigbar. Variablen Kosten dominieren.
+
+### 7.6 Grösster Kostentreiber: Voice vs. SMS
+
+| Kostentreiber | Anteil am typischen Fall | Optimierungshebel |
+|---------------|-------------------------|-------------------|
+| **Voice (Retell)** | ~43% (CHF 0.43 von CHF 1.00) | LLM auf GPT-4o mini (-40%), kürzere Calls, OpenAI Realtime (-70%) |
+| **SMS (eCall)** | ~57% (CHF 0.60 von CHF 1.00) | Post-Call SMS auf ≤160 Chars (-40%), E-Mail statt SMS wo möglich |
+
+**Überraschende Erkenntnis:** SMS-Kosten sind HÖHER als Voice-Kosten pro Fall.
+Der initiale Fokus auf "Voice ist zu teuer" war zu eng — die SMS-Kette ist der grössere Hebel bei Voice-Fällen.
+
+### 7.7 Offene Lücken
+
+| Lücke | Impact auf Rechnung | Schnellster Weg zur Klärung |
+|-------|--------------------|-----------------------------|
+| **eCall exakter SMS-Preis** | ±30% auf SMS-Kosten | eCall-Portal Login → Preisliste oder Vertrag prüfen |
+| **eCall Grundgebühr** | Fixkosten-Umlage unklar | eCall-Portal → Rechnungen der letzten 3 Monate prüfen |
+| **Retell GPT-4.1 exakter LLM-Preis** | ±20% auf Voice-Kosten | Retell Dashboard → Usage → Cost Breakdown |
+| **Retell Enterprise Pricing** | Könnte Platform-Fee von $0.07 auf $0.04-0.05 senken | Retell kontaktieren (sales@retellai.com) |
+
+---
+
+## Founder-Fazit
+
+1. **Ein Voice-Fall kostet minimal CHF 0.55, typisch ~CHF 1.00, maximal ~CHF 1.45** an variablen Kommunikationskosten.
+2. **SMS ist überraschend der grössere Kostentreiber als Voice** — die Post-Call SMS allein kostet CHF 0.24 (2 Segmente weil >160 Chars). Sofort-Hebel: Template kürzen → spart 40% SMS-Kosten.
+3. **Bei 10 Betrieben mit je 5 Fällen/Tag (~1'100 Fälle/Monat) liegen die variablen Kosten bei ~CHF 1'100/Monat** — das ist ~37% des MRR (CHF 2'990). Der grösste einzelne Hebel ist LLM-Downgrade auf GPT-4o mini (~CHF 200/Monat Ersparnis).
+
+---
+
+## 8. Nächste Schritte
 
 | # | Aktion | Wer | Wann |
 |---|--------|-----|------|
