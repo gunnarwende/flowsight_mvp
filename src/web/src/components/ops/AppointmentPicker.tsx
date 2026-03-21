@@ -275,12 +275,8 @@ export function AppointmentPicker({
           {busyCount > 0 && !loadingBusy && (
             <div className="flex items-center gap-3 text-[10px]">
               <span className="flex items-center gap-1">
-                <span className="w-3 h-1.5 rounded-full bg-emerald-200" />
-                <span className="text-gray-400">frei</span>
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-3 h-1.5 rounded-full bg-red-300" />
-                <span className="text-gray-400">belegt</span>
+                <span className="text-gray-400 line-through">00:00</span>
+                <span className="text-gray-400">= belegt</span>
               </span>
             </div>
           )}
@@ -304,7 +300,7 @@ export function AppointmentPicker({
 
         {/* Time columns */}
         <div className="flex gap-2">
-          <div className="flex-1" style={{ minWidth: busyCount > 0 ? "7.5rem" : "5rem" }}>
+          <div className="flex-1" style={{ minWidth: "5rem" }}>
             <TimeSlotSelector
               label="Von"
               value={startTime}
@@ -313,7 +309,7 @@ export function AppointmentPicker({
               busySlots={busyTimes}
             />
           </div>
-          <div className="flex-1" style={{ minWidth: busyCount > 0 ? "7.5rem" : "5rem" }}>
+          <div className="flex-1" style={{ minWidth: "5rem" }}>
             <TimeSlotSelector
               label="Bis"
               value={endTime}

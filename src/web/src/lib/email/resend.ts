@@ -148,7 +148,7 @@ function buildOpsNotificationHtml(p: CaseEmailPayload, deepLink: string): string
 </td></tr>
 <!-- CTA button -->
 <tr><td style="padding:24px 24px 8px" align="center">
-  <a href="${escapeHtml(deepLink)}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:12px 32px;border-radius:6px">Fall im Leitstand &ouml;ffnen</a>
+  <a href="${escapeHtml(deepLink)}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:12px 32px;border-radius:6px">Fall in der Leitzentrale &ouml;ffnen</a>
 </td></tr>
 <!-- Footer -->
 <tr><td style="padding:20px 24px;border-top:1px solid #1e293b;margin-top:16px">
@@ -265,7 +265,7 @@ export async function sendCaseNotification(
       process.env.APP_URL ??
       process.env.NEXT_PUBLIC_APP_URL ??
       "https://flowsight.ch";
-    const deepLink = `${baseUrl}/ops/cases/${payload.caseId}`;
+    const deepLink = `${baseUrl}/ops/open/${payload.caseId}`;
 
     const contactLines: string[] = [];
     if (payload.contactPhone) contactLines.push(`Telefon:   ${payload.contactPhone}`);

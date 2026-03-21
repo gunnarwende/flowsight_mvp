@@ -333,7 +333,7 @@ export async function PATCH(
                   city: row.city,
                   urgency: row.urgency,
                   description: row.description,
-                  deepLink: `${baseUrl}/ops/cases/${id}`,
+                  deepLink: `${baseUrl}/ops/open/${id}`,
                 })
               )
           );
