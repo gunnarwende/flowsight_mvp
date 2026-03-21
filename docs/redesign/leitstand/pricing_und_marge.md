@@ -8,12 +8,32 @@
 
 ## 1. Executive Decision
 
-**Unser Pricing soll sich primär am Fallvolumen orientieren, nicht an der Mitarbeiterzahl.**
+### Strategische Positionierung: Leitsystem, nicht Voice-Tool
 
-Mitarbeiterzahl ist ein schlechter Proxy für unsere Kosten. Ein 5-MA-Betrieb mit 24h-Notdienst kann 140 Fälle/Mo generieren und unsere Marge auf 70% drücken, während ein 8-MA-Betrieb ohne Notdienst bei 80 Fällen bleibt und 85% Marge hat. Der Kostentreiber ist die Kommunikationsintensität (Fälle × SMS pro Fall), nicht die Teamgrösse.
+**FlowSight ist kein AI-Telefonassistent.** FlowSight ist ein **vertikales Einsatz- und Leitsystem für Gebäudetechnik-Betriebe** — mit Voice-AI als einem Eingangskanal unter mehreren. Das Produkt umfasst:
 
-**Wichtigste Korrektur an unserem bisherigen Denken:**
-SMS ist der dominante Kostentreiber (57-84% der variablen Kosten über alle Profile), nicht Voice. Die frühere Fixierung auf "Voice ist zu teuer" war falsch. Jeder Fall löst 1-4 SMS aus (Bestätigung, Termin, Reminder, Review) — das summiert sich schneller als die Voice-Kosten.
+- **Voice-Intake** (Lisa) — KI-Telefonassistentin, 24/7, branchenspezifisch
+- **Leitzentrale** — operative Fallsteuerung, Terminplanung, Bewertungs-Engine
+- **Persönliche PWA pro Mitarbeiter** — jeder Techniker hat seine eigene Arbeitsoberfläche auf der Baustelle (Fälle, Termine, Navigation, Dokumentation)
+- **Automatisierte Kommunikationskette** — SMS, E-Mail, ICS-Einladungen, Review-Anfragen
+- **Branded Website** — pro Betrieb, mit Wizard-Intake
+
+**Warum diese Abgrenzung entscheidend ist:**
+Wenn wir als "KI-Telefonassistent" wahrgenommen werden, konkurrieren wir gegen $29/Mo-AI-Receptionists (smith.ai, Ruby, Dialpad). Diese werden bald $19/Mo kosten. Dort können wir nicht gewinnen.
+
+Unsere echte Vergleichskategorie ist **Field Service Management**: ServiceTitan ($200-500/Mo), Jobber ($69-249/Mo), Housecall Pro ($49-199/Mo). **Keines** davon hat Voice-AI-Intake. **Keines** hat eine branded PWA pro Mitarbeiter. **Keines** spricht Schweizerdeutsch.
+
+**CHF 299 für ein vertikales Leitsystem mit AI-Intake ist nicht teuer — es ist aggressiv günstig in dieser Kategorie.**
+
+### Pricing-Logik: Fallvolumen als Hauptanker
+
+Mitarbeiterzahl ist ein schlechter Proxy für unsere Kosten. Der echte Kostentreiber ist die Kommunikationsintensität (Fälle × SMS pro Fall). Pricing richtet sich daher primär am Fallvolumen aus, mit Mitarbeiterzahl als Sekundärsignal.
+
+### Wichtigste Korrekturen an unserem bisherigen Denken:
+1. **Wir sind kein Voice-Tool.** Voice ist 1 von 5 Modulen. Die Produktidentität ist das Leitsystem.
+2. **SMS ist der dominante Kostentreiber** (57-84%), nicht Voice. Jeder SMS→E-Mail-Shift verbessert die Marge.
+3. **1-2 MA Betriebe sind NICHT unser Kern-ICP.** Sie brauchen keinen Leitstand — sie brauchen einen Anrufbeantworter. Unser Produkt wird wertvoll ab 3-5 MA (operative Komplexität).
+4. **Unser Preis ist strategisch niedrig** relativ zur Kategorie (FSM), nicht hoch relativ zu Voice-Tools.
 
 ---
 
@@ -166,26 +186,42 @@ SMS ist der dominante Kostentreiber (57-84% der variablen Kosten über alle Prof
 
 ## 6. Sweetspot
 
-### Wirtschaftlich attraktivster Bereich: 3-8 MA Betriebe
+### Wirtschaftlich attraktivster Bereich: 5-15 MA Betriebe
 
-| Kriterium | Warum 3-8 MA? |
-|-----------|---------------|
-| **Marge** | 85-95% bei CHF 299 (CHF 10-55 variable Kosten) |
-| **Marktgrösse** | ~630 in Zürich, ~3'700 in Deutschschweiz |
-| **Sales-Komplexität** | Gering — Inhaber entscheidet, kein Beschaffungsprozess |
-| **Churn-Risiko** | Niedrig — Voice = 24/7 Erreichbarkeit wird unverzichtbar |
-| **Schmerz** | Maximal — "Auf Baustelle, kann nicht ans Telefon" |
-| **Zahlungsfähigkeit** | CHF 299 = halber Techniker-Tag |
+| Kriterium | Warum 5-15 MA? |
+|-----------|----------------|
+| **Operative Komplexität** | Mehrere Techniker, Terminplanung, Fallzuweisung — hier wird das Leitsystem unverzichtbar |
+| **Marge** | 75-90% bei CHF 299-499 (je nach Volumen) |
+| **Marktgrösse** | ~450 in Zürich (5-15 MA), ~2'700 in Deutschschweiz |
+| **Produkt-Fit** | Leitstand + Techniker-PWA + Voice = voller Stack, nicht nur "Anrufbeantworter" |
+| **Sales-Komplexität** | Moderat — Inhaber oder Disponent entscheidet, oft nach Live-Demo |
+| **Schmerz** | Maximal — "Wir verwalten Anfragen auf Zetteln und vergessen Rückrufe" |
+| **Zahlungsfähigkeit** | CHF 299-499 = Kosten von 1-2 verpassten Aufträgen pro Monat |
+| **Churn-Risiko** | Niedrig — je mehr Techniker das System nutzen, desto schwerer der Ausstieg |
 
-### Priorisierung
+### Warum NICHT 1-3 MA als Kern?
 
-| Segment | Empfehlung |
-|---------|------------|
-| **3-8 MA** | **KERN-FOKUS.** Hier verdienen wir am meisten pro Aufwand. |
-| 1-2 MA | Mitnehmen, nicht aktiv jagen. Hohe Churn-Gefahr. |
-| 8-15 MA | Aktiv ansprechen mit Professional (CHF 499). |
-| 15-30 MA | Nur auf Anfrage. Custom-Gespräch. |
-| 30+ MA | Vermeiden. Zu komplex, Marge unsicher. |
+Ein 1-2 Mann-Betrieb braucht **kein Leitsystem**. Der Meister IST der Disponent, der Techniker und das Büro in einer Person. Er braucht einen Anrufbeantworter — keinen Leitstand mit Rollen, Terminplanung und Techniker-PWA.
+
+Wenn wir 1-2 MA-Betriebe als Kern-ICP definieren, positionieren wir uns als "günstiger AI-Telefonassistent". Das ist die falsche Kategorie. Dort werden wir von $29/Mo-Lösungen unterboten.
+
+Unser Produkt wird wertvoll wo **operative Komplexität** entsteht:
+- Mehrere Techniker, die koordiniert werden müssen
+- Terminüberschneidungen, die vermieden werden müssen
+- Fälle, die zugewiesen und nachverfolgt werden müssen
+- Kunden, die strukturiert informiert werden müssen (SMS, E-Mail, Review)
+
+Das beginnt bei **5 MA** und ist optimal bei **8-15 MA**.
+
+### Priorisierung (korrigiert nach Leitsystem-Positionierung)
+
+| Segment | Empfehlung | Begründung |
+|---------|------------|------------|
+| **5-15 MA** | **KERN-FOKUS.** Höchster Produkt-Fit, beste Marge pro Wert. | Leitsystem + PWA + Voice = voller Nutzen |
+| **3-5 MA** | **Aktiv ansprechen** mit Standard (CHF 299). Einstieg ins System. | Wachstum: heute 3, morgen 6 MA → bleibt Kunde |
+| 1-2 MA | Mitnehmen wenn sie kommen, nicht aktiv jagen. | Zu wenig operative Komplexität für Leitsystem-Wert |
+| 15-30 MA | Aktiv mit Professional/Enterprise. Höherer Wert pro Deal. | Mehr Features, längerer Sales-Cycle, aber höherer LTV |
+| 30+ MA | Nur Custom. | Zu komplex für standardisiertes Onboarding |
 
 ---
 
@@ -211,21 +247,21 @@ SMS ist der dominante Kostentreiber (57-84% der variablen Kosten über alle Prof
 
 ## 8. Founder-Fazit
 
-1. **Unser Sweetspot sind 3-8 MA Sanitär-/Heizungsbetriebe** — 85-95% Marge bei CHF 299, ~630 Betriebe allein in Zürich, Inhaber entscheidet sofort.
+1. **FlowSight ist ein vertikales Leitsystem, kein Voice-Tool.** Voice ist ein Modul. Das Produkt ist das Gesamtsystem: Leitstand + Techniker-PWA + Voice + Kommunikationskette + Review-Engine. Wir konkurrieren mit ServiceTitan und Jobber, nicht mit AI-Receptionists. CHF 299 ist in dieser Kategorie aggressiv günstig.
 
-2. **SMS ist der grösste Kostentreiber, nicht Voice.** Jeder SMS→E-Mail-Shift verbessert die Marge direkt. Das ist der grösste operative Hebel — wichtiger als LLM-Downgrade.
+2. **Unser Sweetspot sind 5-15 MA Betriebe** — hier entsteht die operative Komplexität (Termine, Zuweisung, Koordination), die unser Leitsystem unverzichtbar macht. ~450 Betriebe in Zürich, ~2'700 in Deutschschweiz.
 
-3. **CHF 299 ist der richtige Preis für den Kern-ICP.** Nicht zu billig (Marge >80%), nicht zu teuer (halber Techniker-Tag). Jede Preiserhöhung für kleine Betriebe schadet dem Gold-Contact-Versprechen.
+3. **1-2 MA Betriebe sind NICHT unser Kern.** Sie brauchen einen Anrufbeantworter, kein Leitsystem. Wenn wir dort fokussieren, werden wir als "billiger AI-Telefonassistent" wahrgenommen — und gegen $29/Mo-Tools verglichen.
 
-4. **120 inkludierte Fälle bei Standard** geben 20% Headroom über dem typischen 5-MA-Betrieb. Das vermeidet Sales-Reibung bei 80% des Marktes.
+4. **SMS ist der grösste Kostentreiber (57-84%), nicht Voice.** Jeder SMS→E-Mail-Shift verbessert die Marge direkt. Das ist operativ der wichtigste Hebel.
 
-5. **CHF 499 Professional für 6-15 MA / serviceintensive Betriebe** fängt die Grenzfälle auf. Bei 250 Fällen inkl. bleibt die Marge bei 75-90%.
+5. **CHF 299 Standard / CHF 499 Professional** ist das richtige Pricing — nicht weil wir billig sein wollen, sondern weil es den Einstieg für den ICP-Kern senkt. Der wahre Wert (Leitsystem + PWA pro Mitarbeiter) rechtfertigt langfristig höhere Preise.
 
-6. **Die pricing-kritischste Lücke ist der eCall SMS-Preis.** ±30% auf den dominanten Kostentreiber. Ein Blick ins eCall-Portal reicht — das muss heute passieren.
+6. **Die persönliche PWA pro Techniker ist der nächste strategische Differentiator.** Kein Wettbewerber bietet das. Sobald live: erhöht den Lock-in, rechtfertigt Professional-Tier, macht das Produkt zur operativen Infrastruktur statt zum "Nice-to-have".
 
-7. **Bei 5% Penetration in der Deutschschweiz = CHF 114'000 MRR.** Der Markt ist gross genug für selektives Wachstum.
+7. **Pricing-kritisch: eCall SMS-Preis verifizieren** (±30% auf dominanten Kostentreiber). Und: **LLM auf GPT-4o-mini umstellen** (spart ~34% Voice-Kosten).
 
-8. **Sofort-Aktion: LLM auf GPT-4o-mini umstellen** (spart ~34% Voice-Kosten, kein Risiko). Dann eCall-Preis klären. Dann Pricing-Page aktualisieren.
+8. **Bei 5% Penetration Deutschschweiz = CHF 114'000 MRR.** Der Markt ist gross genug. Wir müssen nicht jeden nehmen — wir fokussieren auf Betriebe die vom Leitsystem profitieren, nicht auf Solo-Handwerker die nur einen Anrufbeantworter suchen.
 
 ---
 
