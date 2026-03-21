@@ -50,6 +50,21 @@ function isValidUrgency(v: unknown): v is CaseUrgency {
   return typeof v === "string" && VALID_URGENCIES.includes(v as CaseUrgency);
 }
 
+/** Normalize urgency: lowercase + alias mapping → valid enum or null */
+function normalizeUrgency(raw: string | undefined | null): CaseUrgency | null {
+  if (!raw) return null;
+  const lower = raw.toLowerCase().trim();
+  if (VALID_URGENCIES.includes(lower as CaseUrgency)) return lower as CaseUrgency;
+  // Alias map: common Retell outputs → valid enum
+  const aliases: Record<string, CaseUrgency> = {
+    emergency: "notfall", urgent: "notfall", kritisch: "notfall",
+    eilig: "dringend", wichtig: "dringend", hoch: "dringend", high: "dringend",
+    mittel: "dringend", medium: "dringend",
+    niedrig: "normal", low: "normal", gering: "normal", standard: "normal",
+  };
+  return aliases[lower] ?? null;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -303,51 +318,58 @@ export async function POST(req: Request) {
     nonEmptyStr(call?.transcript),
   );
 
-  // ── Strict validation — NO SILENT DEFAULTS ─────────────────────────
-  const missing: string[] = [];
-  if (!callerPhone) missing.push("contact_phone");
-  if (!plz) missing.push("plz");
-  if (!city) missing.push("city");
-  if (!category) missing.push("category");
-  if (!urgencyRaw || !isValidUrgency(urgencyRaw)) missing.push("urgency");
-  if (!description) missing.push("description");
+  // ── Normalize urgency (aliases + lowercase) ────────────────────────
+  const urgencyNormalized = normalizeUrgency(urgencyRaw) ?? "normal";
 
-  if (missing.length > 0) {
-    Sentry.setTag("decision", "missing_fields");
-    Sentry.captureMessage("voice_case_missing_fields", {
+  // ── Validation: HARD reject only if no phone. Everything else = defaults + warn
+  if (!callerPhone) {
+    Sentry.captureMessage("voice_case_no_phone", {
+      level: "error",
+      tags: { area: "voice", provider: "retell", retell_call_id: retellCallId, decision: "no_phone" },
+    });
+    logDecision({ decision: "no_phone", event, call_id: retellCallId });
+    return new NextResponse(null, { status: 204 });
+  }
+
+  // Track which fields needed defaults (for quality monitoring)
+  const defaulted: string[] = [];
+  const finalPlz = plz ?? "";
+  const finalCity = city ?? (plz && PLZ_CITY_MAP[plz]) ?? "";
+  const finalCategory = category ?? "Allgemein";
+  const finalDescription = description ?? nonEmptyStr(call?.transcript) ?? "Telefonische Meldung (Details fehlen)";
+
+  if (!plz) defaulted.push("plz");
+  if (!city) defaulted.push("city");
+  if (!category) defaulted.push("category");
+  if (!urgencyRaw || !normalizeUrgency(urgencyRaw)) defaulted.push("urgency");
+  if (!description) defaulted.push("description");
+
+  if (defaulted.length > 0) {
+    Sentry.captureMessage("voice_case_partial_fields", {
       level: "warning",
       tags: {
         area: "voice",
         provider: "retell",
         retell_call_id: retellCallId,
-        decision: "missing_fields",
+        decision: "partial_fields",
         stage: "validate",
-        error_code: "MISSING_FIELDS",
       },
       extra: {
-        missing_fields: missing,
+        defaulted_fields: defaulted,
         event,
         extracted_path_used: extractedPath,
         extracted_keys: extractedKeys,
         has_transcript: !!call?.transcript,
-        has_call_summary: !!call?.call_analysis?.call_summary,
-        call_keys: callKeys,
-        analysis_keys: analysisKeys,
       },
     });
     logDecision({
-      decision: "missing_fields",
+      decision: "partial_fields",
       event,
       call_id: retellCallId,
+      defaulted_fields: defaulted,
       extracted_path_used: extractedPath,
       extracted_keys: extractedKeys,
-      missing_fields: missing,
-      has_transcript: !!call?.transcript,
-      has_call_summary: !!call?.call_analysis?.call_summary,
-      call_keys: callKeys,
-      analysis_keys: analysisKeys,
     });
-    return new NextResponse(null, { status: 204 });
   }
 
   // ── Resolve tenant ─────────────────────────────────────────────────
@@ -402,18 +424,19 @@ export async function POST(req: Request) {
       tenant_id: tenantId,
       source: "voice" as const,
       reporter_name: reporterName ?? null,
-      contact_phone: callerPhone!,
+      contact_phone: callerPhone,
       contact_email: null,
-      plz: plz!,
-      city: city!,
-      category: category!,
-      urgency: urgencyRaw as CaseUrgency,
-      description: description!,
+      plz: finalPlz,
+      city: finalCity,
+      category: finalCategory,
+      urgency: urgencyNormalized,
+      description: finalDescription,
       photo_url: null,
       raw_payload: {
         provider: "retell",
         retell_call_id: retellCallId,
         event,
+        ...(defaulted.length > 0 ? { defaulted_fields: defaulted } : {}),
       },
     };
     if (street) insertPayload.street = street;
