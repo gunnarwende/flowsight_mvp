@@ -8,11 +8,15 @@
 
 ## 1. Zweck dieses Dokuments
 
-Bei CHF 299/Monat pro Betrieb und ~$100 Voice-Kosten/Monat bleibt zu wenig Marge. Dieses Dokument:
-- Analysiert warum die Kosten so hoch sind
-- Vergleicht Alternativen zu Retell AI
-- Empfiehlt Top 3 Lösungen
-- Gibt eine klare Empfehlung
+**Strategischer Kontext:** FlowSight ist ein vertikales Leitsystem für Gebäudetechnik-Betriebe — nicht ein AI-Telefonassistent. Voice (Lisa) ist ein Modul unter fünf (Voice, Leitstand, Techniker-PWA, Kommunikationskette, Review-Engine). Dieses Dokument betrachtet die Voice-Kosten als TEIL der Gesamtkostenstruktur.
+
+**Anlass:** Testanruf 21.03. → 3 Min = $0.50 Retell-Kosten. Vollständige End-to-End-Analyse zeigt: Voice ist nicht der Hauptkostentreiber — SMS ist es (57-84% über Betriebsprofile).
+
+Dieses Dokument:
+- Analysiert die realen Voice + SMS-Kosten pro Fall (gemessen)
+- Korrigiert falsche Annahmen (OpenAI Realtime = teurer, nicht günstiger)
+- Empfiehlt: Bei Retell bleiben, LLM optimieren
+- Verweist auf finales Pricing: `pricing_und_marge.md`
 
 ---
 
