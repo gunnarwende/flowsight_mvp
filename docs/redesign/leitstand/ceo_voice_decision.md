@@ -477,12 +477,34 @@ Die Hybrid-Empfehlung in §5 basierte auf der falschen Annahme, dass OpenAI Real
 
 ---
 
-## 8. Nächste Schritte
+---
+
+## 9. Pricing- und Margen-Implikation
+
+**Vollständige Analyse:** `docs/redesign/leitstand/pricing_und_marge.md`
+
+### Kernaussage
+
+CHF 299 ist für **80% unseres ICP (3-20 MA) extrem profitabel** — 80-95% Marge. Das 4-stufige Pricing (299/499/899/1290) bestraft die Mitte unnötig. Stattdessen:
+
+| Tier | MA | Preis | Marge (optimiert) | Inkl. Fälle |
+|------|-----|-------|-------------------|-------------|
+| **Standard** | ≤20 | CHF 299 | 80-95% | 200/Mo |
+| **Professional** | 21-30 | CHF 799 | 89% | 400/Mo |
+| **Enterprise** | 30+ | Custom | Custom | Custom |
+
+**Sweetspot:** 4-10 MA Betriebe. CHF 26-40 variable Kosten bei CHF 299 Umsatz = 87-91% Marge.
+**Gefährlich:** 30+ MA bei CHF 299 = nur 61% Marge. Braucht Custom-Pricing.
+
+---
+
+## 10. Nächste Schritte (aktualisiert)
 
 | # | Aktion | Wer | Wann |
 |---|--------|-----|------|
-| 1 | **Founder-Entscheidung:** A, B oder C? | Founder | Sofort |
-| 2 | LLM auf GPT-4o mini umstellen (alle Agents) | CC | Nach Entscheidung |
-| 3 | Retell Enterprise-Team kontaktieren | Founder | Diese Woche |
-| 4 | OpenAI Realtime API evaluieren (Technical Spike) | CC | Q2 2026 |
-| 5 | Prompt-Optimierung für kürzere Calls | CC + Founder | Laufend |
+| 1 | **LLM auf GPT-4o-mini umstellen** (alle Agents) → -34% Voice-Kosten | CC | Sofort (nach Founder-OK) |
+| 2 | **eCall SMS-Preis + Grundgebühr klären** (Portal/Vertrag) | Founder | Diese Woche |
+| 3 | **Retell Dashboard Usage prüfen** → exakte Kosten-Breakdown | Founder | Diese Woche |
+| 4 | **Pricing-Page anpassen** (Standard + Professional + Custom) | CC + Founder | Nach Pricing-Entscheidung |
+| 5 | **Retell Enterprise-Team kontaktieren** (Volume Discount ab 50k Min/Mo) | Founder | Wenn >5 Betriebe |
+| 6 | OpenAI Realtime beobachten (NICHT pilotieren — kein Kostenvorteil) | CC | Laufend |
