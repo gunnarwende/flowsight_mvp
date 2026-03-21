@@ -12,9 +12,10 @@ import type { SendSmsResult } from "./sendSms";
  * - ECALL_API_PASSWORD
  * - ECALL_SENDER_NUMBER (required) — FlowSight service number (E.164), always used as sender
  *
- * Sender: Always ECALL_SENDER_NUMBER (dedicated FlowSight CH number).
- * The tenant/brand name is embedded in the SMS body text, not the sender field.
- * This avoids alphanumeric sender approval per tenant in eCall portal.
+ * Sender: Two-tier strategy for best deliverability:
+ * 1. Alphanumeric sender (tenant brand name, e.g. "Weinberger") — preferred,
+ *    higher trust, less spam filtering. Max 11 chars.
+ * 2. Numeric fallback (ECALL_SENDER_NUMBER) — if alphanumeric is empty or too long.
  *
  * Phone format: eCall expects international format with 00 prefix (e.g. 0041791234567).
  * We accept E.164 (+41...) and convert automatically.
@@ -33,7 +34,7 @@ function toEcallNumber(e164: string): string {
 export async function sendSmsEcall(
   to: string,
   body: string,
-  _from: string,
+  from: string,
 ): Promise<SendSmsResult> {
   const apiUrl = process.env.ECALL_API_URL;
   const username = process.env.ECALL_API_USERNAME;
@@ -48,6 +49,12 @@ export async function sendSmsEcall(
     return { sent: false, reason: "ecall_missing_sender_number" };
   }
 
+  // Two-tier sender: alphanumeric brand name (max 11 chars) preferred,
+  // numeric FlowSight number as fallback. Alphanumeric senders have
+  // higher trust scores and are less likely to be spam-filtered.
+  const isAlphanumericValid = from && from.length > 0 && from.length <= 11 && !/^\+?\d+$/.test(from);
+  const sender = isAlphanumericValid ? from : toEcallNumber(senderNumber);
+
   try {
     const auth = Buffer.from(`${username}:${password}`).toString("base64");
 
@@ -59,7 +66,7 @@ export async function sendSmsEcall(
       },
       body: JSON.stringify({
         channel: "sms",
-        from: toEcallNumber(senderNumber),
+        from: sender,
         to: toEcallNumber(to),
         content: {
           type: "Text",
