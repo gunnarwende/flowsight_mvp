@@ -49,10 +49,8 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
     }
   }, [value]);
 
-  const hasBusy = busySlots && busySlots.size > 0;
-
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" style={{ minWidth: "5rem" }}>
       <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-1.5 px-1">
         {label}
       </span>
@@ -65,16 +63,17 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
           const isDisabled = !!minTime && slot < minTime;
           const isBusy = busySlots?.has(slot) ?? false;
           const fullHour = isFullHour(slot);
+          const isClickable = !isDisabled && !isBusy;
 
           return (
             <button
               key={slot}
               ref={isSelected ? selectedRef : undefined}
               type="button"
-              disabled={isDisabled}
-              onClick={() => { if (!isDisabled) onChange(slot); }}
+              disabled={isDisabled || isBusy}
+              onClick={() => { if (isClickable) onChange(slot); }}
               className={`
-                w-full text-left transition-all duration-100 flex items-center
+                w-full text-center transition-all duration-100
                 ${fullHour ? "pt-1.5 pb-1 px-2.5" : "py-0.5 px-2.5"}
                 ${isSelected ? "rounded-lg my-0.5 shadow-sm" : ""}
               `}
@@ -82,55 +81,29 @@ export function TimeSlotSelector({ label, value, brandColor, onChange, minTime, 
                 backgroundColor: isSelected
                   ? brandColor
                   : undefined,
-                cursor: isDisabled ? "not-allowed" : "pointer",
-                opacity: isDisabled ? 0.35 : 1,
+                cursor: isClickable ? "pointer" : "not-allowed",
+                opacity: isDisabled ? 0.3 : isBusy ? 0.35 : 1,
               }}
               onMouseEnter={(e) => {
-                if (!isSelected && !isDisabled) {
-                  e.currentTarget.style.backgroundColor = isBusy ? "#fee2e2" : `${brandColor}0d`;
+                if (!isSelected && isClickable) {
+                  e.currentTarget.style.backgroundColor = `${brandColor}0d`;
                 }
               }}
               onMouseLeave={(e) => {
-                if (!isSelected && !isDisabled) {
+                if (!isSelected && isClickable) {
                   e.currentTarget.style.backgroundColor = "";
                 }
               }}
             >
-              {/* Time label */}
               <span
                 className={`
                   font-mono tabular-nums
                   ${fullHour ? "text-xs font-semibold" : "text-[10px] font-normal"}
-                  ${isSelected ? "text-white" : isDisabled ? "text-gray-300" : isBusy ? "text-red-400" : "text-gray-700"}
+                  ${isSelected ? "text-white" : isDisabled ? "text-gray-300" : isBusy ? "text-gray-300 line-through" : "text-gray-700"}
                 `}
-                style={{ minWidth: "2.5rem" }}
               >
                 {slot}
               </span>
-
-              {/* Availability bar */}
-              {hasBusy && !isDisabled && (
-                <span className="flex-1 ml-2 flex items-center">
-                  <span
-                    className="h-2 rounded-full transition-all"
-                    style={{
-                      width: "100%",
-                      backgroundColor: isSelected
-                        ? "rgba(255,255,255,0.3)"
-                        : isBusy
-                          ? "#fca5a5"
-                          : "#d1fae5",
-                    }}
-                  />
-                </span>
-              )}
-
-              {/* Busy badge */}
-              {isBusy && !isSelected && !isDisabled && fullHour && (
-                <span className="ml-1.5 text-[8px] font-bold text-red-400 uppercase tracking-widest shrink-0">
-                  belegt
-                </span>
-              )}
             </button>
           );
         })}
