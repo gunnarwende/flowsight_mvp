@@ -173,11 +173,11 @@ Welche Szenen, in welcher Reihenfolge, mit welchen Assets, welchen Variablen, un
 
 | Aspekt | Detail |
 |--------|--------|
-| **Zweck** | Bonus-Feature: Automatische Bewertungs-Anfrage nach Fall |
+| **Zweck** | Bonus-Feature: Bewertungs-Anfrage nach erledigtem Fall (manuell per Knopfdruck) |
 | **Dauer** | 5-8s |
 | **Visual** | Review-Surface (/review/{caseId}) auf Handy |
 | **Audio** | Founder-Narration |
-| **Narration** | "Nach dem Einsatz bekommt der Kunde automatisch eine Bewertungsanfrage." |
+| **Narration** | "Nach dem Einsatz können Sie mit einem Klick eine Bewertungsanfrage an den Kunden senden." |
 | **Capture** | Playwright: /review/{caseId} (mit Testfall-ID) |
 
 ---
