@@ -2,22 +2,22 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-21 (Voice: Laura DE + Partial Cases Fix. Pricing FINAL: Standard CHF 299 / Professional CHF 499. 25+ Module.)
+> Letzte Aktualisierung: 2026-03-22 (Grossumbau: Website-Redesign "Leitsystem für Handwerksbetriebe", Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch. Pricing FINAL.)
 
 ---
 
 ## 1. Was ist FlowSight?
 
-FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digitalisieren den gesamten Kundenkontakt — vom ersten Anruf über die Fallerfassung bis zur Google-Bewertung.
+FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalisieren den gesamten Kundenkontakt — vom ersten Anruf über die Fallerfassung bis zur Bewertung.
 
 **Elevator Pitch (30 Sekunden):**
-"Die meisten Sanitärbetriebe in der Schweiz haben eine veraltete Website, nehmen Aufträge per Telefon und Zettel an, und verlieren dabei Kunden. FlowSight gibt ihnen eine moderne Website, einen KI-Telefonassistenten der 24/7 Aufträge aufnimmt, und ein einfaches Dashboard wo sie alles im Griff haben. In einer Woche live, ohne IT-Kenntnisse."
+"Die meisten Handwerksbetriebe in der Schweiz verpassen Anrufe, verlieren Meldungen und haben keine Zeit für Organisation. FlowSight gibt ihnen ein Leitsystem: eine Telefonassistentin die rund um die Uhr erreichbar ist, ein Online-Meldungsformular, einen Leitstand für alle Fälle, und eine Bewertungs-Engine. In einer Woche live, persönlich eingerichtet, ohne IT-Kenntnisse."
 
 **Firma:** FlowSight GmbH (Schweizer GmbH)
 **Gründer:** Gunnar Wende, Solo-Founder, Zürich
 **LinkedIn:** linkedin.com/company/flowsight-gmbh
 **Website:** flowsight.ch
-**Geschäftsnummer:** +41 44 552 09 19 (KI-Assistentin "Lisa")
+**Geschäftsnummer:** +41 44 552 09 19 (Digitale Assistentin Lisa)
 
 ---
 
@@ -156,8 +156,10 @@ FlowSight ist ein Multi-Tenant SaaS für Schweizer Handwerksbetriebe. Wir digita
 ### 3.12 Sales Voice Agent "Lisa"
 - Auf Geschäftsnummer +41 44 552 09 19
 - DE + INTL (auto language swap)
-- Beantwortet Fragen zu FlowSight, sammelt Demo-Anfragen
-- **Pricing aktuell:** CHF 299/Monat — ein Produkt, alles inklusive
+- **4 Modi:** Video-Rückruf (Prio), Kaltanruf (Default), Testnummer-Verwechslung, Support (NEU)
+- Beantwortet Fragen zu FlowSight, sammelt Rückruf-Anfragen für Founder
+- Knowledge Base aligned mit Website-Content (Leitsystem für Handwerksbetriebe)
+- **Preise:** Werden NICHT genannt — immer Verweis auf persönliches Gespräch mit Founder
 
 ---
 

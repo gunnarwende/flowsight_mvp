@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 2.1 | **Datum:** 2026-03-21
+**Version:** 2.2 | **Datum:** 2026-03-22
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v2.1 — 36 Decisions (D1-D36). Voice: Laura DE + Partial Cases. Pricing FINAL (Standard/Professional/Enterprise). 25+ Module.
+**Status:** v2.2 — 40 Decisions (D1-D40). Grossumbau: Website "Leitsystem für Handwerksbetriebe", Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -48,6 +48,10 @@
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
 | D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
 | D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
+| D37 | Website-Positionierung: "Leitsystem für Handwerksbetriebe" (breit, nicht nur Sanitär/Heizung). Hero: "Das Leitsystem für Ihren Betrieb — vom ersten Kontakt bis zur Bewertung." Kein "Lisa" / "5-Sterne" / "Dashboard" in kundengerichtetem Copy. | **ENTSCHIEDEN** ✅ | Founder + CC | `page.tsx`, `constants.ts`, `layout.tsx`, PRs #349 |
+| D38 | Nav: "Testen" → "Live erleben" (/live-erleben). Generisches 2-Min-Video als Erst-Impact (Phase 1: ohne Video, Phase 2: mit Video). /testen = 301 Redirect. | **ENTSCHIEDEN** ✅ | Founder + CC | `live-erleben/page.tsx`, `testen/page.tsx`, PRs #349 |
+| D39 | Voice Agent Sales: 4 Modi (Video-Rückruf Prio, Kaltanruf Default, Testnummer-Verwechslung, Support NEU). Lisa nennt KEINE Preise — immer Founder-Rückruf. Knowledge Base = Website-Content. | **ENTSCHIEDEN** ✅ | Founder + CC | `retell/flowsight_sales_de.json`, PRs #350 |
+| D40 | Pipeline Tracking: pain_type + outreach_outcome auf tenants. provision_trial.mjs akzeptiert --pain-type + --outreach-outcome. CEO-App Pipeline zeigt Badges. | **ENTSCHIEDEN** ✅ | Founder + CC | `20260322_pipeline_tracking.sql`, PRs #348 |
 
 ---
 
