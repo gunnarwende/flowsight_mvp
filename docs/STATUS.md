@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-21 (Voice: Laura DE, Partial Cases Fix, Pricing-Strategie FINAL, End-to-End Kostenanalyse)
+**Datum:** 2026-03-22 (Grossumbau: Website-Redesign Leitsystem, Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -60,6 +60,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **Grossumbau (22.03.):** PRs #348-#350. Website-Redesign: Neue Hero ("Das Leitsystem für Ihren Betrieb — vom ersten Kontakt bis zur Bewertung."), 8-Section-Struktur, Social Proof, "Handwerksbetriebe" statt nur Sanitär. Nav "Live erleben" (statt "Testen"), /live-erleben Seite, /testen→301 Redirect. Kein "Lisa"/"5-Sterne"/"Dashboard" in kundengerichtetem Copy. Pipeline: pain_type + outreach_outcome Spalten live (Migration applied). Konsistenz: "Dashboard"→"Leitstand", "KI-Assistentin"→"Telefonassistentin" in Trial-Emails. Voice Agent: 4-Modi-Redesign (Video-Rückruf, Kaltanruf, Testnummer, Support NEU). Knowledge Base aligned mit Website. Video-Drehbuch: 2-Min generisches Produktvideo (7 Szenen).
 - **Voice Session (21.03.):** PRs #336-#345. Laura (ElevenLabs) als neue DE-Stimme auf allen 4 Intake-Agents (Juniper bleibt INTL). Partial Cases Fix: Voice-Fälle gehen nicht mehr verloren bei fehlenden Feldern (68 historische Verluste verhindert). Urgency-Normalisierung (Aliases: "Notfall"→"notfall", "emergency"→"notfall"). SMS-Sender jetzt alphanumerisch (Tenant-Markenname statt Nummer → weniger Spam). E-Mail-Button "Fall in der Leitzentrale öffnen". Kalender Belegt/Frei Balken entfernt (cleaner). PWA Deep-Links über Trampoline-Page.
 - **Pricing-Strategie FINAL (21.03.):** PRs #340-#345. End-to-End Kostenanalyse pro Fall (CHF 0.58 minimal, CHF 0.82 typisch). SMS = dominanter Kostentreiber (57-84%, nicht Voice). OpenAI Realtime 2.9× teurer als Retell (Audio-Tokens). Finales Pricing: Standard CHF 299 (120 Fälle inkl.) / Professional CHF 499 (250 Fälle) / Enterprise Custom. Sweetspot: 3-8 MA (85-95% Marge). Markt: ~970 Zürich, ~5'700 Deutschschweiz. Dokument: `docs/redesign/leitstand/pricing_und_marge.md`.
 - **Outlook-Kalender Phase 1 LIVE (20.03.):** PRs #317-#330. Outlook Free/Busy im Terminpicker. Grün/rote Verfügbarkeitsbalken, Kollisionsprüfung intern + Outlook, animierter Status-Indikator. Architektur: Application Permissions (client_credentials), kein User-OAuth. Learnings: Delegated OAuth funktioniert nicht für Multi-Tenant (Admin-Token-Hijacking), Exchange Online Postfach ist Pflicht. Runbook: `docs/runbooks/outlook_kalender_onboarding.md`.

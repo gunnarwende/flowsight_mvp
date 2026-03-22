@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-21 (Voice: Laura + Partial Cases Fix + Pricing FINAL. SMS = dominanter Kostentreiber.)
+**Updated:** 2026-03-22 (Grossumbau: Website-Redesign Leitsystem, Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -15,8 +15,8 @@
 - **Pricing:** FINAL — Standard CHF 299 (120 Fälle), Professional CHF 499 (250 Fälle), Enterprise Custom. Sweetspot: 3-8 MA. Dokument: `pricing_und_marge.md`
 - **BLOCKER:** 0
 - **Sentry-Bugs:** voice_case_missing_fields durch Partial Cases Fix entschärft (Fälle werden jetzt mit Defaults angelegt statt verworfen). Historische Events (68x) werden abnehmen.
-- **Phase:** Pricing validieren + eCall SMS-Preis klären + LLM auf GPT-4o-mini umstellen.
-- **Nächste Schritte:** 1) eCall-Portal: SMS-Preis + Grundgebühr verifizieren 2) Retell LLM → GPT-4o-mini 3) Pricing-Page aktualisieren 4) Voice Agent V2-V6 Bugs testen
+- **Phase:** Grossumbau (22.03.) — Website-Redesign, Voice Agent, Pipeline Tracking, Video-Drehbuch. PRs #348-#350.
+- **Nächste Schritte:** 1) PRs mergen (CI prüfen) 2) retell_sync.mjs für Sales Agents 3) DEMO_SIP_CALLER_ID verifizieren 4) Voice-Bugs V2-V6 Founder-Test 5) Video aufnehmen (generisch)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
