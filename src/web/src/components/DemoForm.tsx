@@ -65,7 +65,7 @@ export function DemoForm() {
           innerhalb von 24 Stunden persönlich bei Ihnen.
         </p>
         <p className="mt-4 text-sm text-navy-400">
-          Wenn es passt, bauen wir Lisa persönlich für Ihren Betrieb —
+          Wenn es passt, richten wir das System pers&ouml;nlich f&uuml;r Ihren Betrieb ein &mdash;
           in 48 Stunden. Kostenlos. 14 Tage zum Testen.
         </p>
       </div>
@@ -165,7 +165,7 @@ export function DemoForm() {
         disabled={loading}
         className="mt-6 w-full rounded-lg bg-gold-500 py-3.5 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 disabled:opacity-60 sm:w-auto sm:px-10"
       >
-        {loading ? "Wird gesendet…" : "Lisa für meinen Betrieb bauen"}
+        {loading ? "Wird gesendet\u2026" : "Jetzt starten"}
       </button>
 
       <p className="mt-4 text-xs text-navy-400">

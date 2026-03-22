@@ -51,6 +51,8 @@ const name = getArg("name");
 const phone = getArg("phone");
 const prospectEmail = getArg("prospect-email");
 const modulesInput = getArg("modules") || "voice,website_wizard,ops,reviews,sms";
+const painType = getArg("pain-type");
+const outreachOutcome = getArg("outreach-outcome") || "interessiert";
 const gewerk = getArg("gewerk") || "sanitaer";
 const seedCount = parseInt(getArg("seed-count") || "15", 10);
 
@@ -63,6 +65,8 @@ Usage:
     --phone="+41441234567" \\
     --prospect-email=hans@firma.ch \\
     [--modules=voice,website_wizard,ops,reviews,sms] \\
+    [--pain-type=erreichbarkeit|buerochaos|aussenwirkung|notfall|bewertung] \\
+    [--outreach-outcome=interessiert|keine_antwort|trial_gestartet|konvertiert|abgelehnt] \\
     [--gewerk=sanitaer|heizung|allgemein] \\
     [--seed-count=15] \\
     [--dry-run]
@@ -111,6 +115,8 @@ async function main() {
   console.log(`  Phone:    ${phone || "(none)"}`);
   console.log(`  Prospect: ${prospectEmail}`);
   console.log(`  Gewerk:   ${gewerk}`);
+  if (painType) console.log(`  Pain:     ${painType}`);
+  console.log(`  Outcome:  ${outreachOutcome}`);
   console.log(`  Seed:     ${seedCount} cases`);
   console.log(`  Trial:    ${trialStart.toISOString().slice(0, 10)} → ${trialEnd.toISOString().slice(0, 10)}`);
   console.log(`  Follow-up: ${followUpAt.toISOString().slice(0, 10)}`);
@@ -141,6 +147,8 @@ async function main() {
           trial_end: trialEnd.toISOString(),
           follow_up_at: followUpAt.toISOString(),
           prospect_email: prospectEmail,
+          ...(painType ? { pain_type: painType } : {}),
+          ...(outreachOutcome ? { outreach_outcome: outreachOutcome } : {}),
         },
         { onConflict: "slug" }
       )
@@ -243,7 +251,7 @@ async function main() {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:6px">
   <tr><td style="padding:16px 20px;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:1px">Ihre Testnummer</td></tr>
   <tr><td style="padding:0 20px 6px;color:#e2e8f0;font-size:20px;font-weight:700;letter-spacing:0.5px">${phone}</td></tr>
-  <tr><td style="padding:0 20px 16px;color:#94a3b8;font-size:14px;line-height:1.5">Rufen Sie jetzt an und sprechen Sie mit Ihrer pers&ouml;nlichen KI-Assistentin Lisa.</td></tr>
+  <tr><td style="padding:0 20px 16px;color:#94a3b8;font-size:14px;line-height:1.5">Rufen Sie jetzt an und sprechen Sie mit Ihrer pers&ouml;nlichen Telefonassistentin.</td></tr>
   </table>
 </td></tr>`
       : "";
@@ -267,7 +275,7 @@ Ihr 14-Tage Trial ist aktiv. Ab sofort k&ouml;nnen Sie das System testen.
 </td></tr>
 <!-- CTA button -->
 <tr><td style="padding:24px 24px 8px" align="center">
-  <a href="${magicLink}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:6px">Dashboard &ouml;ffnen</a>
+  <a href="${magicLink}" target="_blank" style="display:inline-block;background:#d4a853;color:#0b1120;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:6px">Leitstand &ouml;ffnen</a>
 </td></tr>
 ${phoneSection}
 <!-- Trial period -->
@@ -280,8 +288,8 @@ ${phoneSection}
 <!-- What's included -->
 <tr><td style="padding:20px 24px 0;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:1px">Das ist enthalten</td></tr>
 <tr><td style="padding:8px 24px 0;color:#e2e8f0;font-size:14px;line-height:2">
-&bull; Dashboard mit Demo-F&auml;llen<br>
-&bull; Pers&ouml;nliche KI-Assistentin (Lisa)<br>
+&bull; Leitstand mit Demo-F&auml;llen<br>
+&bull; Pers&ouml;nliche Telefonassistentin (24/7, mehrsprachig)<br>
 &bull; SMS-Best&auml;tigung nach jedem Anruf<br>
 &bull; Review-System
 </td></tr>
@@ -300,16 +308,16 @@ ${phoneSection}
       "",
       "Ihr 14-Tage Trial ist aktiv. Ab sofort können Sie das System testen.",
       "",
-      `Dashboard öffnen: ${magicLink}`,
+      `Leitstand öffnen: ${magicLink}`,
       "",
       ...(phone
-        ? [`Ihre Testnummer: ${phone}`, "Rufen Sie jetzt an und sprechen Sie mit Ihrer persönlichen KI-Assistentin Lisa.", ""]
+        ? [`Ihre Testnummer: ${phone}`, "Rufen Sie jetzt an und sprechen Sie mit Ihrer persönlichen Telefonassistentin.", ""]
         : []),
       `Trial-Zeitraum: ${trialStartFmt} bis ${trialEndFmt} (14 Tage)`,
       "",
       "Das ist enthalten:",
-      "- Dashboard mit Demo-Fällen",
-      "- Persönliche KI-Assistentin (Lisa)",
+      "- Leitstand mit Demo-Fällen",
+      "- Persönliche Telefonassistentin (24/7, mehrsprachig)",
       "- SMS-Bestätigung nach jedem Anruf",
       "- Review-System",
       "",

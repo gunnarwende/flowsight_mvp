@@ -38,6 +38,18 @@
     },
     {
       "type": "string",
+      "name": "conversation_mode",
+      "description": "Which conversation mode was triggered. Return exactly one of: \"kaltanruf\", \"video_rueckruf\", \"testnummer_verwechslung\", \"support\". Always use German values.",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "callback_preferred_time",
+      "description": "When the caller prefers to be called back. Return empty string if not discussed. Examples: 'morgen Vormittag', 'Monday afternoon', 'anytime'. Always in German.",
+      "required": false
+    },
+    {
+      "type": "string",
       "name": "call_summary",
       "description": "2-3 sentence summary of the call in German. Include what the caller asked about and the outcome. Always write in German regardless of call language.",
       "required": true
