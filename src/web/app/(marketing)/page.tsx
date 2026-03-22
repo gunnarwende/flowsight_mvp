@@ -6,21 +6,24 @@ import { DashboardShowcase } from "@/src/components/DashboardMockup";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
-  title: "FlowSight — Jeder Anruf wird zum Auftrag",
+  title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
   description:
-    "Telefonassistentin, Fallübersicht und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google-Bewertungen. Raum Zürich.",
+    "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen — alles an einem Ort. 24/7 erreichbar, ab CHF 299/Mo.",
   openGraph: {
-    title: "FlowSight — Jeder Anruf wird zum Auftrag",
+    title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
     description:
-      "Telefonassistentin, Fallübersicht und professionelle Website für Sanitär- und Heizungsbetriebe. 24/7 erreichbar, strukturierte Fälle, Google-Bewertungen. Raum Zürich.",
+      "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen — alles an einem Ort.",
     url: "https://flowsight.ch",
+    type: "website",
+    locale: "de_CH",
+    siteName: "FlowSight",
   },
   alternates: {
     canonical: "https://flowsight.ch",
   },
 };
 
-/* ── Inline SVG icons (no deps) ─────────────────────────── */
+/* ── Inline SVG icons ──────────────────────────────────── */
 
 function PhoneIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -46,77 +49,43 @@ function ShieldIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-
-function CalendarIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-    </svg>
-  );
-}
-
-function StarIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-    </svg>
-  );
-}
-
-function CameraIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H3.75A2.25 2.25 0 0 0 1.5 6.75v12a2.25 2.25 0 0 0 2.25 2.25Z" />
-    </svg>
-  );
-}
-
-
-/* ── Page ────────────────────────────────────────────────── */
+/* ── Page ──────────────────────────────────────────────── */
 
 export default function HomePage() {
   return (
     <>
-      {/* ── 1. Hero ──────────────────────────────────────── */}
+      {/* ── S1: Hero ───────────────────────────────────── */}
       <section className="overflow-hidden bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900">
         <div className="mx-auto max-w-6xl px-6 pb-16 pt-20 sm:pb-24 sm:pt-28 lg:grid lg:grid-cols-2 lg:gap-12 lg:px-8 lg:pb-32 lg:pt-36">
-          {/* Text */}
           <div className="flex flex-col justify-center">
             <p className="text-sm font-semibold uppercase tracking-widest text-gold-400">
-              Für Sanitär- &amp; Heizungsbetriebe in der Schweiz
+              F&uuml;r Schweizer Handwerksbetriebe
             </p>
             <h1 className="mt-5 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
-              Jeder Anruf wird{" "}
-              <span className="text-gold-400">zum Auftrag.</span>
+              Das Leitsystem f&uuml;r Ihren Betrieb &mdash;{" "}
+              <span className="text-gold-400">vom ersten Kontakt bis zur Bewertung.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy-200">
-              Website, Telefonassistentin und Fallübersicht — alles aus einer Hand.
-              FlowSight nimmt Schadensmeldungen entgegen, erstellt strukturierte Fälle
-              und liefert Ihnen alles auf einen Blick. 24/7, auch nachts und am Wochenende.
+              Anfragen werden aufgenommen, best&auml;tigt und als klare F&auml;lle
+              weitergef&uuml;hrt. Damit nichts liegen bleibt und im Betrieb alles
+              sauber zusammenl&auml;uft.
             </p>
 
-            {/* Proof indicators */}
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-navy-200">
-              <span className="flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
-                Inkl. Website
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
-                24/7 erreichbar
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
-                5 Sprachen
-              </span>
+              {["24/7 erreichbar", "Alles an einem Ort", "In einer Woche live"].map((t) => (
+                <span key={t} className="flex items-center gap-2">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-400" aria-hidden="true" />
+                  {t}
+                </span>
+              ))}
             </div>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/testen"
+                href="/live-erleben"
                 className="rounded-lg bg-gold-500 px-8 py-3.5 text-center text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
               >
-                Kostenlos testen
+                Live erleben
               </Link>
               <a
                 href={`tel:${SITE.phoneRaw}`}
@@ -128,262 +97,95 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero visual */}
           <div className="mt-12 lg:mt-0">
             <HeroVisual className="lg:translate-x-4" />
           </div>
         </div>
       </section>
 
-      {/* ── 2. Problem → Solution ────────────────────────── */}
-      <section className="bg-warm-white py-24 lg:py-32">
+      {/* ── S2: Social Proof ───────────────────────────── */}
+      <section className="bg-warm-white py-16 lg:py-20">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Das Problem kennen Sie.
-            </h2>
-            <p className="mt-4 text-lg text-navy-400">
-              Und so löst FlowSight es — ohne zusätzliche Arbeit für Sie.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <p className="text-center text-sm font-semibold uppercase tracking-wider text-navy-400/60">
+            Im Einsatz bei Betrieben in Ihrer Region
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             {[
-              {
-                problem: "Ihre Website zeigt nicht, wie gut Sie wirklich sind.",
-                solution: "Moderne Website in Ihrem Look — in einer Woche live.",
-              },
-              {
-                problem: "Anrufe gehen abends und am Wochenende verloren.",
-                solution: "24/7 erreichbar — die Telefonassistentin nimmt jeden Anruf an.",
-              },
-              {
-                problem: "Zettelwirtschaft statt strukturierter Dokumentation.",
-                solution: "Jede Meldung als Fall mit Ort, Kategorie und Dringlichkeit.",
-              },
-              {
-                problem: "Zufriedene Kunden — aber keine Bewertungen auf Google.",
-                solution: "Per Knopfdruck eine Review-Anfrage senden. Mehr Sterne, mehr Aufträge.",
-              },
-            ].map((item) => (
-              <div
-                key={item.problem}
-                className="group rounded-2xl border border-navy-200/60 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              "D\u00f6rfler AG",
+              "Jul. Weinberger AG",
+              "Walter Leuthold",
+              "Orlandini Sanit\u00e4r",
+              "Widmer H. & Co. AG",
+            ].map((name) => (
+              <span
+                key={name}
+                className="text-base font-semibold text-navy-900/40 transition-colors hover:text-navy-900/70"
               >
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-status-error/10 text-status-error">
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                  </span>
-                  <p className="text-sm leading-relaxed text-navy-900/60 line-through decoration-navy-200">
-                    {item.problem}
-                  </p>
-                </div>
-                <div className="mt-4 flex items-start gap-3">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-600">
-                    <CheckIcon className="h-3.5 w-3.5" />
-                  </span>
-                  <p className="text-sm font-medium leading-relaxed text-navy-900">
-                    {item.solution}
-                  </p>
-                </div>
-              </div>
+                {name}
+              </span>
             ))}
           </div>
+          <p className="mt-6 text-center text-sm text-navy-400">
+            Region Z&uuml;rich &middot; Linkes Z&uuml;richseeufer &middot; Seit 2026
+          </p>
         </div>
       </section>
 
-      {/* ── 3. Prozessflow — "So funktioniert FlowSight." ── */}
-      <section id="funktionen" className="scroll-mt-20 bg-warm-white py-24 lg:py-32">
+      {/* ── S3: So funktioniert FlowSight ──────────────── */}
+      <section id="funktionen" className="scroll-mt-20 bg-navy-50 py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
               So funktioniert FlowSight.
             </h2>
             <p className="mt-4 text-lg text-navy-400">
-              Von der Meldung bis zur 5-Sterne-Bewertung — in vier Schritten.
+              F&uuml;nf Schritte. Ein System. Vom Eingang bis zum Abschluss.
             </p>
           </div>
 
-          <div className="relative mt-16">
-            {/* SVG Loop connector — desktop only */}
-            <div className="absolute inset-0 hidden sm:block" aria-hidden="true">
-              <svg className="h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100" fill="none">
-                <rect x="8" y="8" width="84" height="84" rx="4" stroke="rgb(var(--color-gold-400))" strokeWidth="0.4" strokeDasharray="2 1.5" fill="none" opacity="0.35" />
-                {/* Arrow hints at corners */}
-                <polygon points="50,7 51.5,10 48.5,10" fill="rgb(var(--color-gold-400))" opacity="0.4" />
-                <polygon points="93,50 90,48.5 90,51.5" fill="rgb(var(--color-gold-400))" opacity="0.4" />
-                <polygon points="50,93 48.5,90 51.5,90" fill="rgb(var(--color-gold-400))" opacity="0.4" />
-                <polygon points="7,50 10,48.5 10,51.5" fill="rgb(var(--color-gold-400))" opacity="0.4" />
-              </svg>
-            </div>
-
-            <div className="relative grid gap-8 sm:gap-10 grid-cols-1 sm:grid-cols-2">
-              {[
-                {
-                  step: "1",
-                  title: "Meldung geht ein",
-                  desc: "Per Anruf an Ihre Telefonassistentin oder über das Online-Formular auf Ihrer Website — 24/7, auch nachts und am Wochenende.",
-                  icon: (
-                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-                      <circle cx="20" cy="4" r="3.5" fill="currentColor" strokeWidth={0} opacity={0.3} />
+          <div className="relative mt-16 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+            {([
+              {
+                step: "1",
+                title: "Anfrage geht ein",
+                desc: "Per Anruf an Ihre Telefonassistentin oder \u00fcber das Online-Formular \u2014 rund um die Uhr.",
+              },
+              {
+                step: "2",
+                title: "Fall wird erfasst",
+                desc: "Kategorie, Ort, Dringlichkeit \u2014 alles strukturiert. Automatisch als klarer Fall angelegt.",
+              },
+              {
+                step: "3",
+                title: "Sie werden informiert",
+                desc: "E-Mail an den Betrieb, Best\u00e4tigung an den Kunden \u2014 mit Ihrem Firmennamen. Sofort.",
+              },
+              {
+                step: "4",
+                title: "Sie planen und erledigen",
+                desc: "Termin setzen, Techniker zuweisen, Fotos anh\u00e4ngen. Alles im Leitstand.",
+              },
+              {
+                step: "5",
+                title: "Kunde bewertet",
+                desc: "Nach erledigtem Auftrag: Bewertungsanfrage per Knopfdruck. Mehr Bewertungen, mehr Auftr\u00e4ge.",
+              },
+            ] as const).map((item, idx) => (
+              <div key={item.step} className="relative flex flex-col items-center text-center">
+                {idx > 0 && (
+                  <div className="mb-4 flex h-8 items-center text-gold-400 sm:hidden" aria-hidden="true">
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                     </svg>
-                  ),
-                },
-                {
-                  step: "2",
-                  title: "Fall wird erstellt",
-                  desc: "PLZ, Ort, Kategorie, Dringlichkeit — alles strukturiert. Sie erhalten eine E-Mail, der Melder eine Bestätigung. Automatisch.",
-                  icon: (
-                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                    </svg>
-                  ),
-                },
-                {
-                  step: "3",
-                  title: "Sie übernehmen",
-                  desc: "Termin planen, Fotos anhängen, Fall abschliessen — alles in der Fallübersicht. Kein Zettel, kein Chaos.",
-                  icon: (
-                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m9 14.25 2.25 2.25L15 12" />
-                    </svg>
-                  ),
-                },
-                {
-                  step: "4",
-                  title: "5-Sterne-Bewertung",
-                  desc: "Per Knopfdruck eine Google-Review-Anfrage an den Kunden senden. Mehr Bewertungen, mehr Aufträge.",
-                  icon: (
-                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                    </svg>
-                  ),
-                },
-              ].map((item, idx) => (
-                <div key={item.step} className="relative flex flex-col items-center text-center">
-                  {/* Mobile connecting arrow (between items) */}
-                  {idx > 0 && (
-                    <div className="mb-4 flex h-8 items-center text-gold-400 sm:hidden" aria-hidden="true">
-                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* Icon circle */}
-                  <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-navy-50 text-gold-500 ring-4 ring-warm-white">
-                    {item.icon}
                   </div>
-
-                  {/* Step number */}
-                  <span className="mt-4 flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-xs font-bold text-navy-950">
-                    {item.step}
-                  </span>
-
-                  <h3 className="mt-3 text-lg font-semibold text-navy-900">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-navy-900/70">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 4. Dashboard showcase ────────────────────────── */}
-      <section className="bg-navy-50 py-24 lg:py-32">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Alles kommt zu Ihnen.
-            </h2>
-            <p className="mt-4 text-lg text-navy-400">
-              Kein neues System lernen. Meldungen kommen automatisch rein — Sie entscheiden, was wann erledigt wird.
-            </p>
-          </div>
-
-          {/* Full-width dashboard mockup */}
-          <div className="mt-16">
-            <DashboardShowcase className="shadow-2xl" />
-          </div>
-
-          {/* Feature highlights below */}
-          <div className="mt-12 grid gap-8 sm:grid-cols-3">
-            {[
-              {
-                icon: <CalendarIcon className="h-5 w-5" />,
-                title: "Terminplanung",
-                desc: "Termin direkt aus dem Fall setzen — der Melder erhält eine Kalendereinladung per E-Mail.",
-              },
-              {
-                icon: <CameraIcon className="h-5 w-5" />,
-                title: "Foto-Dokumentation",
-                desc: "Fotos zum Fall hochladen — direkt vom Handy auf der Baustelle.",
-              },
-              {
-                icon: <StarIcon className="h-5 w-5" />,
-                title: "Google-Reviews",
-                desc: "Nach erledigtem Auftrag eine Review-Anfrage senden — per Knopfdruck.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
-                  {item.icon}
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-navy-900">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-navy-900/70">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. Trust / Swiss ─────────────────────────────── */}
-      <section className="bg-warm-white py-24 lg:py-32">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <ShieldIcon className="mx-auto h-10 w-10 text-gold-500" />
-            <h2 className="mt-6 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Entwickelt für die Schweiz.
-            </h2>
-            <p className="mt-4 text-lg text-navy-400">
-              Sicher, mehrsprachig und persönlich betreut.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-8 sm:grid-cols-3">
-            {[
-              {
-                title: "Datenschutz",
-                desc: "Keine Gesprächsaufnahmen. Daten auf Servern in der EU (Frankfurt). DSGVO-konform.",
-              },
-              {
-                title: "Mehrsprachig",
-                desc: "Hochdeutsch, Schweizerdeutsch, Englisch, Französisch und Italienisch — die Telefonassistentin versteht Ihre Kunden, egal welche Sprache.",
-              },
-              {
-                title: "Persönliches Onboarding",
-                desc: "Telefonnummer, Telefonassistentin, Fallübersicht — wir richten alles gemeinsam ein. Kein technisches Wissen nötig.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-navy-200/40 bg-navy-50/50 p-8 text-center">
-                <h3 className="text-lg font-semibold text-navy-900">
+                )}
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-500 text-lg font-bold text-navy-950">
+                  {item.step}
+                </span>
+                <h3 className="mt-4 text-lg font-semibold text-navy-900">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-navy-900/70">
+                <p className="mt-2 max-w-[220px] text-sm leading-relaxed text-navy-900/70">
                   {item.desc}
                 </p>
               </div>
@@ -392,7 +194,81 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 6. Pricing teaser — 3 Tiers + Garantie ────── */}
+      {/* ── S4: Leitstand ──────────────────────────────── */}
+      <section className="bg-warm-white py-24 lg:py-32">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
+              Alles an einem Ort. Kein Zettel. Kein Chaos.
+            </h2>
+            <p className="mt-4 text-lg text-navy-400">
+              Meldungen kommen automatisch rein. Sie entscheiden, was wann erledigt wird.
+            </p>
+          </div>
+
+          <div className="mt-16">
+            <DashboardShowcase className="shadow-2xl" />
+          </div>
+
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            {([
+              {
+                title: "Termin direkt setzen",
+                desc: "Termin aus dem Fall heraus planen \u2014 der Melder erh\u00e4lt eine Best\u00e4tigung per E-Mail oder SMS.",
+              },
+              {
+                title: "Fotos vom Einsatz",
+                desc: "Fotos direkt zum Fall hochladen \u2014 vom Handy auf der Baustelle.",
+              },
+              {
+                title: "Bewertungen sammeln",
+                desc: "Nach erledigtem Auftrag eine Bewertungsanfrage senden \u2014 per Knopfdruck.",
+              },
+            ] as const).map((item) => (
+              <div key={item.title} className="flex gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
+                  <CheckIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-navy-900">{item.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-navy-900/70">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── S5: Vertrauen ──────────────────────────────── */}
+      <section className="bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <ShieldIcon className="mx-auto h-10 w-10 text-gold-500" />
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Schweizer Qualit&auml;t. F&uuml;r Schweizer Betriebe.
+            </h2>
+            <p className="mt-4 text-lg text-navy-300">
+              Sicher, mehrsprachig und pers&ouml;nlich betreut.
+            </p>
+          </div>
+
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {([
+              { title: "Keine Aufnahmen", desc: "Gespr\u00e4che werden nicht aufgezeichnet. Punkt." },
+              { title: "Server in der EU", desc: "Daten auf Servern in Frankfurt. DSGVO-konform. Verschl\u00fcsselt." },
+              { title: "5 Sprachen", desc: "Deutsch, Schweizerdeutsch, Englisch, Franz\u00f6sisch und Italienisch." },
+              { title: "Pers\u00f6nliche Einrichtung", desc: "Kein Self-Service. Wir richten alles gemeinsam ein \u2014 in einer Woche live." },
+            ] as const).map((item) => (
+              <div key={item.title} className="rounded-2xl border border-navy-700/50 bg-navy-800/50 p-6 text-center">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-navy-300">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── S6: Preise ─────────────────────────────────── */}
       <section className="bg-warm-white py-24 lg:py-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
@@ -400,166 +276,124 @@ export default function HomePage() {
               Einfache, faire Preise.
             </h2>
             <p className="mt-4 text-lg text-navy-400">
-              Keine versteckten Kosten. Keine Bindung. Monatlich kündbar.
+              Keine versteckten Kosten. Keine Bindung. Monatlich k&uuml;ndbar.
             </p>
           </div>
 
-          <div className="mx-auto mt-16 max-w-xl">
-            <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
-                Alles inklusive
-              </span>
-              <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
-                FlowSight
-              </p>
+          <div className="mx-auto mt-16 grid max-w-5xl gap-6 lg:grid-cols-3">
+            {/* Standard */}
+            <div className="rounded-2xl border border-navy-200/60 bg-white p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">Standard</p>
               <p className="mt-4">
                 <span className="text-4xl font-bold text-navy-900">CHF 299</span>
                 <span className="ml-1 text-base text-navy-400">/ Monat</span>
               </p>
-              <p className="mt-2 text-sm text-navy-900/70">
-                Website, Telefonassistentin, Dashboard, SMS, Bewertungen — ein Preis für alles.
-              </p>
+              <p className="mt-2 text-sm text-navy-900/70">F&uuml;r Betriebe bis 5 Mitarbeiter. 120 F&auml;lle inklusive.</p>
               <ul className="mt-6 space-y-3">
-                {[
-                  "Moderne Website im Firmenlook (mobiloptimiert)",
-                  "Online-Schadenmeldung in 3 Schritten",
-                  "Digitale Telefonassistentin Lisa (24/7, mehrsprachig)",
-                  "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
-                  "Fallübersicht: alle Meldungen an einem Ort",
-                  "Google-Bewertungen gezielt anfragen",
-                  "Persönliches Onboarding & Setup inklusive",
-                ].map((f) => (
+                {["Website im Firmenlook", "Online-Meldungsformular", "Telefonassistentin (24/7, mehrsprachig)", "Best\u00e4tigungs-SMS + Foto-Upload", "Leitstand: alle F\u00e4lle an einem Ort", "Bewertungen gezielt anfragen", "Pers\u00f6nliche Einrichtung inklusive"].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/testen"
-                className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
-              >
+              <Link href="/live-erleben" className="mt-8 block w-full rounded-lg bg-navy-900 py-3 text-center text-sm font-semibold text-white transition-all hover:bg-navy-800">
                 14 Tage kostenlos testen
+              </Link>
+            </div>
+
+            {/* Professional */}
+            <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">Empfohlen</span>
+              <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">Professional</p>
+              <p className="mt-4">
+                <span className="text-4xl font-bold text-navy-900">CHF 499</span>
+                <span className="ml-1 text-base text-navy-400">/ Monat</span>
+              </p>
+              <p className="mt-2 text-sm text-navy-900/70">F&uuml;r Betriebe mit 6&ndash;15 Mitarbeitern. 250 F&auml;lle inklusive.</p>
+              <ul className="mt-6 space-y-3">
+                {["Alles aus Standard", "H\u00f6heres Fallvolumen (250 F\u00e4lle)", "Techniker-Ansicht pro Mitarbeiter", "Priorit\u00e4ts-Support", "St\u00e4rkeres Google-Profil"].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/live-erleben" className="mt-8 block w-full rounded-lg bg-gold-500 py-3 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20">
+                14 Tage kostenlos testen
+              </Link>
+            </div>
+
+            {/* Enterprise */}
+            <div className="rounded-2xl border border-navy-200/60 bg-white p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">Enterprise</p>
+              <p className="mt-4"><span className="text-4xl font-bold text-navy-900">Individuell</span></p>
+              <p className="mt-2 text-sm text-navy-900/70">F&uuml;r gr&ouml;ssere Betriebe oder spezielle Anforderungen.</p>
+              <ul className="mt-6 space-y-3">
+                {["Alles aus Professional", "Individuelles Fallvolumen", "Dedizierter Ansprechpartner", "Individuelle Integrationen"].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-navy-900/70">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/live-erleben" className="mt-8 block w-full rounded-lg border border-navy-200 bg-white py-3 text-center text-sm font-semibold text-navy-900 transition-all hover:bg-navy-50">
+                Sprechen Sie mit uns
               </Link>
             </div>
           </div>
 
           <p className="mt-6 text-center text-sm font-medium italic text-navy-900/60">
-            Setup kostenfrei · 14 Tage kostenlos · Monatlich kündbar
+            Setup kostenfrei &middot; 14 Tage kostenlos &middot; Monatlich k&uuml;ndbar &middot; Telefonminuten nach Verbrauch
           </p>
-
           <p className="mt-4 text-center">
-            <Link
-              href="/pricing"
-              className="text-sm font-semibold text-gold-600 transition-colors hover:text-gold-500"
-            >
+            <Link href="/pricing" className="text-sm font-semibold text-gold-600 transition-colors hover:text-gold-500">
               Alle Details zum Preis &rarr;
             </Link>
           </p>
-
-          {/* Guarantee card (merged from No-Brainer section) */}
-          <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-gold-300/60 bg-gradient-to-br from-navy-50 to-gold-100/30 p-8 text-center">
-            <h3 className="text-xl font-bold text-navy-900">
-              Testen Sie FlowSight — ohne Risiko.
-            </h3>
-            <p className="mt-2 text-base font-semibold text-gold-600">
-              14 Tage kostenlos. Setup inklusive.
-            </p>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-navy-900/70">
-              Wir bauen Lisa persönlich für Ihren Betrieb — mit Ihrem
-              Firmennamen, Ihren Services und Ihrer Region. 14&nbsp;Tage
-              kostenlos testen. Kein Vertrag. Kein Setup. Monatlich kündbar.
-            </p>
-            <Link
-              href="/testen"
-              className="mt-6 inline-block rounded-lg bg-gold-500 px-8 py-3 text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
-            >
-              Kostenlos testen
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ── 7. FAQ ───────────────────────────────────────── */}
+      {/* ── S7: FAQ ────────────────────────────────────── */}
       <section className="bg-navy-50 py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-            Häufige Fragen
+            H&auml;ufige Fragen
           </h2>
-
           <div className="mt-12 divide-y divide-navy-200/60">
-            {[
-              {
-                q: "Bekomme ich auch eine Website?",
-                a: "Ja — eine moderne, mobil-optimierte Website im Firmenlook ist inklusive. In einer Woche live.",
-              },
-              {
-                q: "Brauche ich technisches Wissen?",
-                a: "Nein. Wir richten alles für Sie ein — Website, Telefonnummer, Telefonassistentin, Fallübersicht. Sie brauchen nur einen Browser.",
-              },
-              {
-                q: "Funktioniert das mit meiner bestehenden Nummer?",
-                a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind — abends, am Wochenende oder im Einsatz.",
-              },
-              {
-                q: "Was passiert bei einem Notfall?",
-                a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine E-Mail mit allen Details.",
-              },
-              {
-                q: "Können mehrere Mitarbeiter die Fallübersicht nutzen?",
-                a: "Ja. Sie können beliebig viele Benutzer anlegen. Jeder sieht die gleichen Fälle und kann Termine planen, Fotos anhängen und Bewertungen anfragen.",
-              },
-              {
-                q: "Wie sicher sind meine Daten?",
-                a: "Alle Daten werden verschlüsselt übertragen und gespeichert. Es gibt keine Gesprächsaufnahmen. Die Verarbeitung ist DSGVO-konform, die Server stehen in der EU.",
-              },
-              {
-                q: "Wie schnell bin ich einsatzbereit?",
-                a: "Website in einer Woche. Telefonassistentin und Fallübersicht ebenfalls — wir übernehmen die komplette Einrichtung, persönlich und in Ihrem Tempo.",
-              },
-              {
-                q: "Kann ich FlowSight risikofrei testen?",
-                a: "Ja. Wir bauen Lisa persönlich für Ihren Betrieb. 14 Tage kostenlos testen — kein Vertrag, kein Setup, monatlich kündbar.",
-              },
-            ].map((item) => (
+            {([
+              { q: "Brauche ich technisches Wissen?", a: "Nein. Wir richten alles f\u00fcr Sie ein \u2014 Website, Telefonnummer, Telefonassistentin, Leitstand. Sie brauchen nur einen Browser." },
+              { q: "Funktioniert das mit meiner bestehenden Nummer?", a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind \u2014 abends, am Wochenende oder im Einsatz." },
+              { q: "Was passiert bei einem Notfall?", a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine E-Mail mit allen Details." },
+              { q: "K\u00f6nnen mehrere Mitarbeiter den Leitstand nutzen?", a: "Ja. Sie k\u00f6nnen beliebig viele Benutzer anlegen. Jeder sieht die F\u00e4lle und kann Termine planen, Fotos anh\u00e4ngen und Bewertungen anfragen." },
+              { q: "Wie sicher sind meine Daten?", a: "Alle Daten werden verschl\u00fcsselt \u00fcbertragen und gespeichert. Keine Gespr\u00e4chsaufnahmen. Server in der EU (Frankfurt). DSGVO-konform." },
+              { q: "Was kostet FlowSight?", a: "Ab CHF 299/Monat (bis 5 MA, 120 F\u00e4lle inklusive). Gr\u00f6ssere Betriebe: CHF 499/Monat (bis 15 MA, 250 F\u00e4lle). Monatlich k\u00fcndbar, keine Bindung." },
+            ] as const).map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer items-center justify-between text-base font-semibold text-navy-900 [&::-webkit-details-marker]:hidden">
                   {item.q}
-                  <svg
-                    className="ml-4 h-5 w-5 shrink-0 text-navy-400 transition-transform duration-200 group-open:rotate-45"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                  >
+                  <svg className="ml-4 h-5 w-5 shrink-0 text-navy-400 transition-transform duration-200 group-open:rotate-45" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
                 </summary>
-                <p className="mt-4 pr-12 text-sm leading-relaxed text-navy-900/70">
-                  {item.a}
-                </p>
+                <p className="mt-4 pr-12 text-sm leading-relaxed text-navy-900/70">{item.a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 8. Demo form (#demo) ─────────────────────────── */}
-      <section
-        id="demo"
-        className="scroll-mt-20 bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32"
-      >
+      {/* ── S8: CTA / Demo Form ────────────────────────── */}
+      <section id="demo" className="scroll-mt-20 bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Lisa für Ihren Betrieb bauen.
+              Bereit? Wir richten alles f&uuml;r Sie ein.
             </h2>
             <p className="mt-4 text-lg text-navy-200">
-              Sagen Sie uns, wer Sie sind — wir bauen Lisa persönlich
-              für Ihren Betrieb. In 48 Stunden. 14 Tage kostenlos.
+              Sagen Sie uns, wer Sie sind &mdash; in 48 Stunden ist Ihr System live. 14 Tage kostenlos.
             </p>
           </div>
-
           <div className="mt-12">
             <DemoForm />
           </div>
