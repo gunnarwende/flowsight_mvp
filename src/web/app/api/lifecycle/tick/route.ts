@@ -395,7 +395,7 @@ Guten Tag,<br><br>
 Ihre Einsatzzentrale f&uuml;r <strong style="color:#e2e8f0">${companyName}</strong> ist seit 5 Tagen aktiv &mdash; aber wir haben bisher wenige Testanrufe gesehen.
 </td></tr>
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
-<strong style="color:#e2e8f0">Testen Sie es jetzt:</strong> Rufen Sie einfach Ihre Testnummer an, oder nutzen Sie das Auftragsformular auf Ihrer Website. Lisa nimmt ab und leitet alles strukturiert weiter.
+<strong style="color:#e2e8f0">Testen Sie es jetzt:</strong> Rufen Sie einfach Ihre Testnummer an, oder nutzen Sie das Auftragsformular auf Ihrer Website. Ihre Telefonassistentin nimmt ab und leitet alles strukturiert weiter.
 </td></tr>
 <tr><td style="padding:16px 24px 0;color:#94a3b8;font-size:15px;line-height:1.6">
 Sie haben noch 9 Tage in Ihrem Trial. Nutzen Sie die Zeit, um zu sehen, wie das System Ihren Arbeitsalltag ver&auml;ndert.
