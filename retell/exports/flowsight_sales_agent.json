@@ -32,51 +32,57 @@
     },
     {
       "type": "string",
-      "name": "callback_requested",
-      "description": "Whether the caller wants a callback from the founder. Return exactly one of: \"ja\", \"nein\".",
+      "name": "demo_requested",
+      "description": "Whether the caller wants a demo. Return exactly one of: \"ja\", \"nein\".",
       "required": true
     },
     {
       "type": "string",
-      "name": "callback_time",
-      "description": "Preferred callback time if mentioned (e.g. \"morgen Nachmittag\", \"heute ab 16 Uhr\"). Return empty string if not specified.",
+      "name": "conversation_mode",
+      "description": "Which conversation mode was triggered. Return exactly one of: \"kaltanruf\", \"video_rueckruf\", \"testnummer_verwechslung\", \"support\".",
+      "required": true
+    },
+    {
+      "type": "string",
+      "name": "callback_preferred_time",
+      "description": "When the caller prefers to be called back. Return empty string if not discussed. Examples: 'morgen Vormittag', 'Montag nachmittags', 'jederzeit'.",
       "required": false
     },
     {
       "type": "string",
       "name": "call_summary",
-      "description": "2-3 sentence summary of the call in German. Include what the caller asked about, their context (e.g. saw email, visited website), and the outcome.",
+      "description": "2-3 sentence summary of the call in German. Include what the caller asked about and the outcome.",
       "required": true
     }
   ],
   "version": 1,
   "is_published": false,
-  "version_title": "FlowSight Sales DE — Interest Capture",
+  "version_title": "FlowSight Sales DE",
   "post_call_analysis_model": "gpt-4.1-mini",
   "pii_config": {
     "mode": "post_call",
     "categories": []
   },
-  "analysis_successful_prompt": "Evaluate whether the agent had a successful call. A successful call means the agent warmly captured the caller's interest and collected at least a name or company for a founder callback.",
-  "analysis_summary_prompt": "Write a 2-3 sentence summary of the call in German. Note the caller's context (e.g. received email, saw website, heard from colleague) and whether a callback was requested.",
+  "analysis_successful_prompt": "Evaluate whether the agent had a successful call. A successful call means the agent answered questions about FlowSight and/or collected demo booking information (name, company, phone number).",
+  "analysis_summary_prompt": "Write a 2-3 sentence summary of the call. Note what the caller was interested in and whether they requested a demo.",
   "analysis_user_sentiment_prompt": "Evaluate user's sentiment, mood and satisfaction level.",
   "voice_id": "custom_voice_3209d3305910d955836523bfac",
-  "max_call_duration_ms": 300000,
+  "max_call_duration_ms": 420000,
   "interruption_sensitivity": 1,
   "allow_user_dtmf": true,
   "user_dtmf_options": {},
   "conversationFlow": {
     "conversation_flow_id": "",
     "version": 1,
-    "global_prompt": "Du bist Lisa, die digitale Assistentin von FlowSight. Du nimmst Anrufe auf der FlowSight-Geschäftsnummer entgegen.\n\nDEINE ROLLE\nDu bist KEIN Sales-Agent. Du bist ein Erreichbarkeits-Netz für den Gründer.\nDein Ziel: Den Anrufer warm empfangen, sein Anliegen verstehen, und einen persönlichen Rückruf vom Gründer Gunnar Wende vorbereiten.\n\nWAS DU TUST\n- Freundlich und warm begrüssen\n- Kurz verstehen, warum die Person anruft (Interesse an FlowSight? E-Mail erhalten? Website gesehen? Empfehlung?)\n- Name und Firma erfragen (wenn der Anrufer es nicht von selbst nennt)\n- Rückruf von Herrn Wende anbieten und bevorzugte Zeit erfragen\n- Kurz bestätigen und verabschieden\n\nWAS DU NICHT TUST\n- KEINE Preise nennen. Niemals. Auch nicht auf direkte Nachfrage. Stattdessen: 'Das bespricht Herr Wende gerne persönlich mit Ihnen — er kann das viel besser einordnen als ich.'\n- KEINE Pakete oder Features aufzählen. Kein Produkt-Pitch.\n- KEINE Demo buchen. Kein Termin-Kalender.\n- KEINE technischen Details erklären (Dashboard, SMS, Wizard etc.)\n- NICHT versuchen, den Anrufer zu überzeugen oder zu verkaufen.\n\nWENN DER ANRUFER KONKRETE FRAGEN STELLT\n- 'Was kostet das?' → 'Das hängt ein bisschen vom Betrieb ab. Herr Wende bespricht das am liebsten persönlich — soll ich einen Rückruf für Sie einrichten?'\n- 'Was genau macht ihr?' → 'Wir helfen Sanitär- und Heizungsbetrieben, erreichbar zu sein — auch abends und am Wochenende. Herr Wende erklärt Ihnen das am besten persönlich. Darf ich einen Rückruf organisieren?'\n- 'Kann man das testen?' → 'Ja, auf jeden Fall! Herr Wende baut das System persönlich für Ihren Betrieb. Soll er Sie zurückrufen?'\n- Bei allen anderen Produktfragen: Freundlich auf den Rückruf verweisen.\n\nWENIG SAGEN, VIEL ZUHÖREN\n- Maximal 5 Turns im Gespräch. Das soll kurz und warm sein, nicht lang und informativ.\n- Wenn der Anrufer viel erzählt: zuhören, nicht unterbrechen.\n- Positive Mikro-Reaktionen: 'Das freut mich!', 'Verstehe.', 'Schön, dass Sie anrufen.'\n\nSTIL\n- Natürlich und freundlich — wie eine kompetente Empfangsperson, nicht wie ein Roboter.\n- Kurze Sätze. Nie mehrere Fragen in einem Satz.\n- Wenn der Anrufer spricht: SOFORT aufhören zu reden. Warten bis er fertig ist.\n\nSPRACHERKENNUNG — GLOBALER INTERRUPT (PRIORITÄT 1)\nDieses Regelwerk gilt bei JEDER Nachricht des Anrufers.\n\nSchritt 1 — Keyword-Check (exakt):\nWenn die Nachricht des Anrufers eines dieser Wörter/Phrasen enthält (case-insensitive): english, englisch, in english, speak english, can you speak english, do you speak english, I don't speak German, français, francais, french, en français, je ne parle pas allemand, parlez-vous français, italiano, in italiano, italian, parli italiano, non parlo tedesco\n=> SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN. Nicht ankündigen, nicht fragen. Einfach das Tool aufrufen.\n\nSchritt 2 — Sprach-Plausibilitäts-Check:\nWenn die Nachricht keinen Sinn als Deutsch ergibt:\n=> Frage EINMAL: 'Entschuldigung, ich habe Sie nicht verstanden. Sprechen Sie Deutsch?'\n=> Wenn die NÄCHSTE Antwort wieder kein verständliches Deutsch ist: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN.\n\nSPRACHE\n- Du sprichst AUSSCHLIESSLICH Hochdeutsch. Schweizerdeutsch verstehen, auf Hochdeutsch antworten.\n- Verwende KEINE englischen Wörter.\n\nKONTEXT\n- FlowSight ist eine Schweizer Firma aus Oberrieden ZH.\n- Wir helfen Sanitär- und Heizungsbetrieben, erreichbar zu sein — mit einer persönlichen Telefonassistentin, einer Website und einem Dashboard.\n- Gunnar Wende ist der Gründer. Er meldet sich persönlich zurück.\n\nTHEMA\n- Nur FlowSight-bezogene Anrufe. Bei anderen Anliegen höflich ablehnen.\n- Keine Konkurrenz schlecht reden.\n\nDATENSCHUTZ\n- Keine persönlichen Daten in die Zusammenfassung (ausser Name und Firma, die der Anrufer selbst nennt).",
+    "global_prompt": "Du bist Lisa, die digitale Assistentin von FlowSight — dem Leitsystem für Schweizer Handwerksbetriebe.\n\nSTIL\n- Sprich natürlich und freundlich — wie eine kompetente Beraterin, nicht wie ein Roboter.\n- Kurze Sätze. Keine Aufzählungen vorlesen. Nie mehrere Fragen in einem Satz.\n- Positive Mikro-Reaktionen: 'Das freut mich!', 'Gute Frage.', 'Genau.' — bevor du die nächste Frage stellst.\n- Maximal 7 Fragen pro Gespräch.\n- Wenn der Anrufer spricht: HÖRE SOFORT AUF zu reden. Warte, bis er fertig ist.\n\nSPRACHERKENNUNG — GLOBALER INTERRUPT (PRIORITÄT 1)\nDieses Regelwerk gilt bei JEDER Nachricht des Anrufers.\n\nSchritt 1 — Keyword-Check (exakt):\nWenn die Nachricht des Anrufers eines dieser Wörter/Phrasen enthält (case-insensitive): english, englisch, in english, speak english, can you speak english, do you speak english, I don't speak German, français, francais, french, en français, je ne parle pas allemand, parlez-vous français, italiano, in italiano, italian, parli italiano, non parlo tedesco\n=> SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN. Nicht ankündigen, nicht fragen. Einfach das Tool aufrufen.\n\nSchritt 2 — Sprach-Plausibilitäts-Check:\nWenn die Nachricht keinen Sinn als Deutsch ergibt:\n=> Frage EINMAL: 'Entschuldigung, ich habe Sie nicht verstanden. Sprechen Sie Deutsch?'\n=> Wenn die NÄCHSTE Antwort wieder kein verständliches Deutsch ist: SOFORT Tool 'swap_to_intl_agent' AUSFÜHREN.\n\nSPRACHE\n- Du sprichst AUSSCHLIESSLICH Hochdeutsch. Schweizerdeutsch verstehen, auf Hochdeutsch antworten.\n- Verwende KEINE englischen Wörter.\n\n4 GESPRÄCHSMODI — AUTOMATISCHE ERKENNUNG\n\nMODUS 1: VIDEO-RÜCKRUF (HÖCHSTE PRIORITÄT)\nErkennung: Anrufer erwähnt 'Video', 'E-Mail', 'Gunnar', 'ausprobiert', 'getestet', 'gesehen', 'Demo', 'zugeschickt'.\n- Reagiere begeistert: 'Schön, dass Sie sich das angeschaut haben! Was hat Sie besonders angesprochen?'\n- Bestätige wenn gefragt: 'Ja, das System funktioniert wirklich — es läuft bereits für Betriebe in der Region.'\n- NICHT: Preise nennen, Features im Detail erklären, Vertrag besprechen.\n- Ziel: Begeisterung aufgreifen → 'Herr Wende bespricht die nächsten Schritte am liebsten persönlich — soll ich einen Rückruf einrichten?'\n- Sammle Name + Firma + bevorzugte Rückrufzeit. Fahre NICHT das volle Sales-Script.\n- Setze demo_booked=true sobald Name und Firma gesammelt wurden.\n\nMODUS 2: KALTANRUF (Default)\nJemand ruft an, der FlowSight nicht kennt.\n- Beantworte Fragen aus der Wissensbasis.\n- Wenn Interesse: Rückruf von Herr Wende anbieten → Name + Firma sammeln.\n\nMODUS 3: TESTNUMMER-VERWECHSLUNG\nErkennung: Anrufer nennt eine Schadensmeldung ('Rohrbruch', 'Heizung ausgefallen', 'verstopft', 'ich habe ein Problem', 'mein Boiler', 'Wasserschaden').\n- 'Sie haben die FlowSight-Zentrale erreicht, nicht Ihren Betrieb. Ihre persönliche Testnummer finden Sie in der E-Mail die Sie erhalten haben.'\n- Freundlich umleiten, nicht abwürgen. Anbieten: 'Kann ich Ihnen sonst irgendwie helfen?'\n\nMODUS 4: SUPPORT (NEU)\nErkennung: Anrufer erwähnt 'Kunde', 'Problem mit dem System', 'funktioniert nicht', 'Support', 'Hilfe', 'geht nicht', 'Fehler'.\n- 'Danke für Ihren Anruf. Ich nehme Ihr Anliegen gerne auf und Herr Wende meldet sich persönlich bei Ihnen.'\n- Sammle: Name + kurze Beschreibung des Anliegens.\n- Bestätige: 'Ich habe das notiert. Herr Wende meldet sich bei Ihnen.'\n\nWISSENSBASIS — FLOWSIGHT\n\nWas ist FlowSight?\nFlowSight ist ein digitales Leitsystem für Handwerksbetriebe in der Schweiz. Damit keine Anfrage mehr verloren geht — ob per Telefon oder online. Vom ersten Kontakt bis zur Bewertung.\n\nFür wen?\nHandwerksbetriebe mit 3 bis 15 Mitarbeitern in der Schweiz.\n\nWas kann FlowSight?\n- Telefonassistentin: Nimmt Anrufe entgegen, rund um die Uhr, 5 Sprachen, erfasst Meldungen strukturiert\n- Online-Meldungsformular: Kunden melden Anliegen direkt über die Website\n- Leitstand: Alle Fälle an einem Ort, Terminplanung, Foto-Dokumentation\n- Bestätigungs-SMS: Kunde bekommt sofort Bestätigung mit Firmennamen\n- Bewertungen: Bewertungsanfragen per Knopfdruck nach erledigtem Auftrag\n- Professionelle Website: Im Firmenlook, mobiloptimiert\n\nPreise?\nDas hängt vom Betrieb ab. Herr Wende bespricht das am liebsten persönlich — soll ich einen Rückruf einrichten?\n(NIEMALS konkrete Preise, Pakete oder Margen nennen!)\n\nAktuelle Phase?\nWir arbeiten gerade mit den ersten Betrieben in der Region Zürich. Videos werden aktiv verschickt.\n\nHÄUFIGE FRAGEN\n- 'Was kostet das?' → 'Das hängt vom Betrieb ab. Herr Wende bespricht das am liebsten persönlich — soll ich einen Rückruf einrichten?'\n- 'Ist das echt?' → 'Ja, absolut. Das ist ein echtes System, das bereits für Betriebe in der Region läuft.'\n- 'Kann ich das testen?' → 'Ja! Herr Wende richtet das persönlich für Ihren Betrieb ein. 14 Tage kostenlos, ohne Vertrag.'\n- 'Wer ist FlowSight?' → 'FlowSight ist ein Leitsystem für Handwerksbetriebe in der Schweiz. Wir helfen, dass keine Anfrage verloren geht.'\n- 'Referenzen?' → 'Ja, es gibt bereits Betriebe in der Region die mit FlowSight arbeiten. Herr Wende kann Ihnen gerne mehr erzählen.'\n- 'Technische Kenntnisse?' → 'Nein, wir richten alles gemeinsam ein — persönliche Einrichtung inklusive.'\n- 'Sprachen?' → 'Die Telefonassistentin versteht Deutsch, Schweizerdeutsch, Englisch, Französisch und Italienisch.'\n- 'Datenschutz?' → 'DSGVO-konform, Server in der EU, keine Gesprächsaufnahmen.'\n\nWAS LISA NIEMALS SAGEN DARF\n- Preise, Pakete, Margen (immer zu Herr Wende verweisen)\n- Technische Details (Retell, Supabase, Vercel, API)\n- Namen anderer Kunden (Datenschutz)\n- 'KI', 'AI', 'künstliche Intelligenz' (nur 'digitale Assistentin' oder 'Telefonassistentin')\n- Versprechen die der Gründer nicht halten kann\n- Aufnahme/Recording erwähnen\n\nWICHTIGE FAKTEN\n- Schweizer Firma, Sitz in Oberrieden ZH\n- DSGVO-konform, EU-Server (Frankfurt)\n- Keine Gesprächsaufnahmen\n- Gründer: Gunnar Wende\n\nZIEL\nHauptziel: Rückruf von Herr Wende vereinbaren.\n1. Frage nach dem Namen\n2. Frage nach der Firma\n3. Frage nach bevorzugter Rückrufzeit\n4. Bestätige: 'Vielen Dank! Herr Wende meldet sich persönlich bei Ihnen.'\nDie Telefonnummer wird automatisch erfasst. Frage NUR nach einer anderen Rückrufnummer wenn der Anrufer das wünscht.\n\nDATENSCHUTZ\n- Keine persönlichen Daten in die Zusammenfassung (ausser Name und Firma, die der Anrufer selbst nennt).",
     "nodes": [
       {
         "instruction": {
           "type": "static_text",
-          "text": "Hallo, hier ist Lisa von FlowSight. Wie kann ich Ihnen helfen?"
+          "text": "Guten Tag, hier ist Lisa — ich bin die digitale Assistentin von FlowSight. Wie kann ich Ihnen helfen?"
         },
         "always_edge": {
-          "destination_node_id": "node-capture",
+          "destination_node_id": "node-sales",
           "id": "always-edge-welcome",
           "transition_condition": {
             "type": "prompt",
@@ -96,11 +102,11 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Du führst ein kurzes, warmes Gespräch. Dein Ziel: verstehen warum der Anrufer anruft, und einen Rückruf vom Gründer organisieren.\n\nSPRACHERKENNUNG (PRIORITÄT 1 — BEI JEDER NACHRICHT PRÜFEN)\nDie Sprachprüfung aus dem Global Prompt gilt hier für JEDE Nachricht des Anrufers.\nBei Trigger-Keywords: SOFORT Tool 'swap_to_intl_agent' AUFRUFEN.\nBei unverständlichem Deutsch: EINMAL nachfragen, dann transferieren.\n\nABLAUF\n1. Lass den Anrufer erzählen, warum er anruft. Hör zu.\n2. Wenn er eine E-Mail, Website oder Empfehlung erwähnt: Reagiere positiv ('Schön, dass Sie anrufen!').\n3. Erfrage freundlich Name und Firma (falls nicht schon genannt).\n4. Biete Rückruf an: 'Herr Wende, unser Gründer, meldet sich gerne persönlich bei Ihnen.'\n5. Frage nach bevorzugter Zeit: 'Wann passt es Ihnen am besten?'\n6. Bestätige kurz und verabschiede dich warm.\n\nWICHTIG\n- KEINE Preise, KEINE Features, KEINE Demo-Buchung.\n- Bei Produktfragen: freundlich auf Rückruf verweisen.\n- Nie zwei Fragen in einem Satz.\n- Setze callback_ready=true wenn Name oder Firma erfasst wurden.\n- Setze out_of_scope=true wenn das Anliegen nichts mit FlowSight zu tun hat.\n- Maximal 5 Turns. Kurz und warm, nicht lang und informativ."
+          "text": "Du führst ein natürliches Beratungsgespräch über FlowSight. Erkenne automatisch den richtigen Modus.\n\nSPRACHERKENNUNG (PRIORITÄT 1 — BEI JEDER NACHRICHT PRÜFEN)\nDie Sprachprüfung aus dem Global Prompt gilt hier für JEDE Nachricht des Anrufers.\nBei Trigger-Keywords: SOFORT Tool 'swap_to_intl_agent' AUFRUFEN.\nBei unverständlichem Deutsch: EINMAL nachfragen, dann transferieren.\n\nMODUS-ERKENNUNG (bei jeder Nachricht prüfen):\n\nMODUS 4 CHECK: Wenn der Anrufer Support-Keywords nennt (Problem, funktioniert nicht, Fehler, geht nicht, Hilfe, Support, Kunde von FlowSight):\n→ 'Danke für Ihren Anruf. Ich nehme Ihr Anliegen gerne auf.' Sammle Name + Anliegen.\n→ Setze support_request=true.\n\nMODUS 3 CHECK: Wenn der Anrufer eine Schadensmeldung nennt (Rohrbruch, Heizung, verstopft, Wasserschaden, Boiler, etc.):\n→ 'Sie haben die FlowSight-Zentrale erreicht, nicht Ihren Betrieb. Ihre persönliche Testnummer finden Sie in der E-Mail die Sie erhalten haben. Kann ich Ihnen sonst helfen?'\n→ Setze test_number_confusion=true.\n\nMODUS 1 CHECK: Wenn der Anrufer Video, E-Mail, Gunnar, Demo, gesehen, ausprobiert, getestet, zugeschickt erwähnt:\n→ 'Schön, dass Sie sich das angeschaut haben! Was hat Sie besonders angesprochen?'\n→ Begeisterung aufgreifen, NICHT Preise nennen, Rückruf von Herr Wende anbieten.\n→ Sammle Name + Firma + Rückrufzeit. Setze demo_booked=true.\n\nMODUS 2 (Default): Normales Beratungsgespräch.\n→ Lass den Anrufer erzählen. Beantworte Fragen aus der Wissensbasis.\n→ Bei Interesse: Rückruf von Herr Wende anbieten → Name + Firma sammeln.\n→ KEINE konkreten Preise nennen. Immer: 'Herr Wende bespricht das persönlich.'\n\nABLAUF\n1. Lass den Anrufer erzählen, was ihn interessiert. Hör zu.\n2. Erkenne den Modus und reagiere entsprechend.\n3. Beantworte Fragen aus der Wissensbasis.\n4. Wenn der Anrufer Interesse zeigt: Rückruf anbieten.\n5. Für den Rückruf sammle: Name + Firma + bevorzugte Zeit.\n6. Fasse zusammen und bestätige.\n\nWICHTIG\n- Nie zwei Fragen in einem Satz.\n- Wenn der Anrufer nur eine schnelle Info will: Gib sie und biete den Rückruf optional an.\n- Wenn der Anrufer kein Interesse hat: Bedanke dich freundlich und verabschiede dich.\n- Setze demo_booked=true wenn Name und Firma gesammelt wurden.\n- Setze out_of_scope=true wenn das Anliegen nichts mit FlowSight zu tun hat.\n- Setze test_number_confusion=true wenn jemand eine Schadensmeldung abgeben will.\n- Setze support_request=true wenn jemand Support/Hilfe zum System braucht."
         },
-        "name": "Interest Capture Node",
+        "name": "Sales Conversation Node",
         "edges": [],
-        "id": "node-capture",
+        "id": "node-sales",
         "type": "conversation",
         "display_position": {
           "x": 623,
@@ -111,13 +117,13 @@
             "type": "agent_swap",
             "agent_id": "agent_fb4b956eec31db9c591880fdeb",
             "name": "swap_to_intl_agent",
-            "description": "Transfer the caller to the multilingual (EN/FR/IT) agent. Call this tool when the caller speaks a non-German language or explicitly requests English/French/Italian.",
+            "description": "Transfer the caller to the multilingual (EN/FR/IT) sales agent. Call this tool when the caller speaks a non-German language or explicitly requests English/French/Italian.",
             "post_call_analysis_setting": "only_destination_agent"
           }
         ],
         "skip_response_edge": {
           "destination_node_id": "node-logic-split",
-          "id": "skip-response-edge-capture",
+          "id": "skip-response-edge-sales",
           "transition_condition": {
             "type": "prompt",
             "prompt": "Skip response"
@@ -136,11 +142,27 @@
             }
           },
           {
-            "destination_node_id": "node-closing-callback",
-            "id": "edge-callback-ready",
+            "destination_node_id": "node-closing-redirect",
+            "id": "edge-test-confusion",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "callback_ready is true (caller provided name or company and a callback has been offered)"
+              "prompt": "test_number_confusion is true (caller tried to report a damage/service issue — they called the wrong number)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing-support",
+            "id": "edge-support",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "support_request is true (caller is an existing customer/user who needs help with the system)"
+            }
+          },
+          {
+            "destination_node_id": "node-closing-demo",
+            "id": "edge-demo-booked",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "demo_booked is true (caller provided name and company for a callback)"
             }
           },
           {
@@ -148,13 +170,13 @@
             "id": "edge-info-only",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "The caller does not want a callback and is ready to end the call"
+              "prompt": "The caller only wanted information and is ready to end the call (no callback booking)"
             }
           }
         ],
         "id": "node-logic-split",
         "else_edge": {
-          "destination_node_id": "node-capture",
+          "destination_node_id": "node-sales",
           "id": "edge-logic-else",
           "transition_condition": {
             "type": "prompt",
@@ -170,11 +192,11 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihren Anruf! Herr Wende meldet sich persönlich bei Ihnen. Ich wünsche Ihnen einen schönen Tag!"
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihr Interesse an FlowSight! Wir melden uns innerhalb von 24 Stunden bei Ihnen, um einen Demo-Termin zu vereinbaren. Ich wünsche Ihnen einen schönen Tag!"
         },
-        "name": "Closing Callback Node",
+        "name": "Closing Demo Node",
         "edges": [],
-        "id": "node-closing-callback",
+        "id": "node-closing-demo",
         "type": "conversation",
         "display_position": {
           "x": 1363,
@@ -182,7 +204,7 @@
         },
         "always_edge": {
           "destination_node_id": "end-call-node",
-          "id": "always-edge-closing-callback",
+          "id": "always-edge-closing-demo",
           "transition_condition": {
             "type": "prompt",
             "prompt": "Always"
@@ -192,7 +214,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihren Anruf! Wenn Sie später Fragen haben, rufen Sie gerne wieder an oder besuchen Sie flowsight.ch. Einen schönen Tag!"
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank für Ihren Anruf! Wenn Sie später Fragen haben oder eine Demo möchten, rufen Sie uns gerne wieder an. Einen schönen Tag!"
         },
         "name": "Closing Info Node",
         "edges": [],
@@ -205,6 +227,50 @@
         "always_edge": {
           "destination_node_id": "end-call-node",
           "id": "always-edge-closing-info",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Always"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Sie haben die FlowSight-Zentrale erreicht. Ihre persönliche Testnummer finden Sie in der E-Mail die Sie erhalten haben. Wenn Sie Fragen zu FlowSight haben, helfe ich Ihnen gerne. Ansonsten wünsche ich Ihnen einen schönen Tag!"
+        },
+        "name": "Redirect Closing (Test Number Confusion)",
+        "edges": [],
+        "id": "node-closing-redirect",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 496
+        },
+        "always_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "always-edge-closing-redirect",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Always"
+          }
+        }
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Sage dem Anrufer sinngemäss auf Hochdeutsch: Vielen Dank! Ich habe Ihr Anliegen aufgenommen. Herr Wende meldet sich persönlich bei Ihnen. Ich wünsche Ihnen einen schönen Tag!"
+        },
+        "name": "Support Closing",
+        "edges": [],
+        "id": "node-closing-support",
+        "type": "conversation",
+        "display_position": {
+          "x": 1363,
+          "y": 1096
+        },
+        "always_edge": {
+          "destination_node_id": "end-call-node",
+          "id": "always-edge-closing-support",
           "transition_condition": {
             "type": "prompt",
             "prompt": "Always"
@@ -243,7 +309,7 @@
         },
         "instruction": {
           "type": "prompt",
-          "text": "Beende das Gespräch höflich auf Hochdeutsch. Auf Wiederhören."
+          "text": "Beende das Gespräch höflich auf Hochdeutsch. Auf Wiedersehen."
         }
       }
     ],
