@@ -4,6 +4,7 @@ import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
   title: "Preise — FlowSight",
+  description: "FlowSight Preise: Standard ab CHF 299/Mo, Professional ab CHF 499/Mo. Monatlich kündbar, keine Bindung.",
 };
 
 function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -17,7 +18,7 @@ function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
 const FEATURES = [
   "Moderne Website im Firmenlook (mobiloptimiert)",
   "Online-Schadenmeldung in 3 Schritten",
-  "Digitale Telefonassistentin Lisa (24/7, mehrsprachig)",
+  "Telefonassistentin (24/7, mehrsprachig)",
   "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
   "Fallübersicht: alle Meldungen an einem Ort",
   "E-Mail-Benachrichtigung bei jeder neuen Meldung",
@@ -73,7 +74,7 @@ export default function PricingPage() {
             </ul>
 
             <Link
-              href="/testen"
+              href="/live-erleben"
               className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
               14 Tage kostenlos testen
@@ -82,7 +83,7 @@ export default function PricingPage() {
 
           <p className="mt-6 text-center text-sm text-navy-400">
             Ihr Betrieb hat spezielle Anforderungen?{" "}
-            <Link href="/testen" className="font-semibold text-gold-600 hover:text-gold-500">
+            <Link href="/live-erleben" className="font-semibold text-gold-600 hover:text-gold-500">
               Schreiben Sie uns
             </Link>{" "}
             — wir finden eine passende Lösung.
@@ -135,7 +136,7 @@ export default function PricingPage() {
             {[
               {
                 q: "Was ist alles enthalten?",
-                a: "Alles: Website, Telefonassistentin Lisa (24/7), Dashboard, SMS-Bestätigungen, Bewertungs-Engine, Mehrsprachig — ein Preis, keine versteckten Extras.",
+                a: "Alles: Website, Telefonassistentin (24/7), Leitstand, SMS-Best\u00e4tigungen, Bewertungen, Mehrsprachig — ein Preis, keine versteckten Extras.",
               },
               {
                 q: "Gibt es eine Mindestlaufzeit?",
@@ -180,10 +181,10 @@ export default function PricingPage() {
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Lisa für Ihren Betrieb bauen.
+              Bereit? Wir richten alles f&uuml;r Sie ein.
             </h2>
             <p className="mt-4 text-lg text-navy-200">
-              Sagen Sie uns, wer Sie sind — wir bauen Lisa persönlich
+              Sagen Sie uns, wer Sie sind &mdash; wir richten das System pers&ouml;nlich
               für Ihren Betrieb. In 48 Stunden. 14 Tage kostenlos.
             </p>
           </div>
