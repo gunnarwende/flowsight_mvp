@@ -77,3 +77,20 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+/* Hero flow pulse — 4 icons light up sequentially */
+@keyframes flow-pulse {
+  0%, 100% { opacity: 0.5; }
+  10%, 30% { opacity: 1; }
+}
+.flow-step-0 { animation: flow-pulse 6s ease-in-out infinite; animation-delay: 0s; }
+.flow-step-1 { animation: flow-pulse 6s ease-in-out infinite; animation-delay: 1.5s; }
+.flow-step-2 { animation: flow-pulse 6s ease-in-out infinite; animation-delay: 3s; }
+.flow-step-3 { animation: flow-pulse 6s ease-in-out infinite; animation-delay: 4.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-step-0, .flow-step-1, .flow-step-2, .flow-step-3 {
+    animation: none;
+    opacity: 1;
+  }
+}
