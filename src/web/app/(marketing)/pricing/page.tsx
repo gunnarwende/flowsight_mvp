@@ -4,7 +4,7 @@ import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
   title: "Preise — FlowSight",
-  description: "FlowSight Preise: Standard ab CHF 299/Mo, Professional ab CHF 499/Mo. Monatlich kündbar, keine Bindung.",
+  description: "FlowSight Preise: Ab CHF 299/Mo. Alles inklusive. Monatlich kündbar, keine Bindung.",
 };
 
 function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -20,16 +20,16 @@ const FEATURES = [
   "Online-Meldungsformular auf Ihrer Website",
   "Telefonassistentin (24/7, mehrsprachig)",
   "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
-  "Leitstand: alle F\u00e4lle an einem Ort",
+  "Leitstand: alle Fälle an einem Ort",
   "E-Mail-Benachrichtigung bei jeder neuen Meldung",
-  "Google-Bewertungen gezielt anfragen",
-  "Persönliches Onboarding & Setup inklusive",
+  "Bewertungen gezielt anfragen",
+  "Persönliche Einrichtung inklusive",
 ] as const;
 
 export default function PricingPage() {
   return (
     <>
-      {/* ── Header ───────────────────────────────────────── */}
+      {/* ── Header ──────────────────────────────── */}
       <section className="bg-navy-50 pb-4 pt-24 lg:pt-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <h1 className="text-center text-4xl font-bold tracking-tight text-navy-900 sm:text-5xl">
@@ -42,7 +42,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── Single pricing card ─────────────────────────── */}
+      {/* ── Single pricing card ─────────────────── */}
       <section className="bg-navy-50 py-16 lg:py-24">
         <div className="mx-auto max-w-xl px-6 lg:px-8">
           <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
@@ -58,15 +58,12 @@ export default function PricingPage() {
               <span className="ml-1 text-base text-navy-400">/ Monat</span>
             </p>
             <p className="mt-2 text-sm text-navy-900/70">
-              Website, Telefonassistentin, Leitstand, SMS, Bewertungen &mdash; ein Preis f&uuml;r alles.
+              Website, Telefonassistentin, Leitstand, SMS, Bewertungen — ein Preis für alles.
             </p>
 
             <ul className="mt-8 space-y-3">
               {FEATURES.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2 text-sm text-navy-900/80"
-                >
+                <li key={f} className="flex items-start gap-2 text-sm text-navy-900/80">
                   <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
                   {f}
                 </li>
@@ -74,24 +71,24 @@ export default function PricingPage() {
             </ul>
 
             <Link
-              href="/live-erleben"
+              href="/live-erleben#formular"
               className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
-              Pers\u00f6nlich beraten lassen
+              Persönlich beraten lassen
             </Link>
           </div>
 
           <p className="mt-6 text-center text-sm text-navy-400">
-            Gr\u00f6sserer Betrieb oder spezielle Anforderungen?{" "}
+            Grösserer Betrieb oder spezielle Anforderungen?{" "}
             <Link href="/live-erleben#formular" className="font-semibold text-gold-600 hover:text-gold-500">
               Kontaktieren Sie uns
             </Link>{" "}
-            &mdash; wir finden eine passende L\u00f6sung.
+            — wir finden eine passende Lösung.
           </p>
         </div>
       </section>
 
-      {/* ── Voice-Minuten & Einrichtung ─────────────────── */}
+      {/* ── Voice-Minuten & Einrichtung ─────────── */}
       <section className="bg-warm-white py-16 lg:py-24">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2">
@@ -117,15 +114,15 @@ export default function PricingPage() {
                 Gemeinsam in einer Woche
               </p>
               <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Website, Telefonnummer, Telefonassistentin, Leitstand &mdash;
-                pers&ouml;nlich eingerichtet. Keine Setup-Kosten.
+                Website, Telefonnummer, Telefonassistentin, Leitstand —
+                persönlich eingerichtet. Keine Setup-Kosten.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── FAQ ─────────────────────────────────────────── */}
+      {/* ── FAQ ─────────────────────────────────── */}
       <section className="bg-navy-50 py-16 lg:py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-navy-900">
@@ -136,7 +133,7 @@ export default function PricingPage() {
             {[
               {
                 q: "Was ist alles enthalten?",
-                a: "Alles: Website, Telefonassistentin (24/7), Leitstand, SMS-Best\u00e4tigungen, Bewertungen, Mehrsprachig — ein Preis, keine versteckten Extras.",
+                a: "Alles: Website, Telefonassistentin (24/7), Leitstand, SMS-Bestätigungen, Bewertungen, Mehrsprachig — ein Preis, keine versteckten Extras.",
               },
               {
                 q: "Gibt es eine Mindestlaufzeit?",
@@ -144,7 +141,7 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "Nichts. Wir richten alles gemeinsam ein \u2014 Website, Telefonassistentin und Leitstand. Pers\u00f6nlich.",
+                a: "Nichts. Wir richten alles gemeinsam ein — Website, Telefonassistentin und Leitstand. Persönlich.",
               },
               {
                 q: "Wie werden Telefonminuten abgerechnet?",
@@ -173,19 +170,19 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── Demo form (#demo) ─────────────────────────────── */}
+      {/* ── CTA / Form ─────────────────────────── */}
       <section
         id="demo"
-        className="scroll-mt-20 bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32"
+        className="scroll-mt-20 bg-gradient-to-b from-navy-900 to-navy-950 py-24 lg:py-32"
       >
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Bereit? Wir richten alles f&uuml;r Sie ein.
+              Bereit? Wir richten alles für Sie ein.
             </h2>
             <p className="mt-4 text-lg text-navy-200">
-              Sagen Sie uns, wer Sie sind &mdash; wir richten das System pers&ouml;nlich
-              für Ihren Betrieb. In 48 Stunden. 14 Tage kostenlos.
+              Sagen Sie uns, wer Sie sind — wir richten das System persönlich
+              für Ihren Betrieb ein. In 48 Stunden. 14 Tage kostenlos.
             </p>
           </div>
 

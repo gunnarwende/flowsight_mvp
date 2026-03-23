@@ -3,11 +3,11 @@ import Link from "next/link";
 import { SITE } from "@/src/lib/marketing/constants";
 
 export const metadata: Metadata = {
-  title: "FlowSight \u2014 Das Leitsystem f\u00fcr Schweizer Handwerksbetriebe",
+  title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
   description:
-    "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen \u2014 alles an einem Ort. Ab CHF 299/Mo.",
+    "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen — alles an einem Ort. Ab CHF 299/Mo.",
   openGraph: {
-    title: "FlowSight \u2014 Das Leitsystem f\u00fcr Schweizer Handwerksbetriebe",
+    title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
     description:
       "Vom ersten Kontakt bis zur Bewertung. Ihr Betrieb, sauber organisiert.",
     url: "https://flowsight.ch",
@@ -19,36 +19,31 @@ export const metadata: Metadata = {
 };
 
 /* ================================================================
-   HOMEPAGE \u2014 5-Akt-Struktur (Mobile-First)
-   Akt 1: Versprechen (Hero)
-   Akt 2: Empathie (Wiedererkennung)
-   Akt 3: Beweis (Prozess \u2014 4 Schritte)
-   Akt 4: Sicherheit (Pricing-Teaser + Vertrauen)
-   Akt 5: Handlung (CTA)
+   HOMEPAGE — 5-Akt-Struktur (Mobile-First)
    ================================================================ */
 
 export default function HomePage() {
   return (
     <>
-      {/* \u2500\u2500 AKT 1 \u2014 VERSPRECHEN (Hero) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── AKT 1 — VERSPRECHEN (Hero) ──────────────── */}
       <section className="bg-gradient-to-b from-navy-900 to-navy-950">
         <div className="mx-auto max-w-5xl px-6 pb-20 pt-20 sm:pb-28 sm:pt-28 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-medium uppercase tracking-widest text-gold-400">
-              F\u00fcr Schweizer Handwerksbetriebe
+              Für Schweizer Handwerksbetriebe
             </p>
 
             <h1 className="mt-6 text-[2rem] font-bold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]">
-              Das Leitsystem f\u00fcr Ihren Betrieb &mdash;{" "}
+              Das Leitsystem für Ihren Betrieb —{" "}
               <span className="text-gold-400">
                 vom ersten Kontakt bis zur Bewertung.
               </span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-navy-300 sm:text-lg">
-              Anfragen werden aufgenommen, best\u00e4tigt und als klare F\u00e4lle
-              weitergef\u00fchrt. Damit nichts liegen bleibt und im Betrieb alles
-              sauber zusammenl\u00e4uft.
+              Anfragen werden aufgenommen, bestätigt und als klare Fälle
+              weitergeführt. Damit nichts liegen bleibt und im Betrieb alles
+              sauber zusammenläuft.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -70,7 +65,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-navy-400">
-              {["Rund um die Uhr erreichbar", "Schweizer System", "Monatlich k\u00fcndbar"].map((t) => (
+              {["Rund um die Uhr erreichbar", "Schweizer System", "Monatlich kündbar"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5">
                   <span className="h-1 w-1 rounded-full bg-gold-500" aria-hidden="true" />
                   {t}
@@ -79,12 +74,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual \u2014 Prozessfluss-Illustration (Motion-Slot f\u00fcr Phase E) */}
+          {/* Hero Visual — Prozessfluss */}
           <div className="mx-auto mt-16 max-w-3xl" aria-hidden="true">
             <div className="flex items-center justify-between gap-2 px-2 sm:gap-4 sm:px-8">
               {([
                 { icon: "phone", label: "Kontakt" },
-                { icon: "check", label: "Best\u00e4tigung" },
+                { icon: "check", label: "Bestätigung" },
                 { icon: "clipboard", label: "Fall" },
                 { icon: "star", label: "Bewertung" },
               ] as const).map((step, i) => (
@@ -119,7 +114,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 AKT 2 \u2014 EMPATHIE (Wiedererkennung) \u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── AKT 2 — EMPATHIE ───────────────────────── */}
       <section className="bg-warm-white py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-6 text-center lg:px-8">
           <div className="mx-auto mb-8 h-px w-12 bg-gold-500" />
@@ -129,18 +124,18 @@ export default function HomePage() {
             Der Kunde wartet. Der Zettel liegt irgendwo.
           </p>
           <p className="mt-6 text-base leading-relaxed text-navy-400">
-            FlowSight f\u00e4ngt auf, was im Alltag sonst verloren geht &mdash;
+            FlowSight fängt auf, was im Alltag sonst verloren geht —
             und macht daraus einen sauberen, professionellen Prozess in Ihrem Namen.
           </p>
         </div>
       </section>
 
-      {/* \u2500\u2500 AKT 3 \u2014 BEWEIS (Prozess \u2014 4 Schritte) \u2500\u2500\u2500\u2500 */}
+      {/* ── AKT 3 — BEWEIS (4 Schritte) ────────────── */}
       <section id="funktionen" className="scroll-mt-20 bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              So l\u00e4uft Kundenkontakt mit FlowSight.
+              So läuft Kundenkontakt mit FlowSight.
             </h2>
           </div>
 
@@ -149,22 +144,22 @@ export default function HomePage() {
               {
                 num: "1",
                 title: "Anfrage geht ein",
-                text: "Per Anruf an Ihre Telefonassistentin oder \u00fcber das Online-Formular \u2014 rund um die Uhr, auch am Wochenende.",
+                text: "Per Anruf an Ihre Telefonassistentin oder über das Online-Formular — rund um die Uhr, auch am Wochenende.",
               },
               {
                 num: "2",
-                title: "Ihr Kunde bekommt R\u00fcckmeldung",
-                text: "Sofortige Best\u00e4tigung per SMS \u2014 in Ihrem Firmennamen. Der Kunde weiss, dass seine Meldung angekommen ist.",
+                title: "Ihr Kunde bekommt Rückmeldung",
+                text: "Sofortige Bestätigung per SMS — in Ihrem Firmennamen. Der Kunde weiss, dass seine Meldung angekommen ist.",
               },
               {
                 num: "3",
-                title: "Sie behalten den \u00dcberblick",
-                text: "Jeder Fall landet strukturiert in Ihrem Leitstand: Kategorie, Ort, Dringlichkeit. Termin setzen, Techniker zuweisen, Fotos anh\u00e4ngen.",
+                title: "Sie behalten den Überblick",
+                text: "Jeder Fall landet strukturiert in Ihrem Leitstand: Kategorie, Ort, Dringlichkeit. Termin setzen, Techniker zuweisen, Fotos anhängen.",
               },
               {
                 num: "4",
-                title: "Auftrag erledigt \u2014 Bewertung gesammelt",
-                text: "Nach dem Einsatz senden Sie per Knopfdruck eine Bewertungsanfrage. Mehr Bewertungen, mehr Auftr\u00e4ge.",
+                title: "Auftrag erledigt — Bewertung gesammelt",
+                text: "Nach dem Einsatz senden Sie per Knopfdruck eine Bewertungsanfrage. Mehr Bewertungen, mehr Aufträge.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-4">
@@ -181,7 +176,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 AKT 4 \u2014 SICHERHEIT (Pricing-Teaser + Trust) \u2500\u2500 */}
+      {/* ── AKT 4 — SICHERHEIT (Pricing + Trust) ──── */}
       <section className="bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-8 text-center shadow-sm">
@@ -189,7 +184,7 @@ export default function HomePage() {
               Ab CHF 299 / Monat.
             </h2>
             <p className="mt-3 text-base text-navy-400">
-              Alles inklusive. Monatlich k\u00fcndbar. Keine versteckten Kosten.
+              Alles inklusive. Monatlich kündbar. Keine versteckten Kosten.
             </p>
             <Link
               href="/pricing"
@@ -201,10 +196,10 @@ export default function HomePage() {
 
           <div className="mx-auto mt-14 grid max-w-3xl gap-6 sm:grid-cols-2">
             {([
-              { title: "Keine Gespr\u00e4chsaufnahmen", text: "Keine Aufzeichnungen. Keine versteckten Mitschnitte. Punkt." },
-              { title: "Pers\u00f6nliche Einrichtung", text: "Wir richten das System gemeinsam ein. Kein Self-Service, kein IT-Projekt." },
-              { title: "Server in der Schweiz und EU", text: "DSGVO-konform. Verschl\u00fcsselt. Daten auf Servern in Frankfurt." },
-              { title: "5 Sprachen", text: "Deutsch, Schweizerdeutsch, Englisch, Franz\u00f6sisch, Italienisch." },
+              { title: "Keine Gesprächsaufnahmen", text: "Keine Aufzeichnungen. Keine versteckten Mitschnitte. Punkt." },
+              { title: "Persönliche Einrichtung", text: "Wir richten das System gemeinsam ein. Kein Self-Service, kein IT-Projekt." },
+              { title: "Server in der Schweiz und EU", text: "DSGVO-konform. Verschlüsselt. Daten auf Servern in Frankfurt." },
+              { title: "5 Sprachen", text: "Deutsch, Schweizerdeutsch, Englisch, Französisch, Italienisch." },
             ] as const).map((item) => (
               <div key={item.title} className="flex gap-3">
                 <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center">
@@ -220,11 +215,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 AKT 5 \u2014 HANDLUNG (CTA) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── AKT 5 — HANDLUNG (CTA) ─────────────────── */}
       <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
         <div className="mx-auto max-w-2xl px-6 text-center lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Bereit? Erleben Sie, wie Ihr Betrieb mit FlowSight l\u00e4uft.
+            Bereit? Erleben Sie, wie Ihr Betrieb mit FlowSight läuft.
           </h2>
           <p className="mt-4 text-base text-navy-300">
             Sehen Sie in 2 Minuten, wie Kundenkontakt in Ihrem Betrieb aussehen kann.
@@ -236,7 +231,7 @@ export default function HomePage() {
             Live erleben
           </Link>
           <p className="mt-5 text-xs text-navy-400">
-            Pers\u00f6nlicher Kontakt &middot; Kostenlose Einrichtung &middot; 14 Tage testen
+            Persönlicher Kontakt · Kostenlose Einrichtung · 14 Tage testen
           </p>
         </div>
       </section>

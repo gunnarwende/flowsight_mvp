@@ -65,7 +65,7 @@ export function DemoForm() {
           innerhalb von 24 Stunden persönlich bei Ihnen.
         </p>
         <p className="mt-4 text-sm text-navy-400">
-          Wenn es passt, richten wir das System pers&ouml;nlich f&uuml;r Ihren Betrieb ein &mdash;
+          Wenn es passt, richten wir das System persönlich für Ihren Betrieb ein —
           in 48 Stunden. Kostenlos. 14 Tage zum Testen.
         </p>
       </div>

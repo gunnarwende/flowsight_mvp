@@ -1,38 +1,31 @@
 import type { Metadata } from "next";
-import { SITE } from "@/src/lib/marketing/constants";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
-  title: "Live erleben \u2014 FlowSight",
+  title: "Live erleben — FlowSight",
   description:
-    "Sehen Sie, wie FlowSight Ihren Betrieb unterst\u00fctzt. Pers\u00f6nliche Einrichtung in 48 Stunden. 14 Tage kostenlos.",
+    "Sehen Sie, wie FlowSight Ihren Betrieb unterstützt. Persönliche Einrichtung in 48 Stunden. 14 Tage kostenlos.",
 };
-
-/* ================================================================
-   /live-erleben \u2014 Tieferer Proof + n\u00e4chster Schritt
-   Rolle: Beweisen + Handlung erm\u00f6glichen
-   NICHT: Homepage-Kopie. Keine Redundanz.
-   ================================================================ */
 
 export default function LiveErlebenPage() {
   return (
     <>
-      {/* \u2500\u2500 Video / Proof Section \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── Video / Proof ─────────────────────────── */}
       <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
-              So l\u00e4uft Kundenkontakt mit FlowSight.
+              So läuft Kundenkontakt mit FlowSight.
             </h1>
             <p className="mt-4 text-base text-navy-300 sm:text-lg">
               2 Minuten. Ein Betrieb. Der komplette Ablauf.
             </p>
           </div>
 
-          {/* Ablauf-Kurzfassung (wird sp\u00e4ter durch Video ersetzt) */}
+          {/* Ablauf-Kurzfassung (wird später durch Video ersetzt) */}
           <div className="mx-auto mt-12 max-w-2xl">
             <div className="flex items-center justify-between gap-3 sm:gap-6">
-              {(["Kontakt", "Best\u00e4tigung", "Fall", "Bewertung"] as const).map((label, i) => (
+              {(["Kontakt", "Bestätigung", "Fall", "Bewertung"] as const).map((label, i) => (
                 <div key={label} className="flex items-center gap-3 sm:gap-6">
                   {i > 0 && <div className="h-px w-4 bg-gold-500/30 sm:w-8" />}
                   <div className="flex flex-col items-center gap-2">
@@ -48,11 +41,11 @@ export default function LiveErlebenPage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 Detaillierter Ablauf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── Detaillierter Ablauf ──────────────────── */}
       <section className="bg-warm-white py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-            Was genau passiert \u2014 Schritt f\u00fcr Schritt.
+            Was genau passiert — Schritt für Schritt.
           </h2>
 
           <div className="mt-12 space-y-10">
@@ -60,22 +53,22 @@ export default function LiveErlebenPage() {
               {
                 num: "1",
                 title: "Anruf oder Online-Meldung",
-                text: "Ihre Telefonassistentin nimmt Anrufe entgegen \u2014 in 5 Sprachen, rund um die Uhr. Parallel k\u00f6nnen Kunden Anliegen \u00fcber das Formular auf Ihrer Website melden. Beide Wege f\u00fchren ins gleiche System.",
+                text: "Ihre Telefonassistentin nimmt Anrufe entgegen — in 5 Sprachen, rund um die Uhr. Parallel können Kunden Anliegen über das Formular auf Ihrer Website melden. Beide Wege führen ins gleiche System.",
               },
               {
                 num: "2",
                 title: "SMS mit Ihrem Firmennamen",
-                text: "Ihr Kunde erh\u00e4lt innerhalb von Sekunden eine Best\u00e4tigung. Der Absender: Ihr Firmenname. Er kann seine Angaben pr\u00fcfen, korrigieren und Fotos hochladen \u2014 \u00fcber einen Link in der SMS.",
+                text: "Ihr Kunde erhält innerhalb von Sekunden eine Bestätigung. Der Absender: Ihr Firmenname. Er kann seine Angaben prüfen, korrigieren und Fotos hochladen — über einen Link in der SMS.",
               },
               {
                 num: "3",
                 title: "Ihr Leitstand zeigt alles",
-                text: "Kategorie, Ort, Dringlichkeit, Kontaktdaten, Fotos \u2014 jeder Fall ist strukturiert. Sie planen Termine, weisen Techniker zu, dokumentieren den Einsatz. Kein Zettel, kein Suchen.",
+                text: "Kategorie, Ort, Dringlichkeit, Kontaktdaten, Fotos — jeder Fall ist strukturiert. Sie planen Termine, weisen Techniker zu, dokumentieren den Einsatz. Kein Zettel, kein Suchen.",
               },
               {
                 num: "4",
                 title: "Abschluss und Bewertung",
-                text: "Fall erledigt? Per Knopfdruck geht eine Bewertungsanfrage an den Kunden. Zufriedene Kunden werden zur Google-Bewertung gef\u00fchrt. So w\u00e4chst Ihr Online-Profil.",
+                text: "Fall erledigt? Per Knopfdruck geht eine Bewertungsanfrage an den Kunden. Zufriedene Kunden werden zur Google-Bewertung geführt. So wächst Ihr Online-Profil.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-5">
@@ -92,24 +85,23 @@ export default function LiveErlebenPage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 Pers\u00f6nlicher Kontakt / Formular \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
-      <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
+      {/* ── Formular ─────────────────────────────── */}
+      <section id="formular" className="scroll-mt-20 bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Pers\u00f6nlich f\u00fcr Ihren Betrieb eingerichtet.
+              Persönlich für Ihren Betrieb eingerichtet.
             </h2>
             <p className="mt-4 text-base text-navy-300">
               Sagen Sie uns, wer Sie sind. Wir melden uns innerhalb von 24 Stunden
-              pers\u00f6nlich bei Ihnen.
+              persönlich bei Ihnen.
             </p>
           </div>
 
-          {/* 3 Schritte */}
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {([
               { num: "1", title: "Sie melden sich", desc: "Firma, Telefon, Region." },
-              { num: "2", title: "Wir richten ein", desc: "Pers\u00f6nlich. In 48 Stunden." },
+              { num: "2", title: "Wir richten ein", desc: "Persönlich. In 48 Stunden." },
               { num: "3", title: "Sie testen", desc: "14 Tage. Kein Vertrag." },
             ] as const).map((s) => (
               <div key={s.num} className="rounded-xl border border-navy-700/40 bg-navy-800/30 p-5 text-center">
@@ -128,19 +120,19 @@ export default function LiveErlebenPage() {
         </div>
       </section>
 
-      {/* \u2500\u2500 FAQ (kompakt, echte H\u00fcrden) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── FAQ ───────────────────────────────────── */}
       <section className="bg-navy-50 py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-xl font-bold text-navy-900 sm:text-2xl">
-            H\u00e4ufige Fragen
+            Häufige Fragen
           </h2>
           <div className="mt-8 divide-y divide-navy-200/60">
             {([
-              { q: "Brauche ich technisches Wissen?", a: "Nein. Wir richten alles f\u00fcr Sie ein \u2014 pers\u00f6nlich. Sie brauchen nur einen Browser." },
+              { q: "Brauche ich technisches Wissen?", a: "Nein. Wir richten alles für Sie ein — persönlich. Sie brauchen nur einen Browser." },
               { q: "Funktioniert das mit meiner bestehenden Nummer?", a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind." },
               { q: "Was passiert bei einem Notfall?", a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine Benachrichtigung." },
-              { q: "Wie sicher sind meine Daten?", a: "Alle Daten verschl\u00fcsselt. Keine Gespr\u00e4chsaufnahmen. Server in der EU. DSGVO-konform." },
-              { q: "Was kostet FlowSight?", a: "Ab CHF 299/Monat. Alles inklusive. Monatlich k\u00fcndbar, keine Bindung." },
+              { q: "Wie sicher sind meine Daten?", a: "Alle Daten verschlüsselt. Keine Gesprächsaufnahmen. Server in der EU. DSGVO-konform." },
+              { q: "Was kostet FlowSight?", a: "Ab CHF 299/Monat. Alles inklusive. Monatlich kündbar, keine Bindung." },
             ] as const).map((item) => (
               <details key={item.q} className="group py-4">
                 <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-navy-900 [&::-webkit-details-marker]:hidden">
