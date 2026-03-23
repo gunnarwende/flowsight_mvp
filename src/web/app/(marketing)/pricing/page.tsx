@@ -4,7 +4,8 @@ import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
   title: "Preise — FlowSight",
-  description: "FlowSight Preise: Ab CHF 299/Mo. Alles inklusive. Monatlich kündbar, keine Bindung.",
+  description:
+    "FlowSight Preise: Standard ab CHF 299/Mo (120 Fälle), Professional ab CHF 499/Mo (250 Fälle). Monatlich kündbar.",
 };
 
 function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -15,15 +16,58 @@ function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-const FEATURES = [
-  "Moderne Website im Firmenlook (mobiloptimiert)",
-  "Online-Meldungsformular auf Ihrer Website",
-  "Telefonassistentin (24/7, mehrsprachig)",
-  "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
-  "Leitstand: alle Fälle an einem Ort",
-  "E-Mail-Benachrichtigung bei jeder neuen Meldung",
-  "Bewertungen gezielt anfragen",
-  "Persönliche Einrichtung inklusive",
+/* ================================================================
+   /pricing — 3-Tier-Modell gemäss SSOT
+   Quelle: docs/redesign/leitstand/pricing_und_marge.md (FINAL)
+   Anker: Fallvolumen. NICHT Minuten. NICHT Module.
+   ================================================================ */
+
+const TIERS = [
+  {
+    name: "Standard",
+    price: "CHF 299",
+    target: "Für Betriebe bis 5 Mitarbeiter",
+    cases: "120 Fälle pro Monat inklusive",
+    overage: "Danach CHF 1.50 pro Fall",
+    highlight: false,
+    features: [
+      "Komplettes Leitsystem für Ihren Betrieb",
+      "Telefonassistentin — rund um die Uhr, mehrsprachig",
+      "Online-Meldungsformular auf Ihrer Website",
+      "Automatische Rückmeldung an Ihre Kunden",
+      "Strukturierte Fallübersicht mit Terminplanung",
+      "Bewertungsanfragen nach erledigtem Einsatz",
+      "Persönliche Einrichtung inklusive",
+    ],
+  },
+  {
+    name: "Professional",
+    price: "CHF 499",
+    target: "Für Betriebe mit 6–15 Mitarbeitern",
+    cases: "250 Fälle pro Monat inklusive",
+    overage: "Danach CHF 1.00 pro Fall",
+    highlight: true,
+    features: [
+      "Alles aus Standard",
+      "Höheres Fallvolumen für serviceintensive Betriebe",
+      "Eigene Ansicht pro Mitarbeiter",
+      "Prioritäts-Support",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: "Individuell",
+    target: "Für grössere Betriebe oder besondere Anforderungen",
+    cases: "Individuelles Fallvolumen",
+    overage: "Individuelle Konditionen",
+    highlight: false,
+    features: [
+      "Alles aus Professional",
+      "Individuelles Fallvolumen",
+      "Dedizierter Ansprechpartner",
+      "Individuelle Anbindungen",
+    ],
+  },
 ] as const;
 
 export default function PricingPage() {
@@ -32,93 +76,89 @@ export default function PricingPage() {
       {/* ── Header ──────────────────────────────── */}
       <section className="bg-navy-50 pb-4 pt-24 lg:pt-32">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <h1 className="text-center text-4xl font-bold tracking-tight text-navy-900 sm:text-5xl">
-            Einfache, faire Preise.
+          <h1 className="text-center text-3xl font-bold tracking-tight text-navy-900 sm:text-5xl">
+            Transparente Preise. Monatlich kündbar.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-center text-lg text-navy-400">
-            Keine versteckten Kosten. Keine Bindung.
-            Monatlich kündbar.
+            Ein Leitsystem — abgestimmt auf die Grösse Ihres Betriebs.
           </p>
         </div>
       </section>
 
-      {/* ── Single pricing card ─────────────────── */}
+      {/* ── 3-Tier Pricing ─────────────────────── */}
       <section className="bg-navy-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-xl px-6 lg:px-8">
-          <div className="relative rounded-2xl border-2 border-gold-500 bg-white p-8 shadow-md">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
-              Alles inklusive
-            </span>
+        <div className="mx-auto max-w-5xl px-6 lg:px-8">
+          <div className="grid gap-6 lg:grid-cols-3">
+            {TIERS.map((tier) => (
+              <div
+                key={tier.name}
+                className={`relative rounded-2xl bg-white p-8 shadow-sm ${
+                  tier.highlight
+                    ? "border-2 border-gold-500 shadow-md"
+                    : "border border-navy-200/60"
+                }`}
+              >
+                {tier.highlight && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-navy-950">
+                    Empfohlen
+                  </span>
+                )}
 
-            <p className="text-sm font-semibold uppercase tracking-wider text-gold-600">
-              FlowSight
-            </p>
-            <p className="mt-4">
-              <span className="text-4xl font-bold text-navy-900">CHF 299</span>
-              <span className="ml-1 text-base text-navy-400">/ Monat</span>
-            </p>
-            <p className="mt-2 text-sm text-navy-900/70">
-              Website, Telefonassistentin, Leitstand, SMS, Bewertungen — ein Preis für alles.
-            </p>
+                <p className={`text-sm font-semibold uppercase tracking-wider ${
+                  tier.highlight ? "text-gold-600" : "text-navy-400"
+                }`}>
+                  {tier.name}
+                </p>
+                <p className="mt-4">
+                  <span className="text-4xl font-bold text-navy-900">{tier.price}</span>
+                  {tier.price !== "Individuell" && (
+                    <span className="ml-1 text-base text-navy-400">/ Monat</span>
+                  )}
+                </p>
+                <p className="mt-1 text-sm text-navy-900/70">{tier.target}</p>
+                <p className="mt-1 text-xs text-navy-400">{tier.cases}</p>
+                <p className="text-xs text-navy-400">{tier.overage}</p>
 
-            <ul className="mt-8 space-y-3">
-              {FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-navy-900/80">
-                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+                <ul className="mt-6 space-y-3">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-navy-900/80">
+                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
 
-            <Link
-              href="/live-erleben#formular"
-              className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
-            >
-              Persönlich beraten lassen
-            </Link>
+                <Link
+                  href="/live-erleben#formular"
+                  className={`mt-8 block w-full rounded-lg py-3.5 text-center text-sm font-semibold transition-all ${
+                    tier.highlight
+                      ? "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
+                      : "bg-navy-900 text-white hover:bg-navy-800"
+                  }`}
+                >
+                  {tier.price === "Individuell" ? "Kontakt aufnehmen" : "Persönlich beraten lassen"}
+                </Link>
+              </div>
+            ))}
           </div>
 
-          <p className="mt-6 text-center text-sm text-navy-400">
-            Grösserer Betrieb oder spezielle Anforderungen?{" "}
-            <Link href="/live-erleben#formular" className="font-semibold text-gold-600 hover:text-gold-500">
-              Kontaktieren Sie uns
-            </Link>{" "}
-            — wir finden eine passende Lösung.
+          <p className="mt-8 text-center text-sm text-navy-400">
+            Persönliche Einrichtung inklusive · Monatlich kündbar · Keine versteckten Kosten
           </p>
         </div>
       </section>
 
-      {/* ── Voice-Minuten & Einrichtung ─────────── */}
+      {/* ── Einrichtung ────────────────────────── */}
       <section className="bg-warm-white py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="grid gap-8 sm:grid-cols-2">
-            <div className="rounded-2xl border border-navy-200/60 bg-white p-8">
-              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Telefonminuten
-              </p>
-              <p className="mt-3 text-lg font-semibold text-navy-900">
-                Abrechnung nach Verbrauch
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Nur bei Nutzung — keine Grundgebühr. Ein typisches Gespräch
-                dauert 2–4 Minuten. Den genauen Minutenpreis besprechen wir
-                persönlich.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-navy-200/60 bg-white p-8">
-              <p className="text-sm font-semibold uppercase tracking-wider text-navy-400">
-                Einrichtung
-              </p>
-              <p className="mt-3 text-lg font-semibold text-navy-900">
-                Gemeinsam in einer Woche
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Website, Telefonnummer, Telefonassistentin, Leitstand —
-                persönlich eingerichtet. Keine Setup-Kosten.
-              </p>
-            </div>
-          </div>
+        <div className="mx-auto max-w-2xl px-6 text-center lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight text-navy-900">
+            Persönlich eingerichtet. In einer Woche.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-navy-400">
+            Kein Self-Service, kein IT-Projekt. Wir richten das Leitsystem
+            gemeinsam für Ihren Betrieb ein — Website, Telefonassistentin und
+            Leitstand. Persönlich und inklusive.
+          </p>
         </div>
       </section>
 
@@ -126,14 +166,18 @@ export default function PricingPage() {
       <section className="bg-navy-50 py-16 lg:py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold text-navy-900">
-            Häufige Fragen zu den Preisen
+            Häufige Fragen
           </h2>
 
           <div className="mt-10 divide-y divide-navy-200/60">
             {[
               {
-                q: "Was ist alles enthalten?",
-                a: "Alles: Website, Telefonassistentin (24/7), Leitstand, SMS-Bestätigungen, Bewertungen, Mehrsprachig — ein Preis, keine versteckten Extras.",
+                q: "Was passiert, wenn ich mehr Fälle habe als im Paket enthalten?",
+                a: "Jeder weitere Fall kostet CHF 1.50 (Standard) bzw. CHF 1.00 (Professional). Transparent und jederzeit im Leitstand sichtbar.",
+              },
+              {
+                q: "Wann brauche ich Professional?",
+                a: "Ab 6 Mitarbeitern oder wenn Ihr Betrieb mehr als 120 Fälle pro Monat erwartet. Betriebe mit Notdienst oder hoher Serviceintensität empfehlen wir grundsätzlich Professional.",
               },
               {
                 q: "Gibt es eine Mindestlaufzeit?",
@@ -141,11 +185,11 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "Nichts. Wir richten alles gemeinsam ein — Website, Telefonassistentin und Leitstand. Persönlich.",
+                a: "Nichts. Die persönliche Einrichtung ist inklusive.",
               },
               {
-                q: "Wie werden Telefonminuten abgerechnet?",
-                a: "Nur bei Nutzung. Ein typisches Gespräch dauert 2–4 Minuten. Den genauen Minutenpreis besprechen wir persönlich.",
+                q: "Kann ich später wechseln?",
+                a: "Jederzeit. Wenn Ihr Betrieb wächst, wechseln Sie einfach auf Professional oder Enterprise.",
               },
             ].map((item) => (
               <details key={item.q} className="group py-5">
@@ -170,22 +214,18 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── CTA / Form ─────────────────────────── */}
-      <section
-        id="demo"
-        className="scroll-mt-20 bg-gradient-to-b from-navy-900 to-navy-950 py-24 lg:py-32"
-      >
+      {/* ── CTA ─────────────────────────────────── */}
+      <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-24 lg:py-32">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Bereit? Wir richten alles für Sie ein.
             </h2>
-            <p className="mt-4 text-lg text-navy-200">
-              Sagen Sie uns, wer Sie sind — wir richten das System persönlich
-              für Ihren Betrieb ein. In 48 Stunden. 14 Tage kostenlos.
+            <p className="mt-4 text-lg text-navy-300">
+              Sagen Sie uns, wer Sie sind — wir richten das Leitsystem persönlich
+              für Ihren Betrieb ein.
             </p>
           </div>
-
           <div className="mt-12">
             <DemoForm />
           </div>

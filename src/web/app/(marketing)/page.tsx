@@ -41,9 +41,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-navy-300 sm:text-lg">
-              Anfragen werden aufgenommen, bestätigt und als klare Fälle
-              weitergeführt. Damit nichts liegen bleibt und im Betrieb alles
-              sauber zusammenläuft.
+              Jede Anfrage wird erfasst, Ihr Kunde bekommt Rückmeldung —
+              und Sie behalten den Überblick.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -65,7 +64,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-navy-400">
-              {["Rund um die Uhr erreichbar", "Schweizer System", "Monatlich kündbar"].map((t) => (
+              {["Keine Anfrage geht verloren", "Schweizer System", "Monatlich kündbar"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5">
                   <span className="h-1 w-1 rounded-full bg-gold-500" aria-hidden="true" />
                   {t}
@@ -119,13 +118,13 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl px-6 text-center lg:px-8">
           <div className="mx-auto mb-8 h-px w-12 bg-gold-500" />
           <p className="text-lg font-medium leading-relaxed text-navy-900 sm:text-xl">
-            Telefon klingelt. Sie sind auf der Baustelle.{" "}
+            Im Handwerk kommen Anfragen selten dann,{" "}
             <br className="hidden sm:block" />
-            Der Kunde wartet. Der Zettel liegt irgendwo.
+            wenn man am Schreibtisch sitzt.
           </p>
           <p className="mt-6 text-base leading-relaxed text-navy-400">
-            FlowSight fängt auf, was im Alltag sonst verloren geht —
-            und macht daraus einen sauberen, professionellen Prozess in Ihrem Namen.
+            FlowSight sorgt dafür, dass trotzdem nichts liegen bleibt —
+            und Ihre Kunden zuverlässig Rückmeldung bekommen.
           </p>
         </div>
       </section>
@@ -154,12 +153,12 @@ export default function HomePage() {
               {
                 num: "3",
                 title: "Sie behalten den Überblick",
-                text: "Jeder Fall landet strukturiert in Ihrem Leitstand: Kategorie, Ort, Dringlichkeit. Termin setzen, Techniker zuweisen, Fotos anhängen.",
+                text: "Jeder Fall ist sofort da — mit Kategorie, Ort und Dringlichkeit. Sie planen Termine, weisen Mitarbeiter zu und dokumentieren den Einsatz.",
               },
               {
                 num: "4",
                 title: "Auftrag erledigt — Bewertung gesammelt",
-                text: "Nach dem Einsatz senden Sie per Knopfdruck eine Bewertungsanfrage. Mehr Bewertungen, mehr Aufträge.",
+                text: "Nach dem Einsatz laden Sie zufriedene Kunden gezielt zur Bewertung ein — einfach und direkt aus dem System.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-4">
@@ -180,11 +179,15 @@ export default function HomePage() {
       <section className="bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-8 text-center shadow-sm">
-            <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
+            <p className="text-sm font-medium uppercase tracking-wider text-navy-400">Standard</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
               Ab CHF 299 / Monat.
             </h2>
-            <p className="mt-3 text-base text-navy-400">
-              Alles inklusive. Monatlich kündbar. Keine versteckten Kosten.
+            <p className="mt-1 text-base font-medium text-gold-600">
+              Professional ab CHF 499.
+            </p>
+            <p className="mt-3 text-sm text-navy-400">
+              Monatlich kündbar. Transparent.
             </p>
             <Link
               href="/pricing"
@@ -198,7 +201,7 @@ export default function HomePage() {
             {([
               { title: "Keine Gesprächsaufnahmen", text: "Keine Aufzeichnungen. Keine versteckten Mitschnitte. Punkt." },
               { title: "Persönliche Einrichtung", text: "Wir richten das System gemeinsam ein. Kein Self-Service, kein IT-Projekt." },
-              { title: "Server in der Schweiz und EU", text: "DSGVO-konform. Verschlüsselt. Daten auf Servern in Frankfurt." },
+              { title: "DSGVO-konform, EU-Server", text: "Verschlüsselt. Daten in Frankfurt (EU). Keine Daten ausserhalb Europas." },
               { title: "5 Sprachen", text: "Deutsch, Schweizerdeutsch, Englisch, Französisch, Italienisch." },
             ] as const).map((item) => (
               <div key={item.title} className="flex gap-3">
@@ -231,7 +234,7 @@ export default function HomePage() {
             Live erleben
           </Link>
           <p className="mt-5 text-xs text-navy-400">
-            Persönlicher Kontakt · Kostenlose Einrichtung · 14 Tage testen
+            Persönlicher Kontakt · Persönliche Einrichtung · Monatlich kündbar
           </p>
         </div>
       </section>
