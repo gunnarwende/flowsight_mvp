@@ -73,9 +73,11 @@ Mitarbeiterzahl ist ein schlechter Proxy für unsere Kosten. Der echte Kostentre
 
 | Tier | Zielgruppe | Preis/Mo | Inkl. Fälle | Overage | Marge (Base) |
 |------|-----------|----------|-------------|---------|--------------|
-| **Standard** | 1-5 MA, normaler Betrieb | **CHF 299** | **120 Fälle** | CHF 1.50/Fall | 82-97% |
-| **Professional** | 6-15 MA oder serviceintensiv | **CHF 499** | **250 Fälle** | CHF 1.00/Fall | 75-90% |
-| **Enterprise** | 16+ MA oder 250+ Fälle | **ab CHF 799** | Custom | Custom | Custom |
+| **Standard** | 1-5 MA, normaler Betrieb | **CHF 299** | **100 Fälle** | Intern: CHF 1.50/Fall (nicht auf Website) | 82-97% |
+| **Professional** | 6-15 MA oder serviceintensiv | **CHF 499** | **200 Fälle** | Intern: CHF 1.00/Fall (nicht auf Website) | 75-90% |
+| **Enterprise** | 16+ MA oder 200+ Fälle | **ab CHF 799** | Custom | Custom | Custom |
+
+**Website-Logik:** Overage wird NICHT auf der Website kommuniziert. Intern bleibt die Logik bestehen, aber der Prospect sieht nur die inkludierten Fälle. Grund: Einfachheit, kein Rechenmodell-Gefühl, Leitsystem-Positionierung.
 
 ### Warum 120 Fälle statt 100 oder 200?
 
