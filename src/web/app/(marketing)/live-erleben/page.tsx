@@ -1,98 +1,160 @@
 import type { Metadata } from "next";
+import { SITE } from "@/src/lib/marketing/constants";
 import { DemoForm } from "@/src/components/DemoForm";
 
 export const metadata: Metadata = {
-  title: "Live erleben — FlowSight",
+  title: "Live erleben \u2014 FlowSight",
   description:
-    "Sehen Sie, wie FlowSight Ihren Betrieb unterstützt. Wir richten das System persönlich für Sie ein — in 48 Stunden. 14 Tage kostenlos.",
+    "Sehen Sie, wie FlowSight Ihren Betrieb unterst\u00fctzt. Pers\u00f6nliche Einrichtung in 48 Stunden. 14 Tage kostenlos.",
 };
 
-function PhoneIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-    </svg>
-  );
-}
-
-function ClipboardIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-    </svg>
-  );
-}
-
-function StarIcon({ className = "h-6 w-6" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-    </svg>
-  );
-}
+/* ================================================================
+   /live-erleben \u2014 Tieferer Proof + n\u00e4chster Schritt
+   Rolle: Beweisen + Handlung erm\u00f6glichen
+   NICHT: Homepage-Kopie. Keine Redundanz.
+   ================================================================ */
 
 export default function LiveErlebenPage() {
   return (
     <>
-      <section className="bg-warm-white py-24 lg:py-32">
-        <div className="mx-auto max-w-3xl px-6 lg:px-8">
+      {/* \u2500\u2500 Video / Proof Section \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
+        <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-              Sehen Sie, wie FlowSight Ihren Betrieb unterst&uuml;tzt.
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
+              So l\u00e4uft Kundenkontakt mit FlowSight.
             </h1>
-            <p className="mt-4 text-lg text-navy-400">
-              Wir richten das System pers&ouml;nlich f&uuml;r Sie ein. In 48 Stunden. 14 Tage kostenlos.
+            <p className="mt-4 text-base text-navy-300 sm:text-lg">
+              2 Minuten. Ein Betrieb. Der komplette Ablauf.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            {[
-              {
-                icon: <PhoneIcon className="h-5 w-5" />,
-                title: "1. Sie melden sich",
-                desc: "Firma, Telefon, PLZ \u2014 mehr brauchen wir nicht.",
-              },
-              {
-                icon: <ClipboardIcon className="h-5 w-5" />,
-                title: "2. Wir richten ein",
-                desc: "Website, Telefonassistentin, Leitstand \u2014 pers\u00f6nlich f\u00fcr Ihren Betrieb.",
-              },
-              {
-                icon: <StarIcon className="h-5 w-5" />,
-                title: "3. Sie testen",
-                desc: "Rufen Sie Ihre Nummer an. 14 Tage kostenlos. Kein Vertrag.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-navy-200/60 bg-white p-6 text-center shadow-sm"
-              >
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
-                  {item.icon}
+          {/* Video Slot \u2014 Platzhalter bis echtes Video produziert wird */}
+          <div className="mx-auto mt-12 max-w-3xl">
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-navy-700/50 bg-navy-800/50">
+              {/* Placeholder: wird durch <video> oder <iframe> ersetzt wenn Video fertig */}
+              <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-500/10">
+                  <svg className="h-8 w-8 text-gold-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                  </svg>
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-navy-900">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-navy-900/70">{item.desc}</p>
+                <p className="text-sm font-medium text-navy-300">
+                  Video wird vorbereitet
+                </p>
+                <p className="text-xs text-navy-400">
+                  In K\u00fcrze sehen Sie hier den kompletten Ablauf \u2014 vom Anruf bis zur Bewertung.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* \u2500\u2500 Detaillierter Ablauf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      <section className="bg-warm-white py-20 sm:py-28">
+        <div className="mx-auto max-w-3xl px-6 lg:px-8">
+          <h2 className="text-center text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
+            Was genau passiert \u2014 Schritt f\u00fcr Schritt.
+          </h2>
+
+          <div className="mt-12 space-y-10">
+            {([
+              {
+                num: "1",
+                title: "Ihr Kunde meldet sich",
+                text: "Per Anruf oder \u00fcber Ihr Online-Formular. Die Telefonassistentin nimmt das Anliegen strukturiert auf: Kategorie, Ort, Dringlichkeit, Kontaktdaten. Rund um die Uhr.",
+              },
+              {
+                num: "2",
+                title: "Sofortige R\u00fcckmeldung in Ihrem Namen",
+                text: "Ihr Kunde erh\u00e4lt innerhalb von Sekunden eine SMS-Best\u00e4tigung \u2014 mit Ihrem Firmennamen als Absender. Er weiss: Die Meldung ist angekommen. Professionell.",
+              },
+              {
+                num: "3",
+                title: "Alles landet in Ihrem Leitstand",
+                text: "Jeder Fall erscheint strukturiert: Was wurde gemeldet, wo, wie dringend. Sie setzen Termine, weisen Techniker zu, h\u00e4ngen Fotos an. Alles an einem Ort.",
+              },
+              {
+                num: "4",
+                title: "Auftrag erledigt \u2014 Bewertung gesammelt",
+                text: "Nach dem Einsatz senden Sie per Knopfdruck eine Bewertungsanfrage. Zufriedene Kunden bewerten Sie auf Google. Mehr Sterne, mehr Anfragen.",
+              },
+            ] as const).map((step) => (
+              <div key={step.num} className="flex gap-5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-500 text-base font-bold text-navy-950">
+                  {step.num}
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold text-navy-900">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-navy-900/70">{step.text}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section
-        id="formular"
-        className="scroll-mt-20 bg-gradient-to-br from-navy-900 via-navy-950 to-navy-900 py-24 lg:py-32"
-      >
+      {/* \u2500\u2500 Pers\u00f6nlicher Kontakt / Formular \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      <section className="bg-gradient-to-b from-navy-900 to-navy-950 py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Bereit? Wir richten alles f&uuml;r Sie ein.
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Pers\u00f6nlich f\u00fcr Ihren Betrieb eingerichtet.
             </h2>
-            <p className="mt-4 text-lg text-navy-200">
-              Sagen Sie uns, wer Sie sind &mdash; wir k&uuml;mmern uns um den Rest.
+            <p className="mt-4 text-base text-navy-300">
+              Sagen Sie uns, wer Sie sind. Wir melden uns innerhalb von 24 Stunden
+              pers\u00f6nlich bei Ihnen.
             </p>
           </div>
+
+          {/* 3 Schritte */}
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {([
+              { num: "1", title: "Sie melden sich", desc: "Firma, Telefon, Region." },
+              { num: "2", title: "Wir richten ein", desc: "Pers\u00f6nlich. In 48 Stunden." },
+              { num: "3", title: "Sie testen", desc: "14 Tage. Kein Vertrag." },
+            ] as const).map((s) => (
+              <div key={s.num} className="rounded-xl border border-navy-700/40 bg-navy-800/30 p-5 text-center">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gold-500 text-sm font-bold text-navy-950">
+                  {s.num}
+                </span>
+                <p className="mt-3 text-sm font-semibold text-white">{s.title}</p>
+                <p className="mt-1 text-xs text-navy-400">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-12">
             <DemoForm />
+          </div>
+        </div>
+      </section>
+
+      {/* \u2500\u2500 FAQ (kompakt, echte H\u00fcrden) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      <section className="bg-navy-50 py-16 sm:py-24">
+        <div className="mx-auto max-w-3xl px-6 lg:px-8">
+          <h2 className="text-center text-xl font-bold text-navy-900 sm:text-2xl">
+            H\u00e4ufige Fragen
+          </h2>
+          <div className="mt-8 divide-y divide-navy-200/60">
+            {([
+              { q: "Brauche ich technisches Wissen?", a: "Nein. Wir richten alles f\u00fcr Sie ein \u2014 pers\u00f6nlich. Sie brauchen nur einen Browser." },
+              { q: "Funktioniert das mit meiner bestehenden Nummer?", a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind." },
+              { q: "Was passiert bei einem Notfall?", a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine Benachrichtigung." },
+              { q: "Wie sicher sind meine Daten?", a: "Alle Daten verschl\u00fcsselt. Keine Gespr\u00e4chsaufnahmen. Server in der EU. DSGVO-konform." },
+              { q: "Was kostet FlowSight?", a: "Ab CHF 299/Monat. Alles inklusive. Monatlich k\u00fcndbar, keine Bindung." },
+            ] as const).map((item) => (
+              <details key={item.q} className="group py-4">
+                <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-navy-900 [&::-webkit-details-marker]:hidden">
+                  {item.q}
+                  <svg className="ml-3 h-4 w-4 shrink-0 text-navy-400 transition-transform duration-200 group-open:rotate-45" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                </summary>
+                <p className="mt-2 pr-8 text-sm leading-relaxed text-navy-900/70">{item.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
