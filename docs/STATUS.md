@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-22 (Grossumbau: Website-Redesign Leitsystem, Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch)
+**Datum:** 2026-03-23 (Website Final Polish + Lisa Knowledge Update)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -31,8 +31,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 | **Email Notifications** | LIVE ✅ | HTML Ops-Notification + Melder-Bestätigung + Review-Anfrage + Demo + Sales Lead |
 | **Peoplefone Front Door** | LIVE ✅ | Brand-Nr → Twilio → SIP → Retell |
 | **Morning Report** | LIVE ✅ | 15 KPIs + Trial Status + Deep Health, GH Actions Cron (daily 07:30 UTC), Telegram + E-Mail (RED/YELLOW) |
-| **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, /testen — "Kostenlos testen" flow) |
-| **Interest Capture Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19 — Interest Capture (kein Pricing, kein Pitch, Founder-Rückruf) |
+| **Marketing Website** | LIVE ✅ | flowsight.ch (homepage, pricing, /live-erleben). Nav: Funktionen, Preise, Video sehen, Kontakt, Live erleben. Hero: "Vom ersten Kontakt bis zur 5★ Bewertung." Schweizer Flagge bei Trust-Badge. |
+| **Interest Capture Agent** | LIVE ✅ | "Lisa" auf 044 552 09 19 — Interest Capture, Pricing Deflect ("ab 299"), 4-Schritt-Prozess, 12 Blind Spots abgedeckt (Wettbewerb, Telefon-Integration, Notfall, Founder-Credibility etc.). Knowledge Update 23.03. (PR #362). |
 | **Customer Websites** | LIVE ✅ | /kunden/[slug] — SSG template (12 sections, ServiceDetailOverlay, lightbox, galleries) |
 | **Customer Links Page** | LIVE ✅ | /kunden/[slug]/links — SSG, alle Kunden-URLs auf einen Blick, noindex |
 | **Review Engine** | LIVE ✅ | Manual button, review_sent_at, tenant-scoped GOOGLE_REVIEW_URL, SMS fallback |
@@ -60,9 +60,10 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **Website Final Polish + Lisa Update (23.03.):** PRs #358-#362. Founder-Feedback Round 3: Hero "5★ Bewertung" (Leerzeichen statt Bindestrich), Subline Zeilenumbruch-Kontrolle, Pricing-Teaser ohne Punkt, "Keine Daten ausserhalb Europas"→"100% DSGVO-konform", "In einer Woche" entfernt, Schweizer Flagge SVG bei Trust-Badge. Nav: "Video sehen" (statt doppelt "Live erleben") + neuer "Kontakt" Reiter (→ /live-erleben#formular). Hero Laptop: 3 statt 4 Zeilen. Mobile: strukturierter Umbruch (weiss oben, gold unten). **Lisa DE+INTL komplett aktualisiert:** Altes Pricing (Starter/Alltag/Wachstum 199/299/399) ersetzt durch Deflect + "ab 299". 4-Schritt-Prozess statt 6-Modul-Liste. 12 Blind Spots abgedeckt (Wettbewerb, Telefon-Integration, Founder-Credibility, Notfall, Eager-Buyer, Sprach-Grenzen, Callback-Timing, Saisonalität, Video-Awareness). Retell published.
 - **Grossumbau (22.03.):** PRs #348-#352. Website-Redesign: Neue Hero ("Das Leitsystem für Ihren Betrieb — vom ersten Kontakt bis zur Bewertung."), 8-Section-Struktur, Social Proof, "Handwerksbetriebe" statt nur Sanitär. Nav "Live erleben" (statt "Testen"), /live-erleben Seite, /testen→301 Redirect. HeroVisual: 3-Element-Kette (Anruf → SMS mit Firmenname → Leitstand). Kein "Lisa"/"5-Sterne"/"Dashboard" in kundengerichtetem Copy. Pipeline: pain_type + outreach_outcome Spalten live. Konsistenz: "Dashboard"→"Leitstand", "KI-Assistentin"→"Telefonassistentin" in Trial-Emails. Voice Agent: 4-Modi-Redesign (Video-Rückruf, Kaltanruf, Testnummer, Support NEU), retell_sync published. Knowledge Base aligned mit Website. Video-Drehbuch: 2-Min generisches Produktvideo (7 Szenen). Zielarchitektur v2.2 (D37-D40).
 - **Voice Session (21.03.):** PRs #336-#345. Laura (ElevenLabs) als neue DE-Stimme auf allen 4 Intake-Agents (Juniper bleibt INTL). Partial Cases Fix: Voice-Fälle gehen nicht mehr verloren bei fehlenden Feldern (68 historische Verluste verhindert). Urgency-Normalisierung (Aliases: "Notfall"→"notfall", "emergency"→"notfall"). SMS-Sender jetzt alphanumerisch (Tenant-Markenname statt Nummer → weniger Spam). E-Mail-Button "Fall in der Leitzentrale öffnen". Kalender Belegt/Frei Balken entfernt (cleaner). PWA Deep-Links über Trampoline-Page.
-- **Pricing-Strategie FINAL (21.03.):** PRs #340-#345. End-to-End Kostenanalyse pro Fall (CHF 0.58 minimal, CHF 0.82 typisch). SMS = dominanter Kostentreiber (57-84%, nicht Voice). OpenAI Realtime 2.9× teurer als Retell (Audio-Tokens). Finales Pricing: Standard CHF 299 (120 Fälle inkl.) / Professional CHF 499 (250 Fälle) / Enterprise Custom. Sweetspot: 3-8 MA (85-95% Marge). Markt: ~970 Zürich, ~5'700 Deutschschweiz. Dokument: `docs/redesign/leitstand/pricing_und_marge.md`.
+- **Pricing-Strategie FINAL (21.03.):** PRs #340-#345. End-to-End Kostenanalyse pro Fall (CHF 0.58 minimal, CHF 0.82 typisch). SMS = dominanter Kostentreiber (57-84%, nicht Voice). OpenAI Realtime 2.9× teurer als Retell (Audio-Tokens). Finales Pricing: Standard CHF 299 (100 Fälle inkl.) / Professional CHF 499 (200 Fälle) / Enterprise ab CHF 799. Overage intern, nicht auf Website kommuniziert. Sweetspot: 3-8 MA (85-95% Marge). Markt: ~970 Zürich, ~5'700 Deutschschweiz. Dokument: `docs/redesign/leitstand/pricing_und_marge.md`.
 - **Outlook-Kalender Phase 1 LIVE (20.03.):** PRs #317-#330. Outlook Free/Busy im Terminpicker. Grün/rote Verfügbarkeitsbalken, Kollisionsprüfung intern + Outlook, animierter Status-Indikator. Architektur: Application Permissions (client_credentials), kein User-OAuth. Learnings: Delegated OAuth funktioniert nicht für Multi-Tenant (Admin-Token-Hijacking), Exchange Online Postfach ist Pflicht. Runbook: `docs/runbooks/outlook_kalender_onboarding.md`.
 - **Sentry Digest + Web Push + PWA (20.03.):** PR #322. Monitoring zeigt jetzt echte Sentry-Errors (25 Issues live). Web Push komplett (SW, Subscribe API, Send API, VAPID Keys). PWA installierbar auf Android/Windows (manifest mit screenshots, id, scope). Alle Founder Tasks F1-F8 erledigt.
 - **CEO-App Thema C KOMPLETT (20.03.):** PRs #304-#315. 10 Phasen: Pulse, Betriebe, Pipeline, Finanzen, Monitoring, AI-Copilot, Notifications, Knowledge Base (37 Runbooks), Forecast, Team. 4 DB-Migrationen. Navy+Gold Design. AI-Provider live (Anthropic+OpenAI).
@@ -73,7 +74,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 - **Shared Utilities (19.03.):** statusColors.ts, getGreeting.ts, plzCityMap.ts. PLZ Auto-Fill, Pflichtfeld-Markierung, Termin-Kollision, Sticky Case-ID, 48px Tap-Targets.
 - **Scaling & Access (18.03.):** Tenant-Switcher, Support-System, Rollen-Switch.
 - **Leitsystem Phase 1-4 (17.-18.03.):** Login OTP, PWA, Falldetail, Staff CRUD.
-- **25+ Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard. CEO-App = FlowSight-Nervenzentrum. Voice: Laura (DE) + Juniper (INTL). Pricing FINAL: Standard CHF 299 / Professional CHF 499.
+- **25+ Module LIVE.** 7 Kunden-Websites. Weinberger = GTM Goldstandard. CEO-App = FlowSight-Nervenzentrum. Voice: Laura (DE) + Juniper (INTL). Pricing FINAL: Standard CHF 299 (100 Fälle) / Professional CHF 499 (200 Fälle) / Enterprise ab CHF 799.
 
 ### Kondensierte Historie (04.-14.03.)
 
