@@ -88,6 +88,13 @@ export function MobileNav() {
               >
                 Live erleben
               </Link>
+              <Link
+                href="/live-erleben#formular"
+                onClick={() => setOpen(false)}
+                className="text-2xl font-semibold text-white transition-colors hover:text-gold-400"
+              >
+                Kontakt
+              </Link>
               <a
                 href={`tel:${SITE.phoneRaw}`}
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-2xl font-semibold text-white transition-colors hover:border-gold-400/40 hover:text-gold-400"
