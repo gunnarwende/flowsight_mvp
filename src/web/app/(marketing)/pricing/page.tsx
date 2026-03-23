@@ -17,10 +17,10 @@ function CheckIcon({ className = "h-5 w-5" }: { className?: string }) {
 
 const FEATURES = [
   "Moderne Website im Firmenlook (mobiloptimiert)",
-  "Online-Schadenmeldung in 3 Schritten",
+  "Online-Meldungsformular auf Ihrer Website",
   "Telefonassistentin (24/7, mehrsprachig)",
   "Bestätigungs-SMS + Foto-Upload für Ihre Kunden",
-  "Fallübersicht: alle Meldungen an einem Ort",
+  "Leitstand: alle F\u00e4lle an einem Ort",
   "E-Mail-Benachrichtigung bei jeder neuen Meldung",
   "Google-Bewertungen gezielt anfragen",
   "Persönliches Onboarding & Setup inklusive",
@@ -58,7 +58,7 @@ export default function PricingPage() {
               <span className="ml-1 text-base text-navy-400">/ Monat</span>
             </p>
             <p className="mt-2 text-sm text-navy-900/70">
-              Website, Telefonassistentin, Dashboard, SMS, Bewertungen — ein Preis für alles.
+              Website, Telefonassistentin, Leitstand, SMS, Bewertungen &mdash; ein Preis f&uuml;r alles.
             </p>
 
             <ul className="mt-8 space-y-3">
@@ -77,7 +77,7 @@ export default function PricingPage() {
               href="/live-erleben"
               className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
-              14 Tage kostenlos testen
+              Live erleben
             </Link>
           </div>
 
@@ -117,8 +117,8 @@ export default function PricingPage() {
                 Gemeinsam in einer Woche
               </p>
               <p className="mt-2 text-sm leading-relaxed text-navy-900/70">
-                Website, Telefonnummer, Telefonassistentin, Fallübersicht —
-                persönlich eingerichtet. Keine Setup-Kosten in der Pilotphase.
+                Website, Telefonnummer, Telefonassistentin, Leitstand &mdash;
+                pers&ouml;nlich eingerichtet. Keine Setup-Kosten.
               </p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "In der Pilotphase: nichts. Wir richten alles gemeinsam ein — Website, Telefonassistentin und Fallübersicht.",
+                a: "Nichts. Wir richten alles gemeinsam ein \u2014 Website, Telefonassistentin und Leitstand. Pers\u00f6nlich.",
               },
               {
                 q: "Wie werden Telefonminuten abgerechnet?",
