@@ -52,23 +52,23 @@ export default function LiveErlebenPage() {
             {([
               {
                 num: "1",
-                title: "Anruf oder Online-Meldung",
-                text: "Ihre Telefonassistentin nimmt Anrufe entgegen — in 5 Sprachen, rund um die Uhr. Parallel können Kunden Anliegen über das Formular auf Ihrer Website melden. Beide Wege führen ins gleiche System.",
+                title: "Anfrage geht ein",
+                text: "Anrufe werden professionell entgegengenommen — rund um die Uhr, in 5 Sprachen. Parallel können Kunden Anliegen über Ihr Online-Formular melden. Beide Wege führen in denselben Ablauf.",
               },
               {
                 num: "2",
-                title: "SMS mit Ihrem Firmennamen",
-                text: "Ihr Kunde erhält innerhalb von Sekunden eine Bestätigung. Der Absender: Ihr Firmenname. Er kann seine Angaben prüfen, korrigieren und Fotos hochladen — über einen Link in der SMS.",
+                title: "Ihr Kunde bekommt Rückmeldung",
+                text: "Innerhalb von Sekunden erhält Ihr Kunde eine Bestätigung — mit Ihrem Firmennamen als Absender. Er kann seine Angaben prüfen, korrigieren und Fotos ergänzen.",
               },
               {
                 num: "3",
-                title: "Ihr Leitstand zeigt alles",
-                text: "Kategorie, Ort, Dringlichkeit, Kontaktdaten, Fotos — jeder Fall ist strukturiert. Sie planen Termine, weisen Techniker zu, dokumentieren den Einsatz. Kein Zettel, kein Suchen.",
+                title: "Alles an einem Ort",
+                text: "Jeder Fall ist sofort da — mit Kategorie, Ort, Dringlichkeit und Kontaktdaten. Sie planen Termine, weisen Mitarbeiter zu und dokumentieren den Einsatz. Strukturiert statt Zettelwirtschaft.",
               },
               {
                 num: "4",
-                title: "Abschluss und Bewertung",
-                text: "Fall erledigt? Per Knopfdruck geht eine Bewertungsanfrage an den Kunden. Zufriedene Kunden werden zur Google-Bewertung geführt. So wächst Ihr Online-Profil.",
+                title: "Sauberer Abschluss",
+                text: "Nach dem Einsatz laden Sie zufriedene Kunden gezielt zur Bewertung ein — einfach und direkt aus dem System.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-5">
@@ -132,7 +132,7 @@ export default function LiveErlebenPage() {
               { q: "Funktioniert das mit meiner bestehenden Nummer?", a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind." },
               { q: "Was passiert bei einem Notfall?", a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine Benachrichtigung." },
               { q: "Wie sicher sind meine Daten?", a: "Alle Daten verschlüsselt. Keine Gesprächsaufnahmen. Server in der EU. DSGVO-konform." },
-              { q: "Was kostet FlowSight?", a: "Ab CHF 299/Monat. Alles inklusive. Monatlich kündbar, keine Bindung." },
+              { q: "Was kostet FlowSight?", a: "Standard ab CHF 299/Monat, Professional ab CHF 499. Monatlich kündbar, keine Bindung." },
             ] as const).map((item) => (
               <details key={item.q} className="group py-4">
                 <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-navy-900 [&::-webkit-details-marker]:hidden">
