@@ -29,23 +29,20 @@ export default function LiveErlebenPage() {
             </p>
           </div>
 
-          {/* Video Slot \u2014 Platzhalter bis echtes Video produziert wird */}
-          <div className="mx-auto mt-12 max-w-3xl">
-            <div className="relative aspect-video overflow-hidden rounded-2xl border border-navy-700/50 bg-navy-800/50">
-              {/* Placeholder: wird durch <video> oder <iframe> ersetzt wenn Video fertig */}
-              <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-500/10">
-                  <svg className="h-8 w-8 text-gold-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                  </svg>
+          {/* Ablauf-Kurzfassung (wird sp\u00e4ter durch Video ersetzt) */}
+          <div className="mx-auto mt-12 max-w-2xl">
+            <div className="flex items-center justify-between gap-3 sm:gap-6">
+              {(["Kontakt", "Best\u00e4tigung", "Fall", "Bewertung"] as const).map((label, i) => (
+                <div key={label} className="flex items-center gap-3 sm:gap-6">
+                  {i > 0 && <div className="h-px w-4 bg-gold-500/30 sm:w-8" />}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-navy-700/50 bg-navy-800/50 text-gold-400">
+                      <span className="text-sm font-bold">{i + 1}</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-navy-400 sm:text-xs">{label}</span>
+                  </div>
                 </div>
-                <p className="text-sm font-medium text-navy-300">
-                  Video wird vorbereitet
-                </p>
-                <p className="text-xs text-navy-400">
-                  In K\u00fcrze sehen Sie hier den kompletten Ablauf \u2014 vom Anruf bis zur Bewertung.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -62,23 +59,23 @@ export default function LiveErlebenPage() {
             {([
               {
                 num: "1",
-                title: "Ihr Kunde meldet sich",
-                text: "Per Anruf oder \u00fcber Ihr Online-Formular. Die Telefonassistentin nimmt das Anliegen strukturiert auf: Kategorie, Ort, Dringlichkeit, Kontaktdaten. Rund um die Uhr.",
+                title: "Anruf oder Online-Meldung",
+                text: "Ihre Telefonassistentin nimmt Anrufe entgegen \u2014 in 5 Sprachen, rund um die Uhr. Parallel k\u00f6nnen Kunden Anliegen \u00fcber das Formular auf Ihrer Website melden. Beide Wege f\u00fchren ins gleiche System.",
               },
               {
                 num: "2",
-                title: "Sofortige R\u00fcckmeldung in Ihrem Namen",
-                text: "Ihr Kunde erh\u00e4lt innerhalb von Sekunden eine SMS-Best\u00e4tigung \u2014 mit Ihrem Firmennamen als Absender. Er weiss: Die Meldung ist angekommen. Professionell.",
+                title: "SMS mit Ihrem Firmennamen",
+                text: "Ihr Kunde erh\u00e4lt innerhalb von Sekunden eine Best\u00e4tigung. Der Absender: Ihr Firmenname. Er kann seine Angaben pr\u00fcfen, korrigieren und Fotos hochladen \u2014 \u00fcber einen Link in der SMS.",
               },
               {
                 num: "3",
-                title: "Alles landet in Ihrem Leitstand",
-                text: "Jeder Fall erscheint strukturiert: Was wurde gemeldet, wo, wie dringend. Sie setzen Termine, weisen Techniker zu, h\u00e4ngen Fotos an. Alles an einem Ort.",
+                title: "Ihr Leitstand zeigt alles",
+                text: "Kategorie, Ort, Dringlichkeit, Kontaktdaten, Fotos \u2014 jeder Fall ist strukturiert. Sie planen Termine, weisen Techniker zu, dokumentieren den Einsatz. Kein Zettel, kein Suchen.",
               },
               {
                 num: "4",
-                title: "Auftrag erledigt \u2014 Bewertung gesammelt",
-                text: "Nach dem Einsatz senden Sie per Knopfdruck eine Bewertungsanfrage. Zufriedene Kunden bewerten Sie auf Google. Mehr Sterne, mehr Anfragen.",
+                title: "Abschluss und Bewertung",
+                text: "Fall erledigt? Per Knopfdruck geht eine Bewertungsanfrage an den Kunden. Zufriedene Kunden werden zur Google-Bewertung gef\u00fchrt. So w\u00e4chst Ihr Online-Profil.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-5">

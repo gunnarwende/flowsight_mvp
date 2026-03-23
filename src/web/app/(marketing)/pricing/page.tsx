@@ -77,16 +77,16 @@ export default function PricingPage() {
               href="/live-erleben"
               className="mt-8 block w-full rounded-lg bg-gold-500 py-3.5 text-center text-sm font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/20"
             >
-              Live erleben
+              Pers\u00f6nlich beraten lassen
             </Link>
           </div>
 
           <p className="mt-6 text-center text-sm text-navy-400">
-            Ihr Betrieb hat spezielle Anforderungen?{" "}
-            <Link href="/live-erleben" className="font-semibold text-gold-600 hover:text-gold-500">
-              Schreiben Sie uns
+            Gr\u00f6sserer Betrieb oder spezielle Anforderungen?{" "}
+            <Link href="/live-erleben#formular" className="font-semibold text-gold-600 hover:text-gold-500">
+              Kontaktieren Sie uns
             </Link>{" "}
-            — wir finden eine passende Lösung.
+            &mdash; wir finden eine passende L\u00f6sung.
           </p>
         </div>
       </section>

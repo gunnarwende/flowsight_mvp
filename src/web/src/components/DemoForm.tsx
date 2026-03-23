@@ -106,7 +106,7 @@ export function DemoForm() {
             name="company"
             type="text"
             required
-            placeholder="Muster Sanitär AG"
+            placeholder="Muster AG"
             className="w-full rounded-lg border border-navy-600 bg-navy-900/60 px-4 py-3 text-sm text-white placeholder:text-navy-400 focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
           />
         </div>
