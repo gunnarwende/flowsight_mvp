@@ -34,15 +34,18 @@ export default function HomePage() {
             </p>
 
             <h1 className="mt-6 text-[2rem] font-bold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]">
-              Das Leitsystem für Ihren Betrieb —{" "}
+              Das Leitsystem für{" "}
+              <span className="inline-block">Ihren Betrieb —</span>{" "}
+              <br className="sm:hidden" />
               <span className="text-gold-400">
-                vom ersten Kontakt bis zur 5★-Bewertung.
+                vom ersten Kontakt{" "}
+                <span className="inline-block">bis zur 5★ Bewertung.</span>
               </span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-navy-300 sm:text-lg">
-              Jede Anfrage wird erfasst. Ihre Kunden bekommen Rückmeldung.
-              Und im Betrieb bleibt nichts liegen.
+              Jede Anfrage wird erfasst. Ihre Kunden bekommen Rückmeldung.{" "}
+              <span className="inline-block">Und im Betrieb bleibt nichts liegen.</span>
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -64,10 +67,22 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-navy-400">
-              {["Keine Anfrage geht verloren", "Schweizer System", "Monatlich kündbar"].map((t) => (
-                <span key={t} className="flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-gold-500" aria-hidden="true" />
-                  {t}
+              {[
+                { label: "Keine Anfrage geht verloren", flag: false },
+                { label: "Schweizer System", flag: true },
+                { label: "Monatlich kündbar", flag: false },
+              ].map((t) => (
+                <span key={t.label} className="flex items-center gap-1.5">
+                  {t.flag ? (
+                    <svg className="h-3 w-3 shrink-0" viewBox="0 0 32 32" aria-label="Schweiz" role="img">
+                      <rect width="32" height="32" rx="4" fill="#D52B1E" />
+                      <path d="M14 8h4v16h-4z" fill="#fff" />
+                      <path d="M8 14h16v4H8z" fill="#fff" />
+                    </svg>
+                  ) : (
+                    <span className="h-1 w-1 rounded-full bg-gold-500" aria-hidden="true" />
+                  )}
+                  {t.label}
                 </span>
               ))}
             </div>
@@ -155,10 +170,11 @@ export default function HomePage() {
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-8 text-center shadow-sm">
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              Ab CHF 299 / Monat.
+              Ab CHF 299 / Monat
             </h2>
             <p className="mt-3 text-sm text-navy-400">
-              Monatlich kündbar. Absolut transparent. Keine versteckten Kosten.
+              Monatlich kündbar. Absolut transparent.{" "}
+              <span className="inline-block">Keine versteckten Kosten.</span>
             </p>
             <Link
               href="/pricing"
@@ -172,7 +188,7 @@ export default function HomePage() {
             {([
               { title: "Keine Gesprächsaufnahmen", text: "Keine Aufzeichnungen. Keine versteckten Mitschnitte. Punkt." },
               { title: "Persönliche Einrichtung", text: "Wir richten das System gemeinsam ein. Kein Self-Service, kein IT-Projekt." },
-              { title: "DSGVO-konform, EU-Server", text: "Verschlüsselt. Daten in Frankfurt (EU). Keine Daten ausserhalb Europas." },
+              { title: "DSGVO-konform, EU-Server", text: "Verschlüsselt. Daten in Frankfurt (EU). 100\u00A0% DSGVO-konform." },
               { title: "5 Sprachen", text: "Deutsch, Schweizerdeutsch, Englisch, Französisch, Italienisch." },
             ] as const).map((item) => (
               <div key={item.title} className="flex gap-3">
