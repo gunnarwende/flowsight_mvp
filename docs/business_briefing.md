@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-22 (Grossumbau: Website-Redesign "Leitsystem für Handwerksbetriebe", Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch. Pricing FINAL.)
+> Letzte Aktualisierung: 2026-03-23 (Website Final Polish: 5★ Hero, Nav Kontakt, Schweizer Flagge, DSGVO-Korrektur. Lisa DE+INTL Knowledge Update: Pricing Deflect, 12 Blind Spots. Pricing auf Website: 100/200 Fälle, Overage intern.)
 
 ---
 
@@ -11,7 +11,7 @@
 FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalisieren den gesamten Kundenkontakt — vom ersten Anruf über die Fallerfassung bis zur Bewertung.
 
 **Elevator Pitch (30 Sekunden):**
-"Die meisten Handwerksbetriebe in der Schweiz verpassen Anrufe, verlieren Meldungen und haben keine Zeit für Organisation. FlowSight gibt ihnen ein Leitsystem: eine Telefonassistentin die rund um die Uhr erreichbar ist, ein Online-Meldungsformular, einen Leitstand für alle Fälle, und eine Bewertungs-Engine. In einer Woche live, persönlich eingerichtet, ohne IT-Kenntnisse."
+"Die meisten Handwerksbetriebe in der Schweiz verpassen Anrufe, verlieren Meldungen und haben keine Zeit für Organisation. FlowSight gibt ihnen ein Leitsystem: eine professionelle Anrufannahme rund um die Uhr, ein Online-Meldungsformular, einen strukturierten Überblick für alle Fälle, und eine Bewertungs-Engine. Persönlich eingerichtet, inklusive, ohne IT-Kenntnisse."
 
 **Firma:** FlowSight GmbH (Schweizer GmbH)
 **Gründer:** Gunnar Wende, Solo-Founder, Zürich
@@ -156,26 +156,28 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 ### 3.12 Sales Voice Agent "Lisa"
 - Auf Geschäftsnummer +41 44 552 09 19
 - DE + INTL (auto language swap)
-- **4 Modi:** Video-Rückruf (Prio), Kaltanruf (Default), Testnummer-Verwechslung, Support (NEU)
+- **4 Modi:** Video-Rückruf (Prio), Kaltanruf (Default), Testnummer-Verwechslung, Support
 - Beantwortet Fragen zu FlowSight, sammelt Rückruf-Anfragen für Founder
-- Knowledge Base aligned mit Website-Content (Leitsystem für Handwerksbetriebe)
-- **Preise:** Werden NICHT genannt — immer Verweis auf persönliches Gespräch mit Founder
+- **Knowledge Update 23.03.:** Pricing Deflect ("ab 299, monatlich kündbar"), 4-Schritt-Prozess (= Website), DSGVO-konform (nicht "keine Daten ausserhalb Europas"), kein Zeitversprechen für Einrichtung, "monatlich kündbar" statt "14 Tage kostenlos"
+- **12 Blind Spots abgedeckt:** Wettbewerbs-Handler ("Leitsystem ersetzt niemanden"), Telefon-Integration ("bestehende Nummer behalten"), Founder-Credibility, Notfall-Handling, Eager-Buyer-Pfad, Sprach-Grenzen, Callback-Timing ("noch am selben Tag"), Saisonalität, Video-Awareness
+- **Preise:** Werden NICHT im Detail genannt — Deflect: "ab 299 Franken, monatlich kündbar. Details bespricht Herr Wende persönlich."
 
 ---
 
 ## 4. Pricing (FINAL, 21.03.2026)
 
-| Tier | Preis/Mo | Zielgruppe | Inkl. Fälle | Overage |
-|------|----------|-----------|-------------|---------|
-| **Standard** | **CHF 299** | 1-5 MA, normaler Betrieb | 120 Fälle/Mo | CHF 1.50/Fall |
-| **Professional** | **CHF 499** | 6-15 MA oder serviceintensiv | 250 Fälle/Mo | CHF 1.00/Fall |
-| **Enterprise** | **ab CHF 799** | 16+ MA oder 250+ Fälle | Custom | Custom |
+| Tier | Preis/Mo | Zielgruppe | Inkl. Fälle |
+|------|----------|-----------|-------------|
+| **Standard** | **CHF 299** | 1-5 MA, normaler Betrieb | 100 Fälle/Mo |
+| **Professional** | **CHF 499** | 6-15 MA oder serviceintensiv | 200 Fälle/Mo |
+| **Enterprise** | **ab CHF 799** | 16+ MA oder 200+ Fälle | Individuell |
 
-Alles inklusive: Website, Telefonassistentin Lisa (24/7, Laura-Stimme DE + Juniper INTL), Dashboard (Leitzentrale), SMS, Bewertungs-Engine, Mehrsprachig (DE/EN/FR/IT).
+Alles inklusive: Website, professionelle Anrufannahme (24/7, Laura-Stimme DE + Juniper INTL), Leitzentrale, SMS, Bewertungs-Engine, 5 Sprachen (DE/CH-DE/EN/FR/IT).
 
-- 14 Tage kostenlos testen. Monatlich kündbar, kein Lock-in.
-- Setup in einer Woche, persönliches Onboarding. Keine Setup-Kosten.
-- **Sweetspot:** 3-8 MA Sanitär-/Heizungsbetriebe (85-95% Marge bei CHF 299).
+- Monatlich kündbar, kein Lock-in. Keine versteckten Kosten.
+- Persönlich eingerichtet, inklusive. Keine Setup-Kosten.
+- **Overage:** Intern CHF 1.50/Fall (Standard) bzw. CHF 1.00/Fall (Professional) — wird NICHT auf der Website kommuniziert. Einfachheit > Transparenz bei Overage.
+- **Sweetspot:** 5-15 MA Sanitär-/Heizungsbetriebe (85-95% Marge bei CHF 299).
 - **Adressierbarer Markt:** ~970 Betriebe Kanton Zürich, ~5'700 Deutschschweiz.
 - **Vollständige Pricing-Analyse:** `docs/redesign/leitstand/pricing_und_marge.md`
 
@@ -211,7 +213,7 @@ VERARBEITUNG:
 OUTPUT:
   → Ops E-Mail an Betrieb (Resend)
   → Bestätigungs-E-Mail an Melder (Resend)
-  → SMS mit Korrekturlink (Twilio, wenn Voice)
+  → SMS mit Korrekturlink (eCall.ch, wenn Voice)
   → case_events Eintrag ("Benachrichtigung gesendet")
 
 NACH ERLEDIGUNG:
@@ -243,6 +245,7 @@ NACH ERLEDIGUNG:
 |-------|--------|--------|-----|
 | **Dörfler AG** (Oberrieden) | Go-Live PARTIAL (3/4 PASS) | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
 | **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
+| **Jul. Weinberger AG** (Thalwil) | **GTM Goldstandard** | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/weinberger-ag |
 | **Walter Leuthold** (Oberrieden) | Website LIVE | wizard | flowsight.ch/kunden/walter-leuthold |
 | **Orlandini Sanitär** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/orlandini |
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
@@ -325,9 +328,9 @@ Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
 **FlowSight-Vorteile:**
 - Branchenspezifisch, nicht generisch
 - All-in-one statt 5 verschiedene Tools
-- In einer Woche live, kein IT-Projekt
+- Persönlich eingerichtet, kein IT-Projekt
 - CHF 299/Monat statt CHF 10'000 einmalig
-- Schweizer Nummer, Schweizer Hosting, Deutsch
+- Schweizer Nummer, 100% DSGVO-konform (EU-Server Frankfurt), Deutsch
 
 ---
 
