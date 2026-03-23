@@ -39,6 +39,12 @@ export default function MarketingLayout({
             >
               Video sehen
             </Link>
+            <Link
+              href="/live-erleben#formular"
+              className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              Kontakt
+            </Link>
             <a
               href={`tel:${SITE.phoneRaw}`}
               className="inline-flex items-center gap-1.5 rounded-full border border-navy-200 bg-navy-50 px-3 py-1.5 text-sm font-medium text-navy-900/60 transition-colors hover:border-gold-300 hover:text-gold-600"

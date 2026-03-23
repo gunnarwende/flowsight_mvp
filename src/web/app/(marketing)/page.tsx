@@ -34,12 +34,11 @@ export default function HomePage() {
             </p>
 
             <h1 className="mt-6 text-[2rem] font-bold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]">
-              Das Leitsystem für{" "}
-              <span className="inline-block">Ihren Betrieb —</span>{" "}
+              <span className="sm:inline">Das Leitsystem für{" "}
+              <span className="inline-block sm:inline">Ihren Betrieb —</span></span>{" "}
               <br className="sm:hidden" />
               <span className="text-gold-400">
-                vom ersten Kontakt{" "}
-                <span className="inline-block">bis zur 5★ Bewertung.</span>
+                vom ersten Kontakt bis zur 5★ Bewertung.
               </span>
             </h1>
 
