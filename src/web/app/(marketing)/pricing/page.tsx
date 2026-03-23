@@ -108,12 +108,7 @@ export default function PricingPage() {
                 </p>
                 <p className="mt-4">
                   <span className="text-4xl font-bold text-navy-900">{tier.price}</span>
-                  {!tier.price.startsWith("ab") && tier.price !== "Individuell" && (
-                    <span className="ml-1 text-base text-navy-400">/ Monat</span>
-                  )}
-                  {tier.price.startsWith("ab") && (
-                    <span className="ml-1 text-base text-navy-400">/ Monat</span>
-                  )}
+                  <span className="ml-1 text-base text-navy-400">/ Monat</span>
                 </p>
                 <p className="mt-1 text-sm text-navy-900/70">{tier.target}</p>
                 <p className="mt-1 text-xs text-navy-400">{tier.cases}</p>
@@ -135,7 +130,7 @@ export default function PricingPage() {
                       : "bg-navy-900 text-white hover:bg-navy-800"
                   }`}
                 >
-                  {tier.price === "Individuell" ? "Kontakt aufnehmen" : "Persönlich beraten lassen"}
+                  {tier.name === "Enterprise" ? "Kontakt aufnehmen" : "Persönlich beraten lassen"}
                 </Link>
               </div>
             ))}
