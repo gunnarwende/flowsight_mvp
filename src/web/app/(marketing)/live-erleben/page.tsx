@@ -4,7 +4,7 @@ import { DemoForm } from "@/src/components/DemoForm";
 export const metadata: Metadata = {
   title: "Live erleben — FlowSight",
   description:
-    "Sehen Sie, wie FlowSight Ihren Betrieb unterstützt. Persönliche Einrichtung in 48 Stunden. 14 Tage kostenlos.",
+    "Sehen Sie, wie Ihr Leitsystem den Kundenkontakt in Ihrem Betrieb organisiert. Persönlich eingerichtet.",
 };
 
 export default function LiveErlebenPage() {
@@ -15,27 +15,23 @@ export default function LiveErlebenPage() {
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
-              So läuft Kundenkontakt mit FlowSight.
+              So läuft Kundenkontakt mit Ihrem Leitsystem.
             </h1>
             <p className="mt-4 text-base text-navy-300 sm:text-lg">
-              2 Minuten. Ein Betrieb. Der komplette Ablauf.
+              Der komplette Ablauf — vom Eingang bis zum Abschluss.
             </p>
           </div>
 
-          {/* Ablauf-Kurzfassung (wird später durch Video ersetzt) */}
-          <div className="mx-auto mt-12 max-w-2xl">
-            <div className="flex items-center justify-between gap-3 sm:gap-6">
-              {(["Kontakt", "Bestätigung", "Fall", "Bewertung"] as const).map((label, i) => (
-                <div key={label} className="flex items-center gap-3 sm:gap-6">
-                  {i > 0 && <div className="h-px w-4 bg-gold-500/30 sm:w-8" />}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-navy-700/50 bg-navy-800/50 text-gold-400">
-                      <span className="text-sm font-bold">{i + 1}</span>
-                    </div>
-                    <span className="text-[10px] font-medium text-navy-400 sm:text-xs">{label}</span>
-                  </div>
-                </div>
-              ))}
+          {/* Video Slot — wird durch 2-Min-Video ersetzt */}
+          <div className="mx-auto mt-12 max-w-3xl">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-navy-700/30 bg-navy-800/40">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+                <div className="h-px w-16 bg-gold-500/40" />
+                <p className="text-sm font-medium text-navy-300">
+                  Ihr Betriebsablauf — vom Eingang bis zur 5★-Bewertung.
+                </p>
+                <div className="h-px w-16 bg-gold-500/40" />
+              </div>
             </div>
           </div>
         </div>
@@ -102,7 +98,7 @@ export default function LiveErlebenPage() {
             {([
               { num: "1", title: "Sie melden sich", desc: "Firma, Telefon, Region." },
               { num: "2", title: "Wir richten ein", desc: "Persönlich. In 48 Stunden." },
-              { num: "3", title: "Sie testen", desc: "14 Tage. Kein Vertrag." },
+              { num: "3", title: "Sie erleben es", desc: "Ihr Betrieb. Ihr Ablauf. Monatlich kündbar." },
             ] as const).map((s) => (
               <div key={s.num} className="rounded-xl border border-navy-700/40 bg-navy-800/30 p-5 text-center">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gold-500 text-sm font-bold text-navy-950">

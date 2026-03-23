@@ -27,16 +27,15 @@ const TIERS = [
     name: "Standard",
     price: "CHF 299",
     target: "Für Betriebe bis 5 Mitarbeiter",
-    cases: "120 Fälle pro Monat inklusive",
-    overage: "Danach CHF 1.50 pro Fall",
+    cases: "100 Fälle im Monat inklusive",
     highlight: false,
     features: [
-      "Komplettes Leitsystem für Ihren Betrieb",
-      "Telefonassistentin — rund um die Uhr, mehrsprachig",
+      "Ihr Leitsystem — persönlich eingerichtet",
+      "Professionelle Anrufannahme, rund um die Uhr",
       "Online-Meldungsformular auf Ihrer Website",
       "Automatische Rückmeldung an Ihre Kunden",
-      "Strukturierte Fallübersicht mit Terminplanung",
-      "Bewertungsanfragen nach erledigtem Einsatz",
+      "Strukturierter Überblick mit Terminplanung",
+      "Bewertungen nach erledigtem Einsatz anstoßen",
       "Persönliche Einrichtung inklusive",
     ],
   },
@@ -44,8 +43,7 @@ const TIERS = [
     name: "Professional",
     price: "CHF 499",
     target: "Für Betriebe mit 6–15 Mitarbeitern",
-    cases: "250 Fälle pro Monat inklusive",
-    overage: "Danach CHF 1.00 pro Fall",
+    cases: "200 Fälle im Monat inklusive",
     highlight: true,
     features: [
       "Alles aus Standard",
@@ -56,10 +54,9 @@ const TIERS = [
   },
   {
     name: "Enterprise",
-    price: "Individuell",
+    price: "ab CHF 799",
     target: "Für grössere Betriebe oder besondere Anforderungen",
     cases: "Individuelles Fallvolumen",
-    overage: "Individuelle Konditionen",
     highlight: false,
     features: [
       "Alles aus Professional",
@@ -111,13 +108,15 @@ export default function PricingPage() {
                 </p>
                 <p className="mt-4">
                   <span className="text-4xl font-bold text-navy-900">{tier.price}</span>
-                  {tier.price !== "Individuell" && (
+                  {!tier.price.startsWith("ab") && tier.price !== "Individuell" && (
+                    <span className="ml-1 text-base text-navy-400">/ Monat</span>
+                  )}
+                  {tier.price.startsWith("ab") && (
                     <span className="ml-1 text-base text-navy-400">/ Monat</span>
                   )}
                 </p>
                 <p className="mt-1 text-sm text-navy-900/70">{tier.target}</p>
                 <p className="mt-1 text-xs text-navy-400">{tier.cases}</p>
-                <p className="text-xs text-navy-400">{tier.overage}</p>
 
                 <ul className="mt-6 space-y-3">
                   {tier.features.map((f) => (
@@ -155,9 +154,8 @@ export default function PricingPage() {
             Persönlich eingerichtet. In einer Woche.
           </h2>
           <p className="mt-4 text-base leading-relaxed text-navy-400">
-            Kein Self-Service, kein IT-Projekt. Wir richten das Leitsystem
-            gemeinsam für Ihren Betrieb ein — Website, Telefonassistentin und
-            Leitstand. Persönlich und inklusive.
+            Kein Self-Service, kein IT-Projekt. Ihr Leitsystem wird
+            persönlich für Ihren Betrieb eingerichtet — inklusive.
           </p>
         </div>
       </section>
@@ -172,12 +170,8 @@ export default function PricingPage() {
           <div className="mt-10 divide-y divide-navy-200/60">
             {[
               {
-                q: "Was passiert, wenn ich mehr Fälle habe als im Paket enthalten?",
-                a: "Jeder weitere Fall kostet CHF 1.50 (Standard) bzw. CHF 1.00 (Professional). Transparent und jederzeit im Leitstand sichtbar.",
-              },
-              {
                 q: "Wann brauche ich Professional?",
-                a: "Ab 6 Mitarbeitern oder wenn Ihr Betrieb mehr als 120 Fälle pro Monat erwartet. Betriebe mit Notdienst oder hoher Serviceintensität empfehlen wir grundsätzlich Professional.",
+                a: "Ab 6 Mitarbeitern oder wenn Ihr Betrieb mehr als 100 Fälle pro Monat erwartet. Betriebe mit Notdienst oder hoher Serviceintensität empfehlen wir grundsätzlich Professional.",
               },
               {
                 q: "Gibt es eine Mindestlaufzeit?",
@@ -185,7 +179,7 @@ export default function PricingPage() {
               },
               {
                 q: "Was kostet die Einrichtung?",
-                a: "Nichts. Die persönliche Einrichtung ist inklusive.",
+                a: "Nichts. Ihr Leitsystem wird persönlich für Ihren Betrieb eingerichtet — inklusive.",
               },
               {
                 q: "Kann ich später wechseln?",
@@ -219,10 +213,10 @@ export default function PricingPage() {
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Bereit? Wir richten alles für Sie ein.
+              Bereit? Ihr Leitsystem wird persönlich eingerichtet.
             </h2>
             <p className="mt-4 text-lg text-navy-300">
-              Sagen Sie uns, wer Sie sind — wir richten das Leitsystem persönlich
+              Sagen Sie uns, wer Sie sind — und wir richten alles
               für Ihren Betrieb ein.
             </p>
           </div>

@@ -36,13 +36,13 @@ export default function HomePage() {
             <h1 className="mt-6 text-[2rem] font-bold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]">
               Das Leitsystem für Ihren Betrieb —{" "}
               <span className="text-gold-400">
-                vom ersten Kontakt bis zur Bewertung.
+                vom ersten Kontakt bis zur 5★-Bewertung.
               </span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-navy-300 sm:text-lg">
-              Jede Anfrage wird erfasst, Ihr Kunde bekommt Rückmeldung —
-              und Sie behalten den Überblick.
+              Jede Anfrage wird erfasst. Ihre Kunden bekommen Rückmeldung.
+              Und im Betrieb bleibt nichts liegen.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -73,41 +73,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual — Prozessfluss */}
-          <div className="mx-auto mt-16 max-w-3xl" aria-hidden="true">
-            <div className="flex items-center justify-between gap-2 px-2 sm:gap-4 sm:px-8">
-              {([
-                { icon: "phone", label: "Kontakt" },
-                { icon: "check", label: "Bestätigung" },
-                { icon: "clipboard", label: "Fall" },
-                { icon: "star", label: "Bewertung" },
-              ] as const).map((step, i) => (
-                <div key={step.label} className="flex items-center gap-2 sm:gap-4">
-                  {i > 0 && <div className="hidden h-px w-6 bg-gold-500/30 sm:block" />}
-                  {i > 0 && (
-                    <svg className="h-3 w-3 shrink-0 text-gold-500/40 sm:hidden" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                  )}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`flow-step-${i} flex h-12 w-12 items-center justify-center rounded-xl bg-navy-800 text-gold-400 sm:h-14 sm:w-14`}>
-                      {step.icon === "phone" && (
-                        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" /></svg>
-                      )}
-                      {step.icon === "check" && (
-                        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      )}
-                      {step.icon === "clipboard" && (
-                        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" /></svg>
-                      )}
-                      {step.icon === "star" && (
-                        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
-                      )}
-                    </div>
-                    <span className="text-[11px] font-medium text-navy-400 sm:text-xs">{step.label}</span>
-                  </div>
-                </div>
-              ))}
+          {/* Hero Visual — Video/Motion Slot (wird durch 12-15s Loop ersetzt) */}
+          <div className="mx-auto mt-16 max-w-3xl">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-navy-700/30 bg-navy-800/40">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+                <div className="h-px w-16 bg-gold-500/40" />
+                <p className="text-sm font-medium text-navy-300">
+                  Vom Eingang bis zum Abschluss — Ihr Betriebsablauf im Überblick.
+                </p>
+                <div className="h-px w-16 bg-gold-500/40" />
+              </div>
             </div>
           </div>
         </div>
@@ -123,7 +98,7 @@ export default function HomePage() {
             wenn man am Schreibtisch sitzt.
           </p>
           <p className="mt-6 text-base leading-relaxed text-navy-400">
-            FlowSight sorgt dafür, dass trotzdem nichts liegen bleibt —
+            Ihr Leitsystem sorgt dafür, dass trotzdem nichts liegen bleibt —
             und Ihre Kunden zuverlässig Rückmeldung bekommen.
           </p>
         </div>
@@ -134,7 +109,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              So läuft Kundenkontakt mit FlowSight.
+              So läuft Kundenkontakt mit Ihrem Leitsystem.
             </h2>
           </div>
 
@@ -143,22 +118,22 @@ export default function HomePage() {
               {
                 num: "1",
                 title: "Anfrage geht ein",
-                text: "Per Anruf an Ihre Telefonassistentin oder über das Online-Formular — rund um die Uhr, auch am Wochenende.",
+                text: "Eine Anfrage kommt rein — per Telefon oder online. Sie wird sofort sauber erfasst und in den richtigen Ablauf gebracht.",
               },
               {
                 num: "2",
                 title: "Ihr Kunde bekommt Rückmeldung",
-                text: "Sofortige Bestätigung per SMS — in Ihrem Firmennamen. Der Kunde weiss, dass seine Meldung angekommen ist.",
+                text: "Ihr Kunde erhält direkt eine Rückmeldung in Ihrem Namen. Er weiss: Seine Anfrage ist angekommen und wird weitergeführt.",
               },
               {
                 num: "3",
-                title: "Sie behalten den Überblick",
-                text: "Jeder Fall ist sofort da — mit Kategorie, Ort und Dringlichkeit. Sie planen Termine, weisen Mitarbeiter zu und dokumentieren den Einsatz.",
+                title: "Der Fall ist sauber da",
+                text: "Alle Informationen liegen als klarer Fall vor. So können Sie den nächsten Schritt sauber planen und im Betrieb nichts verlieren.",
               },
               {
                 num: "4",
-                title: "Auftrag erledigt — Bewertung gesammelt",
-                text: "Nach dem Einsatz laden Sie zufriedene Kunden gezielt zur Bewertung ein — einfach und direkt aus dem System.",
+                title: "Sauberer Abschluss",
+                text: "Nach dem Einsatz können Sie zufriedene Kunden gezielt zur 5★-Bewertung einladen. So wird der Ablauf auch nach aussen sauber abgeschlossen.",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-4">
@@ -179,15 +154,11 @@ export default function HomePage() {
       <section className="bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-8 text-center shadow-sm">
-            <p className="text-sm font-medium uppercase tracking-wider text-navy-400">Standard</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
               Ab CHF 299 / Monat.
             </h2>
-            <p className="mt-1 text-base font-medium text-gold-600">
-              Professional ab CHF 499.
-            </p>
             <p className="mt-3 text-sm text-navy-400">
-              Monatlich kündbar. Transparent.
+              Monatlich kündbar. Absolut transparent. Keine versteckten Kosten.
             </p>
             <Link
               href="/pricing"
