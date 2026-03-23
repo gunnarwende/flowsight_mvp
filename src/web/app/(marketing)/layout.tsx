@@ -37,7 +37,7 @@ export default function MarketingLayout({
               href="/live-erleben"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
-              Live erleben
+              Video sehen
             </Link>
             <a
               href={`tel:${SITE.phoneRaw}`}

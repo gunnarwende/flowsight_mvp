@@ -146,7 +146,7 @@ export default function PricingPage() {
       <section className="bg-warm-white py-16 lg:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-navy-900">
-            Persönlich eingerichtet. In einer Woche.
+            Persönlich eingerichtet.
           </h2>
           <p className="mt-4 text-base leading-relaxed text-navy-400">
             Kein Self-Service, kein IT-Projekt. Ihr Leitsystem wird
