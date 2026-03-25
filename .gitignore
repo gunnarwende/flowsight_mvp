@@ -46,6 +46,18 @@ demo-kit/microsip/
 # Founder working documents (internal, not repo content)
 BAUPLAN.md
 
+# Video production binaries (large files, stored locally only)
+docs/redesign/redesign_website/production/
+*.mp4
+*.mp3
+*.wav
+*.webm
+*.prproj
+*.pproj
+
+# Exception: deployed website videos
+!src/web/public/videos/*.mp4
+
 # Chain reports / debug artifacts (PII, audio, raw API responses)
 tmp/
 

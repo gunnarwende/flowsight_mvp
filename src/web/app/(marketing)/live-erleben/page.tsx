@@ -22,16 +22,15 @@ export default function LiveErlebenPage() {
             </p>
           </div>
 
-          {/* Video Slot — wird durch 2-Min-Video ersetzt */}
+          {/* Live-erleben Video */}
           <div className="mx-auto mt-12 max-w-3xl">
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-navy-700/30 bg-navy-800/40">
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-                <div className="h-px w-16 bg-gold-500/40" />
-                <p className="text-sm font-medium text-navy-300">
-                  Ihr Betriebsablauf — vom Eingang bis zur 5★-Bewertung.
-                </p>
-                <div className="h-px w-16 bg-gold-500/40" />
-              </div>
+              <video
+                controls
+                playsInline
+                className="h-full w-full object-cover"
+                src="/videos/live_erleben_v5.mp4"
+              />
             </div>
           </div>
         </div>

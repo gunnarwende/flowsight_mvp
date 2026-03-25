@@ -2,37 +2,31 @@
 
 **Owner:** Founder
 **Last updated:** 2026-02-25
-**Status:** Risk documented (Free plan = no backups)
+**Status:** Pro plan active — daily backups enabled (since ~March 2026)
 
 ## Current State
 
 | Item | Value |
 |------|-------|
-| Plan | Free |
-| Automatic backups | No (Free plan has no project backups) |
-| Scheduled backups | Not available (Pro required) |
-| PITR (Point-in-Time Recovery) | Not available (Pro add-on, starts $100/mo) |
-| Restore path | Project → Database → Backups → "Restore to new project" (BETA) — requires Pro + physical backups enabled |
-
-**Evidence:** Founder captured 4 screenshots (billing, scheduled backups, PITR restriction, restore restriction). Not in repo — project/org identifiers cropped.
+| Plan | **Pro ($25/mo)** |
+| Automatic backups | **Yes — daily backups** |
+| Scheduled backups | Available (Pro feature) |
+| PITR (Point-in-Time Recovery) | Not enabled (Pro add-on, $100/mo — not needed yet) |
+| Restore path | Project → Database → Backups → Restore to new project |
 
 ## Risk Assessment
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
-| Data loss (DB corruption/accidental delete) | HIGH — all cases, tenants, numbers lost | LOW (Supabase infrastructure is reliable) | Upgrade to Pro when revenue supports it |
+| Data loss (DB corruption/accidental delete) | HIGH — all cases, tenants, numbers lost | LOW (daily backups + Supabase infrastructure) | Daily backups cover most scenarios. Enable PITR if sub-day recovery needed. |
 | No rollback for bad migration | MEDIUM — manual reverse migration required | MEDIUM (migrations are manual + reviewed) | Always write reverse migration SQL before applying |
 
-## Upgrade Triggers
+## Next Upgrade Triggers
 
-Upgrade to Supabase Pro when ANY of these:
-- ≥80% of any Free plan quota (storage, API requests, edge functions)
-- Backups/PITR needed (customer #2 or compliance requirement)
-- Revenue supports $25/mo base cost
-
-## Interim Workaround (pre-Pro)
-
-For critical tables (tenants, tenant_numbers), Founder can manually export via Supabase Dashboard → Table Editor → Export CSV. Not automated, not a backup strategy — just a safety net.
+Enable PITR when ANY of these:
+- Sub-day recovery precision needed (high write volume)
+- Compliance requirement demands point-in-time restore
+- ≥80% of any Pro plan quota (storage, API requests)
 
 ## Cross-References
 

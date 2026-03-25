@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-23 (Website Final Polish: 5★ Hero, Nav Kontakt, Schweizer Flagge, DSGVO-Korrektur. Lisa DE+INTL Knowledge Update: Pricing Deflect, 12 Blind Spots. Pricing auf Website: 100/200 Fälle, Overage intern.)
+> Letzte Aktualisierung: 2026-03-25 (Ferrari-Prototyp KOMPLETT: 10 High-End-Screens für Website-Videos. Firma "Gebäudetechnik GmbH", Inter Font, professionelles Dark Theme. Alle Founder-approved. Video-Assembly als nächstes.)
 
 ---
 
@@ -191,8 +191,8 @@ Live auf flowsight.ch/pricing.
 
 | Layer | Technologie | Plan |
 |-------|------------|------|
-| Frontend + API | Next.js App Router (Vercel Frankfurt) | Hobby (Free) |
-| Datenbank | Supabase (PostgreSQL + Storage + Auth) | Free |
+| Frontend + API | Next.js App Router (Vercel Frankfurt) | Pro ($20/mo) |
+| Datenbank | Supabase (PostgreSQL + Storage + Auth) | Pro ($25/mo) |
 | Voice | Retell AI → Twilio SIP → Peoplefone | Pay-as-you-go |
 | Email | Resend | Free (100/Tag) |
 | Monitoring | Sentry | Free |
@@ -243,7 +243,7 @@ NACH ERLEDIGUNG:
 
 | Kunde | Status | Module | URL |
 |-------|--------|--------|-----|
-| **Dörfler AG** (Oberrieden) | Go-Live PARTIAL (3/4 PASS) | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
+| **Dörfler AG** (Oberrieden) | Website LIVE | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
 | **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
 | **Jul. Weinberger AG** (Thalwil) | **GTM Goldstandard** | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/weinberger-ag |
 | **Walter Leuthold** (Oberrieden) | Website LIVE | wizard | flowsight.ch/kunden/walter-leuthold |
@@ -251,11 +251,10 @@ NACH ERLEDIGUNG:
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
 | **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
 
-### Dörfler AG — Erster Referenzkunde
+### Dörfler AG — Bestandskunde
 - Sanitär/Heizung seit 1926, Oberrieden ZH
-- 3/4 Module getestet und bestanden
-- Reviews noch blockiert (Google Review Link fehlt, nicht Go-Live-kritisch)
-- Founder muss Go/No-Go Entscheid treffen
+- Website live mit Voice, Wizard, Ops, Reviews Modulen
+- Wird als einer von vielen Prospects in der breiten Outreach-Strategie adressiert
 
 ### Brunner Haustechnik AG — Demo-Tenant
 - Fiktiver Betrieb für Sales-Demos (Thalwil ZH)
