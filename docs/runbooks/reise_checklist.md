@@ -160,13 +160,13 @@ gh workflow run lifecycle-tick.yml
 
 | Service | Aktuell | Empfehlung | Kosten | Grund |
 |---------|---------|------------|--------|-------|
-| **Supabase** | Free | **Pro** | $25/Mo | Automatische Backups. Ohne: Datenverlust bei DB-Corruption nicht recoverable. |
-| **Vercel** | Hobby | **Pro** | $20/Mo | 30s Function Timeout (statt 10s), bessere Analytics. Verhindert Timeout bei langsamen Email-Sends. |
+| **Supabase** | **Pro** | ✅ Bereits aktiv | $25/Mo | Automatische Backups aktiv. |
+| **Vercel** | **Pro** | ✅ Bereits aktiv | $20/Mo | 30s Function Timeout, bessere Analytics. |
 | Resend | Free (100/Tag) | Free reicht | $0 | 100/Tag reicht für aktuelle Last (~15-20/Tag). |
 | Twilio | Pay-as-you-go | Reicht | ~$5/Mo | Voice + SMS funktioniert. |
 | Retell | Pay-as-you-go | Reicht | ~$10/Mo | Voice Agent läuft stabil. |
 
-**Priorität:** Supabase Pro > Vercel Pro. Supabase Pro eliminiert das Backup-Risiko komplett.
+**Status:** Beide Pro-Pläne sind aktiv. Backup-Risiko eliminiert.
 
 ---
 

@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-03-23 (Website Final Polish + Lisa Knowledge Update)
+**Datum:** 2026-03-25 (Ferrari-Prototyp KOMPLETT — 10 Screens für Website-Videos)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?
@@ -12,8 +12,8 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 | Layer | Technologie | Plan |
 |-------|------------|------|
-| Frontend + API | Next.js App Router (Vercel) | Hobby (Free) |
-| Datenbank | Supabase (PostgreSQL + Storage + Auth) | Free |
+| Frontend + API | Next.js App Router (Vercel) | Pro ($20/mo) |
+| Datenbank | Supabase (PostgreSQL + Storage + Auth) | Pro ($25/mo) |
 | Voice | Retell AI (Dual-Agent DE/INTL) → Twilio SIP → Peoplefone | Pay-as-you-go |
 | Email | Resend (Transaktional, Domain: send.flowsight.ch) | Free |
 | SMS | eCall.ch Swiss Gateway (Business Account Typ A, CHF 40/Mo + Punkte) | Pay-as-you-go |
@@ -50,7 +50,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 | Kunde | Slug | Module | Status |
 |-------|------|--------|--------|
-| Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | PARTIAL — 3/4 PASS |
+| Dörfler AG (Oberrieden) | doerfler-ag | voice, wizard, ops, reviews | Website LIVE |
 | Brunner Haustechnik AG (Thalwil) | brunner-haustechnik | voice, wizard, ops, reviews, sms | DEMO-Tenant |
 | Walter Leuthold (Oberrieden) | walter-leuthold | wizard | Website LIVE |
 | Orlandini Sanitär (Horgen) | orlandini | wizard | Website LIVE |
@@ -60,6 +60,7 @@ Kernnutzen: Geschwindigkeit + Klarheit. Notfälle sofort als Ticket (Voice), gep
 
 ## Aktueller Stand
 
+- **Ferrari-Prototyp KOMPLETT (25.03.):** Hero v4 abgelehnt (Prototyp-Screens unterirdisch, 3 Testpersonen = fragende Blicke). Kompletter Neuansatz: 10 pixel-perfekte High-End-Screens iterativ mit Founder gebaut. Firma: "Gebäudetechnik GmbH" (generisch, branchenübergreifend). Design: Inter Font, #111827, professionell (Schweizer Präzision). Gold nur für Sterne/Belohnung. Story: Thomas Bühler Rohrbruch durchgezogen (P1→P5→P6→P7). Alle 10 Screens Founder-approved. Voiceover-Sync: 0 Lücken. **Nächster Schritt:** Video-Assembly (Hero v5 + Live-erleben) mit Ferrari-Screens + AI-Szenen + Voiceover. Dokumentiert in `docs/redesign/redesign_website/Website_Video.md` (v4.0).
 - **Website Final Polish + Lisa Update (23.03.):** PRs #358-#362. Founder-Feedback Round 3: Hero "5★ Bewertung" (Leerzeichen statt Bindestrich), Subline Zeilenumbruch-Kontrolle, Pricing-Teaser ohne Punkt, "Keine Daten ausserhalb Europas"→"100% DSGVO-konform", "In einer Woche" entfernt, Schweizer Flagge SVG bei Trust-Badge. Nav: "Video sehen" (statt doppelt "Live erleben") + neuer "Kontakt" Reiter (→ /live-erleben#formular). Hero Laptop: 3 statt 4 Zeilen. Mobile: strukturierter Umbruch (weiss oben, gold unten). **Lisa DE+INTL komplett aktualisiert:** Altes Pricing (Starter/Alltag/Wachstum 199/299/399) ersetzt durch Deflect + "ab 299". 4-Schritt-Prozess statt 6-Modul-Liste. 12 Blind Spots abgedeckt (Wettbewerb, Telefon-Integration, Founder-Credibility, Notfall, Eager-Buyer, Sprach-Grenzen, Callback-Timing, Saisonalität, Video-Awareness). Retell published.
 - **Grossumbau (22.03.):** PRs #348-#352. Website-Redesign: Neue Hero ("Das Leitsystem für Ihren Betrieb — vom ersten Kontakt bis zur Bewertung."), 8-Section-Struktur, Social Proof, "Handwerksbetriebe" statt nur Sanitär. Nav "Live erleben" (statt "Testen"), /live-erleben Seite, /testen→301 Redirect. HeroVisual: 3-Element-Kette (Anruf → SMS mit Firmenname → Leitstand). Kein "Lisa"/"5-Sterne"/"Dashboard" in kundengerichtetem Copy. Pipeline: pain_type + outreach_outcome Spalten live. Konsistenz: "Dashboard"→"Leitstand", "KI-Assistentin"→"Telefonassistentin" in Trial-Emails. Voice Agent: 4-Modi-Redesign (Video-Rückruf, Kaltanruf, Testnummer, Support NEU), retell_sync published. Knowledge Base aligned mit Website. Video-Drehbuch: 2-Min generisches Produktvideo (7 Szenen). Zielarchitektur v2.2 (D37-D40).
 - **Voice Session (21.03.):** PRs #336-#345. Laura (ElevenLabs) als neue DE-Stimme auf allen 4 Intake-Agents (Juniper bleibt INTL). Partial Cases Fix: Voice-Fälle gehen nicht mehr verloren bei fehlenden Feldern (68 historische Verluste verhindert). Urgency-Normalisierung (Aliases: "Notfall"→"notfall", "emergency"→"notfall"). SMS-Sender jetzt alphanumerisch (Tenant-Markenname statt Nummer → weniger Spam). E-Mail-Button "Fall in der Leitzentrale öffnen". Kalender Belegt/Frei Balken entfernt (cleaner). PWA Deep-Links über Trampoline-Page.
@@ -144,9 +145,9 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 | `.github/workflows/` | CI (lint+build), Telegram, lifecycle-tick (daily 07:00), morning-report (daily 07:30) |
 | `docs/archive/` | Wave Log, alte Dokumente, Agent-Framework, Templates, Architecture Audits |
 
-## Hobby-Plan Constraints
+## Plan-Übersicht & Constraints
 
-- Vercel: 1 console.log pro Invocation, 1h Log Retention
-- Supabase Free: keine Backups, 500 MB Storage
+- Vercel Pro ($20/mo): 30s Function Timeout, 1 TB bandwidth, bessere Analytics
+- Supabase Pro ($25/mo): Daily Backups, 8 GB Storage, unlimited API requests
 - Resend Free: 100 emails/day, 1 Domain
 - Upgrade-Trigger: `docs/runbooks/cost_triggers.md`

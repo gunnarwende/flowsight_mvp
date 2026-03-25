@@ -52,7 +52,7 @@ Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
 
 | # | Firma | Ort | Module | MRR (CHF) | Go-Live |
 |---|-------|-----|--------|-----------|---------|
-| 1 | Dörfler AG | Oberrieden | Voice, Wizard, Ops, Reviews | — | PENDING |
+| 1 | Dörfler AG | Oberrieden | Voice, Wizard, Ops, Reviews | — | Website LIVE |
 
 ---
 
