@@ -87,17 +87,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual — Video Loop */}
+          {/* Hero Visual — Video/Motion Slot (Video in Produktion) */}
           <div className="mx-auto mt-16 max-w-3xl">
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-navy-700/30 bg-navy-800/40">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-full w-full object-cover"
-                src="/videos/hero_v5.mp4"
-              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+                <div className="h-px w-16 bg-gold-500/40" />
+                <p className="text-sm font-medium text-navy-300">
+                  Vom Eingang bis zum Abschluss — Ihr Betriebsablauf im Überblick.
+                </p>
+                <div className="h-px w-16 bg-gold-500/40" />
+              </div>
             </div>
           </div>
         </div>
