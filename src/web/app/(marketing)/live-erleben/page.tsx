@@ -24,24 +24,37 @@ export default function LiveErlebenPage() {
           </div>
 
           {/* Leitzentrale Screen + Voice */}
-          <div className="mx-auto mt-12 max-w-3xl">
-            <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50">
-              <div className="relative">
-                <img
-                  src="/images/proof/leitzentrale.png"
-                  alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
-                  className="w-full"
-                  loading="eager"
-                />
+          <div className="mx-auto mt-12 max-w-2xl">
+            <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start sm:gap-10">
+              {/* Leitzentrale Screenshot — Phone-sized */}
+              <div className="w-48 shrink-0 sm:w-56">
+                <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50 shadow-2xl shadow-navy-950/50">
+                  <img
+                    src="/images/proof/leitzentrale.png"
+                    alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
+                    className="w-full"
+                    loading="eager"
+                  />
+                </div>
               </div>
-              <div className="flex flex-col items-center px-6 py-8 sm:py-10">
-                <AudioPlayer
-                  src="/audio/voice_lang.mp3"
-                  label="Live erleben"
-                  duration="2 Min."
-                  variant="hero"
-                />
-                <p className="mt-5 text-center text-xs italic text-navy-500">
+
+              {/* Voice + Text */}
+              <div className="flex flex-col items-center text-center sm:items-start sm:pt-6 sm:text-left">
+                <p className="text-base font-medium leading-relaxed text-navy-300 sm:text-lg">
+                  Vom Eingang bis zum Abschluss —{" "}
+                  <span className="text-white">Ihr Betriebsablauf im Überblick.</span>
+                </p>
+
+                <div className="mt-6">
+                  <AudioPlayer
+                    src="/audio/voice_lang.mp3"
+                    label="Live erleben"
+                    duration="2 Min."
+                    variant="hero"
+                  />
+                </div>
+
+                <p className="mt-4 text-xs italic text-navy-500">
                   Video in Vorbereitung
                 </p>
               </div>
