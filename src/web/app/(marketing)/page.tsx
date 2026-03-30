@@ -165,13 +165,13 @@ export default function HomePage() {
                 num: "3",
                 title: "Der Fall ist geführt",
                 text: "Kategorie, Dringlichkeit, Termin, Zuweisung — alles strukturiert. Ihr Team weiss, was ansteht. Kein Suchen, kein Rückfragen.",
-                accent: "bg-gold-500",
+                accent: "bg-navy-900",
               },
               {
                 num: "4",
                 title: "Gute Arbeit wird sichtbar",
                 text: "Nach dem Einsatz können Sie zufriedene Kunden gezielt zur Bewertung einladen — direkt aus dem System, im richtigen Moment.",
-                accent: "bg-gold-500",
+                accent: "bg-navy-900",
               },
             ] as const).map((step) => (
               <div key={step.num} className="flex gap-4">
