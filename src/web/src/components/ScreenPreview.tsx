@@ -21,29 +21,20 @@ export default function ScreenPreview({ src, alt, cropTop, className = "" }: Scr
         className={`group relative block cursor-pointer overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50 shadow-2xl shadow-navy-950/50 transition-transform hover:scale-[1.02] ${className}`}
         aria-label="Bild vergrössern"
       >
-        <div
-          className="relative w-full overflow-hidden"
-          style={cropTop ? { maxHeight: `${cropTop * 100}%` } : undefined}
-        >
-          {cropTop ? (
-            /* Cropped: show top portion, hide rest */
-            <div className="relative" style={{ paddingBottom: `${cropTop * (844 / 390) * 100}%` }}>
-              <img
-                src={src}
-                alt={alt}
-                className="absolute inset-0 h-auto w-full"
-                style={{ maxHeight: "none" }}
-                loading="eager"
-              />
-            </div>
-          ) : (
-            <img src={src} alt={alt} className="w-full" loading="eager" />
-          )}
-        </div>
-
-        {/* Fade-out gradient at bottom when cropped */}
-        {cropTop && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-navy-800/90 to-transparent" />
+        {cropTop ? (
+          /* Cropped: show only top portion via clip-path */
+          <div className="relative overflow-hidden" style={{ aspectRatio: `390 / ${Math.round(844 * cropTop)}` }}>
+            <img
+              src={src}
+              alt={alt}
+              className="absolute left-0 top-0 w-full"
+              loading="eager"
+            />
+            {/* Fade-out gradient at bottom */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-navy-800/90 to-transparent" />
+          </div>
+        ) : (
+          <img src={src} alt={alt} className="w-full" loading="eager" />
         )}
 
         {/* Expand hint */}
