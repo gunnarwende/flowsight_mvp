@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DemoForm } from "@/src/components/DemoForm";
+import AudioPlayer from "@/src/components/AudioPlayer";
 
 export const metadata: Metadata = {
   title: "Live erleben — FlowSight",
@@ -22,15 +23,27 @@ export default function LiveErlebenPage() {
             </p>
           </div>
 
-          {/* Video Slot — Video in Produktion */}
+          {/* Leitzentrale Screen + Voice */}
           <div className="mx-auto mt-12 max-w-3xl">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-navy-700/30 bg-navy-800/40">
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-                <div className="h-px w-16 bg-gold-500/40" />
-                <p className="text-sm font-medium text-navy-300">
-                  Ihr Betriebsablauf — vom Eingang bis zur 5★-Bewertung.
+            <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50">
+              <div className="relative">
+                <img
+                  src="/images/proof/leitzentrale.png"
+                  alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
+                  className="w-full"
+                  loading="eager"
+                />
+              </div>
+              <div className="flex flex-col items-center px-6 py-8 sm:py-10">
+                <AudioPlayer
+                  src="/audio/voice_lang.mp3"
+                  label="Live erleben"
+                  duration="2 Min."
+                  variant="hero"
+                />
+                <p className="mt-5 text-center text-xs italic text-navy-500">
+                  Video in Vorbereitung
                 </p>
-                <div className="h-px w-16 bg-gold-500/40" />
               </div>
             </div>
           </div>
