@@ -135,8 +135,58 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── AKT 3 — Funktionen-Anker ────────────── */}
-      <div id="funktionen" className="scroll-mt-20" />
+      {/* ── AKT 3 — BEWEIS (Ablauf) ────────────── */}
+      <section id="funktionen" className="scroll-mt-20 bg-navy-950 py-20 sm:py-28">
+        <div className="mx-auto max-w-5xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Vom Eingang bis zur Bewertung — ein Ablauf.
+            </h2>
+            <p className="mt-4 text-base text-navy-400">
+              Was in den meisten Betrieben an einzelnen Personen hängt, wird hier zu einem geführten System.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-16 grid max-w-4xl gap-px overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-700/10 sm:grid-cols-2">
+            {([
+              {
+                num: "1",
+                title: "Eingang wird gehalten",
+                text: "Ob per Telefon, über Ihre Website oder direkt erfasst — jede Meldung landet sofort an einem Ort. Nichts bleibt im Kopf hängen.",
+                accent: "text-blue-400",
+              },
+              {
+                num: "2",
+                title: "Ihr Kunde weiss Bescheid",
+                text: "Ihr Kunde erhält Rückmeldung in Ihrem Namen. Er kann seine Angaben prüfen, korrigieren und Fotos ergänzen.",
+                accent: "text-blue-300",
+              },
+              {
+                num: "3",
+                title: "Der Fall ist geführt",
+                text: "Kategorie, Dringlichkeit, Termin, Zuweisung — alles strukturiert. Ihr Team weiss, was ansteht. Kein Suchen, kein Rückfragen.",
+                accent: "text-gold-400",
+              },
+              {
+                num: "4",
+                title: "Gute Arbeit wird sichtbar",
+                text: "Nach dem Einsatz können Sie zufriedene Kunden gezielt zur Bewertung einladen — direkt aus dem System, im richtigen Moment.",
+                accent: "text-emerald-400",
+              },
+            ] as const).map((step) => (
+              <div key={step.num} className="bg-navy-900/80 p-8 sm:p-10">
+                <div className="mb-4 flex items-center gap-3">
+                  <span className={`text-2xl font-bold tabular-nums ${step.accent}`}>
+                    {step.num}
+                  </span>
+                  <h3 className="text-base font-semibold text-white">{step.title}</h3>
+                </div>
+                <p className="text-sm leading-relaxed text-navy-300">{step.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── AKT 4 — SICHERHEIT (Pricing + Trust) ──── */}
       <section className="bg-navy-50 py-20 sm:py-28">
