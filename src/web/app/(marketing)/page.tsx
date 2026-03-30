@@ -101,23 +101,16 @@ export default function HomePage() {
                 />
               </div>
 
-              {/* Voice + Text */}
-              <div className="flex flex-col items-center text-center sm:items-start sm:pt-4 sm:text-left">
-                <p className="text-base font-medium leading-relaxed text-navy-300 sm:text-lg">
-                  Vom Eingang bis zum Abschluss —{" "}
-                  <span className="text-white">Ihr Betriebsablauf im Überblick.</span>
-                </p>
+              {/* Voice + Video-Hinweis */}
+              <div className="flex flex-col items-center text-center sm:items-start sm:pt-8 sm:text-left">
+                <AudioPlayer
+                  src="/audio/voice_lang.mp3"
+                  label="Live erleben"
+                  duration="2 Min."
+                  variant="hero"
+                />
 
-                <div className="mt-6">
-                  <AudioPlayer
-                    src="/audio/voice_lang.mp3"
-                    label="Live erleben"
-                    duration="2 Min."
-                    variant="hero"
-                  />
-                </div>
-
-                <p className="mt-4 text-xs italic text-navy-400">
+                <p className="mt-5 text-xs italic text-navy-400">
                   Video in Vorbereitung
                 </p>
               </div>
