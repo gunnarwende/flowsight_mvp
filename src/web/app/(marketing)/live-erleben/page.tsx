@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DemoForm } from "@/src/components/DemoForm";
 import AudioPlayer from "@/src/components/AudioPlayer";
+import ScreenPreview from "@/src/components/ScreenPreview";
 
 export const metadata: Metadata = {
   title: "Live erleben — FlowSight",
@@ -26,16 +27,12 @@ export default function LiveErlebenPage() {
           {/* Leitzentrale Screen + Voice */}
           <div className="mx-auto mt-12 max-w-2xl">
             <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start sm:gap-10">
-              {/* Leitzentrale Screenshot — Phone-sized */}
+              {/* Leitzentrale Screenshot — full, click to enlarge */}
               <div className="w-48 shrink-0 sm:w-56">
-                <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50 shadow-2xl shadow-navy-950/50">
-                  <img
-                    src="/images/proof/leitzentrale.png"
-                    alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
-                    className="w-full"
-                    loading="eager"
-                  />
-                </div>
+                <ScreenPreview
+                  src="/images/proof/leitzentrale.png"
+                  alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
+                />
               </div>
 
               {/* Voice + Text */}
@@ -54,7 +51,7 @@ export default function LiveErlebenPage() {
                   />
                 </div>
 
-                <p className="mt-4 text-xs italic text-navy-500">
+                <p className="mt-4 text-xs italic text-navy-400">
                   Video in Vorbereitung
                 </p>
               </div>
