@@ -88,71 +88,30 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* ── Proof-Block: Leitfall + Kurze Voice ── */}
-          <div className="mx-auto mt-16 max-w-4xl">
-            <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/60 backdrop-blur-sm">
-              <div className="px-6 py-10 sm:px-10 sm:py-12">
+          {/* ── Proof-Block: Leitzentrale Screen + Voice ── */}
+          <div className="mx-auto mt-16 max-w-3xl">
+            <div className="overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-800/50">
+              {/* Leitzentrale Screenshot */}
+              <div className="relative">
+                <img
+                  src="/images/proof/leitzentrale.png"
+                  alt="Leitzentrale — Gebäudetechnik GmbH: 4 neue Fälle, 3 in Arbeit, 15 erledigt, 4.8 Sterne Bewertung. Eva Brunner, Problem vor Ort, Wollishofen."
+                  className="w-full"
+                  loading="eager"
+                />
+              </div>
 
-                {/* 3 Stationen als Screen-Ausschnitte */}
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
-                  {([
-                    {
-                      stage: "Eingang",
-                      desc: "Neue Meldung — Eva Brunner",
-                      detail: "Problem vor Ort · Wollishofen",
-                      dot: "bg-blue-400",
-                      accent: "border-blue-400/20",
-                    },
-                    {
-                      stage: "Geführt",
-                      desc: "Fall erfasst · Termin gesetzt",
-                      detail: "Zugewiesen: M.\u00A0Gerber · 10:30",
-                      dot: "bg-gold-500",
-                      accent: "border-gold-500/20",
-                    },
-                    {
-                      stage: "Abgeschlossen",
-                      desc: "Erledigt · Bewertung erhalten",
-                      detail: "Eva Brunner · ★★★★★",
-                      dot: "bg-emerald-400",
-                      accent: "border-emerald-400/20",
-                    },
-                  ] as const).map((s, i) => (
-                    <div
-                      key={s.stage}
-                      className={`rounded-xl border ${s.accent} bg-navy-900/60 p-5 sm:p-6`}
-                    >
-                      <div className="mb-3 flex items-center gap-2">
-                        <span className={`h-2 w-2 rounded-full ${s.dot}`} />
-                        <span className="text-xs font-semibold uppercase tracking-widest text-navy-400">
-                          {s.stage}
-                        </span>
-                      </div>
-                      <p className="text-sm font-semibold text-white/90">{s.desc}</p>
-                      <p className="mt-1 text-xs text-navy-400">{s.detail}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="my-8 flex items-center gap-4">
-                  <div className="h-px flex-1 bg-navy-700/30" />
-                  <span className="text-xs font-medium text-navy-500">Ein Fall. Ein Ablauf. Ein System.</span>
-                  <div className="h-px flex-1 bg-navy-700/30" />
-                </div>
-
-                {/* Audio Player + Video-Hinweis */}
-                <div className="flex flex-col items-center">
-                  <AudioPlayer
-                    src="/audio/voice_kurz.mp3"
-                    label="Anhören"
-                    duration="30 Sek."
-                    variant="hero"
-                  />
-                  <p className="mt-6 text-xs text-navy-500/60">
-                    Video in Vorbereitung
-                  </p>
-                </div>
+              {/* Audio Player + Video-Hinweis */}
+              <div className="flex flex-col items-center px-6 py-8 sm:py-10">
+                <AudioPlayer
+                  src="/audio/voice_lang.mp3"
+                  label="Live erleben"
+                  duration="2 Min."
+                  variant="hero"
+                />
+                <p className="mt-5 text-center text-xs italic text-navy-500">
+                  Video in Vorbereitung
+                </p>
               </div>
             </div>
           </div>
@@ -175,58 +134,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── AKT 3 — BEWEIS (Live erleben) ────────────── */}
-      <section id="funktionen" className="scroll-mt-20 bg-navy-950 py-20 sm:py-28">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="mx-auto mb-6 h-px w-12 bg-gold-500/40" />
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              So bleibt nichts mehr liegen.
-            </h2>
-            <p className="mt-4 text-base text-navy-400">
-              Frau Brunner meldet ein Problem. Ihr Leitsystem hält den Moment fest,
-              macht daraus einen geführten Einsatz und schliesst den Ablauf sauber ab.
-            </p>
-          </div>
-
-          {/* Audio Player — Lange Voice */}
-          <div className="mx-auto mt-12 max-w-md">
-            <div className="rounded-2xl border border-navy-700/20 bg-navy-800/40 px-8 py-8">
-              <AudioPlayer
-                src="/audio/voice_lang.mp3"
-                label="Den ganzen Ablauf anhören"
-                duration="2 Min."
-                variant="section"
-              />
-            </div>
-          </div>
-
-          {/* Ablauf-Kette: 6 Stationen */}
-          <div className="mx-auto mt-14 max-w-3xl">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {([
-                { label: "Eingang", sub: "wird gehalten", dot: "bg-blue-400" },
-                { label: "Rückmeldung", sub: "Kunde weiss Bescheid", dot: "bg-blue-300" },
-                { label: "Geführter Fall", sub: "Priorität · Kontext", dot: "bg-gold-500" },
-                { label: "Einsatz", sub: "vorbereitet · zugewiesen", dot: "bg-gold-400" },
-                { label: "Abschluss", sub: "dokumentiert", dot: "bg-emerald-400" },
-                { label: "Bewertung", sub: "5★ Aussenwirkung", dot: "bg-emerald-300" },
-              ] as const).map((s) => (
-                <div key={s.label} className="flex flex-col items-center gap-2 rounded-xl bg-navy-800/30 px-3 py-4 text-center">
-                  <span className={`h-2.5 w-2.5 rounded-full ${s.dot}`} />
-                  <span className="text-xs font-semibold text-white/80">{s.label}</span>
-                  <span className="text-[11px] leading-tight text-navy-500">{s.sub}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Dezenter Video-Hinweis */}
-          <p className="mt-10 text-center text-xs text-navy-600">
-            Ausführliches Produktvideo folgt in Kürze.
-          </p>
-        </div>
-      </section>
+      {/* ── AKT 3 — Funktionen-Anker ────────────── */}
+      <div id="funktionen" className="scroll-mt-20" />
 
       {/* ── AKT 4 — SICHERHEIT (Pricing + Trust) ──── */}
       <section className="bg-navy-50 py-20 sm:py-28">
