@@ -104,9 +104,9 @@ export default function HomePage() {
               {/* Voice + Video-Hinweis */}
               <div className="flex flex-col items-center text-center sm:items-start sm:pt-8 sm:text-left">
                 <AudioPlayer
-                  src="/audio/voice_lang.mp3"
-                  label="Live erleben"
-                  duration="2 Min."
+                  src="/audio/voice_kurz.mp3"
+                  label="Kurz erklärt"
+                  duration="30 Sek."
                   variant="hero"
                 />
 
@@ -136,10 +136,10 @@ export default function HomePage() {
       </section>
 
       {/* ── AKT 3 — BEWEIS (Ablauf) ────────────── */}
-      <section id="funktionen" className="scroll-mt-20 bg-navy-950 py-20 sm:py-28">
+      <section id="funktionen" className="scroll-mt-20 bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
               Vom Eingang bis zur Bewertung — ein Ablauf.
             </h2>
             <p className="mt-4 text-base text-navy-400">
@@ -147,41 +147,41 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-16 grid max-w-4xl gap-px overflow-hidden rounded-2xl border border-navy-700/20 bg-navy-700/10 sm:grid-cols-2">
+          <div className="mx-auto mt-14 grid max-w-3xl gap-10 sm:grid-cols-2">
             {([
               {
                 num: "1",
                 title: "Eingang wird gehalten",
                 text: "Ob per Telefon, über Ihre Website oder direkt erfasst — jede Meldung landet sofort an einem Ort. Nichts bleibt im Kopf hängen.",
-                accent: "text-blue-400",
+                accent: "bg-navy-900",
               },
               {
                 num: "2",
                 title: "Ihr Kunde weiss Bescheid",
                 text: "Ihr Kunde erhält Rückmeldung in Ihrem Namen. Er kann seine Angaben prüfen, korrigieren und Fotos ergänzen.",
-                accent: "text-blue-300",
+                accent: "bg-navy-900",
               },
               {
                 num: "3",
                 title: "Der Fall ist geführt",
                 text: "Kategorie, Dringlichkeit, Termin, Zuweisung — alles strukturiert. Ihr Team weiss, was ansteht. Kein Suchen, kein Rückfragen.",
-                accent: "text-gold-400",
+                accent: "bg-gold-500",
               },
               {
                 num: "4",
                 title: "Gute Arbeit wird sichtbar",
                 text: "Nach dem Einsatz können Sie zufriedene Kunden gezielt zur Bewertung einladen — direkt aus dem System, im richtigen Moment.",
-                accent: "text-emerald-400",
+                accent: "bg-gold-500",
               },
             ] as const).map((step) => (
-              <div key={step.num} className="bg-navy-900/80 p-8 sm:p-10">
-                <div className="mb-4 flex items-center gap-3">
-                  <span className={`text-2xl font-bold tabular-nums ${step.accent}`}>
-                    {step.num}
-                  </span>
-                  <h3 className="text-base font-semibold text-white">{step.title}</h3>
+              <div key={step.num} className="flex gap-4">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${step.accent} text-sm font-bold text-white`}>
+                  {step.num}
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold text-navy-900">{step.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-navy-900/70">{step.text}</p>
                 </div>
-                <p className="text-sm leading-relaxed text-navy-300">{step.text}</p>
               </div>
             ))}
           </div>
