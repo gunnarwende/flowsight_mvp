@@ -69,7 +69,8 @@
   },
 
   "team": [
-    { "name": "Beat Dörfler", "role": "Geschäftsleitung", "source": "doerflerag.ch (Team-Seite)" }
+    { "name": "Ramon Dörfler", "role": "Geschäftsleitung (Sanitärmeister)", "source": "doerflerag.ch (Team + Firmengeschichte)" },
+    { "name": "Luzian Dörfler", "role": "Geschäftsleitung (Heizungstechniker)", "source": "doerflerag.ch (Team + Firmengeschichte)" }
   ],
 
   "data_sources": [
@@ -86,11 +87,14 @@
     "crawler": "crawl-website.mjs (Puppeteer)"
   },
 
+  "pain_types": ["erreichbarkeit", "aussenwirkung", "bewertung", "notfall", "buerochaos"],
+
   "provisioning_status": {
     "leckerli_d_website": "DONE",
     "leckerli_b_lisa": "DONE",
     "leckerli_c_e2e": "DONE",
-    "leckerli_a_video": "OFFEN",
+    "leckerli_a_video": "IN_PROGRESS",
+    "trial_provisioned": "DONE (2026-04-01, Phase A, no outreach)",
     "outreach": "OFFEN"
   }
 }

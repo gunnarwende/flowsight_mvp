@@ -145,9 +145,9 @@ const CASE_TEMPLATES = {
 const STATUS_DISTRIBUTION = [
   "done", "done", "done", "done", "done",
   "new", "new", "new",
-  "contacted", "contacted",
+  "in_arbeit", "in_arbeit",
   "scheduled", "scheduled",
-  "new", "contacted", "done",
+  "new", "warten", "done",
   "done",
 ];
 
@@ -273,7 +273,7 @@ async function main() {
         case_id: c.id,
         tenant_id: tenantId,
         event_type: "status_changed",
-        title: `Status geändert: Neu → ${c.status === "contacted" ? "Kontaktiert" : c.status === "scheduled" ? "Geplant" : "Erledigt"}`,
+        title: `Status geändert: Neu → ${c.status === "scheduled" ? "Geplant" : c.status === "in_arbeit" ? "In Arbeit" : c.status === "warten" ? "Warten" : "Erledigt"}`,
         metadata: { from: "new", to: c.status },
         created_at: statusTime.toISOString(),
       });
