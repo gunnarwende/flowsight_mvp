@@ -106,12 +106,14 @@ function parseModules(input) {
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const trialStart = new Date();
-  const trialEnd = new Date(trialStart.getTime() + 14 * 24 * 60 * 60 * 1000);
-  const followUpAt = new Date(trialStart.getTime() + 10 * 24 * 60 * 60 * 1000);
+  const isPhaseA = noWelcomeMail;
+  const trialStart = isPhaseA ? null : new Date();
+  const trialEnd = trialStart ? new Date(trialStart.getTime() + 14 * 24 * 60 * 60 * 1000) : null;
+  const followUpAt = trialStart ? new Date(trialStart.getTime() + 10 * 24 * 60 * 60 * 1000) : null;
+  const trialStatus = isPhaseA ? "interested" : "trial_active";
 
   console.log("=".repeat(60));
-  console.log("  FlowSight — Trial Provisioning");
+  console.log(`  FlowSight — Trial Provisioning${isPhaseA ? " (Phase A — no outreach)" : ""}`);
   console.log("=".repeat(60));
   console.log(`\n  Slug:     ${slug}`);
   console.log(`  Name:     ${name}`);
@@ -121,8 +123,12 @@ async function main() {
   if (painType) console.log(`  Pain:     ${painType}`);
   console.log(`  Outcome:  ${outreachOutcome}`);
   console.log(`  Seed:     ${seedCount} cases`);
-  console.log(`  Trial:    ${trialStart.toISOString().slice(0, 10)} → ${trialEnd.toISOString().slice(0, 10)}`);
-  console.log(`  Follow-up: ${followUpAt.toISOString().slice(0, 10)}`);
+  if (isPhaseA) {
+    console.log("  Trial:    NOT STARTED (Phase A — activate via activate_prospect.mjs)");
+  } else {
+    console.log(`  Trial:    ${trialStart.toISOString().slice(0, 10)} → ${trialEnd.toISOString().slice(0, 10)}`);
+    console.log(`  Follow-up: ${followUpAt.toISOString().slice(0, 10)}`);
+  }
   if (dryRun) console.log("\n  DRY RUN — no changes\n");
   console.log();
 
@@ -145,10 +151,10 @@ async function main() {
           slug,
           name,
           modules,
-          trial_status: "trial_active",
-          trial_start: trialStart.toISOString(),
-          trial_end: trialEnd.toISOString(),
-          follow_up_at: followUpAt.toISOString(),
+          trial_status: trialStatus,
+          ...(trialStart ? { trial_start: trialStart.toISOString() } : {}),
+          ...(trialEnd ? { trial_end: trialEnd.toISOString() } : {}),
+          ...(followUpAt ? { follow_up_at: followUpAt.toISOString() } : {}),
           prospect_email: prospectEmail,
           ...(painType ? { pain_type: painType } : {}),
           ...(outreachOutcome ? { outreach_outcome: outreachOutcome } : {}),
