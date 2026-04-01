@@ -251,8 +251,8 @@ async function main() {
     // ── Step 5: Welcome-Mail ─────────────────────────────────────────────
     console.log("\n── Step 5: Welcome-Mail ────────────────────────────");
 
-    const trialStartFmt = trialStart.toISOString().slice(0, 10);
-    const trialEndFmt = trialEnd.toISOString().slice(0, 10);
+    const trialStartFmt = trialStart ? trialStart.toISOString().slice(0, 10) : "(not started)";
+    const trialEndFmt = trialEnd ? trialEnd.toISOString().slice(0, 10) : "(not started)";
 
     if (noWelcomeMail) {
       console.log("  SKIPPED (--no-welcome-mail). Prospect will not be contacted.");

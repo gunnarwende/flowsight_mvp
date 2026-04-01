@@ -75,6 +75,17 @@
     "FlowSight customer config (verified)"
   ],
 
+  "pain_types": ["erreichbarkeit", "buerochaos", "bewertung"],
+
+  "provisioning_status": {
+    "leckerli_d_website": "DONE",
+    "leckerli_b_lisa": "IN_PROGRESS",
+    "leckerli_c_e2e": "OFFEN",
+    "leckerli_a_video": "OFFEN",
+    "trial_provisioned": "OFFEN",
+    "outreach": "OFFEN"
+  },
+
   "crawl_metadata": {
     "pages_visited": null,
     "images_found": null,
