@@ -257,8 +257,8 @@ export const walterLeuthold: CustomerSite = {
     },
   ],
 
-  voicePhone: "+41 XX XXX XX XX", // TODO: assign Twilio number
-  voicePhoneRaw: "+41XXXXXXXXX", // TODO: assign Twilio number
+  voicePhone: "044 505 30 19",
+  voicePhoneRaw: "+41445053019",
 
   // Categories: Sanitär + Spenglerei focus
   categories: [
