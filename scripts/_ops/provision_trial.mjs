@@ -11,6 +11,7 @@
 //     [--modules=voice,website_wizard,ops,reviews,sms] \
 //     [--gewerk=sanitaer] \
 //     [--seed-count=15] \
+//     [--no-welcome-mail]  ← Phase A: provision without contacting prospect
 //     [--dry-run]
 //
 // What it does (in order):
@@ -45,6 +46,7 @@ function getArg(name) {
   return arg ? arg.slice(prefix.length) : undefined;
 }
 const dryRun = args.includes("--dry-run");
+const noWelcomeMail = args.includes("--no-welcome-mail");
 
 const slug = getArg("slug");
 const name = getArg("name");
@@ -69,6 +71,7 @@ Usage:
     [--outreach-outcome=interessiert|keine_antwort|trial_gestartet|konvertiert|abgelehnt] \\
     [--gewerk=sanitaer|heizung|allgemein] \\
     [--seed-count=15] \\
+    [--no-welcome-mail] \\
     [--dry-run]
 `);
   process.exit(1);
@@ -244,6 +247,36 @@ async function main() {
 
     const trialStartFmt = trialStart.toISOString().slice(0, 10);
     const trialEndFmt = trialEnd.toISOString().slice(0, 10);
+
+    if (noWelcomeMail) {
+      console.log("  SKIPPED (--no-welcome-mail). Prospect will not be contacted.");
+      console.log("  To send later: create prospect access + outreach email separately.");
+
+      // ── Summary (no mail) ─────────────────────────────────────────────
+      console.log(`\n${"=".repeat(60)}`);
+      console.log("  TRIAL PROVISIONED (Phase A — no outreach)");
+      console.log("=".repeat(60));
+      console.log(`\n  Tenant:       ${tenant.name} (${tenant.slug})`);
+      console.log(`  Tenant ID:    ${tenant.id}`);
+      console.log(`  Phone:        ${phone || "(none)"}`);
+      console.log(`  Prospect:     ${prospectEmail} (NOT contacted)`);
+      console.log(`  User ID:      ${userId}`);
+      console.log(`  Trial:        ${trialStartFmt} → ${trialEndFmt} (14 days)`);
+      console.log(`  Follow-up:    ${followUpAt.toISOString().slice(0, 10)} (day 10)`);
+      console.log(`  Demo Cases:   ${seedCount}`);
+      console.log(`  Welcome-Mail: SKIPPED`);
+      console.log(`\n  Magic Link:`);
+      console.log(`  ${magicLink}`);
+      console.log(`\n${"=".repeat(60)}`);
+      console.log("\n  Phase A complete. Next steps:");
+      console.log("  1. Founder tests E2E as Admin (tenant switcher)");
+      console.log("  2. Founder records demo video");
+      console.log("  3. When ready → Phase B: send outreach email with video + app link");
+      console.log(`\n  Offboard (if needed):`);
+      console.log(`  node --env-file=src/web/.env.local scripts/_ops/offboard_tenant.mjs --slug=${slug}`);
+      console.log("=".repeat(60));
+      return;
+    }
 
     const phoneSection = phone
       ? `<!-- Trial phone -->

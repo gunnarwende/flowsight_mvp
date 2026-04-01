@@ -5,13 +5,17 @@
 - Notrufnummer: vorhanden
 
 ## Status
-- Setup: DONE (tenant 48cae49e, modules: all true)
+- Setup: DONE (tenant d0000000-0000-0000-0000-000000000002, modules: all true)
+- Trial: PROVISIONED Phase A (01.04.→15.04.2026, 15 Demo-Cases, kein Kontakt mit Prospect)
 - Website/Wizard: LIVE (wizard smoke PASS — case 5fb36e99)
-- Voice: LIVE (E2E PASS — call_cb50d6fd → case 9d89cf6b → email)
-- Ops Dashboard: LIVE (login + workflow verified)
+- Voice: LIVE, DSGVO-Fix applied (everything_except_pii), Laura DE + Juniper INTL published
+- Ops Dashboard: LIVE (login + workflow verified, 15 Demo-Cases sichtbar)
 - Reviews: BLOCKED (F9 — no Google Business Profile link)
 - Email Deliverability: PASS (SPF/DKIM/DMARC all pass, inbox confirmed)
-- Analytics: pending (Sentry alerts configured, morning report operational)
+- CEO-App: Automatisch sichtbar (trial_active)
+- Demo-Video: Script bereit (docs/customers/doerfler-ag/demo_script.md), Aufnahme ausstehend
+- Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos
+- Ansprechpartner: Ramon + Luzian Dörfler (Geschäftsleitung seit 2004, 3. Generation)
 
 ## Phone Numbers
 - Brand: +41 44 552 09 19 (Peoplefone, active)
@@ -19,12 +23,27 @@
 - Legacy: +41 44 505 74 20
 
 ## Links
-- Prod: https://flowsight.ch/doerfler-ag
-- Wizard: https://flowsight.ch/doerfler-ag/meldung
 - Customer Website: https://flowsight.ch/kunden/doerfler-ag
-- Ops: https://flowsight.ch/ops/login
+- Wizard: https://flowsight.ch/kunden/doerfler-ag/meldung
+- Links-Seite: https://flowsight.ch/kunden/doerfler-ag/links
+- Ops/Leitstand: https://flowsight.ch/ops/login
+- Demo (alt): https://flowsight.ch/doerfler-ag
+- Testnummer: +41 44 505 74 20 (Twilio → Retell)
+- Brand-Nummer: +41 43 443 52 00 (Peoplefone → Twilio → Retell)
 
 ## Updates
+
+### 2026-04-01 | CC | Phase A Provisioning (Sales Day 1)
+- **Trial provisioned:** 01.04.→15.04.2026, 15 Demo-Cases (sanitaer), follow_up 11.04.
+- **Voice Agents:** DSGVO-Fix (everything_except_pii), DE+INTL re-published via retell_sync
+- **Demo-Script:** pain_type-basiert (5/5 pain_types), Feedback-Positioning, 3-5 Min
+- **Prospect Card Fix:** "Beat Dörfler" → Ramon + Luzian Dörfler (verifiziert aus FACTS_VERIFIED)
+- **Pain Types:** erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos (alle 5)
+- **Pipeline:** Status DEMO → TRIAL_PREP, leckerli A+B-Full+C+D
+- **seed_demo_data Bug Fix:** STATUS_DISTRIBUTION "contacted" → "in_arbeit"/"warten" (DB constraint)
+- **provision_trial Enhancement:** --no-welcome-mail Flag für Phase A/B Trennung
+- **Phase A = kein Kontakt mit Prospect.** Founder testet E2E, nimmt Video auf. Phase B = Outreach.
+- **Nächste Schritte:** (1) Founder E2E Smoke-Test, (2) Demo-Video aufnehmen, (3) Phase B: Outreach-Mail
 
 ### 2026-02-18 | Web Agent | Discovery Run
 - **Done:** Read all SSOT docs. Audited doerfler-ag inputs — nearly empty (inputs.md, links.md have headers only).
