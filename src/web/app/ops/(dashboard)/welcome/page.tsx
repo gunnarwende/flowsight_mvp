@@ -110,7 +110,7 @@ export default async function WelcomePage() {
             Willkommen, {tenant.name}
           </h1>
           <p className="text-slate-400 text-base">
-            Ihr 14-Tage Trial ist bereit. Testen Sie jetzt Ihre persönliche KI-Assistentin.
+            Ihr 14-Tage Trial ist bereit. Testen Sie jetzt Ihre persönliche Telefonassistentin.
           </p>
         </div>
 
@@ -130,17 +130,17 @@ export default async function WelcomePage() {
               Jetzt anrufen
             </a>
             <p className="text-slate-500 text-sm mt-3 text-center">
-              Lisa nimmt ab, erkennt Ihr Anliegen und leitet alles strukturiert weiter.
+              Ihre Assistentin nimmt ab, erkennt das Anliegen und leitet alles strukturiert weiter.
             </p>
           </div>
         )}
 
-        {/* Secondary CTA — Dashboard */}
+        {/* Secondary CTA — Leitzentrale */}
         <Link
           href="/ops/cases"
           className="block w-full text-center bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-slate-300 font-medium text-base py-3 px-6 rounded-lg transition-colors mb-6"
         >
-          Dashboard öffnen
+          Leitzentrale öffnen
         </Link>
 
         {/* Trial Info */}
@@ -165,7 +165,7 @@ export default async function WelcomePage() {
           <ul className="space-y-2 text-slate-400 text-sm">
             <li className="flex items-start gap-2">
               <span className="text-amber-500 mt-0.5">•</span>
-              <span>Persönliche KI-Assistentin (Lisa)</span>
+              <span>Persönliche Telefonassistentin (24/7)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-500 mt-0.5">•</span>
@@ -173,7 +173,7 @@ export default async function WelcomePage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-500 mt-0.5">•</span>
-              <span>Dashboard mit Fallübersicht</span>
+              <span>Leitzentrale mit Fallübersicht</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-500 mt-0.5">•</span>

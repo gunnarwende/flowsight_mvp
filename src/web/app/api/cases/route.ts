@@ -206,11 +206,13 @@ export async function POST(request: NextRequest) {
     // Resolve tenant display name + case_id_prefix for branding (Identity Contract E4)
     const { data: tenantInfo } = await supabase
       .from("tenants")
-      .select("name, case_id_prefix")
+      .select("name, case_id_prefix, modules")
       .eq("id", tenantId)
       .single();
     const tenantDisplayName = tenantInfo?.name ?? undefined;
     const caseIdPrefix = tenantInfo?.case_id_prefix ?? "FS";
+    const casesModules = tenantInfo?.modules as Record<string, unknown> | null;
+    const casesNotificationEmail = typeof casesModules?.notification_email === "string" ? casesModules.notification_email : undefined;
 
     // Build insert payload — street/house_number are optional columns
     // that may not exist if the address migration hasn't been applied yet.
@@ -284,6 +286,7 @@ export async function POST(request: NextRequest) {
       caseIdPrefix: caseIdPrefix,
       tenantId,
       tenantDisplayName,
+      notificationEmail: casesNotificationEmail,
       source: data.source,
       category: data.category,
       urgency: data.urgency,
