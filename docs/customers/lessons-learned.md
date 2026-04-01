@@ -138,10 +138,10 @@
 ## 5. Demo-Script + Video
 
 **Learnings:**
-- Script-Struktur: Intro (Respekt) → Pain (nicht Features) → Website → Live-Anruf → Leitstand → Feedback-Bitte
+- Script-Struktur: Intro (Respekt) → Pain (nicht Features) → Website → Live-Anruf → Leitzentrale → Feedback-Bitte
 - Dont's: Kein Preis, kein "KI", kein "Dashboard/Wizard/Onboarding", keine Feature-Listen
 - pain_types aus Website-Analyse dynamisch ins Script einbauen
-- Technische Checkliste VOR Aufnahme abarbeiten (SMS, Email, Leitstand, Voice)
+- Technische Checkliste VOR Aufnahme abarbeiten (SMS, Email, Leitzentrale, Voice)
 
 ---
 

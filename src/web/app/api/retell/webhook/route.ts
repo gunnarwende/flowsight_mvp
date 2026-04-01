@@ -397,11 +397,13 @@ export async function POST(req: Request) {
   const supabaseEarly = getServiceClient();
   const { data: tenantRow } = await supabaseEarly
     .from("tenants")
-    .select("name, case_id_prefix")
+    .select("name, case_id_prefix, modules")
     .eq("id", tenantId)
     .single();
   const tenantDisplayName = tenantRow?.name ?? undefined;
   const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
+  const tenantModules = tenantRow?.modules as Record<string, unknown> | null;
+  const tenantNotificationEmail = typeof tenantModules?.notification_email === "string" ? tenantModules.notification_email : undefined;
 
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
@@ -500,6 +502,7 @@ export async function POST(req: Request) {
       caseIdPrefix,
       tenantId,
       tenantDisplayName,
+      notificationEmail: tenantNotificationEmail,
       source: "voice",
       category: category!,
       urgency: urgencyRaw as CaseUrgency,

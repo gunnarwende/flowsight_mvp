@@ -34,6 +34,8 @@ interface CaseEmailPayload {
   houseNumber?: string;
   /** Injected by caller — result of sendReporterConfirmation (no extra log). */
   reporterEmailSent?: boolean;
+  /** Tenant-scoped notification email (from modules.notification_email). Falls back to MAIL_REPLY_TO. */
+  notificationEmail?: string;
 }
 
 /** Format case ID for display: WB-0029 if seq_number available, else UUID fragment. */
@@ -221,7 +223,7 @@ export async function sendCaseNotification(
   payload: CaseEmailPayload
 ): Promise<boolean> {
   const from = buildFromAddress(payload.tenantDisplayName);
-  const to = process.env.MAIL_REPLY_TO;
+  const to = payload.notificationEmail || process.env.MAIL_REPLY_TO;
 
   // Base log fields — always present, no PII (no actual addresses)
   const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
@@ -230,7 +232,7 @@ export async function sendCaseNotification(
     case_id: payload.caseId,
     source: payload.source,
     tenant_id: payload.tenantId,
-    recipient_env: "MAIL_REPLY_TO",
+    recipient_env: payload.notificationEmail ? "tenant_notification_email" : "MAIL_REPLY_TO",
     recipient_present: !!to,
     from_env: process.env.MAIL_FROM ? "MAIL_FROM" : "default",
     from_domain: fromAddr.split("@")[1] ?? "unknown",
