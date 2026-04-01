@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-03-25 (Ferrari-Prototyp KOMPLETT: 10 High-End-Screens für Website-Videos. Firma "Gebäudetechnik GmbH", Inter Font, professionelles Dark Theme. Alle Founder-approved. Video-Assembly als nächstes.)
+> Letzte Aktualisierung: 2026-04-01 (Sales-Phase gestartet. Dörfler AG als erster Prospect durch GTM-Maschine. Phase A/B Architektur live. Voice: Ela (DE). Ops-Email tenant-scoped. Impressum+Datenschutz Seiten live. PRs #374-#377.)
 
 ---
 
@@ -76,7 +76,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 ### 3.3 KI-Telefonassistent (Voice Agent)
 - **Technologie:** Retell AI (Conversational Voice AI)
 - **Flow:** Anruf → Peoplefone (Schweizer Nummer) → Twilio SIP → Retell Agent → Webhook → Supabase → E-Mail
-- **Dual-Agent:** Deutsch (Stimme "Laura" / ElevenLabs, Sharp+Professional) + International (Stimme "Juniper" / Retell, EN/FR/IT)
+- **Dual-Agent:** Deutsch (Stimme "Ela" / ElevenLabs) + International (Stimme "Juniper" / Retell, EN/FR/IT)
 - **Language Gate:** Erkennt automatisch ob Deutsch oder andere Sprache
 - **Zwei Modi (automatische Erkennung):**
   - **Intake-Modus:** Schadensmeldung aufnehmen (max 7 Fragen: Name, Kategorie, PLZ/Ort, Adresse, Dringlichkeit, Beschreibung) → Fall in Supabase + E-Mails
@@ -243,7 +243,7 @@ NACH ERLEDIGUNG:
 
 | Kunde | Status | Module | URL |
 |-------|--------|--------|-----|
-| **Dörfler AG** (Oberrieden) | Website LIVE | voice, wizard, ops, reviews | flowsight.ch/kunden/doerfler-ag |
+| **Dörfler AG** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/doerfler-ag |
 | **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
 | **Jul. Weinberger AG** (Thalwil) | **GTM Goldstandard** | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/weinberger-ag |
 | **Walter Leuthold** (Oberrieden) | Website LIVE | wizard | flowsight.ch/kunden/walter-leuthold |
@@ -251,10 +251,11 @@ NACH ERLEDIGUNG:
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
 | **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
 
-### Dörfler AG — Bestandskunde
-- Sanitär/Heizung seit 1926, Oberrieden ZH
-- Website live mit Voice, Wizard, Ops, Reviews Modulen
-- Wird als einer von vielen Prospects in der breiten Outreach-Strategie adressiert
+### Dörfler AG — Erster Prospect durch die GTM-Maschine
+- Sanitär/Heizung seit 1926, Oberrieden ZH, 3. Generation (Ramon + Luzian Dörfler)
+- Phase A provisioniert (01.04.2026): Website, Voice, 15 Demo-Cases, Leitzentrale
+- Noch KEIN Kontakt mit Betrieb. Demo-Video-Aufnahme steht bevor.
+- Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos (5/5)
 
 ### Brunner Haustechnik AG — Demo-Tenant
 - Fiktiver Betrieb für Sales-Demos (Thalwil ZH)
@@ -280,30 +281,32 @@ NACH ERLEDIGUNG:
 
 **Kein B-Quick.** Jeder Prospect bekommt einen dedizierten B-Full Voice Agent (personalisiert mit Firmenname, Services, Region). Qualität vor Skalierung.
 
-### Phasen-Modell
+### Phasen-Modell (Phase A/B Architektur, ab 01.04.2026)
 
 ```
-Phase 0: Scout         → 20 Prospects/Tag identifizieren (scout.mjs)
-Phase 1: Outreach      → Personalisierter Erstkontakt (Founder, persönlich)
-Phase 2: Provisioning  → Trial in <20 Min (provision_trial.mjs)
-Phase 3: Trial         → 14 Tage eigenes System (eigene Nummer, Dashboard, Demo-Cases)
-Phase 4: Decision      → Convert / Live-Dock / Offboard
-Phase 5: Delivery      → Nur bei Conversion (Vertrag, Portierung)
+Phase A:   Vorbereitung    → provision_trial.mjs --no-welcome-mail (kein Kontakt)
+Phase B-1: Outreach        → Founder schickt Mail 1 (Video + Feedback-Bitte)
+Phase B-2: Aktivierung     → Prospect sagt Go + gibt Email → activate_prospect.mjs
+Phase B-3: Trial           → 14 Tage eigenes System (Timer startet bei B-2)
+Phase B-4: Decision        → Convert / Live-Dock / Offboard
+Phase B-5: Delivery        → Nur bei Conversion (Vertrag, Portierung)
 ```
 
-### Was der Prospect bekommt (Trial, 14 Tage)
+### Was der Prospect bekommt (nach Phase B-2)
 - **Eigene Schweizer Nummer** (Twilio Festnetz)
-- **Lisa (B-Full)** — personalisiert mit seinen Services, PLZ, Firmenname
-- **Dashboard** via OTP-Login (6-Digit Code per E-Mail, Prospect-View: Status + Review)
+- **Telefonassistentin (B-Full)** — personalisiert mit Firmenname, Services, PLZ
+- **Leitzentrale** via OTP-Login (6-Digit Code per E-Mail, Prospect-View)
 - **15 Demo-Cases** (realistische Schweizer Daten)
 - **SMS-Flow** (Post-Call Korrekturlink)
 - **Review-Surface** (Google-Style mit Firmenname)
+- **PWA-App** (installierbar auf Handy)
+- **Ops-Email-Benachrichtigungen** (bei neuen Fällen)
 
 ### Trial-Timeline
 | Tag | Was |
 |-----|-----|
-| 0 | Trial Start + Welcome-Mail mit OTP-Login-Link |
-| 0-2 | **First-Call-Moment** (Pflicht) — Founder ruft Prospect-Nummer an |
+| 0 | Prospect sagt Go → activate_prospect.mjs → Welcome-Mail + Leitzentrale-Zugang |
+| 0-2 | Prospect testet selbst (Anruf, SMS, Leitzentrale) |
 | 10 | **Follow-up** (Pflicht) — Founder ruft persönlich an |
 | 14 | **Decision Day** — Convert / Live-Dock / Offboard |
 
