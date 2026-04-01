@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 2.2 | **Datum:** 2026-03-22
+**Version:** 2.7 | **Datum:** 2026-04-01
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v2.2 — 40 Decisions (D1-D40). Grossumbau: Website "Leitsystem für Handwerksbetriebe", Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch.
+**Status:** v2.7 — 51 Decisions (D1-D51). Sales-Phase ab 01.04. Phase A/B Architektur. Voice: Ela. Ops-Email tenant-scoped.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -52,6 +52,17 @@
 | D38 | Nav: "Testen" → "Live erleben" (/live-erleben). Generisches 2-Min-Video als Erst-Impact (Phase 1: ohne Video, Phase 2: mit Video). /testen = 301 Redirect. | **ENTSCHIEDEN** ✅ | Founder + CC | `live-erleben/page.tsx`, `testen/page.tsx`, PRs #349 |
 | D39 | Voice Agent Sales: 4 Modi (Video-Rückruf Prio, Kaltanruf Default, Testnummer-Verwechslung, Support NEU). Lisa nennt KEINE Preise — immer Founder-Rückruf. Knowledge Base = Website-Content. | **ENTSCHIEDEN** ✅ | Founder + CC | `retell/flowsight_sales_de.json`, PRs #350 |
 | D40 | Pipeline Tracking: pain_type + outreach_outcome auf tenants. provision_trial.mjs akzeptiert --pain-type + --outreach-outcome. CEO-App Pipeline zeigt Badges. | **ENTSCHIEDEN** ✅ | Founder + CC | `20260322_pipeline_tracking.sql`, PRs #348 |
+| D41 | ~~Video-Produktion CC-first: FFmpeg~~ → **ERSETZT durch D43.** FFmpeg kann keine Motion Graphics. | **SUPERSEDED** | — | — |
+| D42 | Hero-Video: Kein echtes Kundenunternehmen. Prototyp-Screens (HTML/CSS, FlowSight-Design, fiktive Daten "Gebäudetechnik GmbH"). 10 Ferrari-Screens Founder-approved. Brand-Assets: `docs/brand/OPS/`. | **ENTSCHIEDEN** ✅ | Founder + CC | `Website_Video.md` v5.0 |
+| D43 | ~~Video-Produktion Stack v2: Remotion + Veo 3.1 Text-only + ElevenLabs~~ → **ERSETZT durch D44.** Text-only Veo-Prompts erzeugen keine konsistente Welt über Segmente. | **SUPERSEDED** | — | — |
+| D44 | Video-Produktion Stack v3: **Nano Banana Pro** (Keyframe-Generierung) → **Veo 3.1 SDK Image-to-Video** (`@google/genai` SDK, `image`-Parameter = Starting Frame) → **Remotion** (Compositing: Notification-Overlay, Headline, Loop, Farbkorrektur) + **ElevenLabs** (Voice, nur Video 2). Keyframe = visuelle Konsistenz-Garantie. Veo animiert nur Bewegung, nicht die Welt. Remotion liefert den System-/Catch-Moment (Gold-Dot Overlay), nicht Veo. | **ENTSCHIEDEN** ✅ | Founder + CC | `generate_hero_final.mjs`, `generate_keyframe.mjs`, `test_image_to_video.mjs` |
+| D45 | Hero-Motiv: **Eckventil-Montage unter Waschtisch in hellem Schweizer Badezimmer.** Keyframe V5 (Navy + Messing + Holzregal + warme Fliesen). Kein Boiler, kein Technikraum, kein Showroom. Regiedokument: `hero-video-en-final.md` (EN = operativ) + `hero-video-de-final.md` (DE = Qualitätskontrolle). Hero-Wahrheit: "Während der Techniker arbeitet, wird eine eingehende Anfrage übernommen und in Ordnung überführt — ohne dass er reagieren muss." | **ENTSCHIEDEN** ✅ | Founder + CC | `production/keyframes/hero_V5_combined.jpg`, `hero-video-en-final.md` |
+| D46 | **Eigenständiges Hero-Video verworfen.** Zu aufwändig für Go-Live, zu viele Iterationsrunden, Perfektion vs. Pragmatismus. Stattdessen: Voice-first + Screen-Visual auf der Homepage. Master-Film bleibt als Langzeitprojekt dokumentiert in `video_final.md` + `video_production_bible.md`. | **ENTSCHIEDEN** ✅ | Founder | PRs #366-#373 |
+| D47 | **Go-Live-Lösung: Voice-Player + Proof-Block.** Homepage: S5 Leitzentrale-Screenshot (gecroppt, Lightbox) + kurze Voice (30s, Helmut turbo v2.5, "Kurz erklärt"). /live-erleben: voller Screen + lange Voice (2min, "Live erleben"). Leitfall Eva Brunner · Wollishofen · Problem vor Ort. Voices: ElevenLabs Helmut (ID: `JiW03c2Gt43XNUQAumRP`), turbo v2.5, stability 0.70. AudioPlayer + ScreenPreview = eigene React-Komponenten. | **ENTSCHIEDEN** ✅ | Founder + CC | `AudioPlayer.tsx`, `ScreenPreview.tsx`, `public/audio/` |
+| D48 | **Website Design-Regel:** Navy-Hintergrund NUR auf Hero-Section + Footer. Alle Zwischen-Sections (Empathie, Funktionen, Pricing): helle einheitliche Flächen (navy-50, warm-white). Keine dunklen Karten-Blöcke in mittleren Sections. Gold/Navy nur als Akzente (Nummern, Dots), nicht als Flächenfarbe. | **ENTSCHIEDEN** ✅ | Founder | PR #372 |
+| D49 | **Phase A/B GTM-Architektur.** Phase A: `provision_trial --no-welcome-mail` → trial_status=interested, kein Timer, kein Kontakt. Phase B-1: Outreach-Mail mit Video. Phase B-2: `activate_prospect.mjs` → notification_email, OTP-User, trial_active, Welcome-Email. Skaliert für 50 Betriebe/Tag. | **ENTSCHIEDEN** ✅ | Founder + CC | `provision_trial.mjs`, `activate_prospect.mjs`, PRs #374-#376 |
+| D50 | **Ops-Email tenant-scoped.** `modules.notification_email` pro Tenant, Fallback `MAIL_REPLY_TO`. Phase A: nicht gesetzt → Founder bekommt alles. Phase B-2: gesetzt → Prospect bekommt Ops-Emails. Beide Caller (webhook + cases API) angepasst. | **ENTSCHIEDEN** ✅ | Founder + CC | `resend.ts`, `webhook/route.ts`, `cases/route.ts`, PR #375 |
+| D51 | **Voice: Ela (ElevenLabs) als DE-Stimme** auf allen 5 Agents (Dörfler, Brunner, Weinberger, Leuthold, FlowSight Sales). Ersetzt Laura. Juniper bleibt INTL. Retell custom_voice_id: `custom_voice_3d93cf97532572d3980044468a`. | **ENTSCHIEDEN** ✅ | Founder | PR #377 |
 
 ---
 
