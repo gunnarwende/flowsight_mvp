@@ -1,11 +1,53 @@
 # Demo-Video-Script: Dörfler AG
 
-**Version:** 2.0 | **Datum:** 2026-04-01
+**Version:** 3.0 | **Datum:** 2026-04-01
 **Zweck:** Founder nimmt sich per Video auf, stellt das Leitsystem vor, bittet um Feedback.
 **Ziel-Dauer:** 3-5 Minuten
 **Ton:** Persönlich, respektvoll, nicht verkaufen. Feedback anfragen.
-**Versand:** Als Paket: Video + Testnummer + Website + Leitzentrale-Zugang + PWA-Hinweis in EINER Mail.
-**Kontext:** Herr Dörfler hat die Mail bereits gelesen. Er weiss: jemand aus Oberrieden hat etwas vorbereitet.
+**Versand:** 2-Mail-Strategie. Mail 1 = nur Video. Mail 2 = Zugänge (erst nach seinem Go).
+**Kontext:** Herr Dörfler hat Mail 1 gelesen. Er weiss: jemand aus Oberrieden hat etwas vorbereitet.
+
+---
+
+## 2-Mail-Strategie
+
+### Mail 1 — Erstkontakt (Video + Feedback-Bitte)
+
+```
+Guten Tag Herr Dörfler
+
+Mein Name ist Gunnar Wende, ich wohne in Oberrieden.
+
+Vor ein paar Monaten war jemand von Ihnen bei uns in der Wohnung, weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste. Wir waren mit der Ausführung sehr zufrieden.
+
+Das ist mir in Erinnerung geblieben. Ich habe mir danach ein paar Gedanken gemacht und dazu ein kurzes Video für Sie aufgenommen.
+
+Darin zeige ich Ihnen kurz, was daraus entstanden ist.
+
+Hier ist der Link:
+[Loom-Video-Link]
+
+Ich möchte Ihnen damit nichts verkaufen. Ich würde mich einfach freuen, wenn Sie mir ein ehrliches Feedback geben, wie das auf Sie wirkt.
+
+Falls Sie möchten, richte ich Ihnen das danach gern so ein, dass Sie es selbst einmal mit typischen Situationen durchspielen können — ganz unkompliziert und ohne jede Verpflichtung.
+
+Für ein kurzes Gespräch komme ich auch gern persönlich vorbei — wir sind ja nur ein paar Strassenschilder voneinander entfernt.
+
+Freundliche Grüsse
+Gunnar Wende
+044 552 09 19
+
+
+
+### Mail 2 — Zugänge (erst nach seinem Go, automatisch via activate_prospect.mjs)
+
+Wird automatisch verschickt wenn Founder ausführt:
+```
+node --env-file=src/web/.env.local scripts/_ops/activate_prospect.mjs \
+  --slug=doerfler-ag --email=<seine-email>
+```
+
+Enthält: Leitzentrale-Link + OTP-Anleitung + Testnummer + PWA-Hinweis + Trial-Zeitraum.
 
 ---
 
@@ -15,7 +57,7 @@
 - [ ] Website flowsight.ch/kunden/doerfler-ag in zweitem Tab
 - [ ] Meldungsformular flowsight.ch/kunden/doerfler-ag/meldung in drittem Tab
 - [ ] Handy bereit (Anruf + SMS-Empfang)
-- [ ] Screen-Recording aktiv (ganzer Bildschirm)
+- [ ] Loom/Screen-Recording aktiv (ganzer Bildschirm)
 - [ ] Kamera an (Bild-in-Bild oder Intro/Outro)
 
 ---
@@ -24,9 +66,12 @@
 
 ### 1. Intro — Kurz, Mail aufgreifen (15-20s)
 
-> "Wie in meiner Nachricht angekündigt — ich habe mir ein paar Gedanken gemacht, was ein System wie dieses für die Dörfler AG bedeuten könnte. Lassen Sie mich Ihnen kurz zeigen, wie das aussieht."
+Grüezi Herr Dörfler
 
-**Warum so:** Er hat die Mail gelesen. Kein doppeltes Vorstellen. Direkt rein.
+Mein Name ist Gunnar Wende. Ich wohne nur ein paar Strassen weiter, hier in Oberrieden.
+
+Nach Ihrem Einsatz bei uns habe ich mir ein paar Gedanken gemacht und möchte Ihnen mal kurz, was daraus entstanden ist.
+
 
 ---
 
@@ -36,7 +81,7 @@
 >
 > Und dann: Bewertungen. Die Arbeit ist gut, die Kunden sind zufrieden — aber es kommt nie eine Google-Bewertung zustande."
 
-**Warum so:** Drei pain_types (erreichbarkeit, notfall, bewertung) angesprochen — ohne den Betrieb direkt zu kritisieren. "Was ich bei vielen Betrieben sehe" statt "Sie haben das Problem".
+**Warum so:** Drei pain_types (erreichbarkeit, notfall, bewertung) — ohne den Betrieb direkt zu kritisieren.
 
 ---
 
@@ -50,7 +95,7 @@
 >
 > [Kurz Meldungsformular zeigen]
 
-**Warum so:** Zeigt Arbeit, nicht Verkauf. "Ich habe mir erlaubt" = respektvoll. Meldungsformular kurz zeigen → Prospect weiss wo es ist.
+**Warum so:** Zeigt Arbeit, nicht Verkauf. Meldungsformular kurz zeigen.
 
 ---
 
@@ -70,7 +115,7 @@
 >
 > "Da steht der Korrekturlink. Falls ich mich bei der Adresse vertan habe, kann ich das hier direkt anpassen. Und ein Foto hochladen."
 
-**Warum so:** Live-Demo, kein Fake. Der Prospect sieht den realen Flow. SMS = Beweis.
+**Warum so:** Live-Demo, kein Fake. SMS = Beweis.
 
 ---
 
@@ -90,27 +135,27 @@
 
 ---
 
-### 6. Login + PWA zeigen (20-30s)
+### 6. App + Mobilität erwähnen (10-15s)
 
-> "Damit Sie das selbst testen können: Sie gehen auf flowsight.ch/ops, geben Ihre E-Mail-Adresse ein, und bekommen einen Code per E-Mail. Damit sind Sie drin.
->
-> Und das Beste: Sie können sich das Ganze als App auf Ihr Handy installieren — dann haben Sie Ihre Leitzentrale immer dabei, wie eine eigene App."
->
-> [Kurz den Login-Screen zeigen, oder: PWA-Install-Banner auf dem Handy zeigen]
+> "Das Ganze funktioniert auch als App auf dem Handy — Sie haben Ihre Leitzentrale immer dabei, egal ob auf der Baustelle oder unterwegs."
 
-**Warum so:** Ohne diesen Abschnitt weiss der Prospect nicht, wie er reinkommt. PWA = "eigene App" → hoher Wow-Effekt.
+**Warum so:** Kurz, nicht technisch. Kein "PWA installieren". Nur der Nutzen. Details kommen in Mail 2.
 
 ---
 
-### 7. Abschluss — Feedback-Bitte (20-30s)
+### 7. Abschluss — Feedback + Rückmeldung (20-30s)
 
-> "Das ist das Leitsystem im Überblick. Mich interessiert: Macht das für einen Betrieb wie Ihren Sinn? Was würden Sie anders machen?
+> "Das ist das Leitsystem im Überblick. Mich interessiert wirklich: Macht das für einen Betrieb wie Ihren Sinn? Was würden Sie anders machen?
 >
-> In der Mail finden Sie alle Links zum Ausprobieren. Das Ganze läuft 14 Tage, danach schaltet es sich von selbst ab. Keine Verpflichtung.
+> Wenn Sie sagen, das ist spannend — melden Sie sich kurz bei mir, am besten mit der E-Mail-Adresse, die Sie dafür verwenden möchten. Dann richte ich Ihnen das so ein, dass Sie es selbst ausprobieren können. Mit Ihrer eigenen Nummer, Ihrer eigenen Leitzentrale.
 >
 > Ich freue mich auf Ihre Rückmeldung."
 
-**Warum so:** Endet mit Frage. "In der Mail finden Sie alles" → kein Diktieren von URLs im Video. Kurz und sauber.
+**Warum so:**
+- Endet mit Frage → Betriebsinhaber als Experte
+- "melden Sie sich mit der E-Mail-Adresse" → gibt uns den Input für activate_prospect.mjs
+- Kein Zeitdruck, kein "14 Tage", kein Preis
+- Er entscheidet ob und wann
 
 ---
 
@@ -124,6 +169,8 @@
 - ~~Features auflisten~~ → Pain zeigen, Lösung demonstrieren
 - ~~Dörfler AG als "Kunde" bezeichnen~~ → Er ist (noch) kein Kunde
 - ~~"Lisa"~~ → "Ihre Assistentin" oder "die Telefonassistentin"
+- ~~"14 Tage Trial"~~ → Nicht in Mail 1 / Video. Erst in Mail 2.
+- ~~"PWA installieren"~~ → "Funktioniert auch als App auf dem Handy"
 
 ## Pain-Type-Zuordnung im Script
 
@@ -137,69 +184,31 @@
 
 ---
 
-## Email-Vorlage (finale Version)
+## Prozess-Ablauf (E2E)
 
 ```
-Betreff: Eine Idee für die Dörfler AG
-
-Guten Tag Herr Dörfler
-
-Mein Name ist Gunnar Wende, ich wohne in Oberrieden.
-
-Vor einiger Zeit war jemand von Ihnen oder aus Ihrem Team bei uns im Haus,
-weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste.
-Wir waren mit der Ausführung sehr zufrieden.
-
-Das ist mir in Erinnerung geblieben. Ich habe mir danach ein paar Gedanken
-gemacht und dazu ein kurzes Video für Sie aufgenommen.
-
-Darin zeige ich Ihnen, was ich mir für die Dörfler AG konkret überlegt habe.
-
-Hier ist der Link:
-[Video-Link]
-
-Ich möchte Ihnen damit nichts verkaufen. Ich würde mich einfach freuen,
-wenn Sie mir kurz sagen, wie das auf Sie wirkt.
-
----
-
-Falls Sie es selbst ausprobieren möchten:
-
-  Ihre Testnummer:      044 505 74 20
-                        Rufen Sie an und schildern Sie ein Anliegen.
-
-  Ihre Website:         flowsight.ch/kunden/doerfler-ag
-                        Mit Online-Meldungsformular.
-
-  Ihre Leitzentrale:    flowsight.ch/ops
-                        Anmelden mit info@doerflerag.ch —
-                        Sie erhalten einen Code per E-Mail.
-
-  Als App installieren: Öffnen Sie die Leitzentrale auf dem Handy,
-                        tippen Sie auf "Zum Startbildschirm hinzufügen".
-
-Alles läuft 14 Tage, danach schaltet es sich von selbst ab.
-
----
-
-Freundliche Grüsse
-Gunnar Wende
-044 552 09 19
+1. Founder nimmt Video auf (dieses Script)
+2. Founder schickt Mail 1 (nur Video + Feedback-Bitte)
+3. Prospect schaut Video
+4. Prospect meldet sich: "Spannend, meine Email ist ramon@doerfler.ch"
+5. Founder: activate_prospect.mjs --slug=doerfler-ag --email=ramon@doerfler.ch
+6. Mail 2 wird automatisch verschickt (Leitzentrale + Testnummer + PWA + Trial)
+7. Prospect testet selbst (14 Tage)
+8. Follow-up Tag 10, Decision Tag 14
 ```
 
 ---
 
 ## Technische Checkliste (vor Aufnahme verifizieren)
 
-- [ ] Voice Agent antwortet auf Deutsch (Laura-Stimme)
-- [ ] SMS kommt an (kein Spam-Ordner)
+- [x] Voice Agent antwortet auf Deutsch (Laura-Stimme) ✅
+- [x] SMS kommt an Founder-Handy (kein Spam) ✅
+- [x] Ops-Email kommt an Founder (MAIL_REPLY_TO) ✅
+- [x] Dörfler AG bekommt NICHTS ✅
 - [ ] Fall erscheint in der Leitzentrale innerhalb 30s
-- [ ] Ops-Email kommt an (an info@doerflerag.ch — tenant-scoped)
-- [ ] Melder-Bestätigungs-Email kommt an
-- [ ] Review-Email kommt an (nach "Erledigt" + Review-Button)
 - [ ] Leitzentrale zeigt Dörfler-Branding (Farbe #2b6cb0)
 - [ ] Tenant-Switcher zeigt "Dörfler AG"
 - [ ] Demo-Cases sind sichtbar (15 Fälle)
-- [ ] OTP-Login funktioniert (info@doerflerag.ch → Code kommt an)
-- [ ] PWA installierbar (Banner erscheint oder "Zum Startbildschirm")
 - [ ] Meldungsformular funktioniert E2E (Submit → Fall in Leitzentrale)
+- [ ] Review-Email kommt an (nach "Erledigt" + Review-Button)
+- [ ] Loom-Recording funktioniert (Test-Aufnahme)
