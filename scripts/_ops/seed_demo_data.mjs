@@ -243,6 +243,13 @@ async function main() {
       review_sent_at: status === "done" && i % 3 === 0
         ? new Date(new Date(createdAt).getTime() + 2 * 24 * 60 * 60 * 1000).toISOString()
         : null,
+      // Ratings: ~60% of review-requested done cases get a rating (realistic)
+      review_rating: status === "done" && i % 3 === 0 && i % 5 !== 0
+        ? [5, 5, 5, 5, 4, 4, 5, 5, 4, 5][i % 10]
+        : null,
+      review_received_at: status === "done" && i % 3 === 0 && i % 5 !== 0
+        ? new Date(new Date(createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toISOString()
+        : null,
     });
   }
 
