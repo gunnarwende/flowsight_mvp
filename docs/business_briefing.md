@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-01 (Sales-Phase gestartet. Dörfler AG als erster Prospect durch GTM-Maschine. Phase A/B Architektur live. Voice: Ela (DE). Ops-Email tenant-scoped. Impressum+Datenschutz Seiten live. PRs #374-#377.)
+> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 2 Betriebe in Phase A: Dörfler AG + Walter Leuthold. GTM Machine Checklist. 2-Mail-Strategie. 6 PRs (#374-#379). Voice: Ela DE. Ops-Email tenant-scoped.)
 
 ---
 
@@ -246,7 +246,7 @@ NACH ERLEDIGUNG:
 | **Dörfler AG** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/doerfler-ag |
 | **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
 | **Jul. Weinberger AG** (Thalwil) | **GTM Goldstandard** | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/weinberger-ag |
-| **Walter Leuthold** (Oberrieden) | Website LIVE | wizard | flowsight.ch/kunden/walter-leuthold |
+| **Walter Leuthold** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/walter-leuthold |
 | **Orlandini Sanitär** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/orlandini |
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
 | **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
@@ -256,6 +256,13 @@ NACH ERLEDIGUNG:
 - Phase A provisioniert (01.04.2026): Website, Voice, 15 Demo-Cases, Leitzentrale
 - Noch KEIN Kontakt mit Betrieb. Demo-Video-Aufnahme steht bevor.
 - Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos (5/5)
+
+### Walter Leuthold — Zweiter Prospect durch die GTM-Maschine
+- Sanitär/Spenglerei, Ein-Mann-Betrieb seit 2001, Oberrieden ZH
+- Phase A provisioniert (01.04.2026): Website, Voice (Ela), 15 Demo-Cases, Leitzentrale
+- ICP 8 (HOT), 4.9 Sterne / 44 Google Reviews — herausragend
+- Pain Types: erreichbarkeit (Ein-Mann-Betrieb!), buerochaos, bewertung
+- Testnummer: +41 44 505 30 19
 
 ### Brunner Haustechnik AG — Demo-Tenant
 - Fiktiver Betrieb für Sales-Demos (Thalwil ZH)
