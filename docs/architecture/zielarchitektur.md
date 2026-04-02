@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 2.9 | **Datum:** 2026-04-02
+**Version:** 3.0 | **Datum:** 2026-04-02
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v2.9 — 55 Decisions (D1-D55). SMS-Spam gelöst. APP_BASE_URL zentralisiert. Voice Quality Gates.
+**Status:** v3.0 — 59 Decisions (D1-D59). CEO-App Komplett-Überarbeitung. PWA installierbar. Update-System. 19 PRs in 2 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -67,6 +67,10 @@
 | D53 | **APP_BASE_URL zentralisiert.** Neue Konstante `src/lib/config/appUrl.ts` — Production IMMER `https://flowsight.ch` (hardcoded). Development liest APP_URL für localhost. Ersetzt 13× verstreute `process.env.APP_URL` Fallback-Ketten. Verhindert dass Emails/SMS jemals vercel.app-URLs enthalten. | **ENTSCHIEDEN** ✅ | CC | `appUrl.ts`, PR #384 |
 | D54 | **Voice Quality Gates.** (1) 25s Minimum-Duration: Anrufe <25s erzeugen keinen Case + keine SMS. (2) SMS Quality Gate: SMS nur wenn ≥2 von 5 Feldern vom Caller kamen (nicht alle defaulted). Verhindert falsche SMS ("Ihre Meldung wurde aufgenommen") bei Kurzanrufen. Case wird trotzdem für Monitoring erstellt. | **ENTSCHIEDEN** ✅ | Founder + CC | `webhook/route.ts`, PRs #382-#383 |
 | D55 | **SMS Sender: Alphanumerisch (Tenant-Markenname).** eCall Support bestätigt (02.04.): Alphanumerische Sender werden korrekt zugestellt wenn whitegelistet. Sender = Firmenname (z.B. "Doerfler AG", max 11 Zeichen). Numerischer Fallback (ECALL_SENDER_NUMBER) nur bei ungültigem Namen. | **ENTSCHIEDEN** ✅ | Founder + eCall Support | `sendSmsEcall.ts`, PR #385 |
+| D56 | **CEO-App: Leitsystem-iframe in TenantDeepDive.** Embedded iframe mit Cookie-Switch (await + 150ms delay). Mini-Toolbar (Zurück + Tenant-Name + Reload). Full-width, 80vh. Kein Phone-Frame im iframe. Löst Stale-Data-Problem (neuer Tab hatte immer alte Daten). | **ENTSCHIEDEN** ✅ | Founder + CC | `TenantDeepDive.tsx`, PRs #388-#390 |
+| D57 | **CEO-App: 3 Tabs statt 5.** Live (converted, Gold-Akzent) / Entwicklung (alles andere inkl. Demo) / Archiv (offboarded). Keine SaaS-Sprache ("Trial", "Prospect"). Alle 4 aktuellen Betriebe = Entwicklung. | **ENTSCHIEDEN** ✅ | Founder | `TenantGrid.tsx`, PR #389 |
+| D58 | **CEO-PWA installierbar.** Eigener `ceo-sw.js` Service Worker (scope /ceo). Manifest existierte bereits. Install-Prompt in CeoShell Sidebar. Zwei getrennte PWAs: "FlowSight CEO" (Founder) + "Leitsystem" (pro Tenant). | **ENTSCHIEDEN** ✅ | Founder + CC | `ceo-sw.js`, `CeoShell.tsx`, PR #391 |
+| D59 | **Intelligentes Update-System (Pulse).** 30s Background-Poll. Baseline-Fingerprint beim ersten Load. Diff-Berechnung bei Änderung. Badge mit Zähler (amber, pulsierend). Changelog-Popover (Label + Detail pro Änderung). "Jetzt aktualisieren" Button. Ignorieren möglich. Shared Utilities (`useUpdateDetection.ts`) für Pulse + Betriebe. | **ENTSCHIEDEN** ✅ | Founder + CC | `PulseView.tsx`, `useUpdateDetection.ts`, PR #392 |
 
 ---
 
