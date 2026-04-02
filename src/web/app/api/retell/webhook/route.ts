@@ -294,6 +294,25 @@ export async function POST(req: Request) {
     return new NextResponse(null, { status: 204 });
   }
 
+  // ── Minimum duration gate (25s) ─────────────────────────────────────
+  // Calls < 25s are accidental hangups or aborted calls. No case, no SMS.
+  // Retell provides start_timestamp and end_timestamp in milliseconds.
+  const callStart = typeof call?.start_timestamp === "number" ? call.start_timestamp : 0;
+  const callEnd = typeof call?.end_timestamp === "number" ? call.end_timestamp : 0;
+  const callDurationMs = callEnd > callStart ? callEnd - callStart : 0;
+  const MIN_CALL_DURATION_MS = 25_000; // 25 seconds
+
+  if (callDurationMs > 0 && callDurationMs < MIN_CALL_DURATION_MS) {
+    logDecision({
+      decision: "too_short",
+      event,
+      call_id: retellCallId,
+      duration_ms: callDurationMs,
+      min_required_ms: MIN_CALL_DURATION_MS,
+    });
+    return new NextResponse(null, { status: 204 });
+  }
+
   // ── Probe extraction paths ──────────────────────────────────────────
   const { data: extractedData, path: extractedPath } = probeExtractedData(call, payload);
   const extractedKeys = Object.keys(extractedData);

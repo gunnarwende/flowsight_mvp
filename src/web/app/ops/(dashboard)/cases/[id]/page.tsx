@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
@@ -92,8 +93,19 @@ export default async function CaseDetailPage({
   const caseId = formatCaseId(caseData.seq_number, identity?.caseIdPrefix);
   const isProspect = scope?.isProspect ?? false;
   const brandColor = identity?.primaryColor ?? "#64748b";
-  // Tenant mismatch detection — admin viewing another tenant's case
+  // Auto-switch tenant when admin opens a case from a different tenant (e.g. via email deep-link).
+  // This ensures sidebar, branding, and context all show the correct business.
   const isForeignTenant = scope?.isAdmin && scope.tenantId && caseData.tenant_id !== scope.tenantId;
+  if (isForeignTenant) {
+    const cookieStore = await cookies();
+    cookieStore.set("fs_active_tenant", caseData.tenant_id, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
 
   // Load tenant modules for notification settings (channel hints)
   const { data: tenantRow } = await supabase
@@ -157,12 +169,7 @@ export default async function CaseDetailPage({
         </div>
       </div>
 
-      {/* Tenant mismatch warning — prevents accidentally emailing from wrong tenant */}
-      {isForeignTenant && identity && (
-        <div className="mb-3 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium">
-          ⚠️ Dieser Fall gehört zu <strong>{identity.displayName}</strong>, nicht zum aktuell eingeloggten Betrieb. E-Mails werden im Namen von {identity.displayName} versendet.
-        </div>
-      )}
+      {/* Tenant auto-switched via cookie when admin opens a foreign-tenant case */}
 
       {/* Case surface */}
       <CaseDetailForm
