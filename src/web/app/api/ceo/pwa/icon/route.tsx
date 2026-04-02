@@ -12,6 +12,8 @@ export async function GET(request: Request) {
   const accentHeight = Math.max(2, Math.round(size * 0.04));
   const accentTop = Math.round(size * 0.62);
 
+  const borderWidth = Math.max(Math.round(size * 0.025), 1);
+
   return new ImageResponse(
     (
       <div
@@ -24,6 +26,8 @@ export async function GET(request: Request) {
           justifyContent: "center",
           backgroundColor: "#1a2744",
           borderRadius: radius,
+          border: `${borderWidth}px solid #c8965a`,
+          boxSizing: "border-box" as const,
           position: "relative",
         }}
       >
