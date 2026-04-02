@@ -6,6 +6,7 @@ import { sendReviewRequest } from "@/src/lib/email/resend";
 import { sendSms } from "@/src/lib/sms/sendSms";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/request-review
@@ -124,12 +125,8 @@ export async function POST(
   // The Google URL only appears as a "Posten" button on the review surface itself.
 
   // ── Build review surface URL (always the primary link) ────────────────
-  const baseUrl =
-    process.env.APP_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "https://flowsight.ch";
   const reviewToken = generateVerifyToken(id, row.created_at);
-  const reviewSurfaceUrl = `${baseUrl}/review/${id}?token=${reviewToken}`;
+  const reviewSurfaceUrl = `${APP_BASE_URL}/review/${id}?token=${reviewToken}`;
 
   // ── Send review request (email preferred, SMS fallback) ──────────────
   Sentry.setTag("case_id", id);

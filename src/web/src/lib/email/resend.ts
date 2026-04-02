@@ -263,11 +263,8 @@ export async function sendCaseNotification(
         : "Neuer Fall";
 
   try {
-    const baseUrl =
-      process.env.APP_URL ??
-      process.env.NEXT_PUBLIC_APP_URL ??
-      "https://flowsight.ch";
-    const deepLink = `${baseUrl}/ops/open/${payload.caseId}`;
+    const { APP_BASE_URL } = await import("@/src/lib/config/appUrl");
+    const deepLink = `${APP_BASE_URL}/ops/open/${payload.caseId}`;
 
     const contactLines: string[] = [];
     if (payload.contactPhone) contactLines.push(`Telefon:   ${payload.contactPhone}`);

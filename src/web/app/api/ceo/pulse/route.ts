@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { computeSeverity } from "@/src/lib/ceo/severityEngine";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 export async function GET() {
   const scope = await resolveTenantScope();
@@ -44,8 +45,7 @@ export async function GET() {
   let healthDb = "?";
   let healthEmail = "?";
   try {
-    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
-    const res = await fetch(`${baseUrl}/api/health`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${APP_BASE_URL}/api/health`, { signal: AbortSignal.timeout(5000) });
     if (res.ok) {
       const body = await res.json();
       healthOk = body.ok === true;

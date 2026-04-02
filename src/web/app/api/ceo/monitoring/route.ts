@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 export async function GET() {
   const scope = await resolveTenantScope();
@@ -11,11 +12,7 @@ export async function GET() {
   // ── Live health check ───────────────────────────────────────────────
   let health: Record<string, unknown> = { ok: false, db: "?", email: "?" };
   try {
-    const baseUrl =
-      process.env.APP_URL ??
-      process.env.NEXT_PUBLIC_APP_URL ??
-      "https://flowsight.ch";
-    const res = await fetch(`${baseUrl}/api/health`, {
+    const res = await fetch(`${APP_BASE_URL}/api/health`, {
       signal: AbortSignal.timeout(5000),
     });
     if (res.ok) {

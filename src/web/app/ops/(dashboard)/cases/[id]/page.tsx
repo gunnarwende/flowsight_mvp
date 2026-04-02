@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
@@ -94,7 +94,7 @@ export default async function CaseDetailPage({
   const isProspect = scope?.isProspect ?? false;
   const brandColor = identity?.primaryColor ?? "#64748b";
   // Auto-switch tenant when admin opens a case from a different tenant (e.g. via email deep-link).
-  // This ensures sidebar, branding, and context all show the correct business.
+  // Sets cookie and redirects to same page — on reload, sidebar shows the correct business.
   const isForeignTenant = scope?.isAdmin && scope.tenantId && caseData.tenant_id !== scope.tenantId;
   if (isForeignTenant) {
     const cookieStore = await cookies();
@@ -105,6 +105,8 @@ export default async function CaseDetailPage({
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 365,
     });
+    // Redirect to same page — forces layout to re-resolve with the new tenant cookie
+    redirect(`/ops/cases/${id}`);
   }
 
   // Load tenant modules for notification settings (channel hints)

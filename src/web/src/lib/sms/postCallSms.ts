@@ -26,10 +26,8 @@ export interface PostCallSmsPayload {
 export async function sendPostCallSms(
   p: PostCallSmsPayload,
 ): Promise<SendSmsResult> {
-  const baseUrl =
-    process.env.APP_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "https://flowsight.ch";
+  const { APP_BASE_URL } = await import("@/src/lib/config/appUrl");
+  const baseUrl = APP_BASE_URL;
 
   const shortToken = generateShortVerifyToken(p.caseId, p.createdAt);
   const caseRef = `${p.caseIdPrefix}-${p.seqNumber}`;

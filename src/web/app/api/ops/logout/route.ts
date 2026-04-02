@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 export async function POST(req: NextRequest) {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.APP_URL ??
-    "http://localhost:3000";
-
-  const redirectResponse = NextResponse.redirect(new URL("/ops/login", appUrl), {
+  const redirectResponse = NextResponse.redirect(new URL("/ops/login", APP_BASE_URL), {
     status: 303,
   });
 

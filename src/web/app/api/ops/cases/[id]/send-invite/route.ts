@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // ICS helpers
@@ -227,11 +228,7 @@ export async function POST(
   const from = `${safeTenantName} <${addr}>`;
   const organizerEmail = addr;
 
-  const baseUrl =
-    process.env.APP_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "https://flowsight.ch";
-  const opsLink = `${baseUrl}/ops/cases/${id}`;
+  const opsLink = `${APP_BASE_URL}/ops/cases/${id}`;
 
   const ics = buildIcs({
     uid: `${id}@flowsight.ch`,
