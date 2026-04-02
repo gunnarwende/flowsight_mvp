@@ -5,6 +5,7 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { sendAssignmentNotification } from "@/src/lib/email/resend";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/notify-assignees
@@ -72,7 +73,6 @@ export async function POST(
       return NextResponse.json({ error: "Tenant identity not found." }, { status: 500 });
     }
 
-    const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
     const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
 
     const staffWithEmail = (staffMatches ?? []).filter(
@@ -98,7 +98,7 @@ export async function POST(
           city: row.city,
           urgency: row.urgency,
           description: row.description,
-          deepLink: `${baseUrl}/ops/open/${id}`,
+          deepLink: `${APP_BASE_URL}/ops/open/${id}`,
         }),
       ),
     );

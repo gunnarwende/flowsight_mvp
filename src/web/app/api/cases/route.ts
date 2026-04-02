@@ -7,6 +7,7 @@ import { hasModule } from "@/src/lib/tenants/hasModule";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -355,8 +356,7 @@ export async function POST(request: NextRequest) {
 
     // Notify: system failures only (email dispatch fail → RED alert)
     if (!emailSent) {
-      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
-      await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${baseUrl}/ops/cases/${row.id}` });
+      await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${APP_BASE_URL}/ops/cases/${row.id}` });
     }
 
     // Include verify token + case_id_prefix for branded success screen

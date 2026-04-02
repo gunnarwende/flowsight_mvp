@@ -9,6 +9,7 @@ import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // Retell webhook payload types (from retell-sdk analysis)
@@ -633,12 +634,11 @@ export async function POST(req: Request) {
     let waSid: string | undefined;
 
     if (!emailSent) {
-      const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
       const wa = await notify({
         severity: "RED",
         code: "EMAIL_DISPATCH_FAILED",
         refs: { case_id: caseId, call_id: retellCallId },
-        opsLink: `${baseUrl}/ops/cases/${caseId}`,
+        opsLink: `${APP_BASE_URL}/ops/cases/${caseId}`,
       });
       waSent = wa.sent;
       waSid = wa.messageSid;

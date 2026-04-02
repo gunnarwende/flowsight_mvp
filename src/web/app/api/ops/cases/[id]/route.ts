@@ -7,6 +7,7 @@ import { sendAssignmentNotification } from "@/src/lib/email/resend";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 // ---------------------------------------------------------------------------
 // Allowed values for ops fields
@@ -317,7 +318,6 @@ export async function PATCH(
         const notifyEnabled = modules.notify_staff_assignment !== false;
 
         if (notifyEnabled && identity && staffMatches && staffMatches.length > 0) {
-          const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
           const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
           const results = await Promise.all(
             staffMatches
@@ -333,7 +333,7 @@ export async function PATCH(
                   city: row.city,
                   urgency: row.urgency,
                   description: row.description,
-                  deepLink: `${baseUrl}/ops/open/${id}`,
+                  deepLink: `${APP_BASE_URL}/ops/open/${id}`,
                 })
               )
           );
