@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 12 PRs (#374-#385). SMS-Spam gelöst (eCall Whitelisting). APP_BASE_URL zentralisiert. Voice Quality Gates (25s + Content). Demo-Scripts finalisiert. 2 Betriebe in Phase A.)
+> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 19 PRs (#374-#392). CEO-App komplett überarbeitet: Leitsystem-iframe, Quick-Actions, Tabs, PWA installierbar, Update-System. SMS-Spam gelöst. Voice Quality Gates. 2 Betriebe in Phase A.)
 
 ---
 
@@ -146,12 +146,14 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - Konfiguration in Supabase tenants-Tabelle
 
 ### 3.11 FlowSight CEO-App (Thema C)
-- **Eigene PWA** unter /ceo — das Nervenzentrum des gesamten Business
-- **9 Seiten:** Pulse (Ampel+KPIs+Alerts), Betriebe (Grid+Health Score+Deep-Dive), Pipeline (Funnel+Smart-Call-Liste+CEO-Kalender), Finanzen (MRR+P&L+Unit Economics+Forecast), Monitoring (Health+Env-Status), Benachrichtigungen (Feed+Comms-KPIs), Wissen (37 Runbooks), Team (Tasks+Notes), Admin (Env-Vars+Quick-Links)
-- **AI-Copilot:** Model-agnostisch (Claude + GPT austauschbar pro Feature). Pulse-Kommentar, Tenant-Insights, Error-Triage (aktiviert mit API Keys)
-- **Revenue Forecast:** 3 Szenarien (Best/Expected/Worst), Churn-Risiko-Erkennung
-- **Design:** Navy+Gold (konsistent mit flowsight.ch), Mobile-first, PWA installierbar
-- **DB:** ceo_costs, ceo_ai_usage, ceo_tasks, ceo_notes
+- **Eigene installierbare PWA** unter /ceo — das Nervenzentrum des gesamten Business
+- **9 Seiten:** Pulse (Ampel+KPIs+Alerts), Betriebe (Grid+Health Score+Deep-Dive), Pipeline, Finanzen, Monitoring, Benachrichtigungen, Wissen, Team, Admin
+- **Betriebe-Seite (02.04.):** Tabs Live/Entwicklung/Archiv, Quick-Actions pro Betrieb (Testnummer, Website, Wizard, Copy), Leitsystem-iframe embedded (Cookie-Switch, Mini-Toolbar, Reload), Tenant-Switcher mit Status-Sortierung + Demo-Badge
+- **Update-System (02.04.):** Intelligentes 30s-Polling, Badge mit Änderungszähler, Changelog-Popover ("Neue Fälle: +5"), "Jetzt aktualisieren" Button
+- **Smartphone-Preview:** Gesamte CEO-App als Phone-Frame darstellbar (Desktop-Toggle)
+- **PWA-Installation:** Eigener ceo-sw.js, Install-Prompt in Sidebar, Gold-Rand auf Icon
+- **AI-Copilot:** Model-agnostisch (Claude + GPT). Pulse-Kommentar, Tenant-Insights
+- **Design:** Navy+Gold, Mobile-first, PWA installierbar (CEO + pro Tenant getrennt)
 - **Skalierbar für 500+ Betriebe:** Pagination, Search, Filter, Server-side Aggregation
 - **Gesamtplan:** `docs/redesign/flowsight_ceo_app.md` (27 Features, 10 Phasen, alle LIVE)
 
