@@ -26,6 +26,9 @@ export async function GET(request: Request) {
     size <= 64 ? 0.38 : size <= 128 ? 0.30 : size <= 256 ? 0.15 : 0.12;
   const dotSize = Math.round(size * (isMaskable ? baseRatio * 0.8 : baseRatio));
 
+  // Gold border: 2.5% of icon size, visible on dark backgrounds
+  const borderWidth = Math.max(Math.round(size * 0.025), 1);
+
   return new ImageResponse(
     (
       <div
@@ -37,6 +40,8 @@ export async function GET(request: Request) {
           justifyContent: "center",
           backgroundColor: "#1a2744",
           borderRadius: radius,
+          border: `${borderWidth}px solid #c8965a`,
+          boxSizing: "border-box" as const,
         }}
       >
         <div

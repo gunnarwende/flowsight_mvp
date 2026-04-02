@@ -97,9 +97,9 @@ export function CeoShell({
       setIsInstalled(true);
       return;
     }
-    // Register service worker for /ceo scope
+    // Register dedicated CEO service worker (required for PWA install prompt)
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js", { scope: "/ceo" }).catch(() => {});
+      navigator.serviceWorker.register("/ceo-sw.js", { scope: "/ceo" }).catch(() => {});
     }
     // Capture install prompt
     function handleBeforeInstall(e: Event) {
