@@ -100,10 +100,45 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
     }
   }, [tenantId]);
 
+  // Update detection via version polling
+  const [initialVersion, setInitialVersion] = useState<string | null>(null);
+  const [hasUpdate, setHasUpdate] = useState(false);
+
   useEffect(() => {
     fetchData();
     fetchInsight();
-  }, [fetchData, fetchInsight]);
+    // Capture initial version
+    fetch(`/api/ceo/tenants/${tenantId}/version`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((body) => { if (body?.version) setInitialVersion(body.version); })
+      .catch(() => {});
+  }, [fetchData, fetchInsight, tenantId]);
+
+  // Poll version every 60s
+  useEffect(() => {
+    if (!initialVersion) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/ceo/tenants/${tenantId}/version`);
+        if (!res.ok) return;
+        const body = await res.json();
+        if (body.version && body.version !== initialVersion) {
+          setHasUpdate(true);
+        }
+      } catch { /* silent */ }
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [initialVersion, tenantId]);
+
+  function handleRefresh() {
+    setHasUpdate(false);
+    fetchData();
+    // Re-capture version
+    fetch(`/api/ceo/tenants/${tenantId}/version`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((body) => { if (body?.version) setInitialVersion(body.version); })
+      .catch(() => {});
+  }
 
   if (loading) {
     return (
@@ -148,6 +183,19 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
     <div className="space-y-6">
       {/* Back + Header */}
       <BackLink />
+
+      {/* Update notification banner */}
+      {hasUpdate && (
+        <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-3">
+          <span className="text-sm text-amber-800 font-medium">Neue Daten verfügbar</span>
+          <button
+            onClick={handleRefresh}
+            className="px-3 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors"
+          >
+            Aktualisieren
+          </button>
+        </div>
+      )}
 
       <div className="bg-white border border-navy-100 rounded-2xl shadow-sm p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -325,18 +373,160 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
         </Section>
       )}
 
-      {/* CTA */}
+      {/* Embedded Leitzentrale */}
+      <LeitzentraleEmbed tenantId={data.tenant.id} tenantName={data.tenant.name} />
+    </div>
+  );
+}
+
+// ── Embedded Leitzentrale ────────────────────────────────────────────────────
+
+function LeitzentraleEmbed({ tenantId, tenantName }: { tenantId: string; tenantName: string }) {
+  const [open, setOpen] = useState(false);
+  const [mobileFrame, setMobileFrame] = useState(false);
+  const [role, setRole] = useState<"admin" | "techniker">("admin");
+  const [iframeKey, setIframeKey] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  async function openLeitzentrale() {
+    setLoading(true);
+    // Switch tenant cookie BEFORE loading the iframe
+    await fetch("/api/ops/switch-tenant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tenantId, viewAsRole: null }),
+    });
+    setRole("admin");
+    setOpen(true);
+    setLoading(false);
+  }
+
+  async function toggleRole() {
+    const newRole = role === "admin" ? "techniker" : "admin";
+    await fetch("/api/ops/switch-tenant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tenantId, viewAsRole: newRole === "techniker" ? "techniker" : null }),
+    });
+    setRole(newRole);
+    setIframeKey((k) => k + 1); // Force iframe reload
+  }
+
+  if (!open) {
+    return (
       <div className="flex justify-center pt-2">
-        <Link
-          href="/ops/cases"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gold-500 text-navy-950 font-semibold text-sm hover:bg-gold-400 transition-colors shadow-sm min-h-[44px]"
+        <button
+          onClick={openLeitzentrale}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gold-500 text-navy-950 font-semibold text-sm hover:bg-gold-400 transition-colors shadow-sm min-h-[44px] disabled:opacity-50"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
           </svg>
-          Zum Leitsystem
-        </Link>
+          {loading ? "Lade..." : "Leitzentrale anzeigen"}
+        </button>
       </div>
+    );
+  }
+
+  const iframeSrc = `/ops/cases?_t=${Date.now()}`;
+
+  return (
+    <div className="mt-2">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between bg-navy-50 rounded-t-xl px-4 py-2 border border-navy-100 border-b-0">
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold text-navy-700">Leitzentrale: {tenantName}</span>
+          {/* Role toggle */}
+          <div className="flex bg-white rounded-lg border border-navy-200 overflow-hidden">
+            <button
+              onClick={() => role !== "admin" && toggleRole()}
+              className={`px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                role === "admin" ? "bg-navy-900 text-white" : "text-navy-500 hover:bg-navy-50"
+              }`}
+            >
+              Admin
+            </button>
+            <button
+              onClick={() => role !== "techniker" && toggleRole()}
+              className={`px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                role === "techniker" ? "bg-violet-600 text-white" : "text-navy-500 hover:bg-navy-50"
+              }`}
+            >
+              Techniker
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Mobile toggle */}
+          <button
+            onClick={() => setMobileFrame((f) => !f)}
+            title={mobileFrame ? "Desktop-Ansicht" : "Smartphone-Ansicht"}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+              mobileFrame ? "bg-navy-900 text-white" : "bg-white text-navy-500 hover:bg-navy-100 border border-navy-200"
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+          </button>
+          {/* Reload */}
+          <button
+            onClick={() => setIframeKey((k) => k + 1)}
+            title="Neu laden"
+            className="w-8 h-8 rounded-lg bg-white text-navy-500 hover:bg-navy-100 border border-navy-200 flex items-center justify-center transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+            </svg>
+          </button>
+          {/* Open in new tab */}
+          <a
+            href="/ops/cases"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="In neuem Tab"
+            className="w-8 h-8 rounded-lg bg-white text-navy-500 hover:bg-navy-100 border border-navy-200 flex items-center justify-center transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </a>
+          {/* Close */}
+          <button
+            onClick={() => setOpen(false)}
+            title="Schliessen"
+            className="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* iframe container */}
+      {mobileFrame ? (
+        <div className="flex justify-center bg-gray-100 border border-navy-100 border-t-0 rounded-b-xl py-8">
+          <div className="w-[410px] h-[820px] bg-gray-900 rounded-[3rem] p-[10px] shadow-2xl">
+            <iframe
+              key={iframeKey}
+              src={iframeSrc}
+              className="w-[390px] h-[800px] rounded-[2.4rem] bg-white"
+              title={`Leitzentrale ${tenantName} (Mobile)`}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="border border-navy-100 border-t-0 rounded-b-xl overflow-hidden">
+          <iframe
+            key={iframeKey}
+            src={iframeSrc}
+            className="w-full h-[700px] bg-white"
+            title={`Leitzentrale ${tenantName}`}
+          />
+        </div>
+      )}
     </div>
   );
 }
