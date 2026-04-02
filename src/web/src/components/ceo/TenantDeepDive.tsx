@@ -379,39 +379,83 @@ export function TenantDeepDive({ tenantId }: { tenantId: string }) {
   );
 }
 
-// ── Leitsystem Link (opens in new tab) ──────────────────────────────────────
+// ── Embedded Leitsystem ─────────────────────────────────────────────────────
 
-function LeitsystemLink({ tenantId, tenantName, slug }: { tenantId: string; tenantName: string; slug: string }) {
+function LeitsystemLink({ tenantId, tenantName }: { tenantId: string; tenantName: string; slug: string }) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [iframeKey, setIframeKey] = useState(0);
+  const [ready, setReady] = useState(false);
 
   async function openLeitsystem() {
     setLoading(true);
-    // Switch tenant cookie BEFORE opening the new tab
+    // Switch tenant cookie BEFORE loading iframe — await ensures cookie is set
     await fetch("/api/ops/switch-tenant", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tenantId, viewAsRole: null }),
     });
-    // Open in new tab — always fresh data, no cache issues
-    window.open("/ops/cases", "_blank");
+    // Short delay to ensure cookie propagation across browser contexts
+    await new Promise((r) => setTimeout(r, 150));
+    setReady(true);
+    setOpen(true);
     setLoading(false);
   }
 
+  if (!open) {
+    return (
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <button
+          onClick={openLeitsystem}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gold-500 text-navy-950 font-semibold text-sm hover:bg-gold-400 transition-colors shadow-sm min-h-[44px] disabled:opacity-50"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+          </svg>
+          {loading ? "Lade..." : "Leitsystem anzeigen"}
+        </button>
+      </div>
+    );
+  }
+
+  // Iframe shown — full-width, with mini back-button + reload
   return (
-    <div className="flex flex-col items-center gap-3 pt-2">
-      <button
-        onClick={openLeitsystem}
-        disabled={loading}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gold-500 text-navy-950 font-semibold text-sm hover:bg-gold-400 transition-colors shadow-sm min-h-[44px] disabled:opacity-50"
-      >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-        </svg>
-        {loading ? "Lade..." : "Leitsystem anzeigen"}
-      </button>
-      <p className="text-[10px] text-gray-400">
-        {tenantName} &mdash; {slug}
-      </p>
+    <div className="mt-2 relative">
+      {/* Mini toolbar */}
+      <div className="flex items-center justify-between bg-navy-50 rounded-t-xl px-3 py-1.5 border border-navy-100 border-b-0">
+        <button
+          onClick={() => setOpen(false)}
+          className="flex items-center gap-1 text-[10px] text-navy-500 hover:text-navy-700 font-medium transition-colors"
+          title="Zurück zur Übersicht"
+        >
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          Zurück
+        </button>
+        <span className="text-[10px] text-navy-400 font-medium">{tenantName}</span>
+        <button
+          onClick={() => setIframeKey((k) => k + 1)}
+          className="flex items-center gap-1 text-[10px] text-navy-500 hover:text-navy-700 font-medium transition-colors"
+          title="Aktualisieren"
+        >
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+          </svg>
+        </button>
+      </div>
+      {/* iframe — full width, no phone frame */}
+      {ready && (
+        <div className="border border-navy-100 border-t-0 rounded-b-xl overflow-hidden">
+          <iframe
+            key={iframeKey}
+            src={`/ops/cases?_r=${iframeKey}`}
+            className="w-full h-[80vh] bg-white"
+            title={`Leitsystem ${tenantName}`}
+          />
+        </div>
+      )}
     </div>
   );
 }
