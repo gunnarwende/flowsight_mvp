@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 
 interface PulseData {
@@ -30,24 +30,77 @@ export function PulseView() {
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pendingData, setPendingData] = useState<PulseData | null>(null);
+  const [changes, setChanges] = useState<{ label: string; detail: string }[]>([]);
+  const [showChanges, setShowChanges] = useState(false);
+  const baselineRef = useRef<string | null>(null);
+
+  function pulseFingerprint(d: PulseData): string {
+    return `${d.cases.cases24h}|${d.cases.backlogNew}|${d.cases.done7d}|${d.cases.reviews7d}|${d.cases.scheduledToday}|${d.trials.active}`;
+  }
+
+  function computeDiff(oldD: PulseData, newD: PulseData): { label: string; detail: string }[] {
+    const ch: { label: string; detail: string }[] = [];
+    const cd = newD.cases.cases24h - oldD.cases.cases24h;
+    if (cd > 0) ch.push({ label: "Neue Fälle", detail: `+${cd} in den letzten 24h` });
+    const bd = newD.cases.backlogNew - oldD.cases.backlogNew;
+    if (bd > 0) ch.push({ label: "Backlog gewachsen", detail: `+${bd} offene Fälle` });
+    if (bd < 0) ch.push({ label: "Backlog abgebaut", detail: `${Math.abs(bd)} bearbeitet` });
+    const dd = newD.cases.done7d - oldD.cases.done7d;
+    if (dd > 0) ch.push({ label: "Fälle erledigt", detail: `+${dd} (7 Tage)` });
+    const rd = newD.cases.reviews7d - oldD.cases.reviews7d;
+    if (rd > 0) ch.push({ label: "Bewertungen", detail: `+${rd} Anfragen` });
+    const sd = newD.cases.scheduledToday - oldD.cases.scheduledToday;
+    if (sd !== 0) ch.push({ label: "Termine heute", detail: `${newD.cases.scheduledToday} (war ${oldD.cases.scheduledToday})` });
+    const td = newD.trials.active - oldD.trials.active;
+    if (td !== 0) ch.push({ label: "Aktive Trials", detail: `${newD.trials.active} (war ${oldD.trials.active})` });
+    return ch;
+  }
 
   const fetchPulse = useCallback(async () => {
     try {
       const res = await fetch("/api/ceo/pulse");
       if (!res.ok) throw new Error("Pulse fetch failed");
-      setData(await res.json());
+      const newData: PulseData = await res.json();
+
+      if (!baselineRef.current) {
+        // First load: set as baseline, show directly
+        setData(newData);
+        baselineRef.current = pulseFingerprint(newData);
+      } else {
+        const newFp = pulseFingerprint(newData);
+        if (newFp !== baselineRef.current && data) {
+          // Data changed: store as pending, compute diff
+          setPendingData(newData);
+          const diff = computeDiff(data, newData);
+          if (diff.length > 0) setChanges(diff);
+        }
+        // If no visible data yet, show it
+        if (!data) setData(newData);
+      }
       setError("");
     } catch {
       setError("Daten konnten nicht geladen werden.");
     }
     setLoading(false);
-  }, []);
+  }, [data]);
+
+  function applyUpdate() {
+    if (pendingData) {
+      setData(pendingData);
+      baselineRef.current = pulseFingerprint(pendingData);
+      setPendingData(null);
+      setChanges([]);
+      setShowChanges(false);
+    }
+  }
 
   useEffect(() => {
     fetchPulse();
     const interval = setInterval(fetchPulse, 30_000); // 30s polling
     return () => clearInterval(interval);
-  }, [fetchPulse]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return (
@@ -86,15 +139,52 @@ export function PulseView() {
             <p className="text-xs text-gray-500">{sev.label} — Stand {time}</p>
           </div>
         </div>
-        <button
-          onClick={fetchPulse}
-          className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-          title="Aktualisieren"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-          </svg>
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => {
+              if (changes.length > 0) {
+                setShowChanges((s) => !s);
+              } else {
+                fetchPulse();
+              }
+            }}
+            className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            title={changes.length > 0 ? `${changes.length} Updates verfügbar` : "Aktualisieren"}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+            </svg>
+            {/* Badge with count */}
+            {changes.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                {changes.length}
+              </span>
+            )}
+          </button>
+
+          {/* Changelog popover */}
+          {showChanges && changes.length > 0 && (
+            <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white border border-amber-200 rounded-xl shadow-xl overflow-hidden">
+              <div className="px-3 py-2 bg-amber-50 border-b border-amber-100">
+                <span className="text-xs font-bold text-amber-800">{changes.length} {changes.length === 1 ? "Änderung" : "Änderungen"}</span>
+              </div>
+              <div className="max-h-48 overflow-y-auto">
+                {changes.map((c, i) => (
+                  <div key={i} className="px-3 py-2 border-b border-gray-50 last:border-0">
+                    <span className="text-xs font-semibold text-gray-900">{c.label}</span>
+                    <span className="block text-[10px] text-gray-500">{c.detail}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={applyUpdate}
+                className="w-full px-3 py-2.5 bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors"
+              >
+                Jetzt aktualisieren
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* KPI Cards — 2x2 mobile, 4 col desktop */}
