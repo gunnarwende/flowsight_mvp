@@ -563,7 +563,18 @@ export async function POST(req: Request) {
     let smsSent = false;
     let smsSid: string | undefined;
     let smsSkipReason: string | undefined;
-    if (!smsTarget) {
+
+    // SMS quality gate: only send if the call produced at least one real
+    // extracted field (not all defaults). A 30s "wrong number" call where
+    // Retell defaults everything should NOT trigger an SMS — it would be
+    // a false confirmation ("Ihre Meldung wurde aufgenommen") for a case
+    // that has no real content. The case is still created (for monitoring),
+    // but the customer is not told it was "aufgenommen".
+    const hasRealContent = defaulted.length < 3; // at least 2 of 5 fields came from the caller
+
+    if (!hasRealContent) {
+      smsSkipReason = "no_real_content";
+    } else if (!smsTarget) {
       smsSkipReason = "no_caller_phone";
     } else {
       const smsConfig = await getTenantSmsConfig(tenantId);
