@@ -3,22 +3,20 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { TenantCard, type TenantCardData } from "./TenantCard";
 
-type Tab = "alle" | "live" | "trial" | "prospect" | "archiv";
+type Tab = "alle" | "live" | "entwicklung" | "archiv";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "alle", label: "Alle" },
   { key: "live", label: "Live" },
-  { key: "trial", label: "Trial" },
-  { key: "prospect", label: "Prospect" },
+  { key: "entwicklung", label: "Entwicklung" },
   { key: "archiv", label: "Archiv" },
 ];
 
 const TAB_STATUS_MAP: Record<Tab, string[] | null> = {
   alle: null,
   live: ["converted"],
-  trial: ["trial_active", "live_dock", "decision_pending"],
-  prospect: ["interested"],
-  archiv: ["offboarded"],
+  entwicklung: ["interested", "trial_active", "live_dock", "decision_pending", "scouted", "contacted"],
+  archiv: ["offboarded", "parked"],
 };
 
 export function TenantGrid() {
@@ -110,14 +108,13 @@ export function TenantGrid() {
 
   // Tab counts
   const tabCounts = useMemo(() => {
-    const counts: Record<Tab, number> = { alle: 0, live: 0, trial: 0, prospect: 0, archiv: 0 };
+    const counts: Record<Tab, number> = { alle: 0, live: 0, entwicklung: 0, archiv: 0 };
     for (const t of tenants) {
       counts.alle++;
       const s = t.trial_status ?? "";
       if (["converted"].includes(s)) counts.live++;
-      else if (["trial_active", "live_dock", "decision_pending"].includes(s)) counts.trial++;
-      else if (["interested"].includes(s)) counts.prospect++;
-      else if (["offboarded"].includes(s)) counts.archiv++;
+      else if (["offboarded", "parked"].includes(s)) counts.archiv++;
+      else counts.entwicklung++; // Everything else = Entwicklung (incl. demo tenants)
     }
     return counts;
   }, [tenants]);
