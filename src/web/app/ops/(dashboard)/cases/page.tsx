@@ -164,7 +164,13 @@ export default async function OpsCasesPage({
     } = await authClient.auth.getUser();
     if (user) {
       const identity = await resolveTenantIdentity(user);
-      if (identity) caseIdPrefix = identity.caseIdPrefix;
+      if (identity) {
+        caseIdPrefix = identity.caseIdPrefix;
+        // For admin impersonation: show tenant name instead of personal name
+        if (scope?.isAdmin && scope.isImpersonating) {
+          currentStaffName = identity.displayName;
+        }
+      }
 
       // Staff context for Techniker view
       if (scope?.tenantId && user.email) {
@@ -186,7 +192,7 @@ export default async function OpsCasesPage({
               .eq("is_active", true)
               .limit(1)
               .maybeSingle();
-            currentStaffName = firstStaff?.display_name ?? user.email?.split("@")[0] ?? "Techniker";
+            currentStaffName = firstStaff?.display_name ?? "Techniker";
           }
         }
       }

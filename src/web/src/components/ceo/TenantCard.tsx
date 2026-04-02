@@ -33,8 +33,8 @@ const STATUS_BADGE: Record<string, { label: string; cls: string }> = {
 
 const MODULE_ICONS: { key: string; label: string; icon: string }[] = [
   { key: "voice", label: "Voice", icon: "V" },
-  { key: "wizard", label: "Formular", icon: "F" },
-  { key: "ops", label: "Leitstand", icon: "L" },
+  { key: "website_wizard", label: "Formular", icon: "F" },
+  { key: "ops", label: "Leitsystem", icon: "L" },
   { key: "reviews", label: "Bewertung", icon: "B" },
   { key: "sms", label: "SMS", icon: "S" },
 ];
