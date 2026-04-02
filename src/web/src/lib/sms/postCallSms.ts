@@ -35,8 +35,11 @@ export async function sendPostCallSms(
   const caseRef = `${p.caseIdPrefix}-${p.seqNumber}`;
   const correctionUrl = `${baseUrl}/v/${caseRef}?t=${shortToken}`;
 
-  // ≤ 160 chars: explicit about what the customer can do (correct voice-agent errors + upload photos)
-  const body = `${p.smsSenderName}: Ihre Meldung ${p.category} wurde erfasst. Bitte Name & Adresse prüfen und Fotos hochladen:\n${correctionUrl}`;
+  // ≤ 160 chars: natural, service-oriented tone. Avoids spam triggers:
+  // - No "Bitte prüfen" (sounds like phishing)
+  // - URL on flowsight.ch (branded domain, not vercel.app)
+  // - Short, factual, helpful
+  const body = `${p.smsSenderName}: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen:\n${correctionUrl}`;
 
   return sendSms(p.callerPhone, body, p.smsSenderName);
 }
