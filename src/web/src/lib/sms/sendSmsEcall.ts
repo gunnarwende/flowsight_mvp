@@ -49,11 +49,11 @@ export async function sendSmsEcall(
     return { sent: false, reason: "ecall_missing_sender_number" };
   }
 
-  // Two-tier sender: alphanumeric brand name (max 11 chars) preferred,
-  // numeric FlowSight number as fallback. Alphanumeric senders have
-  // higher trust scores and are less likely to be spam-filtered.
-  const isAlphanumericValid = from && from.length > 0 && from.length <= 11 && !/^\+?\d+$/.test(from);
-  const sender = isAlphanumericValid ? from : toEcallNumber(senderNumber);
+  // ALWAYS use numeric sender (ECALL_SENDER_NUMBER) for best deliverability.
+  // Alphanumeric senders (e.g. "Doerfler AG") are one-way and get spam-filtered
+  // by Google Messages. Numeric senders look like real phone numbers → less spam.
+  // Brand name is included in the SMS text body instead (Option B).
+  const sender = toEcallNumber(senderNumber);
 
   try {
     const auth = Buffer.from(`${username}:${password}`).toString("base64");
