@@ -27,6 +27,9 @@ export function TenantGrid() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<Tab>("alle");
+  const [initialVersions, setInitialVersions] = useState<Record<string, string>>({});
+  const [currentVersions, setCurrentVersions] = useState<Record<string, string>>({});
+  const [updatedTenants, setUpdatedTenants] = useState<Set<string>>(new Set());
 
   const fetchTenants = useCallback(async () => {
     try {
@@ -35,6 +38,8 @@ export function TenantGrid() {
       const body = await res.json();
       setTenants(body.tenants ?? []);
       setError("");
+      // Reset update indicators on manual refresh
+      setUpdatedTenants(new Set());
     } catch {
       setError("Betriebe konnten nicht geladen werden.");
     }
@@ -44,6 +49,42 @@ export function TenantGrid() {
   useEffect(() => {
     fetchTenants();
   }, [fetchTenants]);
+
+  // Capture initial versions on first load
+  useEffect(() => {
+    if (tenants.length === 0) return;
+    fetch("/api/ceo/tenants/versions")
+      .then((r) => r.ok ? r.json() : { versions: {} })
+      .then((body) => {
+        const v = body.versions ?? {};
+        setInitialVersions(v);
+        setCurrentVersions(v);
+      })
+      .catch(() => {});
+  }, [tenants.length]); // Only on initial load
+
+  // Poll versions every 60s
+  useEffect(() => {
+    if (Object.keys(initialVersions).length === 0) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/ceo/tenants/versions");
+        if (!res.ok) return;
+        const body = await res.json();
+        const newVersions = body.versions ?? {};
+        setCurrentVersions(newVersions);
+        // Compare with initial to find changed tenants
+        const changed = new Set<string>();
+        for (const [tid, ver] of Object.entries(newVersions)) {
+          if (initialVersions[tid] && initialVersions[tid] !== ver) {
+            changed.add(tid);
+          }
+        }
+        if (changed.size > 0) setUpdatedTenants(changed);
+      } catch { /* silent */ }
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [initialVersions]);
 
   const filtered = useMemo(() => {
     let result = tenants;
@@ -174,7 +215,7 @@ export function TenantGrid() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((t) => (
-            <TenantCard key={t.id} tenant={t} />
+            <TenantCard key={t.id} tenant={t} hasUpdate={updatedTenants.has(t.id)} />
           ))}
         </div>
       )}

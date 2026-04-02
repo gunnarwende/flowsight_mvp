@@ -15,7 +15,7 @@ export async function GET() {
   const supabase = getServiceClient();
   const { data, error } = await supabase
     .from("tenants")
-    .select("id, name, slug, modules")
+    .select("id, name, slug, modules, trial_status")
     .neq("slug", "default")
     .order("name");
 
@@ -30,6 +30,8 @@ export async function GET() {
       name: t.name,
       slug: t.slug,
       color: typeof modules.primary_color === "string" ? modules.primary_color : "#64748b",
+      trial_status: t.trial_status ?? null,
+      is_demo: t.slug === "brunner-haustechnik",
     };
   });
 

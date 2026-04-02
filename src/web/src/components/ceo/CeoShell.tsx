@@ -79,6 +79,7 @@ export function CeoShell({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobilePreview, setMobilePreview] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const pathname = usePathname();
 
@@ -237,9 +238,39 @@ export function CeoShell({
 
       {/* Main content */}
       <main className="md:ml-64 overflow-x-hidden">
-        <div className="max-w-6xl mx-auto px-4 py-4 min-w-0">
-          {children}
+        {/* Smartphone preview toggle (desktop only) */}
+        <div className="hidden md:flex justify-end px-4 pt-3 pb-0">
+          <button
+            onClick={() => setMobilePreview((p) => !p)}
+            title={mobilePreview ? "Desktop-Ansicht" : "Smartphone-Vorschau"}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors ${
+              mobilePreview
+                ? "bg-navy-900 text-white"
+                : "bg-white text-navy-500 hover:bg-navy-100 border border-navy-200"
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+            {mobilePreview ? "Desktop" : "Smartphone"}
+          </button>
         </div>
+
+        {mobilePreview ? (
+          <div className="flex justify-center py-8">
+            <div className="w-[410px] h-[820px] bg-gray-900 rounded-[3rem] p-[10px] shadow-2xl">
+              <iframe
+                src={pathname}
+                className="w-[390px] h-[800px] rounded-[2.4rem] bg-white"
+                title="Smartphone-Vorschau"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-6xl mx-auto px-4 py-4 min-w-0">
+            {children}
+          </div>
+        )}
       </main>
     </div>
   );

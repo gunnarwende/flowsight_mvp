@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   // ── 2. Parallel queries for case & staff stats ─────────────────────────
   const tenantIds = tenants.map((t) => t.id);
 
-  const [casesRes, doneRes, reviewRes, staffRes, cases7dRes] = await Promise.all([
+  const [casesRes, doneRes, reviewRes, staffRes, cases7dRes, phonesRes] = await Promise.all([
     // Total cases per tenant
     supabase.from("cases").select("tenant_id, created_at").in("tenant_id", tenantIds),
     // Done cases
@@ -41,12 +41,20 @@ export async function GET(req: NextRequest) {
     supabase.from("staff").select("tenant_id").eq("is_active", true).in("tenant_id", tenantIds),
     // Cases last 7d
     supabase.from("cases").select("tenant_id").gte("created_at", d7ago).in("tenant_id", tenantIds),
+    // Phone numbers per tenant (for quick-actions)
+    supabase.from("tenant_numbers").select("tenant_id, phone_number").eq("active", true).in("tenant_id", tenantIds),
   ]);
 
   // Build lookup maps
   const allCases = casesRes.data ?? [];
   const countBy = (arr: { tenant_id: string }[], tid: string) =>
     arr.filter((r) => r.tenant_id === tid).length;
+
+  // Phone number lookup
+  const phoneMap = new Map<string, string>();
+  for (const p of phonesRes.data ?? []) {
+    if (!phoneMap.has(p.tenant_id)) phoneMap.set(p.tenant_id, p.phone_number);
+  }
 
   const lastCaseMap = new Map<string, string>();
   for (const c of allCases) {
@@ -66,6 +74,7 @@ export async function GET(req: NextRequest) {
     modules: Record<string, unknown> | null;
     prospect_phone: string | null;
     prospect_email: string | null;
+    test_phone: string | null;
     case_count_7d: number;
     case_count_total: number;
     last_case_at: string | null;
@@ -88,6 +97,7 @@ export async function GET(req: NextRequest) {
       modules: t.modules as Record<string, unknown> | null,
       prospect_phone: t.prospect_phone,
       prospect_email: t.prospect_email,
+      test_phone: phoneMap.get(t.id) ?? null,
       case_count_7d: countBy(cases7dRes.data ?? [], t.id),
       case_count_total: countBy(allCases, t.id),
       last_case_at: lastCaseMap.get(t.id) ?? null,
