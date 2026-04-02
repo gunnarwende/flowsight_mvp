@@ -1,6 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PushSubscribeButton } from "./PushSubscribeButton";
@@ -81,7 +86,29 @@ export function CeoShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobilePreview, setMobilePreview] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const pathname = usePathname();
+
+  // Register SW + capture install prompt for CEO PWA
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setIsInstalled(true);
+      return;
+    }
+    // Register service worker for /ceo scope
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js", { scope: "/ceo" }).catch(() => {});
+    }
+    // Capture install prompt
+    function handleBeforeInstall(e: Event) {
+      e.preventDefault();
+      setInstallPrompt(e);
+    }
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+  }, []);
 
   const userInitials = userEmail
     .split("@")[0]
@@ -159,6 +186,24 @@ export function CeoShell({
       </div>
       {/* Push notifications */}
       <PushSubscribeButton />
+      {/* Install CEO PWA */}
+      {!isInstalled && installPrompt && (
+        <button
+          onClick={async () => {
+            const prompt = installPrompt as BeforeInstallPromptEvent;
+            prompt.prompt();
+            const result = await prompt.userChoice;
+            if (result.outcome === "accepted") setIsInstalled(true);
+            setInstallPrompt(null);
+          }}
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-gold-500 hover:text-gold-400 hover:bg-gray-800/50 transition-colors mb-2 font-medium"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          App installieren
+        </button>
+      )}
       {/* Quick link to Leitsystem */}
       <Link
         href="/ops/cases"
