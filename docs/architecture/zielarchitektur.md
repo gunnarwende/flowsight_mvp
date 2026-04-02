@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 2.8 | **Datum:** 2026-04-02
+**Version:** 2.9 | **Datum:** 2026-04-02
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v2.8 — 52 Decisions (D1-D52). 2 Betriebe in Phase A. GTM Machine Checklist. 2-Mail-Strategie validiert.
+**Status:** v2.9 — 55 Decisions (D1-D55). SMS-Spam gelöst. APP_BASE_URL zentralisiert. Voice Quality Gates.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -63,7 +63,10 @@
 | D49 | **Phase A/B GTM-Architektur.** Phase A: `provision_trial --no-welcome-mail` → trial_status=interested, kein Timer, kein Kontakt. Phase B-1: Outreach-Mail mit Video. Phase B-2: `activate_prospect.mjs` → notification_email, OTP-User, trial_active, Welcome-Email. Skaliert für 50 Betriebe/Tag. | **ENTSCHIEDEN** ✅ | Founder + CC | `provision_trial.mjs`, `activate_prospect.mjs`, PRs #374-#376 |
 | D50 | **Ops-Email tenant-scoped.** `modules.notification_email` pro Tenant, Fallback `MAIL_REPLY_TO`. Phase A: nicht gesetzt → Founder bekommt alles. Phase B-2: gesetzt → Prospect bekommt Ops-Emails. Beide Caller (webhook + cases API) angepasst. | **ENTSCHIEDEN** ✅ | Founder + CC | `resend.ts`, `webhook/route.ts`, `cases/route.ts`, PR #375 |
 | D51 | **Voice: Ela (ElevenLabs) als DE-Stimme** auf allen 5 Agents (Dörfler, Brunner, Weinberger, Leuthold, FlowSight Sales). Ersetzt Laura. Juniper bleibt INTL. Retell custom_voice_id: `custom_voice_3d93cf97532572d3980044468a`. | **ENTSCHIEDEN** ✅ | Founder | PR #377 |
-| D52 | **GTM Machine Checklist** (`docs/gtm/machine_checklist.md`): 9-Schritt wiederverwendbare Checkliste pro Betrieb. Referenziert lessons-learned.md Regeln M1-M6. Ziel: <60 Min Phase A pro Betrieb. Erster Durchlauf Dörfler ~70 Min, Leuthold ~45 Min. **2-Mail-Strategie:** Mail 1 = nur Video + Feedback-Bitte (persönlich). Mail 2 = Zugänge (erst nach Prospect-Go via activate_prospect.mjs). | **ENTSCHIEDEN** ✅ | Founder + CC | `machine_checklist.md`, PRs #374-#379 |
+| D52 | **GTM Machine Checklist** (`docs/gtm/machine_checklist.md`): 9-Schritt wiederverwendbare Checkliste pro Betrieb. Referenziert lessons-learned.md Regeln M1-M6. Ziel: <60 Min Phase A pro Betrieb. **2-Mail-Strategie:** Mail 1 = nur Video + Feedback-Bitte. Mail 2 = Zugänge (erst nach Prospect-Go via activate_prospect.mjs). | **ENTSCHIEDEN** ✅ | Founder + CC | `machine_checklist.md`, PRs #374-#379 |
+| D53 | **APP_BASE_URL zentralisiert.** Neue Konstante `src/lib/config/appUrl.ts` — Production IMMER `https://flowsight.ch` (hardcoded). Development liest APP_URL für localhost. Ersetzt 13× verstreute `process.env.APP_URL` Fallback-Ketten. Verhindert dass Emails/SMS jemals vercel.app-URLs enthalten. | **ENTSCHIEDEN** ✅ | CC | `appUrl.ts`, PR #384 |
+| D54 | **Voice Quality Gates.** (1) 25s Minimum-Duration: Anrufe <25s erzeugen keinen Case + keine SMS. (2) SMS Quality Gate: SMS nur wenn ≥2 von 5 Feldern vom Caller kamen (nicht alle defaulted). Verhindert falsche SMS ("Ihre Meldung wurde aufgenommen") bei Kurzanrufen. Case wird trotzdem für Monitoring erstellt. | **ENTSCHIEDEN** ✅ | Founder + CC | `webhook/route.ts`, PRs #382-#383 |
+| D55 | **SMS Sender: Alphanumerisch (Tenant-Markenname).** eCall Support bestätigt (02.04.): Alphanumerische Sender werden korrekt zugestellt wenn whitegelistet. Sender = Firmenname (z.B. "Doerfler AG", max 11 Zeichen). Numerischer Fallback (ECALL_SENDER_NUMBER) nur bei ungültigem Namen. | **ENTSCHIEDEN** ✅ | Founder + eCall Support | `sendSmsEcall.ts`, PR #385 |
 
 ---
 

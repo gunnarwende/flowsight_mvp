@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 2 Betriebe in Phase A: Dörfler AG + Walter Leuthold. GTM Machine Checklist. 2-Mail-Strategie. 6 PRs (#374-#379). Voice: Ela DE. Ops-Email tenant-scoped.)
+> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 12 PRs (#374-#385). SMS-Spam gelöst (eCall Whitelisting). APP_BASE_URL zentralisiert. Voice Quality Gates (25s + Content). Demo-Scripts finalisiert. 2 Betriebe in Phase A.)
 
 ---
 
@@ -127,8 +127,10 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 
 ### 3.8 SMS Channel
 - Post-call SMS mit Korrekturlink an Melder (eCall.ch Swiss Gateway, Business Account Typ A)
-- Kurzlink `/v/[caseId]?t=<16hex>` (~85 Zeichen), HMAC-gesichert
+- **Sender: Alphanumerisch** (Tenant-Markenname, z.B. "Doerfler AG", max 11 Zeichen) — eCall-verifiziert
+- Kurzlink `/v/[caseId]?t=<16hex>` auf flowsight.ch (~85 Zeichen), HMAC-gesichert
 - Foto-Upload via Verify-Seite (Supabase Storage)
+- **Quality Gates:** 25s Minimum-Duration (kein SMS bei Kurzanruf) + Content-Check (≥2 Felder vom Caller)
 - Akzeptiert sowohl Full-Token (64-hex) als auch Short-Token (16-hex)
 
 ### 3.9 CoreBot (Ops-Assistent)
