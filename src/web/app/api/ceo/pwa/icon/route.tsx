@@ -8,8 +8,9 @@ export async function GET(request: Request) {
   const dotSize = Math.round(size * (isMaskable ? 0.14 : 0.18));
 
   if (isMaskable) {
-    // Maskable: gold background survives any Android crop shape
-    const innerSize = Math.round(size * 0.75);
+    // Maskable: Samsung/Android crops ~12.5% from each edge.
+    // Navy circle at 60% = thick gold ring visible after ANY crop.
+    const innerSize = Math.round(size * 0.60);
     return new ImageResponse(
       (
         <div style={{ width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#c8965a" }}>
