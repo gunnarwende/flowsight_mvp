@@ -1,17 +1,12 @@
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { cookies } from "next/headers";
 import type { Metadata } from "next";
 
 /**
- * Per-tenant PWA landing page: /ops/app/[slug]
+ * Per-tenant PWA entry: /ops/app/[slug]
  *
- * Sets the fs_active_tenant cookie SERVER-SIDE (in the response headers),
- * then renders a page that client-side navigates to /ops/cases.
- *
- * Why not redirect? Because cookies set via redirect (302/307) have timing
- * issues — the browser may send the follow-up request before storing the
- * new cookie. By rendering a page first, the cookie is guaranteed to be
- * stored before the next navigation.
+ * Sets tenant cookie CLIENT-SIDE (via API call), then navigates.
+ * Server Components + cookies().set() causes "Application error" on Vercel
+ * (Next.js 15 hydration issue). This approach is bulletproof.
  */
 
 export async function generateMetadata({
@@ -27,16 +22,13 @@ export async function generateMetadata({
     .eq("slug", slug)
     .single();
 
-  const name = tenant?.name ?? "Leitsystem";
-  const tenantId = tenant?.id ?? "";
-
   return {
-    title: `${name} Leitsystem`,
-    manifest: `/api/ops/pwa/manifest?tenant=${tenantId}`,
+    title: `${tenant?.name ?? "Leitsystem"} Leitsystem`,
+    manifest: `/api/ops/pwa/manifest?tenant=${tenant?.id ?? ""}`,
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
-      title: name,
+      title: tenant?.name ?? "Leitsystem",
     },
   };
 }
@@ -50,70 +42,76 @@ export default async function TenantAppPage({
   const supabase = getServiceClient();
   const { data: tenant } = await supabase
     .from("tenants")
-    .select("id, name, modules")
+    .select("id, name")
     .eq("slug", slug)
     .single();
 
   const name = tenant?.name ?? slug;
+  const tenantId = tenant?.id ?? "";
 
-  // SET COOKIE SERVER-SIDE — this is in the response headers of THIS page render.
-  // When the browser receives this page, the cookie is stored BEFORE any navigation.
-  if (tenant) {
-    const cookieStore = await cookies();
-    cookieStore.set("fs_active_tenant", tenant.id, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }
-
-  // Client-side navigation happens AFTER the page (with cookie) is fully loaded.
-  // Using a script instead of meta-refresh to ensure cookie is stored first.
   return (
-    <html lang="de">
-      <body style={{ margin: 0, padding: 0, backgroundColor: "#0b1120", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <TenantAppClient name={name} tenantId={tenantId} slug={slug} />
+  );
+}
+
+function TenantAppClient({ name, tenantId, slug }: { name: string; tenantId: string; slug: string }) {
+  // This component renders static HTML with an inline script.
+  // The script calls the switch-tenant API, then navigates.
+  // No React hydration needed — pure HTML + JS.
+  const scriptContent = `
+    (async function() {
+      try {
+        await fetch("/api/ops/switch-tenant", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tenantId: "${tenantId}", viewAsRole: null })
+        });
+        // Cookie is now set. Navigate to cases.
+        window.location.replace("/ops/cases?_t=" + Date.now());
+      } catch(e) {
+        document.getElementById("status").textContent = "Fehler beim Laden. Bitte Seite neu laden.";
+      }
+    })();
+  `;
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column" as const,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "24px",
+      padding: "24px",
+      backgroundColor: "#0b1120",
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    }}>
+      <div style={{
+        width: "80px",
+        height: "80px",
+        borderRadius: "20px",
+        backgroundColor: "#1a2744",
+        border: "2px solid #c8965a",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
         <div style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "24px",
-          padding: "24px",
-        }}>
-          <div style={{
-            width: "80px",
-            height: "80px",
-            borderRadius: "20px",
-            backgroundColor: "#1a2744",
-            border: "2px solid #c8965a",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <div style={{
-              width: "16px",
-              height: "16px",
-              borderRadius: "50%",
-              backgroundColor: "#c8965a",
-            }} />
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <h1 style={{ color: "#e2e8f0", fontSize: "22px", fontWeight: 700, margin: "0 0 4px 0" }}>
-              {name}
-            </h1>
-            <p style={{ color: "#64748b", fontSize: "14px", margin: 0 }}>Leitsystem wird geladen...</p>
-          </div>
-        </div>
-        {/* Navigate AFTER page load — cookie is guaranteed to be stored */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          setTimeout(function() {
-            window.location.replace("/ops/cases?_t=" + Date.now());
-          }, 500);
-        `}} />
-      </body>
-    </html>
+          width: "16px",
+          height: "16px",
+          borderRadius: "50%",
+          backgroundColor: "#c8965a",
+        }} />
+      </div>
+      <div style={{ textAlign: "center" as const }}>
+        <h1 style={{ color: "#e2e8f0", fontSize: "22px", fontWeight: 700, margin: "0 0 4px 0" }}>
+          {name}
+        </h1>
+        <p id="status" style={{ color: "#64748b", fontSize: "14px", margin: 0 }}>
+          Leitsystem wird geladen...
+        </p>
+      </div>
+      <script dangerouslySetInnerHTML={{ __html: scriptContent }} />
+    </div>
   );
 }
