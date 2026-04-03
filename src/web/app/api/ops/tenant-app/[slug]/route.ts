@@ -28,7 +28,8 @@ export async function GET(
     return NextResponse.redirect(new URL("/ops/login", _req.url));
   }
 
-  const response = NextResponse.redirect(new URL("/ops/cases", _req.url));
+  // Cache-bust: add timestamp to prevent browser from showing stale cached page
+  const response = NextResponse.redirect(new URL(`/ops/cases?_tenant=${slug}&_t=${Date.now()}`, _req.url));
   response.cookies.set("fs_active_tenant", tenant.id, {
     path: "/",
     httpOnly: true,
