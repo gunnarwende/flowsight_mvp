@@ -1,14 +1,17 @@
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 
 /**
  * Per-tenant PWA landing page: /ops/app/[slug]
  *
- * This page serves ONE purpose: provide the correct <link rel="manifest">
- * for the tenant-branded PWA so Chrome can install it with the right name + icon.
+ * Sets the fs_active_tenant cookie SERVER-SIDE (in the response headers),
+ * then renders a page that client-side navigates to /ops/cases.
  *
- * The actual redirect (cookie set + navigate to /ops/cases) happens client-side
- * via the API route, avoiding Next.js Server Component redirect-after-cookie issues.
+ * Why not redirect? Because cookies set via redirect (302/307) have timing
+ * issues — the browser may send the follow-up request before storing the
+ * new cookie. By rendering a page first, the cookie is guaranteed to be
+ * stored before the next navigation.
  */
 
 export async function generateMetadata({
@@ -52,9 +55,22 @@ export default async function TenantAppPage({
     .single();
 
   const name = tenant?.name ?? slug;
-  const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
-  const color = typeof modules.primary_color === "string" ? modules.primary_color : "#1a2744";
 
+  // SET COOKIE SERVER-SIDE — this is in the response headers of THIS page render.
+  // When the browser receives this page, the cookie is stored BEFORE any navigation.
+  if (tenant) {
+    const cookieStore = await cookies();
+    cookieStore.set("fs_active_tenant", tenant.id, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+
+  // Client-side navigation happens AFTER the page (with cookie) is fully loaded.
+  // Using a script instead of meta-refresh to ensure cookie is stored first.
   return (
     <html lang="de">
       <body style={{ margin: 0, padding: 0, backgroundColor: "#0b1120", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
@@ -67,7 +83,6 @@ export default async function TenantAppPage({
           gap: "24px",
           padding: "24px",
         }}>
-          {/* Brand circle */}
           <div style={{
             width: "80px",
             height: "80px",
@@ -85,31 +100,19 @@ export default async function TenantAppPage({
               backgroundColor: "#c8965a",
             }} />
           </div>
-
-          {/* Title */}
           <div style={{ textAlign: "center" }}>
             <h1 style={{ color: "#e2e8f0", fontSize: "22px", fontWeight: 700, margin: "0 0 4px 0" }}>
               {name}
             </h1>
             <p style={{ color: "#64748b", fontSize: "14px", margin: 0 }}>Leitsystem wird geladen...</p>
           </div>
-
-          {/* Auto-redirect via API route (sets cookie + redirects) */}
-          <meta httpEquiv="refresh" content={`1;url=/api/ops/tenant-app/${slug}`} />
-
-          {/* Fallback link */}
-          <a
-            href={`/api/ops/tenant-app/${slug}`}
-            style={{
-              color: "#c8965a",
-              fontSize: "13px",
-              textDecoration: "none",
-              marginTop: "16px",
-            }}
-          >
-            Falls die Weiterleitung nicht funktioniert, hier klicken
-          </a>
         </div>
+        {/* Navigate AFTER page load — cookie is guaranteed to be stored */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          setTimeout(function() {
+            window.location.replace("/ops/cases?_t=" + Date.now());
+          }, 500);
+        `}} />
       </body>
     </html>
   );
