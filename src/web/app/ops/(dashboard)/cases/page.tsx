@@ -1,7 +1,7 @@
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
-import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
+import { resolveTenantIdentity, resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 import { LeitzentraleView } from "@/src/components/ops/LeitzentraleView";
 import type { LeitzentraleCase } from "@/src/components/ops/LeitzentraleView";
@@ -163,7 +163,13 @@ export default async function OpsCasesPage({
       data: { user },
     } = await authClient.auth.getUser();
     if (user) {
-      const identity = await resolveTenantIdentity(user);
+      // IMPORTANT: Use scope.tenantId (from cookie) not user.app_metadata.tenant_id (from JWT).
+      // JWT always points to the admin's home tenant (e.g. Weinberger).
+      // Cookie points to the currently selected tenant (e.g. Dörfler).
+      const effectiveTenantId = scope?.tenantId;
+      const identity = effectiveTenantId
+        ? await resolveTenantIdentityById(effectiveTenantId)
+        : await resolveTenantIdentity(user);
       if (identity) {
         caseIdPrefix = identity.caseIdPrefix;
         // For admin impersonation: show tenant name instead of personal name
