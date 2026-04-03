@@ -10,21 +10,36 @@ import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
  *
  * Fallback for unauthenticated: generic "Leitsystem".
  */
-export async function GET() {
+export async function GET(request: Request) {
   let name = "Leitsystem";
   let shortName = "Leitsystem";
 
-  try {
-    const supabase = await getAuthClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  // Support ?tenant=UUID for per-tenant PWA installation (from /ops/app/[slug])
+  const { searchParams } = new URL(request.url);
+  const tenantIdParam = searchParams.get("tenant");
 
-    if (user) {
-      const identity = await resolveTenantIdentity(user);
+  try {
+    if (tenantIdParam) {
+      // Direct tenant lookup (for per-tenant PWA entry points)
+      const { resolveTenantIdentityById } = await import("@/src/lib/tenants/resolveTenantIdentity");
+      const identity = await resolveTenantIdentityById(tenantIdParam);
       if (identity) {
         shortName = identity.leitsystemName;
         name = `${identity.leitsystemName} Leitsystem`;
+      }
+    } else {
+      // Default: resolve from auth session
+      const supabase = await getAuthClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const identity = await resolveTenantIdentity(user);
+        if (identity) {
+          shortName = identity.leitsystemName;
+          name = `${identity.leitsystemName} Leitsystem`;
+        }
       }
     }
   } catch {
