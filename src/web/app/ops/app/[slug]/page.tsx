@@ -50,6 +50,7 @@ export default async function TenantAppPage({
     <TenantAppClient
       name={tenant?.name ?? slug}
       tenantId={tenant?.id ?? ""}
+      slug={slug}
     />
   );
 }
