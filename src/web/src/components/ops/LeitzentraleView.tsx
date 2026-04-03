@@ -246,6 +246,16 @@ export function LeitzentraleView({
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // Auto-refresh: fetch fresh server data every 30s.
+  // router.refresh() re-renders server components with fresh DB data
+  // without losing client state (filters, scroll position, period toggle).
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.refresh();
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, [router]);
+
   // ── ALL hooks MUST be above early returns (React rules of hooks) ────
   const categories = useMemo(() => {
     const set = new Set<string>();
