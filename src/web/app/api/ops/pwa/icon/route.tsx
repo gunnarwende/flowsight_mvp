@@ -17,44 +17,40 @@ export async function GET(request: Request) {
   const isMaskable = searchParams.get("maskable") === "1";
 
   const radius = isMaskable ? 0 : Math.round(size * 0.22);
-  // Responsive dot: must be clearly visible even at 32px taskbar size.
-  // 48px icon (taskbar): 38% = 18px dot — unmissable
-  // 96px icon (small UI): 30% = 29px dot — clear
-  // 192px icon (homescreen): 15% = 29px dot — elegant
-  // 512px icon (splash): 12% = 61px dot — refined
   const baseRatio =
     size <= 64 ? 0.38 : size <= 128 ? 0.30 : size <= 256 ? 0.15 : 0.12;
   const dotSize = Math.round(size * (isMaskable ? baseRatio * 0.8 : baseRatio));
 
-  // Gold border: 5% of icon size — must be thick enough to survive
-  // Android adaptive icon cropping + browser badge overlays (Edge, Samsung)
-  const borderWidth = Math.max(Math.round(size * 0.05), 2);
+  if (isMaskable) {
+    // Maskable: Android crops to circle/squircle. Use gold BACKGROUND ring
+    // that survives any crop shape. Navy circle inside, dot in center.
+    const innerSize = Math.round(size * 0.75); // navy area = 75% of icon
+    return new ImageResponse(
+      (
+        <div style={{ width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#c8965a" }}>
+          <div style={{ width: innerSize, height: innerSize, borderRadius: "50%", backgroundColor: "#1a2744", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: dotSize, height: dotSize, borderRadius: "50%", backgroundColor: "#c8965a" }} />
+          </div>
+        </div>
+      ),
+      { width: size, height: size },
+    );
+  }
 
+  // Non-maskable: square with border (desktop, taskbar)
+  const borderWidth = Math.max(Math.round(size * 0.05), 2);
   return new ImageResponse(
     (
       <div
         style={{
-          width: size,
-          height: size,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1a2744",
-          borderRadius: radius,
-          border: `${borderWidth}px solid #c8965a`,
-          boxSizing: "border-box" as const,
+          width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center",
+          backgroundColor: "#1a2744", borderRadius: radius,
+          border: `${borderWidth}px solid #c8965a`, boxSizing: "border-box" as const,
         }}
       >
-        <div
-          style={{
-            width: dotSize,
-            height: dotSize,
-            borderRadius: "50%",
-            backgroundColor: "#c8965a",
-          }}
-        />
+        <div style={{ width: dotSize, height: dotSize, borderRadius: "50%", backgroundColor: "#c8965a" }} />
       </div>
     ),
-    { width: size, height: size }
+    { width: size, height: size },
   );
 }
