@@ -311,7 +311,7 @@ export function LeitzentraleView({
         else if (c.source === "wizard" || c.source === "website") doneWeb++;
         else doneManual++;
       }
-      if (c.status === "done") {
+      if (c.status === "done" && ut >= cutoff) {
         if (c.review_sent_at) reviewSent++;
         if (c.review_rating != null) reviewReceived++;
       }
