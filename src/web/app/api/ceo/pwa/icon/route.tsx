@@ -5,14 +5,11 @@ export async function GET(request: Request) {
   const size = Math.min(Math.max(parseInt(searchParams.get("size") || "512", 10), 48), 1024);
   const isMaskable = searchParams.get("maskable") === "1";
   const radius = isMaskable ? 0 : Math.round(size * 0.22);
-
-  // CEO icon: "FS" initials on navy with gold underline accent
-  const fontSize = Math.round(size * 0.32);
-  const accentWidth = Math.round(size * 0.35);
-  const accentHeight = Math.max(2, Math.round(size * 0.04));
-  const accentTop = Math.round(size * 0.62);
-
   const borderWidth = Math.max(Math.round(size * 0.025), 1);
+
+  // CEO icon: Gold dot on darker navy — same brand system as OPS tenant icons
+  // Slightly larger dot (18%) to visually differentiate CEO from tenant icons (12%)
+  const dotSize = Math.round(size * (isMaskable ? 0.14 : 0.18));
 
   return new ImageResponse(
     (
@@ -21,35 +18,20 @@ export async function GET(request: Request) {
           width: size,
           height: size,
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#1a2744",
+          backgroundColor: "#0b1120",
           borderRadius: radius,
           border: `${borderWidth}px solid #c8965a`,
           boxSizing: "border-box" as const,
-          position: "relative",
         }}
       >
-        <span
-          style={{
-            fontSize,
-            fontWeight: 800,
-            color: "#ffffff",
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-          }}
-        >
-          FS
-        </span>
         <div
           style={{
-            position: "absolute",
-            top: accentTop,
-            width: accentWidth,
-            height: accentHeight,
+            width: dotSize,
+            height: dotSize,
+            borderRadius: "50%",
             backgroundColor: "#c8965a",
-            borderRadius: accentHeight,
           }}
         />
       </div>
