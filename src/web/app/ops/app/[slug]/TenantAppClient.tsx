@@ -2,24 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-export function TenantAppClient({ name, tenantId }: { name: string; tenantId: string }) {
+export function TenantAppClient({ name, tenantId, slug }: { name: string; tenantId: string; slug: string }) {
   const [status, setStatus] = useState("Leitsystem wird geladen...");
 
   useEffect(() => {
-    (async () => {
-      try {
-        await fetch("/api/ops/switch-tenant", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tenantId, viewAsRole: null }),
-        });
-        setStatus("Weiterleitung...");
-        window.location.replace("/ops/cases?_t=" + Date.now());
-      } catch {
-        setStatus("Fehler beim Laden. Bitte Seite neu laden.");
-      }
-    })();
-  }, [tenantId]);
+    // Navigate to the API route which sets the cookie via Set-Cookie header
+    // and redirects to /ops/cases. This is a full page navigation (not fetch),
+    // so the browser processes the Set-Cookie before following the redirect.
+    window.location.href = "/api/ops/tenant-app/" + encodeURIComponent(slug) + "?_t=" + Date.now();
+  }, [slug]);
 
   return (
     <div style={{
