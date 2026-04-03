@@ -22,9 +22,9 @@ export async function GET(request: Request) {
   const dotSize = Math.round(size * (isMaskable ? baseRatio * 0.8 : baseRatio));
 
   if (isMaskable) {
-    // Maskable: Android crops to circle/squircle. Use gold BACKGROUND ring
-    // that survives any crop shape. Navy circle inside, dot in center.
-    const innerSize = Math.round(size * 0.75); // navy area = 75% of icon
+    // Maskable: Samsung/Android crops ~12.5% from each edge (safe zone).
+    // Navy circle at 60% = thick gold ring visible after ANY crop shape.
+    const innerSize = Math.round(size * 0.60);
     return new ImageResponse(
       (
         <div style={{ width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#c8965a" }}>
