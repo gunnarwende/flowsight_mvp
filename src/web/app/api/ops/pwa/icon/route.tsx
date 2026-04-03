@@ -26,8 +26,9 @@ export async function GET(request: Request) {
     size <= 64 ? 0.38 : size <= 128 ? 0.30 : size <= 256 ? 0.15 : 0.12;
   const dotSize = Math.round(size * (isMaskable ? baseRatio * 0.8 : baseRatio));
 
-  // Gold border: 2.5% of icon size, visible on dark backgrounds
-  const borderWidth = Math.max(Math.round(size * 0.025), 1);
+  // Gold border: 5% of icon size — must be thick enough to survive
+  // Android adaptive icon cropping + browser badge overlays (Edge, Samsung)
+  const borderWidth = Math.max(Math.round(size * 0.05), 2);
 
   return new ImageResponse(
     (
