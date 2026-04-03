@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const size = Math.min(Math.max(parseInt(searchParams.get("size") || "512", 10), 48), 1024);
   const isMaskable = searchParams.get("maskable") === "1";
   const radius = isMaskable ? 0 : Math.round(size * 0.22);
-  const borderWidth = Math.max(Math.round(size * 0.025), 1);
+  const borderWidth = Math.max(Math.round(size * 0.05), 2);
 
   // CEO icon: Gold dot on darker navy — same brand system as OPS tenant icons
   // Slightly larger dot (18%) to visually differentiate CEO from tenant icons (12%)
