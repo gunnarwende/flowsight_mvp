@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-02 (Sales Day 2. 19 PRs (#374-#392). CEO-App komplett überarbeitet: Leitsystem-iframe, Quick-Actions, Tabs, PWA installierbar, Update-System. SMS-Spam gelöst. Voice Quality Gates. 2 Betriebe in Phase A.)
+> Letzte Aktualisierung: 2026-04-04 (Sales Day 4. 35 PRs (#374-#408). Push-Notifications (Notfall/Zuweisung/Bewertung). Per-Tenant PWA. App-Badge. Auto-Refresh. Google Review Crawl. Wöchentlicher Rapport. Root-Cause Tenant-Bug gefixt.)
 
 ---
 
@@ -133,7 +133,30 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **Quality Gates:** 25s Minimum-Duration (kein SMS bei Kurzanruf) + Content-Check (≥2 Felder vom Caller)
 - Akzeptiert sowohl Full-Token (64-hex) als auch Short-Token (16-hex)
 
-### 3.9 CoreBot (Ops-Assistent)
+### 3.9 Push-Notifications (seit 04.04.2026)
+- **Per-Tenant Push-Subscriptions:** Jeder Mitarbeiter kann Push-Benachrichtigungen aktivieren
+- **Trigger:** Notfall-Fälle (sofort), Zuweisung an Techniker, Bewertung erhalten (★ mit Rating)
+- **Stummschalten:** Preferences pro User (Nur Notfälle / Alles / Stumm)
+- **Onboarding:** Nicht-aggressiver Banner nach 3s, "Aktivieren" / "Später" (30 Tage dismiss)
+- **App-Badge:** Zähler auf dem Homescreen-Icon (Android Chrome/Edge). Zeigt ungelesene Events.
+- **Service Worker:** Push-Handler + Notification-Click → Deep-Link in die App
+- iOS: Push ab iOS 16.4 ✅, Badge ❌ (Push als Alternative)
+
+### 3.10 Google Review Crawl (seit 04.04.2026)
+- **Wöchentlicher Crawl:** GH Actions Cron (Montag 06:00 UTC)
+- **Google Places API (New):** Rating + Review-Count + letzte 5 Review-Texte
+- **DB-Update:** `modules.google_review_avg`, `google_review_count`, `google_latest_reviews`
+- **Kosten:** ~$3.50/Monat bei 50 Betrieben
+- **Immer synchron mit Google:** Kein manuelles Eintragen nötig
+
+### 3.11 Wöchentlicher Rapport (seit 04.04.2026)
+- **Jeden Montag 07:00 UTC** per Email an Betriebsinhaber
+- **Inhalt:** Neue Fälle (Voice/Web/Manual), Erledigt, Bewertungen (erhalten + Ø), Google-Rating, geplante Termine, Notfall-Count
+- **Branded:** Tenant-Farbe im Email-Header, Firmenname als Absender
+- **Automatisch:** Nur an Tenants mit notification_email (Phase B aktiv)
+- **Differenzierung:** Founder wird sichtbar, Betrieb sieht den Wert des Leitsystems
+
+### 3.12 CoreBot (Ops-Assistent)
 - Telegram Bot → GitHub Issues (automatische Klassifizierung)
 - **Voice→STT→Issue:** Sprachnachricht → OpenAI Whisper → GitHub Issue
 - **Photo/Doc Attachments:** Fotos + Dokumente an Tickets (Supabase Storage)

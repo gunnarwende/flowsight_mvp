@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 3.0 | **Datum:** 2026-04-02
+**Version:** 3.1 | **Datum:** 2026-04-04
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v3.0 — 59 Decisions (D1-D59). CEO-App Komplett-Überarbeitung. PWA installierbar. Update-System. 19 PRs in 2 Tagen.
+**Status:** v3.1 — 66 Decisions (D1-D66). Push-Notifications. Per-Tenant PWA. Google Review Crawl. Wöchentlicher Rapport. 35 PRs in 4 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -71,6 +71,13 @@
 | D57 | **CEO-App: 3 Tabs statt 5.** Live (converted, Gold-Akzent) / Entwicklung (alles andere inkl. Demo) / Archiv (offboarded). Keine SaaS-Sprache ("Trial", "Prospect"). Alle 4 aktuellen Betriebe = Entwicklung. | **ENTSCHIEDEN** ✅ | Founder | `TenantGrid.tsx`, PR #389 |
 | D58 | **CEO-PWA installierbar.** Eigener `ceo-sw.js` Service Worker (scope /ceo). Manifest existierte bereits. Install-Prompt in CeoShell Sidebar. Zwei getrennte PWAs: "FlowSight CEO" (Founder) + "Leitsystem" (pro Tenant). | **ENTSCHIEDEN** ✅ | Founder + CC | `ceo-sw.js`, `CeoShell.tsx`, PR #391 |
 | D59 | **Intelligentes Update-System (Pulse).** 30s Background-Poll. Baseline-Fingerprint beim ersten Load. Diff-Berechnung bei Änderung. Badge mit Zähler (amber, pulsierend). Changelog-Popover (Label + Detail pro Änderung). "Jetzt aktualisieren" Button. Ignorieren möglich. Shared Utilities (`useUpdateDetection.ts`) für Pulse + Betriebe. | **ENTSCHIEDEN** ✅ | Founder + CC | `PulseView.tsx`, `useUpdateDetection.ts`, PR #392 |
+| D60 | **Per-Tenant PWA:** `/ops/app/[slug]` als Entry-Point pro Betrieb. Client Component ruft switch-tenant API → Cookie gesetzt → redirect auf /ops/cases. Jeder Betrieb als separate App auf dem Homescreen installierbar. Manifest mit ?tenant=UUID für tenant-spezifische Branding. | **ENTSCHIEDEN** ✅ | Founder + CC | `/ops/app/[slug]`, `/api/ops/tenant-app/[slug]`, PRs #394-#400 |
+| D61 | **Root-Cause Tenant-Cookie-Bug (cases/page.tsx):** `resolveTenantIdentity(user)` las JWT-Tenant (immer Weinberger) statt Cookie-Tenant. Fix: `resolveTenantIdentityById(scope.tenantId)`. Root Cause hinter FB22-FB34. | **ENTSCHIEDEN** ✅ | CC | `cases/page.tsx`, PR #401 |
+| D62 | **Leitzentrale Auto-Refresh 30s.** `router.refresh()` alle 30 Sekunden in LeitzentraleView. Neue Cases erscheinen automatisch. Client-State (Filter, Scroll, Period) bleibt erhalten. | **ENTSCHIEDEN** ✅ | Founder + CC | `LeitzentraleView.tsx`, PR #406 |
+| D63 | **Push-Notifications per Tenant.** Neue DB-Tabelle `ops_push_subscriptions` (tenant_id, user_id, notify_*). Push bei: Notfall (urgency=notfall), Zuweisung (notify-assignees), Bewertung (review_rated). Stummschalten via preferences (notify_notfall/assignment/review/all_cases). PushOnboardingBanner (nicht-aggressiv, 3s delay, 30d dismiss). Server-Helper `sendOpsPush()`. | **ENTSCHIEDEN** ✅ | Founder + CC | `ops_push_subscriptions`, `sendOpsPush.ts`, `PushOnboardingBanner.tsx`, PR #407 |
+| D64 | **App-Badge (Homescreen-Zähler).** `navigator.setAppBadge(count)` für neue Cases seit letztem Öffnen. `clearAppBadge()` on mount. `last_seen_at` in localStorage. Android Chrome/Edge: ✅, iOS: ❌ (Push als Alternative). | **ENTSCHIEDEN** ✅ | Founder + CC | `LeitzentraleView.tsx`, `OpsShell.tsx`, PR #407 |
+| D65 | **Google Review Crawl (wöchentlich).** `crawl_google_reviews.mjs` via GH Actions Cron (Mo 06:00). Google Places API (New): Rating + Count + letzte 5 Reviews. DB: `modules.google_review_avg/count/place_id/latest_reviews/crawled_at`. Kosten: ~$3.50/Mo bei 50 Betrieben. | **ENTSCHIEDEN** ✅ | Founder + CC | `crawl_google_reviews.mjs`, `google-review-crawl.yml`, PR #408 |
+| D66 | **Wöchentlicher Rapport per Email.** `weekly_report.mjs` via GH Actions Cron (Mo 07:00). Branded HTML-Email an Betriebsinhaber: Neue Fälle (Voice/Web/Manual), Erledigt, Bewertungen, Google-Rating, Termine. Nur an Tenants mit notification_email (Phase B aktiv). | **ENTSCHIEDEN** ✅ | Founder + CC | `weekly_report.mjs`, `weekly-report.yml`, PR #408 |
 
 ---
 
