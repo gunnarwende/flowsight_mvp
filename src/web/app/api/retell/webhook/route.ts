@@ -514,6 +514,20 @@ export async function POST(req: Request) {
       metadata: { source: "voice", retell_call_id: retellCallId },
     }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
 
+    // Push notification for Notfall cases (best-effort, never blocks)
+    if (urgencyNormalized === "notfall") {
+      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        sendOpsPush({
+          tenantId,
+          eventType: "notfall",
+          title: "Notfall eingegangen",
+          body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
+          url: `/ops/cases/${caseId}`,
+          tag: `notfall-${caseId}`,
+        })
+      ).catch(() => {});
+    }
+
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
     const emailSent = await sendCaseNotification({

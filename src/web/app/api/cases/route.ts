@@ -264,6 +264,20 @@ export async function POST(request: NextRequest) {
       metadata: { source: data.source },
     }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
 
+    // Push notification for Notfall cases (best-effort)
+    if (data.urgency === "notfall") {
+      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        sendOpsPush({
+          tenantId,
+          eventType: "notfall",
+          title: "Notfall eingegangen",
+          body: `${data.category}: ${data.city} — ${data.reporter_name ?? "Unbekannt"}`,
+          url: `/ops/cases/${row.id}`,
+          tag: `notfall-${row.id}`,
+        })
+      ).catch(() => {});
+    }
+
     // Reporter confirmation (no log — result merged into notification log below)
     let reporterEmailSent: boolean | undefined;
     if (data.contact_email) {
