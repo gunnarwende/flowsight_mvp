@@ -1,0 +1,23 @@
+name: Google Review Crawl (Weekly)
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Monday 06:00 UTC
+  workflow_dispatch: {} # Manual trigger
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: cd src/web && npm ci --ignore-scripts
+      - name: Run Google Review Crawl
+        env:
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/crawl_google_reviews.mjs
