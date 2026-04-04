@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InstallPrompt } from "./InstallPrompt";
 import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
+import { PushOnboardingBanner } from "./PushOnboardingBanner";
 import { UpdatePrompt } from "./UpdatePrompt";
 import { TenantSwitcher } from "./TenantSwitcher";
 
@@ -412,6 +413,7 @@ export function OpsShell({
           </div>
         ) : (
           <div className="max-w-6xl mx-auto px-4 py-4 min-w-0">
+            <PushOnboardingBanner />
             {children}
           </div>
         )}

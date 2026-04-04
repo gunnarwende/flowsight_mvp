@@ -105,6 +105,20 @@ export async function POST(
 
     const sentCount = results.filter(Boolean).length;
 
+    // Push notification to assigned staff (best-effort)
+    import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) => {
+      for (const s of staffWithEmail) {
+        sendOpsPush({
+          tenantId: scope.tenantId!,
+          eventType: "assignment",
+          title: "Neuer Fall zugewiesen",
+          body: `${row.category}: ${row.city} — ${row.urgency === "notfall" ? "NOTFALL" : row.urgency}`,
+          url: `/ops/cases/${id}`,
+          tag: `assign-${id}`,
+        });
+      }
+    }).catch(() => {});
+
     // Log event
     await supabase
       .from("case_events")

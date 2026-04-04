@@ -21,6 +21,13 @@ export async function POST(
 
   const supabase = getServiceClient();
 
+  // Get tenant_id + reporter_name for push notification
+  const { data: caseRow } = await supabase
+    .from("cases")
+    .select("tenant_id, reporter_name")
+    .eq("id", caseId)
+    .single();
+
   const { error } = await supabase
     .from("cases")
     .update({
@@ -39,6 +46,21 @@ export async function POST(
     event_type: "review_rated",
     title: `Kundenbewertung: ${rating} Stern${rating !== 1 ? "e" : ""}`,
   });
+
+  // Push notification to tenant staff (best-effort)
+  if (caseRow?.tenant_id) {
+    const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
+    import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+      sendOpsPush({
+        tenantId: caseRow.tenant_id,
+        eventType: "review",
+        title: `Bewertung erhalten: ${stars}`,
+        body: `${caseRow.reporter_name ?? "Kunde"} hat ${rating} Sterne vergeben`,
+        url: `/ops/cases/${caseId}`,
+        tag: `review-${caseId}`,
+      })
+    ).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true });
 }
