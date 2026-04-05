@@ -53,6 +53,7 @@ export interface LeitzentraleProps {
   featuredReview?: string | null;
   staffName?: string | null;
   staffRole?: "admin" | "techniker";
+  googleReviewCount?: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -227,6 +228,7 @@ export function LeitzentraleView({
   avgRating,
   staffName,
   staffRole,
+  googleReviewCount,
 }: LeitzentraleProps) {
   const router = useRouter();
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -450,10 +452,15 @@ export function LeitzentraleView({
       <FlowBar
         steps={adminSteps}
         starRating={avgRating ?? null}
-        starSub={`${flowStats.reviewReceived} erhalten / ${flowStats.reviewSent} angefragt`}
+        starSub={(() => {
+          const pct = flowStats.reviewSent > 0 ? Math.round((flowStats.reviewReceived / flowStats.reviewSent) * 100) : null;
+          const pctStr = pct !== null ? ` (${pct}%)` : "";
+          return `${flowStats.reviewReceived}/${flowStats.reviewSent} erhalten${pctStr}`;
+        })()}
         starSubLinks={[
           { label: `${flowStats.reviewReceived} erhalten`, onClick: () => { setActiveNode("bewertung_erhalten"); setCurrentPage(1); } },
           { label: `${flowStats.reviewSent} angefragt`, onClick: () => { setActiveNode("bewertung_angefragt"); setCurrentPage(1); } },
+          ...(googleReviewCount != null ? [{ label: `Google: ${googleReviewCount}`, onClick: () => {} }] : []),
         ]}
         activeStep={activeNode}
         onStepClick={handleNodeClick}

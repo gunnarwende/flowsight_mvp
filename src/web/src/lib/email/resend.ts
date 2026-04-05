@@ -462,12 +462,73 @@ interface ReviewRequestPayload {
   reviewSurfaceUrl: string;
   /** Optional Google Review URL — only used as fallback on the review surface itself */
   googleReviewUrl?: string;
+  /** Brand color for HTML email (hex) */
+  primaryColor?: string;
+  /** Case category for personalization */
+  category?: string;
+  /** Location "PLZ City" for personalization */
+  location?: string;
+}
+
+function buildReviewRequestHtml(p: ReviewRequestPayload): string {
+  const tenantLabel = escapeHtml(p.tenantDisplayName ?? "Ihr Servicebetrieb");
+  const color = p.primaryColor ?? "#d4a853";
+  const link = escapeHtml(p.reviewSurfaceUrl);
+
+  // Personal reference line
+  const refParts: string[] = [];
+  if (p.category) refParts.push(escapeHtml(p.category));
+  if (p.location) refParts.push(`in ${escapeHtml(p.location)}`);
+  const refLine = refParts.length > 0
+    ? `Ihr Auftrag <strong>${refParts.join(" ")}</strong> wurde erledigt.`
+    : "";
+
+  return `<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden">
+<!-- Brand accent bar -->
+<tr><td style="height:4px;background:${color};font-size:0;line-height:0">&nbsp;</td></tr>
+<!-- Heading -->
+<tr><td style="padding:32px 32px 0;color:#0f172a;font-size:20px;font-weight:700">${tenantLabel}</td></tr>
+<!-- Body -->
+<tr><td style="padding:20px 32px 0;color:#334155;font-size:15px;line-height:1.6">
+Guten Tag<br><br>
+${refLine}${refLine ? "<br><br>" : ""}
+&Uuml;ber eine kurze Bewertung w&uuml;rden wir uns sehr freuen &mdash; dauert nur 30 Sekunden.
+</td></tr>
+<!-- CTA button -->
+<tr><td style="padding:28px 32px 8px" align="center">
+  <a href="${link}" target="_blank" style="display:inline-block;background:${color};color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:8px">
+    &#9733; Service bewerten
+  </a>
+</td></tr>
+<!-- Sub-CTA -->
+<tr><td style="padding:12px 32px 0" align="center">
+  <span style="color:#94a3b8;font-size:12px">Dauert nur 30 Sekunden</span>
+</td></tr>
+<!-- Sign-off -->
+<tr><td style="padding:28px 32px 0;color:#334155;font-size:15px;line-height:1.6">
+Vielen Dank f&uuml;r Ihr Vertrauen.<br><br>
+Freundliche Gr&uuml;sse<br>Ihr Service-Team
+</td></tr>
+<!-- Footer -->
+<tr><td style="padding:24px 32px;border-top:1px solid #e2e8f0;margin-top:24px">
+  <div style="color:#94a3b8;font-size:12px;text-align:center">Sie erhalten diese Nachricht, weil wir einen Auftrag f&uuml;r Sie erledigt haben.</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 }
 
 /**
  * Send a review request email after a completed job.
- * Plain text, minimal, one-time. Owns its own console.log
- * (this runs in a separate invocation via the request-review route).
+ * HTML + plain text fallback. Owns its own console.log.
  *
  * Errors are captured to Sentry but never thrown.
  */
@@ -497,6 +558,7 @@ export async function sendReviewRequest(
       from,
       to: payload.contactEmail,
       subject: `Wie war unser Service? — ${tenantLabel}`,
+      html: buildReviewRequestHtml(payload),
       text: [
         `Guten Tag`,
         ``,

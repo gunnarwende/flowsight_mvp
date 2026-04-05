@@ -34,7 +34,7 @@ export async function POST(
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, created_at, tenant_id, status, contact_email, contact_phone, review_sent_at")
+    .select("id, created_at, tenant_id, status, contact_email, contact_phone, review_sent_at, category, plz, city")
     .eq("id", id)
     .single();
 
@@ -105,6 +105,7 @@ export async function POST(
   // ── Tenant info (name + modules) ─────────────────────────────────────
   let googleReviewUrl: string | undefined;
   let tenantDisplayName: string | undefined;
+  let primaryColor: string | undefined;
   {
     const { data: tenant } = await supabase
       .from("tenants")
@@ -116,6 +117,9 @@ export async function POST(
     const modules = tenant?.modules as Record<string, unknown> | null;
     if (typeof modules?.google_review_url === "string" && modules.google_review_url.length > 0) {
       googleReviewUrl = modules.google_review_url;
+    }
+    if (typeof modules?.primary_color === "string") {
+      primaryColor = modules.primary_color;
     }
   }
   if (!googleReviewUrl) {
@@ -137,6 +141,7 @@ export async function POST(
 
   if (row.contact_email) {
     Sentry.setTag("area", "email");
+    const location = [row.plz, row.city].filter(Boolean).join(" ") || undefined;
     sent = await sendReviewRequest({
       caseId: id,
       tenantId: row.tenant_id,
@@ -144,6 +149,9 @@ export async function POST(
       contactEmail: row.contact_email,
       reviewSurfaceUrl,
       googleReviewUrl,
+      primaryColor,
+      category: row.category || undefined,
+      location,
     });
     channel = "email";
   }

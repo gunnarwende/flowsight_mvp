@@ -15,6 +15,7 @@ interface SystemCardProps {
     created_at: string;
     updated_at: string;
     review_sent_at?: string | null;
+    review_rating?: number | null;
   }[];
   avgRating: number | null;
   weeklyDone: number;
@@ -45,6 +46,7 @@ export function SystemCard({
       web = 0,
       manual = 0;
     let reviewSent = 0,
+      reviewReceived = 0,
       doneTotal = 0;
 
     for (const c of cases) {
@@ -69,6 +71,7 @@ export function SystemCard({
       if (c.status === "done") {
         doneTotal++;
         if (c.review_sent_at) reviewSent++;
+        if (c.review_rating != null) reviewReceived++;
       }
     }
 
@@ -81,6 +84,7 @@ export function SystemCard({
       web,
       manual,
       reviewSent,
+      reviewReceived,
       doneTotal,
     };
   }, [cases, cutoff]);
@@ -288,7 +292,7 @@ export function SystemCard({
                 Bewertung
               </span>
               <span className="text-[8px] sm:text-[9px] text-gray-400">
-                {stats.reviewSent} von {stats.doneTotal}
+                {stats.reviewReceived}/{stats.reviewSent} erhalten
               </span>
             </button>
           </div>
