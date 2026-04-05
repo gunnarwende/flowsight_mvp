@@ -1358,7 +1358,6 @@ function BewertungEndCap({
 
             {reviewState === "sent" && <span className="text-emerald-600 text-xs">Gesendet</span>}
             {reviewState === "error" && <span className="text-red-600 text-xs">{reviewMsg}</span>}
-            {reviewInfo.reviewCount > 0 && <span className="text-gray-400 text-xs">{reviewInfo.reviewCount}/2 Anfragen</span>}
           </div>
         </div>
       </div>
