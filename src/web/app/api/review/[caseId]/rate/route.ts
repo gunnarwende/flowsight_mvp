@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
 
-// POST /api/review/[caseId]/rate — Save customer rating from review surface
+// POST /api/review/[caseId]/rate — Save customer rating + optional text from review surface
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ caseId: string }> },
@@ -9,11 +9,15 @@ export async function POST(
   const { caseId } = await params;
 
   let rating: number;
+  let text: string | null = null;
   try {
     const body = await req.json();
     rating = Number(body.rating);
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
       return NextResponse.json({ error: "Rating must be 1-5" }, { status: 400 });
+    }
+    if (typeof body.text === "string" && body.text.trim().length > 0) {
+      text = body.text.trim().slice(0, 2000);
     }
   } catch {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
@@ -28,12 +32,17 @@ export async function POST(
     .eq("id", caseId)
     .single();
 
+  const updatePayload: Record<string, unknown> = {
+    review_rating: rating,
+    review_received_at: new Date().toISOString(),
+  };
+  if (text !== null) {
+    updatePayload.review_text = text;
+  }
+
   const { error } = await supabase
     .from("cases")
-    .update({
-      review_rating: rating,
-      review_received_at: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq("id", caseId);
 
   if (error) {
@@ -45,17 +54,22 @@ export async function POST(
     case_id: caseId,
     event_type: "review_rated",
     title: `Kundenbewertung: ${rating} Stern${rating !== 1 ? "e" : ""}`,
+    ...(text ? { metadata: { text_preview: text.slice(0, 200) } } : {}),
   });
 
   // Push notification to tenant staff (best-effort)
   if (caseRow?.tenant_id) {
     const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
+    const name = caseRow.reporter_name ?? "Kunde";
+    const bodyText = text
+      ? `${name}: ${text.slice(0, 80)}${text.length > 80 ? "…" : ""}`
+      : `${name} hat ${rating} Sterne vergeben`;
     import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
       sendOpsPush({
         tenantId: caseRow.tenant_id,
         eventType: "review",
         title: `Bewertung erhalten: ${stars}`,
-        body: `${caseRow.reporter_name ?? "Kunde"} hat ${rating} Sterne vergeben`,
+        body: bodyText,
         url: `/ops/cases/${caseId}`,
         tag: `review-${caseId}`,
       })

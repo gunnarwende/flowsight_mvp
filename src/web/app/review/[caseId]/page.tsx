@@ -87,12 +87,6 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
     timeZone: "Europe/Zurich",
   });
 
-  const defaultReviewText = [
-    "Sehr kompetenter und zuverl\u00e4ssiger Service.",
-    "Schnelle Reaktion, saubere Arbeit, faire Preise.",
-    "Jederzeit wieder \u2014 klare Empfehlung!",
-  ].join("\n");
-
   return (
     <ReviewSurfaceClient
       companyName={companyName}
@@ -100,7 +94,6 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
       category={caseRow.category || "\u2014"}
       location={location}
       caseDate={caseDate}
-      defaultText={defaultReviewText}
       googleReviewUrl={googleReviewUrl}
       trackUrl={`/api/review/${caseId}/track`}
       caseId={caseId}
