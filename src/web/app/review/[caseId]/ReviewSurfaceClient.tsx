@@ -43,7 +43,6 @@ export function ReviewSurfaceClient({
   // Positive path
   const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
   const [freeText, setFreeText] = useState("");
-  const [showFreeText, setShowFreeText] = useState(false);
 
   // Negative path
   const [feedbackText, setFeedbackText] = useState("");
@@ -226,25 +225,16 @@ export function ReviewSurfaceClient({
                 })}
               </div>
 
-              {/* Expandable free text */}
-              {!showFreeText ? (
-                <button
-                  onClick={() => setShowFreeText(true)}
-                  className="w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors mb-4"
-                >
-                  + Eigenen Text hinzufügen
-                </button>
-              ) : (
-                <div className="mb-4">
-                  <textarea
-                    className="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition-colors focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                    rows={3}
-                    value={freeText}
-                    onChange={(e) => setFreeText(e.target.value)}
-                    placeholder="Beschreiben Sie Ihre Erfahrung..."
-                  />
-                </div>
-              )}
+              {/* Free text */}
+              <div className="mb-4">
+                <textarea
+                  className="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition-colors focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                  rows={3}
+                  value={freeText}
+                  onChange={(e) => setFreeText(e.target.value)}
+                  placeholder="Beschreiben Sie Ihre Erfahrung..."
+                />
+              </div>
 
               {/* CTA */}
               {googleReviewUrl ? (
