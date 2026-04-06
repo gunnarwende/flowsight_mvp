@@ -75,6 +75,7 @@ export function OpsShell({
   activeTenantId,
   homeTenantId,
   viewAsRole,
+  showRoleToggle,
   children,
 }: {
   userEmail: string;
@@ -93,6 +94,8 @@ export function OpsShell({
   homeTenantId?: string | null;
   /** Role override for testing (admin views as techniker) */
   viewAsRole?: "techniker" | null;
+  /** Hide role toggle for small tenants without techniker staff */
+  showRoleToggle?: boolean;
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
@@ -337,14 +340,8 @@ export function OpsShell({
         <InstallPrompt />
         {/* Top bar: Role toggle (admin only) + mobile preview */}
         <div className="flex items-center justify-end gap-2 px-4 pt-2">
-          {/* Tenant indicator */}
-          {isImpersonating && (
-            <span className="text-[10px] text-gray-400 mr-auto">
-              Ansicht: {tenantName}
-            </span>
-          )}
           {/* Role toggle — admin can switch between Admin/Techniker */}
-          {isAdmin && (
+          {isAdmin && showRoleToggle !== false && (
             <div className="flex gap-0.5 bg-gray-100 rounded-lg p-0.5">
               <button
                 onClick={async () => {
