@@ -4,6 +4,7 @@ import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
+import { getServiceClient } from "@/src/lib/supabase/server";
 import { OpsShell } from "@/src/components/ops/OpsShell";
 
 /**
@@ -42,6 +43,17 @@ export default async function DashboardLayout({
     staffRole = "techniker";
   }
 
+  // Show role toggle only for tenants with >2 staff members
+  let showRoleToggle = true;
+  if (effectiveTenantId) {
+    const supabase = getServiceClient();
+    const { count } = await supabase
+      .from("staff")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", effectiveTenantId);
+    showRoleToggle = (count ?? 0) > 2;
+  }
+
   return (
     <OpsShell
       userEmail={user.email ?? ""}
@@ -53,6 +65,7 @@ export default async function DashboardLayout({
       activeTenantId={scope?.tenantId}
       homeTenantId={scope?.homeTenantId}
       viewAsRole={scope?.viewAsRole}
+      showRoleToggle={showRoleToggle}
     >
       {children}
     </OpsShell>
