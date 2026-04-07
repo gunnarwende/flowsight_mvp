@@ -77,7 +77,14 @@ export default async function VorstellungPage({
           className="mt-7 border-l-[3px] pl-4 text-[15px] font-medium leading-relaxed text-gray-800 sm:text-base"
           style={{ borderColor: accent }}
         >
-          &bdquo;{v.question}&ldquo;
+          {v.question.split("\n").map((line, i, arr) => (
+            <span key={i}>
+              {i === 0 && <>&bdquo;</>}
+              {line}
+              {i === arr.length - 1 && <>&ldquo;</>}
+              {i < arr.length - 1 && <br />}
+            </span>
+          ))}
         </blockquote>
 
         {/* Value proposition */}
