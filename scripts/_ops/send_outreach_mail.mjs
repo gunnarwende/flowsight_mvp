@@ -100,7 +100,7 @@ function buildHtml(p) {
     <p style="margin:0;font-size:13px;line-height:1.5;color:#888888;">
       Oberrieden<br>
       <a href="tel:+41445520919" style="color:#888888;text-decoration:none;">+41 44 552 09 19</a><br>
-      <a href="mailto:gunnarwende@flowsight.ch" style="color:#888888;text-decoration:none;">gunnarwende@flowsight.ch</a>
+      <a href="mailto:gunnar.wende@flowsight.ch" style="color:#888888;text-decoration:none;">gunnar.wende@flowsight.ch</a>
     </p>
   </td></tr>
   </table>
@@ -139,7 +139,7 @@ Freundliche Grüsse
 Gunnar Wende
 Oberrieden
 +41 44 552 09 19
-gunnarwende@flowsight.ch`;
+gunnar.wende@flowsight.ch`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -179,7 +179,7 @@ const result = await sendEmail({
   html,
   text,
   fromName: "Gunnar Wende",
-  replyTo: "gunnarwende@flowsight.ch",
+  replyTo: "gunnar.wende@flowsight.ch",
 });
 
 if (result.success) {

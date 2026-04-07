@@ -141,7 +141,7 @@ Falls Sie FlowSight in Ihrem Betrieb einsetzen m&ouml;chten, melden Sie sich jed
 </td></tr>
 <!-- Founder contact -->
 <tr><td style="padding:28px 24px 20px;border-top:1px solid #1e293b;margin-top:24px">
-  <div style="color:#64748b;font-size:13px;line-height:1.6;text-align:center">Gunnar Wende &mdash; 044 552 09 19 &mdash; gunnarwende@flowsight.ch</div>
+  <div style="color:#64748b;font-size:13px;line-height:1.6;text-align:center">Gunnar Wende &mdash; 044 552 09 19 &mdash; gunnar.wende@flowsight.ch</div>
 </td></tr>
 </table>
 </td></tr>
@@ -163,7 +163,7 @@ Falls Sie FlowSight in Ihrem Betrieb einsetzen m&ouml;chten, melden Sie sich jed
       "Falls Sie das System in Ihrem Betrieb einsetzen möchten, melden Sie sich jederzeit.",
       "",
       "---",
-      "Gunnar Wende — 044 552 09 19 — gunnarwende@flowsight.ch",
+      "Gunnar Wende — 044 552 09 19 — gunnar.wende@flowsight.ch",
     ].join("\n");
 
     if (dryRun) {

@@ -54,7 +54,7 @@ Gunnar Wende
 Oberrieden
 
 +41 44 552 09 19
-gunnarwende@flowsight.ch
+gunnar.wende@flowsight.ch
 ```
 
 ---
@@ -147,7 +147,7 @@ Gunnar Wende
 Oberrieden
 
 +41 44 552 09 19
-gunnarwende@flowsight.ch
+gunnar.wende@flowsight.ch
 ```
 
 **Mail-Design-Regeln:**
