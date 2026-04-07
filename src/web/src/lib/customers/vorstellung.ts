@@ -44,9 +44,9 @@ const doerflerAg: VorstellungConfig = {
   anrede: "Herr Dörfler",
   headline: "Ein persönliches Leitsystem für die Dörfler AG",
   question:
-    "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht und man trotzdem direkt sauber weiterarbeiten kann?",
+    "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht —\nund man trotzdem direkt sauber weiterarbeiten kann?",
   valueProp:
-    "Weniger geht verloren, der Überblick ist schneller da, und gute Arbeit wird am Ende auch nach aussen sichtbar.",
+    "Weniger geht verloren, der Überblick entsteht schneller, und gute Arbeit wird am Ende auch nach aussen sichtbar.",
   modules: [
     {
       title: "Ihr Alltag — und die eigentliche Frage",

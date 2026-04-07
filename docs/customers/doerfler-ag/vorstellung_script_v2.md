@@ -1,6 +1,65 @@
 # Vorstellung Dörfler AG — Script v2
 
-**Version:** 2.0 | **Datum:** 2026-04-07
+**Version:** 2.1 | **Datum:** 2026-04-07
+
+---
+
+## E-Mail an Dörfler AG
+
+**An:** info@doerflerag.ch
+**Betreff:** Etwas Persönliches für die Dörfler AG
+**Sender:** Gunnar Wende via noreply@send.flowsight.ch (Resend)
+
+### Variante A: HTML-Mail mit Foto (empfohlen)
+
+**Preview:** Öffne `docs/customers/doerfler-ag/mail1_preview.html` im Browser.
+**Senden:**
+```bash
+node --env-file=src/web/.env.local scripts/_ops/send_outreach_mail.mjs doerfler-ag info@doerflerag.ch
+```
+
+Aufbau:
+1. Persönlicher Text (Kontext, Einsatz bei uns)
+2. **Gunnar-Foto** (120px, rund, klickbar → Vorstellungsseite)
+3. Link zur Vorstellungsseite als Text-Fallback
+4. Warmer Abschluss + Signatur
+
+Das Foto sitzt bewusst ZWISCHEN Kontext und Link:
+- Text baut auf: "Wer schreibt mir?"
+- Foto schafft Vertrauen: "Ein echter Mensch"
+- Link lädt ein: "Was hat er vorbereitet?"
+
+### Variante B: Plain-Text (Fallback / Outlook manuell)
+
+```
+Guten Tag Herr Dörfler
+
+Ich hoffe, Ihnen geht es gut und Sie konnten die sonnigen Ostertage geniessen.
+
+Mein Name ist Gunnar Wende, ich wohne in Oberrieden.
+
+Vor ein paar Monaten war einer von Ihnen beiden bei uns in der Wohnung, weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste. Wir waren mit der Ausführung sehr zufrieden.
+
+Das ist mir in Erinnerung geblieben. Ich habe mir danach ein paar Gedanken gemacht und für die Dörfler AG etwas Konkretes vorbereitet.
+
+Hier können Sie es sich in Ruhe anschauen — dauert etwa fünf Minuten:
+https://flowsight.ch/kunden/doerfler-ag/vorstellung
+
+Ich möchte Ihnen damit nichts verkaufen. Mich würde einfach ehrlich interessieren, wie das auf Sie wirkt.
+
+Gerne komme ich auch kurz persönlich vorbei — wir sind ja nur ein paar Strassen voneinander entfernt.
+
+Freundliche Grüsse
+Gunnar Wende
+Oberrieden
+
++41 44 552 09 19
+gunnar@flowsight.ch
+```
+
+---
+
+**Version:** 2.1 | **Datum:** 2026-04-07
 **Zweck:** 4 kurze Video-Module + persönliche Vorstellungsseite. Kein langes Einzelvideo.
 **Ziel-Dauer:** 4 × 1–2 Minuten (Total ~5–7 Minuten)
 **Ton:** Persönlich, respektvoll, nicht verkaufen. Feedback anfragen.

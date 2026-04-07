@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mail 1 — Dörfler AG</title>
+<!--
+  ANLEITUNG:
+  1. Diese Datei im Browser öffnen (Doppelklick)
+  2. Ctrl+A (alles markieren)
+  3. Ctrl+C (kopieren)
+  4. In Outlook: Neue E-Mail → Ctrl+V (einfügen)
+  5. Betreff: Etwas Persönliches für die Dörfler AG
+  6. An: info@doerflerag.ch
+  7. Senden.
+
+  Alternativ via Script (Resend):
+  node --env-file=src/web/.env.local scripts/_ops/send_outreach_mail.mjs doerfler-ag info@doerflerag.ch
+-->
+<style>
+  /* Nur für Browser-Anzeige — wird beim Copy-Paste ignoriert */
+  body { max-width: 560px; margin: 40px auto; }
+</style>
+</head>
+<body style="margin:0;padding:20px;font-family:Calibri,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#1a1a1a;background-color:#ffffff;">
+
+<p style="margin:0 0 18px 0;">Guten Tag Herr Dörfler</p>
+
+<p style="margin:0 0 14px 0;color:#333333;">Ich hoffe, Ihnen geht es gut und Sie konnten die sonnigen Ostertage geniessen.</p>
+
+<p style="margin:0 0 14px 0;color:#333333;">Mein Name ist Gunnar Wende, ich wohne in Oberrieden.</p>
+
+<p style="margin:0 0 14px 0;color:#333333;">Vor ein paar Monaten war einer von Ihnen beiden bei uns in der Wohnung, weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste. Wir waren mit der Ausführung sehr zufrieden.</p>
+
+<p style="margin:0 0 22px 0;color:#333333;">Das ist mir in Erinnerung geblieben. Ich habe mir danach ein paar Gedanken gemacht und für die Dörfler AG etwas Konkretes vorbereitet.</p>
+
+<!-- Gunnar-Foto: klickbar, verlinkt auf Vorstellungsseite -->
+<p style="margin:0 0 16px 0;text-align:center;">
+  <a href="https://flowsight.ch/kunden/doerfler-ag/vorstellung" target="_blank" style="text-decoration:none;">
+    <img
+      src="https://flowsight.ch/vorstellung/gunnar.png"
+      alt="Gunnar Wende"
+      width="120"
+      height="120"
+      style="width:120px;height:120px;border-radius:60px;display:inline-block;border:3px solid #e0e0e0;"
+    >
+  </a>
+</p>
+
+<p style="margin:0 0 6px 0;color:#333333;text-align:center;">Hier können Sie es sich in Ruhe anschauen — dauert etwa fünf Minuten:</p>
+
+<p style="margin:0 0 22px 0;text-align:center;">
+  <a href="https://flowsight.ch/kunden/doerfler-ag/vorstellung" target="_blank" style="color:#2b6cb0;">https://flowsight.ch/kunden/doerfler-ag/vorstellung</a>
+</p>
+
+<p style="margin:0 0 14px 0;color:#333333;">Ich möchte Ihnen damit nichts verkaufen. Mich würde einfach ehrlich interessieren, wie das auf Sie wirkt.</p>
+
+<p style="margin:0 0 26px 0;color:#333333;">Gerne komme ich auch kurz persönlich vorbei — wir sind ja nur ein paar Strassen voneinander entfernt.</p>
+
+<p style="margin:0 0 2px 0;color:#333333;">Freundliche Grüsse</p>
+<p style="margin:0 0 0 0;font-weight:600;color:#1a1a1a;">Gunnar Wende</p>
+<p style="margin:0 0 0 0;color:#888888;font-size:13px;">Oberrieden</p>
+<p style="margin:8px 0 0 0;color:#888888;font-size:13px;">
+  <a href="tel:+41445520919" style="color:#888888;text-decoration:none;">+41 44 552 09 19</a><br>
+  <a href="mailto:gunnar@flowsight.ch" style="color:#888888;text-decoration:none;">gunnar@flowsight.ch</a>
+</p>
+
+</body>
+</html>
