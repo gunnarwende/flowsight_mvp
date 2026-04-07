@@ -78,7 +78,7 @@ const doerflerAg: VorstellungConfig = {
   contact: {
     name: "Gunnar Wende",
     phone: "+41 44 552 09 19",
-    email: "gunnarwende@flowsight.ch",
+    email: "gunnar.wende@flowsight.ch",
     location: "Oberrieden",
   },
 };
