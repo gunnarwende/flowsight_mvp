@@ -111,9 +111,18 @@ export default async function VorstellungPage({
             height={40}
             className="mt-0.5 h-10 w-10 flex-shrink-0 rounded-full object-cover"
           />
-          <p className="text-[14px] leading-relaxed text-gray-600">
-            {v.closing}
-          </p>
+          <div className="space-y-3 text-[14px] leading-relaxed text-gray-600">
+            {v.closing.split("\n\n").map((para, i) => (
+              <p key={i}>
+                {para.split("\n").map((line, j, arr) => (
+                  <span key={j}>
+                    {line}
+                    {j < arr.length - 1 && <br />}
+                  </span>
+                ))}
+              </p>
+            ))}
+          </div>
         </div>
 
         {/* Contact */}

@@ -42,39 +42,39 @@ export interface VorstellungConfig {
 const doerflerAg: VorstellungConfig = {
   slug: "doerfler-ag",
   anrede: "Herr Dörfler",
-  headline: "Persönlich vorbereitet für die Dörfler AG",
+  headline: "Ein persönliches Leitsystem für die Dörfler AG",
   question:
-    "Wie kommt bei einem Betrieb wie Ihrem im Alltag alles so an, dass man direkt sinnvoll damit weiterarbeiten kann?",
+    "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht und man trotzdem direkt sauber weiterarbeiten kann?",
   valueProp:
-    "Weniger geht verloren, der Überblick kommt schneller — und gute Arbeit zahlt am Ende auf die Aussenwirkung der Dörfler AG ein.",
+    "Weniger geht verloren, der Überblick ist schneller da, und gute Arbeit wird am Ende auch nach aussen sichtbar.",
   modules: [
     {
-      title: "Ihr Alltag — und eine Frage",
+      title: "Ihr Alltag — und die eigentliche Frage",
       subtitle:
-        "Baustelle, Kundengespräch und neue Anfragen gleichzeitig",
+        "Baustelle, Kundengespräch und neue Anliegen gleichzeitig",
       videoUrl: null,
     },
     {
-      title: "Wenn Sie gerade nicht rangehen können",
+      title: "Wenn Sie gerade nicht direkt rangehen können",
       subtitle:
-        "Eine Assistentin übernimmt — mit dem Namen der Dörfler AG",
+        "Das Anliegen wird sauber aufgenommen, ohne dass im Alltag etwas verloren geht",
       videoUrl: null,
     },
     {
       title: "Wenn ein Kunde lieber online meldet",
       subtitle:
-        "Ein sauberer Weg über Ihre Website — direkt in dieselbe Übersicht",
+        "Auch schriftlich landet alles im selben Ablauf",
       videoUrl: null,
     },
     {
       title: "Wie gute Arbeit sichtbar wird",
       subtitle:
-        "Zufriedene Kunden gezielt zu einer Bewertung führen — im richtigen Moment",
+        "Bewertungen gezielt anfragen — dann, wenn es wirklich passt",
       videoUrl: null,
     },
   ],
   closing:
-    "Mich würde ehrlich interessieren, wie das auf Sie wirkt. Sie erreichen mich jederzeit — wir sind ja nur ein paar Strassen voneinander entfernt.",
+    "Mich würde ehrlich interessieren,\nwie das auf Sie wirkt.\n\nSie erreichen mich jederzeit —\nwir sind ja nur ein paar Strassen voneinander entfernt.",
   contact: {
     name: "Gunnar Wende",
     phone: "+41 44 552 09 19",
