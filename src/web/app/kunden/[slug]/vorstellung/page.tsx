@@ -79,10 +79,13 @@ export default async function VorstellungPage({
         >
           {v.question.split("\n").map((line, i, arr) => (
             <span key={i}>
-              {i === 0 && <>&bdquo;</>}
               {line}
-              {i === arr.length - 1 && <>&ldquo;</>}
-              {i < arr.length - 1 && <br />}
+              {i < arr.length - 1 && (
+                <>
+                  {" — "}
+                  <br />
+                </>
+              )}
             </span>
           ))}
         </blockquote>

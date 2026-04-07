@@ -44,7 +44,7 @@ const doerflerAg: VorstellungConfig = {
   anrede: "Herr Dörfler",
   headline: "Ein persönliches Leitsystem für die Dörfler AG",
   question:
-    "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht —\nund man trotzdem direkt sauber weiterarbeiten kann?",
+    "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht\nund man trotzdem direkt sauber weiterarbeiten kann?",
   valueProp:
     "Weniger geht verloren, der Überblick entsteht schneller, und gute Arbeit wird am Ende auch nach aussen sichtbar.",
   modules: [
@@ -78,7 +78,7 @@ const doerflerAg: VorstellungConfig = {
   contact: {
     name: "Gunnar Wende",
     phone: "+41 44 552 09 19",
-    email: "gunnar@flowsight.ch",
+    email: "gunnarwende@flowsight.ch",
     location: "Oberrieden",
   },
 };
