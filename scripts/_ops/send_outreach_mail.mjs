@@ -35,7 +35,7 @@ const prospects = {
 /* ------------------------------------------------------------------ */
 
 function buildHtml(p) {
-  const photoUrl = `${BASE}/vorstellung/gunnar.png`;
+  const photoUrl = `${BASE}/vorstellung/gunnar_play.png`;
 
   return `<!DOCTYPE html>
 <html lang="de">
