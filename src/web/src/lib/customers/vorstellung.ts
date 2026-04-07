@@ -17,13 +17,15 @@ export interface VorstellungConfig {
   slug: string;
   /** Anrede für den Prospect (z.B. "Herr Dörfler") */
   anrede: string;
-  /** Hauptüberschrift oben auf der Seite */
+  /** Hauptüberschrift — kurz, persönlich */
   headline: string;
-  /** Persönlicher Intro-Text (Absätze mit \n\n trennen) */
-  intro: string;
+  /** Die Kernfrage (erscheint prominent im Hero) */
+  question: string;
+  /** Nutzenverdichtung — 1-2 Sätze direkt unter der Frage */
+  valueProp: string;
   /** Die 4 inhaltlichen Video-Module */
   modules: VorstellungModule[];
-  /** Persönlicher Abschlusstext (erscheint UNTER den Modulen, kein Video) */
+  /** Kurzer persönlicher Abschluss (2-3 Sätze max) */
   closing: string;
   contact: {
     name: string;
@@ -40,17 +42,17 @@ export interface VorstellungConfig {
 const doerflerAg: VorstellungConfig = {
   slug: "doerfler-ag",
   anrede: "Herr Dörfler",
-  headline: "Persönlich vorbereitet\nfür die Dörfler AG",
-  intro: [
-    "Nach Ihrem Einsatz bei uns in Oberrieden habe ich mir ein paar Gedanken gemacht — und für die Dörfler AG etwas Konkretes vorbereitet.",
-    "In vier kurzen Abschnitten zeige ich Ihnen, wie das im Alltag Ihres Betriebs funktionieren könnte. Jeder Teil dauert nur ein bis zwei Minuten.",
-  ].join("\n\n"),
+  headline: "Persönlich vorbereitet für die Dörfler AG",
+  question:
+    "Wie kommt bei einem Betrieb wie Ihrem im Alltag alles so an, dass man direkt sinnvoll damit weiterarbeiten kann?",
+  valueProp:
+    "Weniger geht verloren, der Überblick kommt schneller — und gute Arbeit zahlt am Ende auf die Aussenwirkung der Dörfler AG ein.",
   modules: [
     {
       title: "Ihr Alltag — und eine Frage",
       subtitle:
-        "Was passiert, wenn Baustelle, Kundengespräch und neue Anfragen gleichzeitig kommen",
-      videoUrl: null, // TODO: Loom-URL nach Aufnahme eintragen
+        "Baustelle, Kundengespräch und neue Anfragen gleichzeitig",
+      videoUrl: null,
     },
     {
       title: "Wenn Sie gerade nicht rangehen können",
@@ -65,18 +67,14 @@ const doerflerAg: VorstellungConfig = {
       videoUrl: null,
     },
     {
-      title: "Vom erledigten Fall zur Bewertung",
+      title: "Wie gute Arbeit sichtbar wird",
       subtitle:
-        "Gute Arbeit gezielt sichtbar machen — unkompliziert, mit einem Klick",
+        "Zufriedene Kunden gezielt zu einer Bewertung führen — im richtigen Moment",
       videoUrl: null,
     },
   ],
-  closing: [
-    "Mir ging es bei dem Ganzen um etwas sehr Einfaches: dass bei Ihnen im Alltag alles so ankommt, dass man direkt sinnvoll damit weiterarbeiten kann.",
-    "Das spart Zeit und Nerven, schafft schneller Überblick und sorgt dafür, dass gute Arbeit am Ende auch auf die Aussenwirkung der Dörfler AG einzahlt.",
-    "Ich möchte Ihnen damit nichts verkaufen. Mich würde einfach ehrlich interessieren, wie das auf Sie wirkt.",
-    "Sie erreichen mich jederzeit — wir sind ja nur ein paar Strassen voneinander entfernt.",
-  ].join("\n\n"),
+  closing:
+    "Mich würde ehrlich interessieren, wie das auf Sie wirkt. Sie erreichen mich jederzeit — wir sind ja nur ein paar Strassen voneinander entfernt.",
   contact: {
     name: "Gunnar Wende",
     phone: "+41 44 552 09 19",
