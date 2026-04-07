@@ -7,6 +7,7 @@ import {
 import type { Metadata } from "next";
 import type { VorstellungModule } from "@/src/lib/customers/vorstellung";
 import Image from "next/image";
+import PhotoLightbox from "./PhotoLightbox";
 
 /* ------------------------------------------------------------------ */
 /*  Static Generation                                                 */
@@ -54,14 +55,7 @@ export default async function VorstellungPage({
       <header className="mx-auto max-w-xl px-5 pt-10 sm:pt-14">
         {/* Identity */}
         <div className="flex items-center gap-4">
-          <Image
-            src="/vorstellung/gunnar.png"
-            alt={v.contact.name}
-            width={64}
-            height={64}
-            className="h-16 w-16 flex-shrink-0 rounded-full object-cover shadow-sm"
-            priority
-          />
+          <PhotoLightbox src="/vorstellung/gunnar.png" alt={v.contact.name} />
           <div className="min-w-0">
             <p className="text-[13px] font-medium text-gray-400">
               {v.contact.name} · {v.contact.location}
