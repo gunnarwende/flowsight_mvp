@@ -42,7 +42,7 @@ export interface VorstellungConfig {
 const doerflerAg: VorstellungConfig = {
   slug: "doerfler-ag",
   anrede: "Herr Dörfler",
-  headline: "Ein persönliches Leitsystem für die Dörfler AG",
+  headline: "Ein persönliches Leitsystem für die Dörfler\u00a0AG",
   question:
     "Wie sorgen wir bei der Dörfler AG dafür, dass im Alltag nichts verloren geht — und man trotzdem direkt sauber weiterarbeiten kann?",
   valueProp:
