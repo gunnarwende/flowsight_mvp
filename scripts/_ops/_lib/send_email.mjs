@@ -10,10 +10,10 @@
 const RESEND_API = "https://api.resend.com/emails";
 
 /**
- * @param {{ to: string, subject: string, html: string, text?: string, fromName?: string }} opts
+ * @param {{ to: string, subject: string, html: string, text?: string, fromName?: string, replyTo?: string }} opts
  * @returns {Promise<{ success: boolean, messageId?: string, error?: string }>}
  */
-export async function sendEmail({ to, subject, html, text, fromName }) {
+export async function sendEmail({ to, subject, html, text, fromName, replyTo }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return { success: false, error: "RESEND_API_KEY not set" };
@@ -25,6 +25,7 @@ export async function sendEmail({ to, subject, html, text, fromName }) {
   try {
     const body = { from, to, subject, html };
     if (text) body.text = text;
+    if (replyTo) body.reply_to = replyTo;
 
     const res = await fetch(RESEND_API, {
       method: "POST",
