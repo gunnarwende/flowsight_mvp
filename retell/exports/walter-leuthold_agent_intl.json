@@ -114,7 +114,7 @@
             "id": "edge-intake-german-trigger",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "The caller's latest message is clearly in German (a coherent German sentence or phrase), or the caller explicitly requests German (e.g. 'Deutsch bitte', 'auf Deutsch', 'German please', 'in German')"
+              "prompt": "The caller's latest message contains the word 'Deutsch' (alone or in any phrase like 'Deutsch bitte', 'auf Deutsch', 'wieder Deutsch', 'Deutsch weitermachen', 'können wir Deutsch'), OR contains 'German' or 'allemand' or 'tedesco', OR is clearly in German (a coherent German sentence like 'Hallo', 'Weitermachen', 'Können wir auf Deutsch sprechen'). Even a SINGLE word 'Deutsch' is enough to trigger this transfer."
             }
           },
           {
@@ -156,7 +156,7 @@
             "id": "edge-logic-german-check",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "The caller speaks German or has requested to continue in German"
+              "prompt": "The caller's latest message contains 'Deutsch', 'German', 'allemand', or 'tedesco', OR is clearly in German. Even a single word 'Deutsch' is enough."
             }
           },
           {
