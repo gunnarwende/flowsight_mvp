@@ -144,7 +144,7 @@
             "id": "edge-out-of-scope",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "out_of_scope is true (the request is not about plumbing, heating, building services, or the company)"
+              "prompt": "out_of_scope is true — ONLY when the caller has NEVER described any plumbing, heating, or building-related issue during the ENTIRE conversation. If ANY intake data has been collected, out_of_scope MUST remain false."
             }
           }
         ],
@@ -178,7 +178,7 @@
             "id": "edge-out-of-scope-logic",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "out_of_scope is true"
+              "prompt": "out_of_scope is true — ONLY when the caller has NEVER described any plumbing, heating, or building-related issue. If ANY intake data exists, out_of_scope MUST remain false."
             }
           },
           {
