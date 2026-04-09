@@ -63,3 +63,4 @@ tmp/
 
 .vercel
 .env*.local
+production/
