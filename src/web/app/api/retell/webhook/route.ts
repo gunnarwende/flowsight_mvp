@@ -314,6 +314,35 @@ export async function POST(req: Request) {
     return new NextResponse(null, { status: 204 });
   }
 
+  // ── Agent-hangup detection (CRITICAL — image damage) ─────────────────
+  // If the AGENT hung up (not the user), this is likely a bug.
+  // Alert immediately so founder can investigate.
+  const disconnectionReason = call?.disconnection_reason as string | undefined;
+  if (disconnectionReason === "agent_hangup" && callDurationMs > 0 && callDurationMs < 120_000) {
+    const durationS = Math.round(callDurationMs / 1000);
+    Sentry.captureMessage("agent_hangup_short_call", {
+      level: "error",
+      tags: {
+        area: "voice",
+        provider: "retell",
+        retell_call_id: retellCallId,
+        decision: "agent_hangup_alert",
+      },
+      extra: {
+        disconnection_reason: disconnectionReason,
+        duration_ms: callDurationMs,
+        from_number: call?.from_number,
+        to_number: call?.to_number,
+      },
+    });
+    // Fire-and-forget: RED alert to founder
+    notify({
+      severity: "RED",
+      code: "AGENT_HANGUP",
+      refs: { call_id: retellCallId, duration: `${durationS}s`, from: call?.from_number ?? "unknown" },
+    }).catch(() => {});
+  }
+
   // ── Probe extraction paths ──────────────────────────────────────────
   const { data: extractedData, path: extractedPath } = probeExtractedData(call, payload);
   const extractedKeys = Object.keys(extractedData);
