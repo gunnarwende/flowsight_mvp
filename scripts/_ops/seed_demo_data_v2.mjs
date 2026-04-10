@@ -1,0 +1,601 @@
+#!/usr/bin/env node
+// ===========================================================================
+// seed_demo_data_v2.mjs — High-End Demo Cases (70+, dynamic per tenant)
+//
+// Reads the CustomerSite config to get categories, service area, team.
+// Generates realistic cases across 2024-2026 with:
+// - Correct categories (matching Voice Agent + Wizard)
+// - Seasonal distribution (heating = winter, clogs = year-round)
+// - Source-appropriate descriptions (voice vs wizard vs manual)
+// - Realistic review data (30% of done cases)
+// - Staff assignments from tenant's actual team
+// - Unique addresses from the tenant's actual service area
+// - Chronological seq_numbers
+// - Realistic updated_at (done cases = days/weeks after created_at)
+//
+// Usage:
+//   node --env-file=.env.local scripts/_ops/seed_demo_data_v2.mjs \
+//     --slug=doerfler-ag [--count=70] [--clean]
+//
+// Requires: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
+// ===========================================================================
+
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
+import { randomUUID } from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+
+// ── ENV ────────────────────────────────────────────────────────────────
+const url = process.env.SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!url || !key) { console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"); process.exit(1); }
+const supabase = createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+
+// ── ARGS ──────────────────────────────────────────────────────────────
+const args = Object.fromEntries(
+  process.argv.slice(2).map((a) => { const [k, v] = a.replace(/^--/, "").split("="); return [k, v ?? "true"]; })
+);
+const slug = args.slug;
+if (!slug) { console.error("--slug=<tenant-slug> is required"); process.exit(1); }
+const targetCount = parseInt(args.count ?? "70", 10);
+const clean = args.clean === "true";
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pickWeighted(items) {
+  const total = items.reduce((s, i) => s + (i.weight || 1), 0);
+  let r = Math.random() * total;
+  for (const item of items) { r -= (item.weight || 1); if (r <= 0) return item; }
+  return items[items.length - 1];
+}
+function randomPhone() { return `+41${pick(["79","78","76"])}${String(Math.floor(Math.random()*10000000)).padStart(7,"0")}`; }
+
+// ── PLZ MAP ───────────────────────────────────────────────────────────
+const GEMEINDE_PLZ = {
+  "Oberrieden":"8942","Thalwil":"8800","Horgen":"8810","Kilchberg":"8802",
+  "Rüschlikon":"8803","Adliswil":"8134","Langnau am Albis":"8135",
+  "Wädenswil":"8820","Richterswil":"8805","Au ZH":"8804",
+  "Hütten":"8825","Schönenberg":"8824","Zürich":"8002",
+};
+
+const STREETS = [
+  "Seestrasse","Bahnhofstrasse","Dorfstrasse","Hauptstrasse","Kirchweg",
+  "Schulhausstrasse","Bergstrasse","Gartenstrasse","Rosenweg","Birkenweg",
+  "Sonnhalde","Wiesenstrasse","Industriestrasse","Im Grund","Rebhalde",
+  "Zürcherstrasse","Oberdorfstrasse","Mattweg","Langackerstrasse","Eichenweg",
+];
+
+const SWISS_FIRST = ["Thomas","Peter","Daniel","Martin","Andreas","Sandra","Monika","Claudia","Ursula","Barbara","Stefan","Markus","Christian","Hans","Beat","Eva","Silvia","Ruth","Maria","Franziska","Lukas","Niklaus","Reto","Marcel","Jürg","Susanne","Heidi","Verena","Brigitte","Doris"];
+const SWISS_LAST = ["Müller","Meier","Brunner","Fischer","Weber","Huber","Schmid","Keller","Wagner","Steiner","Baumann","Gerber","Frei","Roth","Maurer","Bühler","Künzler","Zürcher","Wenger","Ammann"];
+
+// ── CASE TEMPLATES PER CATEGORY ───────────────────────────────────────
+// Each template generates descriptions in 3 styles: voice, wizard, manual
+
+const CATEGORY_TEMPLATES = {
+  "Verstopfung": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12], // year-round
+    urgencyDist: { notfall: 0.15, dringend: 0.25, normal: 0.6 },
+    voice: [
+      "Abfluss in der Küche komplett verstopft. Wasser läuft nicht mehr ab.",
+      "WC im Erdgeschoss verstopft, lässt sich nicht mehr spülen.",
+      "Badewanne läuft nicht ab, steht voll Wasser.",
+      "Lavabo im Bad verstopft, Wasser steht bis zum Rand.",
+      "Küchenabfluss riecht stark und läuft sehr langsam ab.",
+    ],
+    wizard: [
+      "Guten Tag, unser Küchenabfluss ist seit gestern komplett verstopft. Wasser staut sich im Becken. Können Sie vorbeikommen?",
+      "Hallo, das WC im OG ist verstopft, trotz Pömpel keine Besserung. Bitte um Hilfe.",
+      "Der Abfluss in der Dusche ist extrem langsam. Haare und Seifenreste vermutlich. Bitte Termin.",
+    ],
+    manual: [
+      "Kundin angerufen: Abfluss Küche verstopft. Termin vereinbart.",
+      "Rückruf von Frau X: WC verstopft seit 2 Tagen.",
+    ],
+  },
+  "Leck": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0.2, dringend: 0.4, normal: 0.4 },
+    voice: [
+      "Wasserhahn in der Küche tropft seit einer Woche. Wird immer schlimmer.",
+      "Unter dem Lavabo im Bad ist es feucht. Vermutlich undichte Leitung.",
+      "Dusche im OG ist undicht. Fliesen im Bereich der Duschwanne sind nass.",
+      "Tropfende Leitung im Keller, kleine Pfütze am Boden.",
+      "Siphon unter der Spüle tropft bei jedem Abwasch.",
+    ],
+    wizard: [
+      "Seit ca. 2 Wochen tropft unser Wasserhahn im Bad. Können Sie das reparieren?",
+      "Hallo, unter unserem Lavabo ist es feucht. Wir vermuten ein Leck. Bitte Termin.",
+      "Undichte Stelle an der Dusche. Wasser läuft an der Wand runter.",
+    ],
+    manual: ["Kundenmeldung: Leck unter Spülbecken. Besichtigung nötig."],
+  },
+  "Rohrbruch": {
+    seasonal: [1,2,3,11,12], // mostly winter (frost)
+    urgencyDist: { notfall: 0.6, dringend: 0.3, normal: 0.1 },
+    voice: [
+      "Im Keller steht alles unter Wasser. Vermutlich ein Rohrbruch.",
+      "Wasserrohr im Keller geplatzt. Wasser spritzt aus der Wand.",
+      "Rohrbruch in der Waschküche. Wasser steht knöcheltief.",
+      "Leitung gebrochen nach den Frosttemperaturen letzte Nacht.",
+    ],
+    wizard: [
+      "DRINGEND: Rohrbruch im Keller, Wasser steht ca. 10cm hoch. Bitte schnellstmöglich kommen!",
+      "Wasserrohr geplatzt, vermutlich Frostschaden. Haupthahn zugedreht. Bitte um schnelle Hilfe.",
+    ],
+    manual: ["Notfall-Anruf: Rohrbruch Keller, Haupthahn zugedreht, Techniker unterwegs."],
+  },
+  "Heizung": {
+    seasonal: [1,2,3,4,10,11,12], // heating season
+    urgencyDist: { notfall: 0.2, dringend: 0.35, normal: 0.45 },
+    voice: [
+      "Heizung komplett ausgefallen. Heizkörper bleiben kalt.",
+      "Heizkörper im Kinderzimmer wird nicht warm. Rest funktioniert.",
+      "Thermostat zeigt eine Fehlermeldung an. Heizung geht nicht.",
+      "Fussbodenheizung im Bad funktioniert nicht mehr.",
+      "Heizung macht Klopfgeräusche, besonders nachts.",
+      "Heizkörper im Wohnzimmer hat oben ein Leck. Tropft.",
+    ],
+    wizard: [
+      "Unsere Heizung ist seit gestern Abend ausgefallen. Haus kühlt ab. Bitte dringend.",
+      "Hallo, ein Heizkörper im Schlafzimmer wird nicht mehr warm. Könnten Sie vorbeischauen?",
+      "Jährliche Heizungswartung fällig. Bitte Termin in den nächsten 2-3 Wochen.",
+    ],
+    manual: [
+      "Kunde möchte Heizungswartung. Termin nächste Woche.",
+      "Heizungsersatz-Beratung gewünscht (Öl → Wärmepumpe).",
+    ],
+  },
+  "Boiler": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0.1, dringend: 0.3, normal: 0.6 },
+    voice: [
+      "Warmwasserboiler macht seltsame Geräusche. Kein heisses Wasser mehr ab 18 Uhr.",
+      "Boiler tropft. Kleine Pfütze unter dem Gerät.",
+      "Kein Warmwasser seit heute Morgen. Boiler zeigt nichts an.",
+    ],
+    wizard: [
+      "Boiler ist 15 Jahre alt und müsste ersetzt werden. Bitte Beratung und Offerte.",
+      "Warmwasser kommt nur noch lauwarm. Entkalkung fällig?",
+    ],
+    manual: ["Entkalkung Boiler fällig, letztes Mal vor 3 Jahren."],
+  },
+  "Sanitär allgemein": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0.05, dringend: 0.15, normal: 0.8 },
+    voice: [
+      "Allgemeine Frage zu einer Badsanierung. Möchte gerne beraten werden.",
+      "Armaturen im Bad sollen erneuert werden. Beratung gewünscht.",
+      "Neues WC im Gäste-Bad installieren. Offerte gewünscht.",
+    ],
+    wizard: [
+      "Wir planen eine Badezimmer-Renovation. Können Sie für eine Offerte vorbeikommen?",
+      "Möchten eine Regendusche nachrüsten. Ist das bei uns möglich?",
+      "Anfrage: Neue Armaturen Küche + Bad. Bitte Termin für Beratung.",
+    ],
+    manual: [
+      "Offerte Badsanierung EG, 2 Bäder.",
+      "Regendusche nachrüsten, Beratung vor Ort.",
+    ],
+  },
+  "Allgemein": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0, dringend: 0.1, normal: 0.9 },
+    voice: ["Allgemeine Rückfrage zum letzten Einsatz.","Frage zu den Öffnungszeiten und Verfügbarkeit."],
+    wizard: ["Allgemeine Anfrage. Bitte um Rückruf.","Frage zu Ihrem Leistungsangebot."],
+    manual: ["Rückruf-Wunsch Kunde.","Allgemeine Anfrage telefonisch."],
+  },
+  "Angebot": {
+    seasonal: [3,4,5,6,7,8,9], // spring/summer for renovations
+    urgencyDist: { notfall: 0, dringend: 0.05, normal: 0.95 },
+    voice: ["Offerte für komplette Sanitärsanierung im EG. 2 Bäder, 1 Küche.","Offerte gewünscht für Heizungsersatz."],
+    wizard: [
+      "Guten Tag, wir planen die Sanierung unseres Badezimmers und hätten gerne eine Offerte.",
+      "Anfrage Offerte: Ersatz Warmwasserboiler 300L, inkl. Montage.",
+      "Offertanfrage: Komplettsanierung Sanitär Altbau.",
+    ],
+    manual: ["Offerte Badsanierung nach Beratungsgespräch."],
+  },
+  "Kontakt": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0, dringend: 0.1, normal: 0.9 },
+    voice: ["Bitte um Rückruf zwecks Terminvereinbarung.","Möchte einen Beratungstermin vereinbaren."],
+    wizard: ["Bitte um Rückruf. Erreichbar Mo-Fr 9-17 Uhr.","Terminwunsch für Beratung vor Ort."],
+    manual: ["Rückruf-Wunsch: Terminvereinbarung."],
+  },
+};
+
+// ── DISTRIBUTION LOGIC ──────────────────────────────────────────────
+
+function generateTimeline(count) {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const dates = [];
+
+  // 2024 H2: ~11% of cases
+  const count2024 = Math.round(count * 0.11);
+  for (let i = 0; i < count2024; i++) {
+    const month = 6 + Math.floor(Math.random() * 6); // Jul-Dec
+    dates.push(new Date(currentYear - 2, month, 1 + Math.floor(Math.random() * 28)));
+  }
+
+  // 2025: ~31% of cases, increasing per quarter
+  const count2025 = Math.round(count * 0.31);
+  for (let i = 0; i < count2025; i++) {
+    // Weight towards later quarters
+    const r = Math.random();
+    const month = r < 0.15 ? Math.floor(Math.random() * 3) // Q1: 15%
+      : r < 0.35 ? 3 + Math.floor(Math.random() * 3)       // Q2: 20%
+      : r < 0.6 ? 6 + Math.floor(Math.random() * 3)        // Q3: 25%
+      : 9 + Math.floor(Math.random() * 3);                  // Q4: 40%
+    dates.push(new Date(currentYear - 1, month, 1 + Math.floor(Math.random() * 28)));
+  }
+
+  // 2026 Jan-now: ~58% of cases, heavily weighted to recent
+  const count2026 = count - count2024 - count2025;
+  const currentMonth = now.getMonth();
+  for (let i = 0; i < count2026; i++) {
+    const r = Math.random();
+    let month, day;
+    if (r < 0.35) {
+      // Last 30 days: 35% of 2026 cases
+      const daysAgo = Math.floor(Math.random() * 30);
+      const d = new Date(now.getTime() - daysAgo * 86400000);
+      month = d.getMonth();
+      day = d.getDate();
+    } else if (r < 0.55) {
+      // Last 7 days: extra 20%
+      const daysAgo = Math.floor(Math.random() * 7);
+      const d = new Date(now.getTime() - daysAgo * 86400000);
+      month = d.getMonth();
+      day = d.getDate();
+    } else {
+      // Earlier 2026
+      month = Math.floor(Math.random() * currentMonth);
+      day = 1 + Math.floor(Math.random() * 28);
+    }
+    dates.push(new Date(currentYear, month, day));
+  }
+
+  // Sort chronologically
+  dates.sort((a, b) => a.getTime() - b.getTime());
+
+  // Add random time (07:00-19:00)
+  return dates.map(d => {
+    d.setHours(7 + Math.floor(Math.random() * 12));
+    d.setMinutes(Math.floor(Math.random() * 60));
+    d.setSeconds(Math.floor(Math.random() * 60));
+    return d;
+  });
+}
+
+function pickUrgency(dist) {
+  const r = Math.random();
+  if (r < dist.notfall) return "notfall";
+  if (r < dist.notfall + dist.dringend) return "dringend";
+  return "normal";
+}
+
+function statusForAge(daysOld, isRecent7d) {
+  if (isRecent7d) {
+    const r = Math.random();
+    if (r < 0.35) return "new";
+    if (r < 0.55) return "scheduled";
+    if (r < 0.75) return "in_arbeit";
+    if (r < 0.85) return "warten";
+    return "done";
+  }
+  if (daysOld < 14) {
+    const r = Math.random();
+    if (r < 0.15) return "new";
+    if (r < 0.30) return "scheduled";
+    if (r < 0.45) return "in_arbeit";
+    if (r < 0.55) return "warten";
+    return "done";
+  }
+  // Older cases: mostly done
+  return Math.random() < 0.92 ? "done" : "in_arbeit";
+}
+
+// ── MAIN ──────────────────────────────────────────────────────────────
+
+async function main() {
+  // 1. Resolve tenant
+  const { data: tenant, error: tErr } = await supabase
+    .from("tenants").select("id, name, slug, case_id_prefix, modules").eq("slug", slug).single();
+  if (tErr || !tenant) { console.error(`Tenant '${slug}' not found`); process.exit(1); }
+
+  // 2. Get staff for assignments
+  const { data: staff } = await supabase
+    .from("staff").select("display_name").eq("tenant_id", tenant.id).eq("is_active", true);
+  const staffNames = staff?.map(s => s.display_name) ?? [];
+
+  // 3. Try to load CustomerSite config for categories + serviceArea
+  let categories = ["Verstopfung","Leck","Heizung","Boiler","Rohrbruch","Sanitär allgemein","Allgemein","Angebot","Kontakt"];
+  let gemeinden = Object.keys(GEMEINDE_PLZ);
+
+  try {
+    // Dynamic import of the customer config
+    const configPath = path.resolve("src/web/src/lib/customers", `${slug}.ts`);
+    if (fs.existsSync(configPath)) {
+      const content = fs.readFileSync(configPath, "utf8");
+      // Extract categories from the config file
+      const catMatches = content.match(/value:\s*"([^"]+)"/g);
+      if (catMatches) {
+        categories = catMatches.map(m => m.match(/"([^"]+)"/)[1]);
+      }
+      // Always include FIXED_CATEGORIES + common Voice Agent categories
+      const FIXED = ["Allgemein", "Angebot", "Kontakt"];
+      const VOICE_EXTRA = ["Boiler", "Rohrbruch", "Sanitär allgemein"];
+      for (const c of [...FIXED, ...VOICE_EXTRA]) {
+        if (!categories.includes(c)) categories.push(c);
+      }
+      console.log(`  Categories from config: ${categories.join(", ")}`);
+      // Extract gemeinden
+      const gemMatch = content.match(/gemeinden:\s*\[([\s\S]*?)\]/);
+      if (gemMatch) {
+        const gems = gemMatch[1].match(/"([^"]+)"/g);
+        if (gems) {
+          gemeinden = gems.map(g => g.replace(/"/g, ""));
+          console.log(`  Gemeinden from config: ${gemeinden.join(", ")}`);
+        }
+      }
+    }
+  } catch (e) {
+    console.log(`  Could not parse config for ${slug}, using defaults`);
+  }
+
+  // Build location pool from gemeinden
+  const locations = gemeinden.map(g => ({
+    city: g,
+    plz: GEMEINDE_PLZ[g] || "8000",
+  })).filter(l => l.plz !== "8000" || l.city === "Zürich");
+
+  console.log(`\n  Tenant:     ${tenant.name} (${tenant.slug})`);
+  console.log(`  Staff:      ${staffNames.length > 0 ? staffNames.join(", ") : "none"}`);
+  console.log(`  Categories: ${categories.length}`);
+  console.log(`  Locations:  ${locations.length} gemeinden`);
+  console.log(`  Cases:      ${targetCount}`);
+
+  // Clean
+  if (clean) {
+    const { count: deleted } = await supabase
+      .from("cases").delete({ count: "exact" }).eq("tenant_id", tenant.id).eq("is_demo", true);
+    // Also clean events for deleted demo cases
+    console.log(`  Cleaned ${deleted ?? 0} existing demo cases`);
+  }
+
+  // 4. Generate timeline
+  const timeline = generateTimeline(targetCount);
+  const now = new Date();
+
+  // 5. Create recurring customers (3-5 Stammkunden)
+  const stammkundenCount = Math.min(5, Math.max(3, Math.floor(targetCount / 15)));
+  const stammkunden = Array.from({ length: stammkundenCount }, () => {
+    const first = pick(SWISS_FIRST);
+    const last = pick(SWISS_LAST);
+    const loc = pick(locations);
+    return {
+      name: `${first} ${last}`,
+      phone: randomPhone(),
+      email: `${first.toLowerCase()}.${last.toLowerCase()}@bluewin.ch`,
+      plz: loc.plz,
+      city: loc.city,
+      street: pick(STREETS),
+      houseNumber: String(1 + Math.floor(Math.random() * 60)),
+    };
+  });
+
+  // 6. Generate cases
+  const cases = [];
+  const events = [];
+  let usedAddresses = new Set();
+
+  for (let i = 0; i < targetCount; i++) {
+    const createdAt = timeline[i];
+    const daysOld = Math.floor((now.getTime() - createdAt.getTime()) / 86400000);
+    const isRecent7d = daysOld <= 7;
+    const isRecent30d = daysOld <= 30;
+    const monthNum = createdAt.getMonth() + 1;
+
+    // Pick category (weighted by season)
+    const availableCats = categories.filter(cat => {
+      const tmpl = CATEGORY_TEMPLATES[cat];
+      if (!tmpl) return true;
+      return tmpl.seasonal.includes(monthNum);
+    });
+    const cat = pick(availableCats.length > 0 ? availableCats : categories);
+    const tmpl = CATEGORY_TEMPLATES[cat] || CATEGORY_TEMPLATES["Allgemein"];
+
+    // Urgency
+    const urgency = pickUrgency(tmpl.urgencyDist);
+
+    // Source (voice-heavy for older, more wizard for recent)
+    const sourceR = Math.random();
+    const source = sourceR < 0.5 ? "voice" : sourceR < 0.8 ? "wizard" : "manual";
+
+    // Description (style matches source)
+    const descPool = tmpl[source] || tmpl.voice || ["Serviceanfrage."];
+    const description = pick(descPool);
+
+    // Contact (Stammkunde or new)
+    const isStammkunde = Math.random() < 0.2 && stammkunden.length > 0;
+    const contact = isStammkunde ? pick(stammkunden) : (() => {
+      const first = pick(SWISS_FIRST);
+      const last = pick(SWISS_LAST);
+      const loc = pick(locations);
+      let street, hn, addrKey;
+      do {
+        street = pick(STREETS);
+        hn = String(1 + Math.floor(Math.random() * 80));
+        addrKey = `${street}${hn}${loc.city}`;
+      } while (usedAddresses.has(addrKey) && usedAddresses.size < 200);
+      usedAddresses.add(addrKey);
+      return {
+        name: `${first} ${last}`,
+        phone: randomPhone(),
+        email: source === "wizard" ? `${first.toLowerCase()}.${last.toLowerCase()}@${pick(["gmail.com","bluewin.ch","gmx.ch","outlook.com"])}` : null,
+        plz: loc.plz,
+        city: loc.city,
+        street,
+        houseNumber: hn,
+      };
+    })();
+
+    // Status
+    const status = statusForAge(daysOld, isRecent7d);
+
+    // Updated_at: realistic gap after created_at
+    let updatedAt = createdAt;
+    if (status === "done") {
+      const resolveDays = urgency === "notfall" ? 0.5 + Math.random() * 2 : 1 + Math.random() * 14;
+      updatedAt = new Date(createdAt.getTime() + resolveDays * 86400000);
+    } else if (status !== "new") {
+      updatedAt = new Date(createdAt.getTime() + (0.5 + Math.random() * 3) * 86400000);
+    }
+
+    // Assignee (from staff, if available)
+    const assignee = staffNames.length > 0 && status !== "new" ? pick(staffNames) : null;
+
+    // Scheduled (for scheduled/in_arbeit cases)
+    let scheduledAt = null;
+    if (status === "scheduled" || (status === "in_arbeit" && Math.random() < 0.5)) {
+      const scheduleDays = 1 + Math.floor(Math.random() * 7);
+      scheduledAt = new Date(now.getTime() + scheduleDays * 86400000);
+      scheduledAt.setHours(8 + Math.floor(Math.random() * 8), 0, 0, 0);
+    }
+
+    // Review (for done cases)
+    let reviewSentAt = null, reviewRating = null, reviewReceivedAt = null, reviewText = null;
+    if (status === "done" && daysOld > 3) {
+      const shouldSendReview = Math.random() < 0.45; // 45% of done cases get review request
+      if (shouldSendReview) {
+        reviewSentAt = new Date(updatedAt.getTime() + 1 * 86400000).toISOString();
+        const received = Math.random() < 0.6; // 60% of sent reviews get a response
+        if (received) {
+          reviewRating = pick([5, 5, 5, 5, 5, 4, 4, 4, 5, 5]); // avg ~4.7
+          reviewReceivedAt = new Date(updatedAt.getTime() + (2 + Math.random() * 3) * 86400000).toISOString();
+          if (reviewRating >= 4) {
+            reviewText = pick([
+              "Schnell und zuverlässig.",
+              "Top Service, sehr freundlich.",
+              "Saubere Arbeit, gerne wieder.",
+              "Kompetente Beratung und schnelle Umsetzung.",
+              "Jederzeit wieder. Sehr empfehlenswert.",
+              "Professionell und pünktlich.",
+              "Vielen Dank für den schnellen Einsatz!",
+              "Sehr zufrieden mit der Arbeit.",
+            ]);
+          } else {
+            reviewText = "Arbeit war okay, Kommunikation könnte besser sein.";
+          }
+        }
+      }
+    }
+
+    const caseId = randomUUID();
+    cases.push({
+      id: caseId,
+      tenant_id: tenant.id,
+      source,
+      created_at: createdAt.toISOString(),
+      updated_at: updatedAt.toISOString(),
+      reporter_name: contact.name,
+      contact_phone: contact.phone,
+      contact_email: contact.email,
+      plz: contact.plz,
+      city: contact.city,
+      street: contact.street,
+      house_number: contact.houseNumber,
+      category: cat,
+      urgency,
+      description,
+      status,
+      assignee_text: assignee,
+      scheduled_at: scheduledAt?.toISOString() ?? null,
+      review_sent_at: reviewSentAt,
+      review_rating: reviewRating,
+      review_received_at: reviewReceivedAt,
+      review_text: reviewText,
+      is_demo: true,
+    });
+
+    // Events
+    const sourceLabel = source === "voice" ? "Anruf" : source === "wizard" ? "Website" : "manuell";
+    events.push({
+      case_id: caseId, tenant_id: tenant.id,
+      event_type: "case_created", title: `Fall erstellt via ${sourceLabel}`,
+      created_at: createdAt.toISOString(),
+    });
+
+    if (source === "voice") {
+      events.push({
+        case_id: caseId, tenant_id: tenant.id,
+        event_type: "sms_verification_sent", title: "SMS-Verifizierung gesendet",
+        created_at: new Date(createdAt.getTime() + 30000).toISOString(),
+      });
+    }
+
+    if (status !== "new") {
+      const statusLabels = { scheduled: "Geplant", in_arbeit: "In Arbeit", warten: "Warten", done: "Erledigt" };
+      events.push({
+        case_id: caseId, tenant_id: tenant.id,
+        event_type: "status_changed",
+        title: `Status geändert: Neu → ${statusLabels[status] ?? status}`,
+        metadata: { from: "new", to: status },
+        created_at: new Date(createdAt.getTime() + 2 * 3600000).toISOString(),
+      });
+    }
+
+    if (reviewSentAt) {
+      events.push({
+        case_id: caseId, tenant_id: tenant.id,
+        event_type: "review_requested", title: "Bewertungsanfrage gesendet",
+        created_at: reviewSentAt,
+      });
+    }
+  }
+
+  // 7. Insert
+  // Batch insert in chunks of 50
+  for (let i = 0; i < cases.length; i += 50) {
+    const chunk = cases.slice(i, i + 50);
+    const { error } = await supabase.from("cases").insert(chunk);
+    if (error) { console.error(`Insert chunk ${i} failed:`, error.message); process.exit(1); }
+  }
+  console.log(`\n  ${cases.length} cases inserted`);
+
+  for (let i = 0; i < events.length; i += 100) {
+    const chunk = events.slice(i, i + 100);
+    const { error } = await supabase.from("case_events").insert(chunk);
+    if (error) console.error(`  Events chunk ${i} warning:`, error.message);
+  }
+  console.log(`  ${events.length} events inserted`);
+
+  // 8. Stats
+  const statsByYear = {};
+  const statsByCat = {};
+  const statsByStatus = {};
+  for (const c of cases) {
+    const y = new Date(c.created_at).getFullYear();
+    statsByYear[y] = (statsByYear[y] || 0) + 1;
+    statsByCat[c.category] = (statsByCat[c.category] || 0) + 1;
+    statsByStatus[c.status] = (statsByStatus[c.status] || 0) + 1;
+  }
+  const reviewCount = cases.filter(c => c.review_rating != null).length;
+  const avgRating = reviewCount > 0
+    ? (cases.filter(c => c.review_rating).reduce((s, c) => s + c.review_rating, 0) / reviewCount).toFixed(1)
+    : "n/a";
+
+  console.log(`\n  Distribution:`);
+  console.log(`    By year:     ${Object.entries(statsByYear).map(([y,n]) => `${y}: ${n}`).join(", ")}`);
+  console.log(`    By category: ${Object.entries(statsByCat).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${c}: ${n}`).join(", ")}`);
+  console.log(`    By status:   ${Object.entries(statsByStatus).map(([s,n]) => `${s}: ${n}`).join(", ")}`);
+  console.log(`    Reviews:     ${reviewCount} received, avg ${avgRating}★`);
+  console.log(`    Stammkunden: ${stammkundenCount}`);
+  console.log(`\n  Done. Dashboard: /ops/cases`);
+}
+
+main().catch(err => { console.error("Error:", err); process.exit(1); });
