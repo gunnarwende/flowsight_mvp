@@ -76,10 +76,10 @@ function maskPhone(phone: string): string {
   return phone.slice(0, -3) + "...";
 }
 
-function computeCutoff(period: PeriodValue): number {
-  if (period === "ytd") {
-    const now = new Date();
-    return new Date(now.getFullYear(), 0, 1).getTime();
+function computeCutoff(period: PeriodValue, selectedYear?: number): number {
+  if (period === "year") {
+    const y = selectedYear ?? new Date().getFullYear();
+    return new Date(y, 0, 1).getTime();
   }
   return Date.now() - (period === "7d" ? 7 : 30) * 86400000;
 }
@@ -121,6 +121,7 @@ export function TechnikerView({
   const [activeStep, setActiveStep] = useState<TechFilter>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [period, setPeriod] = useState<PeriodValue>("30d");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export function TechnikerView({
   }, []);
   const firstName = staffName.split(" ")[0];
   const todayStr = getTodayZurich();
-  const cutoff = useMemo(() => computeCutoff(period), [period]);
+  const cutoff = useMemo(() => computeCutoff(period, selectedYear), [period, selectedYear]);
 
   // Counts (period-filtered for erledigt, unfiltered for active)
   const beiMir = cases.filter((c) => c.status !== "done").length;
@@ -245,7 +246,7 @@ export function TechnikerView({
         activeStep={activeStep}
         onStepClick={handleStepClick}
         nextAppointment={nextAppt}
-        periodToggle={{ value: period, onChange: (v) => { setPeriod(v); setCurrentPage(1); } }}
+        periodToggle={{ value: period, selectedYear, onChange: (v) => { setPeriod(v); setCurrentPage(1); }, onYearChange: (y) => { setSelectedYear(y); setCurrentPage(1); } }}
       />
 
       {/* Case Table — with proper headers */}
