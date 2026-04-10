@@ -44,6 +44,7 @@ export default async function OpsCasesPage({
       "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, contact_phone, review_sent_at, review_rating, scheduled_at"
     )
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .order("created_at", { ascending: false })
     .limit(200);
   if (filterTenantId) casesQuery = casesQuery.eq("tenant_id", filterTenantId);
@@ -68,6 +69,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .gte("created_at", sevenDaysAgo);
   if (filterTenantId) statsNeueQuery = statsNeueQuery.eq("tenant_id", filterTenantId);
 
@@ -75,6 +77,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .gte("updated_at", sevenDaysAgo);
   if (filterTenantId) statsErledigtQuery = statsErledigtQuery.eq("tenant_id", filterTenantId);
@@ -85,6 +88,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .gte("updated_at", thirtyDaysAgo);
   if (filterTenantId) erledigt30dQuery = erledigt30dQuery.eq("tenant_id", filterTenantId);
@@ -94,6 +98,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .not("review_sent_at", "is", null)
     .gte("updated_at", sevenDaysAgo);
@@ -104,6 +109,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .not("review_sent_at", "is", null);
   if (filterTenantId) reviewSentTotalQuery = reviewSentTotalQuery.eq("tenant_id", filterTenantId);
@@ -114,6 +120,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .not("review_sent_at", "is", null)
     .gte("updated_at", thirtyDaysAgo);
@@ -123,6 +130,7 @@ export default async function OpsCasesPage({
     .from("cases")
     .select("id", { count: "exact", head: true })
     .eq("is_demo", showDemo)
+    .eq("is_deleted", false)
     .eq("status", "done")
     .is("review_sent_at", null)
     .gte("updated_at", thirtyDaysAgo);

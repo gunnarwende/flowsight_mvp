@@ -8,6 +8,7 @@ import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdenti
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { CaseDetailForm } from "./CaseDetailForm";
 import { PrintButton } from "./PrintButton";
+import { DeleteButton } from "./DeleteButton";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
 // ---------------------------------------------------------------------------
@@ -38,6 +39,8 @@ export interface CaseDetail {
   scheduled_end_at: string | null;
   internal_notes: string | null;
   review_sent_at: string | null;
+  is_deleted: boolean | null;
+  deleted_at: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -165,6 +168,7 @@ export default async function CaseDetailPage({
         </div>
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <PrintButton />
+          <DeleteButton caseId={caseData.id} isDeleted={!!caseData.is_deleted} />
           <span className="bg-gray-900 text-white px-3.5 py-1.5 rounded-lg text-sm font-bold tracking-wide">
             {caseId}
           </span>
