@@ -26,7 +26,7 @@ export interface FlowStep {
   sourceBreakdown?: SourceItem[];
 }
 
-export type PeriodValue = "7d" | "30d" | "ytd";
+export type PeriodValue = "7d" | "30d" | "year";
 
 interface FlowBarProps {
   steps: FlowStep[];
@@ -38,7 +38,9 @@ interface FlowBarProps {
   greeting?: string;
   periodToggle?: {
     value: PeriodValue;
+    selectedYear: number;
     onChange: (v: PeriodValue) => void;
+    onYearChange: (y: number) => void;
   };
   nextAppointment?: {
     time: string;
@@ -59,11 +61,14 @@ const ACCENT: Record<string, { border: string; activeBg: string; activeRing: str
 const STAR_PATH =
   "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z";
 
-const PERIOD_LABELS: Record<PeriodValue, string> = {
-  "7d": "7 Tage",
-  "30d": "30 Tage",
-  ytd: "YTD",
-};
+const currentYear = new Date().getFullYear();
+const YEAR_OPTIONS = [currentYear, currentYear - 1, currentYear - 2];
+
+function periodLabel(p: PeriodValue, selectedYear: number): string {
+  if (p === "7d") return "7 Tage";
+  if (p === "30d") return "30 Tage";
+  return String(selectedYear);
+}
 
 export function FlowBar({
   steps,
@@ -98,7 +103,7 @@ export function FlowBar({
           )}
           {periodToggle && (
             <div className="flex gap-0.5 bg-gray-100 rounded-lg p-0.5">
-              {(["7d", "30d", "ytd"] as const).map((p) => (
+              {(["7d", "30d"] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => periodToggle.onChange(p)}
@@ -108,9 +113,31 @@ export function FlowBar({
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  {PERIOD_LABELS[p]}
+                  {periodLabel(p, periodToggle.selectedYear)}
                 </button>
               ))}
+              <select
+                value={periodToggle.value === "year" ? periodToggle.selectedYear : ""}
+                onChange={(e) => {
+                  const y = Number(e.target.value);
+                  if (y) {
+                    periodToggle.onYearChange(y);
+                    periodToggle.onChange("year");
+                  }
+                }}
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors bg-transparent cursor-pointer outline-none ${
+                  periodToggle.value === "year"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {periodToggle.value !== "year" && (
+                  <option value="" disabled>Jahr</option>
+                )}
+                {YEAR_OPTIONS.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
             </div>
           )}
         </div>

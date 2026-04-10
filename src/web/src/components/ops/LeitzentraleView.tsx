@@ -209,12 +209,19 @@ function maskPhone(phone: string): string {
   return phone.slice(0, -3) + "...";
 }
 
-function computeCutoff(period: PeriodValue): number {
-  if (period === "ytd") {
-    const now = new Date();
-    return new Date(now.getFullYear(), 0, 1).getTime();
+function computeCutoff(period: PeriodValue, selectedYear?: number): number {
+  if (period === "year") {
+    const y = selectedYear ?? new Date().getFullYear();
+    return new Date(y, 0, 1).getTime();
   }
   return Date.now() - (period === "7d" ? 7 : 30) * 86400000;
+}
+
+function computeEndCutoff(period: PeriodValue, selectedYear?: number): number | undefined {
+  if (period === "year" && selectedYear && selectedYear < new Date().getFullYear()) {
+    return new Date(selectedYear + 1, 0, 1).getTime();
+  }
+  return undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -239,6 +246,7 @@ export function LeitzentraleView({
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [period, setPeriod] = useState<PeriodValue>("30d");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
 
   useEffect(() => {
@@ -288,7 +296,8 @@ export function LeitzentraleView({
     return Array.from(set).sort();
   }, [cases]);
 
-  const cutoff = useMemo(() => computeCutoff(period), [period]);
+  const cutoff = useMemo(() => computeCutoff(period, selectedYear), [period, selectedYear]);
+  const endCutoff = useMemo(() => computeEndCutoff(period, selectedYear), [period, selectedYear]);
 
   // Period-filter: only exclude old DONE and old NEW cases.
   // Active cases (scheduled, in_arbeit, warten) always show regardless of period.
@@ -299,7 +308,9 @@ export function LeitzentraleView({
       const t = c.status === "done"
         ? new Date(c.updated_at).getTime()
         : new Date(c.created_at).getTime();
-      return t >= cutoff;
+      if (t < cutoff) return false;
+      if (endCutoff && t >= endCutoff) return false;
+      return true;
     });
 
     if (activeNode) {
@@ -319,7 +330,7 @@ export function LeitzentraleView({
     }
 
     return smartSort(result);
-  }, [cases, cutoff, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
+  }, [cases, cutoff, endCutoff, activeNode, statusFilter, urgencyFilter, categoryFilter, searchQuery]);
 
   // ── Flow step data (MUST be above early return — hooks rule) ────────
   const flowStats = useMemo(() => {
@@ -330,7 +341,8 @@ export function LeitzentraleView({
     for (const c of cases) {
       const ct = new Date(c.created_at).getTime();
       const ut = new Date(c.updated_at).getTime();
-      if (c.status === "new" && ct >= cutoff) {
+      const inRange = (t: number) => t >= cutoff && (!endCutoff || t < endCutoff);
+      if (c.status === "new" && inRange(ct)) {
         eingang++;
         if (c.source === "voice") voice++;
         else if (c.source === "wizard" || c.source === "website") web++;
@@ -340,19 +352,19 @@ export function LeitzentraleView({
         beiUns++;
         if (c.urgency === "notfall") notfaelle++;
       }
-      if (c.status === "done" && ut >= cutoff) {
+      if (c.status === "done" && inRange(ut)) {
         erledigt++;
         if (c.source === "voice") doneVoice++;
         else if (c.source === "wizard" || c.source === "website") doneWeb++;
         else doneManual++;
       }
-      if (c.status === "done" && ut >= cutoff) {
+      if (c.status === "done" && inRange(ut)) {
         if (c.review_sent_at) reviewSent++;
         if (c.review_rating != null) reviewReceived++;
       }
     }
     return { eingang, beiUns, erledigt, notfaelle, voice, web, manual, doneVoice, doneWeb, doneManual, reviewSent, reviewReceived };
-  }, [cases, cutoff]);
+  }, [cases, cutoff, endCutoff]);
 
   // ── Techniker view (after ALL hooks) ──────────────────────────────
   if (staffRole === "techniker" && staffName) {
@@ -465,7 +477,7 @@ export function LeitzentraleView({
         activeStep={activeNode}
         onStepClick={handleNodeClick}
         greeting={greetingText}
-        periodToggle={{ value: period, onChange: (v) => { setPeriod(v); setCurrentPage(1); } }}
+        periodToggle={{ value: period, selectedYear, onChange: (v) => { setPeriod(v); setCurrentPage(1); }, onYearChange: (y) => { setSelectedYear(y); setCurrentPage(1); } }}
       />
 
       {/* Search + New Case */}
