@@ -58,6 +58,7 @@ const OPS_UPDATABLE_FIELDS = [
   "street",
   "house_number",
   "reporter_name",
+  "is_deleted",
 ] as const;
 
 type OpsField = (typeof OPS_UPDATABLE_FIELDS)[number];
@@ -236,12 +237,21 @@ export async function PATCH(
     // Read old status before update (for status_changed event)
     const oldStatus = "status" in update ? existing.status : undefined;
 
+    // Soft-delete: set deleted_at timestamp, or clear it on restore
+    if ("is_deleted" in update) {
+      if (update.is_deleted) {
+        (update as Record<string, unknown>).deleted_at = new Date().toISOString();
+      } else {
+        (update as Record<string, unknown>).deleted_at = null;
+      }
+    }
+
     const { data: row, error } = await supabase
       .from("cases")
       .update(update)
       .eq("id", id)
       .select(
-        "id, seq_number, status, urgency, category, plz, city, description, assignee_text, scheduled_at, scheduled_end_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, updated_at"
+        "id, seq_number, status, urgency, category, plz, city, description, assignee_text, scheduled_at, scheduled_end_at, internal_notes, contact_email, contact_phone, street, house_number, reporter_name, is_deleted, deleted_at, updated_at"
       )
       .single();
 
@@ -266,7 +276,18 @@ export async function PATCH(
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
-    const nonStatusFields = Object.keys(update).filter((f) => f !== "status");
+    // Soft-delete / restore event
+    if ("is_deleted" in update) {
+      const isDelete = !!update.is_deleted;
+      await supabase.from("case_events").insert({
+        case_id: id,
+        event_type: isDelete ? "case_deleted" : "case_restored",
+        title: isDelete ? "Fall gelöscht" : "Fall wiederhergestellt",
+        metadata: { user_id: scope.userId },
+      }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+    }
+
+    const nonStatusFields = Object.keys(update).filter((f) => f !== "status" && f !== "is_deleted" && f !== "deleted_at");
     if (nonStatusFields.length > 0) {
       const humanFields = nonStatusFields.map(f => FIELD_LABELS[f] ?? f);
       const title = humanFields.length === 1
