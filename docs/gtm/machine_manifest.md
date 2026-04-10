@@ -1,7 +1,7 @@
 # Machine Manifest — Gold-Contact Proof-Capture-Maschine
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
-**Version:** 1.1 — End-to-End Pipeline (Updated 18.03.: Tenant-Switcher + Brand Color Sync integriert)
+**Version:** 2.0 — Gold-Standard Pipeline (Updated 10.04.: Voice Agent Schablone, Leitsystem Schablone, Demo-Audio-Pipeline, Seed v2, Video Self-Hosted)
 **Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
 
 ---
@@ -135,6 +135,7 @@ WENN ICP == 6 → Parked, nur wenn Founder explizit promoted
 
 **Owner:** CC (automatisiert)
 **Tool:** `scripts/_ops/provision_trial.mjs`
+**Schablonen:** `docs/gtm/leitsystem_schablone.md` (Tenant-Config) + `retell/templates/agent_template_de.md` (Voice Agent)
 **Input:** prospect_card.json + Modul-Entscheid
 **Output:** Provisioning-Block im Prospect Manifest
 **Dauer:** ~15 Min pro Prospect (Modus 2), ~30 Min (Modus 1)
@@ -145,45 +146,112 @@ WENN ICP == 6 → Parked, nur wenn Founder explizit promoted
 |------------|---------|---------|------|
 | Supabase Tenant | ✅ | ✅ | onboard_tenant.mjs |
 | Twilio-Nummer | ✅ | ✅ | Manuell oder API |
-| Voice Agent (DE + INTL) | ✅ | ✅ | retell_sync.mjs |
-| Demo-Daten (15 Cases) | ✅ | ✅ | seed_demo_data.mjs |
+| Voice Agent (DE + INTL) | ✅ | ✅ | retell_sync.mjs (Schablone) |
+| Staff-Eintraege | ✅ | ✅ | DB-Insert (mind. 1 = Inhaber) |
+| Google Review Crawl | ✅ | ✅ | crawl_google_reviews.mjs (1x manuell VOR Seed) |
+| Demo-Daten (70 Cases) | ✅ | ✅ | seed_demo_data_v2.mjs --slug={slug} --count=70 |
 | Magic-Link | ✅ | ✅ | create_prospect_access.mjs |
-| CustomerSite (/kunden/{slug}) | ✅ | — | CustomerSite Generator (TODO: S5.9) |
+| CustomerSite (/kunden/{slug}) | ✅ | — | CustomerSite Config (manuell, ~15 Min) |
 | /start-Seite | — | ✅ | Existiert (SSG Template) |
 | SMS-Config | ✅ | ✅ | Manuell (alphanumeric Sender) |
+
+### Voice Agent Konfiguration (Detail)
+
+**Schablone:** `retell/templates/global_prompt_de.txt` (Gold-Standard-Prompt, 23 Platzhalter)
+**Templates:** `retell/templates/agent_template_de.json` + `agent_template_intl.json`
+**Dokumentation:** `retell/templates/agent_template_de.md` (Checkliste + Workflow)
+
+**Pflicht-Daten (muessen VOR Agent-Erstellung vorliegen):**
+
+| # | Feld | Quelle | Pflicht? |
+|---|------|--------|----------|
+| 1 | Firmenname, Adresse, Telefon, E-Mail, Website | Scout/Website | JA |
+| 2 | Geschaeftsleitung (Namen) | Scout/Website | JA |
+| 3 | Oeffnungszeiten | **Founder bestaetigt** | JA |
+| 4 | Notdienst-Policy (24/7 oder eingeschraenkt) | **Founder bestaetigt** | JA |
+| 5 | Leistungen (komplett) | Scout/Website | JA |
+| 6 | Einzugsgebiet (Gemeinden) | Scout/Website | JA |
+| 7 | Preis-Policy (Deflect oder Richtwerte) | **Founder entscheidet** | JA |
+| 8 | Kategorien (fuer Voice Intake) | Aus Leistungen abgeleitet | JA |
+
+**Delta-Themen (betriebsspezifisch, nicht bei jedem):**
+- Preisindikationen (nur wenn offiziell auf Website)
+- Erweitertes Team (nur wenn verifiziert)
+- Partnerfirmen/Marken
+- Lehrstellen/Bewerbungen
+- Firmengeschichte (Jubilaeum, Tradition)
+- Spezialleistungen (Blitzschutz, Solar, etc.)
+
+**Agent-Faehigkeiten (Gold-Standard, ab 10.04.2026):**
+- Intake-Modus: Schadensmeldung aufnehmen (7 Pflichtfelder)
+- Info-Modus: Oeffnungszeiten, Einzugsgebiet, Chef sprechen, Adresse, Bewerbung, Beratung
+- Preis-Deflekt: Charmante Weiterleitung an Vor-Ort-Besichtigung
+- Rueckruf-Wunsch: Fall anlegen mit Kontaktdaten
+- Reklamation: Empathisch aufnehmen, Dringlichkeit hochstufen
+- Angebotsanfrage: Besichtigungstermin vorschlagen, Fall anlegen
+- Sicherheits-Eskalation: Feuerwehr 118, Haupthahn zudrehen
+- Erste-Hilfe-Tipps: Haupthahn, Tuecher, Strom aus
+- Sprachwechsel: DE→INTL Transfer (EN/FR/IT) und zurueck
+- Themenfremde Fragen: Deflekt + weiter mit Intake
+- 14 No-Go's (Preise erfinden, Garantie, Diagnose, Termine zusagen, etc.)
+
+**Erstellungs-Workflow:**
+1. `retell/templates/global_prompt_de.txt` kopieren
+2. 23 Platzhalter mit Betriebsdaten ersetzen
+3. In `retell/exports/{prefix}_agent.json` + `_intl.json` Prompt einsetzen
+4. KRITISCH: `is_transfer_cf: true` auf BEIDEN Flows (DE + INTL). Ohne das scheitert jeder Sprachwechsel-Rueckswitch. Siehe `docs/runbooks/voice_agent_lessons_learned.md` R1.
+5. `retell_sync.mjs --prefix {prefix}` → published
+6. Telefonnummer zuordnen: `inbound_agent_id` (NICHT `agent_id`!). Danach ALLE Nummern pruefen.
+7. Smoke-Test: 1x Intake + 1x Info + 1x Sprachwechsel DE→EN→DE
+8. Ergebnis in `docs/customers/{slug}/status.md` dokumentieren
+
+**Zeitaufwand:** ~20 Min pro Betrieb (nach Doerfler als erstem Durchlauf)
+**Referenz:** `docs/runbooks/voice_agent_lessons_learned.md` — PFLICHTLEKTUERE vor jeder Agent-Erstellung
 
 ### Parallelisierung
 
 ```
-                              ┌→ Tenant + Seed + Magic-Link (CC)
+                              ┌→ Tenant + Staff + Magic-Link (CC)
 prospect_card.json + Entscheid┤
-                              ├→ Voice Agent (retell_sync.mjs, CC)
+                              ├→ Voice Agent (Schablone + retell_sync.mjs, CC)
                               ├→ Twilio-Nummer (CC)
-                              └→ CustomerSite (nur Modus 1, CC)
+                              ├→ Google Review Crawl (CC, 1x manuell)
+                              ├→ CustomerSite Config (nur Modus 1, CC)
+                              └→ Seed Demo-Daten (seed_demo_data_v2.mjs, CC)
 ```
 
-Alle 4 Pfade koennen parallel laufen. Engpass: Voice Agent (~8 Min).
+Reihenfolge beachten: Google Crawl VOR Seed (Bewertungs-KPI muss stimmen).
+Staff-Eintraege VOR Seed (Fallzuweisung braucht Staff-Namen).
+Alle Pfade koennen parallel laufen. Engpass: Voice Agent (~20 Min inkl. Smoke-Test).
 
 ---
 
 ## Schritt 5: Produzieren (nur Modus 1)
 
 **Owner:** CC
-**Tool:** CustomerSite Generator (TODO: S5.9)
+**Tool:** CustomerSite Config (TypeScript) + Bild-Crawl
 **Input:** prospect_card.json + gecrawlte Bilder
 **Output:** `/kunden/{slug}` — deploybare Website
-**Dauer:** ~15 Min (Ziel: 80% auto-generiert)
+**Dauer:** ~15-20 Min
 
-### Was der Generator macht
+### Was CC macht
 
-1. Template mit prospect_card-Daten befuellen (Name, Services, Team, Kontakt)
-2. Brand Color aus prospect_card uebernehmen → `sync_brand_colors.mjs` synct in DB → Leitsystem nutzt automatisch
-3. Gecrawlte Bilder zuordnen (Service-Mapping)
-4. Wizard-Kategorien aus prospect_card.services ableiten
-5. Emergency-Banner wenn emergency.enabled === true
-6. Build + Deploy-Vorschau
+1. `src/web/src/lib/customers/{slug}.ts` erstellen (Kopie von Template, Platzhalter ersetzen)
+2. In `registry.ts` registrieren
+3. Brand Color aus prospect_card → CustomerSite Config + `sync_brand_colors.mjs` → DB
+4. Gecrawlte Bilder zuordnen (Service-Mapping)
+5. Wizard-Kategorien aus Services ableiten (**MUSS mit Voice Agent uebereinstimmen!**)
+6. Emergency-Banner wenn Notdienst angeboten
+7. Build + Deploy-Vorschau
 
-### Was manuell bleibt (~20%)
+### Kritische Uebereinstimmungen
+
+- `categories[]` in CustomerSite = Voice Agent `post_call_analysis_data.category`
+- `contact.openingHours` = Voice Agent Oeffnungszeiten
+- `emergency.enabled` = Voice Agent Notdienst-Policy
+- `serviceArea.gemeinden` = Voice Agent Einzugsgebiet + Seed-Daten Adressen
+
+### Was manuell bleibt
 
 - Bild-Auswahl (CC waehlt aus gecrawlten Bildern)
 - Text-Feinschliff (Service-Beschreibungen, Tagline)
@@ -239,75 +307,89 @@ Schritte 1-2 laufen VOR dem Founder-Anruf. Schritte 4-6 laufen NACH dem Anruf.
 
 ---
 
-## Schritt 7: Narration (Founder-Batch)
+## Schritt 7: Narration (Segment-Recording + Audio-Pipeline)
 
-**Owner:** Founder
-**Input:** Video-Script (aus video_manifest.md) + Teleprompter-Text
-**Output:** Founder-Narrations-Segmente (Audio/Video)
-**Dauer:** ~20s Narration pro Prospect, 10 Prospects in ~20 Min
+**Owner:** Founder (Recording) + CC (Post-Production)
+**Input:** Video-Script (pro Betrieb) + Rode USB Mikro
+**Output:** Founder-Narrations-Segmente (Audio) + Screen-Recordings (Video)
+**Dauer:** ~15-20 Min Recording pro Betrieb
 
-### Batch-Setup
+### Methode (ab 10.04.2026)
 
-1. Founder sitzt vor Kamera + Mikrofon (identisches Setup wie Video-Produktion)
-2. Teleprompter zeigt pro Prospect: Hook + CTA
-3. Pro Prospect: ~20s Narration aufnehmen
-4. Kein Schnitt zwischen Prospects noetig (wird in Assembly getrennt)
+**NICHT mehr:** Teleprompter-Batch mit einem Take pro Betrieb (scheiterte: 8h fuer 80s).
+**STATTDESSEN:** Segment-Recording + Post-Production.
 
-### Was der Founder spricht
+### Workflow pro Take
 
-| Segment | Modus 1 | Modus 2 |
-|---------|---------|---------|
-| Hook (Szene 1) | "Ich habe fuer {legal_name} eine Website gebaut" | "{video_hook}" |
-| Ueberleitung | "Und eine persoenliche Lisa — schauen Sie mal" | Identisch |
-| CTA (Ende) | "Ihre Nummer: {test_phone}" | Identisch |
+1. **Founder:** Liest Script-Segmente einzeln vor (Rode USB, OBS/Audacity)
+   - Pro Segment 2-3 Versuche, bestes wird genommen
+   - Verhaspler → Satz nochmal, Aufnahme laeuft weiter
+   - Kamera klein (PiP) oder aus — kein Sprechdruck
 
-### Teleprompter-Format
+2. **Founder:** Nimmt Screen-Aktionen separat auf (Loom, stumm oder mit Rough-Guide)
+   - Handy-Screen (Anruf, SMS, Leitsystem)
+   - Desktop-Screen (Website, Wizard)
 
-```
---- WEINBERGER AG ---
-"Haustechnik seit 1912 in Thalwil. Ich habe für die Weinberger AG
-etwas ausprobiert — schauen Sie sich das an."
-[PAUSE 2s]
-"Testen Sie Ihre Lisa: 043 505 11 01."
---- NÄCHSTER ---
-```
+3. **CC:** Post-Production
+   - Beste Segmente auswaehlen + stitchen
+   - Audio normalisieren (-16 LUFS)
+   - Bei Voice Agent Call: Retell Multi-Channel Audio extrahieren (`extract_call_audio.mjs`)
+   - Agent-Audio ersetzen mit Clean-TTS (`mix_demo_audio.mjs`)
+   - Video + Audio zusammenfuegen → finale MP4
+
+### Audio-Pipeline Tools
+
+| Tool | Zweck |
+|------|-------|
+| `extract_call_audio.mjs <call_id>` | Retell Multi-Channel → Agent Clean WAV |
+| `mix_demo_audio.mjs <video> <call_id> <offset>` | Loom Video + Clean Agent Audio → Final MP4 |
+| `--agent-gain`, `--ambient` | Feintuning Lautstaerke-Balance |
+
+### Video-Hosting
+
+**Self-hosted auf Vercel** (NICHT Loom). Videos als MP4 in Vorstellungsseite eingebettet.
+- Kein fremdes Branding, kein Cookie-Banner, kein Tab-Wechsel
+- Vercel Pro: 1 TB Bandbreite (4 Videos a 50 MB = irrelevant)
+- Config: `src/web/src/lib/customers/vorstellung.ts`
 
 ---
 
 ## Schritt 8: Assembly
 
-**Owner:** CC (automatisiert)
-**Tool:** FFmpeg + Assembly-Script (TODO: S5.8)
-**Input:** Proof-Capture Assets + Founder-Narration
-**Output:** `assets.video_raw` (Roh-Video)
-**Dauer:** ~5 Min pro Video (automatisiert)
+**Owner:** CC
+**Tool:** `extract_call_audio.mjs` + `mix_demo_audio.mjs` + FFmpeg
+**Input:** Founder Segment-Recordings + Screen-Recordings + Retell Call Audio
+**Output:** 4 finale MP4s pro Betrieb (Take 1-4)
+**Dauer:** ~15 Min pro Betrieb (Post-Production)
 
-### Szenen-Reihenfolge
+### Take-Struktur pro Betrieb
 
-Siehe `docs/gtm/video_manifest.md` fuer die vollstaendige Szenen-Spezifikation.
+| Take | Inhalt | Kamera | Audio-Quelle |
+|------|--------|--------|-------------|
+| 1 | Vorstellung + Kernfrage | Gross (Face) | Founder Rode (Segment-Recording) |
+| 2 | Voice Agent + SMS + Leitsystem | Klein (PiP) | Founder Rode + Retell Clean TTS |
+| 3 | Website + Online-Meldung | Klein (PiP) | Founder Rode |
+| 4 | Bewertungs-Engine + Abschluss | Klein→Gross | Founder Rode |
 
-Zusammenfassung:
-```
-Szene 1: Website/Spiegel (Founder-Narration + Screenshot)     ~10-15s
-Szene 2: Problem-Setup (generisches Asset)                     ~8-10s
-Szene 3: Lisa-Moment (Founder-Anruf-Audio + Leitstand-Capture) ~25-30s
-Szene 4: SMS-Proof (SMS-Screenshot + Handy-Mockup)             ~8-10s
-Szene 5: Leitstand-Proof (Dashboard-Capture)                   ~10-15s
-Szene 6: Wizard/Formular (optional, nur Modus 1)               ~5-8s
-Szene 7: CTA (Founder-Narration + Testnummer)                  ~10-15s
-```
-
-### Assembly-Pipeline
+### Assembly-Pipeline pro Take
 
 ```
-1. Founder-Narration zerschneiden (Hook, Ueberleitung, CTA)
-2. Screenshots zu Video-Clips (Ken-Burns-Effekt, 2s pro Bild)
-3. Lisa-Audio + Leitstand-Capture synchronisieren
-4. SMS-Proof einblenden
-5. CTA-Slide mit Testnummer + URL
-6. Gesamtlänge prüfen (Modus 1: 150-160s, Modus 2: 130-140s)
-7. Export als MP4 (1080p, 30fps)
+1. Founder-Segmente: Beste Version pro Segment waehlen
+2. Audio normalisieren (-16 LUFS, konsistent ueber alle Takes)
+3. Take 2 speziell: Retell Multi-Channel → Agent Clean WAV
+   → mix_demo_audio.mjs: Founder Rode + Clean Agent Audio
+   → --agent-gain und --ambient fuer Balance
+4. Video + Audio zusammenfuegen (FFmpeg, -c:v copy -c:a aac)
+5. MP4 ablegen in docs/customers/{slug}/takes/
+6. Auf Vorstellungsseite verlinken (vorstellung.ts)
 ```
+
+### Video-Hosting
+
+Self-hosted auf Vercel als MP4. NICHT Loom.
+- Vorstellungsseite: `/kunden/{slug}/vorstellung`
+- Config: `src/web/src/lib/customers/vorstellung.ts`
+- Kein fremdes Branding, kein Cookie-Banner, ein geschlossenes Erlebnis
 
 ---
 
@@ -335,21 +417,26 @@ Vollstaendige QA-Spezifikation: `docs/gtm/qa_gate.md`
 ## Schritt 10: Versand
 
 **Owner:** Founder (sendet persoenlich)
-**Tool:** E-Mail (Resend, persoenlich formuliert)
-**Input:** Fertiges Video (Loom-URL) + Prospect Manifest (Outreach-Felder)
+**Tool:** `send_outreach_mail.mjs` (Resend HTML-Mail mit Foto)
+**Input:** Vorstellungsseite live + Prospect Manifest (Outreach-Felder)
 **Output:** E-Mail gesendet, Status → `contacted`
-**Dauer:** ~5 Min pro Prospect (personalisieren + senden)
+**Dauer:** ~2 Min pro Prospect (1 Kommando)
 
 ### E-Mail-Inhalte
 
-| Element | Quelle im Manifest |
-|---------|-------------------|
-| Empfaenger | outreach.prospect_email |
-| Betreff | "{legal_name} — ich habe etwas fuer Sie ausprobiert" |
-| Video-Link | assets.loom_url |
-| Video-Thumbnail | assets.loom_thumbnail |
-| Testnummer | provisioning.twilio_number_display |
-| Website/Start-Link | provisioning.kunden_url (M1) oder provisioning.start_url (M2) |
+| Element | Quelle |
+|---------|--------|
+| Empfaenger | prospect_email (aus prospect_card.json) |
+| Betreff | "Etwas Persoenliches fuer {legal_name}" |
+| Foto | Gunnar-Foto mit Play-Button (klickbar → Vorstellungsseite) |
+| Link | flowsight.ch/kunden/{slug}/vorstellung |
+| Reply-To | gunnar.wende@flowsight.ch |
+
+### Versand-Kommando
+
+```
+node --env-file=.env.local scripts/_ops/send_outreach_mail.mjs {slug} {email}
+```
 
 ### Versand-Regeln
 
@@ -471,41 +558,62 @@ Cluster-Zuordnung: Erste 3 Ziffern der PLZ. Einfach, deterministisch.
 
 ### Was der Founder tut
 
-| Aufgabe | Wann | Dauer (10 Prospects) |
+| Aufgabe | Wann | Dauer (pro Betrieb) |
 |---------|------|---------------------|
-| Batch-Anrufe (Proof-Capture) | 1x taeglich | 20 Min |
-| Batch-Narration (Teleprompter) | 1x taeglich | 20 Min |
-| Manual QA (Wuerde-Test) | Nach Assembly | 30 Min |
-| Versand (persoenliche E-Mails) | Nach QA | 50 Min |
-| **Total** | | **~2h/Tag** |
+| Segment-Recording (Narration) | Pro Betrieb | ~15-20 Min |
+| Screen-Recording (Handy/Desktop) | Pro Betrieb | ~10-15 Min |
+| Test-Anruf (Voice Agent QA) | Pro Betrieb | ~3 Min |
+| Ergebnis pruefen (Video) | Nach Assembly | ~5 Min |
+| Versand (1 Kommando + pruefen) | Nach QA | ~2 Min |
+| **Total pro Betrieb** | | **~40 Min** |
+| **Total 5 Betriebe/Tag** | | **~3.5h** |
 
 ### Was der Founder NICHT tut
 
 - Kein Provisioning (CC)
-- Kein Proof-Capture (automatisiert, ausser Batch-Anruf)
-- Kein Assembly (automatisiert)
-- Kein Scout (CC)
-- Kein Website-Bau (CC/Generator)
+- Kein Voice Agent Setup (CC, Schablone)
+- Kein Assembly / Audio-Mix (CC)
+- Kein Scout / Analyse (CC)
+- Kein Website-Bau (CC)
+- Kein Seed-Daten (CC)
+- Kein Monitoring (automatisch, RED Alert bei Problemen)
 
 ---
 
-## Status der Pipeline-Komponenten
+## Status der Pipeline-Komponenten (Updated 10.04.2026)
 
 | Schritt | Tool | Status |
 |---------|------|--------|
 | Scout | scout.mjs | DONE |
-| Analyse | Manuell | DONE (Methode klar) |
-| Modul-Entscheid | Manuell | DONE (Matrix klar) |
-| Provisionieren | provision_trial.mjs | DONE |
-| Produzieren (M1) | CustomerSite Generator | **TODO** (S5.9) |
-| Proof-Capture | Playwright + Retell API | **TODO** (S5.7) |
-| Narration | Founder + Teleprompter | DONE (Methode klar) |
-| Assembly | FFmpeg + Script | **TODO** (S5.8) |
-| QA (Auto) | QA-Pipeline | **TODO** (S5.6) |
+| Analyse | Manuell + Website-Crawl | DONE |
+| Modul-Entscheid | Manuell (Matrix) | DONE |
+| Provisionieren: Tenant | provision_trial.mjs | DONE |
+| Provisionieren: Staff | DB-Insert | DONE (manuell) |
+| Provisionieren: Voice Agent | Schablone + retell_sync.mjs | **DONE** (Gold-Standard, 23 Platzhalter) |
+| Provisionieren: Google Crawl | crawl_google_reviews.mjs | DONE (1x manuell triggern) |
+| Provisionieren: Seed-Daten | seed_demo_data_v2.mjs | **DONE** (70 Cases, dynamisch) |
+| Produzieren (M1) | CustomerSite Config (manuell) | DONE (~15 Min) |
+| Proof-Capture | Manuell (Screenshots + Anruf) | DONE (Playwright = spaeter) |
+| Narration | Segment-Recording + Rode USB | **DONE** (neue Methode) |
+| Assembly | extract_call_audio + mix_demo_audio | **DONE** (Audio-Pipeline live) |
+| QA (Auto) | Smoke-Test Checkliste | DONE (8 Pruefpunkte) |
 | QA (Manual) | Founder Checkliste | DONE (qa_gate.md) |
-| Versand | Resend + Founder | DONE |
-| Follow-up | Morning Report + Founder | DONE |
-| Learning Loop | Analytics | **TODO** (nach Maschinenstart) |
+| Versand | send_outreach_mail.mjs | DONE |
+| Follow-up | Morning Report + Lifecycle Tick | DONE |
+| Monitoring | agent_hangup RED Alert | **DONE** (Webhook + Morning Report) |
+| Learning Loop | Analytics | TODO (nach Maschinenstart) |
+
+### Neue Referenzen (ab 10.04.2026)
+
+| Dokument | Zweck |
+|----------|-------|
+| `retell/templates/global_prompt_de.txt` | Voice Agent Gold-Standard-Prompt (23 Platzhalter) |
+| `retell/templates/agent_template_de.md` | Voice Agent Erstellungs-Checkliste |
+| `docs/gtm/leitsystem_schablone.md` | Leitsystem Tenant-Config Schablone |
+| `docs/runbooks/voice_agent_lessons_learned.md` | Retell Gotchas (PFLICHTLEKTUERE) |
+| `scripts/_ops/extract_call_audio.mjs` | Retell Multi-Channel → Clean Agent WAV |
+| `scripts/_ops/mix_demo_audio.mjs` | Loom Video + Clean Audio → Final MP4 |
+| `scripts/_ops/seed_demo_data_v2.mjs` | 70+ dynamische Cases pro Betrieb |
 
 ---
 
