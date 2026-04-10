@@ -558,6 +558,47 @@ async function main() {
     }
   }
 
+  // 6b. Guarantee minimum "new" cases by source in last 30 days
+  // Requirement: min 5 voice + 3 wizard + 2 manual on status "new"
+  const MIN_NEW = { voice: 5, wizard: 3, manual: 2 };
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+
+  const recent30d = cases.filter(c => new Date(c.created_at) >= thirtyDaysAgo);
+  const newBySource = { voice: 0, wizard: 0, manual: 0 };
+  for (const c of recent30d) {
+    if (c.status === "new") newBySource[c.source]++;
+  }
+
+  // Fix shortfalls by flipping recent non-new cases to "new"
+  for (const [src, minCount] of Object.entries(MIN_NEW)) {
+    let deficit = minCount - (newBySource[src] || 0);
+    if (deficit <= 0) continue;
+
+    // Find recent cases with this source that are NOT "new", flip them
+    const candidates = recent30d
+      .filter(c => c.source === src && c.status !== "new")
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()); // newest first
+
+    for (const c of candidates) {
+      if (deficit <= 0) break;
+      c.status = "new";
+      c.updated_at = c.created_at; // new cases have updated_at ≈ created_at
+      c.assignee_text = null; // new cases have no assignee
+      c.scheduled_at = null;
+      // Remove status_changed events for this case
+      const evIdx = events.findIndex(e => e.case_id === c.id && e.event_type === "status_changed");
+      if (evIdx >= 0) events.splice(evIdx, 1);
+      deficit--;
+    }
+  }
+
+  // Log the final distribution
+  const finalNewBySource = { voice: 0, wizard: 0, manual: 0 };
+  for (const c of cases.filter(c => new Date(c.created_at) >= thirtyDaysAgo && c.status === "new")) {
+    finalNewBySource[c.source]++;
+  }
+  console.log(`  New cases (30d): voice=${finalNewBySource.voice} wizard=${finalNewBySource.wizard} manual=${finalNewBySource.manual}`);
+
   // 7. Insert
   // Batch insert in chunks of 50
   for (let i = 0; i < cases.length; i += 50) {
