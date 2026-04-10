@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-04 (Sales Day 4. 35 PRs (#374-#408). Push-Notifications (Notfall/Zuweisung/Bewertung). Per-Tenant PWA. App-Badge. Auto-Refresh. Google Review Crawl. Wöchentlicher Rapport. Root-Cause Tenant-Bug gefixt.)
+> Letzte Aktualisierung: 2026-04-10 (Sales Day 10. PRs #424-#434. Voice Agent Gold-Standard, Leitsystem-Schablone, Demo-Audio-Pipeline, Agent Hangup Monitoring, Machine Manifest v2.0.)
 
 ---
 
@@ -85,30 +85,41 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **Deterministic Closing:** Farewell no-repeat, end_call tool, ß→ss in Analyse
 - **Recording: OFF** (Datenschutz)
 - **24/7 erreichbar**, keine verpassten Anrufe
-- **Template-System:** Agent-Configs als JSON-Schablone (~20 Min pro Kunde)
+- **Template-System:** Gold-Standard-Schablone mit 23 Platzhaltern (~20 Min pro Kunde)
+- **Persona:** "Lisa" — digitale Assistentin mit Firmen-Wissen (Öffnungszeiten, Services, Einzugsgebiet, Team)
+- **18 Verhaltens-Szenarien:** Intake, Info, Rückruf, Reklamation, Angebotsanfrage, Sicherheits-Eskalation, Erste-Hilfe, Sprachwechsel, Themenfremde Fragen, Preis-Deflekt
+- **14 No-Go's:** Keine Preise erfinden, keine Garantie versprechen, keine Diagnose stellen, keine Termine zusagen, nie "FlowSight" sagen
+- **Sprachwechsel:** DE→EN/FR/IT mit Brückensatz in eigener Sprache, Rückswitch ohne Akzent-Probleme
+- **Agent Hangup Monitoring:** RED Alert an Founder bei Bug-bedingtem Auflegen (Webhook + Morning Report)
 
 ### 3.4 Leitzentrale (Ops Dashboard)
 - Web-App unter /ops (Login via Custom OTP: 6-Digit Code per E-Mail, server-side Session. Sender: noreply@send.flowsight.ch)
-- **Leitzentrale v3 (FlowBar):** CSS Grid KPIs (Neu/Bei uns/Erledigt/Bewertung), gleiche Breiten, 7d/30d/YTD-Toggle
+- **Leitzentrale v3 (FlowBar):** CSS Grid KPIs (Neu/Bei uns/Erledigt/Bewertung), gleiche Breiten, Jahres-Dropdown (2024-2026) + 7d/30d Filter
+- **Soft Delete:** Fälle löschen (Mülleimer-Icon) + Wiederherstellen. Gelöschte Fälle fallen aus KPIs raus, bleiben in DB.
 - **Quellen-Aufschlüsselung:** "Neu" KPI zeigt 📞 Tel / 🌐 Web / ✏️ Stift mit Anzahl
 - **Gold-Sterne:** Bewertungs-KPI immer goldene Sterne, Durchschnitt + "erhalten / angefragt"
 - **Admin-Ansicht:** Begrüssung, alle Betrieb-Fälle, Smart Sort, Spaltenfilter
 - **Techniker-Ansicht:** "Meine Arbeit" (nur zugewiesene Fälle), nächster Einsatz mit Maps-Link, Pagination
+- **Adaptiver Rollen-Toggle:** Admin/Techniker-Switch nur bei Betrieben mit >2 Mitarbeitern sichtbar. Kleine Betriebe (2 Personen) sehen nur die Admin-Ansicht — kein unnötiger UI-Ballast.
 - **Fall-Detailansicht:** Status, Termin (mit Kollisions-Warnung), Staff-Zuweisung, Bewertungs-Workflow, Timeline
 - **Status-Farben:** Neu=blau, Geplant=violett, In Arbeit=orange, Warten=grau, Erledigt=grün, Erledigt+4★=gold
 - **Mobile:** 2x2 Grid KPIs, 8 Fälle/Seite, 48px Tap-Targets
 - **PLZ Auto-Fill:** Bei Fallerfassung → Stadt automatisch aus Schweizer PLZ-Map
 - **Light Theme**, Sidebar-Navigation, responsive, PWA-installierbar
 
-### 3.5 Google Review Engine (mit Pre-Filter)
-- Nach erledigtem Fall: Button "Review anfragen" im Ops Dashboard
-- Sendet E-Mail an Melder mit Link zur Bewertungs-Landingpage `/review/[caseId]`
-- **Pre-Filter:** Kunde gibt 1-5 Sterne → ≥4★ sieht Google-Link, ≤3★ sieht nur "Danke" (kein Google-Redirect)
-- Tracking: `review_rating`, `review_received_at`, `review_sent_count` auf Case
+### 3.5 Google Review Engine v2 (seit 05.04.2026)
+- Nach erledigtem Fall: Button "Bewertung anfragen" im Ops Dashboard
+- **HTML-E-Mail:** Gebrandete Karte mit Tenant-Farbe, Auftragsreferenz (Kategorie + Ort), grosser CTA-Button "★ Service bewerten — dauert 30 Sekunden". Plain-Text-Fallback.
+- **Review Surface v2** (`/review/[caseId]`):
+  - Grosse Sterne (48px Tap-Targets, Hover-Animation)
+  - **Positiv (4-5★):** 4 klickbare Text-Chips ("Schnell & zuverlässig", "Saubere Arbeit", "Kompetente Beratung", "Jederzeit wieder") + Freitextfeld + "Jetzt auf Google bewerten" CTA
+  - **Negativ (1-3★):** Empathie + Textarea "Was können wir besser machen?" + "Feedback senden" — kein Google-Redirect, Feedback wird intern gespeichert
+  - **review_text** in DB gespeichert (positiv UND negativ) — Betrieb sieht Kundenfeedback
+  - Push-Notification mit Textvorschau an Betrieb
+- **KPI-Conversion:** FlowBar zeigt "X/Y erhalten (Z%)" statt nur "gesendet". SystemCard zeigt received/sent Ratio.
+- **Google-Count:** Google-Bewertungsanzahl aus weekly Crawl im FlowBar sichtbar
 - **Gold-Status:** Fälle mit rating ≥ 4 werden gold markiert in der Leitzentrale
-- **Review-KPI:** Google-Durchschnitt aus Tenant-Modules (z.B. 4.4★), "X erhalten / Y angefragt" klickbar als Filter
-- **Klickbare Sub-Filter:** "erhalten" filtert auf Fälle mit Rating, "angefragt" auf gesendet-ohne-Rating
-- Google Review URL pro Tenant konfigurierbar
+- Google Review URL pro Tenant konfigurierbar (Settings-Seite)
 - **E2E-Plan:** `docs/redesign/leitstand/plan_google_bewertungen.md`
 
 ### 3.6 Morning Report
@@ -278,15 +289,17 @@ NACH ERLEDIGUNG:
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
 | **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
 
-### Dörfler AG — Erster Prospect durch die GTM-Maschine
+### Dörfler AG — Erster Prospect durch die GTM-Maschine (Gold-Standard)
 - Sanitär/Heizung seit 1926, Oberrieden ZH, 3. Generation (Ramon + Luzian Dörfler)
-- Phase A provisioniert (01.04.2026): Website, Voice, 15 Demo-Cases, Leitzentrale
-- Noch KEIN Kontakt mit Betrieb. Demo-Video-Aufnahme steht bevor.
+- Voice Agent Gold-Standard: Lisa-Persona, Info+Intake Dual-Mode, 18 Szenarien, Sprachwechsel DE↔EN/FR/IT
+- 70 realistische Demo-Cases (2024-2026, saisonal verteilt, Reviews Ø 4.8★)
+- Vorstellungsseite LIVE, Video-Takes in Produktion (Segment-Recording + Demo-Audio-Pipeline)
+- Noch KEIN Kontakt mit Betrieb. Outreach-Mail READY.
 - Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos (5/5)
 
 ### Walter Leuthold — Zweiter Prospect durch die GTM-Maschine
 - Sanitär/Spenglerei, Ein-Mann-Betrieb seit 2001, Oberrieden ZH
-- Phase A provisioniert (01.04.2026): Website, Voice (Ela), 15 Demo-Cases, Leitzentrale
+- Phase A provisioniert (01.04.2026): Website, Voice (Ela), Demo-Cases, Leitzentrale
 - ICP 8 (HOT), 4.9 Sterne / 44 Google Reviews — herausragend
 - Pain Types: erreichbarkeit (Ein-Mann-Betrieb!), buerochaos, bewertung
 - Testnummer: +41 44 505 30 19

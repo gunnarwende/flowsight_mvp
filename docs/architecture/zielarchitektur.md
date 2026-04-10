@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 3.1 | **Datum:** 2026-04-04
+**Version:** 3.3 | **Datum:** 2026-04-10
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v3.1 — 66 Decisions (D1-D66). Push-Notifications. Per-Tenant PWA. Google Review Crawl. Wöchentlicher Rapport. 35 PRs in 4 Tagen.
+**Status:** v3.3 — 75 Decisions (D1-D75). Voice Agent Gold-Standard, Leitsystem-Schablone, Demo-Audio-Pipeline, Machine Manifest v2.0. 62 PRs in 10 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -31,7 +31,7 @@
 | D17 | Tenant Scope: Admin behält tenant_id + isAdmin=true. Kein Fallback auf ältesten Tenant. | **ENTSCHIEDEN** ✅ | Founder + CC | resolveTenantScope.ts |
 | D18 | Brand Color Pipeline: CustomerSite → DB modules.primary_color → Leitsystem (Kalender, Buttons, Sidebar) | **ENTSCHIEDEN** ✅ | Founder + CC | sync_brand_colors.mjs |
 | D19 | Leitzentrale v2→v3: FlowBar (CSS Grid) statt 3-Zonen. v2 abgelehnt → v3: EINE Card, EIN geschlossenes System | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx |
-| D20 | Rollen-basierte Leitzentrale: Admin = "Mein Betrieb", Techniker = "Meine Arbeit" | **ENTSCHIEDEN** ✅ | Founder + CC | LeitzentraleView.tsx, TechnikerView.tsx |
+| D20 | Rollen-basierte Leitzentrale: Admin = "Mein Betrieb", Techniker = "Meine Arbeit". Adaptiver Toggle: nur bei >2 Staff sichtbar (DB query). "Ansicht: Betrieb" Label entfernt. | **ENTSCHIEDEN** ✅ | Founder + CC | LeitzentraleView.tsx, TechnikerView.tsx, OpsShell.tsx, layout.tsx, PR #413 |
 | D21 | Tenant-Switcher: HttpOnly Cookie `fs_active_tenant`, Admin-only, skalierbar | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D22 | Rollen-Switch: Admin kann als Techniker testen (Cookie `fs_view_as_role`) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D23 | Support-System: "Hilfe"-Seite → GitHub Issue (+ Resend Fallback) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
@@ -46,8 +46,8 @@
 | D35 | Pricing: Fallvolumen als Hauptanker (nicht Mitarbeiterzahl). Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise ab CHF 799. Overage intern, nicht auf Website kommuniziert. | **ENTSCHIEDEN** ✅ | Founder + CC | `pricing_und_marge.md` FINAL |
 | D36 | SMS = dominanter Kostentreiber (57-84%), nicht Voice. E-Mail-Substitution maximieren. Retell bleiben, LLM → GPT-4o-mini. OpenAI Realtime NICHT pilotieren. | **ENTSCHIEDEN** ✅ | Founder + CC | `ceo_voice_decision.md` §8 |
 | D26 | Leitzentrale v3 FlowBar: CSS Grid KPIs, 7d/30d/YTD, Quellen-Aufschlüsselung, Gold-Sterne, Mobile 2x2, Shared statusColors.ts | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx |
-| D27 | Review Pre-Filter: ★-Picker → ≥4★ Google-Link, ≤3★ intern. review_rating/review_received_at auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts |
-| D28 | Review-KPI: Google-Durchschnitt aus tenant.modules (google_review_avg). Klickbare Sub-Filter "erhalten"/"angefragt". Timeline Auto-Refresh nach jedem Save. | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, cases/page.tsx |
+| D27 | Review Pre-Filter v2: ★-Picker → ≥4★ Chips + Google-Link, ≤3★ Feedback-Textarea (intern). review_rating/review_received_at/review_text auf Cases. Gold-Status bei ≥4★. | **ENTSCHIEDEN** ✅ | Founder + CC | ReviewSurfaceClient.tsx, statusColors.ts, PRs #410-#412 |
+| D28 | Review-KPI v2: Conversion-Rate (erhalten/angefragt %). Google-Count im FlowBar. Klickbare Sub-Filter "erhalten"/"angefragt". | **ENTSCHIEDEN** ✅ | Founder + CC | FlowBar.tsx, LeitzentraleView.tsx, SystemCard.tsx, PRs #411 |
 | D37 | Website-Positionierung: "Leitsystem für Handwerksbetriebe" (breit, nicht nur Sanitär/Heizung). Hero: "Das Leitsystem für Ihren Betrieb — vom ersten Kontakt bis zur Bewertung." Kein "Lisa" / "5-Sterne" / "Dashboard" in kundengerichtetem Copy. | **ENTSCHIEDEN** ✅ | Founder + CC | `page.tsx`, `constants.ts`, `layout.tsx`, PRs #349 |
 | D38 | Nav: "Testen" → "Live erleben" (/live-erleben). Generisches 2-Min-Video als Erst-Impact (Phase 1: ohne Video, Phase 2: mit Video). /testen = 301 Redirect. | **ENTSCHIEDEN** ✅ | Founder + CC | `live-erleben/page.tsx`, `testen/page.tsx`, PRs #349 |
 | D39 | Voice Agent Sales: 4 Modi (Video-Rückruf Prio, Kaltanruf Default, Testnummer-Verwechslung, Support NEU). Lisa nennt KEINE Preise — immer Founder-Rückruf. Knowledge Base = Website-Content. | **ENTSCHIEDEN** ✅ | Founder + CC | `retell/flowsight_sales_de.json`, PRs #350 |
@@ -78,6 +78,15 @@
 | D64 | **App-Badge (Homescreen-Zähler).** `navigator.setAppBadge(count)` für neue Cases seit letztem Öffnen. `clearAppBadge()` on mount. `last_seen_at` in localStorage. Android Chrome/Edge: ✅, iOS: ❌ (Push als Alternative). | **ENTSCHIEDEN** ✅ | Founder + CC | `LeitzentraleView.tsx`, `OpsShell.tsx`, PR #407 |
 | D65 | **Google Review Crawl (wöchentlich).** `crawl_google_reviews.mjs` via GH Actions Cron (Mo 06:00). Google Places API (New): Rating + Count + letzte 5 Reviews. DB: `modules.google_review_avg/count/place_id/latest_reviews/crawled_at`. Kosten: ~$3.50/Mo bei 50 Betrieben. | **ENTSCHIEDEN** ✅ | Founder + CC | `crawl_google_reviews.mjs`, `google-review-crawl.yml`, PR #408 |
 | D66 | **Wöchentlicher Rapport per Email.** `weekly_report.mjs` via GH Actions Cron (Mo 07:00). Branded HTML-Email an Betriebsinhaber: Neue Fälle (Voice/Web/Manual), Erledigt, Bewertungen, Google-Rating, Termine. Nur an Tenants mit notification_email (Phase B aktiv). | **ENTSCHIEDEN** ✅ | Founder + CC | `weekly_report.mjs`, `weekly-report.yml`, PR #408 |
+| D67 | **Review System v2.** (1) Review Surface: 4 klickbare Text-Chips (1-Tap), Freitextfeld sichtbar, ≤3★ Feedback-Textarea. (2) HTML-Email: Gebrandete Karte mit CTA-Button, Auftragsreferenz. (3) `review_text TEXT` Spalte: Kundenfeedback persistiert (positiv+negativ). (4) KPI-Conversion: FlowBar "X/Y erhalten (Z%)", SystemCard received/sent. (5) Google-Count im FlowBar. Chips aktuell hardcoded (4 generische), skalierbar via `tenants.modules.review_chips` bei Bedarf. | **ENTSCHIEDEN** ✅ | Founder + CC | `ReviewSurfaceClient.tsx`, `resend.ts`, `rate/route.ts`, PRs #410-#412 |
+| D68 | **Voice Agent Gold-Standard-Schablone.** Persona "Lisa", Dual-Mode (Intake+Info), 18 Verhaltens-Szenarien, 14 No-Go's, 23 Platzhalter pro Betrieb. `retell/templates/global_prompt_de.txt` als SSOT. `is_transfer_cf: true` auf BEIDEN Flows (DE+INTL) ist PFLICHT. | **ENTSCHIEDEN** ✅ | Founder + CC | `retell/templates/`, `voice_agent_lessons_learned.md`, PRs #424-#426 |
+| D69 | **Sprachwechsel: Brückensatz in eigener Sprache.** DE Agent sagt "Natürlich, einen Moment bitte" (Deutsch). INTL Agent sagt "Of course, one moment please" (Englisch) / "Bien sûr, un instant" (FR) / "Certo, un momento" (IT). NIE die Zielsprache sprechen. | **ENTSCHIEDEN** ✅ | Founder | PRs #424-#426, `voice_agent_lessons_learned.md` S2 |
+| D70 | **Agent Hangup Monitoring.** `agent_hangup` + Duration <120s → Sentry Error + RED Alert an Founder (Webhook, sofort) + Morning Report VOICE-Sektion (täglich). Image-Schutz für Betriebe. | **ENTSCHIEDEN** ✅ | Founder | PR #429 |
+| D71 | **Soft Delete Cases.** `is_deleted: boolean` + `deleted_at: timestamp`. Mülleimer-Icon + Wiederherstellen-Button. KPIs filtern `is_deleted=false`. Kein neuer Status, kein physisches Löschen. | **ENTSCHIEDEN** ✅ | Founder | PR #428 |
+| D72 | **Jahres-Dropdown statt YTD.** FlowBar: "7 Tage / 30 Tage / [2026▼]". Dropdown mit 2024, 2025, 2026. Vergangene Jahre filtern auf Kalenderjahr. Handwerker-Feedback: "YTD sagt mir nichts." | **ENTSCHIEDEN** ✅ | Founder (Handwerker-Input) | PR #430 |
+| D73 | **Seed Demo Data v2.** 70+ Cases pro Betrieb, dynamisch aus CustomerSite Config. Kategorien = Voice+Wizard-aligned. Saisonal (Heizung=Winter). Stammkunden. Reviews Ø 4.8★. Staff-Zuweisung. Quellen-Minimum: 5V+3W+2M auf Neu. `seed_demo_data_v2.mjs`. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #431-#432 |
+| D74 | **Demo-Audio-Pipeline.** Retell Multi-Channel WAV → Agent Clean TTS + Founder Rode → Mixed Final MP4. `extract_call_audio.mjs` + `mix_demo_audio.mjs`. Parameter: `--agent-gain`, `--ambient`. | **ENTSCHIEDEN** ✅ | Founder + CC | PR #427 |
+| D75 | **Machine Manifest v2.0.** Alle 12 Pipeline-Schritte aktualisiert. Neue Schablonen-Referenzen. Provisioning inkl. Staff, Google Crawl, Seed v2. Narration = Segment-Recording. Video = Self-hosted (nicht Loom). | **ENTSCHIEDEN** ✅ | Founder + CC | PR #434 |
 
 ---
 

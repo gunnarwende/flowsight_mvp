@@ -182,6 +182,277 @@ Enthält: Leitzentrale-Link + OTP-Anleitung + Testnummer + PWA-Hinweis + Trial-Z
 
 ---
 
+## Speakflow
+
+### Take 1: Ihr Alltag — und die eigentliche Frage (Kamera gross, kein Screen-Share)
+
+Guten Tag Herr Dörfler.
+
+Mein Name ist Gunnar Wende.
+Ich wohne nur ein paar Strassen weiter,
+hier in Oberrieden.
+
+Nach Ihrem Einsatz bei uns
+habe ich mir ein paar Gedanken gemacht
+und dazu dieses kurze Video
+für Sie aufgenommen.
+
+Ich möchte Ihnen kurz zeigen,
+was daraus entstanden ist.
+
+Dabei ist mir eine Frage
+durch den Kopf gegangen:
+
+Wie sorgen wir bei der Dörfler AG dafür,
+dass im Alltag nichts verloren geht
+und man trotzdem direkt sauber
+weiterarbeiten kann?
+
+Sie sind auf der Baustelle,
+haben Kundengespräche,
+und gleichzeitig kommen neue Anliegen rein —
+per Telefon,
+per E-Mail
+oder direkt im Gespräch.
+
+Und genau dort wird es entscheidend:
+Man ist nicht immer direkt erreichbar,
+hat nicht immer sofort
+den ganzen Stand zur Hand,
+und trotzdem muss von Anfang an klar sein,
+worum es geht
+und was als Nächstes zu tun ist.
+
+Genau dafür
+habe ich mir für die Dörfler AG
+etwas Konkretes überlegt.
+
+Ich zeige Ihnen das kurz
+an einem typischen Fall.
+
+
+### TAKE 2 — Wenn Sie gerade nicht direkt rangehen können (Kamera klein, Handy-Screen / Leitstand zeigen)
+
+Nehmen wir an,
+ein Kunde braucht Sie gerade,
+erreicht Sie aber nicht direkt,
+weil Sie auf der Baustelle sind
+in einem Kundengespräch
+oder der Kunde ruft ausserhalb
+der Öffnungszeiten an.
+
+Dann sollte dieser Anruf
+nicht einfach ins Leere laufen,
+sondern der Kunde
+zunächst sauber aufgefangen werden.
+
+Genau dafür habe ich für Sie
+eine digitale Assistentin vorbereitet,
+die übernimmt,
+wenn Sie gerade nicht direkt rangehen können.
+
+Ich rufe einmal kurz an.
+
+>>> JETZT ANRUFEN — PAUSE <<<
+
+Direkt nach dem Anruf
+erhält der Kunde eine SMS.
+
+So merkt der Kunde sofort:
+Sein Anliegen ist angekommen,
+und er kann bei Bedarf
+direkt noch ein Foto vom Schaden nachreichen.
+
+Für Sie heisst das zunächst einmal:
+Sie können Ihr Kundengespräch
+oder Ihren Einsatz in Ruhe zu Ende führen,
+ohne unterbrochen zu werden
+und ohne dass das Anliegen verloren geht.
+
+Genau dafür habe ich Ihnen
+Ihre eigene Dörfler-App vorbereitet.
+
+Egal ob ein Kunde anruft,
+online etwas meldet
+oder Sie selbst etwas aufnehmen —
+alles läuft hier zusammen.
+
+Hier sehen Sie auf einen Blick,
+was neu ist,
+was bereits läuft,
+was erledigt ist
+und wie es bei den Bewertungen aussieht.
+
+Gerade das Thema Bewertungen ist bei 
+vielen Betrieben ein Thema,
+das im Alltag schnell untergeht.
+Dafür habe ich aber auch noch
+einen ziemlich coolen Weg gefunden —
+zeige ich Ihnen gleich.
+
+Und wenn ich den Fall öffne,
+sehen Sie direkt,
+worum es geht,
+wie dringend es ist
+und was bereits erfasst wurde.
+
+Von hier aus können Sie den Fall
+direkt einem Ihrer Leute zuweisen
+und einen Einsatztermin festlegen —
+der landet dann auch direkt
+bei Ihrem Techniker auf dem Handy.
+
+So ist der Fall nicht nur irgendwo eingegangen,
+sondern so da,
+dass Sie direkt damit weiterarbeiten können.
+
+Und genau so haben Sie den aktuellen Stand
+nicht irgendwo im Kopf
+oder verteilt in einzelnen Nachrichten,
+sondern direkt im Fall —
+auch unterwegs auf der Baustelle
+sauber zur Hand.
+
+
+### TAKE 3 — Wenn ein Kunde lieber online meldet (Kamera klein, Desktop-Screen)
+
+Dasselbe funktioniert
+übrigens auch schriftlich.
+
+Ich habe mir für die Dörfler AG
+auch erlaubt, eine Website vorzubereiten —
+nicht als Ersatz
+für Ihren bisherigen Auftritt,
+sondern um auch diesen schriftlichen Weg
+einmal konkret sichtbar zu machen.
+
+Nur ganz kurz,
+wie so ein Auftritt
+für die Dörfler AG
+auch aussehen könnte:
+
+ein sauberer Aufbau,
+klare Leistungsbereiche,
+Ihr Einzugsgebiet,
+Ihre Bewertungen,
+Ihr Team
+und auch Ihre Geschichte —
+die verdient aus meiner Sicht
+gerade in diesem Jubiläumsjahr
+einen sichtbaren Platz.
+
+Und über genau diesen Weg
+kann ein Kunde sein Anliegen
+dann auch direkt online melden.
+
+Sie waren bei uns ja
+wegen der Dichtung
+am Wasserhahnanschluss.
+Ich gehe unseren Fall hier
+kurz einmal online durch.
+
+>>> JETZT WIZARD ZEIGEN — PAUSE <<<
+
+Und auch das landet danach
+wieder genau im selben Ablauf.
+
+Hier sehe ich den Fall
+direkt wieder in der Übersicht
+und kann ihn genauso öffnen
+und weiterführen.
+
+Und wenn etwas direkt bei Ihnen
+im Betrieb, auf der Baustelle
+oder in einem Gespräch entsteht,
+kann es genauso manuell aufgenommen werden
+und läuft ebenfalls
+in dieselbe Leitzentrale hinein.
+
+Damit laufen bei Ihnen telefonische,
+schriftliche und manuelle Anliegen
+nicht nebeneinander,
+sondern sauber an einer Stelle zusammen.
+
+
+### TAKE 4 — Wie gute Arbeit sichtbar wird (Kamera klein am Anfang, Abschluss gern wieder gross)
+
+Und auf den Punkt mit den Bewertungen
+komme ich jetzt bewusst
+noch einmal zurück.
+
+Gerade das Thema Bewertungen ist bei
+vielen Betrieben ein Punkt,
+der im Alltag schnell untergeht.
+Dafür habe ich aber auch noch
+einen ziemlich coolen Weg gefunden.
+
+Natürlich nicht blind bei jedem Fall,
+sondern genau dort,
+wo Sie sagen:
+Das war sauber,
+da passt es jetzt.
+
+Denn wenn ein Fall
+wirklich sauber erledigt ist,
+kann mit einem Klick
+direkt und gezielt
+eine Bewertung angefragt werden.
+
+>>> JETZT FALL AUF ERLEDIGT SETZEN / BUTTON ZEIGEN — PAUSE <<<
+
+Gerade bei der Dörfler AG
+ist das aus meiner Sicht
+ein wichtiger Punkt.
+
+Gute Arbeit wird tagtäglich geleistet.
+Umso wichtiger ist es,
+dass daraus im richtigen Moment
+auch etwas für Image
+und Vertrauen entsteht.
+
+Gerade in unserem Fall:
+Wir hätten für Ihren Einsatz
+sehr gerne eine 5-Sterne-Bewertung dagelassen —
+wenn man den Kunden
+in so einem Moment
+direkt und unkompliziert abholt,
+passiert das deutlich eher.
+
+So bleibt ein gut gelöster Einsatz
+nicht nur intern abgeschlossen,
+sondern kann direkt
+auf die Aussenwirkung
+der Dörfler AG einzahlen.
+
+Und dahinter steht für mich im Kern etwas sehr Einfaches:
+dass bei Ihnen im Alltag
+alles so ankommt,
+dass man direkt sinnvoll
+damit weiterarbeiten kann.
+
+Das spart Zeit und Nerven,
+sorgt schneller für Überblick,
+macht die Vorbereitung einfacher
+und sorgt gleichzeitig dafür,
+dass weniger verloren geht
+und gute Arbeit am Ende
+auch auf Vertrauen und die Aussenwirkung
+der Dörfler AG einzahlt.
+
+Wie schon in der Mail geschrieben:
+Ich möchte Ihnen damit nichts verkaufen.
+Mich würde einfach ehrlich interessieren,
+wie das auf Sie wirkt.
+
+Sie können mich jederzeit anrufen
+oder mir kurz schreiben.
+Ich freue mich, von Ihnen zu hören.
+
+Vielen Dank für Ihre Zeit,
+Herr Dörfler.
+---
+
+
 ## Technische Checkliste (vor Aufnahme)
 
 - [ ] Vorstellungsseite läuft: flowsight.ch/kunden/doerfler-ag/vorstellung
