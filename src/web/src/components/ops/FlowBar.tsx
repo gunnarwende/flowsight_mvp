@@ -117,7 +117,7 @@ export function FlowBar({
                 </button>
               ))}
               <select
-                value={periodToggle.value === "year" ? periodToggle.selectedYear : ""}
+                value={periodToggle.selectedYear}
                 onChange={(e) => {
                   const y = Number(e.target.value);
                   if (y) {
@@ -125,15 +125,13 @@ export function FlowBar({
                     periodToggle.onChange("year");
                   }
                 }}
-                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors bg-transparent cursor-pointer outline-none ${
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors bg-transparent cursor-pointer outline-none appearance-none pr-5 ${
                   periodToggle.value === "year"
                     ? "bg-white text-gray-900 shadow-sm"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
+                style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 4px center" }}
               >
-                {periodToggle.value !== "year" && (
-                  <option value="" disabled>Jahr</option>
-                )}
                 {YEAR_OPTIONS.map((y) => (
                   <option key={y} value={y}>{y}</option>
                 ))}
