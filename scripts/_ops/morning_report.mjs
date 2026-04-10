@@ -117,6 +117,39 @@ if (oldestRow) {
 }
 
 // ---------------------------------------------------------------------------
+// Voice Agent Health: agent_hangup detection (last 24h)
+// ---------------------------------------------------------------------------
+
+let agentHangupCount = 0;
+let agentHangupCalls = [];
+try {
+  const retellKey = process.env.RETELL_API_KEY?.replace(/^"|"$/g, "");
+  if (retellKey) {
+    const retellResp = await fetch("https://api.retellai.com/v2/list-calls", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${retellKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ limit: 100, sort_order: "descending" }),
+    });
+    if (retellResp.ok) {
+      const calls = await retellResp.json();
+      const cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000).getTime();
+      agentHangupCalls = (calls || []).filter(c => {
+        const start = c.start_timestamp || 0;
+        const end = c.end_timestamp || 0;
+        const dur = end - start;
+        return c.disconnection_reason === "agent_hangup"
+          && start > cutoff
+          && dur > 0
+          && dur < 120_000;
+      });
+      agentHangupCount = agentHangupCalls.length;
+    }
+  }
+} catch (e) {
+  console.error("Retell agent_hangup check failed:", e.message);
+}
+
+// ---------------------------------------------------------------------------
 // Trial Lifecycle Queries
 // ---------------------------------------------------------------------------
 
@@ -221,7 +254,7 @@ try {
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0;
+const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0 || agentHangupCount > 0;
 const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0;
 const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
 
@@ -252,6 +285,8 @@ const report = [
   `expiring_48h:   ${expiring48hCount}${expiringNames ? ` (${expiringNames})` : ""}`,
   `zombie_trials:  ${zombieCount}`,
   `tick_stale:     ${staleCount}${staleNames ? ` (${staleNames})` : ""}`,
+  `━━━ VOICE ━━━━━━━━━━`,
+  `agent_hangup:   ${agentHangupCount}${agentHangupCount > 0 ? " ⚠ AGENT HAT AUFGELEGT" : ""}`,
   `━━━ HEALTH ━━━━━━━━━`,
   `api:            ${healthOk ? "OK" : "FAIL"}`,
   `db:             ${healthDb}`,
