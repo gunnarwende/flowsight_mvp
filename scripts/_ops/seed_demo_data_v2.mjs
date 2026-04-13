@@ -670,45 +670,101 @@ async function main() {
     }
   }
 
-  // 6b. Guarantee minimum 2 large projects (Badsanierung, Heizungsersatz, Komplettrenovation)
-  // on page 1: recent (last 14 days), active status (in_arbeit or scheduled), detailed descriptions
+  // 6b. Page 1 shaping — control what appears on the first page (8 mobile slots)
+  // Smart-sort order: notfall > dringend > normal > done (then by created_at desc)
+  // Target layout for page 1:
+  //   Slot 1: Notfall (in_arbeit) — exactly ONE, red accent, shows "1" badge on "Bei uns"
+  //   Slot 2: Dringend case (the featured Rohrbruch is "new" so it sorts before normal active)
+  //   Slot 3: Large project 1 (Badsanierung, in_arbeit)
+  //   Slot 4: Normal active case
+  //   Slot 5: Angebot (in_arbeit or scheduled)
+  //   Slot 6: Normal active case
+  //   Slot 7: Large project 2 (Heizungsersatz, scheduled)
+  //   Slot 8: Normal active case
+
+  // Step 1: Enforce exactly 1 notfall (in_arbeit), demote extras to dringend
+  const activeNotfaelle = cases.filter(c => c.urgency === "notfall" && c.status !== "done" && c.status !== "new");
+  if (activeNotfaelle.length > 1) {
+    // Keep the most recent one, demote the rest
+    activeNotfaelle.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    for (let i = 1; i < activeNotfaelle.length; i++) {
+      activeNotfaelle[i].urgency = "dringend";
+    }
+    console.log(`  Notfälle: kept 1, demoted ${activeNotfaelle.length - 1} to dringend`);
+  }
+  // Ensure exactly 1 active notfall exists — promote if none
+  if (activeNotfaelle.length === 0) {
+    const promotable = cases.filter(c => c.urgency === "dringend" && c.status === "in_arbeit" && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+    if (promotable.length > 0) {
+      promotable[0].urgency = "notfall";
+      console.log(`  Notfälle: promoted 1 dringend → notfall`);
+    }
+  }
+  // Set the single notfall to in_arbeit (not new, not done)
+  const theNotfall = cases.find(c => c.urgency === "notfall" && c.status !== "done");
+  if (theNotfall && theNotfall.status === "new") {
+    theNotfall.status = "in_arbeit";
+    theNotfall.updated_at = new Date(new Date(theNotfall.created_at).getTime() + 2 * 3600000).toISOString();
+  }
+
+  // Also demote "new" notfaelle to dringend (they shouldn't exist in seed data — only real calls are notfall+new)
+  for (const c of cases) {
+    if (c.urgency === "notfall" && c.status === "new" && c !== theNotfall) {
+      c.urgency = "dringend";
+    }
+  }
+
+  // Step 2: Ensure 2 large projects (positions 3 and 7 after smart-sort)
   const LARGE_PROJECT_CATS = ["Badsanierung", "Heizungsersatz", "Komplettrenovation"];
-  const recentLargeProjects = cases.filter(c =>
-    LARGE_PROJECT_CATS.includes(c.category) &&
-    (c.status === "in_arbeit" || c.status === "scheduled") &&
+  const page1Projects = [
+    { cat: "Badsanierung", desc: "Komplettsanierung Badezimmer: Dusche, WC, Lavabo, Fliesen. Besichtigung durchgeführt, Offerte in Arbeit.", status: "in_arbeit" },
+    { cat: "Heizungsersatz", desc: "Heizungsersatz Öl → Wärmepumpe. EFH 200m², Besichtigung abgeschlossen. Offerte und Zeitplan in Abstimmung.", status: "scheduled" },
+  ];
+  // Find or promote large projects into active recent cases
+  const recentActive = cases.filter(c =>
+    !LARGE_PROJECT_CATS.includes(c.category) &&
+    c.category !== "Rohrbruch" && c.category !== "Angebot" &&
+    c.urgency === "normal" &&
+    (c.status === "in_arbeit" || c.status === "scheduled" || c.status === "warten") &&
     (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000
   );
-
-  if (recentLargeProjects.length < 2) {
-    // Promote or create large project cases by flipping recent non-large cases
-    const deficit = 2 - recentLargeProjects.length;
-    const recent14d = cases.filter(c =>
-      !LARGE_PROJECT_CATS.includes(c.category) &&
-      c.category !== "Rohrbruch" && // don't touch featured case category
-      (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000 &&
-      c.status !== "new" && c.status !== "done"
-    );
-    const candidates = recent14d.slice(0, deficit);
-    const projectPool = [
-      { cat: "Badsanierung", desc: "Komplettsanierung Badezimmer: Dusche, WC, Lavabo, Fliesen. Besichtigung durchgeführt, Offerte in Arbeit.", src: "wizard" },
-      { cat: "Heizungsersatz", desc: "Heizungsersatz Öl → Wärmepumpe. EFH 200m², Besichtigung abgeschlossen. Offerte und Zeitplan in Abstimmung.", src: "manual" },
-      { cat: "Komplettrenovation", desc: "Komplettsanierung Sanitär EFH: 2 Bäder + Küche, Leitungen ab Hauptverteilung. Baustart geplant. Koordination mit Elektriker.", src: "manual" },
-    ];
-    for (let i = 0; i < candidates.length; i++) {
-      const c = candidates[i];
-      const proj = projectPool[i % projectPool.length];
-      c.category = proj.cat;
-      c.description = proj.desc;
-      c.source = proj.src;
-      c.status = i === 0 ? "in_arbeit" : "scheduled";
-      c.urgency = "normal";
-      // Schedule the project
-      const scheduleDays = 3 + Math.floor(Math.random() * 10);
-      c.scheduled_at = new Date(now.getTime() + scheduleDays * 86400000).toISOString();
+  for (let i = 0; i < page1Projects.length; i++) {
+    const proj = page1Projects[i];
+    // Check if we already have one
+    const existing = cases.find(c => c.category === proj.cat && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+    if (existing) continue;
+    // Promote a normal active case
+    const candidate = recentActive[i];
+    if (!candidate) continue;
+    candidate.category = proj.cat;
+    candidate.description = proj.desc;
+    candidate.status = proj.status;
+    candidate.urgency = "normal";
+    candidate.source = "wizard";
+    if (proj.status === "scheduled") {
+      candidate.scheduled_at = new Date(now.getTime() + (5 + Math.floor(Math.random() * 10)) * 86400000).toISOString();
     }
-    console.log(`  Large projects: ${recentLargeProjects.length} existing + ${candidates.length} promoted = ${recentLargeProjects.length + candidates.length}`);
+  }
+  console.log(`  Page 1 large projects: ${cases.filter(c => LARGE_PROJECT_CATS.includes(c.category) && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000).length}`);
+
+  // Step 3: Ensure 1 Angebot case on page 1 (position ~5)
+  const activeAngebot = cases.find(c => c.category === "Angebot" && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+  if (!activeAngebot) {
+    const angCandidate = cases.find(c =>
+      c.category !== "Rohrbruch" && !LARGE_PROJECT_CATS.includes(c.category) && c.category !== "Angebot" &&
+      c.urgency === "normal" &&
+      (c.status === "in_arbeit" || c.status === "scheduled") &&
+      (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000
+    );
+    if (angCandidate) {
+      angCandidate.category = "Angebot";
+      angCandidate.description = "Offertanfrage: Badsanierung EG komplett, inkl. Dusche, WC, Lavabo. Kunde möchte Beratung vor Ort und detaillierte Offerte.";
+      angCandidate.source = "wizard";
+      angCandidate.status = "in_arbeit";
+      console.log(`  Angebot: promoted 1 case`);
+    }
   } else {
-    console.log(`  Large projects: ${recentLargeProjects.length} (sufficient)`);
+    console.log(`  Angebot: already on page 1`);
   }
 
   // 6c. Guarantee minimum "new" cases by source in last 30 days
