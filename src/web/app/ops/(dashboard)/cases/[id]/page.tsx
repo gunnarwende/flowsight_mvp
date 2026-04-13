@@ -9,6 +9,7 @@ import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { CaseDetailForm } from "./CaseDetailForm";
 import { PrintButton } from "./PrintButton";
 import { DeleteButton } from "./DeleteButton";
+import { ScrollToTop } from "./ScrollToTop";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
 // ---------------------------------------------------------------------------
@@ -145,6 +146,7 @@ export default async function CaseDetailPage({
 
   return (
     <>
+      <ScrollToTop />
       {/* Header: compact — back + case ID + actions on one line, category below */}
       <div className="mb-4">
         {/* Row 1: Navigation + Case ID + Actions */}
