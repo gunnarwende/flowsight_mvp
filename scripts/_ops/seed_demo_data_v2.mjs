@@ -41,6 +41,7 @@ const slug = args.slug;
 if (!slug) { console.error("--slug=<tenant-slug> is required"); process.exit(1); }
 const targetCount = parseInt(args.count ?? "70", 10);
 const clean = args.clean === "true";
+const asDemo = args.demo === "true"; // default: false = real cases (visible in main tab)
 
 // ── HELPERS ───────────────────────────────────────────────────────────
 
@@ -205,6 +206,56 @@ const CATEGORY_TEMPLATES = {
     wizard: ["Bitte um Rückruf. Erreichbar Mo-Fr 9-17 Uhr.","Terminwunsch für Beratung vor Ort."],
     manual: ["Rückruf-Wunsch: Terminvereinbarung."],
   },
+  // ── Large projects (Renovationen, Sanierungen) — min 2 per tenant on page 1
+  "Badsanierung": {
+    seasonal: [1,2,3,4,5,6,7,8,9,10,11,12],
+    urgencyDist: { notfall: 0, dringend: 0.05, normal: 0.95 },
+    voice: [
+      "Komplette Badsanierung geplant. Möchten gerne eine Beratung vor Ort und dann eine Offerte.",
+      "Wir planen unser Badezimmer zu renovieren. Dusche, WC, Lavabo — alles komplett neu.",
+    ],
+    wizard: [
+      "Guten Tag, wir planen die Komplettsanierung unseres Badezimmers (Baujahr 1985). Dusche, Badewanne, Lavabo und WC sollen erneuert werden. Bitte Termin für Beratung und Offerte.",
+      "Badsanierung EG: barrierefreie Dusche, neues WC, Doppellavabo. Budget ca. CHF 25'000-35'000. Bitte Offerte.",
+      "Renovation Gäste-Bad OG: Komplett neu inkl. Fliesen, Dusche, WC. Bitte Besichtigung + Offerte.",
+    ],
+    manual: [
+      "Beratungsgespräch Badsanierung: 2 Bäder, Altbau 1978. Offerte folgt nach Besichtigung.",
+      "Offerte erstellt: Komplettsanierung Bad EG, CHF 32'500 inkl. MwSt. Kunde überlegt.",
+    ],
+  },
+  "Heizungsersatz": {
+    seasonal: [3,4,5,6,7,8,9,10], // planned outside heating season
+    urgencyDist: { notfall: 0, dringend: 0.1, normal: 0.9 },
+    voice: [
+      "Unsere Ölheizung ist 25 Jahre alt. Wir möchten auf Wärmepumpe umsteigen. Beratung gewünscht.",
+      "Heizungsersatz geplant: aktuell Gas, möchten wissen was die Optionen sind.",
+    ],
+    wizard: [
+      "Heizungsersatz: Öl auf Wärmepumpe. EFH Baujahr 1992, 180m². Bitte Beratung und Offerte.",
+      "Planen den Ersatz unserer Gasheizung (20 Jahre alt). Wärmepumpe oder Pellets? Bitte Termin.",
+      "Heizungssanierung MFH (6 Wohnungen): Zentrale Ölheizung ersetzen. Bitte Offerte + Beratung.",
+    ],
+    manual: [
+      "Beratung Heizungsersatz: Öl → WP, EFH 200m². Besichtigung durchgeführt. Offerte in Arbeit.",
+      "Offerte Heizungsersatz: Luft-Wasser WP inkl. Demontage Öltank. CHF 38'000.",
+    ],
+  },
+  "Komplettrenovation": {
+    seasonal: [2,3,4,5,6,7,8,9,10], // spring to autumn
+    urgencyDist: { notfall: 0, dringend: 0.05, normal: 0.95 },
+    voice: [
+      "Wir planen eine Komplettrenovation Sanitär im ganzen Haus. 3 Bäder und Küche. Bitte Beratung.",
+    ],
+    wizard: [
+      "Komplettrenovation Sanitär: EFH Baujahr 1975, 3 Bäder + Küche. Leitungen müssen komplett erneuert werden. Bitte Besichtigung + Offerte.",
+      "Sanierung Altbau: Steigleitungen, 2 Bäder, Küche. Koordination mit Elektriker nötig. Bitte Offerte.",
+    ],
+    manual: [
+      "Grossprojekt: Komplettsanierung Sanitär EFH, 3 Bäder + Küche. Baustart geplant Juni. Offerte CHF 65'000.",
+      "Renovation MFH 4 Wohnungen: Bäder + Leitungen. Etappenweise. Offerte in Arbeit.",
+    ],
+  },
 };
 
 // ── DISTRIBUTION LOGIC ──────────────────────────────────────────────
@@ -313,7 +364,7 @@ async function main() {
   const staffNames = staff?.map(s => s.display_name) ?? [];
 
   // 3. Try to load CustomerSite config for categories + serviceArea
-  let categories = ["Verstopfung","Leck","Heizung","Boiler","Rohrbruch","Sanitär allgemein","Allgemein","Angebot","Kontakt"];
+  let categories = ["Verstopfung","Leck","Heizung","Boiler","Rohrbruch","Sanitär allgemein","Badsanierung","Heizungsersatz","Komplettrenovation","Allgemein","Angebot","Kontakt"];
   let gemeinden = Object.keys(GEMEINDE_PLZ);
 
   try {
@@ -326,10 +377,11 @@ async function main() {
       if (catMatches) {
         categories = catMatches.map(m => m.match(/"([^"]+)"/)[1]);
       }
-      // Always include FIXED_CATEGORIES + common Voice Agent categories
+      // Always include FIXED_CATEGORIES + common Voice Agent categories + large projects
       const FIXED = ["Allgemein", "Angebot", "Kontakt"];
       const VOICE_EXTRA = ["Boiler", "Rohrbruch", "Sanitär allgemein"];
-      for (const c of [...FIXED, ...VOICE_EXTRA]) {
+      const LARGE_PROJECTS = ["Badsanierung", "Heizungsersatz", "Komplettrenovation"];
+      for (const c of [...FIXED, ...VOICE_EXTRA, ...LARGE_PROJECTS]) {
         if (!categories.includes(c)) categories.push(c);
       }
       console.log(`  Categories from config: ${categories.join(", ")}`);
@@ -362,7 +414,7 @@ async function main() {
   // Clean
   if (clean) {
     const { count: deleted } = await supabase
-      .from("cases").delete({ count: "exact" }).eq("tenant_id", tenant.id).eq("is_demo", true);
+      .from("cases").delete({ count: "exact" }).eq("tenant_id", tenant.id).eq("is_demo", asDemo);
     // Also clean events for deleted demo cases
     console.log(`  Cleaned ${deleted ?? 0} existing demo cases`);
   }
@@ -392,6 +444,66 @@ async function main() {
   const cases = [];
   const events = [];
   let usedAddresses = new Set();
+
+  // 6a. Featured case — the "hero" case used for video screenshots / demos.
+  // Always the NEWEST voice case: Rohrbruch, Dringend, status "new".
+  // Uses the tenant's primary city (first location) for the address.
+  {
+    const featLoc = locations[0] || { plz: "8000", city: "Zürich" };
+    const featStreet = "Seestrasse";
+    const featHN = "14";
+    const featContact = {
+      name: `${pick(SWISS_FIRST)} ${pick(SWISS_LAST)}`,
+      phone: randomPhone(),
+      email: null,
+      plz: featLoc.plz,
+      city: featLoc.city,
+      street: featStreet,
+      houseNumber: featHN,
+    };
+    // Created "today" at 15:00 — matches the video storyboard
+    const featCreated = new Date(now);
+    featCreated.setHours(15, 0, 0, 0);
+    const featId = randomUUID();
+    const featDesc = `Der Anrufer steht im Keller knöcheltief im Wasser, vermutlich wegen eines Rohrbruchs. Die Adresse ist ${featStreet} ${featHN}, ${featLoc.plz} ${featLoc.city}. Der Schaden wurde als dringend eingestuft, und der Anrufer gab an, wo der Techniker klingeln soll.`;
+    cases.push({
+      id: featId,
+      tenant_id: tenant.id,
+      source: "voice",
+      created_at: featCreated.toISOString(),
+      updated_at: featCreated.toISOString(),
+      reporter_name: featContact.name,
+      contact_phone: featContact.phone,
+      contact_email: null,
+      plz: featContact.plz,
+      city: featContact.city,
+      street: featContact.street,
+      house_number: featContact.houseNumber,
+      category: "Rohrbruch",
+      urgency: "dringend",
+      description: featDesc,
+      status: "new",
+      assignee_text: null,
+      scheduled_at: null,
+      review_sent_at: null,
+      review_rating: null,
+      review_received_at: null,
+      review_text: null,
+      is_demo: asDemo,
+    });
+    events.push({
+      case_id: featId, tenant_id: tenant.id,
+      event_type: "case_created", title: "Fall erstellt via Voice Agent",
+      created_at: featCreated.toISOString(),
+    });
+    events.push({
+      case_id: featId, tenant_id: tenant.id,
+      event_type: "sms_verification_sent", title: "SMS-Bestätigung an Kunden gesendet",
+      created_at: new Date(featCreated.getTime() + 30000).toISOString(),
+    });
+    usedAddresses.add(`${featStreet}${featHN}${featLoc.city}`);
+    console.log(`  Featured case: Rohrbruch in ${featLoc.plz} ${featLoc.city} (video hero)`);
+  }
 
   for (let i = 0; i < targetCount; i++) {
     const createdAt = timeline[i];
@@ -519,7 +631,7 @@ async function main() {
       review_rating: reviewRating,
       review_received_at: reviewReceivedAt,
       review_text: reviewText,
-      is_demo: true,
+      is_demo: asDemo,
     });
 
     // Events
@@ -558,7 +670,48 @@ async function main() {
     }
   }
 
-  // 6b. Guarantee minimum "new" cases by source in last 30 days
+  // 6b. Guarantee minimum 2 large projects (Badsanierung, Heizungsersatz, Komplettrenovation)
+  // on page 1: recent (last 14 days), active status (in_arbeit or scheduled), detailed descriptions
+  const LARGE_PROJECT_CATS = ["Badsanierung", "Heizungsersatz", "Komplettrenovation"];
+  const recentLargeProjects = cases.filter(c =>
+    LARGE_PROJECT_CATS.includes(c.category) &&
+    (c.status === "in_arbeit" || c.status === "scheduled") &&
+    (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000
+  );
+
+  if (recentLargeProjects.length < 2) {
+    // Promote or create large project cases by flipping recent non-large cases
+    const deficit = 2 - recentLargeProjects.length;
+    const recent14d = cases.filter(c =>
+      !LARGE_PROJECT_CATS.includes(c.category) &&
+      c.category !== "Rohrbruch" && // don't touch featured case category
+      (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000 &&
+      c.status !== "new" && c.status !== "done"
+    );
+    const candidates = recent14d.slice(0, deficit);
+    const projectPool = [
+      { cat: "Badsanierung", desc: "Komplettsanierung Badezimmer: Dusche, WC, Lavabo, Fliesen. Besichtigung durchgeführt, Offerte in Arbeit.", src: "wizard" },
+      { cat: "Heizungsersatz", desc: "Heizungsersatz Öl → Wärmepumpe. EFH 200m², Besichtigung abgeschlossen. Offerte und Zeitplan in Abstimmung.", src: "manual" },
+      { cat: "Komplettrenovation", desc: "Komplettsanierung Sanitär EFH: 2 Bäder + Küche, Leitungen ab Hauptverteilung. Baustart geplant. Koordination mit Elektriker.", src: "manual" },
+    ];
+    for (let i = 0; i < candidates.length; i++) {
+      const c = candidates[i];
+      const proj = projectPool[i % projectPool.length];
+      c.category = proj.cat;
+      c.description = proj.desc;
+      c.source = proj.src;
+      c.status = i === 0 ? "in_arbeit" : "scheduled";
+      c.urgency = "normal";
+      // Schedule the project
+      const scheduleDays = 3 + Math.floor(Math.random() * 10);
+      c.scheduled_at = new Date(now.getTime() + scheduleDays * 86400000).toISOString();
+    }
+    console.log(`  Large projects: ${recentLargeProjects.length} existing + ${candidates.length} promoted = ${recentLargeProjects.length + candidates.length}`);
+  } else {
+    console.log(`  Large projects: ${recentLargeProjects.length} (sufficient)`);
+  }
+
+  // 6c. Guarantee minimum "new" cases by source in last 30 days
   // Requirement: min 5 voice + 3 wizard + 2 manual on status "new"
   const MIN_NEW = { voice: 5, wizard: 3, manual: 2 };
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);

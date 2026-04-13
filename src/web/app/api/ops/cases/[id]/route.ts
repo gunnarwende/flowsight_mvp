@@ -336,7 +336,10 @@ export async function PATCH(
         ]);
 
         const modules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
-        const notifyEnabled = modules.notify_staff_assignment !== false;
+        // Safe default: only send assignment emails when explicitly enabled.
+        // Phase A tenants (no notification_email set) must NEVER email prospect staff.
+        const hasNotificationEmail = typeof modules.notification_email === "string" && modules.notification_email.length > 0;
+        const notifyEnabled = modules.notify_staff_assignment === true || (modules.notify_staff_assignment !== false && hasNotificationEmail);
 
         if (notifyEnabled && identity && staffMatches && staffMatches.length > 0) {
           const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
