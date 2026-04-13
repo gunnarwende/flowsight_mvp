@@ -445,9 +445,9 @@ async function main() {
   const events = [];
   let usedAddresses = new Set();
 
-  // 6a. Featured case — the "hero" case used for video screenshots / demos.
-  // Always the NEWEST voice case: Rohrbruch, Dringend, status "new".
-  // Uses the tenant's primary city (first location) for the address.
+  // 6a. Featured case — used for video screenshots (build_take2_screens.mjs).
+  // Status: "scheduled" (NOT "new" — Founder creates Rohrbruch + Leck LIVE during demo).
+  // The video pipeline finds the latest Rohrbruch case for detail screenshots.
   {
     const featLoc = locations[0] || { plz: "8000", city: "Zürich" };
     const featStreet = "Seestrasse";
@@ -461,8 +461,8 @@ async function main() {
       street: featStreet,
       houseNumber: featHN,
     };
-    // Created "today" at 15:00 — matches the video storyboard
-    const featCreated = new Date(now);
+    // Created 2 days ago — recent enough to show up, old enough to be "scheduled"
+    const featCreated = new Date(now.getTime() - 2 * 86400000);
     featCreated.setHours(15, 0, 0, 0);
     const featId = randomUUID();
     const featDesc = `Der Anrufer steht im Keller knöcheltief im Wasser, vermutlich wegen eines Rohrbruchs. Die Adresse ist ${featStreet} ${featHN}, ${featLoc.plz} ${featLoc.city}. Der Schaden wurde als dringend eingestuft, und der Anrufer gab an, wo der Techniker klingeln soll.`;
@@ -471,7 +471,7 @@ async function main() {
       tenant_id: tenant.id,
       source: "voice",
       created_at: featCreated.toISOString(),
-      updated_at: featCreated.toISOString(),
+      updated_at: new Date(featCreated.getTime() + 3600000).toISOString(),
       reporter_name: featContact.name,
       contact_phone: featContact.phone,
       contact_email: null,
@@ -482,9 +482,9 @@ async function main() {
       category: "Rohrbruch",
       urgency: "dringend",
       description: featDesc,
-      status: "new",
-      assignee_text: null,
-      scheduled_at: null,
+      status: "scheduled", // NOT "new" — Founder creates Rohrbruch LIVE
+      assignee_text: staffNames.length > 0 ? staffNames[0] : null,
+      scheduled_at: new Date(now.getTime() + 1 * 86400000).toISOString(),
       review_sent_at: null,
       review_rating: null,
       review_received_at: null,
@@ -502,7 +502,7 @@ async function main() {
       created_at: new Date(featCreated.getTime() + 30000).toISOString(),
     });
     usedAddresses.add(`${featStreet}${featHN}${featLoc.city}`);
-    console.log(`  Featured case: Rohrbruch in ${featLoc.plz} ${featLoc.city} (video hero)`);
+    console.log(`  Featured case: Rohrbruch in ${featLoc.plz} ${featLoc.city} (video, status=scheduled)`);
   }
 
   for (let i = 0; i < targetCount; i++) {
@@ -670,102 +670,136 @@ async function main() {
     }
   }
 
-  // 6b. Page 1 shaping — control what appears on the first page (8 mobile slots)
-  // Smart-sort order: notfall > dringend > normal > done (then by created_at desc)
-  // Target layout for page 1:
-  //   Slot 1: Notfall (in_arbeit) — exactly ONE, red accent, shows "1" badge on "Bei uns"
-  //   Slot 2: Dringend case (the featured Rohrbruch is "new" so it sorts before normal active)
-  //   Slot 3: Large project 1 (Badsanierung, in_arbeit)
-  //   Slot 4: Normal active case
-  //   Slot 5: Angebot (in_arbeit or scheduled)
-  //   Slot 6: Normal active case
-  //   Slot 7: Large project 2 (Heizungsersatz, scheduled)
-  //   Slot 8: Normal active case
+  // 6b. Page 1 shaping — control what appears on the first 8 mobile slots.
+  //
+  // IMPORTANT: Founder creates Rohrbruch (Voice, dringend) + Leck (Wizard, normal) LIVE
+  // during each Probetrieb demo. Seed data must NOT have Rohrbruch/Leck as "new" recently.
+  //
+  // Smart-sort: notfall > dringend > normal > done (then by created_at desc)
+  // After Founder's live demo, his Rohrbruch + Leck slot in naturally.
+  //
+  // Target seed layout (before Founder's live cases):
+  //   Slot 1: Notfall (in_arbeit) — dynamisch, NICHT Leck/Rohrbruch
+  //   Slot 2: Dringend — Badsanierung (Grossprojekt)
+  //   Slot 3: Dringend — dynamisch (featured Rohrbruch from 6a, status=scheduled)
+  //   Slot 4: Normal — Heizungsersatz (Grossprojekt)
+  //   Slot 5: Normal — Angebot
+  //   Slot 6-8: Normal — Mix (dynamisch pro Betrieb)
+  //
+  // Reserved categories (Founder creates LIVE): Rohrbruch (new), Leck (new)
+  const RESERVED_CATS = ["Rohrbruch", "Leck"];
+  const LARGE_PROJECT_CATS = ["Badsanierung", "Heizungsersatz", "Komplettrenovation"];
 
-  // Step 1: Enforce exactly 1 notfall (in_arbeit), demote extras to dringend
-  const activeNotfaelle = cases.filter(c => c.urgency === "notfall" && c.status !== "done" && c.status !== "new");
-  if (activeNotfaelle.length > 1) {
-    // Keep the most recent one, demote the rest
-    activeNotfaelle.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    for (let i = 1; i < activeNotfaelle.length; i++) {
-      activeNotfaelle[i].urgency = "dringend";
-    }
-    console.log(`  Notfälle: kept 1, demoted ${activeNotfaelle.length - 1} to dringend`);
-  }
-  // Ensure exactly 1 active notfall exists — promote if none
-  if (activeNotfaelle.length === 0) {
-    const promotable = cases.filter(c => c.urgency === "dringend" && c.status === "in_arbeit" && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
-    if (promotable.length > 0) {
-      promotable[0].urgency = "notfall";
-      console.log(`  Notfälle: promoted 1 dringend → notfall`);
-    }
-  }
-  // Set the single notfall to in_arbeit (not new, not done)
-  const theNotfall = cases.find(c => c.urgency === "notfall" && c.status !== "done");
-  if (theNotfall && theNotfall.status === "new") {
-    theNotfall.status = "in_arbeit";
-    theNotfall.updated_at = new Date(new Date(theNotfall.created_at).getTime() + 2 * 3600000).toISOString();
-  }
-
-  // Also demote "new" notfaelle to dringend (they shouldn't exist in seed data — only real calls are notfall+new)
+  // Step 1: Remove Rohrbruch + Leck from "new" status in recent cases
+  // (Founder will create these live — seed data must not duplicate them)
   for (const c of cases) {
-    if (c.urgency === "notfall" && c.status === "new" && c !== theNotfall) {
+    if (RESERVED_CATS.includes(c.category) && c.status === "new" && (now.getTime() - new Date(c.created_at).getTime()) < 30 * 86400000) {
+      // Push to "done" or change category
+      if (c.category === "Rohrbruch" && c !== cases[0]) { // Don't touch featured case (index 0)
+        c.status = "done";
+        c.updated_at = new Date(new Date(c.created_at).getTime() + 2 * 86400000).toISOString();
+      } else if (c.category === "Leck") {
+        c.status = "done";
+        c.updated_at = new Date(new Date(c.created_at).getTime() + 3 * 86400000).toISOString();
+      }
+    }
+  }
+
+  // Step 2: Enforce exactly 1 Notfall (in_arbeit), category NOT Leck/Rohrbruch
+  // Demote ALL notfälle first, then promote exactly one
+  for (const c of cases) {
+    if (c.urgency === "notfall" && c.status !== "done") {
       c.urgency = "dringend";
     }
   }
-
-  // Step 2: Ensure 2 large projects (positions 3 and 7 after smart-sort)
-  const LARGE_PROJECT_CATS = ["Badsanierung", "Heizungsersatz", "Komplettrenovation"];
-  const page1Projects = [
-    { cat: "Badsanierung", desc: "Komplettsanierung Badezimmer: Dusche, WC, Lavabo, Fliesen. Besichtigung durchgeführt, Offerte in Arbeit.", status: "in_arbeit" },
-    { cat: "Heizungsersatz", desc: "Heizungsersatz Öl → Wärmepumpe. EFH 200m², Besichtigung abgeschlossen. Offerte und Zeitplan in Abstimmung.", status: "scheduled" },
-  ];
-  // Find or promote large projects into active recent cases
-  const recentActive = cases.filter(c =>
+  // Find a good candidate: recent, active, NOT reserved category
+  const notfallCandidate = cases.find(c =>
+    !RESERVED_CATS.includes(c.category) &&
     !LARGE_PROJECT_CATS.includes(c.category) &&
-    c.category !== "Rohrbruch" && c.category !== "Angebot" &&
-    c.urgency === "normal" &&
-    (c.status === "in_arbeit" || c.status === "scheduled" || c.status === "warten") &&
+    c.category !== "Angebot" && c.category !== "Kontakt" && c.category !== "Allgemein" &&
+    (c.status === "in_arbeit" || c.status === "scheduled") &&
     (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000
   );
-  for (let i = 0; i < page1Projects.length; i++) {
-    const proj = page1Projects[i];
-    // Check if we already have one
-    const existing = cases.find(c => c.category === proj.cat && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
-    if (existing) continue;
-    // Promote a normal active case
-    const candidate = recentActive[i];
-    if (!candidate) continue;
-    candidate.category = proj.cat;
-    candidate.description = proj.desc;
-    candidate.status = proj.status;
-    candidate.urgency = "normal";
-    candidate.source = "wizard";
-    if (proj.status === "scheduled") {
-      candidate.scheduled_at = new Date(now.getTime() + (5 + Math.floor(Math.random() * 10)) * 86400000).toISOString();
-    }
+  if (notfallCandidate) {
+    notfallCandidate.urgency = "notfall";
+    notfallCandidate.status = "in_arbeit";
+    console.log(`  Notfall: ${notfallCandidate.category} (in_arbeit)`);
   }
-  console.log(`  Page 1 large projects: ${cases.filter(c => LARGE_PROJECT_CATS.includes(c.category) && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000).length}`);
 
-  // Step 3: Ensure 1 Angebot case on page 1 (position ~5)
-  const activeAngebot = cases.find(c => c.category === "Angebot" && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
-  if (!activeAngebot) {
-    const angCandidate = cases.find(c =>
-      c.category !== "Rohrbruch" && !LARGE_PROJECT_CATS.includes(c.category) && c.category !== "Angebot" &&
-      c.urgency === "normal" &&
+  // Step 3: Enforce exactly 2 Dringend cases (Badsanierung + 1 dynamic)
+  // First: make sure NO random cases are "dringend" except our chosen ones
+  const dringendBudget = 2; // target: exactly 2 dringend on page 1
+  let dringendCount = cases.filter(c => c.urgency === "dringend" && c.status !== "done" && c.status !== "new").length;
+
+  // Ensure Badsanierung is dringend + in_arbeit
+  let badsanierung = cases.find(c => c.category === "Badsanierung" && c.status !== "done" && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+  if (!badsanierung) {
+    // Promote a normal active case
+    badsanierung = cases.find(c =>
+      !RESERVED_CATS.includes(c.category) && !LARGE_PROJECT_CATS.includes(c.category) &&
+      c.category !== "Angebot" && c.urgency !== "notfall" &&
       (c.status === "in_arbeit" || c.status === "scheduled") &&
       (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000
     );
-    if (angCandidate) {
-      angCandidate.category = "Angebot";
-      angCandidate.description = "Offertanfrage: Badsanierung EG komplett, inkl. Dusche, WC, Lavabo. Kunde möchte Beratung vor Ort und detaillierte Offerte.";
-      angCandidate.source = "wizard";
-      angCandidate.status = "in_arbeit";
-      console.log(`  Angebot: promoted 1 case`);
+    if (badsanierung) {
+      badsanierung.category = "Badsanierung";
+      badsanierung.description = "Komplettsanierung Badezimmer: Dusche, WC, Lavabo, Fliesen. Besichtigung durchgeführt, Offerte in Arbeit.";
+      badsanierung.source = "wizard";
     }
-  } else {
-    console.log(`  Angebot: already on page 1`);
   }
+  if (badsanierung) {
+    badsanierung.urgency = "dringend";
+    badsanierung.status = "in_arbeit";
+  }
+
+  // Demote excess dringend to normal (keep only Badsanierung + featured Rohrbruch as dringend)
+  const allowedDringend = [badsanierung, cases[0]].filter(Boolean); // Badsanierung + featured Rohrbruch
+  for (const c of cases) {
+    if (c.urgency === "dringend" && c.status !== "done" && !allowedDringend.includes(c)) {
+      c.urgency = "normal";
+    }
+  }
+
+  // Step 4: Ensure Heizungsersatz on page 1 (normal, in_arbeit)
+  let heizungsersatz = cases.find(c => c.category === "Heizungsersatz" && c.status !== "done" && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+  if (!heizungsersatz) {
+    heizungsersatz = cases.find(c =>
+      !RESERVED_CATS.includes(c.category) && !LARGE_PROJECT_CATS.includes(c.category) &&
+      c.category !== "Angebot" && c.urgency === "normal" &&
+      (c.status === "in_arbeit" || c.status === "scheduled") &&
+      (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000 &&
+      c !== badsanierung && c !== notfallCandidate
+    );
+    if (heizungsersatz) {
+      heizungsersatz.category = "Heizungsersatz";
+      heizungsersatz.description = "Heizungsersatz Öl → Wärmepumpe. EFH 200m², Besichtigung abgeschlossen. Offerte und Zeitplan in Abstimmung.";
+      heizungsersatz.source = "manual";
+    }
+  }
+  if (heizungsersatz) {
+    heizungsersatz.urgency = "normal";
+    heizungsersatz.status = "in_arbeit";
+  }
+
+  // Step 5: Ensure Angebot on page 1 (normal, in_arbeit)
+  let angebotCase = cases.find(c => c.category === "Angebot" && (c.status === "in_arbeit" || c.status === "scheduled") && (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000);
+  if (!angebotCase) {
+    angebotCase = cases.find(c =>
+      !RESERVED_CATS.includes(c.category) && !LARGE_PROJECT_CATS.includes(c.category) &&
+      c.category !== "Angebot" && c.urgency === "normal" &&
+      (c.status === "in_arbeit" || c.status === "scheduled") &&
+      (now.getTime() - new Date(c.created_at).getTime()) < 14 * 86400000 &&
+      c !== badsanierung && c !== heizungsersatz && c !== notfallCandidate
+    );
+    if (angebotCase) {
+      angebotCase.category = "Angebot";
+      angebotCase.description = "Offertanfrage: Komplette Sanitärsanierung EG, inkl. Bad und Küche. Kunde möchte Beratung vor Ort und detaillierte Offerte.";
+      angebotCase.source = "wizard";
+      angebotCase.status = "in_arbeit";
+    }
+  }
+
+  console.log(`  Page 1: Notfall=${notfallCandidate ? 1 : 0}, Dringend=${cases.filter(c => c.urgency === "dringend" && c.status !== "done").length}, Badsanierung=${badsanierung ? "✓" : "✗"}, Heizungsersatz=${heizungsersatz ? "✓" : "✗"}, Angebot=${angebotCase ? "✓" : "✗"}`);
 
   // 6c. Guarantee minimum "new" cases by source in last 30 days
   // Requirement: min 5 voice + 3 wizard + 2 manual on status "new"
