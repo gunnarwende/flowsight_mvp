@@ -527,12 +527,11 @@ export function LeitzentraleView({
       {showDeleted && (
         <div className="px-4 py-2.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
           <p>{filteredCases.length} gelöschte {filteredCases.length === 1 ? "Fall" : "Fälle"}.</p>
-          <p className="mt-0.5 flex items-center gap-1.5">
-            Klicke auf einen Fall und dann auf
-            <svg className="w-4 h-4 inline-block text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <p className="mt-0.5 inline-flex items-center gap-1 flex-wrap">
+            <span>Klicke auf einen Fall und dann auf</span>
+            <svg className="w-4 h-4 inline-block text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
             </svg>
-            <span className="font-medium text-green-700">Wiederherstellen</span>
           </p>
         </div>
       )}
