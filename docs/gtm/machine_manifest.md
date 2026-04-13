@@ -1,7 +1,7 @@
 # Machine Manifest — Gold-Contact Proof-Capture-Maschine
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
-**Version:** 2.0 — Gold-Standard Pipeline (Updated 10.04.: Voice Agent Schablone, Leitsystem Schablone, Demo-Audio-Pipeline, Seed v2, Video Self-Hosted)
+**Version:** 3.1 — Speakflow FINAL + Seed v3 (Updated 13.04.: Take 1+2 Speakflow FINAL, generisches Template `speakflow_template.md`, Seed v3 Page-1-Shaping, Staff-Safety-Gate, Papierkorb-Ansicht)
 **Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
 
 ---
@@ -354,13 +354,14 @@ Schritte 1-2 laufen VOR dem Founder-Anruf. Schritte 4-6 laufen NACH dem Anruf.
 
 ---
 
-## Schritt 8: Assembly
+## Schritt 8: Assembly (v2 — Skalierbar)
 
-**Owner:** CC
-**Tool:** `extract_call_audio.mjs` + `mix_demo_audio.mjs` + FFmpeg
-**Input:** Founder Segment-Recordings + Screen-Recordings + Retell Call Audio
+**Owner:** CC (komplett automatisiert)
+**Tool:** 3-stufige Pipeline (siehe unten)
+**Input:** prospect_card.json + Master-Audio-Segmente + PiP_master.mp4
 **Output:** 4 finale MP4s pro Betrieb (Take 1-4)
-**Dauer:** ~15 Min pro Betrieb (Post-Production)
+**Dauer:** ~5 Min pro Betrieb (vollautomaisch)
+**Founder-Aufwand:** 0 Min (Take 2), 30s Voice-Swap (Take 1/3/4)
 
 ### Take-Struktur pro Betrieb
 
@@ -371,18 +372,66 @@ Schritte 1-2 laufen VOR dem Founder-Anruf. Schritte 4-6 laufen NACH dem Anruf.
 | 3 | Website + Online-Meldung | Klein (PiP) | Founder Rode |
 | 4 | Bewertungs-Engine + Abschluss | Klein→Gross | Founder Rode |
 
-### Assembly-Pipeline pro Take
+### Take 2: Vollautomatische Pipeline (3 Schritte)
 
+```bash
+# Schritt A: Screenshots generieren (Samsung-Templates + Playwright)
+node --env-file=.env.local scripts/_ops/build_take2_screens.mjs \
+  --slug={slug} --name="{firma}" --phone="{phone}" \
+  --sms-sender="{sms_sender}" --case-ref="{case_ref}" \
+  --time="15:00" --call-duration-sec=191
+
+# Schritt B: Audio assemblieren (Splice + Normalisierung)
+node --env-file=.env.local scripts/_ops/splice_audio.mjs \
+  --input production/audio/{slug}/agent_master.wav \
+  --voice ela --output production/audio/{slug}/agent_corrected.wav \
+  --corrections '[{"start_s":1.0,"end_s":6.5,"text":"{firma}"}]'
+
+node --env-file=.env.local scripts/_ops/build_take_playback.mjs \
+  --take 2 --slug {slug}
+
+# Schritt C: Video assemblieren (Screenshots + Transitions + PiP + Audio)
+node scripts/_ops/assemble_take2_video.mjs --slug={slug}
 ```
-1. Founder-Segmente: Beste Version pro Segment waehlen
-2. Audio normalisieren (-16 LUFS, konsistent ueber alle Takes)
-3. Take 2 speziell: Retell Multi-Channel → Agent Clean WAV
-   → mix_demo_audio.mjs: Founder Rode + Clean Agent Audio
-   → --agent-gain und --ambient fuer Balance
-4. Video + Audio zusammenfuegen (FFmpeg, -c:v copy -c:a aac)
-5. MP4 ablegen in docs/customers/{slug}/takes/
-6. Auf Vorstellungsseite verlinken (vorstellung.ts)
-```
+
+### Take 2 Pipeline-Tools
+
+| Tool | Zweck | Output |
+|------|-------|--------|
+| `generate_auth_link.mjs` | Supabase Magic Link fuer Playwright | `production/.playwright_auth_link` |
+| `build_take2_screens.mjs` | 15 Screenshots pro Betrieb (Samsung + Leitsystem) | `production/screens/{slug}/S01-S15.png` |
+| `assemble_take2_video.mjs` | Screenshots + Transitions + PiP + Audio → MP4 | `production/video/{slug}/take2_final.mp4` |
+| `splice_audio.mjs` | ElevenLabs TTS-Splice fuer Firmennamen im Agent-Audio | korrigiertes WAV |
+| `build_take_playback.mjs` | Segment-Assembly + Pegel-Normalisierung | `playback_take2_complete.wav` |
+
+### Samsung-Screen-Templates (HTML → Playwright Screenshot)
+
+| Template | Screen | Dynamische Parameter |
+|----------|--------|---------------------|
+| `contact_screen.html` | Kontakt-Suche | Firmenname, Telefonnummer |
+| `call_screen.html` | Anruf laeuft | Firmenname, Timer (ffmpeg drawtext) |
+| `call_ended_screen.html` | Anruf beendet | Firmenname, Telefonnummer, Dauer |
+| `sms_screen.html` | SMS-Bestaetigung | Absender, Fall-Referenz, Uhrzeit |
+| `samsung_frame.html` | Samsung Status/Nav Bar | Uhrzeit, Batterie |
+
+### Leitsystem-Screenshots (Playwright → Live App)
+
+10 Screenshots via Playwright-Navigation der echten App:
+Uebersicht → 4x KPI-Highlight → Scroll → Falldetail (3 Scroll-Positionen) → Final
+
+Voraussetzung: Magic Link Auth (`generate_auth_link.mjs`), Seed-Daten (`seed_demo_data_v2.mjs` mit Featured Case)
+
+### Logik-Konsistenz (kritisch fuer 10+ Betriebe/Tag)
+
+| Parameter | Muss stimmen | Quelle |
+|-----------|-------------|--------|
+| Uhrzeit | Identisch auf allen Samsung-Screens + Leitsystem | `--time` / `--clock` |
+| Anrufdauer | Exakt passend zum Audio | `--call-duration-sec` |
+| Wochentag | Deutsch, aus Datum berechnet | Automatisch |
+| Begruessung | Tageszeit-basiert | Leitsystem-Logik |
+| Fall-Referenz | Tenant-Prefix + Nummer | `--case-ref` |
+| Adresse | Stadt aus Tenant Service-Area | Featured Case in Seed |
+| KPI-Zahlen | Muessen zu gezeigten Faellen passen | Seed-Daten |
 
 ### Video-Hosting
 

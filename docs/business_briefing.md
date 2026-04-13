@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-10 (Sales Day 10. PRs #424-#434. Voice Agent Gold-Standard, Leitsystem-Schablone, Demo-Audio-Pipeline, Agent Hangup Monitoring, Machine Manifest v2.0.)
+> Letzte Aktualisierung: 2026-04-13 (Sales Day 13. PRs #438-#444. Speakflow Take 1+2 FINAL, generisches Template, Seed v3 Page-1-Shaping, Papierkorb-Ansicht, Staff-Safety, Case-Header-Redesign.)
 
 ---
 
@@ -95,13 +95,13 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 ### 3.4 Leitzentrale (Ops Dashboard)
 - Web-App unter /ops (Login via Custom OTP: 6-Digit Code per E-Mail, server-side Session. Sender: noreply@send.flowsight.ch)
 - **Leitzentrale v3 (FlowBar):** CSS Grid KPIs (Neu/Bei uns/Erledigt/Bewertung), gleiche Breiten, Jahres-Dropdown (2024-2026) + 7d/30d Filter
-- **Soft Delete:** Fälle löschen (Mülleimer-Icon) + Wiederherstellen. Gelöschte Fälle fallen aus KPIs raus, bleiben in DB.
+- **Soft Delete + Papierkorb:** Fälle löschen (Mülleimer-Icon) + Papierkorb-Ansicht (Trash-Icon in Pagination) mit Restore. Gelöschte Fälle fallen aus KPIs raus, bleiben in DB.
 - **Quellen-Aufschlüsselung:** "Neu" KPI zeigt 📞 Tel / 🌐 Web / ✏️ Stift mit Anzahl
 - **Gold-Sterne:** Bewertungs-KPI immer goldene Sterne, Durchschnitt + "erhalten / angefragt"
 - **Admin-Ansicht:** Begrüssung, alle Betrieb-Fälle, Smart Sort, Spaltenfilter
 - **Techniker-Ansicht:** "Meine Arbeit" (nur zugewiesene Fälle), nächster Einsatz mit Maps-Link, Pagination
 - **Adaptiver Rollen-Toggle:** Admin/Techniker-Switch nur bei Betrieben mit >2 Mitarbeitern sichtbar. Kleine Betriebe (2 Personen) sehen nur die Admin-Ansicht — kein unnötiger UI-Ballast.
-- **Fall-Detailansicht:** Status, Termin (mit Kollisions-Warnung), Staff-Zuweisung, Bewertungs-Workflow, Timeline
+- **Fall-Detailansicht:** 2-Zeilen-Header (Kategorie volle Breite), Scroll-to-Top, Status, Termin (mit Kollisions-Warnung), Staff-Zuweisung, Bewertungs-Workflow, Timeline
 - **Status-Farben:** Neu=blau, Geplant=violett, In Arbeit=orange, Warten=grau, Erledigt=grün, Erledigt+4★=gold
 - **Mobile:** 2x2 Grid KPIs, 8 Fälle/Seite, 48px Tap-Targets
 - **PLZ Auto-Fill:** Bei Fallerfassung → Stadt automatisch aus Schweizer PLZ-Map
@@ -281,7 +281,7 @@ NACH ERLEDIGUNG:
 
 | Kunde | Status | Module | URL |
 |-------|--------|--------|-----|
-| **Dörfler AG** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/doerfler-ag |
+| **Dörfler AG** (Oberrieden) | **TRIAL_PREP** (Phase A) — Take 2 Video assembliert, Video-Pipeline v1 LIVE | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/doerfler-ag |
 | **Brunner Haustechnik AG** (Thalwil) | DEMO (fiktiv) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/brunner-haustechnik |
 | **Jul. Weinberger AG** (Thalwil) | **GTM Goldstandard** | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/weinberger-ag |
 | **Walter Leuthold** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/walter-leuthold |
