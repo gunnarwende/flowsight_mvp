@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-03-22 (Grossumbau: Website-Redesign Leitsystem, Voice Agent 4-Modi, Pipeline Tracking, Video-Drehbuch.)
+**Updated:** 2026-04-13 (Sales Day 13: Speakflow FINAL, Seed v3, Papierkorb, Staff-Safety, Case-Header-Redesign. PRs #438-#444.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,14 +9,14 @@
 
 ## Snapshot
 
-- **Produkt:** 25+ Module LIVE. Voice: Laura (DE) + Juniper (INTL). CEO-App komplett. Outlook Kalender live.
-- **Kunden:** 7 Websites live, Weinberger = GTM Goldstandard
-- **Voice:** Partial Cases Fix live (PR #336) — kein Fall geht mehr verloren. Laura als DE-Stimme auf 4 Agents. Urgency-Aliases normalisiert. SMS-Sender alphanumerisch.
-- **Pricing:** FINAL — Standard CHF 299 (120 Fälle), Professional CHF 499 (250 Fälle), Enterprise Custom. Sweetspot: 3-8 MA. Dokument: `pricing_und_marge.md`
+- **Produkt:** 25+ Module LIVE. Voice: Ela (DE) + Juniper (INTL). CEO-App komplett. Outlook Kalender live. Papierkorb-Ansicht. Seed v3 Page-1-Shaping.
+- **Kunden:** 7 Websites live, Dörfler + Leuthold = TRIAL_PREP, Weinberger = GTM Goldstandard
+- **Voice:** Gold-Standard-Schablone (23 Platzhalter), Ela DE + Juniper INTL, 18 Szenarien, 14 No-Go's.
+- **Speakflow:** Take 1 + Take 2 FINAL (Founder-approved). Generisches Template: `docs/gtm/speakflow_template.md`
+- **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
-- **Sentry-Bugs:** voice_case_missing_fields durch Partial Cases Fix entschärft (Fälle werden jetzt mit Defaults angelegt statt verworfen). Historische Events (68x) werden abnehmen.
-- **Phase:** Grossumbau (22.03.) — Website-Redesign, Voice Agent, Pipeline Tracking, Video-Drehbuch. PRs #348-#350.
-- **Nächste Schritte:** 1) PRs mergen (CI prüfen) 2) retell_sync.mjs für Sales Agents 3) DEMO_SIP_CALLER_ID verifizieren 4) Voice-Bugs V2-V6 Founder-Test 5) Video aufnehmen (generisch)
+- **Phase:** Sales Day 13. Speakflow FINAL. Nächst: Master-Aufnahmen (Founder nimmt Take 1-4 auf), dann Skalierungstest Walter Leuthold.
+- **Nächste Schritte:** 1) Founder nimmt Take 1-4 Masteraufnahmen auf 2) Take 3+4 Speakflow finalisieren 3) Assembly-Pipeline für Take 3+4 bauen 4) Walter Leuthold als erster Skalierungstest
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
@@ -41,10 +41,10 @@ Keine.
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|
-| RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | OFFEN — Founder |
+| RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | DONE — 26.03. |
 | RM2.2 | **Lisa auf Support-Tickets trainieren** | Voice Agent soll Support-Anfragen sauber verarbeiten | OFFEN |
-| KAL1 | **Outlook OAuth App anlegen** | Azure App Registration für Kalender-Integration (Phase 2). Anleitung: `docs/runbooks/founder_kalender_setup.md` | OFFEN — Founder |
-| KAL2 | **Google Calendar OAuth App anlegen** | Google Cloud Console für Kalender-Integration (Phase 2). Gleiche Anleitung. | OFFEN — Founder |
+| KAL1 | **Outlook OAuth App anlegen** | Azure App Registration für Kalender-Integration (Phase 2). Anleitung: `docs/runbooks/founder_kalender_setup.md` | DONE — 26.03. |
+| KAL2 | **Google Calendar OAuth App anlegen** | Google Cloud Console für Kalender-Integration (Phase 2). Gleiche Anleitung. | DONE — 26.03. |
 
 ## ERLEDIGT — Feedback Session 19.03. (PRs #286-#290)
 

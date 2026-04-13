@@ -1,7 +1,8 @@
 # Projekt "Vorstellung" — Skalierbare Kontaktmaschine
 
-**Erstellt:** 2026-04-10
+**Erstellt:** 2026-04-10 | **Updated:** 2026-04-13
 **Owner:** Founder + CC
+**Status:** **Speakflow Take 1+2 FINAL** (Founder-approved, nicht mehr ändern). Generisches Template: `docs/gtm/speakflow_template.md`. Seed v3 Page-1-Shaping LIVE. Nächst: Master-Aufnahmen + Take 3+4 finalisieren + Skalierungstest.
 **Ziel:** Maximal persönliche, 100% skalierbare Betriebskontaktierung. 10+ Betriebe/Tag theoretisch möglich. Founder-Aufwand pro Betrieb: < 5 Minuten.
 **Regel:** Stufe 3 von Tag 1. Keine Zwischenstufen. Kein Kompromiss.
 
@@ -44,7 +45,7 @@ Alles andere — Voice, Video, Audio, Leitsystem, Demo-Daten, E-Mail — wird au
 | Take | Was ist individuell | Was ist generisch | Automatisierungsgrad |
 |------|-------------------|-------------------|---------------------|
 | **T1** (Face, Vorstellung) | Firmenname, persönliche Geschichte, Lokalbezug | Kernfrage, Struktur, Abschluss | 60% generisch |
-| **T2** (Voice Call + Leitsystem) | Greeting der Assistentin, SMS-Absender, Leitsystem-Daten, Brand-Color | Call-Ablauf, Screen-Flow, alle Erklärungen | **90% generisch** |
+| **T2** (Voice Call + Leitsystem) | Kontaktname, Greeting der Assistentin, SMS-Absender, Leitsystem-Daten, Brand-Color | Kontakt-Trust-Moment, Call-Ablauf, Screen-Flow, alle Erklärungen | **90% generisch** |
 | **T3** (Website + Online-Meldung) | Website-Screenshots, Firmenname | Wizard-Flow, Erklärungen | 80% generisch |
 | **T4** (Bewertung + Abschluss) | Firmenname, Google-Rating | Review-Flow, Abschlussworte | 85% generisch |
 
@@ -60,16 +61,31 @@ Alles andere — Voice, Video, Audio, Leitsystem, Demo-Daten, E-Mail — wird au
 **Was sich pro Betrieb ändert:** NICHTS. Kein Firmenname in diesem Segment.
 **Automatisierung:** 100% wiederverwendbar. EINMAL aufnehmen → für JEDEN Betrieb nutzen.
 
-### S2: Der Anruf (FB84) — KRITISCH
+### S2a: Kontakt auswählen + Anruf starten (FB93 → FB84) — Trust-Moment
 
-**Text:** Live Voice Agent Call
-**Screen:** Anruf-Screen "Dörfler AG Test"
+**Text:** "Ich rufe einmal kurz an." (Ende von S1, Übergang)
+**Screen:** Kontakte-App → "{Firma} Test" suchen → Nummer sichtbar → Anruf-Button drücken → Anruf-Screen
+**Kamera:** Gunnar im Kreis
+
+**Warum dieser Zwischenschritt entscheidend ist:**
+Dörfler sieht: (1) seinen Firmennamen im Kontakt, (2) eine echte Telefonnummer, (3) Founder drückt wirklich auf Anrufen. Das ist kein Fake, kein zusammengeschnittenes Audio — das ist ein echter Anruf.
+
+**Was sich pro Betrieb ändert:** Kontaktname ("{Firma} Test") + Telefonnummer
+**Automatisierung:** Kontaktname im Handy ändern → Screenshot/kurzes Screen-Recording (5 Sekunden). Pro Betrieb: 30 Sekunden.
+
+**Master-Assets:**
+- `Kontakt_master_screenshot.png` — Referenz-Screenshot (FB93)
+
+### S2b: Der Anruf (FB84) — KRITISCH
+
+**Text:** Voice Agent Call (Founder spricht + Agent antwortet)
+**Screen:** Anruf-Screen "{Firma} Test — Wird angerufen..."
 **Kamera:** Gunnar im Kreis
 
 **Was sich pro Betrieb ändert:**
 1. Kontaktname auf dem Anruf-Screen ("{Firma} Test")
 2. Agent-Greeting ("Hier ist der Sanitär- und Heizungsdienst der {Firma}")
-3. Founder spricht die Adresse des Betriebs-Einzugsgebiets
+3. Founder spricht den typischen Fall der Branche
 
 **Automatisierungsstrategie (0 Franken pro Betrieb):**
 
@@ -168,7 +184,17 @@ FOUNDER-AUFWAND: 0 Minuten (alles automatisiert).
 | Founder-Zeit | 30-60 Min | **< 5 Min** (prüfen + senden) |
 | CC-Zeit | 30 Min | 15-20 Min (Assembly + QA) |
 | **Total Kosten** | **CHF 5-10** | **CHF 0.11** |
-| **Total Zeit** | **60-90 Min** | **20-25 Min** |
+| **Total Zeit** | **60-90 Min** | **~5 Min** (Pipeline vollautomatisch) |
+
+### Audio-Standard (alle Takes)
+
+| Parameter | Wert | Warum |
+|-----------|------|-------|
+| **Integrierte Lautstärke** | -14 LUFS | YouTube/Instagram/Mobile Standard |
+| **True Peak** | -1.5 dB | Kein Clipping auf Handylautsprechern |
+| **Loudness Range** | ~11 LU | Gleichmässig laut, keine Sprünge |
+| **Founder↔Agent Balance** | dynaudnorm (maxgain=12, peak=0.6) | Founder +20% im Call |
+| **Tool** | `loudnorm` in `assemble_take2_video.mjs` Step 3c | Automatisch pro Video |
 
 ---
 
@@ -176,11 +202,12 @@ FOUNDER-AUFWAND: 0 Minuten (alles automatisiert).
 
 Diese Aufnahmen werden EINMAL gemacht und für JEDEN Betrieb wiederverwendet:
 
-### Master-Video (Kamera)
+### Master-Video (Kamera-PiP, EINMAL aufnehmen)
 | # | Was | Wiederverwendbar für |
 |---|-----|---------------------|
 | V1 | Gunnar spricht S1 (Intro, kein Firmenname) | Alle Betriebe T2 S1 |
-| V2 | Gunnar während Call (Mimik, Gestik, PiP) | Alle Betriebe T2 S2 |
+| V1b | Gunnar greift zum Handy, sucht Kontakt, drückt Anrufen | Alle Betriebe T2 S2a (Trust-Moment) |
+| V2 | Gunnar während Call (Mimik, Gestik, PiP) | Alle Betriebe T2 S2b |
 | V3 | Gunnar zeigt SMS (Blick aufs Handy) | Alle Betriebe T2 S3 |
 | V4 | Gunnar öffnet App + zeigt Leitsystem | Alle Betriebe T2 S4-S7 |
 
@@ -199,6 +226,16 @@ Diese Aufnahmen werden EINMAL gemacht und für JEDEN Betrieb wiederverwendet:
 | AG1 | Agent-Greeting: "Hier ist der Sanitär- und Heizungsdienst der {Firma}" | TTS neu generieren (Ela-Stimme, 1 Satz) |
 | AG2 | Restlicher Call (Fragen, Empathie, Farewell) | 100% identisch, aus Master-Call |
 
+### Master-Screenshots (Referenz)
+| # | Was | Datei | Pro Betrieb |
+|---|-----|-------|------------|
+| SC1 | Kontakt-Screen ("{Firma} Test" + Nummer) | `Kontakt_master_screenshot.png` | Kontaktname ändern → neuer Screenshot |
+| SC2 | SMS ("{Firma}: Ihre Meldung wurde aufgenommen...") | `SMS_master_screenshot.png` | Test-SMS triggern → neuer Screenshot |
+
+### Master Call-ID
+- **call_8d24198e713f344bf4a1fcb1858** — Dörfler AG, 181s, perfekter Flow (DE→EN→DE, Keilriemen-Proof, Steuererklärung-Proof, sauberes Farewell)
+- `production/call_8d24198e713f344bf4a1fcb1858/` — agent_clean.wav + segments.json
+
 ---
 
 ## Assembly-Pipeline pro Betrieb
@@ -207,18 +244,30 @@ Diese Aufnahmen werden EINMAL gemacht und für JEDEN Betrieb wiederverwendet:
 Input:
   - slug (z.B. "weinberger-ag")
   - prospect_card.json (Firmendaten)
-  - Master-Videos (V1-V4)
-  - Master-Audio (A1-A5)
-  - Master Agent-Audio (AG2)
+  - Master-Videos (V1, V1b, V2, V3, V4) — Kamera-PiP, einmalig
+  - Master-Audio (A1-A5) — Rode Mikro, einmalig
+  - Master Agent-Audio (AG2) — Retell TTS, einmalig
 
-Pipeline:
-  1. TTS: Agent-Greeting generieren → AG1_neu.wav
-  2. Splice: AG1_neu + AG2 → agent_full.wav (kompletter Agent-Call)
-  3. STS: A4 mit neuem Firmennamen → a4_neu.wav
-  4. Screenshots: Tenant wechseln → Leitsystem-Screenshots (Playwright oder manuell)
-  5. SMS: Test-SMS triggern → Screenshot
-  6. Mix: Master-Video + angepasstes Audio → Take2_final.mp4
-  7. Repeat für Take 3+4 (analog)
+FOUNDER tut (2-3 Min, stumm, kein Sprechen, kein Kamera):
+  1. Kontaktname im Handy ändern → "{Firma} Test" → Screenshot (FB93-Equivalent)
+  2. Tenant im Leitsystem wechseln (Cookie/App)
+  3. Screen-Recording starten (Handy)
+  4. Leitsystem öffnen → Übersicht → Scrollen → Fall öffnen → Scrollen
+  5. Screen-Recording stoppen
+  6. Test-SMS triggern → SMS-Screenshot
+
+CC ASSEMBLIERT (15-20 Min):
+  1. TTS: Agent-Greeting generieren → "Hier ist [Lisa] von {Firma}" (Ela-Stimme, 1 Satz)
+  2. Splice: Neues Greeting + Master Agent-Audio → agent_full.wav
+  3. STS: A4 mit neuem Firmennamen → "{Firma}-App" statt "Dörfler-App"
+  4. Video-Assembly:
+     a) V1 (Intro) + Master-Audio A1
+     b) Kontakt-Screenshot (Trust-Moment) + V1b
+     c) Anruf-Screen + V2 + A2 (Founder) + agent_full.wav (Agent)
+     d) SMS-Screenshot + V3 + A3
+     e) Neues Leitsystem Screen-Recording + V4 + A4_neu + A5
+  5. Alles zusammenfügen → Take2_final.mp4
+  6. Audio normalisieren (konsistenter Pegel über alle Segmente)
 
 Output:
   - docs/customers/{slug}/takes/Take2.mp4

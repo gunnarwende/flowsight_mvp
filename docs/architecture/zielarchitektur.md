@@ -1,6 +1,6 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 3.3 | **Datum:** 2026-04-10
+**Version:** 3.4 | **Datum:** 2026-04-12
 **Autor:** CC (Head Ops) + Founder-Input
 **Status:** v3.3 — 75 Decisions (D1-D75). Voice Agent Gold-Standard, Leitsystem-Schablone, Demo-Audio-Pipeline, Machine Manifest v2.0. 62 PRs in 10 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
@@ -87,6 +87,13 @@
 | D73 | **Seed Demo Data v2.** 70+ Cases pro Betrieb, dynamisch aus CustomerSite Config. Kategorien = Voice+Wizard-aligned. Saisonal (Heizung=Winter). Stammkunden. Reviews Ø 4.8★. Staff-Zuweisung. Quellen-Minimum: 5V+3W+2M auf Neu. `seed_demo_data_v2.mjs`. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #431-#432 |
 | D74 | **Demo-Audio-Pipeline.** Retell Multi-Channel WAV → Agent Clean TTS + Founder Rode → Mixed Final MP4. `extract_call_audio.mjs` + `mix_demo_audio.mjs`. Parameter: `--agent-gain`, `--ambient`. | **ENTSCHIEDEN** ✅ | Founder + CC | PR #427 |
 | D75 | **Machine Manifest v2.0.** Alle 12 Pipeline-Schritte aktualisiert. Neue Schablonen-Referenzen. Provisioning inkl. Staff, Google Crawl, Seed v2. Narration = Segment-Recording. Video = Self-hosted (nicht Loom). | **ENTSCHIEDEN** ✅ | Founder + CC | PR #434 |
+| D76 | **Video-Pipeline v1 (Take 2).** `build_take2_screens.mjs` (Samsung-Overlay + Playwright-Leitsystem → 15 Screenshots) + `assemble_take2_video.mjs` (Timeline + PiP + Audio → MP4). Samsung Base-Images als Overlay-Vorlage (Text-Swap per Canvas). Playwright Auth via OTP-Injection (kein Magic Link). | **ENTSCHIEDEN** ✅ | Founder + CC | PR #437, `take2_storyboard.md` v2 |
+| D77 | **Audio-Standard -14 LUFS.** Alle Video-Takes: `loudnorm=I=-14:TP=-1.5:LRA=11`. YouTube/Mobile Standard. Founder↔Agent Balance via `dynaudnorm` (maxgain=12, peak=0.6). Gilt für Take 1-4, alle Betriebe. | **ENTSCHIEDEN** ✅ | Founder + CC | `assemble_take2_video.mjs` Step 3c |
+| D78 | **PiP-Layout.** Oben-rechts neben Phone-Screen (null Overlap). 1280x1920 Output. PiP: 390px Kreis, `alphamerge` (kein geq = keine Farbverzerrung), `crop=ih:ih` (kein Stretch). Phone links, PiP rechts, Oberkanten bündig. | **ENTSCHIEDEN** ✅ | Founder | `assemble_take2_video.mjs` |
+| D79 | **Staff Email Safety Gate.** Assignment-Notifications nur wenn `notification_email` gesetzt (Phase B) ODER explizites `notify_staff_assignment: true`. Phase-A-Tenants können NIEMALS versehentlich Emails an Prospect-Staff senden. Dörfler+Leuthold Staff-Emails auf NULL. | **ENTSCHIEDEN** ✅ | Founder + CC | `route.ts` (cases PATCH), PR #438 |
+| D80 | **Seed v3 Page-1-Shaping.** Exakt 1 Notfall (in_arbeit, NICHT Leck/Rohrbruch). Badsanierung + Heizungsersatz auf Seite 1 (Grossprojekte). Angebot auf Seite 1. Rohrbruch+Leck NICHT als "new" (Founder erstellt LIVE). Featured Rohrbruch = scheduled (für Video-Pipeline). Dynamisch pro Branche (Sanitär, Elektriker, Maler, etc.). | **ENTSCHIEDEN** ✅ | Founder + CC | `seed_demo_data_v2.mjs`, PRs #439+#441 |
+| D81 | **Generisches Speakflow-Template.** `docs/gtm/speakflow_template.md` — Take 1-4 mit {{Platzhaltern}}, 2 Master-Varianten (A: Einsatz bei mir, B: Kenne aus der Region), Mail 1+2 Templates. Take 2 = 1:1 Gold-Standard aus Dörfler. E2E-Pipeline pro Betrieb dokumentiert. | **ENTSCHIEDEN** ✅ | Founder + CC | PR #440 |
+| D82 | **Case-Header-Redesign.** 2-Zeilen-Layout: Row 1 (← Zurück + Print/Delete/ID), Row 2 (Kategorie volle Breite, bricht natürlich um). Redundante Kategorie in Beschreibung-Section entfernt. ScrollToTop bei Navigation. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #443-#444 |
 
 ---
 
