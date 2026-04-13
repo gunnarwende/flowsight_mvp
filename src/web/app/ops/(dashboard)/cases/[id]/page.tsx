@@ -156,7 +156,7 @@ export default async function CaseDetailPage({
               <span className="text-sm font-medium">Zurück</span>
             </Link>
             <div className="flex items-baseline gap-2.5 min-w-0">
-              <h1 className="text-xl font-bold text-gray-900">{caseData.category}</h1>
+              <h1 className="text-xl font-bold text-gray-900 whitespace-nowrap">{caseData.category}</h1>
               <span className="text-sm text-gray-400 whitespace-nowrap hidden sm:inline">
                 {SOURCE_LABELS[caseData.source] ?? caseData.source} · {formatDate(caseData.created_at)}
               </span>
