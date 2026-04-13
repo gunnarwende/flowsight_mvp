@@ -39,6 +39,7 @@ export interface LeitzentraleCase {
   review_sent_at?: string | null;
   review_rating?: number | null;
   scheduled_at?: string | null;
+  is_deleted?: boolean;
 }
 
 export interface LeitzentraleProps {
@@ -54,6 +55,7 @@ export interface LeitzentraleProps {
   staffName?: string | null;
   staffRole?: "admin" | "techniker";
   googleReviewCount?: number | null;
+  showDeleted?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -236,6 +238,7 @@ export function LeitzentraleView({
   staffName,
   staffRole,
   googleReviewCount,
+  showDeleted,
 }: LeitzentraleProps) {
   const router = useRouter();
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -520,6 +523,17 @@ export function LeitzentraleView({
         </button>
       </div>
 
+      {/* Deleted-cases banner */}
+      {showDeleted && (
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+          </svg>
+          <span className="font-medium">Papierkorb</span>
+          <span className="text-red-600">— {filteredCases.length} gelöschte {filteredCases.length === 1 ? "Fall" : "Fälle"}. Klicke auf einen Fall, um ihn wiederherzustellen.</span>
+        </div>
+      )}
+
       {/* Case Table v2 */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Desktop table */}
@@ -741,28 +755,54 @@ export function LeitzentraleView({
         </div>
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3">
+      {/* Pagination + Trash toggle */}
+      <div className="flex items-center justify-center gap-3">
+        {totalPages > 1 && (
+          <>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage <= 1}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              &lt;
+            </button>
+            <span className="text-sm text-gray-500">
+              Seite {safePage} von {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage >= totalPages}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              &gt;
+            </button>
+          </>
+        )}
+        {/* Spacer to push trash icon right */}
+        <div className="flex-1" />
+        {showDeleted ? (
           <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={safePage <= 1}
-            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            onClick={() => router.push("/ops/cases")}
+            className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+            title="Zurück zur Fallübersicht"
           >
-            &lt;
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+            </svg>
+            Zurück
           </button>
-          <span className="text-sm text-gray-500">
-            Seite {safePage} von {totalPages}
-          </span>
+        ) : (
           <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={safePage >= totalPages}
-            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            onClick={() => router.push("/ops/cases?deleted=true")}
+            className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+            title="Gelöschte Fälle anzeigen"
           >
-            &gt;
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       <CreateCaseModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>

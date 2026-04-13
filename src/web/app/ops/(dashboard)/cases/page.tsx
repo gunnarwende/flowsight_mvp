@@ -17,6 +17,7 @@ export default async function OpsCasesPage({
 }) {
   const params = await searchParams;
   const showDemo = params.tab === "demo";
+  const showDeleted = params.deleted === "true";
 
   const supabase = getServiceClient();
   const scope = await resolveTenantScope();
@@ -41,10 +42,10 @@ export default async function OpsCasesPage({
   let casesQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, contact_phone, review_sent_at, review_rating, scheduled_at"
+      "id, seq_number, created_at, updated_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, contact_phone, review_sent_at, review_rating, scheduled_at, is_deleted"
     )
     .eq("is_demo", showDemo)
-    .eq("is_deleted", false)
+    .eq("is_deleted", showDeleted)
     .order("created_at", { ascending: false })
     .limit(200);
   if (filterTenantId) casesQuery = casesQuery.eq("tenant_id", filterTenantId);
@@ -256,6 +257,7 @@ export default async function OpsCasesPage({
       staffName={currentStaffName}
       staffRole={currentStaffRole}
       googleReviewCount={googleReviewCount}
+      showDeleted={showDeleted}
     />
   );
 }
