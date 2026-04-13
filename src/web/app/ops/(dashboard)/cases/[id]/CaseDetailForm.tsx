@@ -875,7 +875,6 @@ export function CaseDetailForm({
             ) : (
               <div className="flex-1 flex flex-col">
                 <SectionHead title="Beschreibung" onEdit={() => startEdit("beschreibung")} canEdit={canEditSection("beschreibung")} />
-                <p className="text-sm font-semibold text-gray-800 mb-2">{category}</p>
                 {description ? (
                   <div className="overflow-hidden flex-1">
                     <p className={`text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words ${!descExpanded ? "line-clamp-2 sm:line-clamp-3" : ""}`} style={{ hyphens: "auto", WebkitHyphens: "auto" }} lang="de">{description}</p>
