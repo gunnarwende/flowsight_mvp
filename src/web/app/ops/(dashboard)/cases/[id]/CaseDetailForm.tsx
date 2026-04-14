@@ -517,16 +517,26 @@ export function CaseDetailForm({
     setReviewMsg("");
     try {
       const res = await fetch(`/api/ops/cases/${initialData.id}/request-review`, { method: "POST" });
-      if (!res.ok) throw new Error("Fehler");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        const code = data?.error;
+        const MSG: Record<string, string> = {
+          case_not_done: "Der Fall muss zuerst als \"Erledigt\" gespeichert werden.",
+          no_contact_info: "Keine E-Mail oder Telefonnummer beim Kunden hinterlegt.",
+          max_reviews_reached: "Maximale Anzahl Bewertungsanfragen erreicht (2).",
+          cooldown_active: "Bitte 7 Tage warten bis zur nächsten Anfrage.",
+        };
+        throw new Error(MSG[code ?? ""] ?? `Senden fehlgeschlagen (${code ?? res.status}).`);
+      }
       setReviewState("sent");
       setTimeout(() => setReviewState("idle"), 2000);
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "review_requested",
         title: "Bewertungsanfrage gesendet", created_at: new Date().toISOString(),
       }]);
-    } catch {
+    } catch (err) {
       setReviewState("error");
-      setReviewMsg("Senden fehlgeschlagen.");
+      setReviewMsg(err instanceof Error ? err.message : "Senden fehlgeschlagen.");
     }
   }
 
