@@ -64,9 +64,6 @@ export function ServiceCard({
           {/* Reference images — always visible */}
           {images.length > 0 && (
             <div className="mt-4" onClick={(e) => e.stopPropagation()}>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">
-                Referenzbilder
-              </p>
               <ImageGallery images={images} height={140} />
             </div>
           )}

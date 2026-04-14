@@ -87,9 +87,6 @@ export function ServiceDetailOverlay({
           {/* Reference images */}
           {images.length > 0 && (
             <div className="mt-8 border-t border-gray-100 pt-6">
-              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-gray-400">
-                Referenzbilder
-              </p>
               <ImageGallery images={images} height={200} />
             </div>
           )}
