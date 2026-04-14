@@ -365,5 +365,10 @@ export const doerflerAg: CustomerSite = {
     colorMode: "warm",
     fontFamily: "source-serif",
     sectionOrder: ["history", "services", "reviews", "team", "serviceArea", "trust", "contact"],
+    serviceLayout: "editorial",
+    reviewStyle: "quote",
+    animation: "fade",
+    buttonStyle: "rounded",
+    sectionDivider: "gradient",
   },
 };

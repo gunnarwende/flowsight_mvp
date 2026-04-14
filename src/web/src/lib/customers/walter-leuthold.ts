@@ -288,5 +288,10 @@ export const walterLeuthold: CustomerSite = {
     colorMode: "warm",
     fontFamily: "dm-sans",
     sectionOrder: ["reviews", "serviceArea", "services", "contact"],
+    serviceLayout: "stacked",
+    reviewStyle: "carousel",
+    animation: "slide",
+    buttonStyle: "pill",
+    sectionDivider: "space",
   },
 };

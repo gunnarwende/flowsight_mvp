@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
 import { getCustomer, getAllCustomerSlugs } from "@/src/lib/customers/registry";
 import { ServiceCard } from "./ServiceCard";
+import { AnimatedSection } from "./AnimatedSection";
+import { StickyMobileCTA } from "./StickyMobileCTA";
 import type { Metadata } from "next";
 import type {
   CustomerSite,
   Service,
   ServiceIcon,
+  ThemeConfig,
 } from "@/src/lib/customers/types";
 
 // ── Static generation ─────────────────────────────────────────────
@@ -83,25 +86,65 @@ export default async function CustomerPage({
   const fontClass = FONT_CLASS[theme?.fontFamily ?? "geist"] ?? "";
   const heroStyle = theme?.heroStyle ?? "classic";
   const sectionOrder = theme?.sectionOrder ?? DEFAULT_SECTION_ORDER;
+  const animation = theme?.animation ?? "none";
+  const serviceLayout = theme?.serviceLayout ?? "grid";
+  const reviewStyle = theme?.reviewStyle ?? "grid";
+  const btnRadius = theme?.buttonStyle === "pill" ? "rounded-full" : theme?.buttonStyle === "sharp" ? "rounded-lg" : "rounded-2xl";
+  const divider = theme?.sectionDivider ?? "line";
+  const dividerClass = divider === "gradient"
+    ? "border-t-0 bg-gradient-to-b from-[var(--cs-section-alt,#f9fafb)] to-transparent h-8"
+    : divider === "space" ? "border-t-0" : "border-t border-[var(--cs-border,#e5e7eb)]";
 
-  // Section registry — maps keys to conditional JSX
+  // Section registry — maps keys to conditional JSX, wrapped in AnimatedSection
   const sectionMap: Record<string, React.ReactNode> = {
-    services: <ServicesSection key="services" services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />,
-    reviews: c.reviews ? <ReviewsSection key="reviews" reviews={c.reviews} accent={accent} /> : null,
-    serviceArea: <ServiceAreaSection key="serviceArea" area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />,
-    team: c.team.length > 1 ? <TeamSection key="team" team={c.team} teamPhoto={c.teamPhoto} companyName={c.companyName} accent={accent} /> : null,
-    history: shouldShowHistory(c.history) ? <HistorySection key="history" history={c.history!} companyName={c.companyName} accent={accent} /> : null,
-    trust: (c.certifications || c.brandPartners) ? <TrustSection key="trust" certifications={c.certifications} partners={c.brandPartners} accent={accent} /> : null,
-    careers: (c.careers && c.careers.length > 0) ? <CareersSection key="careers" careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} /> : null,
-    contact: <ContactSection key="contact" company={c} accent={accent} wizardUrl={wizardUrl} />,
+    services: (
+      <AnimatedSection key="services" animation={animation}>
+        <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} layout={serviceLayout} btnRadius={btnRadius} />
+      </AnimatedSection>
+    ),
+    reviews: c.reviews ? (
+      <AnimatedSection key="reviews" animation={animation}>
+        <ReviewsSection reviews={c.reviews} accent={accent} style={reviewStyle} dividerClass={dividerClass} />
+      </AnimatedSection>
+    ) : null,
+    serviceArea: (
+      <AnimatedSection key="serviceArea" animation={animation}>
+        <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />
+      </AnimatedSection>
+    ),
+    team: c.team.length > 1 ? (
+      <AnimatedSection key="team" animation={animation}>
+        <TeamSection team={c.team} teamPhoto={c.teamPhoto} companyName={c.companyName} accent={accent} />
+      </AnimatedSection>
+    ) : null,
+    history: shouldShowHistory(c.history) ? (
+      <AnimatedSection key="history" animation={animation}>
+        <HistorySection history={c.history!} companyName={c.companyName} accent={accent} />
+      </AnimatedSection>
+    ) : null,
+    trust: (c.certifications || c.brandPartners) ? (
+      <AnimatedSection key="trust" animation={animation}>
+        <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} dividerClass={dividerClass} />
+      </AnimatedSection>
+    ) : null,
+    careers: (c.careers && c.careers.length > 0) ? (
+      <AnimatedSection key="careers" animation={animation}>
+        <CareersSection careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} dividerClass={dividerClass} />
+      </AnimatedSection>
+    ) : null,
+    contact: (
+      <AnimatedSection key="contact" animation={animation}>
+        <ContactSection company={c} accent={accent} wizardUrl={wizardUrl} btnRadius={btnRadius} />
+      </AnimatedSection>
+    ),
   };
 
   // Hero dispatcher
   const heroElement = heroStyle === "split"
-    ? <HeroSplit company={c} accent={accent} wizardUrl={wizardUrl} />
+    ? <HeroSplit company={c} accent={accent} wizardUrl={wizardUrl} btnRadius={btnRadius} />
     : heroStyle === "center"
-      ? <HeroCenter company={c} accent={accent} wizardUrl={wizardUrl} />
-      : <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} />;
+      ? <HeroCenter company={c} accent={accent} wizardUrl={wizardUrl} btnRadius={btnRadius} />
+      : <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} btnRadius={btnRadius} />;
 
   return (
     <div
@@ -113,6 +156,7 @@ export default async function CustomerPage({
       {heroElement}
       {sectionOrder.map((key) => sectionMap[key] ?? null)}
       <Footer company={c} />
+      <StickyMobileCTA phone={c.contact.phoneRaw} wizardUrl={wizardUrl} accent={accent} />
     </div>
   );
 }
@@ -164,7 +208,7 @@ function Nav({ company: c, accent, wizardUrl }: { company: CustomerSite; accent:
 }
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
-function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+function HeroSection({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }: { company: CustomerSite; accent: string; wizardUrl: string; btnRadius?: string }) {
   const foundedYear = c.history?.[0]?.year;
   const yearsActive = foundedYear ? new Date().getFullYear() - foundedYear : null;
   // Hero image: dedicated hero file or first gallery image as fallback
@@ -194,10 +238,10 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
           <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">{c.companyName}</h1>
           <p className="mt-4 text-lg text-white/80 sm:text-xl">{c.tagline}</p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+            <a href={wizardUrl} className={`inline-flex items-center justify-center ${btnRadius} px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90`} style={{ backgroundColor: accent }}>
               Anliegen melden
             </a>
-            <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
+            <a href={`tel:${c.contact.phoneRaw}`} className={`inline-flex items-center justify-center ${btnRadius} border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10`}>
               Anrufen: {c.contact.phone}
             </a>
           </div>
@@ -220,7 +264,7 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
 
 /* ── Hero Split — TRADITION profile ─────────────────────────────
    Image right, text left on solid background. Warm, dignified.    */
-function HeroSplit({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+function HeroSplit({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }: { company: CustomerSite; accent: string; wizardUrl: string; btnRadius?: string }) {
   const foundedYear = c.history?.[0]?.year;
   const yearsActive = foundedYear ? new Date().getFullYear() - foundedYear : null;
   const heroImg = `/kunden/${c.slug}/hero.jpg`;
@@ -238,10 +282,10 @@ function HeroSplit({ company: c, accent, wizardUrl }: { company: CustomerSite; a
           <h1 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.companyName}</h1>
           <p className="mt-4 text-lg" style={{ color: "var(--cs-text-muted, #6b7280)" }}>{c.tagline}</p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-base font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+            <a href={wizardUrl} className={`inline-flex items-center justify-center ${btnRadius} px-7 py-3.5 text-base font-semibold text-white transition-opacity hover:opacity-90`} style={{ backgroundColor: accent }}>
               Anliegen melden
             </a>
-            <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border px-7 py-3.5 text-base font-semibold transition-colors hover:bg-gray-50" style={{ borderColor: accent, color: accent }}>
+            <a href={`tel:${c.contact.phoneRaw}`} className={`inline-flex items-center justify-center ${btnRadius} border px-7 py-3.5 text-base font-semibold transition-colors hover:bg-gray-50`} style={{ borderColor: accent, color: accent }}>
               {c.contact.phone}
             </a>
           </div>
@@ -273,7 +317,7 @@ function HeroSplit({ company: c, accent, wizardUrl }: { company: CustomerSite; a
 
 /* ── Hero Center — NAEHE profile ───────────────────────────────
    Fullscreen image, centered text, stronger overlay. Intimate.   */
-function HeroCenter({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+function HeroCenter({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }: { company: CustomerSite; accent: string; wizardUrl: string; btnRadius?: string }) {
   const foundedYear = c.history?.[0]?.year;
   const heroImg = `/kunden/${c.slug}/hero.jpg`;
 
@@ -298,10 +342,10 @@ function HeroCenter({ company: c, accent, wizardUrl }: { company: CustomerSite; 
           </div>
         )}
         <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-          <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+          <a href={wizardUrl} className={`inline-flex items-center justify-center ${btnRadius} px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90`} style={{ backgroundColor: accent }}>
             Anliegen melden
           </a>
-          <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
+          <a href={`tel:${c.contact.phoneRaw}`} className={`inline-flex items-center justify-center ${btnRadius} border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10`}>
             {c.contact.phone}
           </a>
         </div>
@@ -310,120 +354,198 @@ function HeroCenter({ company: c, accent, wizardUrl }: { company: CustomerSite; 
   );
 }
 
-/* ── Services — Card Layout ───────────────────────────────────────
-   Icon → Name → 2-sentence Summary → "Mehr" → Reference images.
-   Click on card → opens full detail overlay.                       */
+/* ── Services — 3 Layout Variants ─────────────────────────────────
+   grid     → 3-col cards (PRAEZISION: broad, professional)
+   editorial → 2-col, big image left (SUBSTANZ: storytelling, depth)
+   stacked  → 1-col vertical list (VERTRAUEN: direct, compact)       */
 function ServicesSection({
   services,
   gallery,
   companyName,
   accent,
+  layout = "grid",
+  btnRadius = "rounded-2xl",
 }: {
   services: Service[];
   gallery: CustomerSite["gallery"];
   companyName: string;
   accent: string;
+  layout?: "grid" | "editorial" | "stacked";
+  btnRadius?: string;
 }) {
   const galleryMap = new Map(gallery.map((g) => [g.slug, g.images]));
 
   return (
     <section id="leistungen" className="py-14">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="text-center">
+        <div className={layout === "stacked" ? "" : "text-center"}>
           <h2 className="text-3xl font-bold sm:text-4xl">Unsere Leistungen</h2>
-          <p className="mt-3 text-lg text-gray-600">Kompetenz aus einer Hand — von {companyName}</p>
+          <p className="mt-3 text-lg" style={{ color: "var(--cs-text-muted, #6b7280)" }}>Kompetenz aus einer Hand — von {companyName}</p>
         </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => {
-            const imgs = galleryMap.get(s.slug) ?? [];
-            return (
-              <ServiceCard
-                key={s.slug}
-                name={s.name}
-                summary={s.summary}
-                description={s.description}
-                bullets={s.bullets}
-                icon={<ServiceIconSvg icon={s.icon} />}
-                images={imgs}
-                accent={accent}
-              />
-            );
-          })}
-        </div>
+
+        {/* Layout: Grid (3-col, default) */}
+        {layout === "grid" && (
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => {
+              const imgs = galleryMap.get(s.slug) ?? [];
+              return (
+                <ServiceCard key={s.slug} name={s.name} summary={s.summary} description={s.description} bullets={s.bullets} icon={<ServiceIconSvg icon={s.icon} />} images={imgs} accent={accent} />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Layout: Editorial (2-col, image left, text right) */}
+        {layout === "editorial" && (
+          <div className="mt-10 space-y-8">
+            {services.map((s, i) => {
+              const imgs = galleryMap.get(s.slug) ?? [];
+              const firstImg = imgs[0]?.src;
+              return (
+                <div key={s.slug} className={`flex flex-col gap-6 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
+                  {firstImg && (
+                    <div className="md:w-[45%] flex-shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={firstImg} alt={s.name} className="w-full h-56 md:h-72 object-cover rounded-2xl" />
+                    </div>
+                  )}
+                  <div className="flex flex-col justify-center">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl text-white" style={{ backgroundColor: accent }}>
+                      <ServiceIconSvg icon={s.icon} />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">{s.name}</h3>
+                    <p className="mt-2 leading-relaxed" style={{ color: "var(--cs-text-muted, #6b7280)" }}>{s.summary}</p>
+                    {s.description && (
+                      <ServiceCard key={s.slug} name={s.name} summary={s.summary} description={s.description} bullets={s.bullets} icon={<ServiceIconSvg icon={s.icon} />} images={imgs} accent={accent} />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Layout: Stacked (vertical list, full-width per service) */}
+        {layout === "stacked" && (
+          <div className="mt-10 space-y-4">
+            {services.map((s) => {
+              const imgs = galleryMap.get(s.slug) ?? [];
+              return (
+                <ServiceCard key={s.slug} name={s.name} summary={s.summary} description={s.description} bullets={s.bullets} icon={<ServiceIconSvg icon={s.icon} />} images={imgs} accent={accent} />
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-/* ── Reviews ───────────────────────────────────────────────────────
-   Rating < 4.0 → don't show score, only show positive quotes.      */
+/* ── Reviews — 3 Style Variants ────────────────────────────────────
+   grid     → 3-col cards (PRAEZISION)
+   carousel → horizontal scroll (VERTRAUEN)
+   quote    → 1 big quote prominent (SUBSTANZ)                       */
 function ReviewsSection({
   reviews,
   accent,
+  style = "grid",
+  dividerClass = "border-t border-gray-100",
 }: {
   reviews: NonNullable<CustomerSite["reviews"]>;
   accent: string;
+  style?: "grid" | "carousel" | "quote";
+  dividerClass?: string;
 }) {
   const showScore = reviews.averageRating >= SHOW_RATING_THRESHOLD;
+
+  const StarRow = ({ size = "h-7 w-7" }: { size?: string }) => (
+    <div className="mb-3 flex items-center justify-center gap-1">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <svg key={i} className={`${size} ${i < Math.round(reviews.averageRating) ? "text-amber-400" : "text-gray-300"}`} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      ))}
+    </div>
+  );
+
+  const ReviewCard = ({ r, large }: { r: { rating: number; text: string; author: string }; large?: boolean }) => (
+    <div className={`rounded-2xl border bg-[var(--cs-card,#ffffff)] p-6 shadow-sm flex-shrink-0 ${large ? "max-w-2xl mx-auto py-10 px-8" : "w-[300px] sm:w-auto"}`} style={{ borderColor: "var(--cs-border, #e5e7eb)" }}>
+      <div className="mb-3 flex gap-0.5">
+        {Array.from({ length: r.rating }).map((_, j) => (
+          <svg key={j} className={`${large ? "h-5 w-5" : "h-4 w-4"} text-amber-400`} fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
+      </div>
+      <p className={`leading-relaxed ${large ? "text-lg" : "text-sm"}`} style={{ color: "var(--cs-text-muted, #4b5563)" }}>&ldquo;{r.text}&rdquo;</p>
+      <p className={`mt-4 font-medium ${large ? "text-sm" : "text-xs"}`} style={{ color: "var(--cs-text-muted, #6b7280)" }}>{r.author}</p>
+    </div>
+  );
+
   return (
-    <section id="bewertungen" className="border-y border-gray-100 bg-gray-50 py-20">
+    <section id="bewertungen" className={`${dividerClass} py-20`} style={{ backgroundColor: "var(--cs-section-alt, #f9fafb)" }}>
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           {showScore && (
             <>
-              <div className="mb-3 flex items-center justify-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <svg key={i} className={`h-7 w-7 ${i < Math.round(reviews.averageRating) ? "text-amber-400" : "text-gray-300"}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+              <StarRow />
               <p className="text-2xl font-bold text-gray-900">{reviews.averageRating} von 5 Sternen</p>
               {reviews.totalReviews >= 5 && (
-                <p className="mt-1 text-sm text-gray-500">Basierend auf {reviews.totalReviews} Bewertungen</p>
+                <p className="mt-1 text-sm" style={{ color: "var(--cs-text-muted)" }}>Basierend auf {reviews.totalReviews} Bewertungen</p>
               )}
             </>
           )}
           {!showScore && (
             <>
               <h2 className="text-2xl font-bold text-gray-900">Was unsere Kunden sagen</h2>
-              {reviews.totalReviews >= 5 && (
-                <p className="mt-1 text-sm text-gray-500">{reviews.totalReviews} Bewertungen</p>
-              )}
+              {reviews.totalReviews >= 5 && <p className="mt-1 text-sm" style={{ color: "var(--cs-text-muted)" }}>{reviews.totalReviews} Bewertungen</p>}
             </>
           )}
         </div>
 
-        {reviews.highlights.length > 0 ? (
+        {reviews.highlights.length > 0 && style === "quote" && (
+          <div className="mt-12">
+            <ReviewCard r={reviews.highlights[0]} large />
+            {reviews.highlights.length > 1 && (
+              <p className="mt-6 text-center text-sm" style={{ color: "var(--cs-text-muted)" }}>
+                {reviews.googleUrl ? (
+                  <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
+                    +{reviews.totalReviews - 1} weitere Bewertungen auf Google
+                  </a>
+                ) : `+${reviews.totalReviews - 1} weitere Bewertungen`}
+              </p>
+            )}
+          </div>
+        )}
+
+        {reviews.highlights.length > 0 && style === "carousel" && (
+          <div className="mt-12 -mx-6 px-6 overflow-x-auto">
+            <div className="flex gap-4 pb-4 snap-x snap-mandatory">
+              {reviews.highlights.map((r, i) => (
+                <div key={i} className="snap-start">
+                  <ReviewCard r={r} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {reviews.highlights.length > 0 && style === "grid" && (
           <div className={`mx-auto mt-12 max-w-5xl ${reviews.highlights.length <= 2 ? "flex flex-col items-center gap-6 sm:flex-row sm:justify-center" : "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"}`}>
             {reviews.highlights.map((r, i) => (
-              <div key={i} className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${reviews.highlights.length <= 2 ? "w-full max-w-md" : ""}`}>
-                <div className="mb-3 flex gap-0.5">
-                  {Array.from({ length: r.rating }).map((_, j) => (
-                    <svg key={j} className="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed text-gray-700">&ldquo;{r.text}&rdquo;</p>
-                <p className="mt-4 text-xs font-medium text-gray-500">{r.author}</p>
-              </div>
+              <ReviewCard key={i} r={r} />
             ))}
           </div>
-        ) : reviews.googleUrl ? (
+        )}
+
+        {reviews.highlights.length === 0 && reviews.googleUrl && (
           <div className="mt-10 text-center">
-            <a
-              href={reviews.googleUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:shadow-md"
-            >
+            <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border bg-[var(--cs-card,#ffffff)] px-6 py-3 text-sm font-medium shadow-sm transition hover:shadow-md" style={{ borderColor: "var(--cs-border)", color: "var(--cs-text-muted)" }}>
               <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
               Alle Bewertungen auf Google ansehen
             </a>
           </div>
-        ) : null}
-
+        )}
       </div>
     </section>
   );
@@ -563,9 +685,9 @@ function HistorySection({ history, companyName, accent }: { history: NonNullable
 }
 
 /* ── Trust ────────────────────────────────────────────────────────── */
-function TrustSection({ certifications, partners, accent }: { certifications?: CustomerSite["certifications"]; partners?: CustomerSite["brandPartners"]; accent: string }) {
+function TrustSection({ certifications, partners, accent, dividerClass = "border-t border-gray-100" }: { certifications?: CustomerSite["certifications"]; partners?: CustomerSite["brandPartners"]; accent: string; dividerClass?: string }) {
   return (
-    <section className="border-t border-gray-100 bg-gray-50 py-20">
+    <section className={`${dividerClass} py-20`} style={{ backgroundColor: "var(--cs-section-alt, #f9fafb)" }}>
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Qualit&auml;t, der Sie vertrauen k&ouml;nnen</h2>
@@ -607,9 +729,9 @@ function TrustSection({ certifications, partners, accent }: { certifications?: C
 }
 
 /* ── Careers ──────────────────────────────────────────────────────── */
-function CareersSection({ careers, companyName, contact, accent }: { careers: NonNullable<CustomerSite["careers"]>; companyName: string; contact: CustomerSite["contact"]; accent: string }) {
+function CareersSection({ careers, companyName, contact, accent, dividerClass = "border-t border-gray-100" }: { careers: NonNullable<CustomerSite["careers"]>; companyName: string; contact: CustomerSite["contact"]; accent: string; dividerClass?: string }) {
   return (
-    <section className="border-t border-gray-100 bg-gradient-to-b from-gray-50 to-white py-20">
+    <section className={`${dividerClass} py-20`} style={{ background: "linear-gradient(to bottom, var(--cs-section-alt, #f9fafb), var(--cs-surface, #ffffff))" }}>
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Karriere bei {companyName}</h2>
@@ -661,7 +783,7 @@ function CareersSection({ careers, companyName, contact, accent }: { careers: No
 }
 
 /* ── Contact ─────────────────────────────────────────────────────── */
-function ContactSection({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+function ContactSection({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }: { company: CustomerSite; accent: string; wizardUrl: string; btnRadius?: string }) {
   return (
     <section id="kontakt" className="py-20">
       <div className="mx-auto max-w-6xl px-6">
