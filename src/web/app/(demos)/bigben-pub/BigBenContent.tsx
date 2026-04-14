@@ -142,7 +142,7 @@ const REVIEWS = [
     name: "Alexandra Keusch",
     text: "Always love coming to Big Ben pub! We often end up here on a Sunday afternoon for a Guinness and the live Irish music. Highly recommend!",
     initial: "A",
-    color: "bg-[#c0392b]",
+    color: "bg-[#a2774b]",
   },
   {
     name: "Victor Lupu",
@@ -208,9 +208,9 @@ export function BigBenContent() {
   const s = t[lang];
 
   return (
-    <div className="bg-[#faf7f2] text-[#1a1a1a]">
+    <div className="bg-[#1e1611] text-[#f0e8dc]">
       {/* ── Top Bar ─────────────────────────────────────────────── */}
-      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#faf7f2]/90 px-4 py-2.5 shadow-sm backdrop-blur-md">
+      <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#1e1611]/95 px-4 py-2.5 shadow-sm backdrop-blur-md">
         <a
           href="https://www.instagram.com/bigbenpubzh/"
           target="_blank"
@@ -220,14 +220,14 @@ export function BigBenContent() {
           <IcInstagram className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">@bigbenpubzh</span>
         </a>
-        <span className="font-serif text-xs font-bold tracking-wider text-[#1a1a1a]">
+        <span className="font-serif text-xs font-bold tracking-wider text-[#f0e8dc]">
           BIG BEN
           <br />
           PUB
         </span>
         <button
           onClick={() => setLang(lang === "en" ? "de" : "en")}
-          className="flex items-center gap-1.5 rounded-full border border-[#ddd] bg-white px-2.5 py-1 text-[10px] font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
+          className="flex items-center gap-1.5 rounded-full border border-[#3a2e26] bg-[#2a1f1a] px-2.5 py-1 text-[10px] font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
         >
           <span className="inline-flex h-4 w-5 items-center justify-center overflow-hidden rounded-[2px] shadow-sm">
             {lang === "en" ? (
@@ -263,7 +263,7 @@ export function BigBenContent() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1a1210]/80 via-transparent to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
-          <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#c0392b]">
+          <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#a2774b]">
             {s.estLine}
           </p>
           <h1 className="mt-4 font-serif text-6xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
@@ -277,13 +277,13 @@ export function BigBenContent() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
               href="#reserve"
-              className="rounded-lg bg-[#c0392b] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] hover:shadow-lg hover:shadow-[#c0392b]/25"
+              className="rounded-lg bg-[#a2774b] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[#e74c3c] hover:shadow-lg hover:shadow-[#c0392b]/25"
             >
               {s.bookTable}
             </a>
             <a
               href="#menu"
-              className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/60 hover:bg-white/10"
+              className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/60 hover:bg-[#2a1f1a]/10"
             >
               {s.seeMenu}
             </a>
@@ -292,7 +292,7 @@ export function BigBenContent() {
       </section>
 
       {/* ── GUINNESS BANNER ─────────────────────────────────────── */}
-      <section className="border-b border-[#e8e0d5] bg-gradient-to-r from-[#1a1210] via-[#2c1e14] to-[#1a1210] py-5">
+      <section className="border-b border-[#3a2e26] bg-gradient-to-r from-[#1a1210] via-[#2c1e14] to-[#1a1210] py-5">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-2 px-6 sm:flex-row sm:gap-4">
           <span className="text-3xl">🍺</span>
           <p className="text-center font-serif text-xl font-bold text-amber-100 sm:text-2xl">
@@ -308,10 +308,10 @@ export function BigBenContent() {
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="grid items-center gap-14 lg:grid-cols-2">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
                 {s.aboutLabel}
               </p>
-              <h2 className="mt-3 font-serif text-4xl font-bold leading-tight text-[#1a1a1a]">
+              <h2 className="mt-3 font-serif text-4xl font-bold leading-tight text-[#f0e8dc]">
                 {s.aboutH1}
                 <br />
                 {s.aboutH2}
@@ -344,7 +344,7 @@ export function BigBenContent() {
       <DynamicEvents lang={lang} />
 
       {/* ── PERMANENT FEATURES ────────────────────────────────── */}
-      <section className="bg-[#f0ebe3] py-12">
+      <section className="bg-[#261b15] py-12">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <MiniFeature emoji="🎯" title={s.evDartsTitle} desc={s.evDartsDesc} />
@@ -358,7 +358,7 @@ export function BigBenContent() {
       {/* ── MENU ────────────────────────────────────────────────── */}
       <section id="menu" className="scroll-mt-16 py-24">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
             {s.menuLabel}
           </p>
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
@@ -367,9 +367,9 @@ export function BigBenContent() {
 
           <div className="mt-14 grid gap-8 lg:grid-cols-2">
             {/* Food */}
-            <div className="rounded-2xl border border-[#e8e0d5] bg-white p-8 shadow-sm">
-              <h3 className="font-serif text-2xl font-bold text-[#c0392b]">{s.pubBites}</h3>
-              <p className="mt-1 text-sm text-[#999]">{s.pubBitesNote}</p>
+            <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
+              <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.pubBites}</h3>
+              <p className="mt-1 text-sm text-[#7a6b58]">{s.pubBitesNote}</p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Chicken Wings (classic & spicy)",
@@ -381,8 +381,8 @@ export function BigBenContent() {
                   "Toasted Sandwiches",
                   "Chips & Dips",
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
+                  <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
                     {item}
                   </li>
                 ))}
@@ -390,23 +390,23 @@ export function BigBenContent() {
             </div>
 
             {/* Drinks */}
-            <div className="rounded-2xl border border-[#e8e0d5] bg-white p-8 shadow-sm">
-              <h3 className="font-serif text-2xl font-bold text-[#c0392b]">{s.fromBar}</h3>
-              <p className="mt-1 text-sm text-[#999]">{s.fromBarNote}</p>
+            <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
+              <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.fromBar}</h3>
+              <p className="mt-1 text-sm text-[#7a6b58]">{s.fromBarNote}</p>
               <div className="mt-6 space-y-6">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#999]">{s.onTap}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#7a6b58]">{s.onTap}</p>
                   <ul className="mt-2 space-y-2">
                     {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
+                      <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
                         {item}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#999]">{s.bottlesMore}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#7a6b58]">{s.bottlesMore}</p>
                   <ul className="mt-2 space-y-2">
                     {[
                       "Craft Beers (rotating selection)",
@@ -415,8 +415,8 @@ export function BigBenContent() {
                       "Spirits & Whisky",
                       "Soft Drinks & Coffee",
                     ].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-[#444]">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c0392b]" />
+                      <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
                         {item}
                       </li>
                     ))}
@@ -429,9 +429,9 @@ export function BigBenContent() {
       </section>
 
       {/* ── REVIEWS ─────────────────────────────────────────────── */}
-      <section className="bg-[#f0ebe3] py-24">
+      <section className="bg-[#261b15] py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
             {s.reviewsLabel}
           </p>
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
@@ -439,18 +439,18 @@ export function BigBenContent() {
           </h2>
           <div className="mt-2 flex items-center justify-center gap-2">
             <Stars />
-            <span className="text-sm font-semibold text-[#1a1a1a]">4.7</span>
-            <span className="text-sm text-[#888]">— 186+ Reviews {s.reviewsOnGoogle}</span>
+            <span className="text-sm font-semibold text-[#f0e8dc]">4.7</span>
+            <span className="text-sm text-[#8a7a66]">— 186+ Reviews {s.reviewsOnGoogle}</span>
           </div>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {REVIEWS.map((r) => (
               <div
                 key={r.name}
-                className="rounded-2xl border border-[#e8e0d5] bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <Stars />
-                <p className="mt-4 text-sm leading-relaxed text-[#444]">
+                <p className="mt-4 text-sm leading-relaxed text-[#c8b99a]">
                   &ldquo;{r.text}&rdquo;
                 </p>
                 <div className="mt-5 flex items-center gap-3">
@@ -462,7 +462,7 @@ export function BigBenContent() {
                   <div>
                     <p className="text-sm font-semibold">{r.name}</p>
                     {r.badge && (
-                      <p className="text-xs text-[#999]">{r.badge}</p>
+                      <p className="text-xs text-[#7a6b58]">{r.badge}</p>
                     )}
                   </div>
                 </div>
@@ -475,7 +475,7 @@ export function BigBenContent() {
       {/* ── GALLERY ─────────────────────────────────────────────── */}
       <section className="py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
             {s.galleryLabel}
           </p>
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
@@ -508,15 +508,15 @@ export function BigBenContent() {
       </section>
 
       {/* ── RESERVE ─────────────────────────────────────────────── */}
-      <section id="reserve" className="scroll-mt-16 bg-[#f0ebe3] py-24">
+      <section id="reserve" className="scroll-mt-16 bg-[#261b15] py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
             {s.reserveLabel}
           </p>
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
             {s.reserveTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#888]">
+          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#8a7a66]">
             {s.reserveDesc}
           </p>
 
@@ -532,7 +532,7 @@ export function BigBenContent() {
           <div className="grid gap-14 lg:grid-cols-2">
             {/* Hours */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
                 {s.hoursLabel}
               </p>
               <h2 className="mt-3 font-serif text-3xl font-bold">{s.hoursTitle}</h2>
@@ -546,14 +546,14 @@ export function BigBenContent() {
                 <HoursRow day={s.sunday} hours="16:00 – 22:00" />
               </div>
 
-              <div className="mt-10 space-y-2 text-sm text-[#888]">
-                <p className="font-medium text-[#1a1a1a]">Alte Landstrasse 20, 8942 Oberrieden</p>
+              <div className="mt-10 space-y-2 text-sm text-[#8a7a66]">
+                <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
                 <p>044 722 20 62</p>
                 <a
                   href="https://www.instagram.com/bigbenpubzh/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-medium text-[#c0392b] transition-colors hover:text-[#e74c3c]"
+                  className="inline-flex items-center gap-2 font-medium text-[#a2774b] transition-colors hover:text-[#e74c3c]"
                 >
                   <IcInstagram />
                   {s.followUs}
@@ -579,13 +579,13 @@ export function BigBenContent() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
-      <footer className="border-t border-[#e8e0d5] bg-[#f0ebe3] py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#999]">
+      <footer className="border-t border-[#3a2e26] bg-[#261b15] py-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#7a6b58]">
           <a
             href="https://www.instagram.com/bigbenpubzh/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-[#c0392b] transition-colors hover:text-[#e74c3c]"
+            className="flex items-center gap-2 text-[#a2774b] transition-colors hover:text-[#e74c3c]"
           >
             <IcInstagram />
             <span className="text-sm font-medium">@bigbenpubzh</span>
@@ -593,7 +593,7 @@ export function BigBenContent() {
           <p>Big Ben Pub &middot; Alte Landstrasse 20 &middot; 8942 Oberrieden</p>
           <p>
             Website by{" "}
-            <a href="https://flowsight.ch" className="font-medium text-[#c0392b] hover:underline">
+            <a href="https://flowsight.ch" className="font-medium text-[#a2774b] hover:underline">
               FlowSight
             </a>
           </p>
@@ -607,8 +607,8 @@ export function BigBenContent() {
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <p className="text-3xl font-bold text-[#c0392b]">{value}</p>
-      <p className="mt-1 text-xs font-medium text-[#999]">{label}</p>
+      <p className="text-3xl font-bold text-[#a2774b]">{value}</p>
+      <p className="mt-1 text-xs font-medium text-[#7a6b58]">{label}</p>
     </div>
   );
 }
@@ -627,24 +627,24 @@ function BigEventCard({
   accent: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-[#e8e0d5] bg-white p-7 shadow-sm transition-all hover:shadow-lg">
+    <div className="group relative overflow-hidden rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-7 shadow-sm transition-all hover:shadow-lg">
       <div className={`absolute left-0 top-0 h-1 w-full bg-gradient-to-r ${accent}`} />
       <div className="text-4xl">{emoji}</div>
       <h3 className="mt-4 font-serif text-xl font-bold">{title}</h3>
       <p className={`mt-1 inline-block rounded-full bg-gradient-to-r ${accent} px-3 py-0.5 text-xs font-bold text-white`}>
         {when}
       </p>
-      <p className="mt-3 text-sm leading-relaxed text-[#666]">{desc}</p>
+      <p className="mt-3 text-sm leading-relaxed text-[#a89478]">{desc}</p>
     </div>
   );
 }
 
 function MiniFeature({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
-    <div className="rounded-xl border border-[#e8e0d5] bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-5 shadow-sm">
       <span className="text-2xl">{emoji}</span>
       <p className="mt-2 text-sm font-bold">{title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-[#888]">{desc}</p>
+      <p className="mt-1 text-xs leading-relaxed text-[#8a7a66]">{desc}</p>
     </div>
   );
 }
@@ -692,9 +692,9 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   const eventsLabel = lang === "en" ? "Events" : "Events";
 
   return (
-    <section id="events" className="scroll-mt-16 bg-[#f0ebe3] py-24">
+    <section id="events" className="scroll-mt-16 bg-[#261b15] py-24">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
-        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
           {sectionTitle}
         </p>
         <h2 className="mt-3 text-center font-serif text-4xl font-bold">
@@ -705,21 +705,21 @@ function DynamicEvents({ lang }: { lang: Lang }) {
         <div className="mt-14 grid gap-8 lg:grid-cols-2">
           {/* Sport column */}
           <div>
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#c0392b]">
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#a2774b]">
               <span>⚽</span> {sportLabel}
             </h3>
             {sport.length === 0 && (
-              <p className="text-sm text-[#999]">{lang === "en" ? "No matches scheduled." : "Keine Spiele geplant."}</p>
+              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No matches scheduled." : "Keine Spiele geplant."}</p>
             )}
             <div className="space-y-3">
               {sport.map((e) => (
-                <div key={e.id} className="rounded-xl border border-[#e8e0d5] bg-white p-4 shadow-sm">
-                  <div className="flex items-center gap-2 text-xs text-[#999]">
-                    <span className="font-semibold text-[#666]">{fmtDate(e.event_date)}</span>
+                <div key={e.id} className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-[#7a6b58]">
+                    <span className="font-semibold text-[#a89478]">{fmtDate(e.event_date)}</span>
                     {e.event_time && <span>{fmtTime(e.event_time)}</span>}
                   </div>
                   <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
-                  {e.description && <p className="mt-1 text-xs text-[#888]">{e.description}</p>}
+                  {e.description && <p className="mt-1 text-xs text-[#8a7a66]">{e.description}</p>}
                 </div>
               ))}
             </div>
@@ -727,21 +727,21 @@ function DynamicEvents({ lang }: { lang: Lang }) {
 
           {/* Events column */}
           <div>
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#c0392b]">
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#a2774b]">
               <span>🎵</span> {eventsLabel}
             </h3>
             {pubEvents.length === 0 && (
-              <p className="text-sm text-[#999]">{lang === "en" ? "No events scheduled." : "Keine Events geplant."}</p>
+              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No events scheduled." : "Keine Events geplant."}</p>
             )}
             <div className="space-y-3">
               {pubEvents.map((e) => (
-                <div key={e.id} className="rounded-xl border border-[#e8e0d5] bg-white p-4 shadow-sm">
-                  <div className="flex items-center gap-2 text-xs text-[#999]">
-                    <span className="font-semibold text-[#666]">{fmtDate(e.event_date)}</span>
+                <div key={e.id} className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-[#7a6b58]">
+                    <span className="font-semibold text-[#a89478]">{fmtDate(e.event_date)}</span>
                     {e.event_time && <span>{fmtTime(e.event_time)}</span>}
                   </div>
                   <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
-                  {e.description && <p className="mt-1 text-xs text-[#888]">{e.description}</p>}
+                  {e.description && <p className="mt-1 text-xs text-[#8a7a66]">{e.description}</p>}
                 </div>
               ))}
             </div>
@@ -754,9 +754,9 @@ function DynamicEvents({ lang }: { lang: Lang }) {
 
 function HoursRow({ day, hours, closed }: { day: string; hours: string; closed?: boolean }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#e8e0d5] pb-3">
+    <div className="flex items-center justify-between border-b border-[#3a2e26] pb-3">
       <span className="text-sm font-medium">{day}</span>
-      <span className={`text-sm ${closed ? "text-[#ccc]" : "text-[#666]"}`}>
+      <span className={`text-sm ${closed ? "text-[#5a4d40]" : "text-[#a89478]"}`}>
         {hours}
       </span>
     </div>
