@@ -19,18 +19,18 @@ interface Reservation {
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  pending: { bg: "bg-amber-50", text: "text-amber-700", label: "Offen" },
-  confirmed: { bg: "bg-emerald-50", text: "text-emerald-700", label: "Bestätigt" },
-  declined: { bg: "bg-red-50", text: "text-red-700", label: "Abgelehnt" },
-  cancelled: { bg: "bg-gray-50", text: "text-gray-500", label: "Storniert" },
+  pending: { bg: "bg-amber-50", text: "text-amber-700", label: "Pending" },
+  confirmed: { bg: "bg-emerald-50", text: "text-emerald-700", label: "Confirmed" },
+  declined: { bg: "bg-red-50", text: "text-red-700", label: "Declined" },
+  cancelled: { bg: "bg-gray-50", text: "text-gray-500", label: "Cancelled" },
   no_show: { bg: "bg-gray-50", text: "text-gray-500", label: "No-Show" },
 };
 
 const SOURCE_LABELS: Record<string, string> = {
   website: "Website",
-  voice: "Anruf",
-  manual: "Vor Ort",
-  phone: "Telefon",
+  voice: "Call",
+  manual: "Walk-in",
+  phone: "Phone",
 };
 
 function formatDate(iso: string): string {
@@ -115,7 +115,7 @@ export function ReservationManager({ reservations }: { reservations: Reservation
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-900">
-          Reservierungen
+          Reservations
           {pendingCount > 0 && (
             <span className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
               {pendingCount}
@@ -129,13 +129,13 @@ export function ReservationManager({ reservations }: { reservations: Reservation
         onClick={() => setShowForm(!showForm)}
         className="w-full rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
       >
-        {showForm ? "Abbrechen" : "+ Reservierung eintragen"}
+        {showForm ? "Cancel" : "+ Add Reservation"}
       </button>
 
       {/* Manual form — quick entry for bar reservations */}
       {showForm && (
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-3">
-          <p className="text-xs text-gray-400 font-medium">Vor-Ort / Telefonisch</p>
+          <p className="text-xs text-gray-400 font-medium">Walk-in / Phone</p>
           <input
             type="text"
             placeholder="Name"
@@ -146,7 +146,7 @@ export function ReservationManager({ reservations }: { reservations: Reservation
           />
           <input
             type="tel"
-            placeholder="Telefon (optional)"
+            placeholder="Phone (optional)"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
@@ -176,7 +176,7 @@ export function ReservationManager({ reservations }: { reservations: Reservation
           </div>
           <input
             type="text"
-            placeholder="Notiz (optional)"
+            placeholder="Note (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
@@ -186,14 +186,14 @@ export function ReservationManager({ reservations }: { reservations: Reservation
             disabled={saving || !name.trim() || !date}
             className="w-full rounded-lg bg-gray-900 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-colors hover:bg-gray-800"
           >
-            {saving ? "Speichert..." : "Eintragen"}
+            {saving ? "Saving..." : "Save"}
           </button>
         </div>
       )}
 
       {/* Reservations grouped by day */}
       {reservations.length === 0 && (
-        <p className="py-8 text-center text-sm text-gray-400">Keine Reservierungen in den nächsten 14 Tagen.</p>
+        <p className="py-8 text-center text-sm text-gray-400">No reservations in the next 14 days.</p>
       )}
 
       {Array.from(grouped.entries()).map(([dateKey, dayReservations]) => (
