@@ -256,10 +256,34 @@ function HeroSection({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }
             </a>
           </div>
           {/* Stats row */}
-          <div className="mt-12 flex flex-wrap gap-8 border-t border-white/15 pt-6">
-            {yearsActive && yearsActive >= 5 && (
+          <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-white/15 pt-6">
+            {yearsActive && yearsActive >= 100 ? (
+              /* Laurel wreath for 100+ year businesses */
+              <div className="flex flex-col items-center">
+                <div className="relative flex h-20 w-20 items-center justify-center">
+                  <svg className="absolute left-0 top-0 h-full w-1/2 text-amber-500/80" viewBox="0 0 60 120" fill="none">
+                    <path d="M48 108 C44 94, 22 90, 26 76 C30 62, 16 56, 20 42 C24 28, 14 22, 19 10" stroke="currentColor" strokeWidth="1.8" fill="none" />
+                    <ellipse cx="22" cy="22" rx="7" ry="12" transform="rotate(-20 22 22)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="19" cy="42" rx="7" ry="11" transform="rotate(-25 19 42)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="23" cy="60" rx="7" ry="11" transform="rotate(-15 23 60)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="30" cy="78" rx="6" ry="10" transform="rotate(-5 30 78)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="38" cy="94" rx="6" ry="9" transform="rotate(5 38 94)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                  </svg>
+                  <svg className="absolute right-0 top-0 h-full w-1/2 text-amber-500/80" viewBox="0 0 60 120" fill="none" style={{ transform: "scaleX(-1)" }}>
+                    <path d="M48 108 C44 94, 22 90, 26 76 C30 62, 16 56, 20 42 C24 28, 14 22, 19 10" stroke="currentColor" strokeWidth="1.8" fill="none" />
+                    <ellipse cx="22" cy="22" rx="7" ry="12" transform="rotate(-20 22 22)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="19" cy="42" rx="7" ry="11" transform="rotate(-25 19 42)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="23" cy="60" rx="7" ry="11" transform="rotate(-15 23 60)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="30" cy="78" rx="6" ry="10" transform="rotate(-5 30 78)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                    <ellipse cx="38" cy="94" rx="6" ry="9" transform="rotate(5 38 94)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+                  </svg>
+                  <span className="relative z-10 text-2xl font-bold text-amber-400">100</span>
+                </div>
+                <p className="text-[10px] text-amber-400/70 uppercase tracking-wider">Jahre</p>
+              </div>
+            ) : yearsActive && yearsActive >= 5 ? (
               <div><p className="text-2xl font-bold">{yearsActive}+</p><p className="text-xs text-white/60">Jahre Erfahrung</p></div>
-            )}
+            ) : null}
             {c.reviews && c.reviews.averageRating >= SHOW_RATING_THRESHOLD && (
               <div><p className="text-2xl font-bold">{c.reviews.averageRating}&#9733;</p><p className="text-xs text-white/60">{c.reviews.totalReviews} Bewertungen</p></div>
             )}
@@ -541,9 +565,19 @@ function ReviewsSection({
         )}
 
         {reviews.highlights.length > 0 && style === "grid" && (
-          <div className={`mx-auto mt-12 max-w-5xl ${reviews.highlights.length <= 2 ? "flex flex-col items-center gap-6 sm:flex-row sm:justify-center" : "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"}`}>
+          <div className={`mx-auto mt-12 ${reviews.highlights.length <= 2 ? "max-w-3xl grid gap-8 sm:grid-cols-2" : "max-w-5xl grid gap-6 sm:grid-cols-2 lg:grid-cols-3"}`}>
             {reviews.highlights.map((r, i) => (
-              <ReviewCard key={i} r={r} />
+              <div key={i} className={`rounded-2xl border bg-[var(--cs-card,#ffffff)] shadow-sm ${reviews.highlights.length <= 2 ? "p-8" : "p-6"}`} style={{ borderColor: "var(--cs-border, #e5e7eb)" }}>
+                <div className="mb-4 flex gap-1">
+                  {Array.from({ length: r.rating }).map((_, j) => (
+                    <svg key={j} className={`${reviews.highlights.length <= 2 ? "h-5 w-5" : "h-4 w-4"} text-amber-400`} fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className={`leading-relaxed ${reviews.highlights.length <= 2 ? "text-base" : "text-sm"}`} style={{ color: "var(--cs-text-muted, #4b5563)" }}>&ldquo;{r.text}&rdquo;</p>
+                <p className={`mt-4 font-medium ${reviews.highlights.length <= 2 ? "text-sm" : "text-xs"}`} style={{ color: "var(--cs-text-muted, #6b7280)" }}>{r.author}</p>
+              </div>
             ))}
           </div>
         )}
