@@ -282,16 +282,4 @@ export const walterLeuthold: CustomerSite = {
     },
   ],
 
-  theme: {
-    profile: "naehe",
-    heroStyle: "center",
-    colorMode: "warm",
-    fontFamily: "dm-sans",
-    sectionOrder: ["reviews", "serviceArea", "services", "contact"],
-    serviceLayout: "stacked",
-    reviewStyle: "carousel",
-    animation: "slide",
-    buttonStyle: "pill",
-    sectionDivider: "space",
-  },
 };
