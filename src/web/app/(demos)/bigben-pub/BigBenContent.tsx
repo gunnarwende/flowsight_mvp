@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ReservationForm } from "./ReservationForm";
 
@@ -340,47 +340,17 @@ export function BigBenContent() {
         </div>
       </section>
 
-      {/* ── EVENTS ──────────────────────────────────────────────── */}
-      <section className="bg-[#f0ebe3] py-24">
+      {/* ── EVENTS (dynamic from DB) ──────────────────────────── */}
+      <DynamicEvents lang={lang} />
+
+      {/* ── PERMANENT FEATURES ────────────────────────────────── */}
+      <section className="bg-[#f0ebe3] py-12">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
-            {s.eventsLabel}
-          </p>
-          <h2 className="mt-3 text-center font-serif text-4xl font-bold">
-            {s.eventsTitle}
-          </h2>
-
-          {/* 3 main events — big, with dates */}
-          <div className="mt-14 grid gap-6 lg:grid-cols-3">
-            <BigEventCard
-              emoji="🎤"
-              title={s.evKaraokeTitle}
-              when={s.evKaraokeWhen}
-              desc={s.evKaraokeDesc}
-              accent="from-purple-500 to-pink-500"
-            />
-            <BigEventCard
-              emoji="🧠"
-              title={s.evQuizTitle}
-              when={s.evQuizWhen}
-              desc={s.evQuizDesc}
-              accent="from-blue-500 to-cyan-500"
-            />
-            <BigEventCard
-              emoji="🎵"
-              title={s.evMusicTitle}
-              when={s.evMusicWhen}
-              desc={s.evMusicDesc}
-              accent="from-amber-500 to-orange-500"
-            />
-          </div>
-
-          {/* Secondary features — compact row */}
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <MiniFeature emoji="⚽" title={s.evSportTitle} desc={s.evSportDesc} />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <MiniFeature emoji="🎯" title={s.evDartsTitle} desc={s.evDartsDesc} />
             <MiniFeature emoji="🎂" title={s.evPrivateTitle} desc={s.evPrivateDesc} />
             <MiniFeature emoji="☀️" title={s.evTerraceTitle} desc={s.evTerraceDesc} />
+            <MiniFeature emoji="🍺" title={s.guinness} desc={s.guinnessDesc} />
           </div>
         </div>
       </section>
@@ -676,6 +646,109 @@ function MiniFeature({ emoji, title, desc }: { emoji: string; title: string; des
       <p className="mt-2 text-sm font-bold">{title}</p>
       <p className="mt-1 text-xs leading-relaxed text-[#888]">{desc}</p>
     </div>
+  );
+}
+
+// ── Dynamic Events from DB ────────────────────────────────────────
+interface PubEvent {
+  id: string;
+  category: string;
+  title: string;
+  description: string | null;
+  event_date: string;
+  event_time: string | null;
+}
+
+function DynamicEvents({ lang }: { lang: Lang }) {
+  const [events, setEvents] = useState<PubEvent[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  // Fetch events on mount
+  useEffect(() => {
+    fetch("/api/bigben-pub/events?days=21")
+      .then((r) => r.json())
+      .then((d) => { setEvents(d.events ?? []); setLoaded(true); })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  if (!loaded) return null;
+
+  const sport = events.filter((e) => e.category === "sport");
+  const pubEvents = events.filter((e) => e.category === "event");
+
+  function fmtDate(iso: string) {
+    const d = new Date(iso + "T12:00:00");
+    const day = d.toLocaleDateString(lang === "en" ? "en-GB" : "de-CH", { weekday: "short" }).replace(/\.$/, "");
+    const date = d.toLocaleDateString(lang === "en" ? "en-GB" : "de-CH", { day: "2-digit", month: "2-digit" });
+    return `${day} ${date}`;
+  }
+
+  function fmtTime(time: string | null) {
+    return time ? time.substring(0, 5) : "";
+  }
+
+  const sectionTitle = lang === "en" ? "What's On" : "Programm";
+  const sportLabel = lang === "en" ? "Live Sport" : "Live-Sport";
+  const eventsLabel = lang === "en" ? "Events" : "Events";
+
+  return (
+    <section id="events" className="scroll-mt-16 bg-[#f0ebe3] py-24">
+      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#c0392b]">
+          {sectionTitle}
+        </p>
+        <h2 className="mt-3 text-center font-serif text-4xl font-bold">
+          {lang === "en" ? "There's always something happening." : "Bei uns ist immer etwas los."}
+        </h2>
+
+        {/* 2 columns: Sport | Events (desktop). Stacked on mobile. */}
+        <div className="mt-14 grid gap-8 lg:grid-cols-2">
+          {/* Sport column */}
+          <div>
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#c0392b]">
+              <span>⚽</span> {sportLabel}
+            </h3>
+            {sport.length === 0 && (
+              <p className="text-sm text-[#999]">{lang === "en" ? "No matches scheduled." : "Keine Spiele geplant."}</p>
+            )}
+            <div className="space-y-3">
+              {sport.map((e) => (
+                <div key={e.id} className="rounded-xl border border-[#e8e0d5] bg-white p-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-[#999]">
+                    <span className="font-semibold text-[#666]">{fmtDate(e.event_date)}</span>
+                    {e.event_time && <span>{fmtTime(e.event_time)}</span>}
+                  </div>
+                  <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
+                  {e.description && <p className="mt-1 text-xs text-[#888]">{e.description}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Events column */}
+          <div>
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#c0392b]">
+              <span>🎵</span> {eventsLabel}
+            </h3>
+            {pubEvents.length === 0 && (
+              <p className="text-sm text-[#999]">{lang === "en" ? "No events scheduled." : "Keine Events geplant."}</p>
+            )}
+            <div className="space-y-3">
+              {pubEvents.map((e) => (
+                <div key={e.id} className="rounded-xl border border-[#e8e0d5] bg-white p-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-[#999]">
+                    <span className="font-semibold text-[#666]">{fmtDate(e.event_date)}</span>
+                    {e.event_time && <span>{fmtTime(e.event_time)}</span>}
+                  </div>
+                  <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
+                  {e.description && <p className="mt-1 text-xs text-[#888]">{e.description}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
