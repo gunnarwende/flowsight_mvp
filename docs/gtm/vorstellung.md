@@ -1,8 +1,8 @@
 # Projekt "Vorstellung" — Skalierbare Kontaktmaschine
 
-**Erstellt:** 2026-04-10 | **Updated:** 2026-04-13
+**Erstellt:** 2026-04-10 | **Updated:** 2026-04-14
 **Owner:** Founder + CC
-**Status:** **Speakflow Take 1+2 FINAL** (Founder-approved, nicht mehr ändern). Generisches Template: `docs/gtm/speakflow_template.md`. Seed v3 Page-1-Shaping LIVE. Nächst: Master-Aufnahmen + Take 3+4 finalisieren + Skalierungstest.
+**Status:** Speakflow Take 1+2 FINAL. **Website-Entscheidung 14.04.: Modul 2 = Standard. Keine Website im Pipeline-Flow.** Take 3 muss ggf. angepasst werden (zeigt /start/[slug] statt Full-Website fuer Modul-2-Betriebe). Naechst: Take 3+4 finalisieren + Master-Aufnahmen + Skalierungstest.
 **Ziel:** Maximal persönliche, 100% skalierbare Betriebskontaktierung. 10+ Betriebe/Tag theoretisch möglich. Founder-Aufwand pro Betrieb: < 5 Minuten.
 **Regel:** Stufe 3 von Tag 1. Keine Zwischenstufen. Kein Kompromiss.
 

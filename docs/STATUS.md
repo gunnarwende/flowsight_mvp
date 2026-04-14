@@ -1,6 +1,6 @@
 # FlowSight — STATUS (Company SSOT)
 
-**Datum:** 2026-04-13 (Sales Day 13: Speakflow Take 1+2 FINAL. Generisches Template `docs/gtm/speakflow_template.md`. Seed v3 Page-1-Shaping. Papierkorb-Ansicht. Case-Header-Redesign. Staff-Safety. 7 PRs (#438-#444).)
+**Datum:** 2026-04-14 (Sales Day 14: **Website-Entscheidung FINAL: Modul 2 = Standard. Website kein Produktbestandteil mehr.** ICP-Analyse 42 Betriebe: 71% brauchen keine Website, 12% Grenzfall, 12% Fallback. Modul-1-Maschine (3 Systeme, Profile, Banana) beendet. Website nur als Basis-Fallback bei kaputten/fehlenden Sites. PRs #446-#450.)
 **Owner:** Founder + CC (Head Ops)
 
 ## Was ist FlowSight?

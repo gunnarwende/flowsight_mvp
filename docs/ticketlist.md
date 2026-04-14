@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-04-13 (Sales Day 13: Speakflow FINAL, Seed v3, Papierkorb, Staff-Safety, Case-Header-Redesign. PRs #438-#444.)
+**Updated:** 2026-04-14 (Sales Day 14: Website-Entscheidung FINAL — Modul 2 Standard, Website kein Produkt. ICP 42 Betriebe analysiert. PRs #446-#450.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -9,14 +9,15 @@
 
 ## Snapshot
 
-- **Produkt:** 25+ Module LIVE. Voice: Ela (DE) + Juniper (INTL). CEO-App komplett. Outlook Kalender live. Papierkorb-Ansicht. Seed v3 Page-1-Shaping.
-- **Kunden:** 7 Websites live, Dörfler + Leuthold = TRIAL_PREP, Weinberger = GTM Goldstandard
+- **Produkt:** Voice + Wizard + Leitzentrale + Reviews + SMS. **Website ist KEIN Produktbestandteil.** CEO-App, Outlook Kalender, Papierkorb, Seed v3.
+- **Website-Entscheidung (14.04.):** Modul 2 = Standard. Website nur als Basis-Fallback (kaputt/fehlend). Modul-1-Maschine beendet. ICP-Analyse: 71% der 42 Betriebe brauchen keine Website.
+- **Kunden:** 7 bestehende Sites bleiben als Legacy. Keine neuen Website-Builds. Wizard-Einstieg: /start/[slug].
 - **Voice:** Gold-Standard-Schablone (23 Platzhalter), Ela DE + Juniper INTL, 18 Szenarien, 14 No-Go's.
-- **Speakflow:** Take 1 + Take 2 FINAL (Founder-approved). Generisches Template: `docs/gtm/speakflow_template.md`
+- **Speakflow:** Take 1 + Take 2 FINAL. Generisches Template: `docs/gtm/speakflow_template.md`
 - **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
-- **Phase:** Sales Day 13. Speakflow FINAL. Nächst: Master-Aufnahmen (Founder nimmt Take 1-4 auf), dann Skalierungstest Walter Leuthold.
-- **Nächste Schritte:** 1) Founder nimmt Take 1-4 Masteraufnahmen auf 2) Take 3+4 Speakflow finalisieren 3) Assembly-Pipeline für Take 3+4 bauen 4) Walter Leuthold als erster Skalierungstest
+- **Phase:** Sales Day 14. Website-Entscheidung gefallen. Fokus 100% auf Kernprodukt.
+- **Nächste Schritte:** 1) Take 3+4 Speakflow finalisieren 2) Founder nimmt Take 1-4 Masteraufnahmen auf 3) Assembly-Pipeline für Take 3+4 bauen 4) Walter Leuthold als erster Skalierungstest 5) Dörfler Outreach
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
