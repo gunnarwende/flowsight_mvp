@@ -358,4 +358,12 @@ export const doerflerAg: CustomerSite = {
     { year: 2004, title: "Dörfler AG", description: "Umwandlung in eine AG per 1. April. Ramon und Luzian Dörfler übernehmen den Betrieb in dritter Generation." },
     { year: 2007, title: "Wachstum", description: "Einstellung eines zusätzlichen Sanitärinstallateurs — die Auftragslage wächst stetig." },
   ],
+
+  theme: {
+    profile: "tradition",
+    heroStyle: "split",
+    colorMode: "warm",
+    fontFamily: "source-serif",
+    sectionOrder: ["history", "services", "reviews", "team", "serviceArea", "trust", "contact"],
+  },
 };

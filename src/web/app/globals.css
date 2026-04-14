@@ -78,6 +78,43 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* ── Customer Website Color Modes ───────────────────────
+   Applied via data-color-mode attribute on root element.
+   Controls surface temperatures for customer pages.
+   ──────────────────────────────────────────────────────── */
+
+[data-color-mode="warm"] {
+  --cs-surface: #faf8f5;
+  --cs-card: #fff9f5;
+  --cs-section-alt: #f5f0ea;
+  --cs-text-muted: #6b5b4f;
+  --cs-border: #e8e0d8;
+}
+
+[data-color-mode="cool"] {
+  --cs-surface: #ffffff;
+  --cs-card: #f8fafb;
+  --cs-section-alt: #f0f4f8;
+  --cs-text-muted: #5b6b7a;
+  --cs-border: #dde3ea;
+}
+
+[data-color-mode="neutral"] {
+  --cs-surface: #ffffff;
+  --cs-card: #ffffff;
+  --cs-section-alt: #f9fafb;
+  --cs-text-muted: #6b7280;
+  --cs-border: #e5e7eb;
+}
+
+/* ── Customer Website Font Classes ─────────────────────── */
+
+.cs-font-geist { font-family: var(--font-geist-sans), system-ui, sans-serif; }
+.cs-font-inter { font-family: var(--font-inter), system-ui, sans-serif; }
+.cs-font-dm-sans { font-family: var(--font-dm-sans), system-ui, sans-serif; }
+.cs-font-source-serif h1,
+.cs-font-source-serif h2 { font-family: var(--font-source-serif), Georgia, serif; }
+
 /* Hero flow pulse — 4 icons light up sequentially */
 @keyframes flow-pulse {
   0%, 100% { opacity: 0.5; }

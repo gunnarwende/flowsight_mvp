@@ -53,6 +53,19 @@ function shouldShowHistory(history?: CustomerSite["history"]): boolean {
   return years >= SHOW_HISTORY_MIN_YEARS;
 }
 
+// ── Default section order ─────────────────────────────────────────
+const DEFAULT_SECTION_ORDER = [
+  "services", "reviews", "serviceArea", "team", "history", "trust", "careers", "contact",
+];
+
+// ── Font class mapping ───────────────────────────────────────────
+const FONT_CLASS: Record<string, string> = {
+  geist: "cs-font-geist",
+  inter: "cs-font-inter",
+  "dm-sans": "cs-font-dm-sans",
+  "source-serif": "cs-font-source-serif",
+};
+
 // ── Page ──────────────────────────────────────────────────────────
 export default async function CustomerPage({
   params,
@@ -65,19 +78,40 @@ export default async function CustomerPage({
 
   const accent = c.brandColor ?? "#2b6cb0";
   const wizardUrl = `/kunden/${c.slug}/meldung`;
+  const theme = c.theme;
+  const colorMode = theme?.colorMode ?? "neutral";
+  const fontClass = FONT_CLASS[theme?.fontFamily ?? "geist"] ?? "";
+  const heroStyle = theme?.heroStyle ?? "classic";
+  const sectionOrder = theme?.sectionOrder ?? DEFAULT_SECTION_ORDER;
+
+  // Section registry — maps keys to conditional JSX
+  const sectionMap: Record<string, React.ReactNode> = {
+    services: <ServicesSection key="services" services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />,
+    reviews: c.reviews ? <ReviewsSection key="reviews" reviews={c.reviews} accent={accent} /> : null,
+    serviceArea: <ServiceAreaSection key="serviceArea" area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />,
+    team: c.team.length > 1 ? <TeamSection key="team" team={c.team} teamPhoto={c.teamPhoto} companyName={c.companyName} accent={accent} /> : null,
+    history: shouldShowHistory(c.history) ? <HistorySection key="history" history={c.history!} companyName={c.companyName} accent={accent} /> : null,
+    trust: (c.certifications || c.brandPartners) ? <TrustSection key="trust" certifications={c.certifications} partners={c.brandPartners} accent={accent} /> : null,
+    careers: (c.careers && c.careers.length > 0) ? <CareersSection key="careers" careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} /> : null,
+    contact: <ContactSection key="contact" company={c} accent={accent} wizardUrl={wizardUrl} />,
+  };
+
+  // Hero dispatcher
+  const heroElement = heroStyle === "split"
+    ? <HeroSplit company={c} accent={accent} wizardUrl={wizardUrl} />
+    : heroStyle === "center"
+      ? <HeroCenter company={c} accent={accent} wizardUrl={wizardUrl} />
+      : <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} />;
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div
+      className={`min-h-screen text-gray-900 ${fontClass}`}
+      data-color-mode={colorMode}
+      style={{ backgroundColor: "var(--cs-surface, #ffffff)" }}
+    >
       <Nav company={c} accent={accent} wizardUrl={wizardUrl} />
-      <HeroSection company={c} accent={accent} wizardUrl={wizardUrl} />
-      <ServicesSection services={c.services} gallery={c.gallery} companyName={c.companyName} accent={accent} />
-      {c.reviews && <ReviewsSection reviews={c.reviews} accent={accent} />}
-      <ServiceAreaSection area={c.serviceArea} companyName={c.companyName} mapUrl={c.contact.mapEmbedUrl} />
-      {c.team.length > 1 && <TeamSection team={c.team} teamPhoto={c.teamPhoto} companyName={c.companyName} accent={accent} />}
-      {shouldShowHistory(c.history) && <HistorySection history={c.history!} companyName={c.companyName} accent={accent} />}
-      {(c.certifications || c.brandPartners) && <TrustSection certifications={c.certifications} partners={c.brandPartners} accent={accent} />}
-      {c.careers && c.careers.length > 0 && <CareersSection careers={c.careers} companyName={c.companyName} contact={c.contact} accent={accent} />}
-      <ContactSection company={c} accent={accent} wizardUrl={wizardUrl} />
+      {heroElement}
+      {sectionOrder.map((key) => sectionMap[key] ?? null)}
       <Footer company={c} />
     </div>
   );
@@ -178,6 +212,98 @@ function HeroSection({ company: c, accent, wizardUrl }: { company: CustomerSite;
             <div><p className="text-2xl font-bold">{c.services.length}</p><p className="text-xs text-white/60">Fachbereiche</p></div>
             <div><p className="text-2xl font-bold">{c.serviceArea.gemeinden.length}+</p><p className="text-xs text-white/60">Gemeinden</p></div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Hero Split — TRADITION profile ─────────────────────────────
+   Image right, text left on solid background. Warm, dignified.    */
+function HeroSplit({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+  const foundedYear = c.history?.[0]?.year;
+  const yearsActive = foundedYear ? new Date().getFullYear() - foundedYear : null;
+  const heroImg = `/kunden/${c.slug}/hero.jpg`;
+
+  return (
+    <section className="relative overflow-hidden" style={{ minHeight: "70vh" }}>
+      <div className="mx-auto flex min-h-[70vh] max-w-6xl">
+        {/* Left: Text on solid background */}
+        <div className="flex flex-1 flex-col justify-center px-6 py-16 sm:px-12 lg:pr-16" style={{ backgroundColor: "var(--cs-surface, #faf8f5)" }}>
+          {foundedYear && (
+            <div className="mb-5 inline-block self-start rounded-full px-4 py-1.5 text-sm font-medium" style={{ backgroundColor: `${accent}15`, color: accent }}>
+              Seit {foundedYear} in {c.contact.address.city}
+            </div>
+          )}
+          <h1 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.companyName}</h1>
+          <p className="mt-4 text-lg" style={{ color: "var(--cs-text-muted, #6b7280)" }}>{c.tagline}</p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+            <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-base font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+              Anliegen melden
+            </a>
+            <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border px-7 py-3.5 text-base font-semibold transition-colors hover:bg-gray-50" style={{ borderColor: accent, color: accent }}>
+              {c.contact.phone}
+            </a>
+          </div>
+          {/* Stats */}
+          <div className="mt-10 flex flex-wrap gap-6 border-t pt-5" style={{ borderColor: "var(--cs-border, #e5e7eb)" }}>
+            {yearsActive && yearsActive >= 5 && (
+              <div><p className="text-xl font-bold text-gray-900">{yearsActive}+</p><p className="text-xs" style={{ color: "var(--cs-text-muted)" }}>Jahre Erfahrung</p></div>
+            )}
+            {c.reviews && c.reviews.averageRating >= SHOW_RATING_THRESHOLD && (
+              <div><p className="text-xl font-bold text-gray-900">{c.reviews.averageRating}&#9733;</p><p className="text-xs" style={{ color: "var(--cs-text-muted)" }}>{c.reviews.totalReviews} Bewertungen</p></div>
+            )}
+            <div><p className="text-xl font-bold text-gray-900">{c.services.length}</p><p className="text-xs" style={{ color: "var(--cs-text-muted)" }}>Fachbereiche</p></div>
+          </div>
+        </div>
+        {/* Right: Image */}
+        <div className="hidden lg:block lg:w-[45%] relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={heroImg} alt={`${c.companyName}`} className="absolute inset-0 h-full w-full object-cover" />
+        </div>
+      </div>
+      {/* Mobile: image below as banner */}
+      <div className="lg:hidden relative h-56">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImg} alt={`${c.companyName}`} className="absolute inset-0 h-full w-full object-cover" />
+      </div>
+    </section>
+  );
+}
+
+/* ── Hero Center — NAEHE profile ───────────────────────────────
+   Fullscreen image, centered text, stronger overlay. Intimate.   */
+function HeroCenter({ company: c, accent, wizardUrl }: { company: CustomerSite; accent: string; wizardUrl: string }) {
+  const foundedYear = c.history?.[0]?.year;
+  const heroImg = `/kunden/${c.slug}/hero.jpg`;
+
+  return (
+    <section className="relative overflow-hidden text-white" style={{ minHeight: "70vh" }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={heroImg} alt={`${c.companyName} — ${c.tagline}`} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gray-900/85" />
+      <div className="relative mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 py-20 text-center">
+        {foundedYear && (
+          <div className="mb-5 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur-sm">
+            Seit {foundedYear} in {c.contact.address.city}
+          </div>
+        )}
+        <h1 className="text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">{c.companyName}</h1>
+        <p className="mt-4 text-lg text-white/75 sm:text-xl max-w-xl">{c.tagline}</p>
+        {/* Prominent review badge */}
+        {c.reviews && c.reviews.averageRating >= SHOW_RATING_THRESHOLD && c.reviews.totalReviews >= 10 && (
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 backdrop-blur-sm">
+            <span className="text-xl font-bold">{c.reviews.averageRating}&#9733;</span>
+            <span className="text-sm text-white/80">aus {c.reviews.totalReviews} Bewertungen</span>
+          </div>
+        )}
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+          <a href={wizardUrl} className="inline-flex items-center justify-center rounded-xl px-8 py-4 text-lg font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: accent }}>
+            Anliegen melden
+          </a>
+          <a href={`tel:${c.contact.phoneRaw}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
+            {c.contact.phone}
+          </a>
         </div>
       </div>
     </section>
