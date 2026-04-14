@@ -227,7 +227,7 @@ export function BigBenContent() {
         </span>
         <button
           onClick={() => setLang(lang === "en" ? "de" : "en")}
-          className="flex items-center gap-1.5 rounded-full border border-[#3a2e26] bg-[#2a1f1a] px-2.5 py-1 text-[10px] font-bold tracking-wider transition-all hover:border-[#c0392b] hover:shadow-sm"
+          className="flex items-center gap-1 rounded-full border border-[#3a2e26] bg-[#2a1f1a] px-2 py-1 text-[10px] font-bold tracking-wider transition-all hover:border-[#a2774b] hover:shadow-sm flex-shrink-0"
         >
           <span className="inline-flex h-4 w-5 items-center justify-center overflow-hidden rounded-[2px] shadow-sm">
             {lang === "en" ? (
@@ -662,6 +662,9 @@ interface PubEvent {
 function DynamicEvents({ lang }: { lang: Lang }) {
   const [events, setEvents] = useState<PubEvent[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [showAllSport, setShowAllSport] = useState(false);
+  const [showAllEvents, setShowAllEvents] = useState(false);
+  const PREVIEW_COUNT = 3;
 
   // Fetch events on mount
   useEffect(() => {
@@ -743,34 +746,45 @@ function DynamicEvents({ lang }: { lang: Lang }) {
             {sport.length === 0 && (
               <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
             )}
-            <div className="space-y-4">
-              {sport.map((e) => {
-                const dt = fmtDateBig(e.event_date);
-                return (
-                  <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
-                    {/* Date badge */}
-                    <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
-                      <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
-                      <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                      <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
-                    </div>
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{eventEmoji(e.title, "sport")}</span>
-                        <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
-                      </div>
-                      {e.event_time && (
-                        <p className="mt-1 text-xs text-[#a2774b] font-semibold">
-                          {lang === "en" ? "Kick-off" : "Anpfiff"} {fmtTime(e.event_time)}
-                        </p>
-                      )}
-                      {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
-                    </div>
+            {(() => {
+              const visible = showAllSport ? sport : sport.slice(0, PREVIEW_COUNT);
+              const hasMore = sport.length > PREVIEW_COUNT;
+              return (
+                <>
+                  <div className="space-y-4">
+                    {visible.map((e) => {
+                      const dt = fmtDateBig(e.event_date);
+                      return (
+                        <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                          <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
+                            <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
+                            <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
+                            <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{eventEmoji(e.title, "sport")}</span>
+                              <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
+                            </div>
+                            {e.event_time && (
+                              <p className="mt-1 text-xs text-[#a2774b] font-semibold">
+                                {lang === "en" ? "Kick-off" : "Anpfiff"} {fmtTime(e.event_time)}
+                              </p>
+                            )}
+                            {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                  {hasMore && !showAllSport && (
+                    <button onClick={() => setShowAllSport(true)} className="mt-3 w-full rounded-xl border border-[#3a2e26] py-2.5 text-xs font-semibold text-[#a2774b] transition-colors hover:border-[#a2774b]/40 hover:bg-[#2a1f1a]">
+                      {lang === "en" ? `+${sport.length - PREVIEW_COUNT} more matches` : `+${sport.length - PREVIEW_COUNT} weitere Spiele`}
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
 
           {/* ── EVENTS ───────────────────────── */}
@@ -782,32 +796,43 @@ function DynamicEvents({ lang }: { lang: Lang }) {
             {pubEvents.length === 0 && (
               <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
             )}
-            <div className="space-y-4">
-              {pubEvents.map((e) => {
-                const dt = fmtDateBig(e.event_date);
-                return (
-                  <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
-                    {/* Date badge */}
-                    <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
-                      <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
-                      <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                      <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
-                    </div>
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{eventEmoji(e.title, "event")}</span>
-                        <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
-                      </div>
-                      {e.event_time && (
-                        <p className="mt-1 text-xs text-[#a2774b] font-semibold">{fmtTime(e.event_time)}</p>
-                      )}
-                      {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
-                    </div>
+            {(() => {
+              const visible = showAllEvents ? pubEvents : pubEvents.slice(0, PREVIEW_COUNT);
+              const hasMore = pubEvents.length > PREVIEW_COUNT;
+              return (
+                <>
+                  <div className="space-y-4">
+                    {visible.map((e) => {
+                      const dt = fmtDateBig(e.event_date);
+                      return (
+                        <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                          <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
+                            <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
+                            <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
+                            <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{eventEmoji(e.title, "event")}</span>
+                              <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
+                            </div>
+                            {e.event_time && (
+                              <p className="mt-1 text-xs text-[#a2774b] font-semibold">{fmtTime(e.event_time)}</p>
+                            )}
+                            {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                  {hasMore && !showAllEvents && (
+                    <button onClick={() => setShowAllEvents(true)} className="mt-3 w-full rounded-xl border border-[#3a2e26] py-2.5 text-xs font-semibold text-[#a2774b] transition-colors hover:border-[#a2774b]/40 hover:bg-[#2a1f1a]">
+                      {lang === "en" ? `+${pubEvents.length - PREVIEW_COUNT} more events` : `+${pubEvents.length - PREVIEW_COUNT} weitere Events`}
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
