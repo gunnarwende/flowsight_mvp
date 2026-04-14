@@ -258,15 +258,10 @@ function HeroSection({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }
           {/* Stats row */}
           <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-white/15 pt-6">
             {yearsActive && yearsActive >= 100 ? (
-              /* Laurel wreath candidates — Founder picks one, then remove the rest */
-              <div className="flex items-center gap-3">
-                {[1,2,3,4,5].map((n) => (
-                  <div key={n} className="flex flex-col items-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/kunden/${c.slug}/laurel_0${n}.png`} alt={`Kandidat ${n}`} className="h-20 w-20 object-contain" />
-                    <span className="mt-1 text-[10px] text-white/50">#{n}</span>
-                  </div>
-                ))}
+              /* Golden laurel wreath — Banana-generated, Founder-selected (#2) */
+              <div className="flex-shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/kunden/${c.slug}/laurel_100.png`} alt="100 Jahre" className="h-20 w-20 object-contain" />
               </div>
             ) : yearsActive && yearsActive >= 5 ? (
               <div><p className="text-2xl font-bold">{yearsActive}+</p><p className="text-xs text-white/60">Jahre Erfahrung</p></div>
