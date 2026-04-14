@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
 import { getCustomer, getAllCustomerSlugs } from "@/src/lib/customers/registry";
+import { LayoutEditorial } from "./layouts/LayoutEditorial";
+import { LayoutKompakt } from "./layouts/LayoutKompakt";
+import { LayoutSystematisch } from "./layouts/LayoutSystematisch";
 import { ServiceCard } from "./ServiceCard";
 import { AnimatedSection } from "./AnimatedSection";
 import { StickyMobileCTA } from "./StickyMobileCTA";
@@ -79,6 +82,13 @@ export default async function CustomerPage({
   const c = getCustomer(slug);
   if (!c) notFound();
 
+  // ── v2 Layout Dispatcher: profiles get dedicated layout files ──
+  const profile = c.theme?.profile;
+  if (profile === "tradition") return <LayoutEditorial company={c} />;
+  if (profile === "naehe") return <LayoutKompakt company={c} />;
+  if (profile === "kompetenz") return <LayoutSystematisch company={c} />;
+
+  // ── Legacy fallback: sites without theme get the original template ──
   const accent = c.brandColor ?? "#2b6cb0";
   const wizardUrl = `/kunden/${c.slug}/meldung`;
   const theme = c.theme;
