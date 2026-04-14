@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-13 (Sales Day 13. PRs #438-#444. Speakflow Take 1+2 FINAL, generisches Template, Seed v3 Page-1-Shaping, Papierkorb-Ansicht, Staff-Safety, Case-Header-Redesign.)
+> Letzte Aktualisierung: 2026-04-14 (Sales Day 14. **Website-Entscheidung FINAL: Modul 2 = Standard. Website kein Produktbestandteil.** ICP-Analyse 42 Betriebe. Modul-1-Maschine beendet. PRs #446-#450.)
 
 ---
 

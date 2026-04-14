@@ -1,7 +1,7 @@
 # Machine Manifest — Gold-Contact Proof-Capture-Maschine
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
-**Version:** 3.1 — Speakflow FINAL + Seed v3 (Updated 13.04.: Take 1+2 Speakflow FINAL, generisches Template `speakflow_template.md`, Seed v3 Page-1-Shaping, Staff-Safety-Gate, Papierkorb-Ansicht)
+**Version:** 4.0 — Website-Entscheidung FINAL (Updated 14.04.: Website = KEIN Produktbestandteil. Modul 2 = Standard. Kein Website-Build im Pipeline-Flow. Schritt 5 "Website produzieren" GESTRICHEN. Wizard-Einstieg: /start/[slug]. ICP-Analyse 42 Betriebe → 71% brauchen keine Website.)
 **Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
 
 ---
