@@ -54,6 +54,18 @@ export default async function DashboardLayout({
     showRoleToggle = (count ?? 0) > 2;
   }
 
+  // Load tenant modules for nav items (events, reservations)
+  let tenantModules: Record<string, unknown> = {};
+  if (effectiveTenantId) {
+    const sb2 = getServiceClient();
+    const { data: tenantRow } = await sb2
+      .from("tenants")
+      .select("modules")
+      .eq("id", effectiveTenantId)
+      .single();
+    tenantModules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
+  }
+
   return (
     <OpsShell
       userEmail={user.email ?? ""}
@@ -66,6 +78,9 @@ export default async function DashboardLayout({
       homeTenantId={scope?.homeTenantId}
       viewAsRole={scope?.viewAsRole}
       showRoleToggle={showRoleToggle}
+      hasEvents={!!tenantModules.events}
+      hasReservations={!!tenantModules.reservations}
+      pendingReservations={0}
     >
       {children}
     </OpsShell>
