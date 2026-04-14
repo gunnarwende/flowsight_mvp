@@ -287,16 +287,4 @@ export const orlandini: CustomerSite = {
 
   /* History: Details nicht verifiziert → entfernt */
 
-  theme: {
-    profile: "kompetenz",
-    heroStyle: "classic",
-    colorMode: "cool",
-    fontFamily: "inter",
-    sectionOrder: ["services", "trust", "careers", "reviews", "serviceArea", "contact"],
-    serviceLayout: "grid",
-    reviewStyle: "grid",
-    animation: "scale",
-    buttonStyle: "sharp",
-    sectionDivider: "line",
-  },
 };
