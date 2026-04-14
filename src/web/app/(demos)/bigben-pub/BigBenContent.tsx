@@ -691,61 +691,134 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   const sportLabel = lang === "en" ? "Live Sport" : "Live-Sport";
   const eventsLabel = lang === "en" ? "Events" : "Events";
 
+  // Smart emoji for event type
+  function eventEmoji(title: string, category: string) {
+    if (category === "sport") {
+      const t = title.toLowerCase();
+      if (t.includes("rugby")) return "🏉";
+      if (t.includes("f1") || t.includes("formula")) return "🏎️";
+      if (t.includes("tennis")) return "🎾";
+      if (t.includes("boxing") || t.includes("ufc")) return "🥊";
+      return "⚽";
+    }
+    const t = title.toLowerCase();
+    if (t.includes("karaoke")) return "🎤";
+    if (t.includes("quiz")) return "🧠";
+    if (t.includes("music") || t.includes("acoustic") || t.includes("folk") || t.includes("celtic") || t.includes("dublin")) return "🎵";
+    if (t.includes("birthday") || t.includes("private") || t.includes("party")) return "🎂";
+    if (t.includes("dart")) return "🎯";
+    return "🎶";
+  }
+
+  // Format date prominently
+  function fmtDateBig(iso: string) {
+    const d = new Date(iso + "T12:00:00");
+    const locale = lang === "en" ? "en-GB" : "de-CH";
+    const weekday = d.toLocaleDateString(locale, { weekday: "short" }).replace(/\.$/, "").toUpperCase();
+    const day = d.getDate();
+    const month = d.toLocaleDateString(locale, { month: "short" }).replace(/\.$/, "");
+    return { weekday, day, month };
+  }
+
+  const bookLabel = lang === "en" ? "Book a Table" : "Tisch reservieren";
+
   return (
     <section id="events" className="scroll-mt-16 bg-[#261b15] py-24">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
         <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
           {sectionTitle}
         </p>
-        <h2 className="mt-3 text-center font-serif text-4xl font-bold">
+        <h2 className="mt-3 text-center font-serif text-4xl font-bold text-[#f0e8dc]">
           {lang === "en" ? "There's always something happening." : "Bei uns ist immer etwas los."}
         </h2>
 
-        {/* 2 columns: Sport | Events (desktop). Stacked on mobile. */}
-        <div className="mt-14 grid gap-8 lg:grid-cols-2">
-          {/* Sport column */}
+        {/* 2 columns: Sport | Events */}
+        <div className="mt-14 grid gap-10 lg:grid-cols-2">
+          {/* ── SPORT ────────────────────────── */}
           <div>
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#a2774b]">
-              <span>⚽</span> {sportLabel}
+            <h3 className="mb-6 flex items-center gap-2 font-serif text-xl font-bold text-[#f0e8dc]">
+              <span className="text-2xl">⚽</span>
+              {sportLabel}
             </h3>
             {sport.length === 0 && (
-              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No matches scheduled." : "Keine Spiele geplant."}</p>
+              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
             )}
-            <div className="space-y-3">
-              {sport.map((e) => (
-                <div key={e.id} className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-4 shadow-sm">
-                  <div className="flex items-center gap-2 text-xs text-[#7a6b58]">
-                    <span className="font-semibold text-[#a89478]">{fmtDate(e.event_date)}</span>
-                    {e.event_time && <span>{fmtTime(e.event_time)}</span>}
+            <div className="space-y-4">
+              {sport.map((e) => {
+                const dt = fmtDateBig(e.event_date);
+                return (
+                  <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                    {/* Date badge */}
+                    <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
+                      <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
+                      <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
+                      <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{eventEmoji(e.title, "sport")}</span>
+                        <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
+                      </div>
+                      {e.event_time && (
+                        <p className="mt-1 text-xs text-[#a2774b] font-semibold">
+                          {lang === "en" ? "Kick-off" : "Anpfiff"} {fmtTime(e.event_time)}
+                        </p>
+                      )}
+                      {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
-                  {e.description && <p className="mt-1 text-xs text-[#8a7a66]">{e.description}</p>}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* Events column */}
+          {/* ── EVENTS ───────────────────────── */}
           <div>
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#a2774b]">
-              <span>🎵</span> {eventsLabel}
+            <h3 className="mb-6 flex items-center gap-2 font-serif text-xl font-bold text-[#f0e8dc]">
+              <span className="text-2xl">🎵</span>
+              {eventsLabel}
             </h3>
             {pubEvents.length === 0 && (
-              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No events scheduled." : "Keine Events geplant."}</p>
+              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
             )}
-            <div className="space-y-3">
-              {pubEvents.map((e) => (
-                <div key={e.id} className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-4 shadow-sm">
-                  <div className="flex items-center gap-2 text-xs text-[#7a6b58]">
-                    <span className="font-semibold text-[#a89478]">{fmtDate(e.event_date)}</span>
-                    {e.event_time && <span>{fmtTime(e.event_time)}</span>}
+            <div className="space-y-4">
+              {pubEvents.map((e) => {
+                const dt = fmtDateBig(e.event_date);
+                return (
+                  <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                    {/* Date badge */}
+                    <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
+                      <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
+                      <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
+                      <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{eventEmoji(e.title, "event")}</span>
+                        <p className="text-sm font-bold text-[#f0e8dc] truncate">{e.title}</p>
+                      </div>
+                      {e.event_time && (
+                        <p className="mt-1 text-xs text-[#a2774b] font-semibold">{fmtTime(e.event_time)}</p>
+                      )}
+                      {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-[#333]">{e.title}</p>
-                  {e.description && <p className="mt-1 text-xs text-[#8a7a66]">{e.description}</p>}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
+        </div>
+
+        {/* CTA: Book a table */}
+        <div className="mt-12 text-center">
+          <a href="#reserve" className="inline-flex items-center gap-2 rounded-full bg-[#a2774b] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#a2774b]/20 transition-all hover:bg-[#b8884f] hover:shadow-xl">
+            {bookLabel}
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
         </div>
       </div>
     </section>
