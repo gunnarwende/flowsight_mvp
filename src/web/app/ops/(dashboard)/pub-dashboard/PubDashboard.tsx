@@ -119,7 +119,7 @@ export function PubDashboard({
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
               {pendingCount}
             </span>
-            <p className="text-sm font-bold text-amber-800">Neue Reservierungen</p>
+            <p className="text-sm font-bold text-amber-800">New Reservations</p>
           </div>
           <div className="space-y-2">
             {pendingReservations.map((r) => (
@@ -157,7 +157,7 @@ export function PubDashboard({
 
       {/* ── TODAY'S OVERVIEW ───────────────────────────── */}
       <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Heute</p>
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Today</p>
 
         {/* Today stats */}
         <div className="grid grid-cols-3 gap-3 mb-4">
@@ -167,11 +167,11 @@ export function PubDashboard({
           </div>
           <div className="rounded-xl bg-gray-50 p-3 text-center">
             <p className="text-2xl font-bold text-gray-900">{todayReservations.length}</p>
-            <p className="text-[10px] text-gray-400 uppercase">Buchungen</p>
+            <p className="text-[10px] text-gray-400 uppercase">Bookings</p>
           </div>
           <div className="rounded-xl bg-gray-50 p-3 text-center">
             <p className="text-2xl font-bold text-gray-900">{todayGuestCount}</p>
-            <p className="text-[10px] text-gray-400 uppercase">Gäste</p>
+            <p className="text-[10px] text-gray-400 uppercase">Guests</p>
           </div>
         </div>
 
@@ -191,7 +191,7 @@ export function PubDashboard({
         {/* Today's reservations */}
         {todayReservations.length > 0 && (
           <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-400 uppercase">Reservierungen heute</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase">Reservations today</p>
             {todayReservations.map((r) => (
               <div key={r.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
                 <span className="text-xs font-semibold text-gray-700">{fmtTime(r.reservation_time)}</span>
@@ -205,14 +205,14 @@ export function PubDashboard({
         )}
 
         {todayEvents.length === 0 && todayReservations.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-2">Heute ist es ruhig.</p>
+          <p className="text-xs text-gray-400 text-center py-2">Quiet day today.</p>
         )}
       </div>
 
       {/* ── COMING UP (next 7 days) ────────────────────── */}
       {(upcomingEvents.length > 0 || upcomingReservations.length > 0) && (
         <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Nächste 7 Tage</p>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Next 7 Days</p>
 
           {upcomingEvents.length > 0 && (
             <div className="space-y-1.5 mb-3">
@@ -229,7 +229,7 @@ export function PubDashboard({
 
           {upcomingReservations.length > 0 && (
             <div className="space-y-1.5">
-              <p className="text-[10px] font-bold text-gray-400 uppercase">Reservierungen</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase">Reservations</p>
               {upcomingReservations.map((r) => (
                 <div key={r.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
                   <span className="text-xs text-gray-400">{fmtDate(r.reservation_date)}</span>
@@ -245,6 +245,21 @@ export function PubDashboard({
         </div>
       )}
 
+      {/* ── WEBSITE LINK ──────────────────────────────── */}
+      <a
+        href="/bigben-pub"
+        target="_blank"
+        className="flex items-center justify-between rounded-2xl border border-[#3a2e26] bg-gradient-to-r from-[#2a1f1a] to-[#1e1611] p-4 transition-all hover:border-[#a2774b]/40"
+      >
+        <div>
+          <p className="text-sm font-bold text-gray-900">Your Website</p>
+          <p className="text-[10px] text-gray-400">flowsight.ch/bigben-pub</p>
+        </div>
+        <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+      </a>
+
       {/* ── QUICK ACTIONS ──────────────────────────────── */}
       <div className="grid grid-cols-2 gap-3">
         <button
@@ -253,15 +268,15 @@ export function PubDashboard({
         >
           <p className="text-2xl">📅</p>
           <p className="mt-1 text-sm font-bold">Events</p>
-          <p className="text-[10px] text-white/60">Pflegen & bearbeiten</p>
+          <p className="text-[10px] text-white/60">Manage & edit</p>
         </button>
         <button
           onClick={() => router.push("/ops/reservations")}
           className="rounded-2xl bg-gray-900 p-4 text-left text-white transition-colors hover:bg-gray-800 relative"
         >
           <p className="text-2xl">🪑</p>
-          <p className="mt-1 text-sm font-bold">Reservierungen</p>
-          <p className="text-[10px] text-white/60">Verwalten & eintragen</p>
+          <p className="mt-1 text-sm font-bold">Reservations</p>
+          <p className="text-[10px] text-white/60">Manage & add</p>
           {pendingCount > 0 && (
             <span className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
               {pendingCount}
