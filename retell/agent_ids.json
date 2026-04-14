@@ -4,14 +4,14 @@
     "de_flow_id": "conversation_flow_e2c3a7cec528",
     "intl_agent_id": "agent_01fad4217f8b0697f0c26c69d5",
     "intl_flow_id": "conversation_flow_3c7d423226a9",
-    "last_synced": "2026-04-09T08:22:04.027Z"
+    "last_synced": "2026-04-09T17:36:04.514Z"
   },
   "doerfler": {
-    "de_agent_id": "agent_d7dfe45ab444e1370e836c3e0f",
-    "de_flow_id": "conversation_flow_8170ad3c2ca9",
+    "de_agent_id": "agent_4cb307354a2a29d195f656b542",
+    "de_flow_id": "conversation_flow_f51cc5a64702",
     "intl_agent_id": "agent_fb4b956eec31db9c591880fdeb",
     "intl_flow_id": "conversation_flow_608d542979bb",
-    "last_synced": "2026-04-09T08:22:00.481Z"
+    "last_synced": "2026-04-10T17:02:33.714Z"
   },
   "flowsight_sales": {
     "de_agent_id": "agent_6515d8d1f23072ce61db806901",
@@ -25,13 +25,18 @@
     "de_flow_id": "conversation_flow_4254de993a58",
     "intl_agent_id": "agent_0976aabe2c12ab0ca4d48933a5",
     "intl_flow_id": "conversation_flow_ac5b3603b478",
-    "last_synced": "2026-04-09T08:22:07.306Z"
+    "last_synced": "2026-04-09T17:36:07.875Z"
   },
   "walter-leuthold": {
     "de_agent_id": "agent_de6242e8d8a98244e18e762ea8",
     "de_flow_id": "conversation_flow_fff73f294502",
     "intl_agent_id": "agent_ae0185d3494461f8bb2c7e8369",
     "intl_flow_id": "conversation_flow_f50db5e3f3c8",
-    "last_synced": "2026-04-09T08:22:11.135Z"
+    "last_synced": "2026-04-09T17:36:10.990Z"
+  },
+  "bigben-pub": {
+    "en_agent_id": "agent_515990d7577b002026c4c53a32",
+    "en_flow_id": "conversation_flow_88648f53ec10",
+    "last_synced": "2026-04-14T18:08:07.848Z"
   }
 }
