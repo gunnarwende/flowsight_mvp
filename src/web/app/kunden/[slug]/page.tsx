@@ -258,28 +258,15 @@ function HeroSection({ company: c, accent, wizardUrl, btnRadius = "rounded-xl" }
           {/* Stats row */}
           <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-white/15 pt-6">
             {yearsActive && yearsActive >= 100 ? (
-              /* Laurel wreath for 100+ year businesses */
-              <div className="flex flex-col items-center">
-                <div className="relative flex h-20 w-20 items-center justify-center">
-                  <svg className="absolute left-0 top-0 h-full w-1/2 text-amber-500/80" viewBox="0 0 60 120" fill="none">
-                    <path d="M48 108 C44 94, 22 90, 26 76 C30 62, 16 56, 20 42 C24 28, 14 22, 19 10" stroke="currentColor" strokeWidth="1.8" fill="none" />
-                    <ellipse cx="22" cy="22" rx="7" ry="12" transform="rotate(-20 22 22)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="19" cy="42" rx="7" ry="11" transform="rotate(-25 19 42)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="23" cy="60" rx="7" ry="11" transform="rotate(-15 23 60)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="30" cy="78" rx="6" ry="10" transform="rotate(-5 30 78)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="38" cy="94" rx="6" ry="9" transform="rotate(5 38 94)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                  </svg>
-                  <svg className="absolute right-0 top-0 h-full w-1/2 text-amber-500/80" viewBox="0 0 60 120" fill="none" style={{ transform: "scaleX(-1)" }}>
-                    <path d="M48 108 C44 94, 22 90, 26 76 C30 62, 16 56, 20 42 C24 28, 14 22, 19 10" stroke="currentColor" strokeWidth="1.8" fill="none" />
-                    <ellipse cx="22" cy="22" rx="7" ry="12" transform="rotate(-20 22 22)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="19" cy="42" rx="7" ry="11" transform="rotate(-25 19 42)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="23" cy="60" rx="7" ry="11" transform="rotate(-15 23 60)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="30" cy="78" rx="6" ry="10" transform="rotate(-5 30 78)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                    <ellipse cx="38" cy="94" rx="6" ry="9" transform="rotate(5 38 94)" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="0.8" />
-                  </svg>
-                  <span className="relative z-10 text-2xl font-bold text-amber-400">100</span>
-                </div>
-                <p className="text-[10px] text-amber-400/70 uppercase tracking-wider">Jahre</p>
+              /* Laurel wreath candidates — Founder picks one, then remove the rest */
+              <div className="flex items-center gap-3">
+                {[1,2,3,4,5].map((n) => (
+                  <div key={n} className="flex flex-col items-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/kunden/${c.slug}/laurel_0${n}.png`} alt={`Kandidat ${n}`} className="h-20 w-20 object-contain" />
+                    <span className="mt-1 text-[10px] text-white/50">#{n}</span>
+                  </div>
+                ))}
               </div>
             ) : yearsActive && yearsActive >= 5 ? (
               <div><p className="text-2xl font-bold">{yearsActive}+</p><p className="text-xs text-white/60">Jahre Erfahrung</p></div>
