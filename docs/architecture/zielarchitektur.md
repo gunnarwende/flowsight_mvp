@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 3.4 | **Datum:** 2026-04-12
+**Version:** 4.0 | **Datum:** 2026-04-14
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v3.3 — 75 Decisions (D1-D75). Voice Agent Gold-Standard, Leitsystem-Schablone, Demo-Audio-Pipeline, Machine Manifest v2.0. 62 PRs in 10 Tagen.
+**Status:** v4.0 — 83 Decisions (D1-D83). Website-Entscheidung FINAL (D83): Modul 2 = Standard, Website kein Produktbestandteil. Machine Manifest v4.0. 72+ PRs in 14 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
