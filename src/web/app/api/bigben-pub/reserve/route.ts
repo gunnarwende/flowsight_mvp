@@ -77,22 +77,8 @@ export async function POST(req: Request) {
 
     const guestResult = await sendSms(phone, guestSms, "BigBenPub");
 
-    // ── SMS to Paul (owner) ───────────────────────────────────────
-    if (PAUL_PHONE) {
-      const ownerSms = [
-        `NEW BOOKING`,
-        `${dateStr} at ${time}`,
-        `${guests} guests — ${name}`,
-        `Phone: ${phone}`,
-        note ? `Note: ${note}` : "",
-        ``,
-        `Open app to confirm or decline.`,
-      ]
-        .filter(Boolean)
-        .join("\n");
-
-      await sendSms(PAUL_PHONE, ownerSms, "BigBenPub");
-    }
+    // No SMS to Paul — he sees new reservations via badge in his app.
+    // Saves SMS costs. Paul checks app regularly (push notification planned).
 
     console.log(
       JSON.stringify({
