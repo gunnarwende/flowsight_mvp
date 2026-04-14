@@ -281,4 +281,12 @@ export const walterLeuthold: CustomerSite = {
         "Seit \u00fcber zwei Jahrzehnten betreut Walter Leuthold Privathaushalte und Liegenschaften am linken Z\u00fcrichseeufer \u2014 pers\u00f6nlich, zuverl\u00e4ssig und rund um die Uhr erreichbar.",
     },
   ],
+
+  theme: {
+    profile: "naehe",
+    heroStyle: "center",
+    colorMode: "warm",
+    fontFamily: "dm-sans",
+    sectionOrder: ["reviews", "serviceArea", "services", "contact"],
+  },
 };

@@ -48,6 +48,25 @@ export interface CustomerSite {
    *  Controls start page layout (website card shown only for modus 1).
    *  Default: 1 */
   modus?: 1 | 2;
+
+  /** Visual identity configuration — controls layout, hero style, colors, font.
+   *  If not set, defaults to classic/neutral/geist (backwards-compatible). */
+  theme?: ThemeConfig;
+}
+
+// ── Theme / Visual Identity ──────────────────────────────────────
+
+export interface ThemeConfig {
+  /** Wahrnehmungs-Profil: steuert die gesamte Inszenierung */
+  profile: "tradition" | "kompetenz" | "naehe";
+  /** Hero-Variante */
+  heroStyle: "classic" | "split" | "center";
+  /** Farbmodus — steuert Surface/Card/Text-Temperaturen */
+  colorMode: "warm" | "cool" | "neutral";
+  /** Font-Familie fuer Headings (Body bleibt Geist) */
+  fontFamily: "geist" | "inter" | "dm-sans" | "source-serif";
+  /** Section-Reihenfolge Override (ohne 'hero' — Hero ist immer oben) */
+  sectionOrder?: string[];
 }
 
 // ── Contact ───────────────────────────────────────────────────────
