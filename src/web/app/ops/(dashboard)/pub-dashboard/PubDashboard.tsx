@@ -108,7 +108,7 @@ export function PubDashboard({
       <div>
         <h1 className="text-lg font-bold text-gray-900">{tenantName}</h1>
         <p className="text-xs text-gray-400">
-          {new Date().toLocaleDateString("de-CH", { weekday: "long", day: "2-digit", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
+          {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
         </p>
       </div>
 
@@ -159,18 +159,24 @@ export function PubDashboard({
       <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Today</p>
 
-        {/* Today stats */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        {/* Today stats — clickable */}
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <button onClick={() => router.push("/ops/events")} className="rounded-xl bg-gray-50 p-3 text-center transition-colors hover:bg-gray-100">
+            <p className="text-xl font-bold text-gray-900">{todayEvents.length}</p>
+            <p className="text-[10px] text-gray-400 uppercase flex items-center justify-center gap-1">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+              Events
+            </p>
+          </button>
+          <button onClick={() => router.push("/ops/reservations")} className="rounded-xl bg-gray-50 p-3 text-center transition-colors hover:bg-gray-100">
+            <p className="text-xl font-bold text-gray-900">{todayReservations.length}</p>
+            <p className="text-[10px] text-gray-400 uppercase flex items-center justify-center gap-1">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+              Bookings
+            </p>
+          </button>
           <div className="rounded-xl bg-gray-50 p-3 text-center">
-            <p className="text-2xl font-bold text-gray-900">{todayEvents.length}</p>
-            <p className="text-[10px] text-gray-400 uppercase">Events</p>
-          </div>
-          <div className="rounded-xl bg-gray-50 p-3 text-center">
-            <p className="text-2xl font-bold text-gray-900">{todayReservations.length}</p>
-            <p className="text-[10px] text-gray-400 uppercase">Bookings</p>
-          </div>
-          <div className="rounded-xl bg-gray-50 p-3 text-center">
-            <p className="text-2xl font-bold text-gray-900">{todayGuestCount}</p>
+            <p className="text-xl font-bold text-gray-900">{todayGuestCount}</p>
             <p className="text-[10px] text-gray-400 uppercase">Guests</p>
           </div>
         </div>
@@ -212,7 +218,10 @@ export function PubDashboard({
       {/* ── COMING UP (next 7 days) ────────────────────── */}
       {(upcomingEvents.length > 0 || upcomingReservations.length > 0) && (
         <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Next 7 Days</p>
+          <button onClick={() => router.push("/ops/events")} className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 hover:text-gray-600 transition-colors">
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+            Next 7 Days →
+          </button>
 
           {upcomingEvents.length > 0 && (
             <div className="space-y-1.5 mb-3">
@@ -249,41 +258,16 @@ export function PubDashboard({
       <a
         href="/bigben-pub"
         target="_blank"
-        className="flex items-center justify-between rounded-2xl border border-[#3a2e26] bg-gradient-to-r from-[#2a1f1a] to-[#1e1611] p-4 transition-all hover:border-[#a2774b]/40"
+        className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md"
       >
         <div>
-          <p className="text-sm font-bold text-gray-900">Your Website</p>
-          <p className="text-[10px] text-gray-400">flowsight.ch/bigben-pub</p>
+          <p className="text-sm font-bold text-gray-900">🌐 Your Website</p>
+          <p className="text-xs text-gray-500">flowsight.ch/bigben-pub</p>
         </div>
         <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
         </svg>
       </a>
-
-      {/* ── QUICK ACTIONS ──────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => router.push("/ops/events")}
-          className="rounded-2xl bg-gray-900 p-4 text-left text-white transition-colors hover:bg-gray-800"
-        >
-          <p className="text-2xl">📅</p>
-          <p className="mt-1 text-sm font-bold">Events</p>
-          <p className="text-[10px] text-white/60">Manage & edit</p>
-        </button>
-        <button
-          onClick={() => router.push("/ops/reservations")}
-          className="rounded-2xl bg-gray-900 p-4 text-left text-white transition-colors hover:bg-gray-800 relative"
-        >
-          <p className="text-2xl">🪑</p>
-          <p className="mt-1 text-sm font-bold">Reservations</p>
-          <p className="text-[10px] text-white/60">Manage & add</p>
-          {pendingCount > 0 && (
-            <span className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
-              {pendingCount}
-            </span>
-          )}
-        </button>
-      </div>
     </div>
   );
 }

@@ -124,9 +124,11 @@ export function OpsShell({
   // Build nav items dynamically based on modules
   const isPubTenant = !!(hasEvents || hasReservations);
   const allNavItems: NavItem[] = isPubTenant
-    ? NAV_ITEMS.filter(item => item.href !== "/ops/cases") // Remove Leitzentrale for pub tenants
-        .map(item => item.href === "/ops/settings" ? { ...item, label: "Settings" } : item)
-        .map(item => item.href === "/ops/hilfe" ? { ...item, label: "Help" } : item)
+    ? NAV_ITEMS
+        .filter(item => item.href !== "/ops/cases")     // Remove Leitzentrale
+        .filter(item => item.href !== "/ops/settings")   // Remove Settings
+        .filter(item => !item.disabled)                  // Remove Einsatzplanung (disabled)
+        .map(item => item.href === "/ops/hilfe" ? { ...item, label: "Help", href: "/ops/help" } : item)
     : [...NAV_ITEMS];
 
   // Gastro modules: Dashboard + Events + Reservations
