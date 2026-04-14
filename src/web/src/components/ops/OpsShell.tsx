@@ -122,7 +122,12 @@ export function OpsShell({
   const pathname = usePathname();
 
   // Build nav items dynamically based on modules
-  const allNavItems: NavItem[] = [...NAV_ITEMS];
+  const isPubTenant = !!(hasEvents || hasReservations);
+  const allNavItems: NavItem[] = isPubTenant
+    ? NAV_ITEMS.filter(item => item.href !== "/ops/cases") // Remove Leitzentrale for pub tenants
+        .map(item => item.href === "/ops/settings" ? { ...item, label: "Settings" } : item)
+        .map(item => item.href === "/ops/hilfe" ? { ...item, label: "Help" } : item)
+    : [...NAV_ITEMS];
 
   // Gastro modules: Dashboard + Events + Reservations
   if (hasEvents || hasReservations) {
@@ -149,7 +154,7 @@ export function OpsShell({
   }
   if (hasReservations) {
     allNavItems.splice(hasEvents ? 2 : 1, 0, {
-      label: "Reservierungen",
+      label: isPubTenant ? "Reservations" : "Reservierungen",
       href: "/ops/reservations",
       icon: (
         <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
