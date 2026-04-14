@@ -1,7 +1,7 @@
 # Machine Manifest — Gold-Contact Proof-Capture-Maschine
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
-**Version:** 4.0 — Website-Entscheidung FINAL (Updated 14.04.: Website = KEIN Produktbestandteil. Modul 2 = Standard. Kein Website-Build im Pipeline-Flow. Schritt 5 "Website produzieren" GESTRICHEN. Wizard-Einstieg: /start/[slug]. ICP-Analyse 42 Betriebe → 71% brauchen keine Website.)
+**Version:** 4.1 — BigBen Pub Erster Kunde (Updated 14.04.: Website KEIN Produktbestandteil. BigBen Pub onboarded: Voice EN, Events, Reservierungen, Dashboard. Erste Nicht-Sanitaer-Branche bewiesen. Gastro-Module (pub_events, pub_reservations) = neue Produktachse.)
 **Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
 
 ---
