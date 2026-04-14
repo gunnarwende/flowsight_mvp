@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-14 (Sales Day 14. **Website-Entscheidung FINAL: Modul 2 = Standard. Website kein Produktbestandteil.** ICP-Analyse 42 Betriebe. Modul-1-Maschine beendet. PRs #446-#450.)
+> Letzte Aktualisierung: 2026-04-14 (Sales Day 14. 22 PRs. Website-Entscheidung FINAL. **BigBen Pub = erster Kunde (Paul).** Voice EN, Pub Dashboard, Event-Pflege, Reservierungen. Review-Error-Messages.)
 
 ---
 

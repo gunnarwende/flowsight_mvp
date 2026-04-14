@@ -16,8 +16,9 @@
 - **Speakflow:** Take 1 + Take 2 FINAL. Generisches Template: `docs/gtm/speakflow_template.md`
 - **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
-- **Phase:** Sales Day 14. Website-Entscheidung FINAL. 10 PRs (#446-#455). Fokus 100% auf Kernprodukt.
-- **Nächste Schritte:** 1) Take 3+4 Speakflow finalisieren (mit ChatGPT) 2) Founder nimmt Take 1-4 Masteraufnahmen auf (Rode + Loom) 3) Assembly-Pipeline fuer Take 3+4 bauen 4) Screenflow-Architektur umsetzen (Playwright Video statt Screenshots) 5) Walter Leuthold als erster Skalierungstest 6) Doerfler Outreach (Mail 1)
+- **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN LIVE (+41445054818). Website dark. Dashboard + Events + Reservations. 22 PRs (#446-#467).
+- **Phase:** Sales Day 14. Website-Entscheidung FINAL. BigBen Pub onboarded. Fokus: Paul Demo + Doerfler Outreach.
+- **Nächste Schritte:** 1) Founder testet BigBen Voice + App morgen 2) Take 3+4 Speakflow finalisieren (Founder + ChatGPT) 3) Founder nimmt Take 1-4 Masteraufnahmen auf 4) Doerfler Outreach (Mail 1) 5) BigBen Feinschliff nach Founder-Test (Fotos, Voice-Tuning)
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
