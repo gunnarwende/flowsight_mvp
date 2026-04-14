@@ -293,5 +293,10 @@ export const orlandini: CustomerSite = {
     colorMode: "cool",
     fontFamily: "inter",
     sectionOrder: ["services", "trust", "careers", "reviews", "serviceArea", "contact"],
+    serviceLayout: "grid",
+    reviewStyle: "grid",
+    animation: "scale",
+    buttonStyle: "sharp",
+    sectionDivider: "line",
   },
 };

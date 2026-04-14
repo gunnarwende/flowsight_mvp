@@ -67,6 +67,16 @@ export interface ThemeConfig {
   fontFamily: "geist" | "inter" | "dm-sans" | "source-serif";
   /** Section-Reihenfolge Override (ohne 'hero' — Hero ist immer oben) */
   sectionOrder?: string[];
+  /** Service-Praesentation: grid (3-col) | editorial (2-col mit Bild) | stacked (vertikal) */
+  serviceLayout?: "grid" | "editorial" | "stacked";
+  /** Review-Inszenierung: grid (3 Karten) | carousel (horizontal scroll) | quote (1 grosses Zitat) */
+  reviewStyle?: "grid" | "carousel" | "quote";
+  /** Scroll-Animations-Familie */
+  animation?: "fade" | "slide" | "scale" | "none";
+  /** Button-Radius: rounded (2xl) | pill (full) | sharp (lg) */
+  buttonStyle?: "rounded" | "pill" | "sharp";
+  /** Section-Divider: gradient | space | line */
+  sectionDivider?: "gradient" | "space" | "line";
 }
 
 // ── Contact ───────────────────────────────────────────────────────
