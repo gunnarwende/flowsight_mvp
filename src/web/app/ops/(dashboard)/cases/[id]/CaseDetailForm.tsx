@@ -223,6 +223,7 @@ export function CaseDetailForm({
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [reviewState, setReviewState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [repeatWarning, setRepeatWarning] = useState<string | null>(null);
   const [reviewMsg, setReviewMsg] = useState("");
   const [localEvents, setLocalEvents] = useState(caseEvents);
   const [timelineExpanded, setTimelineExpanded] = useState(false);
@@ -512,24 +513,37 @@ export function CaseDetailForm({
   });
   const canRequestReview = reviewInfo.canRequest || reviewInfo.canResend;
 
-  async function handleRequestReview() {
+  async function handleRequestReview(force = false) {
     setReviewState("sending");
     setReviewMsg("");
+    setRepeatWarning(null);
     try {
-      const res = await fetch(`/api/ops/cases/${initialData.id}/request-review`, { method: "POST" });
+      const res = await fetch(`/api/ops/cases/${initialData.id}/request-review`, {
+        method: "POST",
+        headers: force ? { "Content-Type": "application/json" } : undefined,
+        body: force ? JSON.stringify({ force: true }) : undefined,
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         const code = data?.error;
+
+        // Stammkunden-Warnung: show as warning with override option, not hard error
+        if (code === "repeat_customer") {
+          setRepeatWarning(data?.message ?? "Dieser Kunde wurde kürzlich bereits um eine Bewertung gebeten.");
+          setReviewState("idle");
+          return;
+        }
+
         const MSG: Record<string, string> = {
           case_not_done: "Der Fall muss zuerst als \"Erledigt\" gespeichert werden.",
           no_contact_info: "Keine E-Mail oder Telefonnummer beim Kunden hinterlegt.",
           max_reviews_reached: "Maximale Anzahl Bewertungsanfragen erreicht (2).",
           cooldown_active: "Bitte 7 Tage warten bis zur nächsten Anfrage.",
-          repeat_customer: data?.message ?? "Dieser Kunde wurde kürzlich bereits um eine Bewertung gebeten.",
         };
         throw new Error(MSG[code ?? ""] ?? `Senden fehlgeschlagen (${code ?? res.status}).`);
       }
       setReviewState("sent");
+      setRepeatWarning(null);
       setTimeout(() => setReviewState("idle"), 2000);
       setLocalEvents(prev => [...prev, {
         id: crypto.randomUUID(), event_type: "review_requested",
@@ -975,6 +989,8 @@ export function CaseDetailForm({
               reviewMsg={reviewMsg}
               onRequest={handleRequestReview}
               onSkip={handleSkipReview}
+              onForceRequest={() => handleRequestReview(true)}
+              repeatWarning={repeatWarning}
               brandColor={brandColor}
               hasEvents={localEvents.length > 0}
             />
@@ -1297,7 +1313,7 @@ function StarIcon({ filled, muted }: { filled: boolean; brandColor?: string; mut
 
 function BewertungEndCap({
   status, reviewInfo, canRequestReview, reviewState, reviewMsg,
-  onRequest, onSkip, brandColor, hasEvents,
+  onRequest, onSkip, onForceRequest, repeatWarning, brandColor, hasEvents,
 }: {
   status: string;
   reviewInfo: ReturnType<typeof deriveReviewStatus>;
@@ -1306,6 +1322,8 @@ function BewertungEndCap({
   reviewMsg: string;
   onRequest: () => void;
   onSkip: () => void;
+  onForceRequest: () => void;
+  repeatWarning: string | null;
   brandColor: string;
   hasEvents: boolean;
 }) {
@@ -1368,6 +1386,17 @@ function BewertungEndCap({
 
             {reviewState === "sent" && <span className="text-emerald-600 text-xs">Gesendet</span>}
             {reviewState === "error" && <span className="text-red-600 text-xs">{reviewMsg}</span>}
+            {repeatWarning && (
+              <div className="mt-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2">
+                <p className="text-xs text-amber-800">{repeatWarning}</p>
+                <button
+                  onClick={onForceRequest}
+                  className="mt-1.5 rounded-md bg-amber-600 px-3 py-1 text-xs font-medium text-white hover:bg-amber-700 transition-colors"
+                >
+                  Trotzdem anfragen
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

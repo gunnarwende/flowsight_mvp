@@ -73,9 +73,10 @@ export function ReviewSurfaceClient({
   }
 
   // B9: Stars are ALWAYS clickable. Rating changes dynamically.
+  // Rating is NOT saved on star click — only when customer explicitly submits.
+  // This prevents premature push notifications (e.g., 2★ push before customer changes to 5★).
   function handleStarClick(n: number) {
     setRating(n);
-    saveReview(n);
     // Reset chips/text when switching between positive/negative
     if (n >= 4 && rating < 4) {
       setFeedbackText("");
@@ -193,8 +194,11 @@ export function ReviewSurfaceClient({
           {/* ── Phase: Rating (initial — no stars clicked yet) ──────── */}
           {phase === "rating" && (
             <div className="px-6 pb-6">
-              <p className="text-sm text-gray-600 mb-3 text-center">
-                Wie zufrieden waren Sie mit unserem Einsatz?
+              <p className="text-sm text-gray-600 mb-1 text-center">
+                Wie zufrieden waren Sie?
+              </p>
+              <p className="text-xs text-gray-400 mb-4 text-center">
+                Tippen Sie einfach auf die Sterne — dauert nur 30 Sekunden.
               </p>
               <InteractiveStars />
             </div>

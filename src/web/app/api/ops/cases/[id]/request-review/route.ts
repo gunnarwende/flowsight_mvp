@@ -93,7 +93,16 @@ export async function POST(
   if (row.contact_email) contactIdentifiers.push(row.contact_email);
   if (row.contact_phone) contactIdentifiers.push(row.contact_phone);
 
-  if (contactIdentifiers.length > 0) {
+  // Founder test contacts — exempt from repeat-customer check
+  const WHITELISTED_CONTACTS = [
+    "gunnar.wende@flowsight.ch",
+    "+41764458942",
+    "0764458942",
+    "+41445520919",
+  ];
+  const isWhitelisted = contactIdentifiers.some(c => WHITELISTED_CONTACTS.includes(c));
+
+  if (contactIdentifiers.length > 0 && !isWhitelisted) {
     const sixMonthsAgo = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
 
     // Find OTHER cases for this tenant with same contact that already got a review request
@@ -117,16 +126,26 @@ export async function POST(
     const { data: recentRequests } = await recentRequestQuery;
 
     if (recentRequests && recentRequests.length > 0) {
-      const lastRequest = recentRequests[0];
-      const lastDate = new Date(lastRequest.review_sent_at!).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
-      return NextResponse.json(
-        {
-          error: "repeat_customer",
-          message: `Dieser Kunde wurde am ${lastDate} bereits um eine Bewertung gebeten. Stammkunden maximal 1x pro 6 Monate anfragen.`,
-          last_request_date: lastRequest.review_sent_at,
-        },
-        { status: 409 },
-      );
+      // Check if force=true was passed (Betrieb explicitly chooses to send anyway)
+      let forceOverride = false;
+      try {
+        const body = await _request.json();
+        forceOverride = body?.force === true;
+      } catch { /* no body = no force */ }
+
+      if (!forceOverride) {
+        const lastRequest = recentRequests[0];
+        const lastDate = new Date(lastRequest.review_sent_at!).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
+        return NextResponse.json(
+          {
+            error: "repeat_customer",
+            message: `Dieser Kunde wurde am ${lastDate} bereits um eine Bewertung gebeten. Stammkunden maximal 1x pro 6 Monate anfragen.`,
+            last_request_date: lastRequest.review_sent_at,
+          },
+          { status: 409 },
+        );
+      }
+      // force=true → continue with sending (Betrieb takes responsibility)
     }
   }
 
