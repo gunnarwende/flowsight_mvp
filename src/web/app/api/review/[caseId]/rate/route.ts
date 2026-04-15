@@ -30,10 +30,10 @@ export async function POST(
 
   const supabase = getServiceClient();
 
-  // Get case data for token validation + push notification
+  // Get case data for token validation + push notification + email alert
   const { data: caseRow } = await supabase
     .from("cases")
-    .select("tenant_id, reporter_name, created_at")
+    .select("tenant_id, reporter_name, created_at, category, city, seq_number")
     .eq("id", caseId)
     .single();
 
@@ -112,6 +112,21 @@ export async function POST(
         tag: `review-${caseId}`,
       })
     ).catch(() => {});
+
+    // D1: Negative review email alert — must not be missed even if push is disabled
+    if (isNegative) {
+      import("@/src/lib/email/resend").then(({ sendNegativeReviewAlert }) =>
+        sendNegativeReviewAlert({
+          tenantId: caseRow.tenant_id,
+          caseId,
+          rating,
+          reviewText: text ?? undefined,
+          reporterName: name,
+          category: caseRow.category ?? undefined,
+          city: caseRow.city ?? undefined,
+        })
+      ).catch(() => {});
+    }
   }
 
   return NextResponse.json({ ok: true });

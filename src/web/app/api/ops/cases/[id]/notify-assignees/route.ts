@@ -75,9 +75,21 @@ export async function POST(
 
     const caseLabel = formatCaseId(row.seq_number, identity.caseIdPrefix);
 
-    const staffWithEmail = (staffMatches ?? []).filter(
+    const allStaffWithEmail = (staffMatches ?? []).filter(
       (s: { email: string | null }) => s.email,
     );
+
+    // D2: Self-assignment suppression — skip if assigner = assignee at small businesses (≤3 staff)
+    const { count: staffCount } = await supabase
+      .from("staff")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", row.tenant_id)
+      .eq("is_active", true);
+    const isSmallBusiness = (staffCount ?? 0) <= 3;
+
+    const staffWithEmail = isSmallBusiness
+      ? allStaffWithEmail.filter((s: { user_id: string | null }) => s.user_id !== scope.userId)
+      : allStaffWithEmail;
 
     if (staffWithEmail.length === 0) {
       return NextResponse.json(

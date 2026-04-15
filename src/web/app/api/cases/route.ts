@@ -316,10 +316,13 @@ export async function POST(request: NextRequest) {
       } catch { /* SMS best-effort */ }
     }
 
+    // D2: Self-notification suppression — skip Ops email if manual case by logged-in staff
+    const isSelfCreated = data.source === "manual";
+
     // MUST await — fire-and-forget causes Vercel to kill the invocation
     // before the Resend API call + console.log complete (msgLen=0 bug).
     // resend.ts owns the single console.log: _tag:"resend", decision, case_id, etc.
-    const emailSent = await sendCaseNotification({
+    const emailSent = isSelfCreated ? false : await sendCaseNotification({
       caseId: row.id,
       seqNumber: row.seq_number,
       caseIdPrefix: caseIdPrefix,
@@ -393,7 +396,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Notify: system failures only (email dispatch fail → RED alert)
-    if (!emailSent) {
+    // D2: Skip alert if email was intentionally suppressed (self-created manual case)
+    if (!emailSent && !isSelfCreated) {
       await notify({ severity: "RED", code: "EMAIL_DISPATCH_FAILED", refs: { case_id: row.id }, opsLink: `${APP_BASE_URL}/ops/cases/${row.id}` });
     }
 

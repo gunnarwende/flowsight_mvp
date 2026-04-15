@@ -204,10 +204,26 @@ export async function POST(
   Sentry.setTag("tenant_id", row.tenant_id);
 
   let sent = false;
-  let channel: "email" | "sms" = "email";
+  let channel: "email" | "sms" = "sms";
 
-  if (row.contact_email) {
+  // D4r: SMS primary for review requests (higher conversion: 98% open rate vs 25% email)
+  // Email as fallback when no phone number available
+  if (row.contact_phone) {
+    Sentry.setTag("area", "sms");
+    channel = "sms";
+    const smsConfig = await getTenantSmsConfig(row.tenant_id);
+    const senderName = smsConfig?.senderName ?? "FlowSight";
+    const shortToken = generateShortVerifyToken(id, row.created_at);
+    const caseRef = caseIdPrefix && row.seq_number ? `${caseIdPrefix}-${row.seq_number}` : id;
+    const smsReviewUrl = `${APP_BASE_URL}/r/${caseRef}?t=${shortToken}`;
+    const smsBody = `${senderName}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns:\n${smsReviewUrl}`;
+    const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
+    sent = smsResult.sent;
+  }
+
+  if (!sent && row.contact_email) {
     Sentry.setTag("area", "email");
+    channel = "email";
     const location = [row.plz, row.city].filter(Boolean).join(" ") || undefined;
     sent = await sendReviewRequest({
       caseId: id,
@@ -220,21 +236,6 @@ export async function POST(
       category: row.category || undefined,
       location,
     });
-    channel = "email";
-  }
-
-  if (!sent && row.contact_phone) {
-    Sentry.setTag("area", "sms");
-    channel = "sms";
-    const smsConfig = await getTenantSmsConfig(row.tenant_id);
-    const senderName = smsConfig?.senderName ?? "FlowSight";
-    // Build short URL for SMS (< 160 chars total)
-    const shortToken = generateShortVerifyToken(id, row.created_at);
-    const caseRef = caseIdPrefix && row.seq_number ? `${caseIdPrefix}-${row.seq_number}` : id;
-    const smsReviewUrl = `${APP_BASE_URL}/r/${caseRef}?t=${shortToken}`;
-    const smsBody = `${senderName}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns:\n${smsReviewUrl}`;
-    const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
-    sent = smsResult.sent;
   }
 
   if (!sent) {
