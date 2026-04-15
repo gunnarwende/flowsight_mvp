@@ -16,8 +16,8 @@ interface PubEvent {
 
 function formatDate(iso: string): string {
   const d = new Date(iso + "T12:00:00");
-  const day = d.toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
-  const date = d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
+  const day = d.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Europe/Zurich" });
+  const date = d.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
   return `${day} ${date}`;
 }
 
@@ -154,7 +154,7 @@ export function EventManager({ events }: { events: PubEvent[] }) {
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-3">
           <input
             type="text"
-            placeholder={activeTab === "sport" ? "z.B. Premier League: Arsenal vs. Chelsea" : "z.B. Quiz Night"}
+            placeholder={activeTab === "sport" ? "e.g. Premier League: Arsenal vs. Chelsea" : "e.g. Quiz Night"}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
