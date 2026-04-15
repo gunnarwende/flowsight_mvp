@@ -5,13 +5,11 @@ import { useRouter } from "next/navigation";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
-const CATEGORIES = [
-  "Sanitär",
-  "Heizung",
-  "Lüftung",
-  "Klima",
-  "Allgemein",
-] as const;
+const FALLBACK_CATEGORIES = [
+  { value: "Sanitär", label: "Sanitär" },
+  { value: "Heizung", label: "Heizung" },
+  { value: "Allgemein", label: "Allgemein" },
+];
 
 const URGENCIES = [
   { value: "normal", label: "Normal" },
@@ -22,17 +20,20 @@ const URGENCIES = [
 export function CreateCaseModal({
   open,
   onClose,
+  categories,
 }: {
   open: boolean;
   onClose: () => void;
+  categories?: { value: string; label: string }[];
 }) {
+  const effectiveCategories = categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES;
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const [reporterName, setReporterName] = useState("");
-  const [category, setCategory] = useState("Sanitär");
+  const [category, setCategory] = useState("");
   const [urgency, setUrgency] = useState("normal");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ export function CreateCaseModal({
 
   function resetForm() {
     setReporterName("");
-    setCategory("Sanitär");
+    setCategory("");
     setUrgency("normal");
     setPhone("");
     setEmail("");
@@ -164,8 +165,9 @@ export function CreateCaseModal({
                 onChange={(e) => setCategory(e.target.value)}
                 className={inputClasses}
               >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                <option value="">Kategorie wählen</option>
+                {effectiveCategories.map((c) => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
                 ))}
               </select>
             </div>

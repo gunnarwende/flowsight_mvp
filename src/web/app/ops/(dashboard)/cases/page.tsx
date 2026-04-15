@@ -4,6 +4,7 @@ import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentity, resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { resolveStaffRole } from "@/src/lib/staff/resolveStaffRole";
 import { LeitzentraleView } from "@/src/components/ops/LeitzentraleView";
+import { getCustomer } from "@/src/lib/customers/registry";
 import type { LeitzentraleCase } from "@/src/components/ops/LeitzentraleView";
 
 // ---------------------------------------------------------------------------
@@ -167,6 +168,7 @@ export default async function OpsCasesPage({
   let featuredReview: string | null = null;
   let avgRatingFromTenant: number | null = null;
   let googleReviewCount: number | null = null;
+  let tenantCategories: { value: string; label: string }[] = [];
   try {
     const authClient = await getAuthClient();
     const {
@@ -217,7 +219,7 @@ export default async function OpsCasesPage({
       if (scope?.tenantId) {
         const { data: tenant } = await supabase
           .from("tenants")
-          .select("modules")
+          .select("modules, slug")
           .eq("id", scope.tenantId)
           .single();
         const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
@@ -230,6 +232,14 @@ export default async function OpsCasesPage({
         }
         if (typeof modules.google_review_count === "number") {
           googleReviewCount = modules.google_review_count as number;
+        }
+        // Resolve tenant-specific categories from customer registry
+        const tenantSlug = (tenant as Record<string, unknown> | null)?.slug as string | undefined;
+        if (tenantSlug) {
+          const customer = getCustomer(tenantSlug);
+          if (customer?.categories) {
+            tenantCategories = customer.categories.map(c => ({ value: c.value, label: c.label }));
+          }
         }
       }
     }
@@ -258,6 +268,7 @@ export default async function OpsCasesPage({
       staffRole={currentStaffRole}
       googleReviewCount={googleReviewCount}
       showDeleted={showDeleted}
+      tenantCategories={tenantCategories}
     />
   );
 }

@@ -26,6 +26,7 @@ export interface CaseRow {
   assignee_text: string | null;
   reporter_name: string | null;
   review_sent_at: string | null;
+  review_rating: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -295,20 +296,18 @@ export function CaseListClient({
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"}`}
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ${
+                            c.status === "done" && c.review_rating != null && c.review_rating <= 3
+                              ? "bg-emerald-100 text-emerald-700 ring-rose-300"
+                              : c.status === "done" && c.review_rating != null && c.review_rating >= 4
+                                ? "bg-amber-100 text-amber-800 ring-amber-300"
+                                : c.status === "done" && c.review_sent_at
+                                  ? "bg-emerald-100 text-emerald-700 ring-amber-300"
+                                  : `${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"} ring-transparent`
+                          }`}
                         >
                           {STATUS_LABELS[c.status] ?? c.status}
                         </span>
-                        {c.status === "done" && !c.review_sent_at && (
-                          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-200" title="Review m\u00f6glich">
-                            R
-                          </span>
-                        )}
-                        {c.status === "done" && c.review_sent_at && (
-                          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-700 border border-emerald-300" title="Review gesendet">
-                            R&#10003;
-                          </span>
-                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
@@ -338,7 +337,15 @@ export function CaseListClient({
                     )}
                   </div>
                   <span
-                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"}`}
+                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ring-1 ${
+                      c.status === "done" && c.review_rating != null && c.review_rating <= 3
+                        ? "bg-emerald-100 text-emerald-700 ring-rose-300"
+                        : c.status === "done" && c.review_rating != null && c.review_rating >= 4
+                          ? "bg-amber-100 text-amber-800 ring-amber-300"
+                          : c.status === "done" && c.review_sent_at
+                            ? "bg-emerald-100 text-emerald-700 ring-amber-300"
+                            : `${STATUS_COLORS[c.status] ?? "bg-gray-100 text-gray-500"} ring-transparent`
+                    }`}
                   >
                     {STATUS_LABELS[c.status] ?? c.status}
                   </span>

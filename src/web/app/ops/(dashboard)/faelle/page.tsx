@@ -68,7 +68,7 @@ export default async function FaellePage({
   let listQuery = supabase
     .from("cases")
     .select(
-      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at",
+      "id, seq_number, created_at, status, urgency, category, description, city, plz, street, house_number, source, assignee_text, reporter_name, review_sent_at, review_rating",
       { count: "exact" }
     )
     .eq("is_demo", false)

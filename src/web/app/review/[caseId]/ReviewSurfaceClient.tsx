@@ -75,8 +75,8 @@ export function ReviewSurfaceClient({
   }
 
   // B9: Stars are ALWAYS clickable. Rating changes dynamically.
-  // Auto-save rating (stars only, no text) on phase transition so
-  // "bereits gespeichert" is accurate. Text is added on explicit submit.
+  // Rating is NOT saved on star click — only on explicit button click.
+  // Prevents accidental 1-star saves + premature push notifications.
   function handleStarClick(n: number) {
     setRating(n);
     // Reset chips/text when switching between positive/negative
@@ -88,9 +88,6 @@ export function ReviewSurfaceClient({
       setSelectedChips(new Set());
       setFreeText("");
     }
-    // Auto-save stars (fire-and-forget, no text) so rating isn't lost
-    // if customer leaves before clicking a button
-    saveReview(n);
   }
 
   function toggleChip(chip: string) {
@@ -266,16 +263,12 @@ export function ReviewSurfaceClient({
                     </svg>
                     {copied ? "Text kopiert — Google öffnet sich..." : "Auf Google teilen (optional)"}
                   </button>
-                  {/* B5: Confirm star rating was saved */}
-                  <p className="mt-2 text-center text-xs text-emerald-600 font-medium">
-                    ✓ Ihre Sterne-Bewertung wurde gespeichert.
-                  </p>
                   <button
                     type="button"
                     onClick={handlePositiveFeedback}
-                    className="mt-2 w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
+                    className="mt-3 w-full text-center text-sm text-gray-500 hover:text-gray-700 transition-colors py-2"
                   >
-                    Kein Google-Konto? Einfach hier abschliessen.
+                    Ohne Google abschliessen
                   </button>
                 </>
               ) : (
