@@ -93,6 +93,20 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // ── Redirect unauthenticated OPS users to login with ?next= ─────────
+  const pathname = request.nextUrl.pathname;
+  const isOpsProtected = pathname.startsWith("/ops") &&
+    !pathname.startsWith("/ops/login") &&
+    !pathname.startsWith("/ops/expired") &&
+    !pathname.startsWith("/ops/open") &&
+    !pathname.startsWith("/ops/app");
+
+  if (!user && isOpsProtected) {
+    const loginUrl = new URL("/ops/login", request.url);
+    loginUrl.searchParams.set("next", pathname + request.nextUrl.search);
+    return NextResponse.redirect(loginUrl);
+  }
+
   return supabaseResponse;
 }
 

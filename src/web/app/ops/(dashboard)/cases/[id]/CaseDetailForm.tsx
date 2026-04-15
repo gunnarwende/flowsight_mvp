@@ -156,6 +156,7 @@ export function CaseDetailForm({
   currentStaffName,
   staffRole,
   notifySettings,
+  tenantCategories = [],
 }: {
   initialData: CaseDetail;
   isProspect?: boolean;
@@ -171,6 +172,8 @@ export function CaseDetailForm({
     terminSms: boolean;
     staffAssignment: boolean;
   };
+  /** Tenant-specific categories from customer registry (for dropdown) */
+  tenantCategories?: { value: string; label: string }[];
 }) {
   const ns = notifySettings ?? { terminEmail: true, terminSms: true, staffAssignment: true };
   // ── Field state ──────────────────────────────────────────────────────
@@ -896,7 +899,17 @@ export function CaseDetailForm({
               <div className="bg-gray-50 -m-4 p-4 rounded-xl flex-1">
                 <SectionHead title="Beschreibung" editing onClose={cancelEdit} />
                 <div className="space-y-3">
-                  <div><label className={lbl}>Kategorie</label><input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} /></div>
+                  <div><label className={lbl}>Kategorie</label>{tenantCategories.length > 0 ? (
+                    <select value={category} onChange={e => setCategory(e.target.value)} className={inp}>
+                      {tenantCategories.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                      {!tenantCategories.some(c => c.value === category) && category && (
+                        <option value={category}>{category}</option>
+                      )}
+                      <option value="">Andere</option>
+                    </select>
+                  ) : (
+                    <input type="text" value={category} onChange={e => setCategory(e.target.value)} className={inp} />
+                  )}</div>
                   <div><label className={lbl}>Beschreibung</label><textarea rows={5} value={description} onChange={e => setDescription(e.target.value)} className={`${inp} max-h-60 overflow-y-auto`} /></div>
                 </div>
                 <EditActions onSave={saveBeschreibung} onCancel={cancelEdit} saving={saveState === "saving"} dirty={beschreibungDirty} error={saveState === "error" ? errorMsg : ""} />

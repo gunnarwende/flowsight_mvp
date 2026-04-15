@@ -72,6 +72,7 @@ export default async function FaellePage({
       { count: "exact" }
     )
     .eq("is_demo", false)
+    .eq("is_deleted", false)
     .order("created_at", { ascending: false });
   if (filterTenantId) listQuery = listQuery.eq("tenant_id", filterTenantId);
 

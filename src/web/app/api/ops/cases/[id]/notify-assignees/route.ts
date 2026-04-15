@@ -63,7 +63,7 @@ export async function POST(
       resolveTenantIdentityById(row.tenant_id),
       supabase
         .from("staff")
-        .select("display_name, email")
+        .select("display_name, email, user_id")
         .eq("tenant_id", row.tenant_id)
         .in("display_name", names)
         .eq("is_active", true),
@@ -105,9 +105,9 @@ export async function POST(
 
     const sentCount = results.filter(Boolean).length;
 
-    // Push notification to assigned staff (best-effort)
+    // Push notification to assigned staff only (best-effort, targeted per person)
     import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) => {
-      for (const s of staffWithEmail) {
+      for (const s of staffWithEmail as { display_name: string; email: string; user_id: string | null }[]) {
         sendOpsPush({
           tenantId: scope.tenantId!,
           eventType: "assignment",
@@ -115,6 +115,7 @@ export async function POST(
           body: `${row.category}: ${row.city} — ${row.urgency === "notfall" ? "NOTFALL" : row.urgency}`,
           url: `/ops/cases/${id}`,
           tag: `assign-${id}`,
+          ...(s.user_id ? { targetUserId: s.user_id } : {}),
         });
       }
     }).catch(() => {});

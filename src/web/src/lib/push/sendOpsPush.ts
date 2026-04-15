@@ -10,7 +10,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
  */
 export async function sendOpsPush(opts: {
   tenantId: string;
-  eventType: "notfall" | "assignment" | "review" | "case";
+  eventType: "notfall" | "assignment" | "review" | "negative_review" | "case";
   title: string;
   body: string;
   url?: string;
@@ -39,10 +39,11 @@ export async function sendOpsPush(opts: {
     const { data: subs } = await query;
     if (!subs || subs.length === 0) return { sent: 0, failed: 0 };
 
-    // Filter by preferences
+    // Filter by preferences (negative_review always pushes — business-critical, no opt-out)
     const filtered = subs.filter((s) => {
       switch (opts.eventType) {
         case "notfall": return s.notify_notfall;
+        case "negative_review": return true; // always push — cannot be disabled
         case "assignment": return s.notify_assignment;
         case "review": return s.notify_review;
         case "case": return s.notify_all_cases;

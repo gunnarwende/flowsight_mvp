@@ -88,12 +88,20 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   const customer = tenantSlug ? getCustomer(tenantSlug) : undefined;
   const brandColor = customer?.brandColor ?? "#d4a853"; // FlowSight gold as fallback
 
-  // ── Track surface opened (fire-and-forget) ─────────────────────────
-  await supabase.from("case_events").insert({
-    case_id: caseId,
-    event_type: "review_surface_opened",
-    title: "Bewertungsseite ge\u00f6ffnet",
-  }).then(() => {});
+  // ── Track surface opened (deduplicated — only first open) ──────────
+  const { data: existingOpen } = await supabase
+    .from("case_events")
+    .select("id")
+    .eq("case_id", caseId)
+    .eq("event_type", "review_surface_opened")
+    .limit(1);
+  if (!existingOpen || existingOpen.length === 0) {
+    await supabase.from("case_events").insert({
+      case_id: caseId,
+      event_type: "review_surface_opened",
+      title: "Bewertungsseite ge\u00f6ffnet",
+    }).then(() => {});
+  }
 
   // ── Display values ─────────────────────────────────────────────────
   const location = [caseRow.plz, caseRow.city].filter(Boolean).join(" ") || "\u2014";

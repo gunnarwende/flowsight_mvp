@@ -10,6 +10,7 @@ import { CaseDetailForm } from "./CaseDetailForm";
 import { PrintButton } from "./PrintButton";
 import { DeleteButton } from "./DeleteButton";
 import { ScrollToTop } from "./ScrollToTop";
+import { getCustomer } from "@/src/lib/customers/registry";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 
 // ---------------------------------------------------------------------------
@@ -117,10 +118,13 @@ export default async function CaseDetailPage({
   // Load tenant modules for notification settings (channel hints)
   const { data: tenantRow } = await supabase
     .from("tenants")
-    .select("modules")
+    .select("modules, slug")
     .eq("id", caseData.tenant_id)
     .single();
   const tenantModules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
+  const tenantSlug = (tenantRow as Record<string, unknown> | null)?.slug as string | undefined;
+  const tenantCustomer = tenantSlug ? getCustomer(tenantSlug) : undefined;
+  const tenantCategories = tenantCustomer?.categories?.map(c => ({ value: c.value, label: c.label })) ?? [];
 
   // Resolve logged-in user for self-send guard + RBAC
   const authClient = await getAuthClient();
@@ -188,6 +192,7 @@ export default async function CaseDetailPage({
           terminSms: tenantModules.notify_termin_sms !== false,
           staffAssignment: tenantModules.notify_staff_assignment !== false,
         }}
+        tenantCategories={tenantCategories}
       />
 
     </>
