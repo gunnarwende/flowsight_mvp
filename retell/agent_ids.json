@@ -37,6 +37,8 @@
   "bigben-pub": {
     "en_agent_id": "agent_515990d7577b002026c4c53a32",
     "en_flow_id": "conversation_flow_88648f53ec10",
-    "last_synced": "2026-04-14T18:08:07.848Z"
+    "de_agent_id": "agent_acd1807167e9b6a30911e9c5d9",
+    "de_flow_id": "conversation_flow_7b2bc2677d5c",
+    "last_synced": "2026-04-15T22:00:00.000Z"
   }
 }
