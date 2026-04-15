@@ -11,6 +11,7 @@ interface Props {
   googleReviewUrl: string | null;
   trackUrl: string | null;
   caseId?: string;
+  token?: string;
 }
 
 const STAR_PATH =
@@ -32,6 +33,7 @@ export function ReviewSurfaceClient({
   googleReviewUrl,
   trackUrl,
   caseId,
+  token,
 }: Props) {
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
@@ -66,15 +68,15 @@ export function ReviewSurfaceClient({
       await fetch(`/api/review/${caseId}/rate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: stars, ...(text ? { text } : {}) }),
+        body: JSON.stringify({ rating: stars, ...(text ? { text } : {}), ...(token ? { token } : {}) }),
       });
     } catch { /* fire-and-forget */ }
     setSaving(false);
   }
 
   // B9: Stars are ALWAYS clickable. Rating changes dynamically.
-  // Rating is NOT saved on star click — only when customer explicitly submits.
-  // This prevents premature push notifications (e.g., 2★ push before customer changes to 5★).
+  // Auto-save rating (stars only, no text) on phase transition so
+  // "bereits gespeichert" is accurate. Text is added on explicit submit.
   function handleStarClick(n: number) {
     setRating(n);
     // Reset chips/text when switching between positive/negative
@@ -86,6 +88,9 @@ export function ReviewSurfaceClient({
       setSelectedChips(new Set());
       setFreeText("");
     }
+    // Auto-save stars (fire-and-forget, no text) so rating isn't lost
+    // if customer leaves before clicking a button
+    saveReview(n);
   }
 
   function toggleChip(chip: string) {
@@ -261,16 +266,16 @@ export function ReviewSurfaceClient({
                     </svg>
                     {copied ? "Text kopiert — Google öffnet sich..." : "Auf Google teilen (optional)"}
                   </button>
-                  {/* B5: Clarify that internal review is already saved */}
+                  {/* B5: Confirm star rating was saved */}
                   <p className="mt-2 text-center text-xs text-emerald-600 font-medium">
-                    ✓ Ihre Bewertung wurde bereits gespeichert.
+                    ✓ Ihre Sterne-Bewertung wurde gespeichert.
                   </p>
                   <button
                     type="button"
                     onClick={handlePositiveFeedback}
                     className="mt-2 w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
                   >
-                    Kein Google-Konto? Kein Problem — einfach hier fertig.
+                    Kein Google-Konto? Einfach hier abschliessen.
                   </button>
                 </>
               ) : (

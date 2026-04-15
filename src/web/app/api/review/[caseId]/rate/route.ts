@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
+import { validateVerifyToken } from "@/src/lib/sms/verifySmsToken";
 
 // POST /api/review/[caseId]/rate — Save customer rating + optional text from review surface
 export async function POST(
@@ -10,6 +11,7 @@ export async function POST(
 
   let rating: number;
   let text: string | null = null;
+  let token: string | null = null;
   try {
     const body = await req.json();
     rating = Number(body.rating);
@@ -19,18 +21,30 @@ export async function POST(
     if (typeof body.text === "string" && body.text.trim().length > 0) {
       text = body.text.trim().slice(0, 2000);
     }
+    if (typeof body.token === "string") {
+      token = body.token;
+    }
   } catch {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
   const supabase = getServiceClient();
 
-  // Get tenant_id + reporter_name for push notification
+  // Get case data for token validation + push notification
   const { data: caseRow } = await supabase
     .from("cases")
-    .select("tenant_id, reporter_name")
+    .select("tenant_id, reporter_name, created_at")
     .eq("id", caseId)
     .single();
+
+  if (!caseRow) {
+    return NextResponse.json({ error: "Case not found" }, { status: 404 });
+  }
+
+  // Token validation — prevents unauthenticated rating spam
+  if (!token || !validateVerifyToken(caseId, caseRow.created_at, token)) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+  }
 
   const updatePayload: Record<string, unknown> = {
     review_rating: rating,

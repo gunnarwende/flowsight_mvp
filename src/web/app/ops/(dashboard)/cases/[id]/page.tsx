@@ -40,6 +40,7 @@ export interface CaseDetail {
   scheduled_end_at: string | null;
   internal_notes: string | null;
   review_sent_at: string | null;
+  review_rating: number | null;
   is_deleted: boolean | null;
   deleted_at: string | null;
 }

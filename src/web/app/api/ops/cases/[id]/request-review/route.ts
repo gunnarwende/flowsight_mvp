@@ -7,6 +7,7 @@ import { sendSms } from "@/src/lib/sms/sendSms";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
+import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/request-review
@@ -89,15 +90,17 @@ export async function POST(
 
   // ── B6: Stammkunden-Schutz — max 1 review request per contact per 6 months
   // Prevents nagging repeat customers who visit multiple times per year.
+  // Normalize phone for consistent matching (076... == +4176...)
+  const normalizedPhone = row.contact_phone ? normalizeSwissPhone(row.contact_phone) ?? row.contact_phone : null;
+
   const contactIdentifiers: string[] = [];
   if (row.contact_email) contactIdentifiers.push(row.contact_email);
-  if (row.contact_phone) contactIdentifiers.push(row.contact_phone);
+  if (normalizedPhone) contactIdentifiers.push(normalizedPhone);
 
   // Founder test contacts — exempt from repeat-customer check
   const WHITELISTED_CONTACTS = [
     "gunnar.wende@flowsight.ch",
     "+41764458942",
-    "0764458942",
     "+41445520919",
   ];
   const isWhitelisted = contactIdentifiers.some(c => WHITELISTED_CONTACTS.includes(c));
@@ -114,13 +117,13 @@ export async function POST(
       .not("review_sent_at", "is", null)
       .gte("review_sent_at", sixMonthsAgo);
 
-    // Check by email OR phone
-    if (row.contact_email && row.contact_phone) {
-      recentRequestQuery = recentRequestQuery.or(`contact_email.eq.${row.contact_email},contact_phone.eq.${row.contact_phone}`);
+    // Check by email OR phone (use normalized phone for matching)
+    if (row.contact_email && normalizedPhone) {
+      recentRequestQuery = recentRequestQuery.or(`contact_email.eq.${row.contact_email},contact_phone.eq.${normalizedPhone}`);
     } else if (row.contact_email) {
       recentRequestQuery = recentRequestQuery.eq("contact_email", row.contact_email);
     } else {
-      recentRequestQuery = recentRequestQuery.eq("contact_phone", row.contact_phone!);
+      recentRequestQuery = recentRequestQuery.eq("contact_phone", normalizedPhone!);
     }
 
     const { data: recentRequests } = await recentRequestQuery;

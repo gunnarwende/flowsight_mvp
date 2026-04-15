@@ -7,6 +7,7 @@ import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 import { AttachmentsSection } from "./AttachmentsSection";
 import { AppointmentPicker } from "@/src/components/ops/AppointmentPicker";
 import { getStatusColorClass } from "@/src/lib/cases/statusColors";
+import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -460,7 +461,7 @@ export function CaseDetailForm({
       house_number: houseNumber.trim() || null,
       plz: plz.trim(), city: city.trim(),
       reporter_name: reporterName.trim() || null,
-      contact_phone: contactPhone.trim() || null,
+      contact_phone: (normalizeSwissPhone(contactPhone.trim()) ?? contactPhone.trim()) || null,
       contact_email: contactEmail.trim() || null,
     });
   }
@@ -509,6 +510,7 @@ export function CaseDetailForm({
     caseStatus: status,
     hasContactInfo,
     reviewSentAt: initialData.review_sent_at,
+    reviewRating: initialData.review_rating,
     events: localEvents.map(e => ({ event_type: e.event_type, created_at: e.created_at })),
   });
   const canRequestReview = reviewInfo.canRequest || reviewInfo.canResend;
@@ -539,6 +541,8 @@ export function CaseDetailForm({
           no_contact_info: "Keine E-Mail oder Telefonnummer beim Kunden hinterlegt.",
           max_reviews_reached: "Maximale Anzahl Bewertungsanfragen erreicht (2).",
           cooldown_active: "Bitte 7 Tage warten bis zur nächsten Anfrage.",
+          review_skipped: "F\u00fcr diesen Fall wurde keine Bewertung angefragt.",
+          review_send_failed: "Bewertungsanfrage konnte nicht gesendet werden.",
         };
         throw new Error(MSG[code ?? ""] ?? `Senden fehlgeschlagen (${code ?? res.status}).`);
       }
@@ -924,7 +928,7 @@ export function CaseDetailForm({
                 <SectionHead title="Kontakt" editing onClose={cancelEdit} />
                 <div className="space-y-3">
                   <div><label className={lbl}>Kunde</label><input type="text" value={reporterName} onChange={e => setReporterName(e.target.value)} placeholder="Hans Müller" className={inp} /></div>
-                  <div><label className={lbl}>Telefon</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="+41 79..." className={inp} /></div>
+                  <div><label className={lbl}>Telefon</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="076 123 45 67" className={inp} /></div>
                   <div><label className={lbl}>E-Mail</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="name@beispiel.ch" className={inp} /></div>
                   <div className="grid grid-cols-3 gap-2">
                     <div className="col-span-2"><label className={lbl}>Strasse</label><input type="text" value={street} onChange={e => setStreet(e.target.value)} className={inp} /></div>
@@ -1328,24 +1332,40 @@ function BewertungEndCap({
   hasEvents: boolean;
 }) {
   const isActive = status === "done";
+  const isBewertet = reviewInfo.status === "bewertet_positiv" || reviewInfo.status === "bewertet_negativ";
   const reviewSent = reviewInfo.status === "angefragt" || reviewInfo.status === "geoeffnet" || reviewInfo.status === "geklickt";
-  const starsMuted = !isActive; // muted when case not yet done
+  const starsMuted = !isActive && !isBewertet;
 
   // Determine copy
   let label: string;
-  if (reviewSent) {
+  let labelColor: string;
+  if (isBewertet) {
+    label = reviewInfo.label; // "Bewertet: ★★★☆☆"
+    labelColor = reviewInfo.status === "bewertet_positiv" ? "text-amber-700" : "text-red-600";
+  } else if (reviewSent) {
     label = "Bewertung angefragt";
+    labelColor = "text-amber-700";
   } else if (status === "done" && canRequestReview) {
     label = "Bewertung anfragen";
+    labelColor = "text-gray-700";
   } else if (reviewInfo.status === "kein_kontakt") {
     label = "Kein Kontakt hinterlegt";
+    labelColor = "text-gray-400";
   } else if (reviewInfo.status === "uebersprungen") {
     label = "Keine Bewertung angefragt";
+    labelColor = "text-gray-400";
   } else if (isActive) {
     label = "Bewertung möglich";
+    labelColor = "text-gray-700";
   } else {
     label = "Nach Erledigung möglich";
+    labelColor = "text-gray-400";
   }
+
+  // Dot color: gold=rated positive, red=rated negative, amber=sent, brand=default
+  const dotColor = isBewertet
+    ? (reviewInfo.status === "bewertet_positiv" ? "#f59e0b" : "#ef4444")
+    : reviewSent ? "#f59e0b" : brandColor;
 
   return (
     <div className={`relative mt-3 pt-3 ${hasEvents ? "border-t-0" : ""}`}>
@@ -1355,20 +1375,25 @@ function BewertungEndCap({
       <div className="relative flex items-center gap-3">
         {/* Star circle — end-cap of timeline */}
         <div className="relative z-10 flex-shrink-0">
-          <div className="w-[10px] h-[10px] rounded-full" style={{ backgroundColor: reviewSent ? "#f59e0b" : brandColor, opacity: starsMuted ? 0.35 : 1 }} />
+          <div className="w-[10px] h-[10px] rounded-full" style={{ backgroundColor: dotColor, opacity: starsMuted ? 0.35 : 1 }} />
         </div>
 
         <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
-          {/* Stars */}
+          {/* Stars — show actual rating when bewertet */}
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map(i => (
-              <StarIcon key={i} filled={reviewSent} brandColor={brandColor} muted={starsMuted} />
+              <StarIcon
+                key={i}
+                filled={isBewertet ? i < (reviewInfo.reviewRating ?? 0) : (reviewSent || isBewertet)}
+                brandColor={isBewertet && reviewInfo.status === "bewertet_negativ" ? "#ef4444" : brandColor}
+                muted={starsMuted}
+              />
             ))}
           </div>
 
           {/* Label + actions */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-sm font-medium ${reviewSent ? "text-amber-700" : isActive ? "text-gray-700" : "text-gray-400"}`}>
+            <span className={`text-sm font-medium ${labelColor}`}>
               {label}
             </span>
 
