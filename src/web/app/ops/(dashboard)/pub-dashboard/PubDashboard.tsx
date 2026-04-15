@@ -102,6 +102,11 @@ export function PubDashboard({
     }
   }
 
+  // Compute week stats
+  const weekGuestCount = [...todayReservations, ...upcomingReservations].reduce((s, r) => s + r.party_size, 0);
+  const sportEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "sport");
+  const pubEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "event");
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -109,14 +114,15 @@ export function PubDashboard({
         <h1 className="text-lg font-bold text-gray-900">{tenantName}</h1>
         <p className="text-xs text-gray-400">
           {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
+          {weekGuestCount > 0 && <span className="ml-2 text-gray-500">· {weekGuestCount} guests this week</span>}
         </p>
       </div>
 
-      {/* ── NEW RESERVATIONS (urgent!) ──────────────────── */}
+      {/* ── PENDING RESERVATIONS (urgent alert) ──────── */}
       {pendingCount > 0 && (
         <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
           <div className="flex items-center gap-2 mb-3">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white animate-pulse">
               {pendingCount}
             </span>
             <p className="text-sm font-bold text-amber-800">New Reservations</p>
@@ -133,20 +139,10 @@ export function PubDashboard({
                     {r.note && <p className="text-xs text-gray-400 italic mt-0.5">&ldquo;{r.note}&rdquo;</p>}
                   </div>
                   <div className="flex gap-1.5 flex-shrink-0 ml-2">
-                    <button
-                      onClick={() => confirmReservation(r.id)}
-                      disabled={updatingId === r.id}
-                      className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-40"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      onClick={() => declineReservation(r.id)}
-                      disabled={updatingId === r.id}
-                      className="rounded-lg bg-gray-200 px-3 py-2 text-xs font-bold text-gray-600 hover:bg-gray-300 disabled:opacity-40"
-                    >
-                      ✗
-                    </button>
+                    <button onClick={() => confirmReservation(r.id)} disabled={updatingId === r.id}
+                      className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-40">Confirm</button>
+                    <button onClick={() => declineReservation(r.id)} disabled={updatingId === r.id}
+                      className="rounded-lg bg-gray-200 px-3 py-2 text-xs font-bold text-gray-600 hover:bg-gray-300 disabled:opacity-40">Decline</button>
                   </div>
                 </div>
               </div>
@@ -155,80 +151,76 @@ export function PubDashboard({
         </div>
       )}
 
-      {/* ── TODAY'S OVERVIEW ───────────────────────────── */}
-      <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Today</p>
+      {/* ── 4 SEGMENT CARDS ───────────────────────────── */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Reservations */}
+        <button onClick={() => router.push("/ops/reservations")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-base">🪑</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Reservations</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{todayReservations.length}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">{todayGuestCount} guests today</p>
+          {pendingCount > 0 && (
+            <p className="text-[11px] font-bold text-amber-600 mt-1">{pendingCount} pending</p>
+          )}
+        </button>
 
-        {/* Today stats — clickable */}
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          <button onClick={() => router.push("/ops/events")} className="rounded-xl bg-gray-50 p-3 text-center transition-colors hover:bg-gray-100">
-            <p className="text-xl font-bold text-gray-900">{todayEvents.length}</p>
-            <p className="text-[10px] text-gray-400 uppercase flex items-center justify-center gap-1">
-              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
-              Events
+        {/* Sports */}
+        <button onClick={() => router.push("/ops/events")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-base">⚽</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Sports</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{sportEvents.length}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">matches this week</p>
+          {todayEvents.filter(e => e.category === "sport").length > 0 && (
+            <p className="text-[11px] font-bold text-emerald-600 mt-1">
+              {todayEvents.filter(e => e.category === "sport").map(e => e.title.split(":")[0]).join(", ")} tonight
             </p>
-          </button>
-          <button onClick={() => router.push("/ops/reservations")} className="rounded-xl bg-gray-50 p-3 text-center transition-colors hover:bg-gray-100">
-            <p className="text-xl font-bold text-gray-900">{todayReservations.length}</p>
-            <p className="text-[10px] text-gray-400 uppercase flex items-center justify-center gap-1">
-              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-              Bookings
+          )}
+        </button>
+
+        {/* Events */}
+        <button onClick={() => router.push("/ops/events")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-100 text-base">🎵</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Events</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{pubEvents.length}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">events this week</p>
+          {todayEvents.filter(e => e.category === "event").length > 0 && (
+            <p className="text-[11px] font-bold text-purple-600 mt-1">
+              {todayEvents.filter(e => e.category === "event").map(e => e.title).join(", ")} tonight
             </p>
-          </button>
-          <div className="rounded-xl bg-gray-50 p-3 text-center">
-            <p className="text-xl font-bold text-gray-900">{todayGuestCount}</p>
-            <p className="text-[10px] text-gray-400 uppercase">Guests</p>
-          </div>
-        </div>
+          )}
+        </button>
 
-        {/* Today's events */}
-        {todayEvents.length > 0 && (
-          <div className="space-y-1.5 mb-3">
-            {todayEvents.map((e) => (
-              <div key={e.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-                <span className="text-sm">{e.category === "sport" ? "⚽" : "🎵"}</span>
-                <span className="text-xs font-semibold text-gray-700 flex-1 truncate">{e.title}</span>
-                {e.event_time && <span className="text-xs text-gray-400">{fmtTime(e.event_time)}</span>}
-              </div>
-            ))}
+        {/* Website */}
+        <a href="/bigben-pub" target="_blank"
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-base">🌐</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Website</span>
           </div>
-        )}
-
-        {/* Today's reservations */}
-        {todayReservations.length > 0 && (
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-gray-400 uppercase">Reservations today</p>
-            {todayReservations.map((r) => (
-              <div key={r.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-                <span className="text-xs font-semibold text-gray-700">{fmtTime(r.reservation_time)}</span>
-                <span className="text-xs text-gray-600 flex-1 truncate">{r.guest_name} · {r.party_size} guests</span>
-                <span className={`text-[10px] font-bold ${r.status === "confirmed" ? "text-emerald-600" : "text-amber-500"}`}>
-                  {r.status === "confirmed" ? "✓" : "⏳"}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {todayEvents.length === 0 && todayReservations.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-2">Quiet day today.</p>
-        )}
+          <p className="text-sm font-bold text-gray-900">View Website</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">flowsight.ch/bigben-pub</p>
+        </a>
       </div>
 
-      {/* ── COMING UP (next 7 days) ────────────────────── */}
-      {(upcomingEvents.length > 0 || upcomingReservations.length > 0) && (
+      {/* ── TODAY'S DETAIL ────────────────────────────── */}
+      {(todayEvents.length > 0 || todayReservations.length > 0) && (
         <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-          <button onClick={() => router.push("/ops/events")} className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 hover:text-gray-600 transition-colors">
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
-            Next 7 Days →
-          </button>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Today</p>
 
-          {upcomingEvents.length > 0 && (
+          {todayEvents.length > 0 && (
             <div className="space-y-1.5 mb-3">
-              {upcomingEvents.map((e) => (
+              {todayEvents.map((e) => (
                 <div key={e.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
                   <span className="text-sm">{e.category === "sport" ? "⚽" : "🎵"}</span>
-                  <span className="text-xs text-gray-400">{fmtDate(e.event_date)}</span>
                   <span className="text-xs font-semibold text-gray-700 flex-1 truncate">{e.title}</span>
                   {e.event_time && <span className="text-xs text-gray-400">{fmtTime(e.event_time)}</span>}
                 </div>
@@ -236,14 +228,13 @@ export function PubDashboard({
             </div>
           )}
 
-          {upcomingReservations.length > 0 && (
+          {todayReservations.length > 0 && (
             <div className="space-y-1.5">
               <p className="text-[10px] font-bold text-gray-400 uppercase">Reservations</p>
-              {upcomingReservations.map((r) => (
+              {todayReservations.map((r) => (
                 <div key={r.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="text-xs text-gray-400">{fmtDate(r.reservation_date)}</span>
                   <span className="text-xs font-semibold text-gray-700">{fmtTime(r.reservation_time)}</span>
-                  <span className="text-xs text-gray-600 flex-1 truncate">{r.guest_name} · {r.party_size}</span>
+                  <span className="text-xs text-gray-600 flex-1 truncate">{r.guest_name} · {r.party_size} guests</span>
                   <span className={`text-[10px] font-bold ${r.status === "confirmed" ? "text-emerald-600" : "text-amber-500"}`}>
                     {r.status === "confirmed" ? "✓" : "⏳"}
                   </span>
@@ -254,20 +245,11 @@ export function PubDashboard({
         </div>
       )}
 
-      {/* ── WEBSITE LINK ──────────────────────────────── */}
-      <a
-        href="/bigben-pub"
-        target="_blank"
-        className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md"
-      >
-        <div>
-          <p className="text-sm font-bold text-gray-900">🌐 Your Website</p>
-          <p className="text-xs text-gray-500">flowsight.ch/bigben-pub</p>
+      {todayEvents.length === 0 && todayReservations.length === 0 && (
+        <div className="rounded-2xl bg-gray-50 border border-gray-100 p-6 text-center">
+          <p className="text-sm text-gray-400">Quiet day today. Perfect time to plan the week ahead.</p>
         </div>
-        <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-        </svg>
-      </a>
+      )}
     </div>
   );
 }
