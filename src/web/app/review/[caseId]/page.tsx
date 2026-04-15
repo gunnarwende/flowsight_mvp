@@ -36,7 +36,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   const supabase = getServiceClient();
   const { data: caseRow, error } = await supabase
     .from("cases")
-    .select("id, created_at, tenant_id, category, plz, city")
+    .select("id, created_at, tenant_id, category, plz, city, review_sent_at")
     .eq("id", caseId)
     .single();
 
@@ -45,6 +45,23 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   // ── HMAC validation ─────────────────────────────────────────────────
   if (!validateVerifyToken(caseId, caseRow.created_at, token)) {
     return invalidShell;
+  }
+
+  // ── 90-day expiry ──────────────────────────────────────────────────
+  const REVIEW_LINK_MAX_AGE_DAYS = 90;
+  const sentAt = caseRow.review_sent_at ? new Date(caseRow.review_sent_at) : new Date(caseRow.created_at);
+  const daysSinceSent = (Date.now() - sentAt.getTime()) / (1000 * 60 * 60 * 24);
+  if (daysSinceSent > REVIEW_LINK_MAX_AGE_DAYS) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-gray-100 p-4">
+        <div className="w-full max-w-[420px] rounded-2xl bg-white p-8 text-center shadow-lg">
+          <p className="text-lg font-semibold text-gray-900">Link abgelaufen</p>
+          <p className="mt-2 text-sm text-gray-500">
+            Dieser Bewertungslink ist leider abgelaufen. Bitte kontaktieren Sie den Betrieb direkt.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   // ── Resolve tenant ─────────────────────────────────────────────────
@@ -97,6 +114,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
       googleReviewUrl={googleReviewUrl}
       trackUrl={`/api/review/${caseId}/track`}
       caseId={caseId}
+      token={token}
     />
   );
 }

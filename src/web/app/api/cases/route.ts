@@ -8,6 +8,7 @@ import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
+import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 
 // ---------------------------------------------------------------------------
 // Validation helpers (aligned with case_contract.md)
@@ -178,12 +179,17 @@ export async function POST(request: NextRequest) {
 
   const data = validation.data;
 
-  // Resolve tenant_id: body.tenant_id > tenant_slug lookup > FALLBACK_TENANT_ID
+  // Resolve tenant_id: body.tenant_id > tenant_slug lookup > OPS session > FALLBACK_TENANT_ID
   let tenantId = data.tenant_id;
   if (!tenantId && data.tenant_slug) {
     const supabase = getServiceClient();
     const { data: t } = await supabase.from("tenants").select("id").eq("slug", data.tenant_slug).single();
     if (t) tenantId = t.id;
+  }
+  // For manual cases from Leitstand: derive tenant from logged-in user's session
+  if (!tenantId && data.source === "manual") {
+    const scope = await resolveTenantScope();
+    if (scope?.tenantId) tenantId = scope.tenantId;
   }
   tenantId = tenantId ?? process.env.FALLBACK_TENANT_ID;
   if (!tenantId) {

@@ -49,7 +49,7 @@ function formatCaseLabel(caseId: string, seqNumber?: number | null, prefix: stri
 // ---------------------------------------------------------------------------
 
 const SOURCE_LABELS: Record<string, string> = {
-  voice: "Voice Agent",
+  voice: "Sprachassistent",
   wizard: "Website-Formular",
   manual: "Manuell erfasst",
 };

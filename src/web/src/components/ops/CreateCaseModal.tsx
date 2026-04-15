@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
+import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
 const CATEGORIES = [
   "Sanitär",
@@ -79,7 +80,7 @@ export function CreateCaseModal({
         body: JSON.stringify({
           source: "manual",
           reporter_name: reporterName.trim() || undefined,
-          contact_phone: phone.trim() || undefined,
+          contact_phone: (normalizeSwissPhone(phone.trim()) ?? phone.trim()) || undefined,
           contact_email: email.trim() || undefined,
           plz: plz.trim(),
           city: city.trim(),
@@ -194,7 +195,7 @@ export function CreateCaseModal({
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+41 79 123 45 67"
+              placeholder="076 123 45 67"
               className={reqClass(phone)}
             />
           </div>

@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { SendSmsResult } from "./sendSms";
+import { normalizeSwissPhone } from "../phone/normalizeSwissPhone";
 
 /**
  * Send an SMS via eCall.ch REST API (Swiss SMS gateway).
@@ -18,17 +19,23 @@ import type { SendSmsResult } from "./sendSms";
  * 2. Numeric fallback (ECALL_SENDER_NUMBER) — if alphanumeric is empty or too long.
  *
  * Phone format: eCall expects international format with 00 prefix (e.g. 0041791234567).
- * We accept E.164 (+41...) and convert automatically.
+ * We accept E.164 (+41...), local (076...), and 0041... and convert automatically.
  *
  * Never throws — returns result with sent:false on any error.
  */
 
-/** Convert E.164 (+41791234567) to eCall format (0041791234567). */
-function toEcallNumber(e164: string): string {
-  if (e164.startsWith("+")) {
-    return "00" + e164.slice(1);
+/** Convert any Swiss phone number to eCall format (0041791234567). */
+function toEcallNumber(input: string): string {
+  // Normalize to E.164 first (handles 076... → +41...), then convert +→00
+  const normalized = normalizeSwissPhone(input);
+  if (normalized) {
+    return "00" + normalized.slice(1); // +41... → 0041...
   }
-  return e164;
+  // Fallback: original conversion for already-formatted numbers
+  if (input.startsWith("+")) {
+    return "00" + input.slice(1);
+  }
+  return input;
 }
 
 export async function sendSmsEcall(

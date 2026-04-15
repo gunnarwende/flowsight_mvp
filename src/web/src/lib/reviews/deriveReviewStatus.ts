@@ -3,13 +3,15 @@
 // ---------------------------------------------------------------------------
 
 export type ReviewStatus =
-  | "moeglich"        // done + contact data + no review sent → green
-  | "angefragt"       // review_sent_at set, no surface opened → yellow
-  | "geoeffnet"       // surface_opened event → blue
-  | "geklickt"        // cta_clicked event → strong green
-  | "kein_kontakt"    // done + no contact data → gray
-  | "uebersprungen"   // explicit skip → gray
-  | "nicht_bereit"    // not done yet → hidden
+  | "bewertet_positiv" // customer rated ≥4★ → gold
+  | "bewertet_negativ" // customer rated ≤3★ → red accent
+  | "moeglich"         // done + contact data + no review sent → green
+  | "angefragt"        // review_sent_at set, no surface opened → yellow
+  | "geoeffnet"        // surface_opened event → blue
+  | "geklickt"         // cta_clicked event → strong green
+  | "kein_kontakt"     // done + no contact data → gray
+  | "uebersprungen"    // explicit skip → gray
+  | "nicht_bereit"     // not done yet → hidden
   ;
 
 export interface ReviewStatusInfo {
@@ -20,6 +22,7 @@ export interface ReviewStatusInfo {
   canResend: boolean;
   canSkip: boolean;
   reviewCount: number;
+  reviewRating?: number; // 1-5, present when bewertet
 }
 
 const MAX_REVIEW_REQUESTS = 2;
@@ -34,9 +37,10 @@ export function deriveReviewStatus(opts: {
   caseStatus: string;
   hasContactInfo: boolean;
   reviewSentAt: string | null;
+  reviewRating: number | null;
   events: CaseEvent[];
 }): ReviewStatusInfo {
-  const { caseStatus, hasContactInfo, events } = opts;
+  const { caseStatus, hasContactInfo, events, reviewRating } = opts;
 
   // Not done → not ready for review
   if (caseStatus !== "done") {
@@ -56,6 +60,24 @@ export function deriveReviewStatus(opts: {
   const hasSkipped = events.some(e => e.event_type === "review_skipped");
   const hasSurfaceOpened = events.some(e => e.event_type === "review_surface_opened");
   const hasCtaClicked = events.some(e => e.event_type === "review_cta_clicked");
+
+  // ── Customer has rated → highest priority ──────────────────────────
+  if (reviewRating != null && reviewRating >= 1 && reviewRating <= 5) {
+    const isPositive = reviewRating >= 4;
+    const stars = "\u2605".repeat(reviewRating) + "\u2606".repeat(5 - reviewRating);
+    return {
+      status: isPositive ? "bewertet_positiv" : "bewertet_negativ",
+      label: `Bewertet: ${stars}`,
+      color: isPositive
+        ? "bg-amber-50 text-amber-800 border-amber-300"
+        : "bg-red-50 text-red-700 border-red-300",
+      canRequest: false,
+      canResend: false,
+      canSkip: false,
+      reviewCount,
+      reviewRating,
+    };
+  }
 
   // Explicit skip
   if (hasSkipped) {
