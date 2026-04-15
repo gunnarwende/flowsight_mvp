@@ -281,13 +281,16 @@ async function processTerminReminders(
 ): Promise<ReminderResult[]> {
   const results: ReminderResult[] = [];
 
-  // Cases with scheduled_at in next 36h (handles cron timing variance)
+  // Cases with scheduled_at in window: -3h to +36h from now.
+  // The -3h lookback catches early-morning appointments (e.g., 08:30 MESZ = 06:30 UTC)
+  // that would otherwise be "past" when the cron runs at 07:00 UTC.
+  const windowStart = new Date(now.getTime() - 3 * 60 * 60 * 1000);
   const windowEnd = new Date(now.getTime() + 36 * 60 * 60 * 1000);
 
   const { data: cases } = await supabase
     .from("cases")
     .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, contact_phone, reporter_name")
-    .gte("scheduled_at", now.toISOString())
+    .gte("scheduled_at", windowStart.toISOString())
     .lte("scheduled_at", windowEnd.toISOString())
     .in("status", ["scheduled", "in_arbeit"])
     .not("contact_phone", "is", null);

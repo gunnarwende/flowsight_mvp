@@ -278,9 +278,12 @@ export async function POST(request: NextRequest) {
       ).catch(() => {});
     }
 
-    // Reporter confirmation (no log — result merged into notification log below)
+    // Reporter confirmation — respects tenant toggles (B11)
     let reporterEmailSent: boolean | undefined;
-    if (data.contact_email) {
+    const reporterEmailEnabled = casesModules?.notify_reporter_email !== false;
+    const reporterSmsEnabled = casesModules?.notify_reporter_sms === true;
+
+    if (data.contact_email && reporterEmailEnabled) {
       reporterEmailSent = await sendReporterConfirmation({
         caseId: row.id,
         seqNumber: row.seq_number,
@@ -290,6 +293,21 @@ export async function POST(request: NextRequest) {
         contactEmail: data.contact_email,
         category: data.category,
       });
+    }
+
+    // B2: SMS confirmation to reporter (if toggle active + phone available)
+    if (data.contact_phone && reporterSmsEnabled) {
+      try {
+        const smsConfig = await import("@/src/lib/tenants/getTenantSmsConfig").then(m => m.getTenantSmsConfig(tenantId));
+        if (smsConfig) {
+          const { sendSms } = await import("@/src/lib/sms/sendSms");
+          await sendSms(
+            data.contact_phone,
+            `${tenantDisplayName}: Ihre Meldung wurde aufgenommen (${data.category}). Wir melden uns bei Ihnen.`,
+            smsConfig.senderName ?? tenantDisplayName,
+          );
+        }
+      } catch { /* SMS best-effort */ }
     }
 
     // MUST await — fire-and-forget causes Vercel to kill the invocation

@@ -87,6 +87,49 @@ export async function POST(
     }
   }
 
+  // ── B6: Stammkunden-Schutz — max 1 review request per contact per 6 months
+  // Prevents nagging repeat customers who visit multiple times per year.
+  const contactIdentifiers: string[] = [];
+  if (row.contact_email) contactIdentifiers.push(row.contact_email);
+  if (row.contact_phone) contactIdentifiers.push(row.contact_phone);
+
+  if (contactIdentifiers.length > 0) {
+    const sixMonthsAgo = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
+
+    // Find OTHER cases for this tenant with same contact that already got a review request
+    let recentRequestQuery = supabase
+      .from("cases")
+      .select("id, review_sent_at, contact_email, contact_phone")
+      .eq("tenant_id", row.tenant_id)
+      .neq("id", id) // exclude current case
+      .not("review_sent_at", "is", null)
+      .gte("review_sent_at", sixMonthsAgo);
+
+    // Check by email OR phone
+    if (row.contact_email && row.contact_phone) {
+      recentRequestQuery = recentRequestQuery.or(`contact_email.eq.${row.contact_email},contact_phone.eq.${row.contact_phone}`);
+    } else if (row.contact_email) {
+      recentRequestQuery = recentRequestQuery.eq("contact_email", row.contact_email);
+    } else {
+      recentRequestQuery = recentRequestQuery.eq("contact_phone", row.contact_phone!);
+    }
+
+    const { data: recentRequests } = await recentRequestQuery;
+
+    if (recentRequests && recentRequests.length > 0) {
+      const lastRequest = recentRequests[0];
+      const lastDate = new Date(lastRequest.review_sent_at!).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
+      return NextResponse.json(
+        {
+          error: "repeat_customer",
+          message: `Dieser Kunde wurde am ${lastDate} bereits um eine Bewertung gebeten. Stammkunden maximal 1x pro 6 Monate anfragen.`,
+          last_request_date: lastRequest.review_sent_at,
+        },
+        { status: 409 },
+      );
+    }
+  }
+
   // Check for explicit skip
   const { data: skipEvents } = await supabase
     .from("case_events")

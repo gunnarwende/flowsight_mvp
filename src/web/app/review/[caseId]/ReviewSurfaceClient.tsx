@@ -23,8 +23,6 @@ const REVIEW_CHIPS = [
   "Jederzeit wieder",
 ];
 
-type Phase = "rating" | "positive" | "negative" | "done";
-
 export function ReviewSurfaceClient({
   companyName,
   brandColor,
@@ -35,10 +33,10 @@ export function ReviewSurfaceClient({
   trackUrl,
   caseId,
 }: Props) {
-  const [phase, setPhase] = useState<Phase>("rating");
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Positive path
   const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
@@ -47,6 +45,13 @@ export function ReviewSurfaceClient({
   // Negative path
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
+
+  // Done state (after Google click or explicit feedback send)
+  const [done, setDone] = useState(false);
+
+  // B9: Phase is DERIVED from rating, not locked after click.
+  // Customer can always change stars — phase updates dynamically.
+  const phase = done ? "done" : rating === 0 ? "rating" : rating >= 4 ? "positive" : "negative";
 
   const assembledText = useMemo(() => {
     const chips = Array.from(selectedChips).join(". ");
@@ -67,10 +72,19 @@ export function ReviewSurfaceClient({
     setSaving(false);
   }
 
+  // B9: Stars are ALWAYS clickable. Rating changes dynamically.
   function handleStarClick(n: number) {
     setRating(n);
     saveReview(n);
-    setPhase(n >= 4 ? "positive" : "negative");
+    // Reset chips/text when switching between positive/negative
+    if (n >= 4 && rating < 4) {
+      setFeedbackText("");
+      setFeedbackSent(false);
+    }
+    if (n < 4 && rating >= 4) {
+      setSelectedChips(new Set());
+      setFreeText("");
+    }
   }
 
   function toggleChip(chip: string) {
@@ -82,31 +96,33 @@ export function ReviewSurfaceClient({
     });
   }
 
+  // B4: Copy text to clipboard BEFORE opening Google
   async function handleGoogleReview() {
-    // Save text first
     if (assembledText) {
       await saveReview(rating, assembledText);
     }
     // Copy to clipboard
     try {
       await navigator.clipboard.writeText(assembledText);
-    } catch { /* mobile fallback: text is still assembled */ }
+      setCopied(true);
+      // Wait briefly so user sees "Copied!" before Google opens
+      await new Promise((r) => setTimeout(r, 800));
+    } catch { /* mobile fallback */ }
     // Track CTA click
     if (trackUrl) {
       fetch(trackUrl, { method: "POST" }).catch(() => {});
     }
-    // Open Google
     if (googleReviewUrl) {
       window.open(googleReviewUrl, "_blank", "noopener,noreferrer");
     }
-    setPhase("done");
+    setDone(true);
   }
 
   async function handlePositiveFeedback() {
     if (assembledText) {
       await saveReview(rating, assembledText);
     }
-    setPhase("done");
+    setDone(true);
   }
 
   async function handleNegativeFeedback() {
@@ -118,18 +134,28 @@ export function ReviewSurfaceClient({
 
   const displayRating = hoverRating || rating;
 
-  // Read-only mini stars
-  const MiniStars = () => (
-    <div className="flex items-center justify-center gap-1 mb-3">
+  // B9: Interactive stars — shown in ALL phases (except done), always clickable
+  const InteractiveStars = ({ size = "w-12 h-12" }: { size?: string }) => (
+    <div className="flex items-center justify-center gap-2 mb-3">
       {[1, 2, 3, 4, 5].map((n) => (
-        <svg
+        <button
           key={n}
-          className={`w-6 h-6 ${n <= rating ? "text-amber-400" : "text-gray-200"}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
+          onClick={() => handleStarClick(n)}
+          onMouseEnter={() => setHoverRating(n)}
+          onMouseLeave={() => setHoverRating(0)}
+          className="p-0.5 transition-all duration-200 hover:scale-110 active:scale-95"
+          disabled={saving}
         >
-          <path d={STAR_PATH} />
-        </svg>
+          <svg
+            className={`${size} transition-colors duration-150 ${
+              n <= displayRating ? "text-amber-400" : "text-gray-200"
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d={STAR_PATH} />
+          </svg>
+        </button>
       ))}
     </div>
   );
@@ -164,41 +190,21 @@ export function ReviewSurfaceClient({
             </div>
           </div>
 
-          {/* ── Phase: Rating (star picker) ──────────────────────────── */}
+          {/* ── Phase: Rating (initial — no stars clicked yet) ──────── */}
           {phase === "rating" && (
             <div className="px-6 pb-6">
               <p className="text-sm text-gray-600 mb-3 text-center">
                 Wie zufrieden waren Sie mit unserem Einsatz?
               </p>
-              <div className="flex items-center justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => handleStarClick(n)}
-                    onMouseEnter={() => setHoverRating(n)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    className="p-1 transition-all duration-200 hover:scale-125 active:scale-95"
-                    disabled={saving}
-                  >
-                    <svg
-                      className={`w-12 h-12 transition-colors duration-150 ${
-                        n <= displayRating ? "text-amber-400" : "text-gray-200"
-                      }`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d={STAR_PATH} />
-                    </svg>
-                  </button>
-                ))}
-              </div>
+              <InteractiveStars />
             </div>
           )}
 
           {/* ── Phase: Positive (4-5 stars) ──────────────────────────── */}
           {phase === "positive" && (
             <div className="px-6 pb-5">
-              <MiniStars />
+              {/* B9: Stars still clickable — customer can change rating */}
+              <InteractiveStars size="w-8 h-8" />
 
               <p className="text-center text-sm text-emerald-700 font-medium mb-4">
                 Vielen Dank für Ihre tolle Bewertung!
@@ -236,20 +242,33 @@ export function ReviewSurfaceClient({
                 />
               </div>
 
-              {/* CTA */}
+              {/* B4 + B5: Google CTA with clipboard copy + "optional" messaging */}
               {googleReviewUrl ? (
-                <button
-                  type="button"
-                  onClick={handleGoogleReview}
-                  disabled={saving}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-[15px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-                  style={{ backgroundColor: brandColor }}
-                >
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                  Jetzt auf Google bewerten
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleGoogleReview}
+                    disabled={saving}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-[15px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+                    style={{ backgroundColor: brandColor }}
+                  >
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    {copied ? "Text kopiert — Google öffnet sich..." : "Auf Google teilen (optional)"}
+                  </button>
+                  {/* B5: Clarify that internal review is already saved */}
+                  <p className="mt-2 text-center text-xs text-emerald-600 font-medium">
+                    ✓ Ihre Bewertung wurde bereits gespeichert.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlePositiveFeedback}
+                    className="mt-2 w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
+                  >
+                    Kein Google-Konto? Kein Problem — einfach hier fertig.
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
@@ -258,22 +277,17 @@ export function ReviewSurfaceClient({
                   className="flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-[15px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
                   style={{ backgroundColor: brandColor }}
                 >
-                  Feedback senden
+                  Bewertung abschliessen
                 </button>
               )}
-
-              <div className="pt-4 pb-1">
-                <p className="text-center text-xs text-gray-400">
-                  Kein Interesse? Sie müssen nichts tun.
-                </p>
-              </div>
             </div>
           )}
 
           {/* ── Phase: Negative (1-3 stars) ──────────────────────────── */}
           {phase === "negative" && (
             <div className="px-6 pb-5">
-              <MiniStars />
+              {/* B9: Stars still clickable — customer can upgrade to 4-5★ */}
+              <InteractiveStars size="w-8 h-8" />
 
               {!feedbackSent ? (
                 <>
@@ -328,7 +342,7 @@ export function ReviewSurfaceClient({
             </div>
           )}
 
-          {/* ── Phase: Done (after Google click or positive feedback) ── */}
+          {/* ── Phase: Done (after Google click or explicit finish) ── */}
           {phase === "done" && (
             <div className="px-6 pb-6">
               <div className="flex items-center justify-center mb-3">
@@ -348,13 +362,7 @@ export function ReviewSurfaceClient({
           )}
         </div>
 
-        {/* Footer — Identity Contract R4 */}
-        <p className="mt-4 text-center text-xs text-gray-400">
-          Technologie-Partner:{" "}
-          <a href="https://flowsight.ch" className="text-gray-500 hover:text-gray-600">
-            flowsight.ch
-          </a>
-        </p>
+        {/* B10: Footer removed — Identity Contract R4: FlowSight invisible to end customers */}
       </div>
     </div>
   );
