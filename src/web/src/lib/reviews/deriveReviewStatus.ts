@@ -64,10 +64,9 @@ export function deriveReviewStatus(opts: {
   // ── Customer has rated → highest priority ──────────────────────────
   if (reviewRating != null && reviewRating >= 1 && reviewRating <= 5) {
     const isPositive = reviewRating >= 4;
-    const stars = "\u2605".repeat(reviewRating) + "\u2606".repeat(5 - reviewRating);
     return {
       status: isPositive ? "bewertet_positiv" : "bewertet_negativ",
-      label: `Bewertet: ${stars}`,
+      label: "Bewertet",
       color: isPositive
         ? "bg-amber-50 text-amber-800 border-amber-300"
         : "bg-red-50 text-red-700 border-red-300",
@@ -144,7 +143,7 @@ export function deriveReviewStatus(opts: {
       color: "bg-blue-50 text-blue-700 border-blue-200",
       canRequest: false,
       canResend,
-      canSkip: true,
+      canSkip: false, // already sent — skip makes no sense
       reviewCount,
     };
   }
@@ -156,7 +155,7 @@ export function deriveReviewStatus(opts: {
     color: "bg-amber-50 text-amber-700 border-amber-200",
     canRequest: false,
     canResend,
-    canSkip: true,
+    canSkip: false, // already sent — skip makes no sense
     reviewCount,
   };
 }

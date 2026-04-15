@@ -56,6 +56,7 @@ export interface LeitzentraleProps {
   staffRole?: "admin" | "techniker";
   googleReviewCount?: number | null;
   showDeleted?: boolean;
+  tenantCategories?: { value: string; label: string }[];
 }
 
 // ---------------------------------------------------------------------------
@@ -239,6 +240,7 @@ export function LeitzentraleView({
   staffRole,
   googleReviewCount,
   showDeleted,
+  tenantCategories,
 }: LeitzentraleProps) {
   const router = useRouter();
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -806,7 +808,7 @@ export function LeitzentraleView({
         )}
       </div>
 
-      <CreateCaseModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <CreateCaseModal open={modalOpen} onClose={() => setModalOpen(false)} categories={tenantCategories} />
     </div>
   );
 }
