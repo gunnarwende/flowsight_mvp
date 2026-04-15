@@ -42,6 +42,16 @@ export default function SettingsPage() {
   const [notifySaved, setNotifySaved] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
 
+  // Form state — Push-Benachrichtigungen
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushActive, setPushActive] = useState(false);
+  const [pushEndpoint, setPushEndpoint] = useState<string | null>(null);
+  const [pushReview, setPushReview] = useState(true);
+  const [pushAllCases, setPushAllCases] = useState(false);
+  const [pushBaseline, setPushBaseline] = useState({ review: true, allCases: false });
+  const [pushSaving, setPushSaving] = useState(false);
+  const [pushSaved, setPushSaved] = useState(false);
+
   // Form state — Termin-Einstellungen
   const [calendarEmail, setCalendarEmail] = useState("");
   const [calendarEmailBaseline, setCalendarEmailBaseline] = useState("");
@@ -92,6 +102,47 @@ export default function SettingsPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [router]);
+
+  // Load push subscription status
+  useEffect(() => {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+    setPushSupported(true);
+    navigator.serviceWorker.ready.then(async (reg) => {
+      const sub = await reg.pushManager.getSubscription();
+      if (!sub) return;
+      setPushActive(true);
+      setPushEndpoint(sub.endpoint);
+      // Load preferences from API
+      try {
+        const res = await fetch(`/api/ops/push/subscribe?endpoint=${encodeURIComponent(sub.endpoint)}`);
+        if (res.ok) {
+          const prefs = await res.json();
+          setPushReview(prefs.notify_review ?? true);
+          setPushAllCases(prefs.notify_all_cases ?? false);
+          setPushBaseline({ review: prefs.notify_review ?? true, allCases: prefs.notify_all_cases ?? false });
+        }
+      } catch { /* ignore */ }
+    });
+  }, []);
+
+  const pushDirty = pushReview !== pushBaseline.review || pushAllCases !== pushBaseline.allCases;
+
+  async function savePush() {
+    if (!pushEndpoint) return;
+    setPushSaving(true);
+    setPushSaved(false);
+    try {
+      await fetch("/api/ops/push/subscribe", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ endpoint: pushEndpoint, notify_review: pushReview, notify_all_cases: pushAllCases }),
+      });
+      setPushBaseline({ review: pushReview, allCases: pushAllCases });
+      setPushSaved(true);
+      setTimeout(() => setPushSaved(false), 2000);
+    } catch { /* ignore */ }
+    setPushSaving(false);
+  }
 
   const notifyDirty =
     notifyEmail !== notifyBaseline.email || notifySms !== notifyBaseline.sms ||
@@ -313,6 +364,56 @@ export default function SettingsPage() {
             />
           )}
         </Section>
+
+        {/* Push-Benachrichtigungen — per-card save */}
+        {pushSupported && (
+          <Section
+            title="Push-Benachrichtigungen"
+            description={pushActive ? "Einstellungen für Push-Benachrichtigungen auf diesem Gerät." : "Push-Benachrichtigungen sind auf diesem Gerät nicht aktiviert."}
+          >
+            {pushActive ? (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Immer aktiv</p>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-3 opacity-60">
+                      <div className="pt-0.5 flex-shrink-0">
+                        <div className="w-9 h-5 bg-emerald-500 rounded-full relative"><div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full" /></div>
+                      </div>
+                      <div className="min-w-0"><p className="text-sm font-medium text-gray-700">Notf&auml;lle</p><p className="text-xs text-gray-400">Kann nicht deaktiviert werden</p></div>
+                    </div>
+                    <div className="flex items-start gap-3 opacity-60">
+                      <div className="pt-0.5 flex-shrink-0">
+                        <div className="w-9 h-5 bg-emerald-500 rounded-full relative"><div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full" /></div>
+                      </div>
+                      <div className="min-w-0"><p className="text-sm font-medium text-gray-700">Negatives Kundenfeedback</p><p className="text-xs text-gray-400">Kann nicht deaktiviert werden</p></div>
+                    </div>
+                    <div className="flex items-start gap-3 opacity-60">
+                      <div className="pt-0.5 flex-shrink-0">
+                        <div className="w-9 h-5 bg-emerald-500 rounded-full relative"><div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full" /></div>
+                      </div>
+                      <div className="min-w-0"><p className="text-sm font-medium text-gray-700">Ihnen zugewiesene F&auml;lle</p><p className="text-xs text-gray-400">Kann nicht deaktiviert werden</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Optional</p>
+                  <div className="space-y-3">
+                    <Toggle checked={pushReview} onChange={setPushReview} label="Positives Kundenfeedback" description="Push bei positiver Bewertung (4-5 Sterne)" />
+                    <Toggle checked={pushAllCases} onChange={setPushAllCases} label="Alle neuen F&auml;lle" description="Push bei jedem neuen Fall (kann viel sein)" />
+                  </div>
+                </div>
+                {pushDirty && (
+                  <CardSaveBar saving={pushSaving} saved={pushSaved} error={null} onSave={savePush} onCancel={() => { setPushReview(pushBaseline.review); setPushAllCases(pushBaseline.allCases); }} />
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Push-Benachrichtigungen sind nicht aktiviert. Beim n&auml;chsten Login erscheint ein Banner zur Aktivierung.
+              </p>
+            )}
+          </Section>
+        )}
       </div>
     </div>
   );
