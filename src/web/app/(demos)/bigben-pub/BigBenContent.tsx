@@ -282,6 +282,12 @@ export function BigBenContent() {
               {s.bookTable}
             </a>
             <a
+              href="tel:+41764458942"
+              className="rounded-lg border border-[#a2774b] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#a2774b] transition-all hover:bg-[#a2774b] hover:text-white"
+            >
+              {lang === "en" ? "Call Us" : "Anrufen"}
+            </a>
+            <a
               href="#menu"
               className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/60 hover:bg-[#2a1f1a]/10"
             >
@@ -369,7 +375,7 @@ export function BigBenContent() {
             {/* Food */}
             <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.pubBites}</h3>
-              <p className="mt-1 text-sm text-[#7a6b58]">{s.pubBitesNote}</p>
+              <p className="mt-1 text-sm text-[#a89880]">{s.pubBitesNote}</p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Chicken Wings (classic & spicy)",
@@ -392,10 +398,10 @@ export function BigBenContent() {
             {/* Drinks */}
             <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.fromBar}</h3>
-              <p className="mt-1 text-sm text-[#7a6b58]">{s.fromBarNote}</p>
+              <p className="mt-1 text-sm text-[#a89880]">{s.fromBarNote}</p>
               <div className="mt-6 space-y-6">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#7a6b58]">{s.onTap}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#a89880]">{s.onTap}</p>
                   <ul className="mt-2 space-y-2">
                     {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map((item) => (
                       <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
@@ -406,7 +412,7 @@ export function BigBenContent() {
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#7a6b58]">{s.bottlesMore}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#a89880]">{s.bottlesMore}</p>
                   <ul className="mt-2 space-y-2">
                     {[
                       "Craft Beers (rotating selection)",
@@ -462,7 +468,7 @@ export function BigBenContent() {
                   <div>
                     <p className="text-sm font-semibold">{r.name}</p>
                     {r.badge && (
-                      <p className="text-xs text-[#7a6b58]">{r.badge}</p>
+                      <p className="text-xs text-[#a89880]">{r.badge}</p>
                     )}
                   </div>
                 </div>
@@ -548,7 +554,7 @@ export function BigBenContent() {
 
               <div className="mt-10 space-y-2 text-sm text-[#8a7a66]">
                 <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
-                <p>044 722 20 62</p>
+                <a href="tel:+41764458942" className="hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
                 <a
                   href="https://www.instagram.com/bigbenpubzh/"
                   target="_blank"
@@ -580,7 +586,7 @@ export function BigBenContent() {
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
       <footer className="border-t border-[#3a2e26] bg-[#261b15] py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#7a6b58]">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#a89880]">
           <a
             href="https://www.instagram.com/bigbenpubzh/"
             target="_blank"
@@ -608,7 +614,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
       <p className="text-3xl font-bold text-[#a2774b]">{value}</p>
-      <p className="mt-1 text-xs font-medium text-[#7a6b58]">{label}</p>
+      <p className="mt-1 text-xs font-medium text-[#a89880]">{label}</p>
     </div>
   );
 }
@@ -744,7 +750,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {sportLabel}
             </h3>
             {sport.length === 0 && (
-              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
+              <p className="text-sm text-[#a89880]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
             )}
             {(() => {
               const visible = showAllSport ? sport : sport.slice(0, PREVIEW_COUNT);
@@ -759,7 +765,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#a89880] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -794,7 +800,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {eventsLabel}
             </h3>
             {pubEvents.length === 0 && (
-              <p className="text-sm text-[#7a6b58]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
+              <p className="text-sm text-[#a89880]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
             )}
             {(() => {
               const visible = showAllEvents ? pubEvents : pubEvents.slice(0, PREVIEW_COUNT);
@@ -809,7 +815,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#7a6b58] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#a89880] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
