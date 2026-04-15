@@ -55,6 +55,17 @@ export function CaseTimeline({ events, status }: { events: CaseEvent[]; status?:
               <p className="text-sm text-gray-700 leading-snug truncate">
                 {event.title}
               </p>
+              {/* Show review text for review_rated events */}
+              {event.event_type === "review_rated" && !!event.metadata?.text_preview && (
+                <p className="mt-1 text-xs text-gray-500 italic leading-relaxed">
+                  &ldquo;{String(event.metadata.text_preview)}&rdquo;
+                </p>
+              )}
+              {event.event_type === "review_rated" && !!event.metadata?.is_negative && (
+                <span className="inline-block mt-1 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-medium text-red-700">
+                  Negatives Feedback
+                </span>
+              )}
               <p className="text-[11px] text-gray-400">
                 {formatEventDate(event.created_at)}
               </p>
