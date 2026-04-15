@@ -283,7 +283,7 @@ export function OpsShell({
       {showLogoutConfirm ? (
         <div className="bg-gray-900 rounded-lg p-3 space-y-2">
           <p className="text-[11px] text-amber-400/90">
-            Nach Abmeldung ist ein neuer E-Mail-Code nötig.
+            {isPubTenant ? "You will need a new email code to log back in." : "Nach Abmeldung ist ein neuer E-Mail-Code n\u00f6tig."}
           </p>
           <div className="flex gap-3">
             <form action="/api/ops/logout" method="POST">
@@ -294,7 +294,7 @@ export function OpsShell({
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
                 </svg>
-                Ja, abmelden
+                {isPubTenant ? "Yes, log out" : "Ja, abmelden"}
               </button>
             </form>
             <button
@@ -302,7 +302,7 @@ export function OpsShell({
               onClick={() => setShowLogoutConfirm(false)}
               className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors"
             >
-              Abbrechen
+              {isPubTenant ? "Cancel" : "Abbrechen"}
             </button>
           </div>
         </div>
@@ -315,7 +315,7 @@ export function OpsShell({
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
           </svg>
-          Abmelden
+          {isPubTenant ? "Log out" : "Abmelden"}
         </button>
       )}
     </div>

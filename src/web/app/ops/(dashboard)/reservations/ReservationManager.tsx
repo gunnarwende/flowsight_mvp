@@ -37,9 +37,9 @@ function formatDate(iso: string): string {
   const d = new Date(iso + "T12:00:00");
   const today = new Date().toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
-  if (iso === today) return "Heute";
-  if (iso === tomorrow) return "Morgen";
-  return d.toLocaleDateString("de-CH", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
+  if (iso === today) return "Today";
+  if (iso === tomorrow) return "Tomorrow";
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
 }
 
 function formatTime(time: string): string {
@@ -215,7 +215,7 @@ export function ReservationManager({ reservations }: { reservations: Reservation
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-bold text-gray-900">{formatTime(r.reservation_time)}</span>
                         <span className="text-sm text-gray-600">{r.guest_name}</span>
-                        <span className="text-xs text-gray-400">· {r.party_size} Pers.</span>
+                        <span className="text-xs text-gray-400">· {r.party_size} guests</span>
                       </div>
                       {r.note && <p className="text-xs text-gray-500 mb-1">&ldquo;{r.note}&rdquo;</p>}
                       <div className="flex items-center gap-2">

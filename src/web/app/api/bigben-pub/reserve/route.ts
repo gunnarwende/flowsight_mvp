@@ -77,8 +77,19 @@ export async function POST(req: Request) {
 
     const guestResult = await sendSms(phone, guestSms, "BigBenPub");
 
-    // No SMS to Paul — he sees new reservations via badge in his app.
-    // Saves SMS costs. Paul checks app regularly (push notification planned).
+    // Push notification to Paul (no SMS — he uses the app)
+    if (tenant) {
+      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        sendOpsPush({
+          tenantId: tenant.id,
+          eventType: "case", // reuse "case" type — Paul has notify_all_cases=true
+          title: "New Reservation",
+          body: `${name} — ${dateStr} at ${time}, ${guests} ${Number(guests) === 1 ? "guest" : "guests"}`,
+          url: "/ops/reservations",
+          tag: `reservation-${date}-${name}`,
+        })
+      ).catch(() => {});
+    }
 
     console.log(
       JSON.stringify({

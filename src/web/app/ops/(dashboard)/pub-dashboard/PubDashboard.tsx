@@ -50,7 +50,7 @@ interface UpcomingReservation {
 function fmtTime(t: string | null) { return t ? t.substring(0, 5) : ""; }
 function fmtDate(iso: string) {
   const d = new Date(iso + "T12:00:00");
-  return d.toLocaleDateString("de-CH", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
 }
 
 export function PubDashboard({
@@ -127,7 +127,7 @@ export function PubDashboard({
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
-                      {fmtDate(r.reservation_date)} · {fmtTime(r.reservation_time)} · {r.party_size} Pers.
+                      {fmtDate(r.reservation_date)} · {fmtTime(r.reservation_time)} · {r.party_size} guests
                     </p>
                     <p className="text-xs text-gray-600">{r.guest_name}</p>
                     {r.note && <p className="text-xs text-gray-400 italic mt-0.5">&ldquo;{r.note}&rdquo;</p>}
@@ -201,7 +201,7 @@ export function PubDashboard({
             {todayReservations.map((r) => (
               <div key={r.id} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
                 <span className="text-xs font-semibold text-gray-700">{fmtTime(r.reservation_time)}</span>
-                <span className="text-xs text-gray-600 flex-1 truncate">{r.guest_name} · {r.party_size} Pers.</span>
+                <span className="text-xs text-gray-600 flex-1 truncate">{r.guest_name} · {r.party_size} guests</span>
                 <span className={`text-[10px] font-bold ${r.status === "confirmed" ? "text-emerald-600" : "text-amber-500"}`}>
                   {r.status === "confirmed" ? "✓" : "⏳"}
                 </span>

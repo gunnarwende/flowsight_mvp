@@ -66,6 +66,18 @@ export default async function DashboardLayout({
     tenantModules = (tenantRow?.modules ?? {}) as Record<string, unknown>;
   }
 
+  // Count pending reservations for badge (pub tenants)
+  let pendingResCount = 0;
+  if (effectiveTenantId && tenantModules.reservations) {
+    const sb3 = getServiceClient();
+    const { count } = await sb3
+      .from("pub_reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", effectiveTenantId)
+      .eq("status", "pending");
+    pendingResCount = count ?? 0;
+  }
+
   return (
     <OpsShell
       userEmail={user.email ?? ""}
@@ -80,7 +92,7 @@ export default async function DashboardLayout({
       showRoleToggle={showRoleToggle}
       hasEvents={!!tenantModules.events}
       hasReservations={!!tenantModules.reservations}
-      pendingReservations={0}
+      pendingReservations={pendingResCount}
     >
       {children}
     </OpsShell>
