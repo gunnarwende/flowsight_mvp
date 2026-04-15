@@ -245,7 +245,7 @@ export function CreateCaseModal({
   }
 
   const inputClasses =
-    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+    "w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 md:py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
   const labelClasses = "block text-xs font-medium text-gray-600 mb-1";
   const requiredMark = <span className="text-red-500 ml-0.5">*</span>;
 
@@ -264,7 +264,7 @@ export function CreateCaseModal({
       {/* Modal */}
       <div className="relative w-full h-full md:h-auto md:max-w-lg md:rounded-xl bg-white shadow-xl flex flex-col md:max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-3 md:px-5 md:py-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Neuer Fall</h2>
           <button
             onClick={onClose}
@@ -277,7 +277,7 @@ export function CreateCaseModal({
         </div>
 
         {/* Form */}
-        <form id="create-case-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <form id="create-case-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 md:px-5 md:py-4 md:space-y-4">
           {/* Reporter name */}
           <div>
             <label htmlFor="mc-name" className={labelClasses}>Name des Kunden</label>
@@ -506,7 +506,7 @@ export function CreateCaseModal({
         </form>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+        <div className="px-4 py-3 md:px-5 md:py-4 border-t border-gray-200 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}

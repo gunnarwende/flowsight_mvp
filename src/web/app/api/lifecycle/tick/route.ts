@@ -287,13 +287,13 @@ async function processTerminReminders(
   const windowStart = new Date(now.getTime() - 3 * 60 * 60 * 1000);
   const windowEnd = new Date(now.getTime() + 36 * 60 * 60 * 1000);
 
+  // D5: Include email-only cases (not just phone) for email reminder fallback
   const { data: cases } = await supabase
     .from("cases")
-    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, contact_phone, reporter_name")
+    .select("id, tenant_id, seq_number, scheduled_at, scheduled_end_at, category, contact_phone, contact_email, reporter_name")
     .gte("scheduled_at", windowStart.toISOString())
     .lte("scheduled_at", windowEnd.toISOString())
-    .in("status", ["scheduled", "in_arbeit"])
-    .not("contact_phone", "is", null);
+    .in("status", ["scheduled", "in_arbeit"]);
 
   if (!cases || cases.length === 0) return results;
 
@@ -320,49 +320,73 @@ async function processTerminReminders(
 
   for (const c of cases) {
     if (alreadySent.has(c.id)) continue;
-    if (!c.contact_phone) continue;
+    if (!c.contact_phone && !c.contact_email) continue;
 
     const tenant = tenantMap.get(c.tenant_id);
     if (!tenant) continue;
 
     const modules = (tenant.modules ?? {}) as Record<string, unknown>;
-    if (modules.notify_termin_reminder_sms === false) {
-      results.push({ case_id: c.id, sent: false, reason: "toggle_off" });
-      continue;
-    }
-    if (modules.sms !== true) {
-      results.push({ case_id: c.id, sent: false, reason: "sms_disabled" });
-      continue;
-    }
 
+    // Format termin details (shared between SMS + Email)
     const senderName = typeof modules.sms_sender_name === "string" ? modules.sms_sender_name : tenant.name;
     const tenantPhone = typeof tenant.phone === "string" ? tenant.phone : "";
-
     const start = new Date(c.scheduled_at);
     const day = start.toLocaleDateString("de-CH", { weekday: "short", timeZone: "Europe/Zurich" }).replace(/\.$/, "");
     const date = start.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", timeZone: "Europe/Zurich" });
     const time = start.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" });
-
     let endTime = "";
     if (c.scheduled_end_at) {
       const end = new Date(c.scheduled_end_at);
-      endTime = `–${end.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" })}`;
+      endTime = `\u2013${end.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" })}`;
     }
 
-    const phoneStr = tenantPhone ? ` Bei Fragen: ${tenantPhone}.` : "";
-    const smsBody = `${senderName}: Erinnerung — Ihr Termin morgen ${day} ${date}, ${time}${endTime}.${phoneStr}`;
+    let sent = false;
+    let channel: "sms" | "email" | "none" = "none";
+    let reason: string | undefined;
 
-    const smsResult = await sendSms(c.contact_phone, smsBody, senderName);
+    // D5: SMS primary for phone contacts (time-critical, 98% open rate)
+    if (c.contact_phone && modules.notify_termin_reminder_sms !== false && modules.sms === true) {
+      const phoneStr = tenantPhone ? ` Bei Fragen: ${tenantPhone}.` : "";
+      const smsBody = `${senderName}: Erinnerung \u2014 Ihr Termin morgen ${day} ${date}, ${time}${endTime}.${phoneStr}`;
+      const smsResult = await sendSms(c.contact_phone, smsBody, senderName);
+      sent = smsResult.sent;
+      channel = "sms";
+      reason = smsResult.reason;
+    }
+
+    // D5: Email fallback when no phone or SMS failed/disabled
+    if (!sent && c.contact_email) {
+      try {
+        const { sendTerminReminderEmail } = await import("@/src/lib/email/resend");
+        const emailSent = await sendTerminReminderEmail({
+          tenantName: tenant.name,
+          contactEmail: c.contact_email,
+          terminDay: day,
+          terminDate: date,
+          terminTime: `${time}${endTime}`,
+          category: c.category ?? undefined,
+          tenantPhone: tenantPhone || undefined,
+        });
+        if (emailSent) {
+          sent = true;
+          channel = "email";
+        }
+      } catch { /* email best-effort */ }
+    }
+
+    if (!sent) {
+      reason = reason ?? (c.contact_phone ? "sms_disabled_no_email" : "no_phone_email_failed");
+    }
 
     // Insert idempotency guard event
     await supabase.from("case_events").insert({
       case_id: c.id,
       event_type: "termin_reminder_sent",
-      title: "24h-Erinnerung an Kunden gesendet",
-      metadata: { sms_sent: smsResult.sent, reason: smsResult.reason ?? null },
+      title: `24h-Erinnerung an Kunden gesendet (${channel === "sms" ? "SMS" : channel === "email" ? "E-Mail" : "fehlgeschlagen"})`,
+      metadata: { channel, sent, reason: reason ?? null },
     });
 
-    results.push({ case_id: c.id, sent: smsResult.sent, reason: smsResult.reason });
+    results.push({ case_id: c.id, sent, reason });
   }
 
   return results;

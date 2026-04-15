@@ -995,3 +995,133 @@ export async function sendAppointmentIcsEmail(payload: AppointmentEmailPayload):
     return false;
   }
 }
+
+// ---------------------------------------------------------------------------
+// D5: 24h Termin-Erinnerung per E-Mail (Fallback wenn kein SMS)
+// ---------------------------------------------------------------------------
+
+interface TerminReminderEmailPayload {
+  tenantName: string;
+  contactEmail: string;
+  terminDay: string;
+  terminDate: string;
+  terminTime: string;
+  category?: string;
+  tenantPhone?: string;
+}
+
+export async function sendTerminReminderEmail(payload: TerminReminderEmailPayload): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+
+  try {
+    const from = buildFromAddress(payload.tenantName);
+    const phoneHint = payload.tenantPhone ? `<p style="margin:12px 0 0;font-size:14px;color:#6b7280">Bei Fragen erreichen Sie uns unter <strong>${escapeHtml(payload.tenantPhone)}</strong>.</p>` : "";
+
+    const html = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:520px;margin:0 auto;padding:24px">
+  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px">
+    <p style="margin:0 0 12px;font-size:16px;font-weight:600;color:#166534">Erinnerung an Ihren Termin</p>
+    <p style="margin:0;font-size:20px;font-weight:700;color:#111827">${escapeHtml(payload.terminDay)} ${escapeHtml(payload.terminDate)}, ${escapeHtml(payload.terminTime)}</p>
+    ${payload.category ? `<p style="margin:8px 0 0;font-size:14px;color:#6b7280">${escapeHtml(payload.category)}</p>` : ""}
+    ${phoneHint}
+  </div>
+  <p style="margin:16px 0 0;font-size:12px;color:#9ca3af">Diese Erinnerung wurde automatisch von ${escapeHtml(payload.tenantName)} gesendet.</p>
+</div>`;
+
+    const { error } = await getResend().emails.send({
+      from,
+      to: payload.contactEmail,
+      subject: `Erinnerung: Ihr Termin am ${payload.terminDay} ${payload.terminDate}`,
+      html,
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: { _tag: "resend", area: "customer", email_type: "termin_reminder" },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: { _tag: "resend", area: "customer", email_type: "termin_reminder" },
+    });
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// D1: Negative Review Alert — Email to business when customer rates ≤3★
+// ---------------------------------------------------------------------------
+
+interface NegativeReviewAlertPayload {
+  tenantId: string;
+  caseId: string;
+  rating: number;
+  reviewText?: string;
+  reporterName: string;
+  category?: string;
+  city?: string;
+}
+
+export async function sendNegativeReviewAlert(payload: NegativeReviewAlertPayload): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+
+  try {
+    const { getServiceClient: getSvc } = await import("@/src/lib/supabase/server");
+    const supabase = getSvc();
+    const { data: tenant } = await supabase
+      .from("tenants")
+      .select("name, modules")
+      .eq("id", payload.tenantId)
+      .single();
+
+    const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+    const notificationEmail = (typeof modules.notification_email === "string" && modules.notification_email)
+      ? modules.notification_email
+      : process.env.MAIL_REPLY_TO;
+
+    if (!notificationEmail) return false;
+
+    const tenantName = tenant?.name ?? "Betrieb";
+    const from = buildFromAddress(tenantName);
+    const stars = "\u2605".repeat(payload.rating) + "\u2606".repeat(5 - payload.rating);
+    const location = [payload.category, payload.city].filter(Boolean).join(" \u2014 ") || "";
+    const deepLink = `${(await import("@/src/lib/config/appUrl")).APP_BASE_URL}/ops/open/${payload.caseId}`;
+
+    const html = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:520px;margin:0 auto;padding:24px">
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:20px">
+    <p style="margin:0 0 4px;font-size:16px;font-weight:600;color:#991b1b">\u26a0\ufe0f Negatives Kundenfeedback</p>
+    <p style="margin:0 0 16px;font-size:28px;color:#b91c1c">${stars}</p>
+    <table style="width:100%;font-size:14px;color:#374151;border-collapse:collapse">
+      <tr><td style="padding:4px 0;color:#6b7280">Kunde</td><td style="padding:4px 0;font-weight:500">${escapeHtml(payload.reporterName)}</td></tr>
+      ${location ? `<tr><td style="padding:4px 0;color:#6b7280">Auftrag</td><td style="padding:4px 0">${escapeHtml(location)}</td></tr>` : ""}
+      ${payload.reviewText ? `<tr><td style="padding:4px 0;color:#6b7280;vertical-align:top">Feedback</td><td style="padding:4px 0;font-style:italic">\u201e${escapeHtml(payload.reviewText.slice(0, 300))}\u201c</td></tr>` : ""}
+    </table>
+    <a href="${escapeHtml(deepLink)}" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#991b1b;color:white;text-decoration:none;border-radius:8px;font-size:14px;font-weight:500">Fall ansehen</a>
+  </div>
+  <p style="margin:16px 0 0;font-size:12px;color:#9ca3af">Tipp: Reagieren Sie zeitnah auf negatives Feedback \u2014 ein pers\u00f6nlicher Anruf kann die Situation oft drehen.</p>
+</div>`;
+
+    const { error } = await getResend().emails.send({
+      from,
+      to: notificationEmail,
+      subject: `\u26a0\ufe0f Negatives Feedback (${payload.rating}\u2605) \u2014 ${payload.reporterName}`,
+      html,
+    });
+
+    if (error) {
+      Sentry.captureException(error, {
+        tags: { _tag: "resend", area: "ops", email_type: "negative_review_alert", case_id: payload.caseId },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: { _tag: "resend", area: "ops", email_type: "negative_review_alert" },
+    });
+    return false;
+  }
+}
