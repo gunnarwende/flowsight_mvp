@@ -525,6 +525,7 @@ export function CaseDetailForm({
           no_contact_info: "Keine E-Mail oder Telefonnummer beim Kunden hinterlegt.",
           max_reviews_reached: "Maximale Anzahl Bewertungsanfragen erreicht (2).",
           cooldown_active: "Bitte 7 Tage warten bis zur nächsten Anfrage.",
+          repeat_customer: data?.message ?? "Dieser Kunde wurde kürzlich bereits um eine Bewertung gebeten.",
         };
         throw new Error(MSG[code ?? ""] ?? `Senden fehlgeschlagen (${code ?? res.status}).`);
       }
