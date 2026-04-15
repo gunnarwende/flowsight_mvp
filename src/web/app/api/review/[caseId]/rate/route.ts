@@ -46,9 +46,17 @@ export async function POST(
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 
+  // Check if already rated — allow update but skip event+push on subsequent submits
+  const { data: existingCase } = await supabase
+    .from("cases")
+    .select("review_rating")
+    .eq("id", caseId)
+    .single();
+  const isFirstRating = existingCase?.review_rating == null;
+
   const updatePayload: Record<string, unknown> = {
     review_rating: rating,
-    review_received_at: new Date().toISOString(),
+    ...(isFirstRating ? { review_received_at: new Date().toISOString() } : {}),
   };
   if (text !== null) {
     updatePayload.review_text = text;
@@ -61,6 +69,11 @@ export async function POST(
 
   if (error) {
     return NextResponse.json({ error: "Failed to save rating" }, { status: 500 });
+  }
+
+  // Only create event + push on first rating (prevents duplicate timeline entries)
+  if (!isFirstRating) {
+    return NextResponse.json({ ok: true, updated: true });
   }
 
   // Track event (B7: negative reviews flagged)
@@ -92,7 +105,7 @@ export async function POST(
     import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
       sendOpsPush({
         tenantId: caseRow.tenant_id,
-        eventType: isNegative ? "notfall" : "review", // Negative = urgent event type for louder push
+        eventType: isNegative ? "negative_review" : "review", // negative_review = always push (no opt-out)
         title,
         body: bodyText,
         url: `/ops/cases/${caseId}`,

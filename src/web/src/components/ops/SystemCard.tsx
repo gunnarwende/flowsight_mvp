@@ -47,6 +47,7 @@ export function SystemCard({
       manual = 0;
     let reviewSent = 0,
       reviewReceived = 0,
+      reviewNegative = 0,
       doneTotal = 0;
 
     for (const c of cases) {
@@ -71,7 +72,10 @@ export function SystemCard({
       if (c.status === "done") {
         doneTotal++;
         if (c.review_sent_at) reviewSent++;
-        if (c.review_rating != null) reviewReceived++;
+        if (c.review_rating != null) {
+          reviewReceived++;
+          if (c.review_rating <= 3) reviewNegative++;
+        }
       }
     }
 
@@ -85,6 +89,7 @@ export function SystemCard({
       manual,
       reviewSent,
       reviewReceived,
+      reviewNegative,
       doneTotal,
     };
   }, [cases, cutoff]);
@@ -240,14 +245,24 @@ export function SystemCard({
             </button>
           </div>
 
-          {/* Erledigt — bottom center */}
+          {/* Erledigt — bottom center (border reflects review health) */}
           <div
             className="absolute left-1/2 -translate-x-1/2"
             style={{ bottom: "2%" }}
           >
             <button
               onClick={() => toggle("erledigt")}
-              className={`${nc("erledigt")} w-[100px] h-[72px] sm:w-[125px] sm:h-[85px]`}
+              className={`${nb} ${
+                activeNode === "erledigt"
+                  ? "border-blue-400 bg-blue-50 shadow-md ring-2 ring-blue-100"
+                  : stats.reviewNegative > 0
+                    ? "border-red-400 bg-white hover:shadow-sm ring-1 ring-red-100"
+                    : stats.reviewReceived > 0
+                      ? "border-amber-400 bg-amber-50/30 hover:shadow-sm"
+                      : stats.reviewSent > 0
+                        ? "border-amber-300 bg-white hover:shadow-sm"
+                        : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+              } w-[100px] h-[72px] sm:w-[125px] sm:h-[85px]`}
             >
               <div className="flex items-baseline gap-1">
                 <span className="text-xs sm:text-sm">✅</span>

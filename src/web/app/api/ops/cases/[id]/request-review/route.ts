@@ -5,7 +5,7 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { sendReviewRequest } from "@/src/lib/email/resend";
 import { sendSms } from "@/src/lib/sms/sendSms";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
-import { generateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { generateVerifyToken, generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
@@ -35,7 +35,7 @@ export async function POST(
   const supabase = getServiceClient();
   const { data: row, error: dbError } = await supabase
     .from("cases")
-    .select("id, created_at, tenant_id, status, contact_email, contact_phone, review_sent_at, category, plz, city")
+    .select("id, created_at, tenant_id, status, contact_email, contact_phone, review_sent_at, review_sent_count, category, plz, city, seq_number")
     .eq("id", id)
     .single();
 
@@ -171,14 +171,16 @@ export async function POST(
   let googleReviewUrl: string | undefined;
   let tenantDisplayName: string | undefined;
   let primaryColor: string | undefined;
+  let caseIdPrefix: string | undefined;
   {
     const { data: tenant } = await supabase
       .from("tenants")
-      .select("name, modules")
+      .select("name, modules, case_id_prefix")
       .eq("id", row.tenant_id)
       .single();
 
     tenantDisplayName = tenant?.name ?? undefined;
+    caseIdPrefix = (tenant as Record<string, unknown> | null)?.case_id_prefix as string | undefined;
     const modules = tenant?.modules as Record<string, unknown> | null;
     if (typeof modules?.google_review_url === "string" && modules.google_review_url.length > 0) {
       googleReviewUrl = modules.google_review_url;
@@ -226,8 +228,11 @@ export async function POST(
     channel = "sms";
     const smsConfig = await getTenantSmsConfig(row.tenant_id);
     const senderName = smsConfig?.senderName ?? "FlowSight";
-    // ≤ 160 chars: personal thanks + clear CTA
-    const smsBody = `${senderName}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns:\n${reviewSurfaceUrl}`;
+    // Build short URL for SMS (< 160 chars total)
+    const shortToken = generateShortVerifyToken(id, row.created_at);
+    const caseRef = caseIdPrefix && row.seq_number ? `${caseIdPrefix}-${row.seq_number}` : id;
+    const smsReviewUrl = `${APP_BASE_URL}/r/${caseRef}?t=${shortToken}`;
+    const smsBody = `${senderName}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns:\n${smsReviewUrl}`;
     const smsResult = await sendSms(row.contact_phone, smsBody, senderName);
     sent = smsResult.sent;
   }
@@ -247,7 +252,7 @@ export async function POST(
   // ── Set review_sent_at ────────────────────────────────────────────────
   const { error: updateError } = await supabase
     .from("cases")
-    .update({ review_sent_at: new Date().toISOString() })
+    .update({ review_sent_at: new Date().toISOString(), review_sent_count: (row.review_sent_count ?? 0) + 1 })
     .eq("id", id);
 
   if (updateError) {
