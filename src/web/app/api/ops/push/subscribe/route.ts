@@ -4,6 +4,35 @@ import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 
 /**
+ * GET /api/ops/push/subscribe?endpoint=... — Read push preferences for a subscription.
+ */
+export async function GET(request: NextRequest) {
+  const scope = await resolveTenantScope();
+  if (!scope?.userId) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const endpoint = request.nextUrl.searchParams.get("endpoint");
+  if (!endpoint) {
+    return NextResponse.json({ error: "missing_endpoint" }, { status: 400 });
+  }
+
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("ops_push_subscriptions")
+    .select("notify_notfall, notify_assignment, notify_review, notify_all_cases")
+    .eq("endpoint", endpoint)
+    .eq("user_id", scope.userId)
+    .single();
+
+  if (!data) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  return NextResponse.json(data);
+}
+
+/**
  * POST /api/ops/push/subscribe — Save Web Push subscription for a tenant staff member.
  * Body: { endpoint, keys: { p256dh, auth } }
  */

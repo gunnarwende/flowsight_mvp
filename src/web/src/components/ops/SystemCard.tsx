@@ -48,6 +48,7 @@ export function SystemCard({
     let reviewSent = 0,
       reviewReceived = 0,
       reviewNegative = 0,
+      ratingSum = 0,
       doneTotal = 0;
 
     for (const c of cases) {
@@ -74,6 +75,7 @@ export function SystemCard({
         if (c.review_sent_at) reviewSent++;
         if (c.review_rating != null) {
           reviewReceived++;
+          ratingSum += c.review_rating;
           if (c.review_rating <= 3) reviewNegative++;
         }
       }
@@ -90,12 +92,16 @@ export function SystemCard({
       reviewSent,
       reviewReceived,
       reviewNegative,
+      ratingSum,
       doneTotal,
     };
   }, [cases, cutoff]);
 
-  const starsFilled = avgRating != null ? Math.round(avgRating) : 0;
-  const starDisplay = avgRating != null ? avgRating.toFixed(1) : "—";
+  // Prefer external avgRating (Google), fall back to internal case average
+  const internalAvg = stats.reviewReceived > 0 ? stats.ratingSum / stats.reviewReceived : null;
+  const effectiveAvg = avgRating ?? internalAvg;
+  const starsFilled = effectiveAvg != null ? Math.round(effectiveAvg) : 0;
+  const starDisplay = effectiveAvg != null ? effectiveAvg.toFixed(1) : "—";
 
   function toggle(node: string) {
     onNodeClick(activeNode === node ? null : node);
@@ -307,7 +313,11 @@ export function SystemCard({
                 Bewertung
               </span>
               <span className="text-[8px] sm:text-[9px] text-gray-400">
-                {stats.reviewReceived}/{stats.reviewSent} erhalten
+                {stats.reviewReceived > 0
+                  ? `${stats.reviewReceived} Bewertung${stats.reviewReceived !== 1 ? "en" : ""}`
+                  : stats.reviewSent > 0
+                    ? `${stats.reviewSent} angefragt`
+                    : "Noch keine"}
               </span>
             </button>
           </div>
