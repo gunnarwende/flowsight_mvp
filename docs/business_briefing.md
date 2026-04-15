@@ -153,6 +153,15 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **Service Worker:** Push-Handler + Notification-Click → Deep-Link in die App
 - iOS: Push ab iOS 16.4 ✅, Badge ❌ (Push als Alternative)
 
+### Kanal-Routing-Regeln (seit 15.04.2026)
+- **Ein Kanal pro Empfänger pro Ereignis** — keine doppelten Benachrichtigungen
+- **SMS für zeitkritische Nachrichten** (Post-Call, Review-Fallback), **E-Mail für informative** (Bestätigungen, Termindetails)
+- **Push = Ergänzung** für sofortige Aufmerksamkeit (Notfall, Negative Review), nicht Kopie der E-Mail
+- **Self-Assignment unterdrückt** bei ≤3 MA (kein Spam bei Kleinbetrieben)
+- **Negativ-Review: immer E-Mail-Alert** zusätzlich zu Push (darf nicht untergehen)
+- **SMS-Budget-Schutz:** Email-Fallback wo möglich (~38% SMS-Einsparung)
+- Vollständige Analyse: `docs/redesign/leitstand/kommunikationsmatrix_v2.md`, Architektur-Regeln: §12a in `zielarchitektur.md`
+
 ### 3.10 Google Review Crawl (seit 04.04.2026)
 - **Wöchentlicher Crawl:** GH Actions Cron (Montag 06:00 UTC)
 - **Google Places API (New):** Rating + Review-Count + letzte 5 Review-Texte

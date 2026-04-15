@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 4.0 | **Datum:** 2026-04-14
+**Version:** 4.1 | **Datum:** 2026-04-15
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v4.0 — 83 Decisions (D1-D83). Website-Entscheidung FINAL (D83): Modul 2 = Standard, Website kein Produktbestandteil. Machine Manifest v4.0. 72+ PRs in 14 Tagen.
+**Status:** v4.1 — 84 Decisions (D1-D84). Kommunikationsregeln integriert (D84). Website-Entscheidung FINAL (D83): Modul 2 = Standard, Website kein Produktbestandteil. Machine Manifest v4.0. 72+ PRs in 14 Tagen.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -95,6 +95,7 @@
 | D81 | **Generisches Speakflow-Template.** `docs/gtm/speakflow_template.md` — Take 1-4 mit {{Platzhaltern}}, 2 Master-Varianten (A: Einsatz bei mir, B: Kenne aus der Region), Mail 1+2 Templates. Take 2 = 1:1 Gold-Standard aus Dörfler. E2E-Pipeline pro Betrieb dokumentiert. | **ENTSCHIEDEN** ✅ | Founder + CC | PR #440 |
 | D82 | **Case-Header-Redesign.** 2-Zeilen-Layout: Row 1 (← Zurück + Print/Delete/ID), Row 2 (Kategorie volle Breite, bricht natürlich um). Redundante Kategorie in Beschreibung-Section entfernt. ScrollToTop bei Navigation. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #443-#444 |
 | D83 | **Website = KEIN Produktbestandteil.** Modul 2 ist Standard (100%). Website-Modul-1-Maschine (3 Systeme, Profile, Banana, CSS-Handschriften) nach 4 Iterationen + Kill-Test beendet. ICP-Analyse 42 Betriebe: 71% brauchen keine Website, 12% Grenzfall, 12% Fallback. Website nur als Basis-Fallback bei kaputten/fehlenden Sites (Legacy-Template, kein Profil-System). Bestehende 7 Sites bleiben als Legacy. Wizard-Einstieg fuer Modul-2-Betriebe: `/start/[slug]`. | **ENTSCHIEDEN** ✅ | Founder | ICP-Analyse `docs/gtm/website/icp_analyse_42_betriebe.md`, PRs #446-#450 |
+| D84 | **Kommunikationsregeln (7 Kanal-Regeln).** Ein Kanal pro Empfänger pro Ereignis. Push = Ergänzung (nicht Kopie). Self-Assignment unterdrücken (≤3 MA). SMS primär für zeitkritische Nachrichten. E-Mail primär für informative. Negativ-Review E-Mail-Alert (immer). SMS-Budget-Schutz via Email-Fallback. 4 Regeln LIVE (D1 Negative Review Alert, D2 Self-Notification Suppression, D4r Review SMS Primary, D5 24h Reminder Email Fallback). Stress-Test mit 3 ICP-Profilen bestanden. | **ENTSCHIEDEN** ✅ | Founder + CC | §12a, `kommunikationsmatrix_v2.md` (Referenz) |
 
 ---
 
@@ -689,6 +690,45 @@ postCallSms.ts  →  sendSms()  →  sendSmsEcall()  →  eCall REST API
 - [ ] SMS_ALLOWED_NUMBERS Whitelist entfernen (nach Go-Live-Entscheid)
 - [ ] Delivery-Status-Monitoring (eCall Status-Webhooks → Morning Report)
 - [ ] Optional: Alpha-Sender pro Tenant im eCall-Portal (UX-Upgrade, kein Blocker)
+
+---
+
+## 12a. Kommunikationsregeln (Entschieden 15.04.2026)
+
+Sieben verbindliche Kanal-Regeln für alle Benachrichtigungen im System. Abgeleitet aus Code-Audit (25+ Trigger, 5 Kanäle, 5 Akteurs-Typen) und Stress-Test mit 3 ICP-Profilen (2-MA, 15-MA, 25-MA Betrieb). Vollständige Analyse: `docs/redesign/leitstand/kommunikationsmatrix_v2.md`.
+
+### KR-1: Ein Kanal pro Empfänger pro Ereignis
+Kein Empfänger bekommt die gleiche Information über zwei Kanäle gleichzeitig. Primär-Kanäle: Endkunde Voice = SMS, Endkunde Wizard = Email, Betrieb = Email, Techniker = Push, Founder = Telegram. Sekundär-Kanal nur als Fallback wenn Primär nicht verfügbar.
+
+### KR-2: Push = Ergänzung, nicht Kopie
+Push-Notifications nur für Ereignisse die SOFORTIGE Aufmerksamkeit brauchen: Notfall (Inhaber/Büro, nicht alle Techniker), Negative Review (Inhaber/Büro), Zuweisung (nur zugewiesener Techniker). Neue Fälle (nicht Notfall) = KEIN Push, Leitstand zeigt es.
+
+### KR-3: Self-Assignment unterdrücken (≤3 Staff)
+Bei Betrieben mit ≤ 3 Mitarbeitern: KEINE Assignment-Email und KEIN Assignment-Push wenn Zuweiser = Zugewiesener. Verhindert 53% Noise bei 2-Mann-Betrieben (Stress-Test Profil A). **LIVE** — Implementierung in `notify-assignees/route.ts`.
+
+### KR-4: SMS primär für zeitkritische Nachrichten
+Post-Call SMS: Immer (Kernfunktion). Review SMS: Nur wenn KEIN Email (Fallback). Termin-SMS: Nur wenn KEIN Email (Fallback). Wizard SMS: Default AUS (bleibt so). **LIVE** — Review SMS als Email-first mit SMS-Fallback.
+
+### KR-5: E-Mail primär für informative Nachrichten
+Bestätigungen, Termindetails, Zuweisung, ICS-Kalender = immer Email. 24h-Termin-Erinnerung: Email-first, SMS nur als Fallback wenn keine Email-Adresse vorhanden. **LIVE** — 24h Reminder Email-Fallback in `lifecycle/tick/route.ts`.
+
+### KR-6: Negativ-Review E-Mail-Alert (immer, zusätzlich zu Push)
+Negative Reviews (≤3 Sterne) generieren IMMER einen Email-Alert an notification_email, auch wenn Push aktiv. Begründung: Push kann deaktiviert sein, Browser geschlossen — negative Bewertung darf NICHT untergehen. Einzige Ausnahme von KR-1 (bewusste Dopplung für business-critical Event). **LIVE** — Implementierung in `rate/route.ts`.
+
+### KR-7: SMS-Budget-Schutz
+SMS = teuerster Kanal (CHF 0.10-0.14/SMS). Einsparung durch Email-Fallback bei Termin-SMS und Reminder-SMS spart ~38% SMS-Volumen. Post-Call SMS bleibt immer aktiv (kein Einsparpotenzial, Kernfunktion).
+
+### Implementierungs-Status
+
+| Regel | Status | Seit |
+|-------|--------|------|
+| KR-3: Self-Assignment-Unterdrückung | **LIVE** | 15.04.2026 |
+| KR-4: Review SMS Email-first | **LIVE** | 05.04.2026 |
+| KR-5: 24h Reminder Email-Fallback | **LIVE** | 15.04.2026 |
+| KR-6: Negativ-Review Email-Alert | **LIVE** | 05.04.2026 |
+| KR-1: Ein-Kanal-Prinzip | Regel (kein Code-Change nötig, bestehende Logik konform) | 15.04.2026 |
+| KR-2: Push-Scope-Einschränkung | OFFEN — Notfall-Push noch Broadcast an alle Staff | — |
+| KR-7: SMS-Budget-Schutz | Teilweise LIVE (Review + Reminder), Termin-SMS noch kein Email-Fallback | — |
 
 ---
 

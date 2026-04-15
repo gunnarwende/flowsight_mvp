@@ -115,6 +115,7 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 - SSOT: Supabase (tenants + cases). Vercel Env = Secret SSOT.
 - Deploy: Vercel, Root Directory = src/web
 - Secrets: Niemals ins Repo
+- Kommunikation: 7 Kanal-Regeln (D84, §12a in zielarchitektur.md). 4 davon LIVE. Referenz: `kommunikationsmatrix_v2.md`
 
 ## Dokument-Map
 
