@@ -446,7 +446,7 @@ export async function POST(req: Request) {
   const supabaseEarly = getServiceClient();
   const { data: tenantRow } = await supabaseEarly
     .from("tenants")
-    .select("name, case_id_prefix, modules")
+    .select("name, slug, case_id_prefix, modules")
     .eq("id", tenantId)
     .single();
   const tenantDisplayName = tenantRow?.name ?? undefined;
@@ -542,6 +542,41 @@ export async function POST(req: Request) {
       title: "Fall erstellt via Voice Agent",
       metadata: { source: "voice", retell_call_id: retellCallId },
     }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
+
+    // ── BigBen Pub: also create reservation if transcript indicates booking ──
+    const tenantSlug = (tenantRow as Record<string, unknown> | null)?.slug as string | undefined;
+    if (tenantSlug === "bigben-pub" && callerPhone) {
+      // Extract reservation intent from transcript/description
+      const transcript = (call?.transcript ?? "").toLowerCase();
+      const desc = (finalDescription ?? "").toLowerCase();
+      const hasReservationIntent = transcript.includes("reserv") || transcript.includes("book") || transcript.includes("table") || desc.includes("reserv") || desc.includes("book");
+      if (hasReservationIntent) {
+        try {
+          await supabase.from("pub_reservations").insert({
+            tenant_id: tenantId,
+            guest_name: reporterName ?? "Phone Booking",
+            guest_phone: callerPhone,
+            reservation_date: new Date().toISOString().split("T")[0], // today as default
+            reservation_time: "19:00", // default evening
+            party_size: 2, // default
+            note: `Voice call: ${(finalDescription ?? "").slice(0, 200)}`,
+            source: "voice",
+            status: "pending",
+          });
+          // Push to Paul
+          import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+            sendOpsPush({
+              tenantId,
+              eventType: "case",
+              title: "New Reservation (Call)",
+              body: `${reporterName ?? "Guest"} via phone`,
+              url: "/ops/reservations",
+              tag: `reservation-voice-${caseId}`,
+            })
+          ).catch(() => {});
+        } catch { /* best-effort */ }
+      }
+    }
 
     // Push notification for Notfall cases (best-effort, never blocks)
     if (urgencyNormalized === "notfall") {

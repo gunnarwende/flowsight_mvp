@@ -191,13 +191,22 @@ function Stars({ count = 5 }: { count?: number }) {
   );
 }
 
-/* ── Instagram icon ──────────────────────────────────────────────── */
+/* ── Instagram icon (colorful gradient) ─────────────────────────── */
 function IcInstagram({ className = "h-5 w-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className}>
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="5" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <defs>
+        <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#F77737" />
+          <stop offset="25%" stopColor="#FD1D1D" />
+          <stop offset="50%" stopColor="#E1306C" />
+          <stop offset="75%" stopColor="#C13584" />
+          <stop offset="100%" stopColor="#833AB4" />
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#ig-grad)" strokeWidth="2" />
+      <circle cx="12" cy="12" r="5" stroke="url(#ig-grad)" strokeWidth="2" />
+      <circle cx="17.5" cy="6.5" r="1.5" fill="url(#ig-grad)" />
     </svg>
   );
 }
@@ -205,10 +214,19 @@ function IcInstagram({ className = "h-5 w-5" }: { className?: string }) {
 /* ── Main Component ──────────────────────────────────────────────── */
 export function BigBenContent() {
   const [lang, setLang] = useState<Lang>("en");
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const s = t[lang];
 
+  /* Close lightbox on Escape */
+  useEffect(() => {
+    if (!lightboxSrc) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setLightboxSrc(null); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [lightboxSrc]);
+
   return (
-    <div className="bg-[#1e1611] text-[#f0e8dc]">
+    <div className="overflow-hidden bg-[#1e1611] text-[#f0e8dc]">
       {/* ── Top Bar ─────────────────────────────────────────────── */}
       <div className="fixed top-0 z-50 flex w-full items-center justify-between bg-[#1e1611]/95 px-4 py-2.5 shadow-sm backdrop-blur-md">
         <a
@@ -375,7 +393,7 @@ export function BigBenContent() {
             {/* Food */}
             <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.pubBites}</h3>
-              <p className="mt-1 text-sm text-[#a89880]">{s.pubBitesNote}</p>
+              <p className="mt-1 text-sm text-[#c8b99a]">{s.pubBitesNote}</p>
               <ul className="mt-6 space-y-3">
                 {[
                   "Chicken Wings (classic & spicy)",
@@ -398,10 +416,10 @@ export function BigBenContent() {
             {/* Drinks */}
             <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
               <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.fromBar}</h3>
-              <p className="mt-1 text-sm text-[#a89880]">{s.fromBarNote}</p>
+              <p className="mt-1 text-sm text-[#c8b99a]">{s.fromBarNote}</p>
               <div className="mt-6 space-y-6">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#a89880]">{s.onTap}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#c8b99a]">{s.onTap}</p>
                   <ul className="mt-2 space-y-2">
                     {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map((item) => (
                       <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
@@ -412,7 +430,7 @@ export function BigBenContent() {
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#a89880]">{s.bottlesMore}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#c8b99a]">{s.bottlesMore}</p>
                   <ul className="mt-2 space-y-2">
                     {[
                       "Craft Beers (rotating selection)",
@@ -446,7 +464,7 @@ export function BigBenContent() {
           <div className="mt-2 flex items-center justify-center gap-2">
             <Stars />
             <span className="text-sm font-semibold text-[#f0e8dc]">4.7</span>
-            <span className="text-sm text-[#8a7a66]">— 186+ Reviews {s.reviewsOnGoogle}</span>
+            <span className="text-sm text-[#b0a090]">— 186+ Reviews {s.reviewsOnGoogle}</span>
           </div>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -468,7 +486,7 @@ export function BigBenContent() {
                   <div>
                     <p className="text-sm font-semibold">{r.name}</p>
                     {r.badge && (
-                      <p className="text-xs text-[#a89880]">{r.badge}</p>
+                      <p className="text-xs text-[#c8b99a]">{r.badge}</p>
                     )}
                   </div>
                 </div>
@@ -499,7 +517,11 @@ export function BigBenContent() {
               { src: "drinks2.png", alt: "Cocktails at the bar" },
               { src: "darts.jpg", alt: "Darts at Big Ben Pub" },
             ].map((img) => (
-              <div key={img.src} className="group relative aspect-square overflow-hidden rounded-xl shadow-sm">
+              <div
+                key={img.src}
+                className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl shadow-sm"
+                onClick={() => setLightboxSrc(IMG(img.src))}
+              >
                 <Image
                   src={IMG(img.src)}
                   alt={img.alt}
@@ -513,6 +535,29 @@ export function BigBenContent() {
         </div>
       </section>
 
+      {/* ── LIGHTBOX ────────────────────────────────────────────── */}
+      {lightboxSrc && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <button
+            className="absolute right-4 top-4 text-3xl font-bold text-white/80 transition-colors hover:text-white"
+            onClick={() => setLightboxSrc(null)}
+            aria-label="Close lightbox"
+          >
+            &times;
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxSrc}
+            alt="Gallery full view"
+            className="max-h-[90vh] max-w-[95vw] rounded-lg object-contain shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
       {/* ── RESERVE ─────────────────────────────────────────────── */}
       <section id="reserve" className="scroll-mt-16 bg-[#261b15] py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
@@ -522,7 +567,7 @@ export function BigBenContent() {
           <h2 className="mt-3 text-center font-serif text-4xl font-bold">
             {s.reserveTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#8a7a66]">
+          <p className="mx-auto mt-4 max-w-md text-center text-sm text-[#b0a090]">
             {s.reserveDesc}
           </p>
 
@@ -552,7 +597,7 @@ export function BigBenContent() {
                 <HoursRow day={s.sunday} hours="16:00 – 22:00" />
               </div>
 
-              <div className="mt-10 space-y-2 text-sm text-[#8a7a66]">
+              <div className="mt-10 space-y-2 text-sm text-[#b0a090]">
                 <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
                 <a href="tel:+41764458942" className="hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
                 <a
@@ -586,7 +631,7 @@ export function BigBenContent() {
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
       <footer className="border-t border-[#3a2e26] bg-[#261b15] py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#a89880]">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#c8b99a]">
           <a
             href="https://www.instagram.com/bigbenpubzh/"
             target="_blank"
@@ -614,7 +659,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
       <p className="text-3xl font-bold text-[#a2774b]">{value}</p>
-      <p className="mt-1 text-xs font-medium text-[#a89880]">{label}</p>
+      <p className="mt-1 text-xs font-medium text-[#c8b99a]">{label}</p>
     </div>
   );
 }
@@ -650,7 +695,7 @@ function MiniFeature({ emoji, title, desc }: { emoji: string; title: string; des
     <div className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-5 shadow-sm">
       <span className="text-2xl">{emoji}</span>
       <p className="mt-2 text-sm font-bold">{title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-[#8a7a66]">{desc}</p>
+      <p className="mt-1 text-xs leading-relaxed text-[#b0a090]">{desc}</p>
     </div>
   );
 }
@@ -750,7 +795,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {sportLabel}
             </h3>
             {sport.length === 0 && (
-              <p className="text-sm text-[#a89880]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
+              <p className="text-sm text-[#c8b99a]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
             )}
             {(() => {
               const visible = showAllSport ? sport : sport.slice(0, PREVIEW_COUNT);
@@ -765,7 +810,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#a89880] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#c8b99a] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -777,7 +822,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                                 {lang === "en" ? "Kick-off" : "Anpfiff"} {fmtTime(e.event_time)}
                               </p>
                             )}
-                            {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                            {e.description && <p className="mt-1 text-xs text-[#b0a090] leading-relaxed">{e.description}</p>}
                           </div>
                         </div>
                       );
@@ -800,7 +845,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {eventsLabel}
             </h3>
             {pubEvents.length === 0 && (
-              <p className="text-sm text-[#a89880]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
+              <p className="text-sm text-[#c8b99a]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
             )}
             {(() => {
               const visible = showAllEvents ? pubEvents : pubEvents.slice(0, PREVIEW_COUNT);
@@ -815,7 +860,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#a89880] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#c8b99a] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -825,7 +870,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                             {e.event_time && (
                               <p className="mt-1 text-xs text-[#a2774b] font-semibold">{fmtTime(e.event_time)}</p>
                             )}
-                            {e.description && <p className="mt-1 text-xs text-[#8a7a66] leading-relaxed">{e.description}</p>}
+                            {e.description && <p className="mt-1 text-xs text-[#b0a090] leading-relaxed">{e.description}</p>}
                           </div>
                         </div>
                       );
