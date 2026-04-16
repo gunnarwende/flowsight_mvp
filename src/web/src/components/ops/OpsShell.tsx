@@ -124,47 +124,28 @@ export function OpsShell({
   // Build nav items dynamically based on modules
   const isPubTenant = !!(hasEvents || hasReservations);
   const allNavItems: NavItem[] = isPubTenant
-    ? NAV_ITEMS
-        .filter(item => item.href !== "/ops/cases")     // Remove Leitzentrale
-        .filter(item => item.href !== "/ops/settings")   // Remove Settings
-        .filter(item => !item.disabled)                  // Remove Einsatzplanung (disabled)
-        .map(item => item.href === "/ops/hilfe" ? { ...item, label: "Help", href: "/ops/help" } : item)
+    ? [
+        // Pub nav: only Dashboard + Help (Events/Reservations are sub-pages of Dashboard)
+        {
+          label: "Dashboard",
+          href: "/ops/pub-dashboard",
+          icon: (
+            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+          ),
+        },
+        {
+          label: "Help",
+          href: "/ops/help",
+          icon: (
+            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+            </svg>
+          ),
+        },
+      ]
     : [...NAV_ITEMS];
-
-  // Gastro modules: Dashboard + Events + Reservations
-  if (hasEvents || hasReservations) {
-    allNavItems.splice(0, 0, {
-      label: "Dashboard",
-      href: "/ops/pub-dashboard",
-      icon: (
-        <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-        </svg>
-      ),
-    });
-  }
-  if (hasEvents) {
-    allNavItems.splice(1, 0, {
-      label: "Events",
-      href: "/ops/events",
-      icon: (
-        <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-        </svg>
-      ),
-    });
-  }
-  if (hasReservations) {
-    allNavItems.splice(hasEvents ? 2 : 1, 0, {
-      label: isPubTenant ? "Reservations" : "Reservierungen",
-      href: "/ops/reservations",
-      icon: (
-        <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-      ),
-    });
-  }
 
   // RBAC: Techniker sees Leitzentrale + Support (for help/FAQ)
   const visibleNavItems = staffRole === "techniker"
@@ -175,6 +156,10 @@ export function OpsShell({
     if (href === "/ops/cases") {
       // Leitzentrale: exact match + case detail pages /ops/cases/[id]
       return pathname === "/ops/cases" || pathname === "/ops/cases/" || pathname.startsWith("/ops/cases/");
+    }
+    if (href === "/ops/pub-dashboard") {
+      // Pub dashboard: also active on events + reservations sub-pages
+      return pathname.startsWith("/ops/pub-dashboard") || pathname.startsWith("/ops/events") || pathname.startsWith("/ops/reservations");
     }
     return pathname.startsWith(href);
   }
