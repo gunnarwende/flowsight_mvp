@@ -57,7 +57,9 @@ export async function PATCH(
   }
 
   // SMS to guest on confirm/decline (skip for manual/no-phone reservations)
-  if (res.guest_phone && res.guest_phone !== "—") {
+  // Only send when status is actually CHANGING (guard against re-confirms)
+  const statusChanged = res.status !== newStatus;
+  if (statusChanged && res.guest_phone && res.guest_phone !== "—") {
     const dateObj = new Date(res.reservation_date + "T12:00:00");
     const dateStr = dateObj.toLocaleDateString("en-GB", {
       weekday: "long",
@@ -69,7 +71,7 @@ export async function PATCH(
     if (newStatus === "confirmed") {
       await sendSms(
         res.guest_phone,
-        `Hi ${res.guest_name}! Your table at Big Ben Pub is confirmed: ${dateStr} at ${timeStr}, ${res.party_size} guests. See you there! Alte Landstrasse 20, Oberrieden.`,
+        `Confirmed! Your table at Big Ben Pub, ${dateStr} at ${timeStr} for ${res.party_size} guests. Alte Landstrasse 20, Oberrieden. See you there!`,
         "BigBenPub"
       );
     } else if (newStatus === "declined") {
@@ -86,7 +88,7 @@ export async function PATCH(
     reservation_id: id,
     status: newStatus,
     guest: res.guest_name,
-    sms: res.guest_phone && res.guest_phone !== "—" ? "sent" : "skipped",
+    sms: statusChanged && res.guest_phone && res.guest_phone !== "—" ? "sent" : "skipped",
   }));
 
   return NextResponse.json({ ok: true, status: newStatus });
