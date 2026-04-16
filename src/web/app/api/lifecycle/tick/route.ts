@@ -105,12 +105,17 @@ export async function POST(req: NextRequest) {
   // ── 24h Termin reminders ──────────────────────────────────────────────
   const reminderResults = await processTerminReminders(supabase, now);
 
+  // ── 24h Pub reservation reminders ────────────────────────────────────
+  const pubReminderResults = await processPubReservationReminders(supabase, now);
+
   return NextResponse.json({
     processed: trials.length,
     actions: results.length,
     results,
     reminders_sent: reminderResults.length,
     reminders: reminderResults,
+    pub_reminders_sent: pubReminderResults.length,
+    pub_reminders: pubReminderResults,
   });
 }
 
@@ -387,6 +392,65 @@ async function processTerminReminders(
     });
 
     results.push({ case_id: c.id, sent, reason });
+  }
+
+  return results;
+}
+
+// ---------------------------------------------------------------------------
+// 24h Pub reservation reminders — SMS to guests before confirmed reservations
+// ---------------------------------------------------------------------------
+
+interface PubReminderResult {
+  reservation_id: string;
+  sent: boolean;
+  reason?: string;
+}
+
+async function processPubReservationReminders(
+  supabase: ReturnType<typeof getServiceClient>,
+  now: Date,
+): Promise<PubReminderResult[]> {
+  const results: PubReminderResult[] = [];
+
+  // Tomorrow's date in Europe/Zurich timezone
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const tomorrowStr = tomorrow.toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" }); // YYYY-MM-DD
+
+  // Query confirmed reservations for tomorrow that haven't been reminded yet
+  const { data: reservations } = await supabase
+    .from("pub_reservations")
+    .select("id, guest_name, guest_phone, reservation_date, reservation_time, party_size")
+    .eq("reservation_date", tomorrowStr)
+    .eq("status", "confirmed")
+    .is("reminder_sent_at", null);
+
+  if (!reservations || reservations.length === 0) return results;
+
+  for (const r of reservations) {
+    if (!r.guest_phone || r.guest_phone === "—") {
+      results.push({ reservation_id: r.id, sent: false, reason: "no_phone" });
+      continue;
+    }
+
+    const timeStr = r.reservation_time?.substring(0, 5) ?? "";
+    const smsBody = `Reminder: Your table at Big Ben Pub tomorrow at ${timeStr} for ${r.party_size} guests. We look forward to seeing you! — Big Ben Pub`;
+
+    const smsResult = await sendSms(r.guest_phone, smsBody, "BigBenPub");
+
+    // Mark as reminded (idempotency guard)
+    if (smsResult.sent) {
+      await supabase
+        .from("pub_reservations")
+        .update({ reminder_sent_at: now.toISOString() })
+        .eq("id", r.id);
+    }
+
+    results.push({
+      reservation_id: r.id,
+      sent: smsResult.sent,
+      reason: smsResult.reason,
+    });
   }
 
   return results;
