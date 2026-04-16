@@ -191,22 +191,11 @@ function Stars({ count = 5 }: { count?: number }) {
   );
 }
 
-/* ── Instagram icon (colorful gradient) ─────────────────────────── */
+/* ── Instagram icon (filled gold — clean on dark background) ────── */
 function IcInstagram({ className = "h-5 w-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
-      <defs>
-        <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#F77737" />
-          <stop offset="25%" stopColor="#FD1D1D" />
-          <stop offset="50%" stopColor="#E1306C" />
-          <stop offset="75%" stopColor="#C13584" />
-          <stop offset="100%" stopColor="#833AB4" />
-        </linearGradient>
-      </defs>
-      <rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#ig-grad)" strokeWidth="2" />
-      <circle cx="12" cy="12" r="5" stroke="url(#ig-grad)" strokeWidth="2" />
-      <circle cx="17.5" cy="6.5" r="1.5" fill="url(#ig-grad)" />
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
     </svg>
   );
 }
@@ -305,12 +294,7 @@ export function BigBenContent() {
             >
               {lang === "en" ? "Call Us" : "Anrufen"}
             </a>
-            <a
-              href="#menu"
-              className="rounded-lg border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/60 hover:bg-[#2a1f1a]/10"
-            >
-              {s.seeMenu}
-            </a>
+            {/* Menu button hidden — Paul preparing menu, will re-enable later */}
           </div>
         </div>
       </section>
@@ -340,10 +324,10 @@ export function BigBenContent() {
                 <br />
                 {s.aboutH2}
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-[#555]">
+              <p className="mt-6 text-base leading-relaxed text-[#b0a898]">
                 {s.aboutP1}
               </p>
-              <p className="mt-4 text-base leading-relaxed text-[#555]">
+              <p className="mt-4 text-base leading-relaxed text-[#b0a898]">
                 {s.aboutP2}
               </p>
               <div className="mt-10 grid grid-cols-3 gap-6">
@@ -379,78 +363,7 @@ export function BigBenContent() {
         </div>
       </section>
 
-      {/* ── MENU ────────────────────────────────────────────────── */}
-      <section id="menu" className="scroll-mt-16 py-24">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
-            {s.menuLabel}
-          </p>
-          <h2 className="mt-3 text-center font-serif text-4xl font-bold">
-            {s.menuTitle}
-          </h2>
-
-          <div className="mt-14 grid gap-8 lg:grid-cols-2">
-            {/* Food */}
-            <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
-              <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.pubBites}</h3>
-              <p className="mt-1 text-sm text-[#c8b99a]">{s.pubBitesNote}</p>
-              <ul className="mt-6 space-y-3">
-                {[
-                  "Chicken Wings (classic & spicy)",
-                  "Loaded Nachos with guacamole & sour cream",
-                  "Club Sandwich",
-                  "Beef Burger with chips",
-                  "Fish & Chips",
-                  "Sausage & Mash",
-                  "Toasted Sandwiches",
-                  "Chips & Dips",
-                ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Drinks */}
-            <div className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-8 shadow-sm">
-              <h3 className="font-serif text-2xl font-bold text-[#a2774b]">{s.fromBar}</h3>
-              <p className="mt-1 text-sm text-[#c8b99a]">{s.fromBarNote}</p>
-              <div className="mt-6 space-y-6">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#c8b99a]">{s.onTap}</p>
-                  <ul className="mt-2 space-y-2">
-                    {["Guinness", "Pale Ale", "Lager", "Cider", "Seasonal Guest Ale"].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#c8b99a]">{s.bottlesMore}</p>
-                  <ul className="mt-2 space-y-2">
-                    {[
-                      "Craft Beers (rotating selection)",
-                      "Wines (red, white, ros\u00e9)",
-                      "Cocktails & Highballs",
-                      "Spirits & Whisky",
-                      "Soft Drinks & Coffee",
-                    ].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-[#c8b99a]">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#a2774b]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Menu section hidden — Paul preparing menu, will re-enable later */}
 
       {/* ── REVIEWS ─────────────────────────────────────────────── */}
       <section className="bg-[#261b15] py-24">
@@ -474,7 +387,7 @@ export function BigBenContent() {
                 className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <Stars />
-                <p className="mt-4 text-sm leading-relaxed text-[#c8b99a]">
+                <p className="mt-4 text-sm leading-relaxed text-[#d8cbb0]">
                   &ldquo;{r.text}&rdquo;
                 </p>
                 <div className="mt-5 flex items-center gap-3">
@@ -486,7 +399,7 @@ export function BigBenContent() {
                   <div>
                     <p className="text-sm font-semibold">{r.name}</p>
                     {r.badge && (
-                      <p className="text-xs text-[#c8b99a]">{r.badge}</p>
+                      <p className="text-xs text-[#d8cbb0]">{r.badge}</p>
                     )}
                   </div>
                 </div>
@@ -631,7 +544,7 @@ export function BigBenContent() {
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
       <footer className="border-t border-[#3a2e26] bg-[#261b15] py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#c8b99a]">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-[#d8cbb0]">
           <a
             href="https://www.instagram.com/bigbenpubzh/"
             target="_blank"
@@ -659,7 +572,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
       <p className="text-3xl font-bold text-[#a2774b]">{value}</p>
-      <p className="mt-1 text-xs font-medium text-[#c8b99a]">{label}</p>
+      <p className="mt-1 text-xs font-medium text-[#d8cbb0]">{label}</p>
     </div>
   );
 }
@@ -795,7 +708,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {sportLabel}
             </h3>
             {sport.length === 0 && (
-              <p className="text-sm text-[#c8b99a]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
+              <p className="text-sm text-[#d8cbb0]">{lang === "en" ? "No matches scheduled yet." : "Noch keine Spiele geplant."}</p>
             )}
             {(() => {
               const visible = showAllSport ? sport : sport.slice(0, PREVIEW_COUNT);
@@ -810,7 +723,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#c8b99a] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#d8cbb0] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -845,7 +758,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
               {eventsLabel}
             </h3>
             {pubEvents.length === 0 && (
-              <p className="text-sm text-[#c8b99a]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
+              <p className="text-sm text-[#d8cbb0]">{lang === "en" ? "No events scheduled yet." : "Noch keine Events geplant."}</p>
             )}
             {(() => {
               const visible = showAllEvents ? pubEvents : pubEvents.slice(0, PREVIEW_COUNT);
@@ -860,7 +773,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
-                            <span className="text-[10px] text-[#c8b99a] uppercase">{dt.month}</span>
+                            <span className="text-[10px] text-[#d8cbb0] uppercase">{dt.month}</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">

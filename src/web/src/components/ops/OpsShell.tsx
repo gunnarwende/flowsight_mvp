@@ -188,7 +188,7 @@ export function OpsShell({
         backgroundImage: `linear-gradient(135deg, ${color}, ${color}dd)`,
       }}
     >
-      <Link href="/ops/cases" className="flex items-center gap-3.5">
+      <Link href={isPubTenant ? "/ops/pub-dashboard" : "/ops/cases"} className="flex items-center gap-3.5">
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/20 flex-shrink-0 shadow-sm"
           style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
