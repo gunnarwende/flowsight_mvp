@@ -63,17 +63,33 @@ function NoShowBadge({ count }: { count: number }) {
   );
 }
 
+/** Return today's date as YYYY-MM-DD in Zurich timezone */
+function todayISO(): string {
+  return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" });
+}
+
+/** Return current time rounded to nearest 30 min as HH:MM */
+function nowRounded30(): string {
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
+  const mins = now.getMinutes();
+  const rounded = mins < 15 ? 0 : mins < 45 ? 30 : 60;
+  const d = new Date(now);
+  d.setMinutes(rounded, 0, 0);
+  if (rounded === 60) d.setHours(d.getHours()); // already handled by setMinutes overflow
+  return d.toTimeString().substring(0, 5);
+}
+
 export function ReservationManager({ reservations, noShowMap }: { reservations: Reservation[]; noShowMap: Record<string, number> }) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  // Manual reservation form
+  // Manual reservation form — pre-filled for fast walk-in entry
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("19:00");
+  const [date, setDate] = useState(todayISO);
+  const [time, setTime] = useState(nowRounded30);
   const [guests, setGuests] = useState("2");
   const [note, setNote] = useState("");
 
@@ -94,7 +110,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
-          phone: phone.trim() || "—",
+          phone: phone.trim() || "\u2014",
           date,
           time,
           guests,
@@ -103,7 +119,8 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
         }),
       });
       if (res.ok) {
-        setName(""); setPhone(""); setDate(""); setTime("19:00"); setGuests("2"); setNote("");
+        // Reset but keep date/time pre-filled for next walk-in
+        setName(""); setPhone(""); setDate(todayISO()); setTime(nowRounded30()); setGuests("2"); setNote("");
         setShowForm(false);
         router.refresh();
       }
@@ -112,7 +129,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
     }
   }
 
-  async function updateStatus(id: string, status: "confirmed" | "declined" | "no_show") {
+  async function updateStatus(id: string, status: "confirmed" | "declined" | "cancelled" | "no_show") {
     setUpdatingId(id);
     try {
       await fetch(`/api/bigben-pub/reservations/${id}`, {
@@ -152,7 +169,14 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
 
       {/* Manual reservation button — for walk-in / bar reservations */}
       <button
-        onClick={() => setShowForm(!showForm)}
+        onClick={() => {
+          if (!showForm) {
+            // Re-compute date/time each time the form opens for accurate walk-in defaults
+            setDate(todayISO());
+            setTime(nowRounded30());
+          }
+          setShowForm(!showForm);
+        }}
         className="w-full rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
       >
         {showForm ? "Cancel" : "+ Add Reservation"}
@@ -239,6 +263,8 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
               // Show "No Show" button for confirmed reservations whose date is today or in the past
               const todayStr = new Date().toISOString().split("T")[0];
               const canMarkNoShow = isConfirmed && r.reservation_date <= todayStr;
+              // Show "Cancel" button for confirmed/pending reservations (guest called to cancel — no penalty)
+              const canCancel = (isConfirmed || isPending) && r.reservation_date >= todayStr;
 
               return (
                 <div key={r.id} className={`rounded-xl border p-4 ${st.bg} border-gray-100`}>
@@ -260,7 +286,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
                           {st.label}
                         </span>
                         <span className="text-[10px] text-gray-400">{SOURCE_LABELS[r.source] ?? r.source}</span>
-                        {r.guest_phone && r.guest_phone !== "—" && (
+                        {r.guest_phone && r.guest_phone !== "\u2014" && (
                           <a href={`tel:${r.guest_phone}`} className="text-[10px] text-blue-500 hover:underline">{r.guest_phone}</a>
                         )}
                       </div>
@@ -284,6 +310,15 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
                             ✗
                           </button>
                         </>
+                      )}
+                      {canCancel && (
+                        <button
+                          onClick={() => updateStatus(r.id, "cancelled")}
+                          disabled={isUpdating}
+                          className="rounded-lg bg-gray-400 px-3 py-1.5 text-xs font-bold text-white hover:bg-gray-500 disabled:opacity-40 transition-colors"
+                        >
+                          Cancel
+                        </button>
                       )}
                       {canMarkNoShow && (
                         <button
