@@ -137,23 +137,113 @@
 
 ## 5. Demo-Script + Video
 
+*Script-Vorlage: `docs/customers/<slug>/demo_script.md` (Speakflow-optimiert)*
+*Verpackung: `docs/customers/<slug>/vorstellung_script_v2.md`*
+
+**Architektur (seit 07.04.):**
+- **4 Module statt 1 langes Video.** Jedes Modul = 1 Loom-Take (1-2 Min).
+- **Kein 5. Video für den Abschluss** — Text auf der Seite ist ehrlicher als ein 30s-Clip.
+- **2 Dokumente pro Betrieb:** demo_script.md (Speakflow-Text zum Ablesen) + vorstellung_script_v2.md (Verpackung + Versandlogik)
+
+**Die 4 Module (Standard-Struktur):**
+
+| # | Titel | Fokus |
+|---|-------|-------|
+| 1 | Ihr Alltag — und die eigentliche Frage | Empathie, Pain zeigen |
+| 2 | Wenn Sie gerade nicht direkt rangehen können | Voice-Demo (Live-Anruf) |
+| 3 | Wenn ein Kunde lieber online meldet | Wizard + Website zeigen |
+| 4 | Wie gute Arbeit sichtbar wird | Bewertungs-Engine |
+
 **Learnings:**
 - Script-Struktur: Intro (Respekt) → Pain (nicht Features) → Website → Live-Anruf → Leitzentrale → Feedback-Bitte
 - Dont's: Kein Preis, kein "KI", kein "Dashboard/Wizard/Onboarding", keine Feature-Listen
 - pain_types aus Website-Analyse dynamisch ins Script einbauen
 - Technische Checkliste VOR Aufnahme abarbeiten (SMS, Email, Leitzentrale, Voice)
+- Modultitel = Unternehmerlogik, nicht Feature-Sprache ("Wenn Sie gerade nicht rangehen können" statt "KI-Telefonassistent")
+- Modul 4 NICHT technisch formulieren ("Wie gute Arbeit sichtbar wird" statt "Vom erledigten Fall zur Bewertung")
 
 ---
 
-## 6. Outreach (Phase B)
+## 6. Vorstellungsseite
 
-*Noch nicht durchlaufen. Wird nach erstem Versand ergänzt.*
+*Seite: `/kunden/<slug>/vorstellung` (SSG, noindex)*
+*Config: `src/web/src/lib/customers/vorstellung.ts`*
+*Komponenten: `src/web/app/kunden/[slug]/vorstellung/`*
+
+**Was ist das:**
+Persönliche Hub-Seite pro Betrieb. Gunnar-Foto + Kernfrage + 4 Video-Module + Abschlusstext. Ersetzt rohe Loom-Links in der E-Mail.
+
+**Aufbau (Standard):**
+1. **Hero:** Gunnar-Foto (klickbar → Lightbox) + Name/Ort + Überschrift + Kernfrage (Blockquote mit Tenant-Farbe) + Nutzenverdichtung
+2. **4 Module:** Nummeriert, vertikal verbunden (Connector-Linie), je Titel + Untertitel + Video (Loom-Embed oder Platzhalter)
+3. **Closing:** Gunnar-Foto klein + 2 Sätze (persönlich, kein CTA)
+4. **Kontakt:** Telefon + E-Mail
+
+**Neuen Betrieb anlegen (3 Schritte):**
+1. Eintrag in `src/web/src/lib/customers/vorstellung.ts` → `vorstellungen` Map ergänzen
+2. Texte anpassen: headline, question, valueProp, modules[], closing (alles betriebsspezifisch)
+3. Push → SSG-Seite wird automatisch generiert
+
+**Nach Video-Aufnahme:**
+Loom-URLs in `vorstellung.ts` bei `videoUrl` eintragen → Push → Videos erscheinen embedded auf der Seite.
+
+**Design-Regeln (hart gelernt):**
+- max-w-xl (576px) — schmaler = persönlicher, nicht Landing-Page
+- Warm-white Hintergrund (#faf9f7)
+- Tenant-Farbe nur als Akzent (Blockquote-Balken, Modul-Nummern)
+- Keine Anführungszeichen um die Kernfrage (Blockquote + Balken reicht)
+- Gedankenstrich inline im Textfluss, kein erzwungener Zeilenumbruch
+- Überschrift: geschütztes Leerzeichen vor "AG" (`\u00a0`) verhindert Waisenkind
+- Foto-Lightbox: Prospect will den Founder sehen bevor er Videos schaut
+- Footer: max 2 Sätze. Kein CTA, kein "Jetzt starten"
+
+---
+
+## 7. Outreach (E-Mail Phase B-1)
+
+*Script: `scripts/_ops/send_outreach_mail.mjs`*
+*Preview: `docs/customers/<slug>/mail1_preview.html`*
+
+**2-Mail-Strategie:**
+- **Mail 1:** Persönlich, 1 Link zur Vorstellungsseite. Kein Pitch, kein Trial-Angebot.
+- **Mail 2:** Zugänge (automatisch via `activate_prospect.mjs` nach Prospect-Go)
+
+**Mail 1 senden (1 Kommando):**
+```bash
+node --env-file=src/web/.env.local scripts/_ops/send_outreach_mail.mjs <slug> <email>
+```
+
+**Was die Mail enthält:**
+- Absender: `Gunnar Wende <noreply@send.flowsight.ch>`
+- Reply-To: `gunnar.wende@flowsight.ch`
+- Gunnar-Foto mit Play-Button (Startbild_B1), 120px rund, klickbar → Vorstellungsseite
+- Link als Text-Fallback darunter
+- Plain-Text-Fallback für alte Clients
+- Kein HTML-Newsletter-Look, kein Tracking-Pixel
+
+**Neuen Betrieb hinzufügen:**
+1. Eintrag im `prospects`-Objekt in `send_outreach_mail.mjs` (anrede, firma, betreff, kontext, vorstellungUrl)
+2. Foto bereitstellen: `src/web/public/vorstellung/gunnar_play.png` (gleich für alle — ist Gunnar, nicht der Betrieb)
+3. `mail1_preview.html` kopieren + anpassen (optional, für Browser-Preview)
+
+**Design-Regeln E-Mail:**
+- Foto NACH dem Kontextaufbau, VOR dem Link (Kontext → Vertrauen → Handlung)
+- Foto OHNE Play-Button auf der Vorstellungsseite, MIT Play-Button in der E-Mail
+- Calibri/Segoe UI (Outlook-nativ)
+- Kein grauer Wrapper, kein Card-Design — plain-persönlich
+- "Hier können Sie es sich anschauen" statt "Jetzt ansehen"
+
+**Learnings:**
+- E-Mail-Adresse: `gunnar.wende@flowsight.ch` (mit Punkt!)
+- HTML-Datei in VS Code öffnen ≠ im Browser öffnen → Script-Versand ist sicherer
+- Resend Free: 100 Mails/Tag reicht für Outreach locker
+- Outlook Dark Mode: Foto mit hellem Rand (3px #e0e0e0) bleibt sichtbar
 
 ---
 
 ## Betriebsspezifische Learnings
 
-### Dörfler AG (2026-02-26 Website, 2026-04-01 Maschine)
+### Dörfler AG (2026-02-26 Website, 2026-04-01 Maschine, 2026-04-07 Vorstellung)
 
 **Kontext:** Sanitär/Heizung, Oberrieden ZH, seit 1926, 3. Generation (Ramon + Luzian)
 
@@ -170,6 +260,19 @@
 - Impressum/Datenschutz Links → 404 → Seiten gebaut
 - Phase A Total: ~70 min (Soll nächster Betrieb: ~40 min)
 
+**Vorstellung + Outreach (07.04.):**
+- Vorstellungsseite: `/kunden/doerfler-ag/vorstellung` (PRs #414-#422, 9 Iterationen)
+- 4 Module statt 1 Video (Founder-Entscheid: kürzere Takes, einzeln wiederholbar)
+- Kernfrage im Hero: Gedankenstrich inline, kein erzwungener Umbruch (3× iteriert)
+- Modultitel: "Wie gute Arbeit sichtbar wird" statt technisch (2× umformuliert)
+- Foto-Lightbox: Prospect will den Founder sehen → klick = vergrössern
+- "Dörfler AG" mit `\u00a0` zusammenhalten (Waisenkind-Fix Mobile)
+- E-Mail: Startbild_B1 (mit Play-Button) → klickbar → Vorstellungsseite
+- E-Mail-Adresse: 3× korrigiert (gunnar@ → gunnarwende@ → gunnar.wende@) — IMMER beim Founder verifizieren!
+- HTML-Mail per Script statt manuell in Outlook → skaliert, keine Copy-Paste-Fehler
+- Dateien: `vorstellung_script_v2.md` (Verpackung), `demo_script.md` (Speakflow, unberührt)
+- **Key Insight:** demo_script.md und vorstellung_script_v2.md sind GETRENNTE Dokumente. demo_script.md = Ablese-Script. vorstellung_script_v2.md = Verpackung + Versandlogik. Nie vermischen.
+
 ### Walter Leuthold (2026-03-08)
 
 **Kontext:** Sanitär, Heizung, Spenglerei, Dachdecker, Fassadenbau. Seit 2001. 25 Kunden-Bilder.
@@ -180,6 +283,26 @@
 - `bullets?: string[]` pro Service = High-End-Qualität
 - Team-Sektion ausblenden wenn nur 1 Person
 - Total: ~6h (inkl. Template-Erweiterung die jetzt allen zugute kommt)
+
+### BigBen Pub (2026-04-14 Onboarding, 2026-04-16 Go-Live Prep)
+
+**Kontext:** Gastro / Pub, Oberrieden ZH, Paul (English-only). Erster zahlender Kunde. Barter-Deal (300 CHF einmalig + ~23 CHF/Mo + Free Drinks). Go-Live Target 30.04.
+
+**Onboarding (14.04., 11 PRs in 1 Tag):**
+- Pub/Gastro = ein ANDERES Produkt als Sanitär — braucht Events, Reservierungen, No-Show-Tracking, Walk-in (nicht Cases/Tickets)
+- Neue DB-Tabellen (pub_events, pub_reservations) statt bestehende cases-Tabelle zu missbrauchen
+- Dark Theme (kennedys.ch-Basis) + dynamic events statt Standard-Kunden-Template
+
+**Go-Live Prep (PRs #479-#491, 13 PRs):**
+- **Retell webhook_url feuert nicht:** Agent hat webhook_url konfiguriert, aber Retell feuert ihn nicht für BigBen. Polling via sync-calls API = stabiler Workaround. Lesson: Webhook nie als einzigen Integrationspfad annehmen.
+- **is_transfer_cf = Flow-Creation-Time-Only:** Steht in voice_agent_lessons_learned.md, hat uns trotzdem erwischt. Muss bei JEDEM neuen Flow explizit gesetzt werden. Kann nicht nachgepatcht werden.
+- **English-only Customer = i18n-Audit JEDER Oberfläche:** OpsShell logout-Text, Datumsformate, Fehlermeldungen — alles war auf Deutsch. Jeder EN-Kunde braucht einen Durchlauf durch alle Screens.
+- **No-Show = echtes Business-Problem für Gastro:** Yellow/Red Card System = hoher Kundenwert, niedriger Dev-Aufwand. Paul war sofort begeistert.
+- **Mobile-first Kunde:** Paul testet ALLES auf dem Handy. Jede UI-Entscheidung muss Mobile-first validiert werden.
+- **Barter-Deal = Zero-Friction erster Kunde:** Free Drinks schaffen alignment of interests. Kein Vertragsrisiko, kein Zahlungsverzug.
+- **24h SMS Reminder > No-Show Tracking:** Prävention (Reminder) hat höheren Kundenwert als Nachverfolgung (Yellow/Red Card). Beides zusammen = komplett.
+- **Voice Events statisch:** Events sind als Text im Prompt. Dynamischer Fetch wäre ideal, aber Retell unterstützt keine Runtime-API-Calls im Prompt. Manuelles Update vor Abreise nötig.
+- **Total Onboarding: ~8h** (inkl. DB-Schema, Voice, Website, Dashboard). Neuer Gastro-Kunde: Soll ~4h.
 
 ### Orlandini + Widmer (2026-03-08)
 
@@ -222,4 +345,4 @@
 
 ---
 
-*Letztes Update: 2026-04-01 | Quelle: Dörfler AG Phase A (erster GTM-Maschinendurchlauf)*
+*Letztes Update: 2026-04-16 | Quelle: BigBen Pub Go-Live Prep (PRs #479-#491)*

@@ -2,7 +2,7 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-14 (Sales Day 14. 22 PRs. Website-Entscheidung FINAL. **BigBen Pub = erster Kunde (Paul).** Voice EN, Pub Dashboard, Event-Pflege, Reservierungen. Review-Error-Messages.)
+> Letzte Aktualisierung: 2026-04-16 (Sales Day 16. **BigBen Pub Go-Live prep complete** (24 PRs). No-Show Yellow/Red Card, Walk-in, 24h SMS Reminder, Voice DE swap, Polling. Bewertungen 40+ Fixes. Kommunikationsmatrix D84. Stresstests 52 Findings.)
 
 ---
 
@@ -38,7 +38,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - "Seit 19xx" ist der #1 Trust-Signal
 - Schnelle Reaktionszeit und Sauberkeit sind die meistgenannten Review-Themen
 
-**Spätere Branchen-Erweiterung:** Elektriker, Gastronomie (BigBen Pub = erste Demo), Friseur (ab Phase 3, 15+ Kunden)
+**Spätere Branchen-Erweiterung:** Elektriker, Gastronomie (BigBen Pub = erster zahlender Kunde, Pub/Gastro-Modul LIVE), Friseur (ab Phase 3, 15+ Kunden)
 
 **Typische Kunden-Aussagen:**
 - "Ich bin den ganzen Tag auf der Baustelle, kann nicht ans Telefon."
@@ -296,7 +296,7 @@ NACH ERLEDIGUNG:
 | **Walter Leuthold** (Oberrieden) | **TRIAL_PREP** (Phase A) | voice, wizard, ops, reviews, sms | flowsight.ch/kunden/walter-leuthold |
 | **Orlandini Sanitär** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/orlandini |
 | **Widmer H. & Co. AG** (Horgen) | Website LIVE | wizard | flowsight.ch/kunden/widmer-sanitaer |
-| **BigBen Pub** (Zürich) | Custom Demo | — | flowsight.ch/bigben-pub |
+| **BigBen Pub** (Oberrieden) | **ERSTER KUNDE** — Go-Live prep complete, Barter-Deal | voice, ops, events, reservations | flowsight.ch/bigben-pub |
 
 ### Dörfler AG — Erster Prospect durch die GTM-Maschine (Gold-Standard)
 - Sanitär/Heizung seit 1926, Oberrieden ZH, 3. Generation (Ramon + Luzian Dörfler)
@@ -324,10 +324,15 @@ NACH ERLEDIGUNG:
 - Template v3: Standardisierter 10-Regeln Intake-Prozess
 - Jeder Kunde hat `docs/customers/<slug>/links.md` mit allen URLs
 
-### BigBen Pub — Gastronomie-Demo
-- Custom Demo für Pub/Gastronomie (Reservierungen, Events, Galerie)
-- Zeigt Template-Flexibilität über Sanitär hinaus
-- Prospect Paul zeigt sich interessiert (#79/#80)
+### BigBen Pub — Erster zahlender Kunde (Gastro/Pub-Modul)
+- **Erster zahlender Kunde.** Paul, Big Ben Pub, Oberrieden. 300 CHF einmalig + ~23 CHF/Mo. Barter-Deal (Free Drinks).
+- **Go-Live Target: 30.04.2026** (Founder danach auf Philippinen, 4 Wochen Testphase)
+- **Pub/Gastro = eigenes Produkt-Modul:** Events, Reservierungen, No-Show Tracking (Yellow/Red Card), Walk-in — separat von Cases/Tickets
+- Website dark theme (flowsight.ch/bigben-pub), Voice Agent EN+DE (Lisa, +41445054818)
+- Pub Dashboard (EN), Event-Pflege (Sport/Events Tabs), Reservierungs-System (Walk-in, Confirm/Decline, SMS)
+- 24h SMS Reminder + Confirmation SMS = No-Show-Prävention
+- **Architektur:** Polling statt Webhook für Voice→Reservation (Retell webhook_url unzuverlässig für BigBen)
+- PRs #457-#467 (Onboarding) + #479-#491 (Go-Live prep) = 24 PRs total
 
 ---
 
