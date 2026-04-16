@@ -54,6 +54,7 @@ export function PubDashboard({
   pendingReservations,
   todayReservations,
   upcomingReservations,
+  noShowMap,
 }: {
   tenantName: string;
   todayEvents: TodayEvent[];
@@ -61,6 +62,7 @@ export function PubDashboard({
   pendingReservations: PendingReservation[];
   todayReservations: TodayReservation[];
   upcomingReservations: UpcomingReservation[];
+  noShowMap: Record<string, number>;
 }) {
   const router = useRouter();
 
@@ -79,6 +81,11 @@ export function PubDashboard({
   const weekGuestCount = [...todayReservations, ...upcomingReservations].reduce((s, r) => s + r.party_size, 0);
   const sportEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "sport");
   const pubEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "event");
+
+  // Guest Watch: count guests with yellow (1 no-show) and red (2+ no-shows) cards
+  const yellowCardCount = Object.values(noShowMap).filter(c => c === 1).length;
+  const redCardCount = Object.values(noShowMap).filter(c => c >= 2).length;
+  const totalFlagged = yellowCardCount + redCardCount;
 
   return (
     <div className="space-y-4">
@@ -158,6 +165,24 @@ export function PubDashboard({
           {todayEvents.filter(e => e.category === "event").length > 0 && (
             <p className="text-[11px] font-bold text-purple-600 mt-1">
               {todayEvents.filter(e => e.category === "event").map(e => e.title).join(", ")} tonight
+            </p>
+          )}
+        </button>
+
+        {/* Guest Watch */}
+        <button onClick={() => router.push("/ops/reservations")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-100 text-base">{totalFlagged > 0 ? "\u26A0\uFE0F" : "\u2705"}</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Guest Watch</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{totalFlagged}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">flagged guests</p>
+          {(yellowCardCount > 0 || redCardCount > 0) && (
+            <p className="text-[11px] mt-1">
+              {yellowCardCount > 0 && <span className="font-bold text-yellow-600">{yellowCardCount} yellow</span>}
+              {yellowCardCount > 0 && redCardCount > 0 && <span className="text-gray-400"> · </span>}
+              {redCardCount > 0 && <span className="font-bold text-red-600">{redCardCount} red</span>}
             </p>
           )}
         </button>

@@ -74,14 +74,31 @@ export async function GET() {
       const time = extractTime(transcript);
       const date = extractDate(transcript);
 
+      // Check guest no-show history
+      let voiceNote = `Voice reservation (call_id:${call.call_id})`;
+      const guestPhone = call.from_number ?? "";
+      if (guestPhone) {
+        const { count } = await supabase
+          .from("pub_reservations")
+          .select("id", { count: "exact", head: true })
+          .eq("tenant_id", tenant.id)
+          .eq("guest_phone", guestPhone)
+          .eq("status", "no_show");
+        if (count && count >= 2) {
+          voiceNote = `\uD83D\uDD34 ${count} previous no-shows | ${voiceNote}`;
+        } else if (count && count === 1) {
+          voiceNote = `\u26A0\uFE0F 1 previous no-show | ${voiceNote}`;
+        }
+      }
+
       const { error: insertErr } = await supabase.from("pub_reservations").insert({
         tenant_id: tenant.id,
         guest_name: guestName,
-        guest_phone: call.from_number ?? "",
+        guest_phone: guestPhone,
         reservation_date: date,
         reservation_time: time,
         party_size: partySize,
-        note: `Voice reservation (call_id:${call.call_id})`,
+        note: voiceNote,
         source: "voice",
         status: "pending",
       });
