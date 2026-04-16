@@ -381,10 +381,12 @@ export function BigBenContent() {
           </div>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r) => (
+            {REVIEWS.map((r, i) => (
               <div
                 key={r.name}
-                className="rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-6 shadow-sm transition-shadow hover:shadow-md"
+                className={`rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-6 shadow-sm transition-shadow hover:shadow-md ${
+                  ![0, 1, 3].includes(i) ? "hidden sm:block" : ""
+                }`}
               >
                 <Stars />
                 <p className="mt-4 text-sm leading-relaxed text-[#d8cbb0]">
@@ -510,14 +512,14 @@ export function BigBenContent() {
                 <HoursRow day={s.sunday} hours="16:00 – 22:00" />
               </div>
 
-              <div className="mt-10 space-y-2 text-sm text-[#b0a090]">
+              <div className="mt-10 flex flex-col gap-3 text-sm text-[#b0a090]">
                 <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
-                <a href="tel:+41764458942" className="hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
+                <a href="tel:+41764458942" className="block hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
                 <a
                   href="https://www.instagram.com/bigbenpubzh/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-medium text-[#a2774b] transition-colors hover:text-[#e74c3c]"
+                  className="flex items-center gap-2 font-medium text-[#a2774b] transition-colors hover:text-[#e74c3c]"
                 >
                   <IcInstagram />
                   {s.followUs}
@@ -662,11 +664,19 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   function eventEmoji(title: string, category: string) {
     if (category === "sport") {
       const t = title.toLowerCase();
-      if (t.includes("rugby")) return "🏉";
-      if (t.includes("f1") || t.includes("formula")) return "🏎️";
-      if (t.includes("tennis")) return "🎾";
-      if (t.includes("boxing") || t.includes("ufc")) return "🥊";
-      return "⚽";
+      if (t.includes("rugby")) return "\ud83c\udfc9";
+      if (t.includes("f1") || t.includes("formula")) return "\ud83c\udfce\ufe0f";
+      if (t.includes("tennis")) return "\ud83c\udfbe";
+      if (t.includes("boxing") || t.includes("ufc") || t.includes("mma")) return "\ud83e\udd4a";
+      if (t.includes("hockey") || t.includes("ice hockey") || t.includes("eishockey")) return "\ud83c\udfd2";
+      if (t.includes("basketball") || t.includes("nba")) return "\ud83c\udfc0";
+      if (t.includes("cricket")) return "\ud83c\udfcf";
+      if (t.includes("cycling") || t.includes("tour de")) return "\ud83d\udeb4";
+      if (t.includes("swimming")) return "\ud83c\udfca";
+      if (t.includes("olympics") || t.includes("athletics")) return "\ud83c\udfc5";
+      if (t.includes("baseball")) return "\u26be";
+      if (t.includes("golf")) return "\u26f3";
+      return "\u26bd";
     }
     const t = title.toLowerCase();
     if (t.includes("karaoke")) return "🎤";
@@ -690,8 +700,8 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   const bookLabel = lang === "en" ? "Book a Table" : "Tisch reservieren";
 
   return (
-    <section id="events" className="scroll-mt-16 bg-[#261b15] py-24">
-      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+    <section id="events" className="scroll-mt-16 bg-[#261b15] py-24 overflow-hidden">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
           {sectionTitle}
         </p>

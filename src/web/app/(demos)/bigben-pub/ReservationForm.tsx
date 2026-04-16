@@ -7,7 +7,7 @@ const TIME_SLOTS = [
   "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
 ];
 
-const PARTY_SIZES = [1, 2, 3, 4, 5, 6, 7, 8];
+const PARTY_SIZES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20];
 
 export function ReservationForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -151,7 +151,7 @@ export function ReservationForm() {
             {PARTY_SIZES.map((n) => (
               <option key={n} value={n}>{n} {n === 1 ? "guest" : "guests"}</option>
             ))}
-            <option value="9+">9+ (call us)</option>
+            {/* All sizes available — no need to call */}
           </select>
         </div>
 
