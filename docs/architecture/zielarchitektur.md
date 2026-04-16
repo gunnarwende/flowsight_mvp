@@ -1,8 +1,8 @@
 # FlowSight — Zielarchitektur (Business + Produkt + GTM)
 
-**Version:** 4.1 | **Datum:** 2026-04-15
+**Version:** 4.2 | **Datum:** 2026-04-16
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v4.1 — 84 Decisions (D1-D84). Kommunikationsregeln integriert (D84). Website-Entscheidung FINAL (D83): Modul 2 = Standard, Website kein Produktbestandteil. Machine Manifest v4.0. 72+ PRs in 14 Tagen.
+**Status:** v4.2 — 86 Decisions (D1-D86). Pub/Gastro-Modul (D85): Events, Reservierungen, No-Show, Walk-in — eigene Domäne. Voice→Reservation Polling (D86): sync-calls API bei Webhook-Ausfall. BigBen Pub = erster zahlender Kunde.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -96,6 +96,8 @@
 | D82 | **Case-Header-Redesign.** 2-Zeilen-Layout: Row 1 (← Zurück + Print/Delete/ID), Row 2 (Kategorie volle Breite, bricht natürlich um). Redundante Kategorie in Beschreibung-Section entfernt. ScrollToTop bei Navigation. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #443-#444 |
 | D83 | **Website = KEIN Produktbestandteil.** Modul 2 ist Standard (100%). Website-Modul-1-Maschine (3 Systeme, Profile, Banana, CSS-Handschriften) nach 4 Iterationen + Kill-Test beendet. ICP-Analyse 42 Betriebe: 71% brauchen keine Website, 12% Grenzfall, 12% Fallback. Website nur als Basis-Fallback bei kaputten/fehlenden Sites (Legacy-Template, kein Profil-System). Bestehende 7 Sites bleiben als Legacy. Wizard-Einstieg fuer Modul-2-Betriebe: `/start/[slug]`. | **ENTSCHIEDEN** ✅ | Founder | ICP-Analyse `docs/gtm/website/icp_analyse_42_betriebe.md`, PRs #446-#450 |
 | D84 | **Kommunikationsregeln (7 Kanal-Regeln).** Ein Kanal pro Empfänger pro Ereignis. Push = Ergänzung (nicht Kopie). Self-Assignment unterdrücken (≤3 MA). SMS primär für zeitkritische Nachrichten. E-Mail primär für informative. Negativ-Review E-Mail-Alert (immer). SMS-Budget-Schutz via Email-Fallback. 4 Regeln LIVE (D1 Negative Review Alert, D2 Self-Notification Suppression, D4r Review SMS Primary, D5 24h Reminder Email Fallback). Stress-Test mit 3 ICP-Profilen bestanden. | **ENTSCHIEDEN** ✅ | Founder + CC | §12a, `kommunikationsmatrix_v2.md` (Referenz) |
+| D85 | **Pub/Gastro-Modul (eigene Domäne, nicht Cases/Tickets).** Events (`pub_events`), Reservierungen (`pub_reservations`), No-Show Tracking (Yellow Card 1x / Red Card 2+), Walk-in Quick-Add, 24h SMS Reminder, Confirmation SMS. Eigene DB-Tabellen, eigenes Dashboard (`/ops/pub-dashboard`), eigene Nav (Dashboard→Events→Reservations→Help). Nicht die cases-Tabelle missbrauchen — Gastro hat andere Entities als Sanitär. BigBen Pub = erster Kunde auf diesem Modul. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #457-#467, #479-#491, `docs/customers/bigben-pub/status.md` |
+| D86 | **Voice→Reservation Polling (sync-calls API) bei unzuverlässigem Webhook.** Retell `webhook_url` kann auf Agent konfiguriert sein, aber trotzdem nicht feuern (BigBen-Fall). Workaround: `/api/retell/sync-calls` pollt completed calls und erstellt Reservierungen. Polling = stabiler als Webhook für nicht-Standard-Tenants. Langfristig: Webhook als Primary, Polling als Fallback-Garantie. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #479-#491, `sync-calls/route.ts` |
 
 ---
 
