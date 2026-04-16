@@ -36,6 +36,7 @@ export default async function PubDashboardPage() {
     { data: pendingRes },
     { data: todayRes },
     { data: upcomingRes },
+    { data: noShowRows },
   ] = await Promise.all([
     // Today's events
     supabase
@@ -82,7 +83,22 @@ export default async function PubDashboardPage() {
       .in("status", ["confirmed", "pending"])
       .order("reservation_date")
       .order("reservation_time"),
+    // No-show history (all time)
+    supabase
+      .from("pub_reservations")
+      .select("guest_phone")
+      .eq("tenant_id", tenantId)
+      .eq("status", "no_show"),
   ]);
+
+  // Build no-show map: phone -> count
+  const noShowMap: Record<string, number> = {};
+  for (const row of noShowRows ?? []) {
+    const phone = row.guest_phone;
+    if (phone && phone !== "\u2014") {
+      noShowMap[phone] = (noShowMap[phone] ?? 0) + 1;
+    }
+  }
 
   return (
     <PubDashboard
@@ -92,6 +108,7 @@ export default async function PubDashboardPage() {
       pendingReservations={pendingRes ?? []}
       todayReservations={todayRes ?? []}
       upcomingReservations={upcomingRes ?? []}
+      noShowMap={noShowMap}
     />
   );
 }

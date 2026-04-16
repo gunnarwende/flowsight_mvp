@@ -47,7 +47,23 @@ function formatTime(time: string): string {
   return time.substring(0, 5);
 }
 
-export function ReservationManager({ reservations }: { reservations: Reservation[] }) {
+function NoShowBadge({ count }: { count: number }) {
+  if (count === 0) return null;
+  if (count === 1) {
+    return (
+      <span className="inline-flex items-center gap-0.5 rounded-full bg-yellow-100 px-1.5 py-0.5 text-[10px] font-bold text-yellow-800" title="1 previous no-show">
+        Yellow Card
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-0.5 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700" title={`${count} previous no-shows`}>
+      Red Card
+    </span>
+  );
+}
+
+export function ReservationManager({ reservations, noShowMap }: { reservations: Reservation[]; noShowMap: Record<string, number> }) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -216,15 +232,22 @@ export function ReservationManager({ reservations }: { reservations: Reservation
             {dayReservations.map((r) => {
               const st = STATUS_STYLES[r.status] ?? STATUS_STYLES.pending;
               const isPending = r.status === "pending";
+              const isConfirmed = r.status === "confirmed";
               const isUpdating = updatingId === r.id;
+              const guestNoShows = (r.guest_phone && r.guest_phone !== "—") ? (noShowMap[r.guest_phone] ?? 0) : 0;
+
+              // Show "No Show" button for confirmed reservations whose date is today or in the past
+              const todayStr = new Date().toISOString().split("T")[0];
+              const canMarkNoShow = isConfirmed && r.reservation_date <= todayStr;
 
               return (
                 <div key={r.id} className={`rounded-xl border p-4 ${st.bg} border-gray-100`}>
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="text-sm font-bold text-gray-900">{formatTime(r.reservation_time)}</span>
                         <span className="text-sm text-gray-600">{r.guest_name}</span>
+                        <NoShowBadge count={guestNoShows} />
                         <span className="text-xs text-gray-400">· {r.party_size} guests</span>
                       </div>
                       {r.note && (
@@ -242,25 +265,36 @@ export function ReservationManager({ reservations }: { reservations: Reservation
                         )}
                       </div>
                     </div>
-                    {/* Action buttons for pending reservations */}
-                    {isPending && (
-                      <div className="flex gap-1.5 ml-2 flex-shrink-0">
+                    {/* Action buttons */}
+                    <div className="flex gap-1.5 ml-2 flex-shrink-0">
+                      {isPending && (
+                        <>
+                          <button
+                            onClick={() => updateStatus(r.id, "confirmed")}
+                            disabled={isUpdating}
+                            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-40 transition-colors"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={() => updateStatus(r.id, "declined")}
+                            disabled={isUpdating}
+                            className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-600 disabled:opacity-40 transition-colors"
+                          >
+                            ✗
+                          </button>
+                        </>
+                      )}
+                      {canMarkNoShow && (
                         <button
-                          onClick={() => updateStatus(r.id, "confirmed")}
+                          onClick={() => updateStatus(r.id, "no_show")}
                           disabled={isUpdating}
-                          className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-40 transition-colors"
+                          className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-40 transition-colors"
                         >
-                          ✓
+                          No Show
                         </button>
-                        <button
-                          onClick={() => updateStatus(r.id, "declined")}
-                          disabled={isUpdating}
-                          className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-600 disabled:opacity-40 transition-colors"
-                        >
-                          ✗
-                        </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               );

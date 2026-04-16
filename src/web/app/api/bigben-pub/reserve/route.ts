@@ -42,6 +42,22 @@ export async function POST(req: Request) {
       .single();
 
     if (tenant) {
+      // Check guest no-show history
+      let noShowNote = note || null;
+      if (phone && phone !== "—") {
+        const { count } = await supabase
+          .from("pub_reservations")
+          .select("id", { count: "exact", head: true })
+          .eq("tenant_id", tenant.id)
+          .eq("guest_phone", phone)
+          .eq("status", "no_show");
+        if (count && count >= 2) {
+          noShowNote = `\uD83D\uDD34 ${count} previous no-shows${note ? " | " + note : ""}`;
+        } else if (count && count === 1) {
+          noShowNote = `\u26A0\uFE0F 1 previous no-show${note ? " | " + note : ""}`;
+        }
+      }
+
       await supabase.from("pub_reservations").insert({
         tenant_id: tenant.id,
         guest_name: name,
@@ -49,7 +65,7 @@ export async function POST(req: Request) {
         reservation_date: date,
         reservation_time: time,
         party_size: parseInt(guests, 10) || 2,
-        note: note || null,
+        note: noShowNote,
         source,
         status: "pending",
       });
