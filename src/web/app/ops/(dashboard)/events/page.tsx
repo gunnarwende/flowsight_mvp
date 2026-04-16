@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { redirect } from "next/navigation";
@@ -36,5 +37,9 @@ export default async function EventsPage() {
     .order("event_date")
     .order("event_time");
 
-  return <EventManager events={events ?? []} />;
+  return (
+    <Suspense fallback={<div className="py-8 text-center text-sm text-gray-400">Loading...</div>}>
+      <EventManager events={events ?? []} />
+    </Suspense>
+  );
 }
