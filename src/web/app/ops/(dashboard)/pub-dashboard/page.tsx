@@ -22,6 +22,9 @@ export default async function PubDashboardPage() {
   const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
   if (!modules.events && !modules.reservations) redirect("/ops/cases");
 
+  // Sync voice call reservations from Retell (fire-and-forget, non-blocking)
+  fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch"}/api/bigben-pub/sync-calls`).catch(() => {});
+
   const today = new Date().toISOString().split("T")[0];
   const next7 = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];
   const next21 = new Date(Date.now() + 21 * 86400000).toISOString().split("T")[0];

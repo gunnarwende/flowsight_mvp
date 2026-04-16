@@ -35,10 +35,10 @@
     "last_synced": "2026-04-09T17:36:10.990Z"
   },
   "bigben-pub": {
-    "en_agent_id": "agent_515990d7577b002026c4c53a32",
-    "en_flow_id": "conversation_flow_88648f53ec10",
-    "de_agent_id": "agent_acd1807167e9b6a30911e9c5d9",
-    "de_flow_id": "conversation_flow_7b2bc2677d5c",
-    "last_synced": "2026-04-15T22:00:00.000Z"
+    "en_agent_id": "agent_96a9aef429eee1e015795439dc",
+    "en_flow_id": "conversation_flow_9a3daeba7dec",
+    "de_agent_id": "agent_0e34197d7e1a8427a41193972e",
+    "de_flow_id": "conversation_flow_bf214fe29fc2",
+    "last_synced": "2026-04-16T05:41:32.286Z"
   }
 }
