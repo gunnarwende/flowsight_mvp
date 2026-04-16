@@ -544,15 +544,18 @@ export async function POST(req: Request) {
     }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
 
     // ── BigBen Pub: also create reservation if transcript indicates booking ──
-    const tenantSlug = (tenantRow as Record<string, unknown> | null)?.slug as string | undefined;
+    // tenantRow comes from .select("name, slug, case_id_prefix, modules") — slug is a direct field
+    const tenantSlug = typeof (tenantRow as { slug?: string })?.slug === "string" ? (tenantRow as { slug: string }).slug : undefined;
+    console.log(JSON.stringify({ _tag: "bigben_check", tenantSlug, callerPhone: !!callerPhone, caseId }));
     if (tenantSlug === "bigben-pub" && callerPhone) {
       // Extract reservation intent from transcript/description
       const transcript = (call?.transcript ?? "").toLowerCase();
       const desc = (finalDescription ?? "").toLowerCase();
       const hasReservationIntent = transcript.includes("reserv") || transcript.includes("book") || transcript.includes("table") || desc.includes("reserv") || desc.includes("book");
+      console.log(JSON.stringify({ _tag: "bigben_reservation_check", hasReservationIntent, transcript: (call?.transcript ?? "").substring(0, 100) }));
       if (hasReservationIntent) {
         try {
-          await supabase.from("pub_reservations").insert({
+          const insertResult = await supabase.from("pub_reservations").insert({
             tenant_id: tenantId,
             guest_name: reporterName ?? "Phone Booking",
             guest_phone: callerPhone,
@@ -563,6 +566,7 @@ export async function POST(req: Request) {
             source: "voice",
             status: "pending",
           });
+          console.log(JSON.stringify({ _tag: "bigben_reservation_insert", error: insertResult.error?.message || null, ok: !insertResult.error }));
           // Push to Paul
           import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
             sendOpsPush({
