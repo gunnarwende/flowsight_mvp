@@ -169,8 +169,8 @@ export function PubDashboard({
           )}
         </button>
 
-        {/* Guest Watch */}
-        <button onClick={() => router.push("/ops/reservations")}
+        {/* Guest Watch — read-only view of no-show guests */}
+        <button onClick={() => router.push("/ops/guest-watch")}
           className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
           <div className="flex items-center gap-2 mb-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-100 text-base">{totalFlagged > 0 ? "\u26A0\uFE0F" : "\u2705"}</span>
