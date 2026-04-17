@@ -339,7 +339,7 @@ export function OpsShell({
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
           </svg>
         </button>
-        <Link href="/ops/cases" className="flex items-center gap-2">
+        <Link href={isPubTenant ? "/ops/pub-dashboard" : "/ops/cases"} className="flex items-center gap-2">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/20"
             style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
