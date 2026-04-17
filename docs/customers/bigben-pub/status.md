@@ -105,6 +105,9 @@
 ### 2026-03-05 | CC | Kundenordner angelegt
 - Struktur erstellt, Briefing verschoben aus docs/briefings/
 
+### 2026-04-17 | CC | SMS_ALLOWED_NUMBERS fix
+- `SMS_ALLOWED_NUMBERS` env var removed from Vercel — was blocking all external numbers (only allowlisted numbers received SMS). SMS now works for everyone.
+
 ## ERLEDIGT (17.04.2026, PRs #493-#499)
 - [x] Voice Extraction: Retell PCA-Felder (guest_name, party_size, time, date) statt Transcript-Parsing
 - [x] Voice: Öffnungszeiten-Validierung (Lisa lehnt Zeiten ausserhalb ab)
