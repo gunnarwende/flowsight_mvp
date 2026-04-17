@@ -33,6 +33,7 @@ export default async function ReservationsPage() {
       .eq("tenant_id", tenantId)
       .gte("reservation_date", today)
       .lte("reservation_date", future)
+      .in("status", ["pending", "confirmed", "no_show"])
       .order("reservation_date")
       .order("reservation_time"),
     // Count past no-shows per guest phone

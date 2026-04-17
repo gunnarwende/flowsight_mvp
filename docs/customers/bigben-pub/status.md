@@ -105,11 +105,29 @@
 ### 2026-03-05 | CC | Kundenordner angelegt
 - Struktur erstellt, Briefing verschoben aus docs/briefings/
 
+## ERLEDIGT (17.04.2026, PRs #493-#498)
+- [x] Voice Extraction: Retell PCA-Felder (guest_name, party_size, time, date) statt Transcript-Parsing
+- [x] Voice: Öffnungszeiten-Validierung (Lisa lehnt Zeiten ausserhalb ab)
+- [x] Voice: DE Switch funktioniert (Ela übernimmt bei Deutsch)
+- [x] Voice: Richtiger Tag/Datum im Prompt
+- [x] Dashboard: 6 Cards (Reservations, Guest Watch, Events, Sports, Website, Bookings Analytics)
+- [x] Guest Watch: Eigene Seite (/ops/guest-watch) — read-only Gelb/Rot-Liste
+- [x] Bookings Analytics: Walk-in/Online/Phone Breakdown + Monatstrend
+- [x] Time Picker: 15-Min-Intervalle (Select statt native Input)
+- [x] Event/Description: max 30/40 Zeichen
+- [x] Cancelled Reservations: verschwinden aus Übersicht (nur pending/confirmed/no_show sichtbar)
+- [x] "guests this week" aus Header entfernt (irreführend bei Laufkundschaft)
+
 ## OFFEN
-- [ ] Website noch nicht 100% High-End (Founder-Feedback pending)
-- [ ] Voice DE switch holprig (Retell is_transfer_cf Limitierung — kein Fix möglich, nur UX-Workaround)
+### Website (wartet auf Pauls Input — Fotos/Videos kommen)
+- [ ] **Hero: GIF/belebendes Element** — Founder hat Datei, muss eingebaut werden
+- [ ] **Galerie aufräumen** — luxuriöser gestalten, nicht nur 8 Bilder nebeneinander. Neue Fotos/Videos von Paul einbauen
+- [ ] **Instagram zentral bei Galerie** — Paul pflegt Galerie nur über Instagram. @bigbenpubzh prominent bei/statt Galerie platzieren
+- [ ] **Echte Fotos** von Paul ersetzen Platzhalter
+- [ ] Sport/Event Cards Overflow auf Mobile (FB16/FB19) — Zeichenlänge begrenzt, aber Layout muss noch getestet werden
+
+### Sonstige offene Punkte
 - [ ] Voice Events statisch im Prompt (manuell updaten vor Abreise 30.04.)
 - [ ] Pauls eigene E-Mail für OTP (aktuell auf gunnar.wende@flowsight.ch)
-- [ ] Website Fotos von Paul (echte Bilder statt Platzhalter)
-- [ ] Push-Notifications für Reservierungen
-- [ ] Voice → DB-Integration (Reservierung aus Anruf direkt in DB, aktuell nur Polling)
+- [ ] Pauls finale Telefonnummer für Website + Voice Agent (aktuell Founder-Nr.)
+- [ ] Voice → DB: Polling statt Webhook (funktioniert, aber nicht real-time — Retell Webhook-Bug ungelöst)
