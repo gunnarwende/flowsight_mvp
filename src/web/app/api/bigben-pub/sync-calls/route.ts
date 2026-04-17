@@ -61,10 +61,15 @@ export async function GET() {
       const transcript = call.transcript ?? "";
       const lower = transcript.toLowerCase();
 
-      // Must have CONFIRMED reservation (agent said "noted" or "reservation for")
+      // Must have CONFIRMED reservation — check EN + DE patterns
       const hasConfirmedRes =
-        (lower.includes("noted your reservation") || lower.includes("reservation for")) &&
-        (lower.includes("reserv") || lower.includes("book"));
+        // English: "noted your reservation", "reservation for tomorrow"
+        (lower.includes("noted your reservation") || lower.includes("reservation for")) ||
+        // German: "reservierung notiert", "reservierung für", "habe deine reservierung"
+        (lower.includes("reservierung") && (lower.includes("notiert") || lower.includes("für"))) ||
+        // Generic: any "reserv" + confirmed agent response pattern
+        ((lower.includes("reserv") || lower.includes("book") || lower.includes("tisch")) &&
+         (lower.includes("paul will confirm") || lower.includes("paul wird") || lower.includes("bestätigen")));
       if (!hasConfirmedRes) continue;
 
       // Extract data from transcript
@@ -132,9 +137,13 @@ function extractName(transcript: string, analysis: Record<string, unknown>): str
   const aName = analysis.reporter_name ?? analysis.name;
   if (typeof aName === "string" && aName.length > 1) return aName;
 
-  // Try transcript: "under the name X" or "name is X"
-  const nameMatch = transcript.match(/(?:under (?:the )?name|my name is|name is)\s+(\w[\w\s]{1,30}?)[\.,!?]/i);
+  // Try transcript: EN + DE patterns
+  const nameMatch = transcript.match(/(?:under (?:the )?name|my name is|name is|auf den Namen|unter dem Namen|Namen?\s)\s*(\w[\w\s]{1,30}?)[\.,!?\n]/i);
   if (nameMatch) return nameMatch[1].trim();
+
+  // Agent confirmation: "under your name" or "deinem Namen"
+  const agentName = transcript.match(/(?:under your name|unter deinem Namen|für\s+)(\w+)[.,!?\s]/i);
+  if (agentName) return agentName[1].trim();
 
   return "Phone Guest";
 }
@@ -159,9 +168,14 @@ function extractPartySize(transcript: string): number {
   const m4 = lower.match(/for\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty)\s+(?:people|guests?|person)/);
   if (m4) return numWords[m4[1]] ?? (parseInt(m4[1], 10) || 2);
 
-  // Pattern 5: Just a number near "guests" anywhere
-  const m5 = lower.match(/(\d+)\s*guests?/);
-  if (m5) return parseInt(m5[1], 10) || 2;
+  // Pattern 5: German — "für X Personen", "X Personen"
+  const m5de = lower.match(/(?:für|fuer)\s+(\d+|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn)\s+personen/);
+  const deWords: Record<string, number> = { zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9, zehn: 10 };
+  if (m5de) return deWords[m5de[1]] ?? (parseInt(m5de[1], 10) || 2);
+
+  // Pattern 6: Just a number near "guests" or "personen" anywhere
+  const m6 = lower.match(/(\d+)\s*(?:guests?|personen)/);
+  if (m6) return parseInt(m6[1], 10) || 2;
 
   return 2;
 }
@@ -170,11 +184,18 @@ function extractTime(transcript: string): string {
   const lower = transcript.toLowerCase();
 
   // PRIORITY 1: Agent confirmation line — Lisa confirmed time + guests back to caller
-  // Formats: "at 16:00, 5 guests" / "at 16:00 for 5 people" / "at 7 PM, 5 guests"
-  const agentConfirm = lower.match(/at\s+(\d{1,2}):(\d{2})[,\s]+\d+\s+(?:people|guests?|person)/);
+  // EN: "at 16:00, 5 guests" / DE: "um 17:00 Uhr, für zwei Personen"
+  const agentConfirm = lower.match(/(?:at|um)\s+(\d{1,2}):(\d{2})[,\s]+(?:\d+\s+(?:people|guests?|person|personen)|für\s+\w+\s+personen)/);
   if (agentConfirm) {
-    let h = parseInt(agentConfirm[1], 10);
-    return fmt(h, parseInt(agentConfirm[2], 10));
+    return fmt(parseInt(agentConfirm[1], 10), parseInt(agentConfirm[2], 10));
+  }
+
+  // DE Agent: "um 17:00 Uhr" or "um 17 Uhr" (without guest count in same sentence)
+  const deTime = lower.match(/um\s+(\d{1,2}):?(\d{2})?\s*uhr/);
+  if (deTime) {
+    const h = parseInt(deTime[1], 10);
+    const m = deTime[2] ? parseInt(deTime[2], 10) : 0;
+    return fmt(h, m);
   }
 
   // Agent confirmation with PM/AM: "at 7 PM, 5 guests"
