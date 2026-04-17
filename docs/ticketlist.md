@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-04-14 (Sales Day 14: Website-Entscheidung FINAL — Modul 2 Standard, Website kein Produkt. ICP 42 Betriebe analysiert. PRs #446-#450.)
+**Updated:** 2026-04-17 (Sales Day 17: BigBen Pub Go-Live fixes — Voice PCA structured extraction, Dashboard 6 Cards, Cancelled reservations filtered. PRs #493-#499.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -16,9 +16,9 @@
 - **Speakflow:** Take 1 + Take 2 FINAL. Generisches Template: `docs/gtm/speakflow_template.md`
 - **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
-- **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN LIVE (+41445054818). Website dark. Dashboard + Events + Reservations. 22 PRs (#446-#467).
-- **Phase:** Sales Day 14. Website-Entscheidung FINAL. BigBen Pub onboarded. Fokus: Paul Demo + Doerfler Outreach.
-- **Nächste Schritte:** 1) Founder testet BigBen Voice + App morgen 2) Take 3+4 Speakflow finalisieren (Founder + ChatGPT) 3) Founder nimmt Take 1-4 Masteraufnahmen auf 4) Doerfler Outreach (Mail 1) 5) BigBen Feinschliff nach Founder-Test (Fotos, Voice-Tuning)
+- **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN+DE LIVE (+41445054818), PCA structured extraction. Dashboard 6 Cards. Go-Live prep 90% complete, waiting for Paul's photos/videos. 35 PRs (#457-#467 + #479-#499).
+- **Phase:** Sales Day 17. BigBen Pub Go-Live fixes done. Fokus: Take 4 Script + Video Recording + Dörfler Outreach.
+- **Nächste Schritte:** 1) Take 4 script finalisieren 2) Video recording (generic + Dörfler) 3) Dörfler Outreach (Mail 1) 4) BigBen: Pauls Fotos/Videos einbauen wenn geliefert 5) BigBen: Voice Events manuell updaten vor 30.04.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
@@ -79,7 +79,7 @@ Keine.
 
 | # | Titel | Status |
 |---|-------|--------|
-| #80 | BigBen Pub — Ruecksprache Paul | Tier 3, Paul interessiert |
+| #80 | BigBen Pub — Pauls Fotos/Videos | Wartet auf Paul (Go-Live 30.04.) |
 
 ---
 

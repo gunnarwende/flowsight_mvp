@@ -27,7 +27,7 @@
 - 24h SMS Reminder: **LIVE** — Automatische Erinnerung 24h vor Reservierung
 - Confirmation SMS: **LIVE** — Sofort-Bestätigung bei Reservierung
 - Help: **LIVE** — /ops/help (EN, support@flowsight.ch + Gunnar)
-- PRs: #457-#467 (initial, 11 PRs), #479-#491 (Go-Live prep, 13 PRs)
+- PRs: #457-#467 (initial, 11 PRs), #479-#491 (Go-Live prep, 13 PRs), #493-#499 (Go-Live fixes, 7 PRs)
 
 ## Architektur-Besonderheiten
 - **Polling statt Webhook:** Retell `webhook_url` feuert nicht zuverlässig für BigBen (nicht-Standard-Tenant). Lösung: Polling via sync-calls API (`/api/retell/sync-calls`) für Voice→Reservation Pipeline.
@@ -105,7 +105,7 @@
 ### 2026-03-05 | CC | Kundenordner angelegt
 - Struktur erstellt, Briefing verschoben aus docs/briefings/
 
-## ERLEDIGT (17.04.2026, PRs #493-#498)
+## ERLEDIGT (17.04.2026, PRs #493-#499)
 - [x] Voice Extraction: Retell PCA-Felder (guest_name, party_size, time, date) statt Transcript-Parsing
 - [x] Voice: Öffnungszeiten-Validierung (Lisa lehnt Zeiten ausserhalb ab)
 - [x] Voice: DE Switch funktioniert (Ela übernimmt bei Deutsch)
