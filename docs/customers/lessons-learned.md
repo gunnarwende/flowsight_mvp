@@ -304,6 +304,11 @@ node --env-file=src/web/.env.local scripts/_ops/send_outreach_mail.mjs <slug> <e
 - **Voice Events statisch:** Events sind als Text im Prompt. Dynamischer Fetch wäre ideal, aber Retell unterstützt keine Runtime-API-Calls im Prompt. Manuelles Update vor Abreise nötig.
 - **Total Onboarding: ~8h** (inkl. DB-Schema, Voice, Website, Dashboard). Neuer Gastro-Kunde: Soll ~4h.
 
+**Go-Live Fixes (PRs #493-#499, 7 PRs):**
+- **Retell post_call_analysis_data: CUSTOM fields per tenant type.** Sanitär ≠ Pub. PCA-Felder (guest_name, party_size, time, date) müssen tenant-spezifisch konfiguriert werden. Copying from another tenant gives wrong extraction fields. IMMER die PCA-Schema pro Branche/Tenant-Typ neu definieren.
+- **Transcript-Parsing ist unzuverlässig für Production.** IMMER structured PCA fields verwenden. Transcript-Parsing bricht bei Akzenten, Hintergrundgeräuschen, unerwarteten Formulierungen. PCA = deterministisch, Transcript = fragil.
+- **Voice Reservation Pipeline: Polling + structured PCA = reliable.** Webhook + Transcript-Parsing = fragile. Die Kombination aus sync-calls Polling und PCA structured extraction ist die produktionsreife Architektur für Voice→DB Pipelines.
+
 ### Orlandini + Widmer (2026-03-08)
 
 **Kontext:** Rebuild nach Qualitäts-Audit. Erfundene Services + Team-Mitglieder.
@@ -345,4 +350,4 @@ node --env-file=src/web/.env.local scripts/_ops/send_outreach_mail.mjs <slug> <e
 
 ---
 
-*Letztes Update: 2026-04-16 | Quelle: BigBen Pub Go-Live Prep (PRs #479-#491)*
+*Letztes Update: 2026-04-17 | Quelle: BigBen Pub Go-Live Fixes (PRs #493-#499)*
