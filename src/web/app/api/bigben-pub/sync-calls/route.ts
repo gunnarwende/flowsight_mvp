@@ -155,9 +155,13 @@ function extractPartySize(transcript: string): number {
   const m3 = lower.match(/(?:for|f(?:ü|ue)r)\s+(\d+|two|three|four|five|six|seven|eight|nine|ten|twelve)\s+(?!pm|am|today|tomorrow|monday|tuesday)/);
   if (m3) return numWords[m3[1]] ?? (parseInt(m3[1], 10) || 2);
 
-  // Pattern 4: Agent confirmation "X guests" (Lisa says back the number)
-  const m4 = lower.match(/(\d+)\s*guests?,\s*under/);
-  if (m4) return parseInt(m4[1], 10) || 2;
+  // Pattern 4: Agent confirmation — "for X people/guests" (Lisa confirms)
+  const m4 = lower.match(/for\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty)\s+(?:people|guests?|person)/);
+  if (m4) return numWords[m4[1]] ?? (parseInt(m4[1], 10) || 2);
+
+  // Pattern 5: Just a number near "guests" anywhere
+  const m5 = lower.match(/(\d+)\s*guests?/);
+  if (m5) return parseInt(m5[1], 10) || 2;
 
   return 2;
 }
@@ -165,38 +169,39 @@ function extractPartySize(transcript: string): number {
 function extractTime(transcript: string): string {
   const lower = transcript.toLowerCase();
 
-  // Pattern 1: "at X:XX PM/AM" or "at X PM" or "um X Uhr" (with or without "at/um")
-  const m1 = lower.match(/(?:at\s+|um\s+)?(\d{1,2})(?::(\d{2}))?\s*(pm|am|p\.m\.|a\.m\.|uhr|o'clock)/);
-  if (m1) {
-    let hour = parseInt(m1[1], 10);
-    const min = m1[2] ? parseInt(m1[2], 10) : 0;
-    const ampm = m1[3];
-    if (ampm.startsWith("p") && hour < 12) hour += 12;
-    if (ampm.startsWith("a") && hour === 12) hour = 0;
-    // "uhr" = 24h format, no conversion needed unless < 12 (assume PM for pub)
-    if (ampm === "uhr" && hour < 12) hour += 12;
-    return fmt(hour, min);
+  // PRIORITY 1: Agent confirmation line "at HH:MM for X people/guests"
+  // This is the most reliable — Lisa confirmed the time back to the caller
+  const agentConfirm = lower.match(/at\s+(\d{1,2}):(\d{2})\s+for\s+\d+\s+(?:people|guests?|person)/);
+  if (agentConfirm) {
+    const h = parseInt(agentConfirm[1], 10);
+    return fmt(h, parseInt(agentConfirm[2], 10));
   }
 
-  // Pattern 2: "at 19:00" or "um 19:00" (24h format, no AM/PM)
-  const m2 = lower.match(/(?:at|um)\s+(\d{2}):(\d{2})/);
-  if (m2) return fmt(parseInt(m2[1], 10), parseInt(m2[2], 10));
+  // Also try: "for X PM, Y guests" or "at X PM for"
+  const agentConfirm2 = lower.match(/at\s+(\d{1,2}):?(\d{2})?\s*(pm|am),?\s+\d+\s+guests?/);
+  if (agentConfirm2) {
+    let h = parseInt(agentConfirm2[1], 10);
+    if (agentConfirm2[3] === "pm" && h < 12) h += 12;
+    return fmt(h, agentConfirm2[2] ? parseInt(agentConfirm2[2], 10) : 0);
+  }
 
-  // Pattern 3: Word numbers — "at seven", "seven pm", "seven o'clock"
+  // PRIORITY 2: Caller says time with AM/PM/o'clock explicitly
+  const callerTime = lower.match(/(?:at|um|for)\s+(\d{1,2})(?::(\d{2}))?\s*(pm|am|p\.m\.|a\.m\.|uhr|o'clock)/);
+  if (callerTime) {
+    let h = parseInt(callerTime[1], 10);
+    const m = callerTime[2] ? parseInt(callerTime[2], 10) : 0;
+    const suffix = callerTime[3];
+    if (suffix.startsWith("p") && h < 12) h += 12;
+    if (suffix.startsWith("a") && h === 12) h = 0;
+    if ((suffix === "uhr" || suffix === "o'clock") && h < 12) h += 12; // pub = afternoon/evening
+    return fmt(h, m);
+  }
+
+  // PRIORITY 3: Word numbers — "one o'clock", "at seven"
   const timeWords: Record<string, number> = { one: 13, two: 14, three: 15, four: 16, five: 17, six: 18, seven: 19, eight: 20, nine: 21, ten: 22, eleven: 23, twelve: 12 };
   for (const [word, hour] of Object.entries(timeWords)) {
-    if (lower.includes(word + " pm") || lower.includes(word + " p.m") || lower.includes(word + " o'clock") || lower.match(new RegExp("at\\s+" + word + "\\b"))) {
-      return fmt(hour, 0);
-    }
-  }
-
-  // Pattern 4: Agent confirmation — "at X:XX PM, Y guests"
-  const m4 = lower.match(/at\s+(\d{1,2}):?(\d{2})?\s*(pm|am)/);
-  if (m4) {
-    let hour = parseInt(m4[1], 10);
-    const min = m4[2] ? parseInt(m4[2], 10) : 0;
-    if (m4[3] === "pm" && hour < 12) hour += 12;
-    return fmt(hour, min);
+    const pattern = new RegExp(`(?:at\\s+${word}|${word}\\s+(?:pm|p\\.m|o'clock))\\b`);
+    if (pattern.test(lower)) return fmt(hour, 0);
   }
 
   return "19:00";

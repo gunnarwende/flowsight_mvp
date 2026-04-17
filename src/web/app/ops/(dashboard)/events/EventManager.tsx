@@ -172,9 +172,10 @@ export function EventManager({ events }: { events: PubEvent[] }) {
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-3">
           <input
             type="text"
-            placeholder={activeTab === "sport" ? "e.g. Premier League: Arsenal vs. Chelsea" : "e.g. Quiz Night"}
+            placeholder={activeTab === "sport" ? "e.g. Arsenal vs. Chelsea" : "e.g. Quiz Night"}
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value.slice(0, 30))}
+            maxLength={30}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
             autoFocus
           />
@@ -221,7 +222,7 @@ export function EventManager({ events }: { events: PubEvent[] }) {
             {editingId === e.id ? (
               /* Inline edit form */
               <div className="p-3 space-y-2 bg-gray-50">
-                <input type="text" value={editTitle} onChange={(ev) => setEditTitle(ev.target.value)} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />
+                <input type="text" value={editTitle} onChange={(ev) => setEditTitle(ev.target.value.slice(0, 30))} maxLength={30} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />
                 <div className="flex gap-2">
                   <input type="date" value={editDate} onChange={(ev) => setEditDate(ev.target.value)} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />
                   <input type="time" value={editTime} onChange={(ev) => setEditTime(ev.target.value)} className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />

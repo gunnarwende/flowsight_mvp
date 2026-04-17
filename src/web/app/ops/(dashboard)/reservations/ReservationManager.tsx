@@ -68,15 +68,18 @@ function todayISO(): string {
   return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" });
 }
 
-/** Return current time rounded to nearest 30 min as HH:MM */
-function nowRounded30(): string {
+/** Return current time rounded to nearest 15 min as HH:MM */
+function nowRounded15(): string {
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Zurich" }));
   const mins = now.getMinutes();
-  const rounded = mins < 15 ? 0 : mins < 45 ? 30 : 60;
+  const rounded = Math.ceil(mins / 15) * 15;
   const d = new Date(now);
   d.setMinutes(rounded, 0, 0);
-  if (rounded === 60) d.setHours(d.getHours()); // already handled by setMinutes overflow
-  return d.toTimeString().substring(0, 5);
+  const h = d.getHours();
+  const m = d.getMinutes();
+  // Clamp to pub opening hours (14:00 minimum)
+  if (h < 14) return "16:00";
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 export function ReservationManager({ reservations, noShowMap }: { reservations: Reservation[]; noShowMap: Record<string, number> }) {
@@ -89,7 +92,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState(todayISO);
-  const [time, setTime] = useState(nowRounded30);
+  const [time, setTime] = useState(nowRounded15);
   const [guests, setGuests] = useState("2");
   const [note, setNote] = useState("");
 
@@ -120,7 +123,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
       });
       if (res.ok) {
         // Reset but keep date/time pre-filled for next walk-in
-        setName(""); setPhone(""); setDate(todayISO()); setTime(nowRounded30()); setGuests("2"); setNote("");
+        setName(""); setPhone(""); setDate(todayISO()); setTime(nowRounded15()); setGuests("2"); setNote("");
         setShowForm(false);
         router.refresh();
       }
@@ -173,7 +176,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
           if (!showForm) {
             // Re-compute date/time each time the form opens for accurate walk-in defaults
             setDate(todayISO());
-            setTime(nowRounded30());
+            setTime(nowRounded15());
           }
           setShowForm(!showForm);
         }}
@@ -208,12 +211,19 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
               onChange={(e) => setDate(e.target.value)}
               className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
             />
-            <input
-              type="time"
+            <select
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-24 rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
-            />
+              className="w-24 rounded-lg border border-gray-200 px-2 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
+            >
+              {Array.from({ length: 40 }, (_, i) => {
+                const h = Math.floor(i / 4) + 14; // 14:00 to 23:45
+                const m = (i % 4) * 15;
+                if (h >= 24) return null;
+                const val = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+                return <option key={val} value={val}>{val}</option>;
+              })}
+            </select>
             <select
               value={guests}
               onChange={(e) => setGuests(e.target.value)}
