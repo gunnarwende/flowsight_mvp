@@ -36,6 +36,7 @@ export default async function PubDashboardPage() {
     { data: todayRes },
     { data: upcomingRes },
     { data: noShowRows },
+    { data: sourceRows },
   ] = await Promise.all([
     // Today's events
     supabase
@@ -88,6 +89,11 @@ export default async function PubDashboardPage() {
       .select("guest_phone")
       .eq("tenant_id", tenantId)
       .eq("status", "no_show"),
+    // Booking source stats (all time)
+    supabase
+      .from("pub_reservations")
+      .select("source")
+      .eq("tenant_id", tenantId),
   ]);
 
   // Build no-show map: phone -> count
@@ -99,6 +105,13 @@ export default async function PubDashboardPage() {
     }
   }
 
+  // Build source stats: source -> count
+  const sourceStats: Record<string, number> = {};
+  for (const row of sourceRows ?? []) {
+    const src = row.source ?? "unknown";
+    sourceStats[src] = (sourceStats[src] ?? 0) + 1;
+  }
+
   return (
     <PubDashboard
       tenantName={tenant?.name ?? "Pub"}
@@ -108,6 +121,7 @@ export default async function PubDashboardPage() {
       todayReservations={todayRes ?? []}
       upcomingReservations={upcomingRes ?? []}
       noShowMap={noShowMap}
+      sourceStats={sourceStats}
     />
   );
 }
