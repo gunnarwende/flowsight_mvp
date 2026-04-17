@@ -22,8 +22,7 @@ export default async function PubDashboardPage() {
   const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
   if (!modules.events && !modules.reservations) redirect("/ops/cases");
 
-  // Sync voice call reservations from Retell (fire-and-forget, non-blocking)
-  fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch"}/api/bigben-pub/sync-calls`).catch(() => {});
+  // Sync is triggered client-side in PubDashboard useEffect (not here — double-sync caused duplicates)
 
   const today = new Date().toISOString().split("T")[0];
   const next7 = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];

@@ -169,16 +169,16 @@ function extractPartySize(transcript: string): number {
 function extractTime(transcript: string): string {
   const lower = transcript.toLowerCase();
 
-  // PRIORITY 1: Agent confirmation line "at HH:MM for X people/guests"
-  // This is the most reliable — Lisa confirmed the time back to the caller
-  const agentConfirm = lower.match(/at\s+(\d{1,2}):(\d{2})\s+for\s+\d+\s+(?:people|guests?|person)/);
+  // PRIORITY 1: Agent confirmation line — Lisa confirmed time + guests back to caller
+  // Formats: "at 16:00, 5 guests" / "at 16:00 for 5 people" / "at 7 PM, 5 guests"
+  const agentConfirm = lower.match(/at\s+(\d{1,2}):(\d{2})[,\s]+\d+\s+(?:people|guests?|person)/);
   if (agentConfirm) {
-    const h = parseInt(agentConfirm[1], 10);
+    let h = parseInt(agentConfirm[1], 10);
     return fmt(h, parseInt(agentConfirm[2], 10));
   }
 
-  // Also try: "for X PM, Y guests" or "at X PM for"
-  const agentConfirm2 = lower.match(/at\s+(\d{1,2}):?(\d{2})?\s*(pm|am),?\s+\d+\s+guests?/);
+  // Agent confirmation with PM/AM: "at 7 PM, 5 guests"
+  const agentConfirm2 = lower.match(/at\s+(\d{1,2}):?(\d{2})?\s*(pm|am)[,\s]+\d+\s+(?:people|guests?)/);
   if (agentConfirm2) {
     let h = parseInt(agentConfirm2[1], 10);
     if (agentConfirm2[3] === "pm" && h < 12) h += 12;
