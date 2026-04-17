@@ -302,8 +302,8 @@ NACH ERLEDIGUNG:
 - Sanitär/Heizung seit 1926, Oberrieden ZH, 3. Generation (Ramon + Luzian Dörfler)
 - Voice Agent Gold-Standard: Lisa-Persona, Info+Intake Dual-Mode, 18 Szenarien, Sprachwechsel DE↔EN/FR/IT
 - 70 realistische Demo-Cases (2024-2026, saisonal verteilt, Reviews Ø 4.8★)
-- Vorstellungsseite LIVE, Video-Takes in Produktion (Segment-Recording + Demo-Audio-Pipeline)
-- Noch KEIN Kontakt mit Betrieb. Outreach-Mail READY.
+- Vorstellungsmaschine in Entwicklung: Scripts gefroren (Take 1-4), Screenflow-Spec (19 Screens), Pipeline-Architektur definiert. Alte Assets OBSOLET — Neuproduktion ab 18.04.
+- Noch KEIN Kontakt mit Betrieb. Outreach nach Video-Produktion.
 - Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos (5/5)
 
 ### Walter Leuthold — Zweiter Prospect durch die GTM-Maschine

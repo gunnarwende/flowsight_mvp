@@ -18,7 +18,7 @@
 - **BLOCKER:** 0
 - **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN+DE LIVE (+41445054818), PCA structured extraction. Dashboard 6 Cards. Go-Live prep 90% complete, waiting for Paul's photos/videos. 35 PRs (#457-#467 + #479-#499).
 - **Phase:** Sales Day 17. BigBen Pub Go-Live fixes done. Fokus: Take 4 Script + Video Recording + Dörfler Outreach.
-- **Nächste Schritte:** 1) Take 4 script finalisieren 2) Video recording (generic + Dörfler) 3) Dörfler Outreach (Mail 1) 4) BigBen: Pauls Fotos/Videos einbauen wenn geliefert 5) BigBen: Voice Events manuell updaten vor 30.04.
+- **Nächste Schritte:** 1) **Tomorrow: Take 2 Dörfler AG generisch als Maschinengrundlage** (Founder Audio + CC Seed-Fix + Playwright + Samsung Pipeline + Assembly) 2) BigBen: wartet auf Pauls Fotos/Videos 3) BigBen: Voice Events manuell updaten vor 30.04.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
