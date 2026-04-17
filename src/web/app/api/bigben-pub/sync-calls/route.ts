@@ -50,7 +50,7 @@ export async function GET() {
       .eq("tenant_id", tenant.id)
       .eq("source", "voice");
     const syncedIds = new Set(
-      (existing ?? []).map((r: { note: string | null }) => r.note?.match(/call_id:(\S+)/)?.[1]).filter(Boolean)
+      (existing ?? []).map((r: { note: string | null }) => r.note?.match(/call_id:([a-z0-9_]+)/)?.[1]).filter(Boolean)
     );
 
     let synced = 0;
@@ -140,36 +140,70 @@ function extractName(transcript: string, analysis: Record<string, unknown>): str
 }
 
 function extractPartySize(transcript: string): number {
-  // "4 people", "four people", "4 guests", "we are 4"
-  const numWords: Record<string, number> = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, twelve: 12 };
-  const match = transcript.match(/(\d+|two|three|four|five|six|seven|eight|nine|ten|twelve)\s*(?:people|person|guests?|personen?|leute)/i)
-    ?? transcript.match(/(?:we are|wir sind)\s*(\d+|two|three|four|five|six|seven|eight|nine|ten|twelve)/i)
-    ?? transcript.match(/(?:for|für)\s*(\d+|two|three|four|five|six|seven|eight|nine|ten|twelve)\s/i);
-  if (match) {
-    const val = match[1].toLowerCase();
-    return numWords[val] ?? (parseInt(val, 10) || 2);
-  }
+  const numWords: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, fifteen: 15, twenty: 20 };
+  const lower = transcript.toLowerCase();
+
+  // Pattern 1: "X people/guests/person"
+  const m1 = lower.match(/(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty)\s*(?:people|person|guests?|personen?|leute|pax)/);
+  if (m1) return numWords[m1[1]] ?? (parseInt(m1[1], 10) || 2);
+
+  // Pattern 2: "we are X" / "wir sind X"
+  const m2 = lower.match(/(?:we are|wir sind|there(?:'s| is| are)|party of)\s*(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)/);
+  if (m2) return numWords[m2[1]] ?? (parseInt(m2[1], 10) || 2);
+
+  // Pattern 3: "for X" (but not "for today/tomorrow")
+  const m3 = lower.match(/(?:for|f(?:ü|ue)r)\s+(\d+|two|three|four|five|six|seven|eight|nine|ten|twelve)\s+(?!pm|am|today|tomorrow|monday|tuesday)/);
+  if (m3) return numWords[m3[1]] ?? (parseInt(m3[1], 10) || 2);
+
+  // Pattern 4: Agent confirmation "X guests" (Lisa says back the number)
+  const m4 = lower.match(/(\d+)\s*guests?,\s*under/);
+  if (m4) return parseInt(m4[1], 10) || 2;
+
   return 2;
 }
 
 function extractTime(transcript: string): string {
-  // "at 7 PM", "at 19:00", "um 19 Uhr", "seven PM"
-  const timeWords: Record<string, number> = { five: 17, six: 18, seven: 19, eight: 20, nine: 21 };
-  const match = transcript.match(/(?:at|um)\s*(\d{1,2})(?::(\d{2}))?\s*(?:PM|pm|Uhr|o'clock)?/i);
-  if (match) {
-    let hour = parseInt(match[1], 10);
-    const min = match[2] ? parseInt(match[2], 10) : 0;
-    if (hour < 12 && transcript.toLowerCase().includes("pm")) hour += 12;
-    if (hour < 12) hour += 12; // Pub = always evening
-    return `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  const lower = transcript.toLowerCase();
+
+  // Pattern 1: "at X:XX PM/AM" or "at X PM" or "um X Uhr" (with or without "at/um")
+  const m1 = lower.match(/(?:at\s+|um\s+)?(\d{1,2})(?::(\d{2}))?\s*(pm|am|p\.m\.|a\.m\.|uhr|o'clock)/);
+  if (m1) {
+    let hour = parseInt(m1[1], 10);
+    const min = m1[2] ? parseInt(m1[2], 10) : 0;
+    const ampm = m1[3];
+    if (ampm.startsWith("p") && hour < 12) hour += 12;
+    if (ampm.startsWith("a") && hour === 12) hour = 0;
+    // "uhr" = 24h format, no conversion needed unless < 12 (assume PM for pub)
+    if (ampm === "uhr" && hour < 12) hour += 12;
+    return fmt(hour, min);
   }
-  // Try word numbers
+
+  // Pattern 2: "at 19:00" or "um 19:00" (24h format, no AM/PM)
+  const m2 = lower.match(/(?:at|um)\s+(\d{2}):(\d{2})/);
+  if (m2) return fmt(parseInt(m2[1], 10), parseInt(m2[2], 10));
+
+  // Pattern 3: Word numbers — "at seven", "seven pm", "seven o'clock"
+  const timeWords: Record<string, number> = { one: 13, two: 14, three: 15, four: 16, five: 17, six: 18, seven: 19, eight: 20, nine: 21, ten: 22, eleven: 23, twelve: 12 };
   for (const [word, hour] of Object.entries(timeWords)) {
-    if (transcript.toLowerCase().includes(word + " pm") || transcript.toLowerCase().includes(word + " o'clock")) {
-      return `${hour}:00`;
+    if (lower.includes(word + " pm") || lower.includes(word + " p.m") || lower.includes(word + " o'clock") || lower.match(new RegExp("at\\s+" + word + "\\b"))) {
+      return fmt(hour, 0);
     }
   }
+
+  // Pattern 4: Agent confirmation — "at X:XX PM, Y guests"
+  const m4 = lower.match(/at\s+(\d{1,2}):?(\d{2})?\s*(pm|am)/);
+  if (m4) {
+    let hour = parseInt(m4[1], 10);
+    const min = m4[2] ? parseInt(m4[2], 10) : 0;
+    if (m4[3] === "pm" && hour < 12) hour += 12;
+    return fmt(hour, min);
+  }
+
   return "19:00";
+}
+
+function fmt(h: number, m: number): string {
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 function extractDate(transcript: string): string {

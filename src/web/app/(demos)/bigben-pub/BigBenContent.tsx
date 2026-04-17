@@ -710,7 +710,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
         </h2>
 
         {/* 2 columns: Sport | Events */}
-        <div className="mt-14 grid gap-10 lg:grid-cols-2">
+        <div className="mt-14 grid gap-8 lg:gap-10 lg:grid-cols-2 max-w-full">
           {/* ── SPORT ────────────────────────── */}
           <div>
             <h3 className="mb-6 flex items-center gap-2 font-serif text-xl font-bold text-[#f0e8dc]">
@@ -729,7 +729,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                     {visible.map((e) => {
                       const dt = fmtDateBig(e.event_date);
                       return (
-                        <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                        <div key={e.id} className="group flex gap-3 sm:gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-3 sm:p-4 overflow-hidden transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>
@@ -779,7 +779,7 @@ function DynamicEvents({ lang }: { lang: Lang }) {
                     {visible.map((e) => {
                       const dt = fmtDateBig(e.event_date);
                       return (
-                        <div key={e.id} className="group flex gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-4 transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
+                        <div key={e.id} className="group flex gap-3 sm:gap-4 rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-3 sm:p-4 overflow-hidden transition-all hover:border-[#a2774b]/40 hover:shadow-lg hover:shadow-[#a2774b]/5">
                           <div className="flex-shrink-0 flex flex-col items-center justify-center w-14 rounded-xl bg-[#1e1611] py-2">
                             <span className="text-[10px] font-bold text-[#a2774b] uppercase">{dt.weekday}</span>
                             <span className="text-xl font-bold text-[#f0e8dc]">{dt.day}</span>

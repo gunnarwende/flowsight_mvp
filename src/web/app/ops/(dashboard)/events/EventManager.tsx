@@ -30,7 +30,9 @@ function formatTime(time: string | null): string {
 export function EventManager({ events }: { events: PubEvent[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") === "event" ? "event" : "sport";
+  const tabParam = searchParams.get("tab");
+  const lockedTab = tabParam === "event" || tabParam === "sport" ? tabParam : null;
+  const initialTab = tabParam === "event" ? "event" : "sport";
   const [activeTab, setActiveTab] = useState<"sport" | "event">(initialTab);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -130,28 +132,32 @@ export function EventManager({ events }: { events: PubEvent[] }) {
         Back
       </Link>
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-gray-900">Events</h1>
+        <h1 className="text-lg font-bold text-gray-900">
+          {lockedTab === "sport" ? "Sports" : lockedTab === "event" ? "Events" : "Events"}
+        </h1>
       </div>
 
-      {/* Tabs */}
-      <div className="flex rounded-xl bg-gray-100 p-1">
-        <button
-          onClick={() => { setActiveTab("sport"); setShowForm(false); }}
-          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-colors ${
-            activeTab === "sport" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-          }`}
-        >
-          Sport ({sportEvents.length})
-        </button>
-        <button
-          onClick={() => { setActiveTab("event"); setShowForm(false); }}
-          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-colors ${
-            activeTab === "event" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-          }`}
-        >
-          Events ({pubEvents.length})
-        </button>
-      </div>
+      {/* Tabs — only show if not locked to a specific category */}
+      {!lockedTab && (
+        <div className="flex rounded-xl bg-gray-100 p-1">
+          <button
+            onClick={() => { setActiveTab("sport"); setShowForm(false); }}
+            className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-colors ${
+              activeTab === "sport" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+            }`}
+          >
+            Sport ({sportEvents.length})
+          </button>
+          <button
+            onClick={() => { setActiveTab("event"); setShowForm(false); }}
+            className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-colors ${
+              activeTab === "event" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+            }`}
+          >
+            Events ({pubEvents.length})
+          </button>
+        </div>
+      )}
 
       {/* Add button */}
       <button
