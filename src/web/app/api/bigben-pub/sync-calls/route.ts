@@ -61,23 +61,21 @@ export async function GET() {
       const transcript = call.transcript ?? "";
       const lower = transcript.toLowerCase();
 
-      // Must have CONFIRMED reservation — check EN + DE patterns
-      const hasConfirmedRes =
-        // English: "noted your reservation", "reservation for tomorrow"
-        (lower.includes("noted your reservation") || lower.includes("reservation for")) ||
-        // German: "reservierung notiert", "reservierung für", "habe deine reservierung"
-        (lower.includes("reservierung") && (lower.includes("notiert") || lower.includes("für"))) ||
-        // Generic: any "reserv" + confirmed agent response pattern
-        ((lower.includes("reserv") || lower.includes("book") || lower.includes("tisch")) &&
-         (lower.includes("paul will confirm") || lower.includes("paul wird") || lower.includes("bestätigen")));
-      if (!hasConfirmedRes) continue;
-
-      // Extract data from transcript
+      // Check if this is a reservation call — use structured analysis first, transcript fallback
       const analysis = call.call_analysis?.custom_analysis_data ?? {};
-      const guestName = extractName(transcript, analysis);
-      const partySize = extractPartySize(transcript);
-      const time = extractTime(transcript);
-      const date = extractDate(transcript);
+      const isReservation = analysis.is_reservation === true ||
+        analysis.call_type === "reservation" || analysis.call_type === "mixed" ||
+        // Transcript fallback for older calls without structured analysis
+        lower.includes("noted your reservation") || lower.includes("reservation for") ||
+        (lower.includes("reservierung") && lower.includes("notiert")) ||
+        ((lower.includes("reserv") || lower.includes("tisch")) && lower.includes("paul"));
+      if (!isReservation) continue;
+
+      // Extract data — PRIORITY: structured analysis > transcript parsing
+      const guestName = (typeof analysis.guest_name === "string" && analysis.guest_name) || extractName(transcript, analysis);
+      const partySize = (typeof analysis.party_size === "number" && analysis.party_size > 0) ? analysis.party_size : extractPartySize(transcript);
+      const time = (typeof analysis.reservation_time === "string" && /^\d{2}:\d{2}$/.test(analysis.reservation_time)) ? analysis.reservation_time : extractTime(transcript);
+      const date = (typeof analysis.reservation_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(analysis.reservation_date)) ? analysis.reservation_date : extractDate(transcript);
 
       // Check guest no-show history
       let voiceNote = `Voice reservation (call_id:${call.call_id})`;
