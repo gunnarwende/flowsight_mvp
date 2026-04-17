@@ -195,9 +195,10 @@ export function EventManager({ events }: { events: PubEvent[] }) {
           </div>
           <input
             type="text"
-            placeholder="Short description (optional)"
+            placeholder="Short description (max 40 chars)"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value.slice(0, 40))}
+            maxLength={40}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
           />
           <button
@@ -227,7 +228,7 @@ export function EventManager({ events }: { events: PubEvent[] }) {
                   <input type="date" value={editDate} onChange={(ev) => setEditDate(ev.target.value)} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />
                   <input type="time" value={editTime} onChange={(ev) => setEditTime(ev.target.value)} className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none" />
                 </div>
-                <input type="text" value={editDesc} onChange={(ev) => setEditDesc(ev.target.value)} placeholder="Description" className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none" />
+                <input type="text" value={editDesc} onChange={(ev) => setEditDesc(ev.target.value.slice(0, 40))} maxLength={40} placeholder="Short description (max 40)" className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none" />
                 <div className="flex gap-2">
                   <button onClick={handleEditSave} disabled={saving} className="flex-1 rounded-lg bg-gray-900 py-2 text-xs font-semibold text-white disabled:opacity-40">{saving ? "Saving..." : "Save"}</button>
                   <button onClick={() => setEditingId(null)} className="rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 hover:bg-gray-50">Cancel</button>
