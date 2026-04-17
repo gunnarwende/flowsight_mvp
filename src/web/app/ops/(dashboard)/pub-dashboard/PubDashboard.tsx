@@ -55,6 +55,7 @@ export function PubDashboard({
   todayReservations,
   upcomingReservations,
   noShowMap,
+  sourceStats,
 }: {
   tenantName: string;
   todayEvents: TodayEvent[];
@@ -63,6 +64,7 @@ export function PubDashboard({
   todayReservations: TodayReservation[];
   upcomingReservations: UpcomingReservation[];
   noShowMap: Record<string, number>;
+  sourceStats: Record<string, number>;
 }) {
   const router = useRouter();
 
@@ -94,7 +96,6 @@ export function PubDashboard({
         <h1 className="text-lg font-bold text-gray-900">{tenantName}</h1>
         <p className="text-xs text-gray-400">
           {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
-          {weekGuestCount > 0 && <span className="ml-2 text-gray-500">· {weekGuestCount} guests this week</span>}
         </p>
       </div>
 
@@ -121,8 +122,10 @@ export function PubDashboard({
         </button>
       )}
 
-      {/* ── 4 SEGMENT CARDS ───────────────────────────── */}
+      {/* ── 6 SEGMENT CARDS ───────────────────────────── */}
       <div className="grid grid-cols-2 gap-3">
+        {/* Row 1: Reservations | Guest Watch */}
+
         {/* Reservations */}
         <button onClick={() => router.push("/ops/reservations")}
           className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
@@ -134,38 +137,6 @@ export function PubDashboard({
           <p className="text-[11px] text-gray-500 mt-0.5">{todayGuestCount} guests today</p>
           {pendingCount > 0 && (
             <p className="text-[11px] font-bold text-amber-600 mt-1">{pendingCount} pending</p>
-          )}
-        </button>
-
-        {/* Sports */}
-        <button onClick={() => router.push("/ops/events?tab=sport")}
-          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-base">⚽</span>
-            <span className="text-xs font-bold text-gray-400 uppercase">Sports</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{sportEvents.length}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">matches this week</p>
-          {todayEvents.filter(e => e.category === "sport").length > 0 && (
-            <p className="text-[11px] font-bold text-emerald-600 mt-1">
-              {todayEvents.filter(e => e.category === "sport").map(e => e.title.split(":")[0]).join(", ")} tonight
-            </p>
-          )}
-        </button>
-
-        {/* Events */}
-        <button onClick={() => router.push("/ops/events?tab=event")}
-          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-100 text-base">🎵</span>
-            <span className="text-xs font-bold text-gray-400 uppercase">Events</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{pubEvents.length}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">events this week</p>
-          {todayEvents.filter(e => e.category === "event").length > 0 && (
-            <p className="text-[11px] font-bold text-purple-600 mt-1">
-              {todayEvents.filter(e => e.category === "event").map(e => e.title).join(", ")} tonight
-            </p>
           )}
         </button>
 
@@ -187,6 +158,42 @@ export function PubDashboard({
           )}
         </button>
 
+        {/* Row 2: Events | Sports */}
+
+        {/* Events */}
+        <button onClick={() => router.push("/ops/events?tab=event")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-100 text-base">🎵</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Events</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{pubEvents.length}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">events this week</p>
+          {todayEvents.filter(e => e.category === "event").length > 0 && (
+            <p className="text-[11px] font-bold text-purple-600 mt-1">
+              {todayEvents.filter(e => e.category === "event").map(e => e.title).join(", ")} tonight
+            </p>
+          )}
+        </button>
+
+        {/* Sports */}
+        <button onClick={() => router.push("/ops/events?tab=sport")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-base">⚽</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Sports</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{sportEvents.length}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">matches this week</p>
+          {todayEvents.filter(e => e.category === "sport").length > 0 && (
+            <p className="text-[11px] font-bold text-emerald-600 mt-1">
+              {todayEvents.filter(e => e.category === "sport").map(e => e.title.split(":")[0]).join(", ")} tonight
+            </p>
+          )}
+        </button>
+
+        {/* Row 3: Website | Bookings Analytics */}
+
         {/* Website */}
         <a href="/bigben-pub" target="_blank"
           className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
@@ -197,6 +204,23 @@ export function PubDashboard({
           <p className="text-sm font-bold text-gray-900">View Website</p>
           <p className="text-[11px] text-gray-500 mt-0.5">flowsight.ch/bigben-pub</p>
         </a>
+
+        {/* Bookings Analytics */}
+        <button onClick={() => router.push("/ops/bookings-analytics")}
+          className="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm text-left transition-all hover:shadow-md hover:border-gray-300 active:scale-[0.98]">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100 text-base">{"\uD83D\uDCCA"}</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Bookings</span>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-gray-600">
+            <span>{"\uD83D\uDEB6"} {sourceStats.manual ?? 0}</span>
+            <span>{"\uD83C\uDF10"} {sourceStats.website ?? 0}</span>
+            <span>{"\uD83D\uDCDE"} {sourceStats.voice ?? 0}</span>
+          </div>
+          <p className="text-[11px] text-gray-400 mt-1">
+            {(sourceStats.manual ?? 0) + (sourceStats.website ?? 0) + (sourceStats.voice ?? 0) > 20 ? "this month" : "all time"}
+          </p>
+        </button>
       </div>
 
     </div>
