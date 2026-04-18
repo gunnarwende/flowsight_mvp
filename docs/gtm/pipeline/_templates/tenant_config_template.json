@@ -1,0 +1,72 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "",
+  "_founder_actions_needed": [],
+
+  "tenant": {
+    "slug": "",
+    "name": "",
+    "case_id_prefix": "",
+    "brand_color": "",
+    "sms_sender_name": ""
+  },
+
+  "voice_agent": {
+    "company_name": "",
+    "domain": "",
+    "owner_names": "",
+    "address": "",
+    "phone": "",
+    "email": "",
+    "website": "",
+    "founded": "",
+    "team_section": "",
+    "memberships": "",
+    "google_rating": "",
+    "opening_hours": "",
+    "opening_hours_spoken": "",
+    "emergency_policy": "",
+    "services_list": "",
+    "service_area": "",
+    "service_area_spoken": "",
+    "price_section": "",
+    "price_deflect": "Fuer eine genaue Einschaetzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "",
+    "address_spoken": "",
+    "categories": ""
+  },
+
+  "wizard": {
+    "categories": []
+  },
+
+  "seed": {
+    "case_count": 30,
+    "google_rating": null,
+    "google_review_count": null,
+    "team_names": [],
+    "categories_weighted": {},
+    "service_area_plz": [],
+    "featured_case": {
+      "kategorie": "",
+      "beschreibung": "",
+      "stadt": "",
+      "plz": "",
+      "dringlichkeit": "Dringend"
+    }
+  },
+
+  "video": {
+    "firma_display": "",
+    "firma_silben": 0,
+    "telefon_display": "",
+    "prefix": "",
+    "modus": 2,
+    "google_stars": null,
+    "video_hook": "",
+    "kontext_variante": "B",
+    "betriebsspezifische_frage": "",
+    "betriebsspezifische_antwort": ""
+  }
+}
