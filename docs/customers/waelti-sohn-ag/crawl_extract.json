@@ -1,0 +1,171 @@
+{
+  "_meta": {
+    "crawled_at": "2026-04-18T10:13:31.406Z",
+    "source_url": "https://www.waeltisohn.ch",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.waeltisohn.ch/",
+        "chars": 2865
+      },
+      {
+        "key": "team",
+        "url": "https://www.waeltisohn.ch/team",
+        "chars": 528
+      },
+      {
+        "key": "services",
+        "url": "https://www.waeltisohn.ch/dienstleistungen-service",
+        "chars": 2340
+      },
+      {
+        "key": "impressum",
+        "url": "https://www.waeltisohn.ch/impressum",
+        "chars": 1006
+      }
+    ]
+  },
+  "firma": {
+    "value": "Wälti & Sohn AG",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Heinz Wälti",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Gartenweg 2, 8135 Langnau am Albis",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "telefon": {
+    "value": "044 713 03 04",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@waeltisohn.ch, service@waeltisohn.ch, umbau@waeltisohn.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": null,
+    "review_count": null,
+    "source": "google_api",
+    "verified": false
+  },
+  "gruendung": {
+    "value": "1952",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "SANITÄR",
+        "WC",
+        "Defekter WC Sitz",
+        "WC-Rollenhalter, Griffe, ...)",
+        "Installationen von WC`s die mit Wasser reinigen"
+      ],
+      "Heizung": [
+        "HEIZUNG",
+        "Heizkörper / Radiatoren / Ventile",
+        "Fehlender Komfort (Heizstaab)",
+        "Reparaturen von bestehenden Heizkörpern",
+        "Installation von Thermostatventilen"
+      ],
+      "Boiler/Warmwasser": [
+        "Boiler Service (Entkalkung)"
+      ],
+      "Rohrbruch/Leitungen": [
+        "Geräusche von Wasser und Abwasserleitungen"
+      ],
+      "Verstopfung/Abfluss": [
+        "Verstopfte Abläufe",
+        "Geräusche von Wasser und Abwasserleitungen"
+      ],
+      "Umbau/Sanierung": [
+        "Umbau"
+      ],
+      "Solar/Erneuerbar": [
+        "Integration von erneuerbaren Energien in bestehende Systeme"
+      ],
+      "Beratung/Planung": [
+        "Unterbaumöbel (Beratung und Montage)",
+        "Beratung für Heizungsersatz"
+      ],
+      "Kundendienst": [
+        "Service",
+        "SERVICE",
+        "Boiler Service (Entkalkung)",
+        "Wartung und Unterhalt",
+        "SERVICE"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "WIE DÜRFEN WIR IHNEN HELFEN?",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#213a5c",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.waeltisohn.ch",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Showroom, Laden, Lehrbetrieb, Familienbetrieb",
+    "source": "website_home",
+    "verified": true
+  }
+}
