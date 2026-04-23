@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 358px; height: 772px;
+    font-family: 'SamsungOne', -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    background: #fff; color: #1a1a1a; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* ── Samsung Status Bar ─────────────────────────────────── */
+  .status-bar {
+    width: 100%; height: 32px; padding: 6px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 500; color: #1a1a1a;
+    flex-shrink: 0;
+  }
+  .status-left { display: flex; align-items: center; gap: 4px; }
+  .status-right { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+  .battery { display: inline-flex; align-items: center; gap: 2px; }
+  .battery-shell {
+    width: 20px; height: 10px; border: 1.5px solid #1a1a1a;
+    border-radius: 2px; position: relative; display: inline-block;
+  }
+  .battery-shell::after {
+    content: ''; position: absolute; right: -4px; top: 2px;
+    width: 2px; height: 4px; background: #1a1a1a; border-radius: 0 1px 1px 0;
+  }
+  .battery-fill {
+    position: absolute; left: 1px; top: 1px; bottom: 1px;
+    background: #4caf50; border-radius: 1px;
+  }
+
+  /* ── "Anruf beendet" banner ─────────────────────────────── */
+  .banner {
+    margin-top: 20px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 15px; color: #2e7d32;
+    font-weight: 400;
+  }
+  .banner .icon-contact {
+    width: 20px; height: 20px;
+    background: #4caf50;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .banner .icon-contact svg { width: 12px; height: 12px; fill: white; }
+  .banner .icon-hangup { display: flex; align-items: center; }
+  .banner .icon-hangup svg { width: 18px; height: 18px; fill: #e53935; }
+  .banner .duration {
+    color: #2e7d32; font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+  .banner .text { color: #2e7d32; }
+
+  /* ── Company name ───────────────────────────────────────── */
+  .company-name {
+    margin-top: 45px;
+    font-size: 30px; font-weight: 700;
+    color: #1a1a1a; text-align: center;
+    letter-spacing: -0.3px; padding: 0 20px;
+  }
+
+  /* ── Phone info ─────────────────────────────────────────── */
+  .phone-info {
+    margin-top: 10px;
+    font-size: 15px; color: #666; font-weight: 400;
+  }
+
+  /* ── Contact link ───────────────────────────────────────── */
+  .contact-link {
+    margin-top: auto;
+    margin-bottom: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .contact-link .icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+  .contact-link .icon svg { width: 28px; height: 28px; fill: #999; }
+  .contact-link .label { font-size: 13px; color: #666; text-align: center; line-height: 1.3; }
+
+  /* ── Action buttons ─────────────────────────────────────── */
+  .action-row {
+    display: flex; gap: 24px;
+    margin-bottom: 20px;
+  }
+  .action-btn {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .action-btn.call { background: #e8f5e9; }
+  .action-btn.call svg { width: 26px; height: 26px; fill: #4caf50; }
+  .action-btn.msg { background: #e3f2fd; }
+  .action-btn.msg svg { width: 26px; height: 26px; fill: #2196f3; }
+  .action-btn.video { background: #e8f5e9; }
+  .action-btn.video svg { width: 26px; height: 26px; fill: #4caf50; }
+
+  /* ── Samsung Nav Bar ────────────────────────────────────── */
+  .nav-bar {
+    width: 100%; height: 42px;
+    display: flex; justify-content: center; align-items: center; gap: 80px;
+    border-top: 1px solid #f0f0f0;
+    flex-shrink: 0;
+  }
+  .nav-line { width: 36px; height: 4px; background: #ccc; border-radius: 2px; }
+  .nav-square { width: 13px; height: 13px; border: 2px solid #ccc; border-radius: 2px; }
+  .nav-tri {
+    width: 0; height: 0;
+    border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+    border-right: 9px solid #ccc;
+  }
+</style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <div class="status-left"><span id="clock">08:36</span></div>
+  <div class="status-right">
+    <span style="font-size:10px; color:#999;">&#x1F507;</span>
+    <span style="font-size:9px;">&#x25B2;&#x25BC;</span>
+    <div class="battery">
+      <div class="battery-shell"><div class="battery-fill" style="width:80%"></div></div>
+      <span id="batteryPct" style="font-weight:600; font-size:11px;">95</span>
+    </div>
+  </div>
+</div>
+
+<!-- Anruf beendet banner -->
+<div class="banner">
+  <div class="icon-contact">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  </div>
+  <div class="icon-hangup">
+    <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+  </div>
+  <span class="duration" id="duration">00:06</span>
+  <span class="text">Anruf beendet</span>
+</div>
+
+<!-- Company name -->
+<div class="company-name" id="companyName">Dörfler AG Test</div>
+
+<!-- Phone -->
+<div class="phone-info" id="phoneInfo">Mobil  +41 44 505 74 20</div>
+
+<!-- Contact anzeigen -->
+<div class="contact-link">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  </div>
+  <div class="label">Kontakt<br>anzeigen</div>
+</div>
+
+<!-- Action buttons -->
+<div class="action-row">
+  <div class="action-btn call">
+    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+  </div>
+  <div class="action-btn msg">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+  </div>
+  <div class="action-btn video">
+    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+  </div>
+</div>
+
+<!-- Nav Bar -->
+<div class="nav-bar">
+  <div class="nav-line"></div>
+  <div class="nav-square"></div>
+  <div class="nav-tri"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get('name') || 'Dörfler AG Test';
+const phone = params.get('phone') || '+41 44 505 74 20';
+const dur = params.get('duration') || '00:06';
+const clock = params.get('clock') || '08:36';
+const battery = params.get('battery') || '95';
+
+document.getElementById('companyName').textContent = name;
+document.getElementById('phoneInfo').textContent = `Mobil  ${phone}`;
+document.getElementById('duration').textContent = dur;
+document.getElementById('clock').textContent = clock;
+document.getElementById('batteryPct').textContent = battery;
+</script>
+</body>
+</html>

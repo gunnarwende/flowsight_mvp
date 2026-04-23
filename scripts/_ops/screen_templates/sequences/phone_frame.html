@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Phone Frame</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 340px; height: 700px;
+    background: transparent;
+    overflow: hidden;
+  }
+  .frame {
+    width: 340px; height: 700px;
+    background: transparent;
+    position: relative;
+    padding: 15px 10px 25px 10px;
+  }
+  .outer {
+    width: 100%; height: 100%;
+    background: #0a0a0d;
+    border-radius: 44px;
+    box-shadow:
+      0 0 0 1px #2a2a30 inset,
+      0 0 0 2px #000 inset,
+      0 30px 60px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+    padding: 8px;
+  }
+  .screen {
+    width: 100%; height: 100%;
+    background: #fff;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+  }
+  /* Punch-hole-style notch */
+  .notch {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 11px;
+    height: 11px;
+    background: #000;
+    border-radius: 50%;
+    z-index: 2;
+  }
+  /* Side buttons */
+  .side-btn {
+    position: absolute;
+    left: -2px;
+    background: #1a1a1e;
+    border-radius: 2px;
+    width: 3px;
+  }
+  .side-btn.vol-up { top: 140px; height: 48px; }
+  .side-btn.vol-dn { top: 200px; height: 48px; }
+  .side-btn.power { left: auto; right: -2px; top: 175px; height: 65px; }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="outer">
+      <div class="screen">
+        <div class="notch"></div>
+      </div>
+      <div class="side-btn vol-up"></div>
+      <div class="side-btn vol-dn"></div>
+      <div class="side-btn power"></div>
+    </div>
+  </div>
+</body>
+</html>

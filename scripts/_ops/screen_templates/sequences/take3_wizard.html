@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=412, initial-scale=1">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --accent: #003478;
+    --accent-light: #e8eef6;
+    --bg: #f8fafc;
+    --text: #1a1a1a;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --success: #22c55e;
+  }
+
+  body {
+    width: 412px; height: 915px;
+    font-family: -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text);
+    overflow: hidden;
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    height: 36px; padding: 8px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 500; color: #1a1a1a;
+    background: #fff;
+  }
+
+  /* ── Wizard Header ── */
+  .wizard-header {
+    background: var(--accent); color: #fff;
+    padding: 16px 20px 20px;
+  }
+  .wizard-header .back { font-size: 20px; opacity: 0.8; margin-bottom: 8px; }
+  .wizard-header h1 { font-size: 20px; font-weight: 600; }
+  .wizard-header .subtitle { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+  /* ── Progress Bar ── */
+  .progress {
+    height: 4px; background: var(--border); position: relative;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    transition: width 400ms ease-out;
+  }
+
+  /* ── Step Container ── */
+  .step {
+    display: none; padding: 24px 20px;
+    animation: fadeIn 300ms ease-out;
+  }
+  .step.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+  .step-label {
+    font-size: 12px; color: var(--text-light); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 16px;
+  }
+
+  /* ── Category Cards (Step 1) ── */
+  .categories {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .cat-card {
+    background: #fff; border: 2px solid var(--border); border-radius: 12px;
+    padding: 16px 8px; text-align: center; cursor: pointer;
+    transition: all 200ms ease-out; position: relative;
+  }
+  .cat-card .icon { font-size: 28px; margin-bottom: 6px; }
+  .cat-card .label { font-size: 12px; font-weight: 500; color: var(--text); }
+  .cat-card .hint { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+  .cat-card.selected {
+    border-color: var(--accent); background: var(--accent-light);
+    transform: scale(0.95);
+  }
+  .cat-card.selected::after {
+    content: '✓'; position: absolute; top: 6px; right: 8px;
+    color: var(--accent); font-weight: 700; font-size: 16px;
+  }
+
+  .separator { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* ── Urgency (Step 1) ── */
+  .urgency-section { margin-top: 20px; }
+  .urgency-label { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .urgency-options { display: flex; gap: 8px; }
+  .urgency-btn {
+    flex: 1; padding: 10px; border-radius: 8px;
+    border: 2px solid var(--border); background: #fff;
+    text-align: center; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 200ms;
+  }
+  .urgency-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .urgency-btn.notfall { border-color: #ef4444; background: #fef2f2; color: #dc2626; }
+
+  /* ── Form Fields (Step 2+3) ── */
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+  .field input, .field textarea {
+    width: 100%; padding: 12px 14px;
+    border: 2px solid var(--border); border-radius: 10px;
+    font-size: 15px; font-family: inherit; color: var(--text);
+    background: #fff; outline: none;
+    transition: border-color 200ms;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { height: 100px; resize: none; }
+  .field .autocomplete {
+    font-size: 12px; color: var(--accent); margin-top: 4px;
+    opacity: 0; transition: opacity 300ms;
+  }
+  .field .autocomplete.visible { opacity: 1; }
+
+  /* ── Photo Upload ── */
+  .photo-upload {
+    border: 2px dashed var(--border); border-radius: 12px;
+    padding: 20px; text-align: center; cursor: pointer;
+    transition: all 200ms;
+  }
+  .photo-upload .icon { font-size: 32px; color: var(--text-light); }
+  .photo-upload .text { font-size: 13px; color: var(--text-light); margin-top: 8px; }
+
+  /* ── CTA Button ── */
+  .cta-btn {
+    width: 100%; padding: 16px; border-radius: 12px;
+    background: var(--accent); color: #fff;
+    font-size: 16px; font-weight: 600; text-align: center;
+    border: none; cursor: pointer; margin-top: 24px;
+    position: relative; overflow: hidden;
+    transition: transform 100ms;
+  }
+  .cta-btn:active { transform: scale(0.98); }
+  .cta-btn .ripple-effect {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: scale(0); animation: btnRipple 500ms ease-out forwards;
+  }
+  @keyframes btnRipple { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(6); opacity: 0; } }
+
+  /* ── Success Screen ── */
+  .success-screen {
+    display: none; text-align: center; padding: 80px 40px;
+    animation: fadeIn 400ms ease-out;
+  }
+  .success-screen.active { display: block; }
+  .success-screen .checkmark {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--success); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 24px;
+    animation: scaleIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+  .success-screen h2 { font-size: 22px; margin-bottom: 12px; }
+  .success-screen p { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+  /* ── Loading Spinner ── */
+  .spinner { display: none; }
+  .spinner.active {
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin 600ms linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Cursor blink */
+  .cursor-blink::after {
+    content: '|'; animation: blink 1s step-end infinite; color: var(--accent);
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span id="clock">08:42</span>
+  <span>▂▄▆█ 5G 🔋 94%</span>
+</div>
+
+<div class="wizard-header" id="wizard-header">
+  <div class="back">← zurück</div>
+  <h1 id="header-title">Anliegen melden</h1>
+  <div class="subtitle" id="header-subtitle">Stark Haustechnik GmbH</div>
+</div>
+
+<div class="progress">
+  <div class="progress-fill" id="progress" style="width: 33%"></div>
+</div>
+
+<!-- ══ STEP 1: Kategorie + Dringlichkeit ═════════════════ -->
+<div class="step active" id="step1">
+  <div class="step-label">Schritt 1 von 3 · Worum geht es?</div>
+
+  <div class="categories" id="categories">
+    <!-- Filled by JS from URL params -->
+  </div>
+
+  <div class="separator"></div>
+
+  <div class="urgency-section">
+    <div class="urgency-label">Wie dringend?</div>
+    <div class="urgency-options">
+      <div class="urgency-btn" data-val="notfall">🔴 Notfall</div>
+      <div class="urgency-btn" data-val="dringend">🟡 Dringend</div>
+      <div class="urgency-btn selected" data-val="normal">🟢 Normal</div>
+    </div>
+  </div>
+
+  <button class="cta-btn" id="btn-step1">Weiter</button>
+</div>
+
+<!-- ══ STEP 2: Adresse ═══════════════════════════════════ -->
+<div class="step" id="step2">
+  <div class="step-label">Schritt 2 von 3 · Wo ist der Schaden?</div>
+
+  <div class="field">
+    <label>Strasse</label>
+    <input type="text" id="field-street" />
+  </div>
+  <div class="field">
+    <label>Hausnummer</label>
+    <input type="text" id="field-house" />
+  </div>
+  <div class="field">
+    <label>Postleitzahl</label>
+    <input type="text" id="field-plz" />
+    <div class="autocomplete" id="plz-autocomplete">✓ Horgen</div>
+  </div>
+  <div class="field">
+    <label>Ort</label>
+    <input type="text" id="field-city" readonly />
+  </div>
+
+  <button class="cta-btn" id="btn-step2">Weiter</button>
+</div>
+
+<!-- ══ STEP 3: Kontakt + Beschreibung ════════════════════ -->
+<div class="step" id="step3">
+  <div class="step-label">Schritt 3 von 3 · Ihre Kontaktdaten</div>
+
+  <div class="field">
+    <label>Name</label>
+    <input type="text" id="field-name" />
+  </div>
+  <div class="field">
+    <label>Telefon</label>
+    <input type="text" id="field-phone" />
+  </div>
+  <div class="field">
+    <label>Beschreibung</label>
+    <textarea id="field-desc"></textarea>
+  </div>
+
+  <div class="photo-upload" id="photo-upload">
+    <div class="icon">📷</div>
+    <div class="text">Foto hochladen (optional)</div>
+  </div>
+
+  <button class="cta-btn" id="btn-submit">
+    <span id="submit-text">Meldung absenden</span>
+    <span class="spinner" id="submit-spinner"></span>
+  </button>
+</div>
+
+<!-- ══ SUCCESS SCREEN ════════════════════════════════════ -->
+<div class="success-screen" id="success">
+  <div class="checkmark">✓</div>
+  <h2>Ihre Meldung wurde aufgenommen</h2>
+  <p>Sie erhalten in Kürze eine Bestätigung.<br>Unser Team meldet sich bei Ihnen.</p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const CONFIG = {
+  firma: params.get("firma") || "Stark Haustechnik GmbH",
+  accent: params.get("accent") || "#003478",
+  cat1: params.get("cat1") || "Verstopfung",
+  cat1_hint: params.get("cat1_hint") || "Abfluss, WC",
+  cat1_icon: params.get("cat1_icon") || "🚽",
+  cat2: params.get("cat2") || "Leck",
+  cat2_hint: params.get("cat2_hint") || "Wasserschaden",
+  cat2_icon: params.get("cat2_icon") || "💧",
+  cat3: params.get("cat3") || "Heizung",
+  cat3_hint: params.get("cat3_hint") || "Heizung, Wärme",
+  cat3_icon: params.get("cat3_icon") || "🔥",
+  // Wizard demo case data
+  street: params.get("street") || "Gartenweg",
+  house: params.get("house") || "8",
+  plz: params.get("plz") || "8810",
+  city: params.get("city") || "Horgen",
+  name: params.get("name") || "Max Muster",
+  phone: params.get("phone") || "+41 79 123 45 67",
+  desc: params.get("desc") || "Dachrinne undicht, bei Regen tropft es an der Fassade herunter.",
+  clock: params.get("clock") || "08:42",
+};
+
+// Apply accent color
+document.documentElement.style.setProperty("--accent", CONFIG.accent);
+document.documentElement.style.setProperty("--accent-light", CONFIG.accent + "15");
+
+// Apply text
+document.getElementById("header-subtitle").textContent = CONFIG.firma;
+document.getElementById("clock").textContent = CONFIG.clock;
+
+// Build category cards
+const catContainer = document.getElementById("categories");
+const cats = [
+  { value: CONFIG.cat1, hint: CONFIG.cat1_hint, icon: CONFIG.cat1_icon },
+  { value: CONFIG.cat2, hint: CONFIG.cat2_hint, icon: CONFIG.cat2_icon },
+  { value: CONFIG.cat3, hint: CONFIG.cat3_hint, icon: CONFIG.cat3_icon },
+  { value: "Allgemein", hint: "Sonstiges", icon: "📋" },
+  { value: "Angebot", hint: "Offerte", icon: "📄" },
+  { value: "Kontakt", hint: "Rückruf", icon: "💬" },
+];
+for (const c of cats) {
+  const card = document.createElement("div");
+  card.className = "cat-card";
+  card.dataset.value = c.value;
+  card.innerHTML = `<div class="icon">${c.icon}</div><div class="label">${c.value}</div><div class="hint">${c.hint}</div>`;
+  catContainer.appendChild(card);
+}
+
+// ── Typing simulation ──
+async function typeInto(el, text, delay = 70) {
+  el.focus();
+  for (const char of text) {
+    el.value += char;
+    el.dispatchEvent(new Event("input"));
+    await sleep(delay + Math.random() * 40 - 20); // Varianz: 50-90ms
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Sequence ──
+async function runSequence() {
+  await sleep(1500);
+
+  // Step 1: Select first category (e.g., "Leck")
+  const secondCard = catContainer.children[1]; // Leck
+  secondCard.classList.add("selected");
+  await sleep(800);
+
+  // Select urgency "Normal"
+  // Already selected by default
+  await sleep(1000);
+
+  // Click "Weiter"
+  document.getElementById("btn-step1").click();
+  await sleep(400);
+
+  // Transition to Step 2
+  document.getElementById("step1").classList.remove("active");
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("progress").style.width = "66%";
+  await sleep(800);
+
+  // Type address
+  await typeInto(document.getElementById("field-street"), CONFIG.street, 80);
+  await sleep(300);
+  await typeInto(document.getElementById("field-house"), CONFIG.house, 100);
+  await sleep(300);
+  await typeInto(document.getElementById("field-plz"), CONFIG.plz, 120);
+  await sleep(500);
+
+  // PLZ autocomplete
+  document.getElementById("plz-autocomplete").textContent = "✓ " + CONFIG.city;
+  document.getElementById("plz-autocomplete").classList.add("visible");
+  document.getElementById("field-city").value = CONFIG.city;
+  await sleep(1500);
+
+  // Click "Weiter"
+  document.getElementById("step2").classList.remove("active");
+  document.getElementById("step3").classList.add("active");
+  document.getElementById("progress").style.width = "100%";
+  await sleep(800);
+
+  // Type contact info
+  await typeInto(document.getElementById("field-name"), CONFIG.name, 70);
+  await sleep(200);
+  await typeInto(document.getElementById("field-phone"), CONFIG.phone, 60);
+  await sleep(300);
+  await typeInto(document.getElementById("field-desc"), CONFIG.desc, 45);
+  await sleep(1000);
+
+  // Tap photo upload (highlight only)
+  document.getElementById("photo-upload").style.borderColor = CONFIG.accent;
+  document.getElementById("photo-upload").style.background = CONFIG.accent + "08";
+  await sleep(1000);
+  document.getElementById("photo-upload").style.borderColor = "";
+  document.getElementById("photo-upload").style.background = "";
+
+  // Submit
+  await sleep(500);
+  document.getElementById("submit-text").textContent = "";
+  document.getElementById("submit-spinner").classList.add("active");
+  await sleep(1500);
+
+  // Success
+  document.getElementById("step3").classList.remove("active");
+  document.getElementById("success").classList.add("active");
+  document.querySelector(".wizard-header").style.display = "none";
+  document.querySelector(".progress").style.display = "none";
+  await sleep(3000);
+}
+
+window.addEventListener("DOMContentLoaded", () => setTimeout(runSequence, 500));
+</script>
+</body>
+</html>

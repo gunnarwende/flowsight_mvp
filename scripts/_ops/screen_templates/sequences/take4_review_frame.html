@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Bewertung</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1440px; height: 900px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+  }
+  body {
+    position: relative;
+    background: radial-gradient(ellipse at center, var(--bg-light) 0%, var(--bg-dark) 80%);
+  }
+
+  .phone-mock {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 418px;
+    height: 864px;
+    background: #1a1a1e;
+    border-radius: 40px;
+    padding: 10px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.45),
+                0 0 0 1px rgba(255,255,255,0.04) inset,
+                0 0 0 2px rgba(0,0,0,0.6);
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: #f8fafc;
+    border-radius: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .status-bar {
+    height: 30px;
+    background: #f8fafc;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px; font-size: 13px; font-weight: 500; color: #1a1a1a;
+  }
+  .status-bar .right { display: flex; gap: 6px; align-items: center; }
+  .status-bar svg { width: 15px; height: 15px; }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    margin: 16px 16px 0;
+    padding: 28px 22px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+
+  .brand-header { text-align: center; margin-bottom: 20px; }
+  .brand-header .logo {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 600; margin-bottom: 12px;
+  }
+  .brand-header .firma { font-size: 13px; color: #555; letter-spacing: 0.3px; }
+
+  h1 {
+    font-size: 20px; font-weight: 600; color: #1a1a1a;
+    text-align: center; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .sub {
+    font-size: 13px; color: #6b7280;
+    text-align: center; line-height: 1.5; margin-bottom: 22px;
+  }
+
+  .stars { display: flex; justify-content: center; gap: 7px; margin-bottom: 24px; }
+  .star {
+    width: 46px; height: 46px; cursor: pointer; color: #e2e8f0;
+    transition: transform 120ms cubic-bezier(0.2, 0, 0.3, 1), color 180ms ease-out;
+  }
+  .star.filled {
+    color: #fbbf24;
+    animation: starPop 320ms cubic-bezier(0.2, 1.5, 0.3, 1) forwards;
+  }
+  @keyframes starPop {
+    0% { transform: scale(0.8); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .chips-title { font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 10px; }
+  .chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-bottom: 18px; }
+  .chip {
+    padding: 10px 11px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+    background: #fff; color: #475569; font-size: 12px; font-weight: 500;
+    text-align: center; cursor: pointer;
+    transition: border-color 180ms, background 180ms, color 180ms;
+  }
+  .chip.selected {
+    border-color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 8%, white);
+    color: var(--brand);
+  }
+
+  .submit {
+    width: 100%; padding: 13px;
+    background: var(--brand); color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    margin-top: 8px;
+  }
+  .submit:disabled { opacity: 0.5; }
+
+  .success { display: none; flex-direction: column; align-items: center; text-align: center; }
+  .success.show { display: flex; }
+  .success .check {
+    width: 66px; height: 66px; border-radius: 50%;
+    background: color-mix(in srgb, var(--brand) 12%, white);
+    color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    animation: scaleIn 500ms cubic-bezier(0.2, 1.6, 0.3, 1) forwards;
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0.4); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="phone-mock">
+    <div class="phone-screen">
+      <div class="status-bar">
+        <span>{{CLOCK}}</span>
+        <div class="right">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20Zm-3 15 5-3-5-3v6Z" opacity=".7"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a8 8 0 0 1 8 8v4h-2v-4a6 6 0 0 0-12 0v4H4v-4a8 8 0 0 1 8-8Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 16h4V8H2v8Zm6 0h4V4H8v12Zm6 0h4v-8h-4v8Zm6 0h2V4h-2v12Z"/></svg>
+          <span style="font-weight:700;font-size:11px;">86</span>
+        </div>
+      </div>
+
+      <div class="card" id="card">
+        <div class="brand-header">
+          <div class="logo" id="logo">DA</div>
+          <div class="firma" id="firma">Dörfler AG</div>
+        </div>
+        <h1>Wie war unser Service?</h1>
+        <p class="sub">Ihre Rückmeldung hilft uns, jeden Einsatz noch besser zu machen.</p>
+
+        <div class="stars" id="stars"></div>
+
+        <div class="chips-title">Was hat besonders gepasst?</div>
+        <div class="chips">
+          <div class="chip" data-label="Schnell & zuverlässig">Schnell &amp; zuverlässig</div>
+          <div class="chip" data-label="Saubere Arbeit">Saubere Arbeit</div>
+          <div class="chip" data-label="Kompetente Beratung">Kompetente Beratung</div>
+          <div class="chip" data-label="Jederzeit wieder">Jederzeit wieder</div>
+        </div>
+
+        <button class="submit" id="submit" disabled>Bewertung abschicken</button>
+
+        <div class="success" id="success">
+          <div class="check">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l5 5L20 7"/>
+            </svg>
+          </div>
+          <h1>Vielen Dank!</h1>
+          <p class="sub" style="margin:0;">Ihre Bewertung ist bei uns angekommen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const CONFIG = {
+  firma: "{{FIRMA}}",
+  brand: "{{BRAND}}",
+};
+
+function hexToRgb(h) { const v = h.replace(/^#/, ""); const n = parseInt(v, 16); return [n>>16&0xff,n>>8&0xff,n&0xff]; }
+function adjust(rgb, f) { return `rgb(${rgb.map(v=>Math.max(0,Math.min(255,Math.round(v*f)))).join(",")})`; }
+const rgb = hexToRgb(CONFIG.brand || "#0b1220");
+document.documentElement.style.setProperty("--bg-light", adjust(rgb, 0.4));
+document.documentElement.style.setProperty("--bg-dark", adjust(rgb, 0.12));
+document.documentElement.style.setProperty("--brand", CONFIG.brand);
+
+document.getElementById("firma").textContent = CONFIG.firma;
+document.getElementById("logo").textContent = (CONFIG.firma || "XX").slice(0, 2).toUpperCase();
+
+const starsEl = document.getElementById("stars");
+for (let i = 1; i <= 5; i++) {
+  const s = document.createElement("div");
+  s.className = "star";
+  s.dataset.value = i;
+  s.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>`;
+  starsEl.appendChild(s);
+}
+
+let selectedRating = 0;
+let selectedChip = null;
+
+function updateSubmit() {
+  document.getElementById("submit").disabled = !(selectedRating && selectedChip);
+}
+
+starsEl.addEventListener("click", (e) => {
+  const star = e.target.closest(".star");
+  if (!star) return;
+  selectedRating = parseInt(star.dataset.value, 10);
+  const all = [...starsEl.querySelectorAll(".star")];
+  all.forEach((s, idx) => {
+    setTimeout(() => {
+      if (idx < selectedRating) s.classList.add("filled");
+      else s.classList.remove("filled");
+    }, idx * 80);
+  });
+  updateSubmit();
+});
+
+document.querySelectorAll(".chip").forEach((c) => {
+  c.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach((x) => x.classList.remove("selected"));
+    c.classList.add("selected");
+    selectedChip = c.dataset.label;
+    updateSubmit();
+  });
+});
+
+document.getElementById("submit").addEventListener("click", () => {
+  const card = document.getElementById("card");
+  [...card.children].forEach((el) => { if (el.id !== "success") el.style.display = "none"; });
+  document.getElementById("success").classList.add("show");
+});
+
+window.__clickStar = (n) => {
+  const s = starsEl.querySelector(`.star[data-value="${n}"]`);
+  if (s) s.click();
+};
+window.__clickChip = (label) => {
+  const c = [...document.querySelectorAll(".chip")].find((x) => x.dataset.label === label);
+  if (c) c.click();
+};
+window.__submit = () => document.getElementById("submit").click();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 358px; height: 772px;
+    position: relative; overflow: hidden;
+  }
+  /* Base image = real Samsung screenshot */
+  .base {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  /* Overlay: white-out + redraw specific text areas */
+  .overlay {
+    position: absolute;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'SamsungOne', -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    color: white;
+  }
+  /* Scrcpy header - hide it */
+  .scrcpy-hide {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 18px; background: #000;
+  }
+  /* Company name - large, centered */
+  #companyName {
+    position: absolute;
+    top: 138px; left: 0; right: 0;
+    text-align: center;
+    font-size: 28px; font-weight: 300; color: white;
+    letter-spacing: -0.5px;
+    /* Background must match the gradient behind the original text */
+    /* We paint a gradient rectangle to cover the old name */
+  }
+  #companyNameBg {
+    position: absolute;
+    top: 130px; left: 15px; right: 15px; height: 55px;
+    background: linear-gradient(90deg, #461d23 0%, #421927 50%, #582337 100%);
+  }
+  /* Location under name */
+  #locationBg {
+    position: absolute;
+    top: 183px; left: 60px; right: 60px; height: 22px;
+    background: #52202b;
+  }
+  #location {
+    position: absolute;
+    top: 182px; left: 0; right: 0;
+    text-align: center;
+    font-size: 13px; color: rgba(255,255,255,0.5);
+  }
+  /* Timer */
+  #timerBg {
+    position: absolute;
+    top: 72px; left: 125px; width: 85px; height: 22px;
+    background: #230f18;
+  }
+  #timer {
+    position: absolute;
+    top: 73px; left: 130px; width: 80px;
+    text-align: center;
+    font-size: 15px; font-weight: 500; color: white;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Clock (top left) */
+  #clockBg {
+    position: absolute;
+    top: 29px; left: 12px; width: 44px; height: 18px;
+    background: #1a0d14;
+  }
+  #clock {
+    position: absolute;
+    top: 31px; left: 14px;
+    font-size: 13px; font-weight: 500; color: white;
+  }
+</style>
+</head>
+<body>
+  <!-- Real Samsung screenshot as base -->
+  <img class="base" id="baseImg" src="">
+
+  <!-- Hide Scrcpy header -->
+  <div class="scrcpy-hide"></div>
+
+  <!-- Dynamic overlays -->
+  <div id="clockBg"></div>
+  <div id="clock">15:00</div>
+
+  <div id="timerBg"></div>
+  <div id="timer">00:00</div>
+
+  <div id="companyNameBg"></div>
+  <div id="companyName">Dörfler AG Test</div>
+
+  <div id="locationBg"></div>
+  <div id="location">Zürich</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    // Set base image
+    const baseUrl = params.get('base') || '';
+    if (baseUrl) document.getElementById('baseImg').src = baseUrl;
+
+    // Set dynamic text
+    const name = params.get('name') || 'Dörfler AG Test';
+    const loc = params.get('location') || 'Zürich';
+    const clock = params.get('clock') || '15:00';
+    const startSec = parseInt(params.get('start_sec') || '0');
+
+    document.getElementById('companyName').textContent = name;
+    document.getElementById('location').textContent = loc;
+    document.getElementById('clock').textContent = clock;
+
+    // Animated timer
+    let sec = startSec;
+    function tick() {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      document.getElementById('timer').textContent =
+        String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      sec++;
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
