@@ -19,6 +19,9 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { chromium } from "playwright";
+import { getDemoTimes } from "./_lib/demo_time.mjs";
+
+const demoTime = getDemoTimes({ skipGate: true });
 
 // ── CLI args ─────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -78,29 +81,21 @@ async function createVideoContext(browser, dir, opts = {}) {
   });
 }
 
-// ── Helper: Get today's date in German ───────────────────────────────────
+// Datum deterministisch aus demoTime (heute, lokal Europe/Zurich via Intl).
 function getTodayGerman() {
-  const days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
-  const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
-  const now = new Date();
-  return `${days[now.getDay()]}, ${now.getDate()}. ${months[now.getMonth()]}`;
+  const parts = new Intl.DateTimeFormat("de-CH", {
+    timeZone: "Europe/Zurich",
+    weekday: "long", day: "numeric", month: "long",
+  }).formatToParts(demoTime.phoneCallStartTime).reduce((a, p) => { a[p.type] = p.value; return a; }, {});
+  return `${parts.weekday}, ${parts.day}. ${parts.month}`;
 }
 
-function getCurrentTime() {
-  const now = new Date();
-  return String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
-}
-
-// FB47/49: Video-Start-Zeit synchron zum Seed-Zeitpunkt.
-// Seed schreibt _seed_time in tenant_config.json. Produce liest es damit
-// SMS-Zeit (CONFIG.uhrzeit + 4min) exakt gleich Case-Created-Zeit (seed + 4min) ist.
+// Zeit-SSoT (23.04.): Samsung-Uhr IMMER aus demoTime.samsungClock, NICHT aus
+// System-Zeit oder _seed_time. Take 2 Basis = take2_call_active = 08:04.
+// Downstream-Logik (SMS nach +4min) ergibt 08:08 — konsistent mit
+// demoTime.phoneCaseSavedTime und seed.phoneCase.created_at.
 function getVideoBaseTime() {
-  const seedTime = config._seed_time;
-  if (seedTime) {
-    const d = new Date(seedTime);
-    return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
-  }
-  return getCurrentTime(); // Fallback wenn seed nicht gelaufen
+  return demoTime.samsungClock.take2_call_active;
 }
 
 // ══════════════════════════════════════════════════════════════════════════

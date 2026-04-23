@@ -82,7 +82,7 @@ async function renderStatusBarAt(outPath, timeLabel) {
   const html = `<!DOCTYPE html><html><head><style>
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{width:412px;height:36px;background:#fff;font-family:'Segoe UI',Roboto,system-ui,sans-serif;overflow:hidden}
-    .status-bar{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 26px;color:#1a1a1a;font-size:13px;font-weight:500}
+    .status-bar{display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 38px;color:#1a1a1a;font-size:13px;font-weight:500}
     .status-right{display:flex;align-items:center;gap:6px}
     .status-right svg{display:block}
     .battery{background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;}
@@ -98,7 +98,7 @@ async function renderStatusBarAt(outPath, timeLabel) {
         <!-- Signal bars -->
         <svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
         <!-- Battery Pill with green bolt -->
-        <span class="battery"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>86</span>
+        <span class="battery"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
       </div>
     </div>
   </body></html>`;
@@ -116,9 +116,11 @@ async function renderStatusBarAt(outPath, timeLabel) {
   return outPath;
 }
 
-// ── Phone-Composite (BG + Platter + Phone mit Bezel) ──
+// ── Phone-Composite (BG + Platter + Phone mit Bezel + optional Samsung-Nav) ──
+// FB12+FB15: `samsungNavPath` overlayed Samsung-Bottom-Nav in den Content-Bereich,
+// damit SMS-Screens (Phone1/Phone2) in Take 4 die gleiche Nav haben wie Take 2.
 function buildCompositeWithPhone(bgVideoPath, phoneVideoPath, outPath, opts = {}) {
-  const { slideIn = true, from = "topright", bezelPath, contentMaskPath, platterPath, holdSeconds } = opts;
+  const { slideIn = true, from = "topright", bezelPath, contentMaskPath, platterPath, samsungNavPath, holdSeconds } = opts;
   const lastFramePng = bgVideoPath + ".lastframe.png";
   extractLastFrame(bgVideoPath, lastFramePng);
 
@@ -156,25 +158,45 @@ function buildCompositeWithPhone(bgVideoPath, phoneVideoPath, outPath, opts = {}
   // [4] Platter → [platter]
   // [bg][platter]overlay → [bgpl]
   // [bgpl][phfull]overlay → [out]
+  // FB12+FB15: Samsung-Nav wird ERST nach Content-Clip auf den phpad-Frame overlayed,
+  // VOR Bezel. Layout 340×730: Content-Bereich ist (10,9)-(329,720) = 320×711.
+  // Nav 320×44 bei y = 9 + 712 - 44 = 677 zeigt 3-Button-Bar unten im Content.
+  const navOverlayEnabled = Boolean(samsungNavPath);
+  // Der Input-Index für samsungNav hängt von den Vorgänger-Inputs ab:
+  //   [0]=bgLastFrame, [1]=phone, dann optional [2]=bezel, [3]=contentMask, [4]=platter.
+  // Nav wird hinten angehängt.
+  let inputIdxCounter = 2;
+  const bezelIdx = bezelPath ? inputIdxCounter++ : null;
+  const cmaskIdx = contentMaskPath ? inputIdxCounter++ : null;
+  const platterIdx = platterPath ? inputIdxCounter++ : null;
+  const navIdx = samsungNavPath ? inputIdxCounter++ : null;
+
   const filters = [];
   filters.push("[0:v]fps=30,scale=1440:900,setsar=1[bg]");
   if (contentMaskPath) {
     filters.push("[1:v]fps=30,scale=320:712,setsar=1,format=yuva420p[phraw]");
-    filters.push("[3:v]format=gray,scale=320:712[cmask]");
+    filters.push(`[${cmaskIdx}:v]format=gray,scale=320:712[cmask]`);
     filters.push("[phraw][cmask]alphamerge[phclip]");
-    filters.push("[phclip]pad=340:730:10:9:color=black@0[phpad]");
+    filters.push("[phclip]pad=340:730:10:9:color=black@0[phpad0]");
   } else {
-    filters.push("[1:v]fps=30,scale=320:712,setsar=1,pad=340:730:10:9:color=black@0[phpad]");
+    filters.push("[1:v]fps=30,scale=320:712,setsar=1,pad=340:730:10:9:color=black@0[phpad0]");
+  }
+  // FB12+FB15: Samsung-Nav Overlay im Content-Bereich (vor Bezel).
+  if (navOverlayEnabled) {
+    filters.push(`[${navIdx}:v]scale=320:44,setsar=1[snav]`);
+    filters.push("[phpad0][snav]overlay=x=10:y=677:format=auto[phpad]");
+  } else {
+    filters.push("[phpad0]null[phpad]");
   }
   if (bezelPath) {
-    filters.push("[2:v]scale=340:730,setsar=1[bezel]");
+    filters.push(`[${bezelIdx}:v]scale=340:730,setsar=1[bezel]`);
     filters.push("[phpad][bezel]overlay=0:0[phfull]");
   } else {
     filters.push("[phpad]null[phfull]");
   }
-  // Platter underneath (Index 4 wenn beides bezel+contentMask da)
+  // Platter underneath (dynamischer Input-Index)
   if (platterPath) {
-    filters.push("[4:v]scale=356:746,setsar=1[platter]");
+    filters.push(`[${platterIdx}:v]scale=356:746,setsar=1[platter]`);
     filters.push(`[bg][platter]overlay=x='${xExprPlatter}':y='${yExprPlatter}':shortest=1[bgpl]`);
     filters.push(`[bgpl][phfull]overlay=x='${xExpr}':y='${yExpr}':shortest=1`);
   } else {
@@ -189,6 +211,7 @@ function buildCompositeWithPhone(bgVideoPath, phoneVideoPath, outPath, opts = {}
   if (bezelPath) inputs.push("-loop", "1", "-i", bezelPath);
   if (contentMaskPath) inputs.push("-loop", "1", "-i", contentMaskPath);
   if (platterPath) inputs.push("-loop", "1", "-i", platterPath);
+  if (samsungNavPath) inputs.push("-loop", "1", "-i", samsungNavPath);
   inputs.push(
     "-filter_complex", filters.join(";"),
     "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-pix_fmt", "yuv420p",
@@ -222,8 +245,9 @@ function overlayPhoneChrome(inputVideo, outputVideo, statusBarPng, samsungNavPng
 // ── Render helpers ──
 console.log(`\n== Take 4 Final Compose (${slug}) ==`);
 
-const bezelPath = await renderPhoneBezel({ outDir: outBase });
-console.log(`  ✓ Bezel: ${bezelPath}`);
+// FB10: brand_color als Bezel-Shadow-Farbe — Ecken-Aura harmoniert mit Leitsystem-BG.
+const bezelPath = await renderPhoneBezel({ outDir: outBase, shadowColor: brandColor });
+console.log(`  ✓ Bezel (shadow=${brandColor}): ${bezelPath}`);
 
 const bezelHelper = await import("./_lib/renderPhoneBezel.mjs");
 // C24: Content-Mask radius 46 (vorher 40) — matches bezel outer curve, kein Edge-Bleed
@@ -285,20 +309,22 @@ overlayPhoneChrome(files.review, reviewFramed, statusBarReviewPath, samsungNavPa
 console.log(`  ✓ Review framed: ${reviewFramed}`);
 
 // Composite 1: Akt1 last-frame + phone1 (Bogen von oben rechts)
+// FB12+FB15: samsungNavPath aktiviert Bottom-Nav-Overlay im Content-Bereich.
 const scenePhone1 = join(outBase, "_scene_phone1.mp4");
 console.log("\n── Composite 1: Phone Day+1 (Bogen) ──");
 buildCompositeWithPhone(files.akt1, files.phone1, scenePhone1, {
-  from: "topright", slideIn: true, bezelPath, contentMaskPath,
+  from: "topright", slideIn: true, bezelPath, contentMaskPath, samsungNavPath,
 });
 
 // Composite 2: Akt2 last-frame + phone2 (instant pop)
 const scenePhone2 = join(outBase, "_scene_phone2.mp4");
 console.log("\n── Composite 2: Phone Day+2 (instant) ──");
 buildCompositeWithPhone(files.akt2, files.phone2, scenePhone2, {
-  slideIn: false, bezelPath, contentMaskPath,
+  slideIn: false, bezelPath, contentMaskPath, samsungNavPath,
 });
 
 // Composite 3: Akt2 last-frame + review-framed (A12 D15 → Handy rein)
+// Review bringt bereits eigene Samsung-Nav aus overlayPhoneChrome → kein Doppel-Overlay.
 const sceneReview = join(outBase, "_scene_review.mp4");
 console.log("\n── Composite 3: Review (aus live /review, Samsung-Chrome overlay) ──");
 buildCompositeWithPhone(files.akt2, reviewFramed, sceneReview, {

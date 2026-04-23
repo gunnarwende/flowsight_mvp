@@ -17,7 +17,9 @@
   /* ── Samsung status bar ─────────────────────────── */
   .sb-status {
     position: absolute; top: 0; left: 0; right: 0;
-    height: 36px; padding: 8px 16px;
+    height: 36px;
+    /* FB2+FB13: Icons 8px weiter von den Rändern (phone-bezel frisst sonst Rand). */
+    padding: 8px 28px;
     background: #fff;
     display: flex; justify-content: space-between; align-items: center;
     font-size: 12px; font-weight: 500; color: #1a1a1a;
@@ -249,7 +251,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1a1a" opacity="0.9"><path d="M12 4a8 8 0 0 1 8 8v4h-2v-4a6 6 0 0 0-12 0v4H4v-4a8 8 0 0 1 8-8z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="#1a1a1a"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-      <span class="battery"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>86</span>
+      <span class="battery"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
     </div>
   </div>
 

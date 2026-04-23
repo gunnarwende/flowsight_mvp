@@ -7,7 +7,7 @@
  *   node --env-file=src/web/.env.local scripts/_ops/record_leitsystem_take2.mjs --slug doerfler-ag
  */
 
-import { readFile, mkdir, copyFile, rm } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, rm } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { chromium } from "playwright";
@@ -228,6 +228,9 @@ async function main() {
   await page.goto("about:blank");
   await page.waitForTimeout(350);
 
+  // FB1: Recording-Start-Zeitstempel (für Status-Bar-Switch beim Fall-Detail-Öffnen).
+  const recordingStartMs = Date.now();
+
   // Tenant-Scope wurde bereits oben per context.addCookies gesetzt.
   // Jetzt zur App navigieren — der Cookie greift ab der ersten Request.
   await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded", timeout: 20000 });
@@ -420,6 +423,18 @@ async function main() {
   }
 
   if (caseClicked) {
+    // FB1: Messe den Moment des Fall-Detail-Öffnens (Sekunden seit Recording-Start).
+    // compose nutzt diesen Wert zum Umschalten der Status-Bar-Uhr (+1 min).
+    const detailSwitchSec = (Date.now() - recordingStartMs) / 1000;
+    console.log(`  FB1: Fall-Detail geöffnet bei Recording-Sekunde ${detailSwitchSec.toFixed(2)}`);
+    try {
+      const cfgAgain = JSON.parse(await readFile(configPath, "utf-8"));
+      cfgAgain._take2_detail_switch_sec = detailSwitchSec;
+      await writeFile(configPath, JSON.stringify(cfgAgain, null, 2), "utf-8");
+    } catch (e) {
+      console.warn(`  FB1 config write warning: ${e.message}`);
+    }
+
     // FB26: Warten bis Case-Detail WIRKLICH geladen ist
     await page.waitForTimeout(5000);
     await page.waitForSelector(`text=${phoneCat}`, { timeout: 5000 }).catch(() => {});

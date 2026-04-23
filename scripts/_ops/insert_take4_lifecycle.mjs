@@ -44,13 +44,13 @@ if (!config._wizard_time || !config._wizard_case_id) {
 }
 
 // Reset wizard case to "Neu" state so Take 4 recording starts from clean slate.
-// C3: Case creation time wird demo-time-basiert gesetzt (gestern Nachmittag),
-// damit Verlauf konsistent demo-chronologisch erscheint.
+// Zeit-SSoT (23.04.): Wizard-Case IMMER bei demoTime.wizardSubmitTime (heute 08:56).
+// Vorher: demoNow - 15h = gestern 17:04 → FB7 Bruch (Leck zeigte "22.04. 17:04" statt
+// "heute 08:56"). Alle Events hängen jetzt am selben Morgen.
 {
-  // Demo case creation: today 07:59 minus 15h = yesterday 16:59 local
   const dtLocal = await import("./_lib/demo_time.mjs");
   const dt = dtLocal.getDemoTimes({ skipGate: true });
-  const caseCreatedAt = new Date(dt.demoNow.getTime() - 15 * 3600 * 1000);
+  const caseCreatedAt = dt.wizardSubmitTime;
   const smsSentAt = new Date(caseCreatedAt.getTime() + 30 * 1000);
   const caseCreatedIso = caseCreatedAt.toISOString();
   const smsSentIso = smsSentAt.toISOString();

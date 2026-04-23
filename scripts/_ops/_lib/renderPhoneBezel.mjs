@@ -10,12 +10,23 @@ import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-export async function renderPhoneBezel({ outDir, width = 340, height = 730 }) {
-  const out = join(outDir, `_phone_bezel_${width}x${height}.png`);
+/**
+ * FB10 (23.04.): `shadowColor` (Hex) erlaubt brand_color-farbigen Drop-Shadow
+ * damit die Bezel-Ecken-Ausstrahlung mit dem Leitsystem-BG verschmilzt statt
+ * als schwarze Aura auf blauem BG zu stechen. Default bleibt #000 (Backward-Compat).
+ * Cache-Key enthält Farbe damit verschiedene Tenants getrennte PNGs bekommen.
+ */
+export async function renderPhoneBezel({ outDir, width = 340, height = 730, shadowColor = "#000" }) {
+  const tag = shadowColor === "#000" ? "" : `_sh${shadowColor.replace("#", "")}`;
+  const out = join(outDir, `_phone_bezel_${width}x${height}${tag}.png`);
   if (existsSync(out)) return out;
 
   const htmlPath = join("scripts", "_ops", "screen_templates", "sequences", "phone_bezel.html");
-  const html = await readFile(htmlPath, "utf-8");
+  let html = await readFile(htmlPath, "utf-8");
+  // Inject shadow color override — replaces the hardcoded flood-color in phone_bezel.html.
+  if (shadowColor && shadowColor !== "#000") {
+    html = html.replace('flood-color="#000"', `flood-color="${shadowColor}"`);
+  }
   const browser = await chromium.launch({ headless: true });
   try {
     const ctx = await browser.newContext({

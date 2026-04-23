@@ -17,7 +17,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, statSync, copyFileSync } from "node:fs";
+import { existsSync, statSync, copyFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ensureCircleMask, buildCircleLoomFilter } from "./_lib/renderLoomCircle.mjs";
 
@@ -72,6 +72,17 @@ const runTake2 = take === "2" || take === "all";
 const runTake3 = take === "3" || take === "all";
 const runTake4 = take === "4" || take === "all";
 
+// FB10: Canvas-BG = brand_color. Früher hart "#0b1220" Navy → sichtbarer Kontrast-Bruch
+// an Phone-Bezel-Ecken wenn Leitsystem-BG brand_color ist. Jetzt einheitlich.
+// Tenant-Config liefert brand_color, Fallback Navy.
+let canvasBg = "#0b1220";
+try {
+  const cfg = JSON.parse(readFileSync(join("docs", "customers", slug, "tenant_config.json"), "utf-8"));
+  const bc = cfg.tenant?.brand_color;
+  if (bc) canvasBg = bc.startsWith("#") ? bc : `#${bc}`;
+} catch {}
+console.log(`── Canvas-BG (FB10 brand_color): ${canvasBg}`);
+
 // ══════════════════════════════════════════════════════════════════════════
 // STEP 1: Seed — DB + _seed_time (nur bei Take 2 oder all)
 // ══════════════════════════════════════════════════════════════════════════
@@ -105,14 +116,26 @@ if (runTake2) {
   const samsungPath = join(screenflowDir, "take2_samsung.webm");
   const leitPath = join(screenflowDir, "take2_leitsystem.webm");
   const statusBarPath = join(screenflowDir, "status_bar.png");
+  const statusBarDetailPath = join(screenflowDir, "status_bar_detail.png");
   const completePath = join(screenflowDir, "take2_complete.mp4");
 
-  for (const p of [samsungPath, slugClip, leitPath, statusBarPath]) {
+  for (const p of [samsungPath, slugClip, leitPath, statusBarPath, statusBarDetailPath]) {
     if (!existsSync(p)) {
       console.error(`❌ Fehlende Datei für Take-2-Splice: ${p}`);
       process.exit(1);
     }
   }
+
+  // FB1: Switch-Zeitpunkt Status-Bar +1 min (Fall-Detail-Klick).
+  // record_leitsystem_take2.mjs schreibt _take2_detail_switch_sec ins tenant_config.
+  // Das Leitsystem-Video hat -ss 2.0 Offset → Timeline-Sekunde = raw - 2.0.
+  // Samsung+Transition sind davor (ca. 35s), wir addieren ihre Dauer.
+  const cfgForSwitch = JSON.parse(
+    await (await import("node:fs/promises")).readFile(
+      join("docs", "customers", slug, "tenant_config.json"), "utf-8"
+    )
+  );
+  const detailSwitchRawSec = Number(cfgForSwitch._take2_detail_switch_sec) || 999;
 
   // A1/A2/A3/A4 Rebuild:
   //   - Phone bezel + content scaled up to 400×860 (fills 95% vertical)
@@ -120,26 +143,42 @@ if (runTake2) {
   //   - Face fix rechts neben Phone, top-aligned (keine Animation)
   //   - Combined phone+face (400 + 30 gap + 300) = 730 wide, centered in 1440×900
   const bezelHelper = await import("./_lib/renderPhoneBezel.mjs");
-  const bezelPath = await bezelHelper.renderPhoneBezel({ outDir: screenflowDir });
+  // FB10: brand_color als Bezel-Shadow-Farbe — Ecken-Aura harmoniert mit Leitsystem-BG.
+  const bezelPath = await bezelHelper.renderPhoneBezel({ outDir: screenflowDir, shadowColor: canvasBg });
   const contentMaskPath = await bezelHelper.ensureContentMask({
     outDir: screenflowDir, width: 320, height: 712, radius: 40,
   });
   console.log(`── Phone bezel: ${bezelPath}`);
   console.log(`── Content mask (rounded): ${contentMaskPath}`);
 
+  // FB1: Switch-Sekunde in der Leitsystem-Lokal-Zeit (nach -ss 2.0 Offset).
+  // Wenn detailSwitchRawSec < 2.0 (unrealistisch) → Switch sofort bei 0.
+  const leitSwitchSec = Math.max(0, detailSwitchRawSec - 2.0);
+  console.log(`── FB1: Status-Bar-Switch bei Leitsystem-Sekunde ${leitSwitchSec.toFixed(2)} (raw=${detailSwitchRawSec.toFixed(2)})`);
+
   const tmpMobile = join(screenflowDir, "_take2_mobile_tmp.mp4");
-  runStep("STEP 4a (Take 2): Concat 3 mobile parts", "ffmpeg", [
+  runStep("STEP 4a (Take 2): Concat 3 mobile parts + FB1 bar-switch + FB3 dev-badge-cover", "ffmpeg", [
     "-y",
     "-ss", "0.3", "-i", samsungPath,
     "-i", slugClip,
     "-ss", "2.0", "-i", leitPath,
-    "-loop", "1", "-t", "60", "-i", statusBarPath,
+    "-loop", "1", "-t", "120", "-i", statusBarPath,
+    "-loop", "1", "-t", "120", "-i", statusBarDetailPath,
     "-filter_complex",
     "[0:v]fps=30,scale=412:914,setsar=1,setpts=PTS-STARTPTS[s];" +
     "[1:v]fps=30,scale=412:914,setsar=1,setpts=PTS-STARTPTS[c];" +
-    "[2:v]fps=30,scale=412:878,setsar=1,setpts=PTS-STARTPTS[lscaled];" +
-    "[3:v]fps=30,scale=412:36,setsar=1[bar];" +
-    "[bar][lscaled]vstack[l];" +
+    "[2:v]fps=30,scale=412:878,setsar=1,setpts=PTS-STARTPTS[lraw];" +
+    // FB3 (23.04.): Dev-Badge "2 Issues" erscheint am Ende wenn Back-Nav zur Fall-Liste.
+    // Drawbox überdeckt permanent die untere linke Ecke (Position Next.js Dev Tools).
+    // Farbe = Leitsystem-Sidebar-Nav-Hintergrund (nahezu schwarz-navy), fließender Übergang.
+    "[lraw]drawbox=x=0:y=820:w=160:h=58:color=#010610:t=fill[lscaled];" +
+    // Pad Leitsystem-Part auf 412×914 (oben 36px schwarz für Bar-Platz)
+    "[lscaled]pad=412:914:0:36:color=black[lpad];" +
+    "[3:v]fps=30,scale=412:36,setsar=1[bar1];" +
+    "[4:v]fps=30,scale=412:36,setsar=1[bar2];" +
+    // Bar1 bis Switch-Sekunde, Bar2 danach — FB1 +1 min bei Fall-Detail.
+    `[lpad][bar1]overlay=0:0:enable='lt(t\\,${leitSwitchSec.toFixed(3)})'[lb1];` +
+    `[lb1][bar2]overlay=0:0:enable='gte(t\\,${leitSwitchSec.toFixed(3)})'[l];` +
     "[s][c][l]concat=n=3:v=1[out]",
     "-map", "[out]",
     "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-pix_fmt", "yuv420p",
@@ -170,7 +209,7 @@ if (runTake2) {
     "-y",
     "-i", tmpMobile,                                                // [0] content 412×914
     "-loop", "1", "-t", String(tmpDur), "-i", bezelPath,           // [1] bezel 340×730
-    "-f", "lavfi", "-t", String(tmpDur), "-i", "color=c=#0b1220:size=1440x900:rate=30", // [2] navy bg
+    "-f", "lavfi", "-t", String(tmpDur), "-i", `color=c=${canvasBg}:size=1440x900:rate=30`, // [2] brand-color bg (FB10)
     "-loop", "1", "-t", String(tmpDur), "-i", contentMaskPath,     // [3] content mask 320×712
     "-stream_loop", "-1", "-i", loomSource,                         // [4] face source
     "-loop", "1", "-t", String(tmpDur), "-i", faceMask,            // [5] face mask
@@ -326,7 +365,7 @@ if (false) {
     `[${inputIdx}:v]fps=30,scale=412:864,setsar=1[m${inputIdx}raw];` +
     `[${inputIdx + 100}:v]fps=30,scale=412:36,setsar=1[m${inputIdx}bar];` +
     `[m${inputIdx}bar][m${inputIdx}raw]vstack[m${inputIdx}v];` +
-    `[m${inputIdx}v]pad=1440:900:(ow-iw)/2:(oh-ih)/2:#0b1220,setpts=PTS-STARTPTS[p${inputIdx}]`;
+    `[m${inputIdx}v]pad=1440:900:(ow-iw)/2:(oh-ih)/2:${canvasBg},setpts=PTS-STARTPTS[p${inputIdx}]`;
 
   const desktopFilterFor = (inputIdx) =>
     `[${inputIdx}:v]fps=30,scale=1440:900,setsar=1,setpts=PTS-STARTPTS[p${inputIdx}]`;
@@ -360,7 +399,7 @@ if (false) {
         `[${i}:v]fps=30,scale=412:864,setsar=1[m${i}c];` +
         `[${barIdx}:v]fps=30,scale=412:36,setsar=1[m${i}b];` +
         `[m${i}b][m${i}c]vstack[m${i}v];` +
-        `[m${i}v]pad=1440:900:(ow-iw)/2:(oh-ih)/2:#0b1220,setsar=1,setpts=PTS-STARTPTS[p${i}]`
+        `[m${i}v]pad=1440:900:(ow-iw)/2:(oh-ih)/2:${canvasBg},setsar=1,setpts=PTS-STARTPTS[p${i}]`
       );
     } else {
       filters.push(`[${i}:v]fps=30,scale=1440:900,setsar=1,setpts=PTS-STARTPTS[p${i}]`);
@@ -504,6 +543,14 @@ if (runTake4) {
   const out = join(screenflowDir, "take4_with_loom.mp4");
   applyLoomPiP(base, out, { static: { x: 40, y: 350 } });
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// POST-TAKE QG (FB3): Automatische Quality-Gates prüfen Zeit-Konsistenz,
+// Artefakte und Mindest-Dauern. Bei FAIL → exit 1 + Finding-Report.
+// ══════════════════════════════════════════════════════════════════════════
+runStep("FINAL: Post-Take Quality-Gates", node, [
+  envFile, "scripts/_ops/post_take_qg.mjs", `--slug=${slug}`, `--take=${take}`,
+]);
 
 // ══════════════════════════════════════════════════════════════════════════
 // FINAL: Summary

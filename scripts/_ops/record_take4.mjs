@@ -817,10 +817,12 @@ async function recordReview(browser) {
   });
 
   // Padding für Samsung-Chrome-Overlay (36 top + 56 bottom).
+  // FB14 (23.04.): padding-top 36→96 damit Review-Card 60px Abstand von Status-Bar hat
+  // (vorher hing der Content unter der Status-Bar). Overlay selbst bleibt 36px top.
   await context.addInitScript(() => {
     const css = `
-      body { padding-top: 36px !important; padding-bottom: 56px !important; }
-      body > div:first-child { min-height: calc(100dvh - 92px) !important; }
+      body { padding-top: 96px !important; padding-bottom: 56px !important; }
+      body > div:first-child { min-height: calc(100dvh - 152px) !important; }
       /* Dev-Badges killen (auch Next.js Portal in Shadow-DOM) */
       nextjs-portal, [data-nextjs-dialog], [data-nextjs-toast],
       button[data-nextjs-dev-tools-button] { display: none !important; }

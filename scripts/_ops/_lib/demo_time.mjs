@@ -1,19 +1,32 @@
 /**
- * demo_time.mjs — Single Source of Truth für Take-4-Zeitlogik (A10).
+ * demo_time.mjs — Single Source of Truth für ALLE Pipeline-Zeiten (Take 2/3/4).
  *
- * Demo-Wirklichkeit:
- *   - demoNow           = heute 07:59 (lokal Europe/Zurich)
- *   - appointmentStart  = morgen 08:00
- *   - appointmentEnd    = morgen 10:00
- *   - confirmationSent  = heute 07:59:30 (wenige Sekunden nach Termin-Save)
- *   - reminderSent      = heute 08:00   (24h-Reminder)
- *   - completionTime    = morgen 10:30  (30 Min nach Termin-Ende)
- *   - reviewSentTime    = morgen 10:31  (1 Min nach Completion)
- *   - reviewRatedTime   = morgen 10:32  (1 Min später — Kunde bewertet)
+ * Compressed-Morning-Architektur (Founder-Entscheidung 23.04.):
+ *   Alles spielt am gleichen Werktag zwischen 08:04 und 09:06 ab. Termin selbst
+ *   liegt morgen 08:00-10:00 (nur im Bestätigungs-Text sichtbar, keine
+ *   visuelle Zeitreferenz im Video). Samsung-Uhr in jeder Szene deterministisch
+ *   aus diesem Modul — keine dynamischen `new Date()`-Zeiten mehr in Pipeline.
+ *
+ * Timeline:
+ *   08:04  Take 2 Anruf startet (Samsung-Uhr)
+ *   08:07  Anruf endet (Lisa 3:11 min intake)
+ *   08:08  Rohrbruch-Case in DB + Lisa-SMS-Bestätigung (Samsung-Uhr 08:08)
+ *   08:09  Take 2 Leitsystem Fall-Detail (Nav-Uhr +1 min, FB1)
+ *   ──────── 47 min Timeskip ────────
+ *   08:56  Take 3 Wizard-Submit (Leck-Case in DB)
+ *   08:57  Take 3 Leitsystem-View nach Wizard (Nav-Uhr)
+ *   08:58  Take 3 Leitsystem Fall-Detail (Nav-Uhr +1 min)
+ *   08:58  Take 4 Akt 1 — Click "Termin versenden"
+ *           → Termin-Bestätigung-SMS an Kunde (Samsung-Uhr 08:58)
+ *           → 24h-Reminder fires (Termin morgen 08:00 = <24h) (Samsung-Uhr 08:58)
+ *   ──────── Compressed Cut ("Am nächsten Morgen") ────────
+ *   09:02  Take 4 Akt 2 — Completion-Click → Status Erledigt
+ *   09:04  Bewertungs-SMS (+2 min nach Completion, FB11) (Samsung-Uhr 09:04)
+ *   09:06  Kunde bewertet (+2 min) (Samsung-Uhr 09:04)
  *
  * Werktag-Gate:
- *   - Videos werden NUR generiert wenn heute UND morgen Werktag sind
- *     (Mo-Fr, keine CH-Feiertage).
+ *   Videos werden NUR generiert wenn heute UND morgen Werktag sind
+ *   (Mo-Fr, keine CH-Feiertage).
  *
  * Das Modul arbeitet konsistent in ISO-Strings (UTC) und berücksichtigt
  * Europe/Zurich für die Wandlung Tag/Uhrzeit.
@@ -161,40 +174,106 @@ export function getDemoTimes(opts = {}) {
     }
   }
 
-  // C16+C17 Compressed: Alles passiert heute 08:04 – 08:12 (live, kein Tomorrow-Jump).
-  // Termin selbst liegt morgen 08:00-10:00, der Reminder feuert aber HEUTE 08:04
-  // weil <24h vor Termin (Save-Zeit demoNow 08:04, Termin morgen 08:00 = 23h56min away).
-  const demoNow = zurichDate(today.y, today.m, today.d, 8, 4);
-  const confirmationSent = zurichDate(today.y, today.m, today.d, 8, 4);  // Lisa's Bestätigung (Take 2)
-  const reminderSent = zurichDate(today.y, today.m, today.d, 8, 4);      // Reminder fires NOW (<24h)
-  const appointmentStart = zurichDate(tomorrow.y, tomorrow.m, tomorrow.d, 8, 0);
-  const appointmentEnd = zurichDate(tomorrow.y, tomorrow.m, tomorrow.d, 10, 0);
-  // Compressed: Erledigen + Bewertung live im Video, nicht morgen.
-  const completionTime = zurichDate(today.y, today.m, today.d, 8, 9);
-  const reviewSentTime = zurichDate(today.y, today.m, today.d, 8, 10);
-  const reviewRatedTime = zurichDate(today.y, today.m, today.d, 8, 12);
+  const Z = (h, m) => zurichDate(today.y, today.m, today.d, h, m);
+  const ZT = (h, m) => zurichDate(tomorrow.y, tomorrow.m, tomorrow.d, h, m);
+
+  // ── Take 2 — Rohrbruch-Call ──
+  const phoneCallStartTime   = Z(8, 4);   // Samsung-Uhr beim Anruf-Start
+  const phoneCallEndTime     = Z(8, 7);   // Lisa 3:11 min intake (191s)
+  const phoneCaseSavedTime   = Z(8, 8);   // Case in DB (1 min nach Call-Ende)
+  const phoneSmsConfirmTime  = Z(8, 8);   // Lisa SMS-Bestätigung = Case-Save
+  const phoneLeitsystemNav   = Z(8, 8);   // Admin öffnet Leitsystem
+  const phoneLeitsystemDet   = Z(8, 9);   // Fall-Detail +1 min (FB1)
+
+  // ── Take 3 — Wizard ──
+  const wizardSubmitTime     = Z(8, 56);  // Leck-Case in DB
+  const wizardLeitsystemNav  = Z(8, 57);
+  const wizardLeitsystemDet  = Z(8, 58);  // Fall-Detail +1 min (FB1)
+
+  // ── Take 4 Akt 1 — Bestätigung ──
+  const terminSaveTime       = Z(8, 58);  // Click "Termin versenden"
+  const confirmSmsSent       = Z(8, 58);  // Termin-Bestätigung an Kunde
+  const reminder24hSent      = Z(8, 58);  // <24h → feuert sofort
+  const appointmentStart     = ZT(8, 0);
+  const appointmentEnd       = ZT(10, 0);
+
+  // ── Take 4 Akt 2 — Erledigen + Bewertung (Compressed) ──
+  const completionTime       = Z(9, 2);   // "Erledigt"-Click
+  const reviewSmsSent        = Z(9, 4);   // +2 min nach Completion (FB11)
+  const reviewRatedTime      = Z(9, 6);   // Kunde bewertet +2 min
+
+  // ── Samsung-Uhr pro Szene (statisch, keine new Date() mehr) ──
+  const samsungClock = {
+    take2_homescreen:  "08:03",   // Vor-Anruf-Homescreen
+    take2_contacts:    "08:03",   // Kontaktsuche
+    take2_call_active: "08:04",   // Anruf aktiv
+    take2_call_ended:  "08:07",   // Call-Ended Screen
+    take2_sms_notif:   "08:08",   // SMS-Notification
+    take2_sms_open:    "08:08",   // SMS geöffnet
+    take4_akt1_home:   "08:58",   // Bestätigung kommt
+    take4_akt1_sms:    "08:58",   // Bestätigungs-SMS-Notif
+    take4_akt1_rem:    "08:58",   // 24h-Reminder
+    take4_akt2_home:   "09:04",   // Review-SMS kommt
+    take4_akt2_sms:    "09:04",   // Review-SMS-Notif
+    take4_review:      "09:04",   // Review-Screen
+  };
+
+  // ── Legacy-Aliasse (für Abwärtskompat während Umbau) ──
+  const demoNow = Z(8, 4);
+  const confirmationSent = confirmSmsSent;
+  const reminderSent = reminder24hSent;
+  const reviewSentTime = reviewSmsSent;
 
   return {
     today,
     tomorrow,
+    // Take 2
+    phoneCallStartTime,
+    phoneCallEndTime,
+    phoneCaseSavedTime,
+    phoneSmsConfirmTime,
+    phoneLeitsystemNav,
+    phoneLeitsystemDet,
+    // Take 3
+    wizardSubmitTime,
+    wizardLeitsystemNav,
+    wizardLeitsystemDet,
+    // Take 4 Akt 1
+    terminSaveTime,
+    confirmSmsSent,
+    reminder24hSent,
+    appointmentStart,
+    appointmentEnd,
+    // Take 4 Akt 2
+    completionTime,
+    reviewSmsSent,
+    reviewRatedTime,
+    // Samsung-Uhr pro Szene
+    samsungClock,
+    // Legacy-Aliasse
     demoNow,
     confirmationSent,
     reminderSent,
-    appointmentStart,
-    appointmentEnd,
-    completionTime,
     reviewSentTime,
-    reviewRatedTime,
     // Hilfs-ISO-Strings
     iso: {
-      demoNow: demoNow.toISOString(),
-      confirmationSent: confirmationSent.toISOString(),
-      reminderSent: reminderSent.toISOString(),
+      phoneCallStartTime: phoneCallStartTime.toISOString(),
+      phoneCaseSavedTime: phoneCaseSavedTime.toISOString(),
+      phoneSmsConfirmTime: phoneSmsConfirmTime.toISOString(),
+      wizardSubmitTime: wizardSubmitTime.toISOString(),
+      terminSaveTime: terminSaveTime.toISOString(),
+      confirmSmsSent: confirmSmsSent.toISOString(),
+      reminder24hSent: reminder24hSent.toISOString(),
       appointmentStart: appointmentStart.toISOString(),
       appointmentEnd: appointmentEnd.toISOString(),
       completionTime: completionTime.toISOString(),
-      reviewSentTime: reviewSentTime.toISOString(),
+      reviewSmsSent: reviewSmsSent.toISOString(),
       reviewRatedTime: reviewRatedTime.toISOString(),
+      // Legacy
+      demoNow: demoNow.toISOString(),
+      confirmationSent: confirmationSent.toISOString(),
+      reminderSent: reminderSent.toISOString(),
+      reviewSentTime: reviewSentTime.toISOString(),
     },
   };
 }

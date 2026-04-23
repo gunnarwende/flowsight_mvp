@@ -16,9 +16,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createRequire } from "node:module";
+import { getDemoTimes } from "./_lib/demo_time.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
+
+const demoTime = getDemoTimes({ skipGate: true });
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -61,17 +64,10 @@ if (tErr || !tenant) {
 const TID = tenant.id;
 const PREFIX = tenant.case_id_prefix || t.case_id_prefix || "FS";
 
-// ── _seed_time must exist (from seed_screenflow_from_config.mjs) ──
-if (!config._seed_time) {
-  console.error("Missing _seed_time in tenant_config.json — run seed_screenflow_from_config.mjs first.");
-  process.exit(1);
-}
-
-const seedTime = new Date(config._seed_time);
-// Phone-Case is seedTime + ~4min (191s call + 60s buffer). Wizard-Case is seedTime + 30min.
-const wizardTime = new Date(seedTime.getTime() + 30 * 60 * 1000);
-console.log(`  Seed-Time (Phone-Case): ${seedTime.toISOString()}`);
-console.log(`  Wizard-Time (+30min):   ${wizardTime.toISOString()}`);
+// Zeit-SSoT (23.04.): Wizard-Case IMMER bei demoTime.wizardSubmitTime (heute 08:56).
+// Unabhängig von _seed_time. Konsistent mit Samsung-Uhr in Take 3 Wizard-Submit-Frame.
+const wizardTime = demoTime.wizardSubmitTime;
+console.log(`  Wizard-Time (demoTime SSoT): ${wizardTime.toISOString()}`);
 
 // ── Delete prior Take-3 wizard-case (idempotent re-run) ──
 // Identify by reporter_name + reporter_phone + source="wizard" + street="Bahnhofstrasse"

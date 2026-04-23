@@ -28,6 +28,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createRequire } from "node:module";
+import { getDemoTimes } from "./_lib/demo_time.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -35,6 +36,10 @@ const { createClient } = require("../../src/web/node_modules/@supabase/supabase-
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
+
+// Demo-Time SSoT — alle "now"/"minutesAgo"-Zeiten leiten sich aus heute 08:04 ab.
+// Kein skipGate hier: Seed nur an Werktagen laufen (sonst kein Reminder-Szenario).
+const demoTime = getDemoTimes({ skipGate: true });
 
 // ── CLI ──────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -316,11 +321,11 @@ async function main() {
   const reporterPhone = pcc.reporter_phone || "076 489 89 80";
   const anrufDauerSec = 191;
 
-  // FB47/49: Seed schreibt _seed_time in tenant_config damit produce_screenflow
-  // die gleiche Base-Zeit nutzt. Ohne das springt die SMS-Zeit (CONFIG.uhrzeit
-  // when samsung recorded) gegen Case-Created-Zeit (seed.now + 4min).
-  const seedNow = new Date();
-  const phoneCaseCreatedAt = new Date(seedNow.getTime() + (anrufDauerSec + 60) * 1000).toISOString();
+  // FB5+FB6+FB8+FB9: Phone-Case-Zeit aus demo_time SSoT (heute 08:08).
+  // Vorher: `new Date() + 4min` → Leitsystem + SMS zeigten Uhrzeit von Pipeline-Lauf
+  // (z.B. 00:30 nachts) statt konsistenter 08:08. Jetzt deterministisch konsistent
+  // mit Samsung-Uhr (take2_sms_notif = "08:08") und SMS-Body-Timestamp.
+  const phoneCaseCreatedAt = demoTime.iso.phoneCaseSavedTime;
   const phoneCaseData = {
     tenant_id: TID,
     category: pcc.kategorie || "Rohrbruch",
@@ -358,7 +363,9 @@ async function main() {
     plz: cities[1]?.plz || phoneCity.plz,
     description: wizardCase.beschreibung ||
       `${wizCat} über Online-Formular gemeldet.`,
-    created_at: minutesAgo(60), // 1h ago
+    // FB5+FB6+FB7: Wizard-Case bei demoTime.wizardSubmitTime (heute 08:56).
+    // Vorher: minutesAgo(60) → "gestern" wenn Pipeline nachts lief.
+    created_at: demoTime.iso.wizardSubmitTime,
     is_demo: false,
   });
 
@@ -483,12 +490,14 @@ async function main() {
   // FB40: Phone-Case als ALLERLETZTEN Case einfügen → höchste seq_number
   cases.push(phoneCaseData);
 
-  // FB47/49: Seed-Zeit in tenant_config.json persistieren damit produce_screenflow
-  // die GLEICHE Base-Zeit nutzt. Sonst springt SMS-Zeit vs Case-Created-Zeit.
+  // FB47/49 + Zeit-SSoT (23.04.): _seed_time = Anruf-Start (demoTime heute 08:04).
+  // Downstream-Scripts (produce_screenflow, render_status_bar, insert_take3) rechnen
+  // darauf +4min = 08:08 für SMS/Case-Saved-Time, konsistent mit demoTime.phoneCaseSavedTime.
   const { writeFile } = await import("node:fs/promises");
-  const configUpdate = { ...config, _seed_time: seedNow.toISOString() };
+  const seedTimeIso = demoTime.iso.phoneCallStartTime;
+  const configUpdate = { ...config, _seed_time: seedTimeIso };
   await writeFile(configPath, JSON.stringify(configUpdate, null, 2), "utf-8");
-  console.log(`✓ _seed_time geschrieben: ${seedNow.toISOString()}`);
+  console.log(`✓ _seed_time geschrieben (demoTime SSoT): ${seedTimeIso}`);
 
   // updated_at = created_at falls nicht gesetzt (DB-Spalte ist NOT NULL)
   for (const c of cases) {

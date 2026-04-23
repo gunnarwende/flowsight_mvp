@@ -180,6 +180,25 @@ async function ensureSwitcherHidden() {
   }).catch(() => {});
 }
 
+// FB4 (23.04.): Reveal-Overlay mit length > Content-Load-Zeit.
+// Vorher: weißer Flash beim Wizard→Leitsystem-Übergang weil Content noch lud.
+// Jetzt: brand_color-Overlay bleibt 1500ms opaque → fadet 500ms → Content stabil.
+const brandColorT3 = t.brand_color || "#003478";
+await context.addInitScript(`
+  document.documentElement.style.background = '${brandColorT3}';
+  const styleTag = document.createElement('style');
+  styleTag.textContent = 'html,body{background:${brandColorT3} !important;}';
+  document.documentElement.appendChild(styleTag);
+  const overlay = document.createElement('div');
+  overlay.id = 'app-reveal-overlay-t3';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:${brandColorT3};opacity:1;pointer-events:none;transition:opacity 500ms ease-out;';
+  document.documentElement.appendChild(overlay);
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 600);
+  }, 1500);
+`);
+
 // ── C8: Navigate to /ops/cases, show list with new DA-0050 ──
 await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded", timeout: 20000 });
 await ensureSwitcherHidden();
