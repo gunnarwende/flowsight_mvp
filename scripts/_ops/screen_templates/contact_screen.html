@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 358px; height: 698px;
+    font-family: -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    background: #fff; color: #1a1a1a; overflow: hidden;
+  }
+
+  /* Search header */
+  .search-header {
+    height: 56px; display: flex; align-items: center;
+    padding: 0 16px; border-bottom: 1px solid #e5e5e5;
+  }
+  .search-header .back { font-size: 20px; margin-right: 12px; }
+  .search-header .search-text {
+    flex: 1; font-size: 18px; font-weight: 500;
+  }
+  .search-header .clear { font-size: 18px; color: #666; margin-left: 8px; }
+  .search-header .menu { font-size: 18px; color: #666; margin-left: 12px; }
+
+  /* Filter tabs */
+  .tabs {
+    display: flex; justify-content: space-between;
+    padding: 12px 16px; font-size: 13px; color: #999;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .tabs .active { color: #1a1a1a; font-weight: 500; }
+
+  /* Contact card */
+  .contact-card {
+    padding: 16px;
+  }
+  .contact-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+  }
+  .contact-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #e8eaf6; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 600; color: #5c6bc0;
+  }
+  .contact-info { flex: 1; }
+  .contact-name { font-size: 16px; font-weight: 500; color: #4caf50; }
+  .contact-number { font-size: 13px; color: #666; margin-top: 2px; }
+
+  /* Phone detail */
+  .phone-detail {
+    padding: 8px 16px 8px 72px;
+    font-size: 14px; color: #1a1a1a;
+  }
+  .phone-label { font-size: 12px; color: #999; margin-bottom: 2px; }
+
+  /* Action buttons */
+  .contact-actions {
+    display: flex; gap: 20px;
+    padding: 16px 16px 16px 72px;
+  }
+  .contact-action {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .contact-action.call { background: #e8f5e9; }
+  .contact-action.msg { background: #e3f2fd; }
+  .contact-action.video { background: #e8f5e9; }
+  .contact-action.info { background: #f5f5f5; }
+</style>
+</head>
+<body>
+
+<div class="search-header">
+  <span class="back">←</span>
+  <span class="search-text" id="searchText">Dörfler AG Test</span>
+  <span class="clear">✕</span>
+  <span class="menu">⋮</span>
+</div>
+
+<div class="tabs">
+  <span class="active">Häufig gesucht</span>
+  <span id="resultCount">1 gefunden ˄</span>
+</div>
+
+<div class="contact-card">
+  <div class="contact-row">
+    <div class="contact-avatar" id="avatar">D</div>
+    <div class="contact-info">
+      <div class="contact-name" id="displayName">Dörfler AG Test</div>
+      <div class="contact-number" id="phoneDisplay">+41 44 505 74 20</div>
+    </div>
+  </div>
+
+  <div class="phone-detail">
+    <div class="phone-label">Mobil</div>
+    <div id="phoneDetail">+41 44 505 74 20</div>
+  </div>
+
+  <div class="contact-actions">
+    <div class="contact-action call">📞</div>
+    <div class="contact-action msg">💬</div>
+    <div class="contact-action video">📹</div>
+    <div class="contact-action info">ℹ️</div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get('name') || 'Dörfler AG Test';
+const phone = params.get('phone') || '+41 44 505 74 20';
+const initial = params.get('initial') || name.charAt(0);
+
+document.getElementById('searchText').textContent = name;
+document.getElementById('displayName').textContent = name;
+document.getElementById('phoneDisplay').textContent = phone;
+document.getElementById('phoneDetail').textContent = phone;
+document.getElementById('avatar').textContent = initial;
+</script>
+</body>
+</html>

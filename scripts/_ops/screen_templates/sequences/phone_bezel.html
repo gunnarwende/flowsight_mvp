@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; }
+  html, body { background: transparent; width: 340px; height: 730px; }
+</style>
+</head>
+<body>
+<svg width="340" height="730" viewBox="0 0 340 730" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Mask: white = visible bezel, black = cut-out (screen area) -->
+    <mask id="cutout">
+      <rect width="340" height="730" fill="white"/>
+      <!-- C24: Inner screen cutout radius 46 (matches outer rx=46) — saubere runde Ecken ohne Bleed -->
+      <rect x="10" y="9" width="320" height="712" rx="46" ry="46" fill="black"/>
+    </mask>
+    <!-- C27: Aggressive shadow — hides Leitsystem background bleed through bezel's rx=46 transparent corners -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="22" flood-color="#000" flood-opacity="0.9"/>
+    </filter>
+    <!-- Subtle inner glass highlight (top edge) -->
+    <linearGradient id="topHighlight" x1="50%" y1="0%" x2="50%" y2="8%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer bezel body — near-black with ultra-thin border — looks like modern flagship phone -->
+  <g filter="url(#softShadow)">
+    <rect x="0" y="0" width="340" height="730" rx="46" ry="46" fill="#0b0b0e" mask="url(#cutout)"/>
+  </g>
+
+  <!-- Bright 1px edge highlight for premium metallic look -->
+  <rect x="0.5" y="0.5" width="339" height="729" rx="45.5" ry="45.5" fill="none"
+        stroke="rgba(255,255,255,0.14)" stroke-width="1" mask="url(#cutout)"/>
+
+  <!-- Inner frame (thin) between bezel and screen — black + subtle -->
+  <rect x="8" y="7" width="324" height="716" rx="42" ry="42" fill="none"
+        stroke="#000" stroke-width="1.5" mask="url(#cutout)"/>
+
+  <!-- Top glass highlight shimmer -->
+  <rect x="1" y="1" width="338" height="56" rx="46" ry="46" fill="url(#topHighlight)" mask="url(#cutout)"/>
+
+  <!-- Punch-hole (small camera, centered at top, ~5px radius) -->
+  <circle cx="170" cy="22" r="4.5" fill="#000"/>
+  <circle cx="170" cy="22" r="2" fill="#1a1a20" opacity="0.85"/>
+</svg>
+</body>
+</html>

@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "crawled_at": "2026-04-20T10:46:10.817Z",
+    "source_url": "https://www.stark-haustechnik.ch",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.stark-haustechnik.ch/",
+        "chars": 3396
+      },
+      {
+        "key": "team",
+        "url": "https://www.stark-haustechnik.ch/team",
+        "chars": 3396
+      },
+      {
+        "key": "kontakt",
+        "url": "https://www.stark-haustechnik.ch/kontakt",
+        "chars": 704
+      }
+    ]
+  },
+  "firma": {
+    "value": "Stark Haustechnik GmbH",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Zürichstrasse 103, 8134 Adliswil",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 79 961 76 91, +41 76 310 29 71",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@stark-haustechnik.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Montag-Freitag": "08:00-17:00"
+    },
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "notdienst": {
+    "value": "Pikettdienst Rufen Sie uns im Notfall an, egal um welche Uhrzeit. +41 79 961 76 91 +41 76 310 29 71 STARTSITE UNTERNEHMEN DIENSTLEISTUNGEN SERVICEAUFTRÄGE AKTUELL REFERENZEN KONTAKT KONTAKT Shke",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "+41 79 961 76 91"
+  },
+  "google": {
+    "rating": 4.8,
+    "review_count": 18,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG",
+        "Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu"
+      ],
+      "Heizung": [
+        "STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG",
+        "Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu"
+      ],
+      "Lüftung/Klima": [
+        "STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG",
+        "Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu"
+      ],
+      "Umbau/Sanierung": [
+        "Das stark Team installiert und saniert alles von Gas- und Ölheizungen bis hin zu Wärmepumpen.",
+        "Unser Lüftungstechniker kennt sich mit Neu und Umbauten, Sanierung bestens aus."
+      ],
+      "Solar/Erneuerbar": [
+        "Das stark Team installiert und saniert alles von Gas- und Ölheizungen bis hin zu Wärmepumpen."
+      ],
+      "Beratung/Planung": [
+        "Wir legen hohen Wert auf persönliche Beratung & Planung, wir bewältigen alle Arbeiten zuverlässig und zu fairen Preisen,"
+      ],
+      "Kundendienst": [
+        "SERVICEAUFTRÄGE",
+        "Kundendienst"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "zuverlässig und zu fairen Preisen, um Ihnen die optimale Lösung zu bieten",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#003478",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.stark-haustechnik.ch",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "24h Notdienst, Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Stark Haustechnik GmbH",
+    "uid": "CHE-339.375.820",
+    "ehraid": 1446680,
+    "legal_seat": "Adliswil",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-339.375.820",
+    "match_score": 80
+  }
+}

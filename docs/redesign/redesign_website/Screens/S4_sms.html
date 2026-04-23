@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>S4 &mdash; SMS Confirmation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 390px; height: 844px;
+    overflow: hidden;
+    background: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* iOS Status Bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 28px 0 28px;
+    height: 54px;
+    background: #f8fafc;
+  }
+  .status-time { font-size: 16px; font-weight: 600; color: #1e293b; letter-spacing: -0.02em; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+
+  /* Messages Nav Bar */
+  .messages-nav {
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px 20px 12px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+    background: #f8fafc;
+  }
+  .nav-back {
+    position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .nav-back-label { font-size: 17px; color: #3b82f6; font-weight: 400; }
+  .nav-center { text-align: center; }
+  .nav-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 4px auto;
+  }
+  .nav-contact-name {
+    font-size: 13px; font-weight: 600; color: #1e293b;
+    letter-spacing: -0.01em;
+  }
+
+  /* Chat Area */
+  .chat-area {
+    padding: 20px 16px;
+    flex: 1;
+  }
+  .message-row {
+    display: flex;
+    margin-bottom: 4px;
+  }
+  .message-row.incoming { justify-content: flex-start; }
+  .message-bubble {
+    max-width: 280px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 15px; line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .bubble-incoming {
+    background: #e5e7eb;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    font-weight: 400;
+  }
+  .bubble-incoming strong {
+    font-weight: 600;
+    color: #f59e0b;
+  }
+  .msg-time {
+    font-size: 11px; color: #94a3b8; font-weight: 400;
+    text-align: left;
+    padding-left: 14px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+
+  /* Link Preview */
+  .link-preview {
+    margin: 8px 16px 0 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 280px;
+  }
+  .link-preview-content {
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .lp-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: #f8fafc;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+  }
+  .lp-gold-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #c9a227;
+  }
+  .lp-text { flex: 1; }
+  .lp-title {
+    font-size: 14px; font-weight: 600; color: #1e293b;
+    letter-spacing: -0.01em;
+    margin-bottom: 1px;
+  }
+  .lp-url {
+    font-size: 12px; font-weight: 400; color: #94a3b8;
+  }
+
+  /* iMessage input bar */
+  .input-bar {
+    position: absolute; bottom: 34px; left: 0; right: 0;
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 10px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+  .input-plus {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .input-field {
+    flex: 1; height: 36px;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 18px;
+    padding: 0 14px;
+    font-size: 15px; color: #94a3b8;
+    display: flex; align-items: center;
+  }
+
+  /* Home Indicator */
+  .home-indicator {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 3px;
+    background: rgba(15,23,42,0.15);
+  }
+</style>
+</head>
+<body>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">08:48</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#1e293b"/><rect x="4.5" y="3" width="3" height="9" rx="1" fill="#1e293b"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#1e293b"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#1e293b"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.1 3.6 12 4.4 13.4 5.8L14.8 4.4C13 2.6 10.6 1.5 8 1.5S3 2.6 1.2 4.4L2.6 5.8C4 4.4 5.9 3.6 8 3.6Z" fill="#1e293b"/><path d="M8 7.2C9.2 7.2 10.3 7.7 11.1 8.5L12.5 7.1C11.3 5.9 9.7 5.2 8 5.2S4.7 5.9 3.5 7.1L4.9 8.5C5.7 7.7 6.8 7.2 8 7.2Z" fill="#1e293b"/><circle cx="8" cy="10.5" r="1.5" fill="#1e293b"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="rgba(15,23,42,0.35)" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#1e293b"/><path d="M24 4.5C24.8 4.8 25.5 5.7 25.5 6.5S24.8 8.2 24 8.5V4.5Z" fill="rgba(15,23,42,0.4)"/></svg>
+    </div>
+  </div>
+
+  <!-- Messages Nav -->
+  <div class="messages-nav">
+    <div class="nav-back">
+      <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="nav-back-label"></span>
+    </div>
+    <div class="nav-center">
+      <div class="nav-avatar">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3.5" stroke="#94a3b8" stroke-width="1.5" fill="none"/><path d="M2.5 16C2.5 13 5.5 11 9 11C12.5 11 15.5 13 15.5 16" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <div class="nav-contact-name">Geb&auml;udetechnik GmbH</div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-area">
+    <div class="message-row incoming">
+      <div class="message-bubble bubble-incoming">
+        Guten Tag Frau Brunner,<br><br>
+        Ihre Meldung wurde aufgenommen.<br>
+        <strong>Dringend</strong><br><br>
+        Wir melden uns bei Ihnen.<br>
+        Geb&auml;udetechnik GmbH
+      </div>
+    </div>
+    <div class="msg-time">08:48</div>
+
+    <div class="link-preview">
+      <div class="link-preview-content">
+        <div class="lp-icon"><div class="lp-gold-dot"></div></div>
+        <div class="lp-text">
+          <div class="lp-title">Fotos hochladen &amp; Details pr&uuml;fen</div>
+          <div class="lp-url">flowsight.ch</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4L10 8L6 12" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Bar -->
+  <div class="input-bar">
+    <div class="input-plus">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3V15M3 9H15" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="input-field">iMessage</div>
+  </div>
+
+  <div class="home-indicator"></div>
+</body>
+</html>

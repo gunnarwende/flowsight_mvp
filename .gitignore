@@ -55,6 +55,10 @@ docs/redesign/redesign_website/production/
 *.prproj
 *.pproj
 
+# Pipeline V2 — per-tenant generated screenshot artifacts (reproducible from scripts)
+docs/gtm/pipeline/06_video_production/screenflows/*/
+!docs/gtm/pipeline/06_video_production/screenflows/_shared/
+
 # Exception: deployed website videos
 !src/web/public/videos/*.mp4
 

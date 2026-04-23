@@ -2,7 +2,7 @@
 
 **Version:** 1.0 | **Datum:** 2026-04-13
 **Zweck:** Generisches Speakflow-Template fuer alle Betriebe ab Betrieb 2 (nach Doerfler AG).
-**Gold-Standard:** Doerfler AG Take 2 = 1:1 Vorlage. Takes 1/3/4 abgeleitet aus Doerfler-Script.
+**Gold-Standard:** Doerfler AG Take 2 = 1:1 Vorlage (nicht mehr). Takes 1/3/4 abgeleitet aus Doerfler-Script - update seit 17.04. - neues script für maschine_manifest pipeline für maximale persönliche und skalierende Pipeline
 **Regel:** Platzhalter `{{...}}` werden pro Betrieb ersetzt. Alles andere ist identisch.
 **Referenz:** `docs/gtm/vorstellung.md` (Skalierungsstrategie), `docs/gtm/machine_manifest.md` (Pipeline)
 
@@ -107,118 +107,62 @@ Design-Regeln:
 **Versand:** Automatisch, kein manuelles Script noetig.
 
 ---
-
 ## Take 1 — Ihr Alltag und die eigentliche Frage
 
 **Modus:** Kamera gross, kein Screen-Share
-**Dauer:** ~80 Sekunden
-**Automatisierung:** 60% generisch. Firmenname per STS-Swap (1 Wort).
-**2 Master-Versionen:** A (Einsatz) + B (Region). Pro Betrieb: STS tauscht `{{firma}}`.
 
-### Speakflow — Variante A (Einsatz bei mir)
+### Speakflow
 
 ```
-Guten Tag {{anrede}}.
+Hallo, einen wunderschönen guten Tag.
 
 Mein Name ist Gunnar Wende.
-Ich wohne nur ein paar Strassen weiter,
-{{lokalbezug}}.
 
-Nach Ihrem Einsatz bei uns
-habe ich mir ein paar Gedanken gemacht
-und dazu dieses kurze Video
-fuer Sie aufgenommen.
+Ich habe für Ihren Betrieb
+etwas Persönliches vorbereitet
+und möchte Ihnen das ganz kurz zeigen.
 
-Ich moechte Ihnen kurz zeigen,
-was daraus entstanden ist.
-
-Dabei ist mir eine Frage
-durch den Kopf gegangen:
-
-Wie sorgen wir bei der {{firma}} dafuer,
-dass im Alltag nichts verloren geht
-und man trotzdem direkt sauber
-weiterarbeiten kann?
+Sie kennen die Situation:
 
 Sie sind auf der Baustelle,
-haben Kundengespraeche,
-und gleichzeitig kommen neue Anliegen rein —
-per Telefon,
+sind im Kundengespräch
+oder unterwegs —
+
+und währenddessen 
+kommt schon das Nächste rein.
+Per Telefon,
 per E-Mail
-oder direkt im Gespraech.
+oder aus einem Gespräch vor Ort.
 
-Und genau dort wird es entscheidend:
-Man ist nicht immer direkt erreichbar,
-hat nicht immer sofort
-den ganzen Stand zur Hand,
-und trotzdem muss von Anfang an klar sein,
-worum es geht
-und was als Naechstes zu tun ist.
+Und natürlich kann man
+nicht immer direkt erreichbar sein
+und hat bei allem 
+nicht sofort den ganzen Überblick.
 
-Genau dafuer
-habe ich mir fuer die {{firma}}
-etwas Konkretes ueberlegt.
+Und genau dort
+wird es im Alltag kritisch.
+
+Ein Anruf bleibt offen,
+eine neue Meldung wird nicht sauber aufgenommen,
+und ehe Sie reagieren können,
+ist der Kunde genervt 
+oder sogar schon beim Nächsten.
+
+Genau dafür
+habe ich für Ihren Betrieb
+etwas sehr Konkretes vorbereitet.
 
 Ich zeige Ihnen das kurz
 an einem typischen Fall.
-```
-
-### Speakflow — Variante B (Kenne aus der Region)
-
-```
-Guten Tag {{anrede}}.
-
-Mein Name ist Gunnar Wende.
-Ich wohne nur ein paar Strassen weiter,
-{{lokalbezug}}.
-
-Ich habe mir Gedanken
-zu Ihrem Betrieb gemacht
-und dazu dieses kurze Video
-fuer Sie aufgenommen.
-
-Ich moechte Ihnen kurz zeigen,
-was daraus entstanden ist.
-
-Dabei ist mir eine Frage
-durch den Kopf gegangen:
-
-Wie sorgen wir bei der {{firma}} dafuer,
-dass im Alltag nichts verloren geht
-und man trotzdem direkt sauber
-weiterarbeiten kann?
-
-Sie sind auf der Baustelle,
-haben Kundengespraeche,
-und gleichzeitig kommen neue Anliegen rein —
-per Telefon,
-per E-Mail
-oder direkt im Gespraech.
-
-Und genau dort wird es entscheidend:
-Man ist nicht immer direkt erreichbar,
-hat nicht immer sofort
-den ganzen Stand zur Hand,
-und trotzdem muss von Anfang an klar sein,
-worum es geht
-und was als Naechstes zu tun ist.
-
-Genau dafuer
-habe ich mir fuer die {{firma}}
-etwas Konkretes ueberlegt.
-
-Ich zeige Ihnen das kurz
-an einem typischen Fall.
-```
 
 ---
 
-## Take 2 — Wenn Sie gerade nicht rangehen koennen
+## Take 2 — Wenn Sie gerade nicht rangehen können
 
 **Modus:** Kamera klein (PiP), Handy-Screen / Leitsystem zeigen
-**Dauer:** ~5:38 (338s)
+**Dauer:** zeigt sich noch 
 **Automatisierung:** 90% generisch. Agent-Greeting per TTS, Firmenname per STS.
-**Gold-Standard:** 1:1 aus Doerfler AG Take 2 (speakflow_final.txt, 12.04.2026)
+**Gold-Standard:** 1:1 aus Doerfler AG Take 2 (speakflow_final.txt, 12.04.2026 - hier gibts aber seit 17.04. update im scripts, daher neu und Dörfler unabhängig)
 **Assembly:** `scripts/_ops/assemble_take2_video.mjs` + `build_take2_screens.mjs`
 
 ### Speakflow (Gold-Standard — copy-paste aus Doerfler)
@@ -228,55 +172,57 @@ Nehmen wir an,
 ein Kunde braucht Sie gerade,
 erreicht Sie aber nicht direkt,
 weil Sie auf der Baustelle sind
-in einem Kundengespraech
+in einem Kundengespräch
 oder der Kunde ruft ausserhalb
-der Oeffnungszeiten an.
+der Öffnungszeiten an.
 
 Dann sollte dieser Anruf
 nicht einfach ins Leere laufen,
 sondern der Kunde
-zunaechst sauber aufgefangen werden.
+zunächst sauber aufgefangen werden.
 
-Und genau dafuer habe ich fuer Sie
+Und genau dafür habe ich für Sie
 eine Assistentin vorbereitet,
-die dann uebernimmt,
-wenn Sie gerade nicht direkt rangehen koennen.
+die dann übernimmt,
+wenn Sie gerade nicht direkt rangehen können.
 
 Ich rufe einmal kurz an.
 
->>> ANRUF (Agent-Audio: Greeting + Intake + Sprachwechsel + Kompetenzgrenzen + Farewell) <<<
+>>> ANRUF (Agent-Audio: Greeting + Intake + Sprachwechsel + Öffnungszeiten +  Kompetenzgrenzen + Farewell) <<<
 
 Okay perfekt.
 
 Und direkt nach dem Anruf
-erhaelt der Kunde eine SMS.
+erhält der Kunde eine SMS.
 
-So merkt der Kunde sofort:
+So weiss der Kunde sofort:
 Sein Anliegen ist angekommen,
 und er kann bei Bedarf
 direkt noch ein Foto vom Schaden nachreichen.
 
-Fuer Sie heisst das:
-Sie koennen Ihr Kundengespraech
-oder Ihren Einsatz in Ruhe zu Ende fuehren,
+Und Für Sie heisst das:
+Sie können Ihr Kundengespräch
+oder Ihren Einsatz in Ruhe zu Ende führen,
 ohne unterbrochen zu werden
 und ohne dass das Anliegen verloren geht.
 
-Und danach ist es nicht einfach irgendwo erfasst,
+Und danach ist es nicht 
+einfach irgendwo erfasst,
 sondern direkt so da,
-dass Sie damit weiterarbeiten koennen.
+dass Sie damit weiterarbeiten können.
 
-Genau dafuer fuer Ihren Betrieb
-Ihr eigenes Leitsystem vorbereitet.
+Genau dafür hab ich für Ihren Betrieb
+eine eigene Leitzentrale vorbereitet -
+Ihre eigene App.
 
-Und egal ob ein Kunde anruft,
+Egal ob ein Kunde anruft,
 online etwas meldet
 oder Sie selbst etwas aufnehmen —
-alles laeuft hier zusammen.
+alles läuft hier zusammen.
 
 Sie sehen hier auf einen Blick,
 was neu ist,
-was bereits laeuft,
+was bereits läuft,
 was erledigt ist
 und wie es bei den Bewertungen aussieht.
 
@@ -284,24 +230,28 @@ Und gerade beim Thema Bewertungen
 kennen Sie das sicherlich auch
 aus eigener Erfahrung:
 
-Sehr gute Arbeit wird tagtaeglich geleistet,
-fuehrt im Alltag aber nicht automatisch dazu,
-dass daraus auch eine positive Bewertung entsteht.
+Sehr gute Arbeit wird tagtäglich geleistet,
+führt im Alltag aber nicht automatisch dazu,
+dass daraus auch wirklich 
+eine positive Rückmeldung entsteht.
 
-Und gleichzeitig moechte man
+Und gleichzeitig möchte man
 nach sauber geleisteter Arbeit
 nicht jedes Mal noch aktiv
-um eine Bewertung bitten.
+um eine Bewertung bitten —
 
-Dafuer habe ich aber auch noch
+vor allem nicht so,
+dass es für den Kunden lästig wird.
+
+Dafür habe ich aber auch noch
 einen ziemlich coolen Weg gefunden —
 zeige ich Ihnen gleich.
 
-Und wenn ich den Fall oeffne,
+Und wenn ich den Fall öffne,
 sehen Sie nicht einfach nur,
 dass etwas eingegangen ist.
 
-Sie sehen direkt,
+Sie sehen hier direkt,
 worum es geht,
 wie dringend es ist
 uuund was bereits erfasst wurde.
@@ -309,13 +259,13 @@ uuund was bereits erfasst wurde.
 Von hier aus
 geht es dann direkt weiter.
 
-Sie koennen den Fall einordnen,
+Sie können den Fall einordnen,
 einem Mitarbeiter zuweisen
 und einen Einsatztermin festlegen.
 
 So wird aus einem eingegangenen Anliegen
 ein sauberer Arbeitsfall,
-mit dem Sie direkt weiterarbeiten koennen.
+mit dem Sie direkt weiterarbeiten können.
 
 Und genau so haben Sie den aktuellen Stand
 nicht irgendwo im Kopf
@@ -346,165 +296,227 @@ und direkt einsatzbereit.
 ### Speakflow
 
 ```
-Dasselbe funktioniert
-uebrigens auch schriftlich.
+Und der zweite Weg,
+der im Alltag genauso wichtig ist:
 
-Ich habe fuer die {{firma}}
-auch eine Website vorbereitet —
-nicht als Ersatz
-fuer Ihren bisherigen Auftritt,
-sondern um auch diesen schriftlichen Weg
-einmal konkret sichtbar zu machen.
+Nicht jeder Kunde ruft an.
 
-Nur ganz kurz,
-wie so ein Auftritt
-fuer die {{firma}}
-auch aussehen koennte:
+Viele schauen kurz online,
+landen auf Ihrer Website
+und wollen ihr Anliegen
+einfach schnell
+und ohne Umwege durchgeben.
 
-ein sauberer Aufbau,
-klare Leistungsbereiche,
-Ihre Bewertungen,
-Ihr Team,
-Ihre Geschichte
-und auch Ihr Einzugsgebiet —
-{{jubilaeum_satz}}.
+Genau dort entsteht oft das nächste Problem:
 
-Und ueber genau diesen Weg
-kann ein Kunde sein Anliegen
-dann auch direkt online melden.
+Die Anfrage kommt zwar rein,
+aber unvollständig,
+unklar
+oder ohne die Informationen,
+die Sie für den nächsten Schritt 
+eigentlich brauchen.
 
-{{einsatz_bezug}}.
-Ich gehe den Fall hier
-kurz einmal online durch.
+Und gleichzeitig will auch der Kunde
+nicht lange suchen
+oder erst überlegen müssen,
+was er jetzt alles angeben soll.
+
+Genau dafür
+habe ich diesen Weg vorbereitet.
+
+Nicht einfach als weiteres Formular,
+sondern so,
+dass der Kunde Schritt für Schritt
+sauber durchgeführt wird
+und Sie am Ende
+direkt mit einer vollständigen Meldung
+weiterarbeiten können.
+
+Ich zeige Ihnen das kurz.
 
 >>> WIZARD ZEIGEN <<<
+Der Kunde klickt hier zuerst an,
+worum es geht
+und wie dringend das Ganze ist.
 
-Und auch das landet danach
-wieder genau im selben Ablauf.
+So ist das Anliegen
+von Anfang an sauber eingeordnet.
 
-Hier sehe ich den Fall
-direkt wieder in der Uebersicht
-und kann ihn genauso oeffnen
-und weiterfuehren.
+Danach kommt direkt der Einsatzort dazu.
+
+Also einfach Strasse,
+Hausnummer,
+Postleitzahl
+und Ort.
+
+Damit ist sofort klar,
+wo es hingeht.
+
+Und im letzten Schritt
+werden die Kontaktdaten ergänzt,
+das Anliegen kurz beschrieben
+und mit einem Klick
+auch direkt ein Foto mitgeschickt.
+
+Denn Sie wissen ja selbst:
+Ein Foto sagt oft mehr
+als viele Worte.
+>>> WIZARD ZEIGEN <<<
+
+
+Und auch das läuft danach
+wieder genau in denselben Ablauf hinein.
+
+Sie sehen den neuen Eintrag
+direkt in Ihrer Übersicht
+und können ihn von dort aus
+ganz normal weiterführen.
 
 Und wenn etwas direkt bei Ihnen
-im Betrieb, auf der Baustelle
-oder in einem Gespraech entsteht,
-kann es genauso manuell aufgenommen werden
-und laeuft ebenfalls
+im Betrieb,
+auf der Baustelle
+oder in einem Gespräch entsteht,
+kann es genauso direkt erfasst werden
+und läuft ebenfalls
 in dieselbe Leitzentrale hinein.
 
-Damit laufen bei Ihnen telefonische,
-schriftliche und manuelle Anliegen
+Damit laufen bei Ihnen
+telefonische,
+schriftliche
+und direkt aufgenommene Anliegen
 nicht nebeneinander,
-sondern sauber an einer Stelle zusammen.
-```
 
-### Variante A — Einsatz-Bezug
+sondern sauber
+an einer Stelle zusammen.
 
-```
-{{einsatz_bezug}} =
-Sie waren bei uns ja
-wegen der Dichtung am Wasserhahnanschluss.
-Ich gehe unseren Fall hier
-kurz einmal online durch.
-```
-
-### Variante B — Generisch
-
-```
-{{einsatz_bezug}} =
-Ein typischer Fall waere zum Beispiel
-eine verstopfte Leitung im Badezimmer.
-Ich gehe den Fall hier
-kurz einmal online durch.
-```
-
----
+----
 
 ## Take 4 — Wie gute Arbeit sichtbar wird + Abschluss
 
 **Modus:** Kamera klein → Kamera gross am Ende
 **Dauer:** ~90-100 Sekunden
-**Automatisierung:** 85% generisch. Firmenname per STS.
+**Automatisierung:** 95% generisch. Firmenname per STS.
 
 ### Speakflow
 
-```
-Und auf den Punkt mit den Bewertungen
-komme ich jetzt bewusst
-noch einmal zurueck.
 
-Dafuer habe ich auch noch
-einen ziemlich coolen Weg gefunden.
+Zum Schluss
+möchte ich Ihnen noch
+einen Punkt zeigen,
+der für Ihren Alltag
+richtig wertvoll ist.
 
-Aber zuerst:
-Damit der Einsatz
-auch wirklich stattfindet,
-bekommt der Kunde 24 Stunden vorher
-automatisch eine Erinnerung.
-So vermeiden Sie Leerfahrten.
+>> ÜBERSICHT ZEIGEN / FALL ÖFFNEN <<<
 
-Und wenn der Einsatz dann
+Dafür gehen wir jetzt
+in den eben erstellten Fall hinein,
+setzen ihn auf „in Arbeit“
+und terminieren den Einsatz.
+
+Dadurch wird der Kunde
+24 Stunden vorher
+automatisch erinnert.
+
+So sinkt das Risiko,
+dass ein Termin
+versehentlich untergeht.
+
+>>> TERMINIEREN <<<
+
+Wenn der Auftrag dann
 sauber erledigt ist,
-kann mit einem Klick
-direkt und gezielt
-eine Bewertung angefragt werden.
+wird der Status hier
+auf Erledigt gesetzt
+und kurz gespeichert.
 
->>> FALL AUF ERLEDIGT SETZEN / BEWERTUNGS-BUTTON ZEIGEN <<<
+Und genau hier
+kann die Bewertung
+im richtigen Moment
+direkt angestossen werden.
 
-Gerade bei der {{firma}}
-ist das aus meiner Sicht
-ein wichtiger Punkt.
+Der entscheidende Unterschied:
 
-Gute Arbeit wird tagtaeglich geleistet.
-Umso wichtiger ist es,
-dass daraus im richtigen Moment
-auch etwas fuer Image
-und Vertrauen entsteht.
+Sie fragen nicht irgendwann
+zwischen Tür und Angel nach,
 
-Gerade in unserem Fall:
-Wir haetten fuer Ihren Einsatz
-sehr gerne eine 5-Sterne-Bewertung dagelassen —
-wenn man den Kunden
-in so einem Moment
-direkt und unkompliziert abholt,
-passiert das deutlich eher.
+sondern genau dann,
+wenn der Auftrag sauber erledigt ist
+und Sie das Gefühl haben:
+Jetzt passt es.
 
-So bleibt ein gut geloester Einsatz
-nicht nur intern abgeschlossen,
-sondern kann direkt
-auf die Aussenwirkung
-der {{firma}} einzahlen.
+>>> STATUS AUF ERLEDIGT / SPEICHERN / BEWERTUNG ANFRAGEN <<<
 
-Und dahinter steht fuer mich im Kern
-etwas sehr Einfaches:
-dass bei Ihnen im Alltag
-alles so ankommt,
-dass man direkt sinnvoll
-damit weiterarbeiten kann.
+Und der Kunde bekommt das Ganze
+direkt aufs Handy.
 
-Das spart Zeit und Nerven,
-sorgt schneller fuer Ueberblick,
-macht die Vorbereitung einfacher
-und sorgt gleichzeitig dafuer,
-dass weniger verloren geht
+>>> SMS ZEIGEN / LINK ÖFFNEN <<<
+
+Und auch hier
+wird er nicht einfach
+irgendwohin geschickt,
+
+sondern ruhig
+und verständlich durchgeführt.
+
+>>> REVIEW-SEITE / 5 STERNE <<<
+
+Ohne Druck,
+ohne unnötige Reibung
+und einfach in einem Moment,
+in dem es für ihn gerade passt.
+
+>>> FAKE-ENDSCREEN <<<
+
+Und genau hier
+schliesst sich der Kreis.
+
+Aus dem,
+was im Alltag sonst
+nebeneinander herläuft,
+wird Ihr betriebseigenes Leitsystem:
+
+Dass von der ersten Anfrage
+bis zum abgeschlossenen Auftrag
+alles so ineinandergreift,
+
+dass nichts verloren geht,
+Sie den Überblick behalten,
+direkt weiterarbeiten können
+
 und gute Arbeit am Ende
-auch auf Vertrauen und die Aussenwirkung
-der {{firma}} einzahlt.
+auch auf das einzahlt,
+was für Ihren Betrieb zählt:
 
-Wie schon in der Mail geschrieben:
-Ich moechte Ihnen damit nichts verkaufen.
-Mich wuerde einfach ehrlich interessieren,
-wie das auf Sie wirkt.
+auf Ihren guten Ruf
+und auf neue Aufträge.
 
-Sie koennen mich jederzeit anrufen
-oder mir kurz schreiben.
-Ich freue mich, von Ihnen zu hoeren.
+Und genau deshalb
+wollte ich Ihnen das
+einmal konkret zeigen.
 
-Vielen Dank fuer Ihre Zeit,
-{{anrede}}.
-```
+Wenn Sie sich dabei
+an ein, zwei Stellen
+gedacht haben:
+ja, das würde bei uns
+wirklich helfen —
+
+dann schreiben Sie mir
+einfach kurz zurück.
+
+Und wenn Sie sagen,
+das ist nichts für uns,
+ist das natürlich auch völlig okay.
+
+Dann wäre ich Ihnen
+für eine ehrliche Rückmeldung
+genauso dankbar.
+
+Vielen Dank,
+dass Sie sich die Zeit
+dafür genommen haben.
+
+Ich würde mich wirklich freuen,
+von Ihnen zu hören.
 
 ---
 

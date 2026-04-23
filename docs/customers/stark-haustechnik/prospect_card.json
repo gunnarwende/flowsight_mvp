@@ -1,0 +1,155 @@
+{
+  "version": "1.0",
+  "slug": "stark-haustechnik",
+  "name": "Stark Haustechnik GmbH",
+  "generated_at": "2026-04-15T12:00:00Z",
+
+  "scoring": {
+    "icp_score": 8,
+    "tier": "HOT",
+    "trust": 3,
+    "gap": 2,
+    "reasons": [
+      "Trust 3: 4.8 bei 18 Reviews — starke Reputation fuer die Groesse",
+      "Gap 2: Moderne Website vorhanden, aber Mobilnummer als Hauptkanal = operativer Flaschenhals",
+      "Contactable: Telefon + E-Mail verifiziert (info@stark-haustechnik.ch)"
+    ]
+  },
+
+  "leckerli": {
+    "recommendation": "A+B-Full+C+D",
+    "best_demo_case": "Mittwoch 14:00: Inhaber auf Baustelle, Mobilnummer besetzt — Kunde mit Boilerausfall erreicht Lisa sofort",
+    "modus": 2
+  },
+
+  "company": {
+    "legal_name": "Stark Haustechnik GmbH",
+    "short_name": "Stark Haustechnik",
+    "founding_year": null,
+    "gewerke": ["Sanitaer", "Heizung", "Lueftung", "Energieberatung", "Umbau"],
+    "employees_estimate": "5-10",
+    "brand_color": "#003478"
+  },
+
+  "contact": {
+    "phone": "079 961 76 91",
+    "phone_e164": "+41799617691",
+    "phone_secondary": "076 310 29 71",
+    "phone_secondary_e164": "+41763102971",
+    "email": "info@stark-haustechnik.ch",
+    "website": "https://stark-haustechnik.ch",
+    "address": {
+      "street": "Zuerichstrasse 103",
+      "zip": "8134",
+      "city": "Adliswil",
+      "canton": "ZH"
+    },
+    "address_secondary": {
+      "street": "Ackerstrasse 8",
+      "zip": "8135",
+      "city": "Langnau am Albis",
+      "canton": "ZH"
+    }
+  },
+
+  "anrede": "Herr Malici",
+
+  "opening_hours": {
+    "regular": "Mo-Fr: 08:00-17:00",
+    "source": "Website (stark-haustechnik.ch)",
+    "founder_confirmed": false,
+    "note": "Founder muss bestaetigen: Sind 08:00-17:00 korrekt? Mittagspause? Samstag?"
+  },
+
+  "services": [
+    { "name": "Sanitaer", "slug": "sanitaer", "icon": "bath", "verified": true },
+    { "name": "Heizung", "slug": "heizung", "icon": "flame", "verified": true },
+    { "name": "Lueftung", "slug": "lueftung", "icon": "snowflake", "verified": true },
+    { "name": "Energieberatung", "slug": "energieberatung", "icon": "leaf", "verified": true },
+    { "name": "Umbau", "slug": "umbau", "icon": "tool", "verified": true },
+    { "name": "Kundendienst", "slug": "kundendienst", "icon": "wrench", "verified": true }
+  ],
+
+  "categories": [
+    "Sanitaer",
+    "Heizung",
+    "Lueftung",
+    "Verstopfung",
+    "Leck",
+    "Boiler",
+    "Rohrbruch",
+    "Allgemein",
+    "Angebot",
+    "Kontakt"
+  ],
+
+  "emergency": {
+    "enabled": true,
+    "phone_e164": "+41799617691",
+    "label": "24/7 Pikettdienst",
+    "keywords_detected": ["24 stunden fuer sie da", "Pikettdienst", "unabhaengig von der Uhrzeit"]
+  },
+
+  "reviews": {
+    "google_rating": 4.8,
+    "google_reviews": 18,
+    "google_url": "https://www.google.com/maps/place/Stark+Haustechnik+GmbH",
+    "source": "Google Maps / ICP Stresstest-Profil"
+  },
+
+  "team": [
+    { "name": "Shkelzen Malici", "role": "Geschaeftsfuehrer", "source": "stark-haustechnik.ch (Kontakt)" },
+    { "name": "Jetmir Aliu", "role": "Partner / Geschaeftsleitung", "source": "stark-haustechnik.ch (Kontakt)" }
+  ],
+
+  "service_area": {
+    "region": "Zimmerberg / Sihltal",
+    "gemeinden": [
+      "Adliswil",
+      "Langnau am Albis",
+      "Thalwil",
+      "Kilchberg",
+      "Rueschlikon",
+      "Horgen",
+      "Oberrieden",
+      "Zuerich Sued"
+    ],
+    "note": "Abgeleitet aus zwei Standorten (Adliswil + Langnau a.A.) und regionaler Naehe"
+  },
+
+  "video_hook": "Wachstumsbetrieb in Adliswil — moderner Auftritt, aber Mobilnummer als Flaschenhals. 4.8 Sterne bei 18 Bewertungen.",
+
+  "data_sources": [
+    "stark-haustechnik.ch (Homepage, Kontakt, Leistungen)",
+    "search.ch / local.ch (Adresse, Telefon)",
+    "Google Maps (4.8/18 Reviews)",
+    "ICP Stresstest-Profil (Profil 9)"
+  ],
+
+  "crawl_metadata": {
+    "pages_visited": 4,
+    "images_found": null,
+    "images_selected": null,
+    "crawled_at": "2026-04-15T12:00:00Z",
+    "crawler": "WebFetch (manual)"
+  },
+
+  "pain_types": ["erreichbarkeit", "skalierung"],
+
+  "provisioning_status": {
+    "leckerli_d_website": "N/A (Modus 2)",
+    "leckerli_b_lisa": "OFFEN",
+    "leckerli_c_e2e": "OFFEN",
+    "leckerli_a_video": "OFFEN",
+    "outreach": "OFFEN"
+  },
+
+  "open_questions": [
+    "Oeffnungszeiten bestaetigen (Mo-Fr 08:00-17:00 korrekt? Mittagspause?)",
+    "Notdienst-Policy klaeren (24/7 ueber welche Nummer? Beide oder nur eine?)",
+    "Preis-Policy entscheiden (deflect oder Richtwerte?)",
+    "Gruendungsjahr nicht auf Website — bei Prospect nachfragen oder weglassen?",
+    "E-Mail-Adresse des Entscheidungstraegers (info@ reicht oder persoenliche?)",
+    "Prospect-E-Mail fuer Magic Link (persoenliche Adresse von Shkelzen Malici)"
+  ]
+}

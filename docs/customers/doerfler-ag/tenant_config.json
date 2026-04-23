@@ -1,0 +1,170 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-04-20T15:27:45.826Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "doerfler-ag",
+    "name": "Dörfler AG",
+    "case_id_prefix": "DA",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "Doerfler AG"
+  },
+  "voice_agent": {
+    "company_name": "Dörfler AG",
+    "domain": "Sanitär und Heizung",
+    "owner_names": "Ramon Dörfler (Sanitärmeister), Luzian Dörfler (Spengler/Heizung)",
+    "address": "Hubstrasse 30, 8942 Oberrieden",
+    "phone": "043 443 52 00",
+    "email": "info@doerflerag.ch",
+    "website": "https://www.doerflerag.ch",
+    "founded": "1926 (3. Generation, seit fast 100 Jahren)",
+    "team_section": "Ramon und Luzian Dörfler (Geschäftsleitung, 3. Generation seit 2004)",
+    "memberships": "suissetec (Schweizerisch-Liechtensteinischer Gebäudetechnikverband)",
+    "google_rating": "4.7 Sterne bei 3 Bewertungen",
+    "opening_hours": "Montag bis Freitag: 07:00–12:00 und 13:00–17:00",
+    "opening_hours_spoken": "Wir sind Montag bis Freitag von sieben bis zwölf und dreizehn bis siebzehn Uhr für Sie da. Am Wochenende ist das Büro geschlossen, aber unser Notdienst ist rund um die Uhr erreichbar.",
+    "emergency_policy": "24 Stunden, 7 Tage die Woche — für echte Notfälle (Rohrbruch, Überflutung, Heizungsausfall). Auch an Sonn- und Feiertagen erreichbar.",
+    "services_list": "Sanitär: Badezimmer-Renovationen, WC-/Lavabo-Installationen, Armaturen, Abflussreinigung, Rohrbruch-Reparatur\nHeizung: Heizungsersatz, Wärmepumpen, Fussbodenheizung, Heizkörper, Heizungsservice\nSpenglerei: Dachrinnen, Blechverkleidungen, Stehfalzdächer, Kaminverkleidungen\nSolartechnik: Solarthermie und Photovoltaik\nBlitzschutz: Blitzschutzanlagen, Fangstangen, Ableitungen\nReparaturservice: Notfall-Reparaturen, allgemeine Reparaturen",
+    "service_area": "8800 Thalwil, 8802 Kilchberg, 8803 Rüschlikon, 8804 Au ZH, 8805 Richterswil, 8810 Horgen, 8820 Wädenswil, 8942 Oberrieden",
+    "service_area_spoken": "Ja, wir decken die Region Zimmerberg ab — Oberrieden, Thalwil, Horgen, Kilchberg und die umliegenden Gemeinden am linken Zürichseeufer.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Ob aktuell Stellen offen sind, kann ich leider nicht sagen. Aber Initiativbewerbungen sind immer willkommen — einfach per E-Mail an info ät doerflerag Punkt ch.",
+    "address_spoken": "Unser Büro ist an der Hubstrasse dreissig in Oberrieden.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.7,
+    "google_review_count": 3,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8800",
+      "8802",
+      "8803",
+      "8804",
+      "8805",
+      "8810",
+      "8820",
+      "8942"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Kilchberg",
+      "plz": "8802",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Dörfler AG",
+    "firma_silben": 4,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "DA",
+    "modus": 2,
+    "google_stars": 4.7,
+    "video_hook": "Seit 1926 für Sie da.",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "info@doerflerag.ch"
+  },
+  "_seed_time": "2026-04-22T18:08:40.758Z",
+  "_wizard_time": "2026-04-22T18:38:40.758Z",
+  "_wizard_case_id": "2a9302e7-ad48-48c1-9d69-48737ffa36ad",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "DA-0050",
+  "_appointment_start": "2026-04-23T06:00:00.000Z",
+  "_appointment_end": "2026-04-23T08:00:00.000Z",
+  "_reminder_time": "2026-04-22T06:04:00.000Z",
+  "_completion_time": "2026-04-22T06:09:00.000Z",
+  "_review_sent_time": "2026-04-22T06:10:00.000Z",
+  "_review_token": "c17ce9a1f98d98bc",
+  "_review_token_long": "c17ce9a1f98d98bc718bb98e00af8c92be42b6068dc4cea800ce562d20b1f742",
+  "_case_created_at": "2026-04-21T15:04:00+00:00",
+  "_demo_now": "2026-04-22T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-04-22T06:04:00.000Z",
+  "_review_rated_time": "2026-04-22T06:12:00.000Z"
+}

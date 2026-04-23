@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // FB68: Disable Next.js dev badge ("N / 3 issues") so it never appears in
+  // screen recordings. Affects only development; production ignores the flag.
+  devIndicators: false,
 };
 
 export default withSentryConfig(nextConfig, {

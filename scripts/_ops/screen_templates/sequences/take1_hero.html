@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Take 1 Hero</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1440px; height: 900px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand-dark, #0b1220) 0%, var(--brand, #1a2744) 100%);
+  }
+
+  /* Linke Hälfte — Brand / Hook */
+  .left-panel {
+    position: absolute;
+    top: 0; left: 0;
+    width: 720px; height: 900px;
+    padding: 100px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 32px;
+  }
+
+  .logo-row {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .logo-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+  .firma-name {
+    font-size: 22px; font-weight: 500;
+    letter-spacing: -0.2px;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .kicker {
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 58px;
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+    color: #fff;
+    max-width: 540px;
+  }
+  h1 .accent { color: rgba(255, 255, 255, 0.7); display: block; font-weight: 400; font-size: 42px; margin-top: 6px; }
+
+  .sub {
+    font-size: 19px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 500px;
+    font-weight: 400;
+  }
+
+  .sign-row {
+    margin-top: 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .sign-row .line {
+    width: 48px; height: 2px; background: rgba(255,255,255,0.3); border-radius: 1px;
+  }
+  .sign-row .name {
+    font-size: 15px; color: rgba(255, 255, 255, 0.55); letter-spacing: 0.2px;
+  }
+
+  /* Rechte Hälfte — Platzhalter-Rahmen für Face-Kreis.
+     FFmpeg legt den Loom-Circle 720×720 auf x=720, y=0 (flush top-right). */
+  .face-guard {
+    position: absolute;
+    top: 0; right: 0;
+    width: 720px; height: 900px;
+    /* Transparent — FFmpeg overlay läuft darauf. */
+    pointer-events: none;
+  }
+
+  /* Dezente Hinweis-Geometrie unter dem Face-Kreis */
+  .face-hint {
+    position: absolute;
+    bottom: 80px; right: 80px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+</style>
+</head>
+<body>
+  <div class="left-panel">
+    <div class="logo-row">
+      <span class="logo-circle" id="logo">DA</span>
+      <span class="firma-name" id="firma">Dörfler AG</span>
+    </div>
+
+    <span class="kicker">Persönlich vorbereitet</span>
+
+    <h1 id="hero">
+      Etwas, das Ihren Alltag<br/>
+      spürbar leichter macht.
+      <span class="accent">Kurz und konkret.</span>
+    </h1>
+
+    <p class="sub">
+      Sie sind auf der Baustelle, im Kundengespräch, unterwegs —
+      und währenddessen kommt schon das Nächste rein.
+      Lassen Sie uns reden, wie FlowSight Ihnen da Rücken frei hält.
+    </p>
+
+    <div class="sign-row">
+      <div class="line"></div>
+      <div class="name">Gunnar Wende · Gründer, FlowSight</div>
+    </div>
+  </div>
+
+  <div class="face-guard"></div>
+  <div class="face-hint">Gespräch zwischen Menschen</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const firma = params.get("firma") || "Dörfler AG";
+const brand = params.get("brand") || "#1a2744";
+
+document.getElementById("firma").textContent = firma;
+document.getElementById("logo").textContent = firma.slice(0, 2).toUpperCase();
+
+// Brand-Gradient: use brand color for the gradient
+function darken(hex, f) {
+  const v = hex.replace(/^#/, "");
+  const n = parseInt(v, 16);
+  const r = Math.floor(((n >> 16) & 0xff) * f);
+  const g = Math.floor(((n >> 8) & 0xff) * f);
+  const b = Math.floor((n & 0xff) * f);
+  return `rgb(${r},${g},${b})`;
+}
+document.documentElement.style.setProperty("--brand", brand);
+document.documentElement.style.setProperty("--brand-dark", darken(brand, 0.5));
+</script>
+</body>
+</html>

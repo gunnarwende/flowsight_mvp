@@ -1,6 +1,6 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-04-17 (Sales Day 17: BigBen Pub Go-Live fixes — Voice PCA structured extraction, Dashboard 6 Cards, Cancelled reservations filtered. PRs #493-#499.)
+**Updated:** 2026-04-23 (Sales Day 23: **Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG** (Masterbetrieb 10/10). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet. Demo-Time-Architektur + DEMO_NO_DISPATCH env-Flag + Take 4 komplett (Termin → Reminder → D15 → Review Mobile → Closing Gold → Windows-Toast). Quality-Gates-Framework etabliert. Morgen: 3-Betrieb-Dry-Run Lens+Wälti+Stark.)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -14,11 +14,14 @@
 - **Kunden:** 7 bestehende Sites bleiben als Legacy. Keine neuen Website-Builds. Wizard-Einstieg: /start/[slug].
 - **Voice:** Gold-Standard-Schablone (23 Platzhalter), Ela DE + Juniper INTL, 18 Szenarien, 14 No-Go's.
 - **Speakflow:** Take 1 + Take 2 FINAL. Generisches Template: `docs/gtm/speakflow_template.md`
+- **Pipeline V2:** Phase 1 DONE (Crawl+Extract+Derive+Provision). `pipeline_run.mjs` = Ein-Befehl-Orchestrator. `tenant_config.json` = SSOT für alles downstream.
+- **Take 2+3+4 Screenflow-Pipeline FINAL (Day 23):** Pipeline komplett für Dörfler AG (Masterbetrieb 10/10). Demo-Time-Architektur (`demo_time.mjs` + Werktag-Gate CH-Feiertage + compressed Timeline 08:04→morgen 08:00-10:00). DEMO_NO_DISPATCH env-Flag unterdrückt echte SMS/Mails in Pipeline-Runs. Take 4 Feature-Set: Akt1 Termin versenden → Phone1 Reminder → Akt2 D15 → Phone2 SMS → Review Mobile redesigned → Closing Gold → Windows-Toast tenant-branded (Navy+Gold). Samsung-Chrome (Status-Bar + Bottom-Nav) + Phone-Platter-Backstop + Sidebar-Profile-Overlay. 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet.
+- **Quality-Gates-Framework (Day 23):** Pre-Flight, Take 2, Take 3, Take 4, Composite, Cross-Tenant Checks in PIPELINE_BIBLE §-Quality-Gates. Automation-Script `dry_run_qg.mjs` in Bau für 24.04.
 - **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
 - **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN+DE LIVE (+41445054818), PCA structured extraction. Dashboard 6 Cards. Go-Live prep 90% complete, waiting for Paul's photos/videos. 35 PRs (#457-#467 + #479-#499).
-- **Phase:** Sales Day 17. BigBen Pub Go-Live fixes done. Fokus: Take 4 Script + Video Recording + Dörfler Outreach.
-- **Nächste Schritte:** 1) **Tomorrow: Take 2 Dörfler AG generisch als Maschinengrundlage** (Founder Audio + CC Seed-Fix + Playwright + Samsung Pipeline + Assembly) 2) BigBen: wartet auf Pauls Fotos/Videos 3) BigBen: Voice Events manuell updaten vor 30.04.
+- **Phase:** Sales Day 23. Take 2+3+4 Pipeline komplett für Dörfler AG. Audio Take 1-4 hochgeladen. Nächste Schritte: 3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation (24.04.).
+- **Nächste Schritte (Tag 24, 24.04.):** **3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation.** Reihenfolge: (1) Take 2 × 3 Betriebe sequential (Lens, Wälti, Stark), (2) Take 3+4 Lens AG solo als Masterprobe, (3) Take 3+4 Dörfler + Wälti + Stark parallel. Quality-Gates-Script (`dry_run_qg.mjs`) parallel fertig bauen. Ziel: Pipeline reproducibly over 4 Betriebe, Loom-PiP-Integration final, Outreach-Phase 3 vorbereitet.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)
@@ -80,6 +83,32 @@ Keine.
 | # | Titel | Status |
 |---|-------|--------|
 | #80 | BigBen Pub — Pauls Fotos/Videos | Wartet auf Paul (Go-Live 30.04.) |
+
+---
+
+## Pipeline V2 — OFFEN
+
+| # | Schritt | Status | Nächste Aktion |
+|---|---------|--------|----------------|
+| P1 | Phase 1: Crawl+Extract+Derive+Provision | ✅ DONE | 3 Betriebe getestet. Seed erweitert (50 Cases, Demo-Cases, Dummy-Staff) |
+| P2 | Phase 2: Take 2 Screenflow-Pipeline (Samsung + Leitsystem + Splice) | ✅ DONE (21.04.) | 4 Betriebe end-to-end. One-Command `pipeline_screenflow.mjs`. 61+ FBs abgearbeitet. |
+| P2.1 | Audio Take 1 + Take 2 Master | ✅ DONE (21.04.) | Founder-seitig hochgeladen |
+| P3 | Phase 2: Take 3 (Wizard) Screenflow-Pipeline | ✅ DONE (22.04.) | Pipeline für Dörfler komplett, FB76-FB101 gefixt |
+| P3.1 | Audio Take 3 Master | ✅ DONE (22.04.) | Founder-seitig hochgeladen |
+| P4 | Phase 2: Take 4 (Review + FAKE-ENDSCREEN) Screenflow-Pipeline | ✅ DONE (23.04.) | Dörfler AG 10/10 Masterbetrieb. Feature-Set: Termin → Reminder → D15 → Review Mobile → Closing Gold → Windows-Toast |
+| P4.1 | Audio Take 4 Master | ✅ DONE (22.04.) | Founder-seitig |
+| P4.2 | Screenflows + Audio verknüpfen (alle 4 Takes) | ✅ DONE (23.04.) | Composite-Videos take2/3/4_with_loom.mp4 |
+| P5 | Loom-PiP + Final Assembly (Founder-Face overlay) | ✅ DONE (23.04.) | Composite-Videos in `docs/gtm/pipeline/06_video_production/screenflows/doerfler-ag/` |
+| P5.1 | Demo-Time-Architektur (demo_time.mjs + Werktag-Gate + compressed Timeline) | ✅ DONE (23.04.) | Zentrale Zeit-Quelle, CH-Feiertage, 08:04→morgen 08:00-10:00 |
+| P5.2 | DEMO_NO_DISPATCH env-Flag | ✅ DONE (23.04.) | Unterdrückt echte SMS/Mails in Pipeline-Runs |
+| P5.3 | Script-Helper: demo_time, renderSidebarProfile, renderWindowsToast, renderSamsungNav, renderPhoneBezel | ✅ DONE (23.04.) | Mit ensureContentMask + ensurePhonePlatter-Backstop |
+| P5.4 | 3-Betrieb-Dry-Run Lens+Wälti+Stark (Take 2+3+4) + Quality-Gates-Automation | OFFEN (24.04.) | dry_run_qg.mjs bauen. Reihenfolge: Take2×3 sequential → Take3+4 Lens solo → Take3+4 Dörfler+Wälti+Stark parallel |
+| P6 | Phase 3: Outreach-E-Mail dynamisieren | OFFEN | Template + tenant_config statt hardcoded |
+| P7 | Phase 3: Pipeline Orchestrator erweitern (video + outreach steps) | OFFEN | Wartet auf Phase 2 Dry-Run |
+| P8 | Marktanalyse + ICP | ✅ DONE | 585 Betriebe, 4 Quellen, Pipeline Bible |
+| P9 | Take 2: Call-Scripts FINAL (Notruf + Preis) | ✅ DONE | 2-Video-Ansatz, Pipeline wählt per call_proof_variante |
+| P10 | Founder Review Prozess (7 Abschnitte, regenerate_review.mjs) | ✅ DONE | 13 Fixes, 3 Betriebe quality-hardened |
+| P11 | Remotion Animation Pipeline Setup | OFFEN (später) | Scrcpy-Clip-Zwischenlösung bleibt vorerst stabil |
 
 ---
 

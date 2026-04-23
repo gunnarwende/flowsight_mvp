@@ -43,7 +43,8 @@ export default async function DashboardLayout({
     staffRole = "techniker";
   }
 
-  // Show role toggle only for tenants with >2 staff members
+  // FB63: Role toggle only for tenants with >4 staff members.
+  // Smaller teams (2-4) don't need Admin/Techniker distinction — confusing UX.
   let showRoleToggle = true;
   if (effectiveTenantId) {
     const supabase = getServiceClient();
@@ -51,7 +52,7 @@ export default async function DashboardLayout({
       .from("staff")
       .select("id", { count: "exact", head: true })
       .eq("tenant_id", effectiveTenantId);
-    showRoleToggle = (count ?? 0) > 2;
+    showRoleToggle = (count ?? 0) > 4;
   }
 
   // Load tenant modules for nav items (events, reservations)

@@ -109,7 +109,7 @@ export function TenantSwitcher({ activeTenantId, homeTenantId, viewAsRole }: Ten
   });
 
   return (
-    <div ref={ref} className="relative px-5 pb-3 -mt-1">
+    <div ref={ref} data-owner-only="tenant-switcher" className="relative px-5 pb-3 -mt-1">
       {/* Trigger button */}
       <button
         onClick={() => setOpen((p) => !p)}

@@ -8,6 +8,7 @@ import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
 import { PushOnboardingBanner } from "./PushOnboardingBanner";
 import { UpdatePrompt } from "./UpdatePrompt";
 import { TenantSwitcher } from "./TenantSwitcher";
+import { shortenDisplayName } from "@/src/lib/tenants/shortenDisplayName";
 
 // ---------------------------------------------------------------------------
 // Navigation — 3 items only, mirroring the Leitsystem architecture
@@ -108,7 +109,9 @@ export function OpsShell({
   children: React.ReactNode;
 }) {
   // Identity Contract R4: No "FlowSight" visible to end users
-  const displayName = tenantName ?? "Leitsystem";
+  // FB60: Header-Shortener strippt GmbH/AG/Sohn wenn name > 22 chars
+  // ("Stark Haustechnik GmbH" → "Stark Haustechnik"). Skalierbar.
+  const displayName = shortenDisplayName(tenantName);
   const initials = tenantName
     ? tenantName
         .split(/\s+/)
@@ -310,7 +313,11 @@ export function OpsShell({
   const sidebarContent = (
     <>
       {brandHeader}
-      {isAdmin && (
+      {/* FB62: Tenant-Switcher ist ein Founder-Tool (System-weiter Cross-Tenant-Zugriff).
+          Normale Betriebs-Admins haben nur ihren eigenen Tenant — für die ist der Switcher
+          sinnlos und verwirrend. Sichtbar nur wenn Admin aktiv einen fremden Tenant
+          impersoniert (z.B. Founder-Zugriff auf Kunden-Leitsystem). */}
+      {isAdmin && isImpersonating && (
         <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} viewAsRole={viewAsRole} />
       )}
       {navLinks}

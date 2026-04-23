@@ -204,6 +204,11 @@ export function CaseDetailForm({
   const [collisionWarning, setCollisionWarning] = useState<string | null>(null);
   const [collisionSource, setCollisionSource] = useState<"internal" | "outlook" | null>(null);
 
+  // FB124: Video-Recording-Bypass — alle Benachrichtigungs-UI-Elemente verstecken.
+  // Aktiviert via `?_hb=1` URL-Param (Hide-Banner). Gilt NUR für Recording, nicht live.
+  const hideNotifUi = typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("_hb") === "1";
+
   const [baseline, setBaseline] = useState({
     status: initialData.status,
     urgency: initialData.urgency,
@@ -352,9 +357,14 @@ export function CaseDetailForm({
     }
   }
 
-  /** Save steuerung and close — warns if notification-worthy changes exist */
+  /** Save steuerung and close — warns if notification-worthy changes exist.
+   *  FB115: Query-Param `?_hb=1` bypasst die Warning (direct force-save).
+   *  Nur für Video-Recording — produktiv bleibt Warning aktiv.
+   */
   async function saveSteuerungAndClose() {
-    if (liveNewAssignees.length > 0 || liveTerminChanged) {
+    const hideBanner = typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("_hb") === "1";
+    if (!hideBanner && (liveNewAssignees.length > 0 || liveTerminChanged)) {
       setShowCloseWarning(true);
       return;
     }
@@ -673,7 +683,7 @@ export function CaseDetailForm({
                     )}
                   </button>
                 )}
-                {showAssigneeButton && assigneeNotifyState === "idle" && (
+                {showAssigneeButton && assigneeNotifyState === "idle" && !hideNotifUi && (
                   <p className="text-xs text-gray-500 mt-1">
                     {liveNewAssignees.length > 0 ? `Neu: ${liveNewAssignees.join(", ")}` : "Benachrichtigung ausstehend"}
                     {ns.staffAssignment ? " — wird per E-Mail benachrichtigt" : ""}
@@ -708,7 +718,7 @@ export function CaseDetailForm({
                   <p className="text-xs text-red-600 font-medium mt-2">Termin liegt in der Vergangenheit — Versand nicht möglich</p>
                 )}
                 {/* Termin versenden — sofort bei Änderung */}
-                {liveTerminChanged && !terminInPast && terminSendState !== "sent" && (contactEmail.trim() || contactPhone.trim()) && (
+                {liveTerminChanged && !terminInPast && terminSendState !== "sent" && !hideNotifUi && (contactEmail.trim() || contactPhone.trim()) && (
                   <button
                     onClick={handleSaveAndSendTermin}
                     disabled={terminSendState === "sending"}
@@ -733,7 +743,7 @@ export function CaseDetailForm({
                   </button>
                 )}
                 {/* Channel hint: dynamic based on contact data + tenant notification settings */}
-                {liveTerminChanged && terminSendState === "idle" && (
+                {liveTerminChanged && terminSendState === "idle" && !hideNotifUi && (
                   <p className="text-xs text-gray-500 mt-1">
                     {(() => {
                       const hasEmail = !!contactEmail.trim() && ns.terminEmail;
@@ -745,7 +755,7 @@ export function CaseDetailForm({
                   </p>
                 )}
                 {/* No contact warning — shown instead of button */}
-                {liveTerminChanged && !contactEmail.trim() && !contactPhone.trim() && terminSendState !== "sent" && (
+                {liveTerminChanged && !contactEmail.trim() && !contactPhone.trim() && terminSendState !== "sent" && !hideNotifUi && (
                   <p className="text-xs text-amber-600 mt-1 font-medium">Termin wird nur an Zuständige gesendet</p>
                 )}
                 {terminSendState === "sent" && (
@@ -841,9 +851,19 @@ export function CaseDetailForm({
             <SectionHead title="Übersicht" onEdit={() => startEdit("steuerung")} canEdit={canEditSection("steuerung")} />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 min-w-0">
               <KV label="Status">
-                <span className={`inline-block px-2.5 py-0.5 rounded-full text-sm font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
-                  {STATUS_LABELS[status] ?? status}
-                </span>
+                {reviewInfo.status === "bewertet_positiv" ? (
+                  <span data-status-pill="erledigt-gold" className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-gradient-to-r from-amber-100 to-yellow-200 text-amber-800 ring-1 ring-amber-300">
+                    Erledigt
+                  </span>
+                ) : reviewInfo.status === "bewertet_negativ" ? (
+                  <span data-status-pill="erledigt-negativ" className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-red-50 text-red-700 ring-1 ring-red-300">
+                    Erledigt
+                  </span>
+                ) : (
+                  <span data-status-pill={status} className={`inline-block px-2.5 py-0.5 rounded-full text-sm font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
+                    {STATUS_LABELS[status] ?? status}
+                  </span>
+                )}
               </KV>
               <KV label="Priorität">
                 <span className={`inline-block px-2.5 py-0.5 rounded-full text-sm font-medium ${

@@ -1,0 +1,487 @@
+## Take 1 — Ihr Alltag und die eigentliche Frage
+
+**Modus:** Kamera gross, kein Screen-Share
+**Dauer:** ~80 Sekunden
+**Automatisierung:** 100% generisch. Firmenname per STS-Swap (1 Wort).
+**2 Master-Versionen:** A (Einsatz) + B (Region). Pro Betrieb: STS tauscht `{{firma}}`.
+
+### Speakflow
+
+```
+Hallo, einen wunderschönen guten Tag.
+
+Mein Name ist Gunnar Wende.
+
+Ich habe für Ihren Betrieb
+etwas Persönliches vorbereitet
+und möchte Ihnen das ganz kurz zeigen.
+
+Denn ich glaube,
+Sie kennen die Situation:
+
+Sie sind auf der Baustelle,
+sind im Kundengespräch
+oder unterwegs —
+
+und währenddessen kommt schon das Nächste rein.
+Per Telefon,
+per E-Mail
+oder aus einem Gespräch vor Ort.
+
+Und natürlich kann man
+nicht immer direkt erreichbar sein
+und hat bei allem 
+nicht sofort den ganzen Überblick.
+
+Und genau dort
+wird es im Alltag kritisch.
+
+Ein Anruf bleibt offen,
+eine neue Meldung wird nicht sauber aufgenommen,
+oder sie wird zwar angenommen, 
+aber geht danach im Alltag unter.
+
+und ehe Sie reagieren können,
+ist der Kunde genervt 
+oder sogar schon beim Nächsten.
+
+Genau dafür
+habe ich für Ihren Betrieb
+etwas sehr Konkretes vorbereitet.
+
+Ich zeige Ihnen das kurz
+an einem typischen Fall.
+
+---
+
+## Take 2 — Wenn Sie gerade nicht rangehen koennen
+
+**Modus:** Kamera klein (PiP), Handy-Screen / Leitsystem zeigen
+**Dauer:** ~5:38 (338s)
+**Automatisierung:** 90% generisch. Agent-Greeting per TTS, Firmenname per STS.
+**Gold-Standard:** 1:1 aus Doerfler AG Take 2 (speakflow_final.txt, 12.04.2026)
+**Assembly:** `scripts/_ops/assemble_take2_video.mjs` + `build_take2_screens.mjs`
+
+### Speakflow (Gold-Standard — copy-paste aus Doerfler)
+
+```
+>B1<
+Nehmen wir an,
+ein Kunde braucht Sie gerade,
+erreicht Sie aber nicht direkt,
+weil Sie auf der Baustelle sind
+in einem Kundengespräch
+oder der Kunde ruft ausserhalb
+der Öffnungszeiten an.
+
+Dann sollte dieser Anruf
+nicht einfach ins Leere laufen,
+sondern der Kunde
+zunächst sauber aufgefangen werden.
+
+Und genau dafür habe ich für Sie
+eine Assistentin vorbereitet,
+die dann übernimmt,
+wenn Sie gerade nicht direkt rangehen können.
+
+Ich rufe einmal kurz an.
+
+>B2< (vorher klick auf Anruf Button, und dann soll natürlich high end kommen "Betrieb Test")
+
+>>> ANRUF (Agent-Audio: Greeting + Intake + Sprachwechsel + Kompetenzgrenzen + Farewell) <<<
+
+Okay perfekt.
+
+>B1< (wir springen ganz kurz zum Homescreen zuürck und klicken von dort aus auf das SMS Symbol)
+
+Und direkt nach dem Anruf
+erhält der Kunde eine SMS.
+
+>B3< (SMS flattert rein und wir öffnen sie)
+
+So weiss der Kunde sofort:
+Sein Anliegen ist angekommen,
+und er kann bei Bedarf
+direkt noch ein Foto vom Schaden nachreichen.
+
+
+Und Für Sie heisst das:
+Sie können Ihr Kundengespräch
+oder Ihren Einsatz in Ruhe zu Ende führen,
+ohne unterbrochen zu werden
+und ohne dass das Anliegen verloren geht.
+
+>B1< (wir spingen kurz wieder zu Homescreen)
+
+Und danach ist es nicht einfach irgendwo erfasst,
+sondern direkt so da,
+dass Sie damit weiterarbeiten können.
+
+Genau dafür hab ich für Ihren Betrieb
+eine eigene Leitzentrale vorbereitet -
+Ihre eigene App.
+
+>B4< (hier versuchen mit Maus oder irgendwie super echt authentisch die App draufzuzeigen, oder die App ein bisschen zu Highlighten mit einem echten effekt)
+>B5<
+
+Egal ob ein Kunde anruft,
+online etwas meldet
+oder Sie selbst etwas aufnehmen —
+alles läuft hier zusammen.
+
+>B6.1<
+>B6.2<
+>B6.3< (Es wird hier einmal lagsam von obnen nach unten gecrollt und dann wieder langsam nach oben)
+Sie sehen hier auf einen Blick,
+was zuerst Aufmerksamkeit braucht.
+
+
+Was neu ist,
+>B7<
+was bereits läuft,
+>B8<
+was erledigt ist
+>B9<
+und wie es bei den Bewertungen aussieht.
+>B10<
+
+Und gerade beim Thema Bewertungen
+kennen Sie das sicherlich auch
+aus eigener Erfahrung:
+
+Sehr gute Arbeit wird tagtäglich geleistet,
+führt im Alltag aber nicht automatisch dazu,
+dass daraus auch wirklich 
+eine positive Rückmeldung entsteht.
+
+Und gleichzeitig möchte man
+nach sauber geleisteter Arbeit
+nicht jedes Mal noch aktiv
+um eine Bewertung bitten —
+
+vor allem nicht so,
+dass es für den Kunden lästig wird.
+
+Dafür habe ich aber auch noch
+einen ziemlich coolen Weg gefunden —
+zeige ich Ihnen gleich.
+
+>B11<
+>B12< (scrolling zum reingekommenen Fall und dann per klick den Fall Highlighten, dass man dadrauf geklickt hat)
+>B13<
+Und wenn ich den Fall öffne,
+sehen Sie nicht einfach nur,
+dass etwas eingegangen ist.
+
+>14<
+>15<
+>16<
+
+Sie sehen hier direkt,
+worum es geht,
+wie dringend es ist
+uuund was bereits erfasst wurde.
+
+Von hier aus
+geht es dann direkt weiter.
+
+Sie können den Fall einordnen,
+einem Mitarbeiter zuweisen
+und einen Einsatztermin festlegen.
+
+So wird aus einem eingegangenen Anliegen
+ein sauberer Arbeitsfall,
+mit dem Sie direkt weiterarbeiten können.
+
+>B17<
+
+Und genau so haben Sie den aktuellen Stand
+nicht irgendwo im Kopf
+oder verteilt in einzelnen Nachrichten,
+
+sondern zentral an einem Ort —
+sauber eingeordnet,
+nachvollziehbar
+und direkt einsatzbereit.
+```
+
+### Was sich pro Betrieb aendert (nur im Audio)
+
+| Element | Wie | Aufwand |
+|---------|-----|---------|
+| Agent-Greeting ("Hier ist Lisa von {{firma}}") | TTS Ela-Stimme, 1 Satz | CHF 0.01 |
+| "{{firma}}-App" in Seg4 | STS Firmenname-Swap | Automatisch |
+| Oeffnungszeiten-Antwort im Call | TTS Ela, dynamisch aus prospect_card | CHF 0.01 |
+
+---
+
+## Take 3 — Wenn ein Kunde lieber online meldet
+
+**Modus:** Kamera klein, Desktop-Screen (Website + Wizard)
+**Dauer:** ~90 Sekunden
+**Automatisierung:** 80% generisch. Website-Screenshots pro Betrieb. Firmenname per STS.
+
+### Speakflow
+
+```
+>C1< (Wichtig, alles baut auf Take 2 auf, alles muss super synchron und aufeinander abgestimmt sein)
+Und der zweite Weg,
+der im Alltag genauso wichtig ist:
+
+Nicht jeder Kunde ruft an.
+
+Viele schauen kurz online,
+landen auf Ihrer Website
+und wollen ihr Anliegen
+einfach schnell
+und ohne Umwege durchgeben.
+
+Genau dort entsteht oft das nächste Problem:
+
+Die Anfrage kommt zwar rein,
+aber unvollständig,
+unklar
+oder ohne die Informationen,
+die Sie für den nächsten Schritt 
+eigentlich brauchen.
+
+Und gleichzeitig will auch der Kunde
+nicht lange suchen
+oder erst überlegen müssen,
+was er jetzt alles angeben soll.
+
+Genau dafür
+habe ich diesen Weg vorbereitet.
+
+Nicht einfach als weiteres Formular,
+sondern so,
+dass der Kunde Schritt für Schritt
+sauber durchgeführt wird
+und Sie am Ende
+direkt mit einer vollständigen Meldung
+weiterarbeiten können.
+
+Ich zeige Ihnen das kurz.
+
+>>> WIZARD ZEIGEN <<<
+
+
+Der Kunde klickt hier zuerst an,
+worum es geht
+>C2<
+und wie dringend das Ganze ist.
+>C3<
+So ist das Anliegen
+von Anfang an sauber eingeordnet.
+
+Danach kommt direkt der Einsatzort dazu.
+>C4<
+>C5< (Hier wichtig, ich tippe diese Strasse Nr PLZ Ort alles live händisch ein)
+Also einfach Strasse,
+Hausnummer,
+Postleitzahl
+und Ort.
+
+Damit ist sofort klar,
+wo es hingeht.
+
+>C6< (auch hier live schreiben, exakt das was da steht und dann klick auf Meldung absenden)
+Und im letzten Schritt
+werden die Kontaktdaten ergänzt,
+das Anliegen kurz beschrieben
+und mit einem Klick
+auch direkt ein Foto mitgeschickt.
+
+Denn Sie wissen ja selbst:
+Ein Foto sagt oft mehr
+als viele Worte.
+
+>C7< (hier natürlich wieder drauf achten dass dynamisch Präfix sauber kommt, Telefonnummer überall korrekt angezeigt wird  (21 hinten )usw.)
+
+>C8< (hier wirklich drauf achten, dass wir ganz exakt synchron sind mit den Fällen aus Take 2 Und das unser neuer Fall Nun hier an korrekter stelle erscheint (Unter Prio dringend, Leck, als neu, inkl. korrekter Datum, Uhrzeit, Name, Beschreibung, Kontaktdaten etc.))
+
+Und auch das läuft danach
+wieder genau in denselben Ablauf hinein.
+
+>C9< 
+
+Sie sehen den neuen Eintrag
+direkt in Ihrer Übersicht
+und können ihn von dort aus
+ganz normal weiterführen.
+
+>C10<
+
+Und wenn etwas direkt bei Ihnen
+im Betrieb,
+auf der Baustelle
+oder in einem Gespräch entsteht,
+kann es genauso direkt erfasst werden
+und läuft ebenfalls
+in dieselbe Leitzentrale hinein.
+
+Damit laufen bei Ihnen
+telefonische,
+schriftliche
+und direkt aufgenommene Anliegen
+nicht nebeneinander,
+
+sondern sauber
+an einer Stelle zusammen.
+
+----
+
+## Take 4 — Wie gute Arbeit sichtbar wird + Abschluss
+
+**Modus:** Kamera klein → Kamera gross am Ende, Monitorscreen gezeigt und später kommt handyscreen dazu
+**Dauer:** ~100-120 Sekunden
+**Automatisierung:** 100% generisch. Firmenname per STS.
+
+### Speakflow
+
+>X< (Wichtig, alles baut auf Take 2 und 3 auf, alles muss super synchron und aufeinander abgestimmt sein)
+Zum Schluss
+möchte ich Ihnen noch
+einen Punkt zeigen,
+der für Ihren Alltag
+richtig wertvoll ist.
+
+>>> ÜBERSICHT ZEIGEN / FALL ÖFFNEN <<<
+
+>D1< 
+
+
+Dafür gehen wir jetzt
+in den eben erstellten Fall hinein,
+
+>D2<
+
+setzen ihn auf „in Arbeit“
+>D3<
+>D4<
+>D5<
+>D6< 
+>D7< (hier absolut entscheidend: Immer ausgehend vom Tag und Datum der Fallerstellung hier die korrekte Vorauswahl nehmen!)
+>D8< (wir setzen hier den Termin auf einen Dienstag vormittag der Folgewoche vom Falldatum. Wenn es dazu kommt, dass wir hier einen neuen Monat aufachen müssen, dann bitte super sauber umsetzen! Zeitdauer 2h auswählen und alles so klickbar realistisch wie möglich aussehen lassen. Wir scrollen hier uns eine Uhrzeit aus immer von 09:00-11:00, bitte dieses scrollverhalten auch zeigen)
+>D9< 
+>D10<
+
+und terminieren den Einsatz.
+
+Dadurch wird der Kunde
+24 Stunden vorher
+automatisch per SMS erinnert.
+
+>DXX (muss sauber high end generiert werden) Ab hier kommt neben Bildschirm Screen mein Handyscreen dazu zum zeigen der Bewertung. WICHTIG: hier muss ein super sauberer chronologischer Verlauf erkennbar sein, schon aus Take 2: bdeutet: man sieht oben die Bestätigung aus dem Call von Lisa mit Bitte zur prüfung und fotos zum schaden hochladen und dem Link (das Bild haben wir ja schon) Hier kommt dann neu im SMS Verlauf zeitlich super sauber chronologisch ein TerminReminder kommen.
+
+So sinkt das Risiko,
+dass ein Termin
+versehentlich untergeht.
+
+Wenn der Auftrag dann
+sauber erledigt ist,
+wird der Status hier
+
+>D11<
+>D12<
+>D13<
+
+auf Erledigt gesetzt
+und kurz gespeichert.
+
+Und genau hier
+
+>D15<
+
+kann die Bewertung
+im richtigen Moment
+direkt angestossen werden.
+
+Der entscheidende Unterschied:
+
+Sie fragen nicht irgendwann
+zwischen Tür und Angel nach,
+
+sondern genau dann,
+wenn der Auftrag sauber erledigt ist
+und Sie das Gefühl haben:
+Jetzt passt es.
+
+>Ab hier kommt neben Bildschirm Screen mein Handyscreen dazu zum zeigen der Bewertung. WICHTIG: hier muss ein super sauberer chronologischer Verlauf erkennbar sein, schon aus Take 2: bdeutet: man sieht oben die Bestätigung aus dem Call von Lisa mit Bitte zur prüfung und fotos zum schaden hochladen und dem Link (das Bild haben wir ja schon), dann folgt bitte im Verlauf zeitlich super aufeinander abgestimmt der 24h Reminder aus dem Termin, und zu guter letzt nun die Anfrage zur Bewertung - ich hoffe ich hab alles oder hab ich was vergessen?)
+>D16< (wie gesagt, muss du super high end generieren, skalierend und persönlich für andere Betriebe austauschbar und zeit und Uhr auf dem schirm haben + Verlauf)
+
+Und der Kunde bekommt das Ganze
+direkt aufs Handy.
+
+(Ich merke gerade, dass ich inhaltlich nicht sauber strukturiert habe hinsichtlich des SMS-Verlaufes. 
+Denn wenn ich mir für einen Kunden dann den SMS-Verlauf einsehe, gedanklich, dann kriege ich erstens eine SMS nach dem Call der digitalen Assistentin mit der Bitte zur Überprüfung der Daten sowie Fotos vom Schaden hochladen. Zweitens, und hier ist der Knackpunkt, einen 24-Stunden-Reminder. Jedoch haben wir jetzt in Take vier vorher definiert gehabt, wir sitzen den Termin immer in der Folgewoche den Dienstag. Das heißt, wir können hier teilweise plus sechs Tage haben, aber auch bei plus drei Tagen, plus fünf Tagen ist das dann hier falsch. Deshalb würde diese SMS jetzt in der Form, wie wir sie jetzt gerade umsetzen, keinen Sinn machen. Die dritte SMS hinsichtlich der Bewertung, auch hier, das muss sauber sein. Aber zu Punkt zwei. Die Frage ist, wie setzen wir das hier jetzt sauber, skalierend, inhaltlich maximal korrekt um? Mein Vorschlag ist, dass wir den Termin, den wir setzen, Einfach mal auf den Folgetag legen plus 23 Stunden von der jetztzeit. Also gehen wir mal immer aus, wir setzen den Termin oder wir haben jetzt Tag X, dann setzen wir den Termin im Bereich D8 nicht auf Folgewoche Dienstag, sondern plus 24 Stunden plus einen Tag und dann eine Uhrzeit 9 bis 11, dass das inhaltlich schlüssig macht. Bitte challenge das mal hart, sauber, dass wir hier visuell, strukturell, inhaltlich maximal sauber fahren und somit dann auch skalieren können für Folgewochen, Folgemonate, Folgetage, auch im Zusammenhang vom Wochenende, Ferientage.Das Thema ist nicht trivial, 
+aber hoch entscheidend dafür, ob das Video glaubwürdig ist und skalierbar bleibt und persönlich ist oder nicht. Absolut business-relevant.)
+
+Und auch hier
+wird er nicht einfach
+irgendwohin geschickt,
+
+>D17< (Leider funktionoiert der Link nicht, bitte fix das! dann kümmern wir uns hier um den krönenden abschluss bis zur REVIEW-SEITE / 5 STERNE )
+(zusatz und wichtig: )
+sondern ruhig
+und verständlich durchgeführt.
+
+>>> REVIEW-SEITE / 5 STERNE <<<
+
+Ohne Druck,
+ohne unnötige Reibung
+und einfach in einem Moment,
+in dem es für ihn gerade passt.
+
+>>> FAKE-ENDSCREEN <<<
+
+Und genau hier
+schliesst sich der Kreis.
+
+Aus dem,
+was im Alltag sonst
+nebeneinander herläuft,
+wird Ihr betriebseigenes Leitsystem:
+
+Dass von der ersten Anfrage
+bis zum abgeschlossenen Auftrag
+alles so ineinandergreift,
+
+dass nichts verloren geht,
+Sie den Überblick behalten,
+direkt weiterarbeiten können
+
+und gute Arbeit am Ende
+auch auf das einzahlt,
+was für Ihren Betrieb zählt:
+
+auf Ihren guten Ruf
+und auf neue Aufträge.
+
+Und genau deshalb
+wollte ich Ihnen das
+einmal konkret zeigen.
+
+Wenn Sie beim Zuschauen
+an ein, zwei Stellen
+gedacht haben:
+ja, genau so etwas
+würde uns helfen —
+
+dann schreiben Sie mir
+einfach kurz zurück.
+
+Und wenn Sie sagen,
+das ist nichts für uns,
+ist das natürlich auch völlig okay.
+
+Dann wäre ich Ihnen
+für eine ehrliche Rückmeldung
+genauso dankbar.
+
+Vielen Dank,
+dass Sie sich die Zeit
+dafür genommen haben.
+
+Ich würde mich wirklich freuen,
+von Ihnen zu hören.
