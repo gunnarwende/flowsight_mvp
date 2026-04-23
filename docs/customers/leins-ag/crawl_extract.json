@@ -1,0 +1,109 @@
+{
+  "_meta": {
+    "crawled_at": "2026-04-20T09:34:03.582Z",
+    "source_url": "https://www.leins.ch",
+    "crawler": "playwright",
+    "pages_crawled": []
+  },
+  "firma": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "telefon": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "email": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 9,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {},
+    "source": "not_found",
+    "verified": false
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "brand_color": {
+    "value": null,
+    "source": "",
+    "verified": false
+  },
+  "website_url": {
+    "value": "https://www.leins.ch",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "_zefix": null
+}

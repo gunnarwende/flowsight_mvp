@@ -1,17 +1,17 @@
 {
   "_derived_from": "crawl_extract.json",
-  "_derived_at": "2026-04-18T10:15:02.481Z",
+  "_derived_at": "2026-04-21T18:10:49.135Z",
   "_founder_actions_needed": [],
   "tenant": {
     "slug": "waelti-sohn-ag",
     "name": "Wälti & Sohn AG",
-    "case_id_prefix": "W2",
+    "case_id_prefix": "WS",
     "brand_color": "#213a5c",
-    "sms_sender_name": "WaeltiSohnA"
+    "sms_sender_name": "Waelti AG"
   },
   "voice_agent": {
     "company_name": "Wälti & Sohn AG",
-    "domain": "Sanitär und Heizung",
+    "domain": "Sanitär, Heizung und Solar",
     "owner_names": "Heinz Wälti",
     "address": "Gartenweg 2, 8135 Langnau am Albis",
     "phone": "044 713 03 04",
@@ -20,11 +20,11 @@
     "founded": "1952",
     "team_section": "Geschäftsleitung: Heinz Wälti",
     "memberships": "",
-    "google_rating": "4.6 Sterne bei 237 Bewertungen",
+    "google_rating": "5 Sterne bei 11 Bewertungen",
     "opening_hours": "",
     "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
     "emergency_policy": "",
-    "services_list": "Sanitär: SANITÄR, WC, Defekter WC Sitz, WC-Rollenhalter, Griffe, ...), Installationen von WC`s die mit Wasser reinigen\nHeizung: HEIZUNG, Heizkörper / Radiatoren / Ventile, Fehlender Komfort (Heizstaab), Reparaturen von bestehenden Heizkörpern, Installation von Thermostatventilen\nBoiler/Warmwasser: Boiler Service (Entkalkung)\nRohrbruch/Leitungen: Geräusche von Wasser und Abwasserleitungen\nVerstopfung/Abfluss: Verstopfte Abläufe, Geräusche von Wasser und Abwasserleitungen\nUmbau/Sanierung: Umbau\nSolar/Erneuerbar: Integration von erneuerbaren Energien in bestehende Systeme\nBeratung/Planung: Unterbaumöbel (Beratung und Montage), Beratung für Heizungsersatz\nKundendienst: Service, SERVICE, Boiler Service (Entkalkung), Wartung und Unterhalt, SERVICE",
+    "services_list": "Sanitär: SANITÄR, WC, Defekter WC Sitz, WC-Rollenhalter, Griffe, ...), Installationen von WC`s die mit Wasser reinigen\nHeizung: HEIZUNG, Heizkörper / Radiatoren / Ventile, Fehlender Komfort (Heizstaab), Reparaturen von bestehenden Heizkörpern, Installation von Thermostatventilen\nBoiler/Warmwasser: Boiler Service (Entkalkung)\nRohrbruch/Leitungen: Geräusche von Wasser und Abwasserleitungen\nVerstopfung/Abfluss: Verstopfte Abläufe, Geräusche von Wasser und Abwasserleitungen\nUmbau/Sanierung: Umbau\nSolar/Erneuerbar: Integration von erneuerbaren Energien in bestehende Systeme\nBeratung/Planung: Unterbaumöbel (Beratung und Montage), Beratung für Heizungsersatz, Karriereberatung\nKundendienst: Service, SERVICE, Boiler Service (Entkalkung), Wartung und Unterhalt",
     "service_area": "8001 Zürich, 8002 Zürich, 8003 Zürich, 8004 Zürich, 8005 Zürich, 8006 Zürich, 8008 Zürich, 8032 Zürich, 8037 Zürich, 8038 Zürich, 8041 Zürich, 8045 Zürich, 8048 Zürich, 8055 Zürich, 8134 Adliswil, 8135 Langnau am Albis",
     "service_area_spoken": "Wir sind in Langnau am Albis und der näheren Umgebung für Sie da.",
     "price_section": "",
@@ -32,7 +32,7 @@
     "jobs_section": "",
     "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
     "address_spoken": "Sie finden uns an der Gartenweg 2, 8135 Langnau am Albis.",
-    "categories": "Verstopfung | Heizung | Boiler | Rohrbruch | Umbau/Sanierung | Allgemein | Angebot | Kontakt"
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
   },
   "wizard": {
     "categories": [
@@ -43,28 +43,16 @@
         "iconKey": "drain"
       },
       {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
         "value": "Heizung",
         "label": "Heizung",
         "hint": "Heizung, Wärmepumpe",
         "iconKey": "flame"
-      },
-      {
-        "value": "Boiler",
-        "label": "Boiler",
-        "hint": "Warmwasser, Entkalkung",
-        "iconKey": "thermometer"
-      },
-      {
-        "value": "Rohrbruch",
-        "label": "Rohrbruch",
-        "hint": "Wasserrohr, Rohrleitung",
-        "iconKey": "pipe"
-      },
-      {
-        "value": "Umbau/Sanierung",
-        "label": "Umbau/Sanierung",
-        "hint": "Umbau, Bad-Renovation",
-        "iconKey": "wrench"
       },
       {
         "value": "Allgemein",
@@ -90,18 +78,18 @@
     ]
   },
   "seed": {
-    "case_count": 30,
-    "google_rating": 4.6,
-    "google_review_count": 237,
-    "team_names": [
-      "Heinz Wälti"
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 11,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
     ],
     "categories_weighted": {
-      "Verstopfung": 17,
-      "Heizung": 17,
-      "Boiler": 17,
-      "Rohrbruch": 17,
-      "Umbau/Sanierung": 17,
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
       "Allgemein": 5,
       "Angebot": 5,
       "Kontakt": 5
@@ -130,18 +118,61 @@
       "stadt": "Langnau am Albis",
       "plz": "8135",
       "dringlichkeit": "Dringend"
-    }
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Zürich",
+      "plz": "8002",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
   },
   "video": {
     "firma_display": "Wälti & Sohn AG",
     "firma_silben": 4,
-    "telefon_display": "044 713 03 04",
-    "prefix": "WÄ",
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "WS",
     "modus": 2,
-    "google_stars": 4.6,
+    "google_stars": 5,
     "video_hook": "Seit 1952 für Sie da.",
-    "kontext_variante": "B",
-    "betriebsspezifische_frage": "Wie lange gibt es Wälti & Sohn AG schon?",
-    "betriebsspezifische_antwort": ""
-  }
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@waeltisohn.ch"
+  },
+  "_seed_time": "2026-04-22T22:28:13.864Z",
+  "_wizard_time": "2026-04-22T22:58:13.864Z",
+  "_wizard_case_id": "708dc886-40c9-4eca-8d8c-30c95a99c9fc",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "WS-0050",
+  "_demo_now": "2026-04-23T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-04-23T06:04:00.000Z",
+  "_appointment_start": "2026-04-24T06:00:00.000Z",
+  "_appointment_end": "2026-04-24T08:00:00.000Z",
+  "_reminder_time": "2026-04-23T06:04:00.000Z",
+  "_completion_time": "2026-04-23T06:09:00.000Z",
+  "_review_sent_time": "2026-04-23T06:10:00.000Z",
+  "_review_rated_time": "2026-04-23T06:12:00.000Z",
+  "_review_token": "9bc0f8ad1884c366",
+  "_review_token_long": "9bc0f8ad1884c366f7b38f2df273b8aaaf2db28dde2e8c7944488aa4a8d26111",
+  "_case_created_at": "2026-04-22T15:04:00+00:00"
 }

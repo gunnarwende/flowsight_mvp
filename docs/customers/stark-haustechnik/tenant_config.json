@@ -1,0 +1,178 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-04-21T18:10:49.205Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "stark-haustechnik",
+    "name": "Stark Haustechnik GmbH",
+    "case_id_prefix": "SH",
+    "brand_color": "#003478",
+    "sms_sender_name": "Stark GmbH"
+  },
+  "voice_agent": {
+    "company_name": "Stark Haustechnik GmbH",
+    "domain": "Sanitär, Heizung, Lüftung und Solar",
+    "owner_names": "Shkelzen Malici, Jetmir Aliu",
+    "address": "Zürichstrasse 103, 8134 Adliswil",
+    "phone": "+41 79 961 76 91",
+    "email": "info@stark-haustechnik.ch",
+    "website": "https://www.stark-haustechnik.ch",
+    "founded": "",
+    "team_section": "Geschäftsleitung: Shkelzen Malici, Jetmir Aliu",
+    "memberships": "",
+    "google_rating": "4.8 Sterne bei 18 Bewertungen",
+    "opening_hours": "Montag-Freitag: 08:00-17:00",
+    "opening_hours_spoken": "Wir sind Montag-Freitag: 08:00-17:00 für Sie erreichbar.",
+    "emergency_policy": "Pikettdienst Rufen Sie uns im Notfall an, egal um welche Uhrzeit. +41 79 961 76 91 +41 76 310 29 71 STARTSITE UNTERNEHMEN DIENSTLEISTUNGEN SERVICEAUFTRÄGE AKTUELL REFERENZEN KONTAKT KONTAKT Shke",
+    "services_list": "Sanitär: STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG, Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu\nHeizung: STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG, Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu\nLüftung/Klima: STARK HAUSTECHNIK BERATUNG UND PLANUNG FÜR SANITÄR, HEIZUNG, LÜFTUNG UND ENERGIEBERATUNG, Langjährige Erfahrung und kompetentes Fachwissen machen uns zu Ihrem Partner für die Planung von Sanitär, Heizung, Lüftu\nUmbau/Sanierung: Das stark Team installiert und saniert alles von Gas- und Ölheizungen bis hin zu Wärmepumpen., Unser Lüftungstechniker kennt sich mit Neu und Umbauten, Sanierung bestens aus.\nSolar/Erneuerbar: Das stark Team installiert und saniert alles von Gas- und Ölheizungen bis hin zu Wärmepumpen.\nBeratung/Planung: Wir legen hohen Wert auf persönliche Beratung & Planung, wir bewältigen alle Arbeiten zuverlässig und zu fairen Preisen,\nKundendienst: SERVICEAUFTRÄGE, Kundendienst",
+    "service_area": "8001 Zürich, 8002 Zürich, 8003 Zürich, 8004 Zürich, 8005 Zürich, 8006 Zürich, 8008 Zürich, 8032 Zürich, 8037 Zürich, 8038 Zürich, 8041 Zürich, 8045 Zürich, 8048 Zürich, 8055 Zürich, 8134 Adliswil, 8135 Langnau am Albis",
+    "service_area_spoken": "Wir sind in Adliswil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Zürichstrasse 103, 8134 Adliswil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.8,
+    "google_review_count": 18,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8001",
+      "8002",
+      "8003",
+      "8004",
+      "8005",
+      "8006",
+      "8008",
+      "8032",
+      "8037",
+      "8038",
+      "8041",
+      "8045",
+      "8048",
+      "8055",
+      "8134",
+      "8135"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Adliswil",
+      "plz": "8134",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Zürich",
+      "plz": "8002",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Stark Haustechnik GmbH",
+    "firma_silben": 4,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "SH",
+    "modus": 2,
+    "google_stars": 4.8,
+    "video_hook": "zuverlässig und zu fairen Preisen, um Ihnen die optimale Lösung zu bieten",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "info@stark-haustechnik.ch"
+  },
+  "_seed_time": "2026-04-22T22:30:12.325Z",
+  "_wizard_time": "2026-04-22T23:00:12.325Z",
+  "_wizard_case_id": "165f3802-f6b1-4444-87a5-9105e54266f2",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "SH-0050",
+  "_demo_now": "2026-04-23T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-04-23T06:04:00.000Z",
+  "_appointment_start": "2026-04-24T06:00:00.000Z",
+  "_appointment_end": "2026-04-24T08:00:00.000Z",
+  "_reminder_time": "2026-04-23T06:04:00.000Z",
+  "_completion_time": "2026-04-23T06:09:00.000Z",
+  "_review_sent_time": "2026-04-23T06:10:00.000Z",
+  "_review_rated_time": "2026-04-23T06:12:00.000Z",
+  "_review_token": "ccf2b6a91364698f",
+  "_review_token_long": "ccf2b6a91364698f0541cce196d3d24ffbdbbdc6119d474484cc19839ad19fc8",
+  "_case_created_at": "2026-04-22T15:04:00+00:00"
+}

@@ -1,0 +1,10 @@
+{
+  "source": "https://www.stark-haustechnik.ch",
+  "crawledAt": "2026-04-18T07:39:28.934Z",
+  "pagesVisited": 10,
+  "totalImageUrls": 144,
+  "downloaded": 135,
+  "duplicates": 6,
+  "skipped": 3,
+  "outputDir": "C:/flowsight_mvp/docs/customers/stark-haustechnik/crawl"
+}

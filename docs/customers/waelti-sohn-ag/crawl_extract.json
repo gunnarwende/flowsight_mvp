@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "crawled_at": "2026-04-18T10:13:31.406Z",
+    "crawled_at": "2026-04-20T10:46:50.686Z",
     "source_url": "https://www.waeltisohn.ch",
     "crawler": "playwright",
     "pages_crawled": [
@@ -16,8 +16,8 @@
       },
       {
         "key": "services",
-        "url": "https://www.waeltisohn.ch/dienstleistungen-service",
-        "chars": 2340
+        "url": "https://www.waeltisohn.ch/dienstleistungen",
+        "chars": 2701
       },
       {
         "key": "impressum",
@@ -28,7 +28,7 @@
   },
   "firma": {
     "value": "Wälti & Sohn AG",
-    "source": "website_impressum",
+    "source": "website_og_site_name+zefix_verified",
     "verified": true
   },
   "inhaber": {
@@ -64,10 +64,10 @@
     "action": "skip"
   },
   "google": {
-    "rating": null,
-    "review_count": null,
+    "rating": 5,
+    "review_count": 11,
     "source": "google_api",
-    "verified": false
+    "verified": true
   },
   "gruendung": {
     "value": "1952",
@@ -114,14 +114,14 @@
       ],
       "Beratung/Planung": [
         "Unterbaumöbel (Beratung und Montage)",
-        "Beratung für Heizungsersatz"
+        "Beratung für Heizungsersatz",
+        "Karriereberatung"
       ],
       "Kundendienst": [
         "Service",
         "SERVICE",
         "Boiler Service (Entkalkung)",
-        "Wartung und Unterhalt",
-        "SERVICE"
+        "Wartung und Unterhalt"
       ]
     },
     "source": "website_services",
@@ -144,9 +144,11 @@
     "verified": false
   },
   "markenpartner": {
-    "value": null,
-    "source": "not_found",
-    "verified": false
+    "value": [
+      "Franke"
+    ],
+    "source": "website_home",
+    "verified": true
   },
   "werte": {
     "value": "WIE DÜRFEN WIR IHNEN HELFEN?",
@@ -167,5 +169,14 @@
     "value": "Showroom, Laden, Lehrbetrieb, Familienbetrieb",
     "source": "website_home",
     "verified": true
+  },
+  "_zefix": {
+    "official_name": "Wälti & Sohn AG",
+    "uid": "CHE-190.443.228",
+    "ehraid": 1569384,
+    "legal_seat": "Langnau am Albis",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-190.443.228",
+    "match_score": 100
   }
 }

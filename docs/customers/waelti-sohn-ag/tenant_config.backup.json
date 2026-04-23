@@ -1,0 +1,151 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-04-20T10:47:20.114Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "waelti-sohn-ag",
+    "name": "Wälti & Sohn AG",
+    "case_id_prefix": "WS",
+    "brand_color": "#213a5c",
+    "sms_sender_name": "Waelti AG"
+  },
+  "voice_agent": {
+    "company_name": "Wälti & Sohn AG",
+    "domain": "Sanitär und Heizung",
+    "owner_names": "Heinz Wälti",
+    "address": "Gartenweg 2, 8135 Langnau am Albis",
+    "phone": "044 713 03 04",
+    "email": "info@waeltisohn.ch",
+    "website": "https://www.waeltisohn.ch",
+    "founded": "1952",
+    "team_section": "Geschäftsleitung: Heinz Wälti",
+    "memberships": "",
+    "google_rating": "5 Sterne bei 11 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: SANITÄR, WC, Defekter WC Sitz, WC-Rollenhalter, Griffe, ...), Installationen von WC`s die mit Wasser reinigen\nHeizung: HEIZUNG, Heizkörper / Radiatoren / Ventile, Fehlender Komfort (Heizstaab), Reparaturen von bestehenden Heizkörpern, Installation von Thermostatventilen\nBoiler/Warmwasser: Boiler Service (Entkalkung)\nRohrbruch/Leitungen: Geräusche von Wasser und Abwasserleitungen\nVerstopfung/Abfluss: Verstopfte Abläufe, Geräusche von Wasser und Abwasserleitungen\nUmbau/Sanierung: Umbau\nSolar/Erneuerbar: Integration von erneuerbaren Energien in bestehende Systeme\nBeratung/Planung: Unterbaumöbel (Beratung und Montage), Beratung für Heizungsersatz, Karriereberatung\nKundendienst: Service, SERVICE, Boiler Service (Entkalkung), Wartung und Unterhalt",
+    "service_area": "8001 Zürich, 8002 Zürich, 8003 Zürich, 8004 Zürich, 8005 Zürich, 8006 Zürich, 8008 Zürich, 8032 Zürich, 8037 Zürich, 8038 Zürich, 8041 Zürich, 8045 Zürich, 8048 Zürich, 8055 Zürich, 8134 Adliswil, 8135 Langnau am Albis",
+    "service_area_spoken": "Wir sind in Langnau am Albis und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Gartenweg 2, 8135 Langnau am Albis.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 11,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8001",
+      "8002",
+      "8003",
+      "8004",
+      "8005",
+      "8006",
+      "8008",
+      "8032",
+      "8037",
+      "8038",
+      "8041",
+      "8045",
+      "8048",
+      "8055",
+      "8134",
+      "8135"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Langnau am Albis",
+      "plz": "8135",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "beschreibung": "Der Anrufer steht im Keller knöcheltief im Wasser, vermutlich wegen eines Rohrbruchs. Die Kontaktdaten wurden vollständig aufgenommen.",
+      "stadt": "Zürich",
+      "plz": "8001",
+      "dringlichkeit": "Dringend"
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Zürich",
+      "plz": "8002",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Wälti & Sohn AG",
+    "firma_silben": 4,
+    "telefon_display": "044 713 03 04",
+    "prefix": "WS",
+    "modus": 2,
+    "google_stars": 5,
+    "video_hook": "Seit 1952 für Sie da.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@waeltisohn.ch"
+  }
+}
