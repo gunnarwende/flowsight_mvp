@@ -81,14 +81,18 @@ export async function POST(
   await supabase.from("case_events").insert({
     case_id: caseId,
     event_type: "review_rated",
-    title: isNegativeReview
-      ? `⚠️ Negatives Feedback: ${rating} Stern${rating !== 1 ? "e" : ""}`
-      : `Kundenbewertung: ${rating} Stern${rating !== 1 ? "e" : ""}`,
+    title: isNegativeReview ? "Negatives Feedback eingegangen" : "Bewertung eingegangen",
     metadata: {
+      rating,
       ...(text ? { text_preview: text.slice(0, 200) } : {}),
       is_negative: isNegativeReview,
     },
   });
+
+  // Demo mode: skip push + negative-review email alert
+  if (process.env.DEMO_NO_DISPATCH === "1") {
+    return NextResponse.json({ ok: true, demo: true });
+  }
 
   // Push notification to tenant staff (best-effort)
   // B7: Negative reviews (≤3★) get urgent title to alert the business immediately

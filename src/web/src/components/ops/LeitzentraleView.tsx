@@ -63,7 +63,8 @@ export interface LeitzentraleProps {
 // Constants
 // ---------------------------------------------------------------------------
 
-const PAGE_SIZE_DESKTOP = 15;
+// FB75: Desktop 12 statt 15 — High-End Monitor-Look mit Atemluft, nicht vollgestopft.
+const PAGE_SIZE_DESKTOP = 12;
 const PAGE_SIZE_MOBILE = 8;
 
 // ---------------------------------------------------------------------------
@@ -638,17 +639,30 @@ export function LeitzentraleView({
               {paginatedCases.map((c) => {
                 const isNotfall =
                   c.urgency === "notfall" && c.status !== "done";
+                const isDringend =
+                  c.urgency === "dringend" && c.status !== "done";
                 const isDone = c.status === "done";
+                // FB68 + FB74: Stripes beide transparent high-end gestaltet.
+                // Notfall: rot-500 @ 50%, leicht rot-getönter Background (2% alpha).
+                // Dringend: amber-300 @ 55%, leicht amber-getönter Background (2.5% alpha).
+                const rowStyle = isNotfall
+                  ? {
+                      borderLeft: "3px solid rgba(239, 68, 68, 0.5)",
+                      background: "rgba(239, 68, 68, 0.02)",
+                    }
+                  : isDringend
+                    ? {
+                        borderLeft: "3px solid rgba(252, 211, 77, 0.55)",
+                        background: "rgba(252, 211, 77, 0.025)",
+                      }
+                    : undefined;
                 return (
                   <tr
                     key={c.id}
                     onClick={() => router.push(`/ops/cases/${c.id}`)}
+                    style={rowStyle}
                     className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
-                      isNotfall
-                        ? "border-l-4 border-l-red-500 bg-red-50/30"
-                        : isDone
-                          ? "opacity-60"
-                          : ""
+                      isDone ? "opacity-60" : ""
                     }`}
                   >
                     <td className="px-3 py-2 font-mono text-xs text-gray-500 whitespace-nowrap sticky left-0 z-10 bg-white">
@@ -712,17 +726,27 @@ export function LeitzentraleView({
           )}
           {paginatedCases.map((c) => {
             const isNotfall = c.urgency === "notfall" && c.status !== "done";
+            const isDringend = c.urgency === "dringend" && c.status !== "done";
             const isDone = c.status === "done";
+            // FB68 + FB74: Transparente Stripes (Notfall + Dringend identisch zur Tabelle).
+            const cardStyle = isNotfall
+              ? {
+                  borderLeft: "3px solid rgba(239, 68, 68, 0.5)",
+                  background: "rgba(239, 68, 68, 0.02)",
+                }
+              : isDringend
+                ? {
+                    borderLeft: "3px solid rgba(252, 211, 77, 0.55)",
+                    background: "rgba(252, 211, 77, 0.025)",
+                  }
+                : undefined;
             return (
               <div
                 key={c.id}
                 onClick={() => router.push(`/ops/cases/${c.id}`)}
+                style={cardStyle}
                 className={`px-4 py-3.5 min-h-[48px] hover:bg-gray-50 cursor-pointer transition-colors ${
-                  isNotfall
-                    ? "border-l-4 border-l-red-500 bg-red-50/30"
-                    : isDone
-                      ? "opacity-60"
-                      : ""
+                  isDone ? "opacity-60" : ""
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
