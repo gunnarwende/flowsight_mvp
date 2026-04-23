@@ -1,91 +1,46 @@
 # Demo-Video-Script: Dörfler AG
 
-**Version:** 4.0 | **Datum:** 2026-04-07
-**Zweck:** 4 kurze Video-Module + persönliche Vorstellungsseite. Kein langes Einzelvideo.
-**Ziel-Dauer:** 4 × 1–2 Minuten (Total ~5–7 Minuten)
+**Version:** 3.0 | **Datum:** 2026-04-01
+**Zweck:** Founder nimmt sich per Video auf, stellt das Leitsystem vor, bittet um Feedback.
+**Ziel-Dauer:** 3-5 Minuten
 **Ton:** Persönlich, respektvoll, nicht verkaufen. Feedback anfragen.
-**Versand:** 2-Mail-Strategie. Mail 1 = Link zur Vorstellungsseite. Mail 2 = Zugänge (erst nach Go).
-**Vorstellungsseite:** flowsight.ch/kunden/doerfler-ag/vorstellung
-**Config:** `src/web/src/lib/customers/vorstellung.ts` (Loom-URLs hier eintragen)
-
----
-
-## Architektur (v4.0)
-
-```
-Mail 1 (schlank, persönlich)
-  → 1 Link → flowsight.ch/kunden/doerfler-ag/vorstellung
-    → Gunnar-Foto + persönlicher Intro
-    → Modul 1: Ihr Alltag — und eine Frage
-    → Modul 2: Wenn Sie gerade nicht rangehen können
-    → Modul 3: Wenn ein Kunde lieber online meldet
-    → Modul 4: Vom erledigten Fall zur Bewertung
-    → Persönlicher Abschlusstext (kein Video — Text auf der Seite)
-    → Kontaktdaten
-```
-
-**Warum 4 Module statt 1 langes Video:**
-- Dörfler kann einzelne Teile anschauen, pausieren, wiederkommen
-- Jedes Modul hat einen klaren Fokus und ein klares Versprechen
-- Intern weiterleitbar (Ramon zeigt Luzian: "Schau dir mal Teil 2 an")
-- Weniger Aufnahme-Druck (jeder Take kann einzeln neu aufgenommen werden)
-
-**Warum Abschluss als Text statt Video:**
-- Die 4 Module ZEIGEN etwas Konkretes. Der Abschluss REDET nur.
-- Text fühlt sich persönlicher an als ein 30-Sekunden-Clip
-- Weniger Modul-Inflation (4 starke Teile > 5 mit einem schwachen)
-
+**Versand:** 2-Mail-Strategie. Mail 1 = nur Video. Mail 2 = Zugänge (erst nach seinem Go).
+**Kontext:** Herr Dörfler hat Mail 1 gelesen. Er weiss: jemand aus Oberrieden hat etwas vorbereitet.
+**Loom Video Titel** Persönliches Leitsystem für die Dörfler AG
 ---
 
 ## 2-Mail-Strategie
 
-### Mail 1 — Erstkontakt (Vorstellung + Feedback-Bitte)
 
-**Betreff:**
-Etwas Persönliches für die Dörfler AG
+### Mail 1 — Erstkontakt (Video + Feedback-Bitte)
 
-**Body:**
+Betreff: 
+Kurze persönliche Übersicht für die Dörfler AG
+
 ```
 Guten Tag Herr Dörfler
 
-Ich hoffe, Ihnen geht es gut und Sie konnten die sonnigen Ostertage geniessen.
+Ich hoffe, es geht Ihnen gut.
 
 Mein Name ist Gunnar Wende, ich wohne in Oberrieden.
 
-Vor ein paar Monaten war einer von Ihnen beiden bei uns in der Wohnung,
-weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste.
-Wir waren mit der Ausführung sehr zufrieden.
+Vor ein paar Monaten war einer von Ihnen beiden bei uns in der Wohnung, weil eine Dichtung bei einem Wasserhahnanschluss ersetzt werden musste. Wir waren mit der Ausführung sehr zufrieden.
 
-Das ist mir in Erinnerung geblieben.
-Ich habe mir danach ein paar Gedanken gemacht
-und für die Dörfler AG etwas Konkretes vorbereitet.
+Das ist mir in Erinnerung geblieben. Ich habe mir danach ein paar Gedanken gemacht und das einmal sauber für die Dörfler AG aufbereitet.
 
-Hier können Sie es sich in Ruhe anschauen — dauert etwa fünf Minuten:
+Es sind 5 kurze Teile, damit Sie schnell sehen können, worum es geht, ohne sich durch ein langes Video arbeiten zu müssen.
 
-[Hier Gunnar-Foto OHNE Play-Button, verlinkt auf die Vorstellungsseite]
-flowsight.ch/kunden/doerfler-ag/vorstellung
+[Hier klickbare Übersicht / Bild]
 
-Ich möchte Ihnen damit nichts verkaufen.
-Mich würde einfach ehrlich interessieren, wie das auf Sie wirkt.
+Falls das Bild bei Ihnen nicht klickbar ist, finden Sie hier den direkten Link:
+[Link]
 
-Gerne komme ich auch kurz persönlich vorbei —
-wir sind ja nur ein paar Strassen voneinander entfernt.
+Ich möchte Ihnen damit nichts verkaufen. Mich würde einfach ehrlich interessieren, wie das auf Sie wirkt.
 
-Freundliche Grüsse
-Gunnar Wende
-Oberrieden
+Gerne komme ich auch kurz persönlich vorbei — wir sind ja nur ein paar Strassen voneinander entfernt.
 
-+41 44 552 09 19
-gunnar@flowsight.ch
+
 ```
-
-**Mail-Design-Regeln:**
-- Kein HTML-Template, kein Newsletter-Look → Plain-Text-Optik (evtl. mit Gunnar-Foto als einziges Bild)
-- Gunnar-Foto OHNE Play-Button (Startbild.png) → Vertrauensanker, nicht Video-Teaser
-- Foto verlinkt auf die Vorstellungsseite
-- Direkter URL-Link als Fallback unter dem Foto
-- Kein "Jetzt ansehen" Button → Stattdessen sachlich: "Hier können Sie es sich anschauen"
-- Kein Tracking-Pixel, kein Funnel-Gefühl
 
 ### Mail 2 — Zugänge (erst nach seinem Go, automatisch via activate_prospect.mjs)
 
@@ -99,39 +54,20 @@ Enthält: Leitzentrale-Link + OTP-Anleitung + Testnummer + PWA-Hinweis + Trial-Z
 
 ---
 
-## Die 4 Module (Video-Aufnahme-Script)
-
-### Vorbereitung (vor Aufnahme)
+## Vorbereitung (vor Aufnahme)
 
 - [ ] Leitzentrale offen im Browser (als Admin, Dörfler-Tenant ausgewählt)
 - [ ] Website flowsight.ch/kunden/doerfler-ag in zweitem Tab
 - [ ] Meldungsformular flowsight.ch/kunden/doerfler-ag/meldung in drittem Tab
 - [ ] Handy bereit (Anruf auf 044 505 74 20 + SMS-Empfang)
-- [ ] Loom/Screen-Recording aktiv
+- [ ] Loom/Screen-Recording aktiv (ganzer Bildschirm)
 - [ ] Kamera an (Bild-in-Bild oder Intro/Outro)
-- [ ] Vorstellungsseite prüfen: flowsight.ch/kunden/doerfler-ag/vorstellung
-
-### Technische Checkliste (vor Aufnahme verifizieren)
-
-- [x] Voice Agent antwortet auf Deutsch (Ela-Stimme)
-- [x] SMS kommt an Founder-Handy (kein Spam)
-- [x] Ops-Email kommt an Founder (MAIL_REPLY_TO)
-- [x] Dörfler AG bekommt NICHTS
-- [ ] Fall erscheint in der Leitzentrale innerhalb 30s
-- [ ] Leitzentrale zeigt Dörfler-Branding (Farbe #2b6cb0)
-- [ ] Tenant-Switcher zeigt "Dörfler AG"
-- [ ] Demo-Cases sind sichtbar (15 Fälle)
-- [ ] Meldungsformular funktioniert E2E (Submit → Fall in Leitzentrale)
-- [ ] Review-Email kommt an (nach "Erledigt" + Review-Button)
-- [ ] Loom-Recording funktioniert (Test-Aufnahme)
-- [ ] Vorstellungsseite läuft korrekt (Mobile + Desktop)
 
 ---
 
-### MODUL 1 — Ihr Alltag — und eine Frage
-**Kamera:** Gross (kein Screen-Share). Persönlich, direkt.
-**Dauer:** ~60–90 Sekunden
-**Loom-Titel:** Dörfler AG — Ihr Alltag
+## Speakflow
+
+### TAKE 1 — Intro + Alltag (Kamera gross, kein Screen-Share)
 
 Guten Tag Herr Dörfler.
 
@@ -144,10 +80,13 @@ habe ich mir ein paar Gedanken gemacht
 und dazu dieses kurze Video
 für Sie aufgenommen.
 
+Ich möchte Ihnen kurz zeigen,
+was daraus entstanden ist.
+
 Dabei ist mir eine Frage durch den Kopf gegangen:
 
-Wie kommt bei einem Betrieb wie Ihrem
-im Alltag alles so an, dass man
+Wie kommt bei einem Betrieb wie Ihrem 
+im Alltag alles so an, dass man 
 direkt sinnvoll damit weiterarbeiten kann?
 
 Sie sind auf der Baustelle,
@@ -167,14 +106,14 @@ und was als Nächstes zu tun ist.
 
 Ich habe mir deshalb erlaubt,
 für die Dörfler AG
-etwas Konkretes vorzubereiten.
+etwas Konkretes vorzubereiten,
+wie das für Ihren Betrieb funktionieren könnte.
 
----
+Ich zeige Ihnen das kurz
+an einem typischen Fall.
 
-### MODUL 2 — Wenn Sie gerade nicht rangehen können
-**Kamera:** Klein (Bild-in-Bild). Handy-Screen / Leitstand zeigen.
-**Dauer:** ~90–120 Sekunden
-**Loom-Titel:** Dörfler AG — Telefonische Anfragen
+
+### TAKE 2 — Tel. Demo (Kamera klein, Handy-Screen / Leitstand zeigen)
 
 Nehmen wir an,
 ein Kunde braucht Sie gerade
@@ -218,6 +157,12 @@ was bereits läuft,
 was erledigt ist
 und wie es bei den Bewertungen aussieht.
 
+Gerade Letzteres ist bei vielen Betrieben ein Thema,
+das im Alltag schnell untergeht.
+Dafür habe ich aber auch noch
+einen ziemlich coolen Weg gefunden —
+zeige ich Ihnen gleich.
+
 Und wenn ich den Fall öffne,
 sehen Sie direkt,
 worum es geht,
@@ -230,12 +175,8 @@ oder verteilt in einzelnen Nachrichten,
 sondern direkt im Fall —
 auch unterwegs auf der Baustelle.
 
----
 
-### MODUL 3 — Wenn ein Kunde lieber online meldet
-**Kamera:** Klein (Bild-in-Bild). Desktop-Screen zeigen.
-**Dauer:** ~60–90 Sekunden
-**Loom-Titel:** Dörfler AG — Online-Anfragen
+### TAKE 3 — Demo Online Anliegen und Bewertung (Kamera klein, Desktop-Screen)
 
 Dasselbe funktioniert
 übrigens auch schriftlich.
@@ -282,27 +223,21 @@ direkt wieder in der Übersicht
 und kann ihn genauso öffnen
 und weiterführen.
 
->>> JETZT FALL IN ÜBERSICHT ÖFFNEN — PAUSE <<<
-
 Damit ist der schriftliche Weg
 genauso sauber abgedeckt
 wie der telefonische.
 
----
 
-### MODUL 4 — Vom erledigten Fall zur Bewertung
-**Kamera:** Klein (Bild-in-Bild). Desktop-Screen zeigen.
-**Dauer:** ~90–120 Sekunden
-**Loom-Titel:** Dörfler AG — Bewertungen
+### TAKE 4 - manueller Fall + Bewertung
 
 Und wenn etwas direkt bei Ihnen
 im Betrieb oder nach einem Gespräch entsteht,
 kann es genauso manuell aufgenommen werden
 und läuft wieder
-in dieselbe Übersicht hinein.
+in dieselbe Leitzentrale hinein.
 
-Und jetzt komme ich noch
-auf den Punkt mit den Bewertungen zurück.
+Und auf den Punkt mit den Bewertungen
+komme ich jetzt noch einmal kurz zurück.
 
 Gerade Letzteres ist bei vielen Betrieben
 ein Punkt,
@@ -347,6 +282,37 @@ sondern kann direkt
 auf die Aussenwirkung
 der Dörfler AG einzahlen.
 
+
+### TAKE 5 — Abschluss (Kamera gross, kein Screen-Share)
+
+Mir ging es bei dem Ganzen
+um etwas sehr Einfaches:
+
+dass bei Ihnen im Alltag
+alles so ankommt,
+dass man direkt sinnvoll
+damit weiterarbeiten kann.
+
+Das spart Zeit und Nerven,
+schafft schneller Überblick,
+macht die Vorbereitung einfacher
+und sorgt gleichzeitig dafür,
+dass weniger verloren geht
+und gute Arbeit am Ende
+auch auf Vertrauen und die Aussenwirkung 
+der Dörfler AG einzahlt.
+
+Wie schon in der Mail geschrieben:
+Ich möchte Ihnen damit nichts verkaufen.
+Mich würde einfach ehrlich interessieren,
+wie das auf Sie wirkt.
+
+Sie können mich jederzeit anrufen
+oder mir kurz schreiben.
+Ich freue mich, von Ihnen zu hören.
+
+Vielen Dank für Ihre Zeit,
+Herr Dörfler.
 ---
 
 ## Dont's (Was du NICHT sagen sollst)
@@ -362,50 +328,43 @@ der Dörfler AG einzahlen.
 - ~~"14 Tage Trial"~~ → Nicht in Mail 1 / Video. Erst in Mail 2.
 - ~~"PWA installieren"~~ → "Funktioniert auch als App auf dem Handy"
 
-## Pain-Type-Zuordnung pro Modul
+## Pain-Type-Zuordnung im Script
 
-| pain_type | Modul | Wie angesprochen |
-|-----------|-------|------------------|
-| erreichbarkeit | 1 + 2 | "Man kommt nicht ran" → Assistentin übernimmt |
-| notfall | 2 | Live-Anruf, SMS, sofort im System |
-| aussenwirkung | 3 | Website gezeigt (subtil, "auch aussehen könnte") |
-| buerochaos | 2 + 3 | Leitzentrale mit Status, alles an einem Ort |
-| bewertung | 4 | Review-Anfrage, Aussenwirkung, konkretes Beispiel |
+| pain_type | Wo im Script | Wie angesprochen |
+|-----------|-------------|------------------|
+| erreichbarkeit | Abschnitt 2 + 4 | "Man kommt nicht ran" → Telefonassistentin 24/7 |
+| notfall | Abschnitt 2 + 4 | "Samstag ein Leck" → Live-Anruf-Demo |
+| bewertung | Abschnitt 2 + 5 | "Kommt nie eine Google-Bewertung" → Review-Anfrage |
+| aussenwirkung | Abschnitt 3 | Neue Website gezeigt (subtil, ohne alte zu kritisieren) |
+| buerochaos | Abschnitt 5 | Leitzentrale mit Status, Zuweisung, Termine |
 
 ---
 
 ## Prozess-Ablauf (E2E)
 
 ```
-1. Founder nimmt 4 Videos auf (Loom, je 1–2 Min)
-2. Loom-URLs in vorstellung.ts eintragen (src/web/src/lib/customers/vorstellung.ts)
-3. Deploy (Vercel auto-deploy bei Push)
-4. Vorstellungsseite prüfen: flowsight.ch/kunden/doerfler-ag/vorstellung
-5. Mail 1 senden (persönlich, 1 Link zur Vorstellungsseite)
-6. Prospect schaut Videos auf der Vorstellungsseite
-7. Prospect meldet sich: "Spannend, meine Email ist ramon@doerfler.ch"
-8. Founder: activate_prospect.mjs --slug=doerfler-ag --email=ramon@doerfler.ch
-9. Mail 2 wird automatisch verschickt (Leitzentrale + Testnummer + PWA + Trial)
-10. Prospect testet selbst (14 Tage)
-11. Follow-up Tag 10, Decision Tag 14
+1. Founder nimmt Video auf (dieses Script)
+2. Founder schickt Mail 1 (nur Video + Feedback-Bitte)
+3. Prospect schaut Video
+4. Prospect meldet sich: "Spannend, meine Email ist ramon@doerfler.ch"
+5. Founder: activate_prospect.mjs --slug=doerfler-ag --email=ramon@doerfler.ch
+6. Mail 2 wird automatisch verschickt (Leitzentrale + Testnummer + PWA + Trial)
+7. Prospect testet selbst (14 Tage)
+8. Follow-up Tag 10, Decision Tag 14
 ```
 
 ---
 
-## Nach Aufnahme: Loom-URLs eintragen
+## Technische Checkliste (vor Aufnahme verifizieren)
 
-Datei: `src/web/src/lib/customers/vorstellung.ts`
-
-```typescript
-modules: [
-  {
-    title: "Ihr Alltag — und eine Frage",
-    subtitle: "...",
-    videoUrl: "https://www.loom.com/share/XXXXXXXXX",  // ← hier
-    duration: "1:30",
-  },
-  // ... analog für Module 2–4
-],
-```
-
-Nach Push: Seite wird automatisch mit eingebetteten Videos neu gebaut.
+- [x] Voice Agent antwortet auf Deutsch (Ela-Stimme) ✅
+- [x] SMS kommt an Founder-Handy (kein Spam) ✅
+- [x] Ops-Email kommt an Founder (MAIL_REPLY_TO) ✅
+- [x] Dörfler AG bekommt NICHTS ✅
+- [ ] Fall erscheint in der Leitzentrale innerhalb 30s
+- [ ] Leitzentrale zeigt Dörfler-Branding (Farbe #2b6cb0)
+- [ ] Tenant-Switcher zeigt "Dörfler AG"
+- [ ] Demo-Cases sind sichtbar (15 Fälle)
+- [ ] Meldungsformular funktioniert E2E (Submit → Fall in Leitzentrale)
+- [ ] Review-Email kommt an (nach "Erledigt" + Review-Button)
+- [ ] Loom-Recording funktioniert (Test-Aufnahme)

@@ -41,7 +41,7 @@ Required:
   process.exit(1);
 }
 
-const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY || null;
+const GOOGLE_API_KEY = process.env.GOOGLE_SCOUT_KEY || process.env.GOOGLE_PLACES_API_KEY || null;
 const baseUrl = inputUrl.replace(/\/+$/, "");
 const domain = new URL(baseUrl).hostname;
 
@@ -68,6 +68,7 @@ const MEMBER_RE = /(?:suissetec|VSSH|aqua\s*suisse|SIA|Innung|Fachverband|Verban
 
 // ── State ────────────────────────────────────────────────────────────────
 const pageTexts = {};      // pageKey → text
+const pageMeta = {};       // pageKey → { title, ogSiteName, ogTitle }
 const pageSources = {};    // pageKey → url that worked
 const allTexts = [];       // all text concatenated
 
@@ -98,6 +99,7 @@ const result = {
   brand_color: { value: null, source: "", verified: false },
   website_url: { value: inputUrl, source: "input", verified: true },
   besonderheiten: { value: null, source: "not_found", verified: false },
+  _zefix: null,
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -151,8 +153,13 @@ async function crawlPage(page, url, pageKey) {
 
     await page.waitForTimeout(1000);
 
-    const text = await page.evaluate(() => document.body.innerText);
-    return text || null;
+    const data = await page.evaluate(() => ({
+      text: document.body.innerText || "",
+      title: document.title || null,
+      ogSiteName: document.querySelector('meta[property="og:site_name"]')?.getAttribute("content") || null,
+      ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute("content") || null,
+    }));
+    return data.text ? data : null;
   } catch (err) {
     // Timeout or navigation error — silently skip
     return null;
@@ -226,7 +233,64 @@ async function extractBrandColor(page) {
 // ── Field extraction ─────────────────────────────────────────────────────
 
 function extractFirma() {
-  // Collect all AG/GmbH mentions and pick the shortest/cleanest one
+  const LEGAL_FORMS = /\b(AG|GmbH|Sàrl|SA|KlG|Genossenschaft)\b/;
+  const LEGAL_FORMS_CI = /\b(AG|GMBH|GmbH|Sàrl|SARL|SA|KlG|KLG|Genossenschaft|GENOSSENSCHAFT)\b/i;
+
+  // ── Priority 1: og:site_name — usually the cleanest company name ──
+  const homeMeta = pageMeta.home;
+  if (homeMeta) {
+    const ogName = homeMeta.ogSiteName?.trim();
+    if (ogName && ogName.length >= 3 && ogName.length <= 80) {
+      if (LEGAL_FORMS.test(ogName)) {
+        console.log(`  [firma] Found via og:site_name: "${ogName}"`);
+        return { value: ogName, source: "website_og_site_name", verified: true };
+      }
+      // Even without legal form, og:site_name is typically the company name
+      if (ogName.length <= 50 && !/\b(home|willkommen|startseite|welcome)\b/i.test(ogName)) {
+        console.log(`  [firma] Found via og:site_name (no legal form): "${ogName}"`);
+        return { value: ogName, source: "website_og_site_name", verified: true };
+      }
+    }
+
+    // ── Priority 2: <title> tag ──
+    const title = homeMeta.title?.trim();
+    if (title) {
+      // Strategy A: Extract legal entity name from title
+      // Handles: "Stark Haustechnik GmbH - Sanitär", "LEINS AG | Horgen", etc.
+      const legalRe = /([\w\sÄÖÜäöüéèê&.'-]+?)\s+(AG|GmbH|Sàrl|SA|KlG|Genossenschaft)\b/i;
+      const legalMatch = title.match(legalRe);
+      if (legalMatch) {
+        let name = `${legalMatch[1].trim()} ${legalMatch[2]}`;
+        // Clean: remove leading separators/junk
+        name = name.replace(/^[\s|—–·:\-]+/, "").trim();
+        if (name.length >= 4 && name.length <= 80) {
+          console.log(`  [firma] Found via <title> (legal entity): "${name}"`);
+          return { value: name, source: "website_title", verified: true };
+        }
+      }
+
+      // Strategy B: First segment before separator
+      const segment = title.split(/\s*[-|—–·:]\s*/)[0].trim();
+      if (segment.length >= 3 && segment.length <= 60) {
+        if (!/^(home|willkommen|startseite|welcome|index)/i.test(segment)) {
+          // Could be "Stark Haustechnik" without legal form — mark as unverified
+          console.log(`  [firma] Found via <title> (first segment): "${segment}"`);
+          return { value: segment, source: "website_title", verified: false };
+        }
+        // If first segment is generic, try last segment: "Home | Firma AG"
+        const segments = title.split(/\s*[-|—–·:]\s*/);
+        if (segments.length > 1) {
+          const last = segments[segments.length - 1].trim();
+          if (last.length >= 3 && last.length <= 60 && LEGAL_FORMS_CI.test(last)) {
+            console.log(`  [firma] Found via <title> (last segment): "${last}"`);
+            return { value: last, source: "website_title", verified: true };
+          }
+        }
+      }
+    }
+  }
+
+  // ── Priority 3: Regex on body text (Titlecase + ALLCAPS) ──
   const candidates = [];
 
   for (const key of ["impressum", "home", "kontakt"]) {
@@ -235,30 +299,45 @@ function extractFirma() {
 
     const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
 
-    for (const line of lines.slice(0, 40)) {
-      // Match standalone company name: 1-5 words + legal form
-      // Use a tighter regex that avoids capturing long preamble
-      const re = /(?:^|[\s,.:(])([A-ZÄÖÜ][a-zäöüéèê]*(?:\s+(?:&\s+)?[A-ZÄÖÜ][a-zäöüéèê]*){0,4}\s+(?:AG|GmbH|Sàrl|SA|KlG|Genossenschaft))\b/g;
-      for (const m of line.matchAll(re)) {
-        const name = m[1].trim();
-        // Prefer shorter matches (less context pollution)
-        candidates.push({ name, source: sourceTag(key), len: name.length });
+    for (const line of lines.slice(0, 50)) {
+      // Titlecase: "Wälti & Sohn AG", "Leins AG"
+      const titlecaseRe = /(?:^|[\s,.:(])([A-ZÄÖÜ][a-zäöüéèê]*(?:\s+(?:&\s+)?[A-ZÄÖÜ][a-zäöüéèê]*){0,4}\s+(?:AG|GmbH|Sàrl|SA|KlG|Genossenschaft))\b/g;
+      for (const m of line.matchAll(titlecaseRe)) {
+        candidates.push({ name: m[1].trim(), source: sourceTag(key), len: m[1].trim().length });
+      }
+
+      // ALLCAPS: "STARK HAUSTECHNIK GMBH", "LEINS AG"
+      const capsRe = /\b((?:[A-ZÄÖÜ][A-ZÄÖÜ0-9&.'-]*\s+){1,5}(?:AG|GMBH|SARL|SA|KLG|GENOSSENSCHAFT))\b/g;
+      for (const m of line.matchAll(capsRe)) {
+        // Convert ALLCAPS to proper Titlecase
+        const raw = m[1].trim();
+        const words = raw.split(/\s+/);
+        const titleCased = words.map((w) => {
+          // Keep legal forms as-is (AG stays AG, GMBH → GmbH)
+          const legalMap = { AG: "AG", GMBH: "GmbH", SARL: "Sàrl", SA: "SA", KLG: "KlG", GENOSSENSCHAFT: "Genossenschaft" };
+          if (legalMap[w.toUpperCase()]) return legalMap[w.toUpperCase()];
+          // Titlecase other words
+          return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+        }).join(" ");
+        candidates.push({ name: titleCased, source: sourceTag(key), len: titleCased.length });
       }
     }
   }
 
   if (candidates.length > 0) {
-    // Sort by length — shortest match is usually the cleanest company name
-    candidates.sort((a, b) => a.len - b.len);
+    // Sort: prefer shortest match (less context noise), break ties by source priority
+    const sourcePriority = { website_impressum: 0, website_kontakt: 1, website_home: 2 };
+    candidates.sort((a, b) => a.len - b.len || (sourcePriority[a.source] ?? 9) - (sourcePriority[b.source] ?? 9));
+    console.log(`  [firma] Found via body regex: "${candidates[0].name}" (${candidates.length} candidates)`);
     return { value: candidates[0].name, source: candidates[0].source, verified: true };
   }
 
-  // Fallback: use <title> or first heading
+  // ── Fallback: first meaningful line from home ──
   const homeText = pageTexts.home;
   if (homeText) {
-    const lines = homeText.split("\n").map((l) => l.trim()).filter(Boolean);
+    const lines = homeText.split("\n").map((l) => l.trim()).filter((l) => l.length > 3 && l.length < 80);
     if (lines.length > 0) {
-      return { value: lines[0].slice(0, 80), source: "website_home", verified: false };
+      return { value: lines[0], source: "website_home", verified: false };
     }
   }
 
@@ -311,7 +390,9 @@ function extractAdresse() {
     const matches = [...text.matchAll(addressRe)];
     if (matches.length > 0) {
       const m = matches[0];
-      return { value: `${m[1]}, ${m[2]} ${m[3]}`, source: sourceTag(key), verified: true };
+      // Cut city at first newline — prevents garbage capture from `i` flag
+      const city = m[3].split(/[\n\r]/)[0].trim();
+      return { value: `${m[1]}, ${m[2]} ${city}`, source: sourceTag(key), verified: true };
     }
 
     // Broader pattern: PLZ + City with any preceding street
@@ -322,11 +403,12 @@ function extractAdresse() {
       const plzIdx = text.indexOf(m[0]);
       const before = text.slice(Math.max(0, plzIdx - 100), plzIdx);
       const streetMatch = before.match(/([A-ZÄÖÜ][a-zäöüéèê]+(?:strasse|weg|gasse|platz|rain|halden)\s*\d{1,4}[a-z]?)\s*$/i);
+      const city = m[2].split(/[\n\r]/)[0].trim();
       if (streetMatch) {
-        return { value: `${streetMatch[1]}, ${m[1]} ${m[2]}`, source: sourceTag(key), verified: true };
+        return { value: `${streetMatch[1]}, ${m[1]} ${city}`, source: sourceTag(key), verified: true };
       }
       // Just PLZ + City
-      return { value: `${m[1]} ${m[2]}`, source: sourceTag(key), verified: true };
+      return { value: `${m[1]} ${city}`, source: sourceTag(key), verified: true };
     }
   }
   return { value: "", source: "not_found", verified: false };
@@ -381,6 +463,13 @@ function extractEmail() {
 }
 
 function extractOeffnungszeiten() {
+  // Day name patterns (short and long forms)
+  const DAY = "(?:Mo(?:ntag)?|Di(?:enstag)?|Mi(?:ttwoch)?|Do(?:nnerstag)?|Fr(?:eitag)?|Sa(?:mstag)?|So(?:nntag)?)";
+  // Time pattern: 8:00 or 08:00 or 08.00 (with or without leading zero)
+  const TIME = "(\\d{1,2}[:.]\\d{2})";
+  // Separator between times: hyphen, en-dash, em-dash, or " bis "
+  const TSEP = "\\s*[-–—]\\s*|\\s+bis\\s+";
+
   for (const key of ["kontakt", "home"]) {
     const text = pageTexts[key];
     if (!text) continue;
@@ -390,8 +479,19 @@ function extractOeffnungszeiten() {
     const headerMatch = text.match(headerRe);
     if (headerMatch) {
       const block = headerMatch[0];
-      // Extract individual day → time patterns
-      const dayRe = /(Mo(?:ntag)?|Di(?:enstag)?|Mi(?:ttwoch)?|Do(?:nnerstag)?|Fr(?:eitag)?|Sa(?:mstag)?|So(?:nntag)?)[\s\-–bis]*((?:Mo(?:ntag)?|Di(?:enstag)?|Mi(?:ttwoch)?|Do(?:nnerstag)?|Fr(?:eitag)?|Sa(?:mstag)?|So(?:nntag)?))?\s*[:\s]+(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})(?:\s*(?:und|,|&)\s*(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2}))?/gi;
+      // Extract individual day → time patterns (day-first: "Mo-Fr 08:00-17:00")
+      const dayRe = new RegExp(
+        `(${DAY})` +                              // first day
+        `(?:[\\s\\-–—]*(?:bis\\s+)?` +            // optional separator ("bis", "-", "–")
+        `(${DAY}))?` +                            // optional second day
+        `\\s*[:;\\s]+` +                          // separator before time
+        `${TIME}` +                               // start time
+        `(?:${TSEP})` +                           // time separator
+        `${TIME}` +                               // end time
+        `(?:\\s*(?:und|,|&|\\/)\\s*` +            // optional second time range
+        `${TIME}(?:${TSEP})${TIME})?`,            // second start-end time
+        "gi"
+      );
       const dayMatches = [...block.matchAll(dayRe)];
 
       if (dayMatches.length > 0) {
@@ -404,15 +504,67 @@ function extractOeffnungszeiten() {
         }
         return { value: hours, source: sourceTag(key), verified: true };
       }
+
+      // Within the header block, also try time-first pattern
+      const timeFirstRe = new RegExp(
+        `${TIME}` +                               // start time
+        `(?:${TSEP})` +                           // time separator
+        `${TIME}` +                               // end time
+        `\\s+` +                                  // space before days
+        `(${DAY})` +                              // first day
+        `(?:[\\s\\-–—]*(?:bis\\s+)?` +            // optional separator
+        `(${DAY}))?`,                             // optional second day
+        "gi"
+      );
+      const timeFirstMatches = [...block.matchAll(timeFirstRe)];
+      if (timeFirstMatches.length > 0) {
+        const hours = {};
+        for (const dm of timeFirstMatches) {
+          const dayRange = dm[4] ? `${dm[3]}-${dm[4]}` : dm[3];
+          hours[dayRange] = `${dm[1]}-${dm[2]}`;
+        }
+        return { value: hours, source: sourceTag(key), verified: true };
+      }
     }
 
-    // Strategy 2: Look for day-time patterns anywhere
-    const dayTimeRe = /(Mo(?:ntag)?[\s\-–]*(?:Fr(?:eitag)?|Sa(?:mstag)?)?)\s*[:\s]+(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})/gi;
+    // Strategy 2: Look for day-time patterns anywhere (day first: "Mo-Fr 08:00-17:00")
+    const dayTimeRe = new RegExp(
+      `(${DAY})` +                                // first day
+      `(?:[\\s\\-–—]*(?:bis\\s+)?` +              // optional separator
+      `(${DAY}))?` +                              // optional second day
+      `\\s*[:;\\s]+` +                            // separator before time
+      `${TIME}` +                                 // start time
+      `(?:${TSEP})` +                             // time separator
+      `${TIME}`,                                  // end time
+      "gi"
+    );
     const dayTimeMatches = [...text.matchAll(dayTimeRe)];
     if (dayTimeMatches.length > 0) {
       const hours = {};
       for (const dm of dayTimeMatches) {
-        hours[dm[1].trim()] = `${dm[2]}-${dm[3]}`;
+        const dayRange = dm[2] ? `${dm[1]}-${dm[2]}` : dm[1];
+        hours[dayRange] = `${dm[3]}-${dm[4]}`;
+      }
+      return { value: hours, source: sourceTag(key), verified: true };
+    }
+
+    // Strategy 3: Time-first patterns anywhere ("08:00 - 17:00 Montag bis Freitag")
+    const timeFirstAnyRe = new RegExp(
+      `${TIME}` +                                 // start time
+      `(?:${TSEP})` +                             // time separator
+      `${TIME}` +                                 // end time
+      `\\s+` +                                    // space before days
+      `(${DAY})` +                                // first day
+      `(?:[\\s\\-–—]*(?:bis\\s+)?` +              // optional separator
+      `(${DAY}))?`,                               // optional second day
+      "gi"
+    );
+    const timeFirstAnyMatches = [...text.matchAll(timeFirstAnyRe)];
+    if (timeFirstAnyMatches.length > 0) {
+      const hours = {};
+      for (const dm of timeFirstAnyMatches) {
+        const dayRange = dm[4] ? `${dm[3]}-${dm[4]}` : dm[3];
+        hours[dayRange] = `${dm[1]}-${dm[2]}`;
       }
       return { value: hours, source: sourceTag(key), verified: true };
     }
@@ -525,6 +677,26 @@ function extractLeistungen() {
     }
 
     if (Object.keys(categories).length > 0) {
+      // Deduplicate: count how many categories each line appears in
+      const lineCatCount = {};
+      for (const [cat, lines] of Object.entries(categories)) {
+        for (const line of lines) {
+          lineCatCount[line] = (lineCatCount[line] || 0) + 1;
+        }
+      }
+      // Remove generic lines (appear in > 3 categories) + deduplicate within category
+      // But KEEP at least the category keyword itself (e.g., "SANITÄR", "HEIZUNG")
+      for (const cat of Object.keys(categories)) {
+        const deduped = [...new Set(categories[cat])];
+        const specific = deduped.filter((l) => (lineCatCount[l] || 0) <= 3);
+        if (specific.length > 0) {
+          categories[cat] = specific;
+        } else {
+          // All lines are generic — keep just the category name as a marker
+          categories[cat] = [cat];
+        }
+      }
+
       return { value: categories, source: sourceTag(key), verified: true };
     }
   }
@@ -686,6 +858,121 @@ function extractBesonderheiten() {
   return { value: null, source: "not_found", verified: false };
 }
 
+// ── Zefix (Handelsregister) API ──────────────────────────────────────────
+async function verifyWithZefix(companyName) {
+  if (!companyName || companyName.length < 3) return null;
+
+  try {
+    // Clean query: remove trailing punctuation, normalize whitespace
+    const query = companyName.replace(/[.,;:!?]+$/, "").trim();
+    console.log(`  [Zefix] Searching: "${query}"`);
+
+    // Zefix REST API: POST to firm/search.json with JSON body
+    const url = "https://www.zefix.ch/ZefixREST/api/v1/firm/search.json";
+
+    // Try exact match first, then contains if no results
+    for (const searchType of ["exact", "contains"]) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Origin: "https://www.zefix.ch",
+          Referer: "https://www.zefix.ch/de/search/entity/welcome",
+        },
+        body: JSON.stringify({
+          name: query,
+          searchType,
+          maxEntries: 10,
+        }),
+        signal: AbortSignal.timeout(8000),
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        // Zefix returns error JSON for "no results" on some queries
+        if (text.includes("NORESULT")) {
+          if (searchType === "exact") continue; // try contains
+          console.log("  [Zefix] No results found");
+          return null;
+        }
+        console.log(`  [Zefix] API returned ${response.status} — skipping`);
+        return null;
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        if (searchType === "exact") continue;
+        console.log("  [Zefix] No results found");
+        return null;
+      }
+
+      if (data.list && data.list.length > 0) {
+        return parseZefixResult(data.list, query);
+      }
+    }
+
+    console.log("  [Zefix] No results found");
+    return null;
+  } catch (err) {
+    console.log(`  [Zefix] Error: ${err.message}`);
+    return null;
+  }
+}
+
+function parseZefixResult(companies, query) {
+  const normalizedQuery = query.toLowerCase().replace(/\s+/g, " ").trim();
+
+  // Find best match: prefer exact match, then closest name
+  let best = null;
+  let bestScore = -1;
+
+  for (const c of companies) {
+    const name = (c.name || c.companyName || "").trim();
+    const normalizedName = name.toLowerCase().replace(/\s+/g, " ");
+
+    let score = 0;
+    // Exact match
+    if (normalizedName === normalizedQuery) score = 100;
+    // Contains query
+    else if (normalizedName.includes(normalizedQuery)) score = 80;
+    // Query contains result
+    else if (normalizedQuery.includes(normalizedName)) score = 60;
+    // Partial overlap (Levenshtein-like: shared words)
+    else {
+      const queryWords = new Set(normalizedQuery.split(/\s+/));
+      const nameWords = normalizedName.split(/\s+/);
+      const shared = nameWords.filter((w) => queryWords.has(w)).length;
+      score = (shared / Math.max(queryWords.size, nameWords.length)) * 50;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  }
+
+  if (!best || bestScore < 20) {
+    console.log("  [Zefix] No good match found");
+    return null;
+  }
+
+  const result = {
+    name: best.name,
+    uid: best.uidFormatted || best.uid || null,
+    ehraid: best.ehraid || null,
+    legalSeat: best.legalSeat || null,
+    cantonalExcerptWeb: best.cantonalExcerptWeb || null,
+    status: best.status || null,
+    legalFormId: best.legalFormId || null,
+    matchScore: bestScore,
+  };
+
+  console.log(`  [Zefix] Match: "${result.name}" (score: ${bestScore}, seat: ${result.legalSeat}, UID: ${result.uid})`);
+  return result;
+}
+
 // ── Google Places API ────────────────────────────────────────────────────
 async function fetchGooglePlaces(companyName, address) {
   if (!GOOGLE_API_KEY) {
@@ -765,15 +1052,20 @@ async function main() {
       const url = baseUrl + path;
       console.log(`  [${pageKey}] Trying: ${url}`);
 
-      const text = await crawlPage(page, url, pageKey);
-      if (text && text.trim().length > 50) {
-        pageTexts[pageKey] = text;
+      const crawlResult = await crawlPage(page, url, pageKey);
+      if (crawlResult && crawlResult.text.trim().length > 50) {
+        pageTexts[pageKey] = crawlResult.text;
+        pageMeta[pageKey] = {
+          title: crawlResult.title,
+          ogSiteName: crawlResult.ogSiteName,
+          ogTitle: crawlResult.ogTitle,
+        };
         pageSources[pageKey] = url;
-        allTexts.push(text);
-        result._meta.pages_crawled.push({ key: pageKey, url, chars: text.length });
+        allTexts.push(crawlResult.text);
+        result._meta.pages_crawled.push({ key: pageKey, url, chars: crawlResult.text.length });
         pagesFound++;
         found = true;
-        console.log(`  [${pageKey}] OK — ${text.length} chars`);
+        console.log(`  [${pageKey}] OK — ${crawlResult.text.length} chars${crawlResult.title ? ` (title: "${crawlResult.title.slice(0, 60)}")` : ""}`);
         break;
       }
     }
@@ -867,6 +1159,79 @@ async function main() {
   const besondResult = extractBesonderheiten();
   result.besonderheiten = besondResult;
   console.log(`  besonderheiten: ${besondResult.value || "(not found)"}`);
+
+  // ── Zefix (Handelsregister) Verification ──
+  console.log("\n--- Zefix Verification ---\n");
+  const zefixResult = await verifyWithZefix(result.firma.value);
+  if (zefixResult) {
+    result._zefix = {
+      official_name: zefixResult.name,
+      uid: zefixResult.uid,
+      ehraid: zefixResult.ehraid,
+      legal_seat: zefixResult.legalSeat,
+      status: zefixResult.status,
+      cantonal_excerpt: zefixResult.cantonalExcerptWeb,
+      match_score: zefixResult.matchScore,
+    };
+
+    // If Zefix has a better name (higher confidence), upgrade
+    if (zefixResult.matchScore >= 60 && zefixResult.name) {
+      const oldName = result.firma.value;
+      const zefixName = zefixResult.name;
+
+      // Compare case-insensitively to detect substance change vs just casing
+      const oldNorm = oldName.toLowerCase().replace(/\s+/g, " ");
+      const zefixNorm = zefixName.toLowerCase().replace(/\s+/g, " ");
+
+      if (oldNorm === zefixNorm) {
+        // Same name, different casing — keep the better-cased version (prefer Titlecase over ALLCAPS)
+        const isZefixAllCaps = zefixName === zefixName.toUpperCase();
+        const isOldAllCaps = oldName === oldName.toUpperCase();
+        if (isZefixAllCaps && !isOldAllCaps) {
+          // Keep original casing, just mark as verified
+          result.firma.source = `${result.firma.source}+zefix_verified`;
+          result.firma.verified = true;
+          console.log(`  [Zefix] Confirmed firma: "${oldName}" ✓ (Zefix: "${zefixName}")`);
+        } else {
+          result.firma.value = zefixName;
+          result.firma.source = `${result.firma.source}+zefix_verified`;
+          result.firma.verified = true;
+          console.log(`  [Zefix] Confirmed firma: "${zefixName}" ✓`);
+        }
+      } else if (zefixNorm.includes(oldNorm) || oldNorm.includes(zefixNorm)) {
+        // Zefix adds legal form (e.g., "Stark Haustechnik" → "Stark Haustechnik GmbH")
+        // Use Zefix name but apply Titlecase if it's ALLCAPS
+        const finalName = (zefixName === zefixName.toUpperCase())
+          ? zefixName.split(/\s+/).map((w) => {
+              const legalMap = { AG: "AG", GMBH: "GmbH", SA: "SA", SARL: "Sàrl" };
+              return legalMap[w] || w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+            }).join(" ")
+          : zefixName;
+        result.firma.value = finalName;
+        result.firma.source = `${result.firma.source}+zefix_verified`;
+        result.firma.verified = true;
+        console.log(`  [Zefix] Upgraded firma: "${oldName}" → "${finalName}"`);
+      } else {
+        // Substantially different — use Zefix as authority
+        result.firma.value = zefixName;
+        result.firma.source = `${result.firma.source}+zefix_verified`;
+        result.firma.verified = true;
+        console.log(`  [Zefix] Replaced firma: "${oldName}" → "${zefixName}"`);
+      }
+    }
+
+    // Cross-reference address with registered seat
+    if (zefixResult.legalSeat && result.adresse.value) {
+      const addrLower = result.adresse.value.toLowerCase();
+      const seatLower = zefixResult.legalSeat.toLowerCase();
+      if (!addrLower.includes(seatLower)) {
+        console.log(`  [Zefix] WARNING: Address city mismatch — extracted "${result.adresse.value}" but registered seat is "${zefixResult.legalSeat}"`);
+      }
+    }
+  } else {
+    result._zefix = null;
+    console.log("  [Zefix] No verification available — company may not be in Handelsregister");
+  }
 
   // ── Google Places API ──
   console.log("\n--- Google Places API ---\n");

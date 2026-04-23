@@ -1,0 +1,3 @@
+file 'docs/customers/doerfler-ag/takes/Scaling/Take2/_splice_founder_q.wav'
+file 'docs/customers/doerfler-ag/takes/Scaling/Take2/_splice_silence.wav'
+file 'docs/customers/doerfler-ag/takes/Scaling/Take2/_splice_lisa_a.wav'

@@ -8,12 +8,15 @@
 - Setup: DONE (tenant d0000000-0000-0000-0000-000000000002, modules: all true)
 - Trial: PROVISIONED Phase A (01.04.→15.04.2026, 15 Demo-Cases, kein Kontakt mit Prospect)
 - Website/Wizard: LIVE (wizard smoke PASS — case 5fb36e99)
-- Voice: LIVE, DSGVO-Fix applied (everything_except_pii), Laura DE + Juniper INTL published
+- Voice: LIVE, DSGVO-Fix applied (everything_except_pii), Ela DE + Juniper INTL published. **PR #424:** Out-of-scope + Language Gate fixes (09.04.)
 - Ops Dashboard: LIVE (login + workflow verified, 15 Demo-Cases sichtbar)
 - Reviews: BLOCKED (F9 — no Google Business Profile link)
 - Email Deliverability: PASS (SPF/DKIM/DMARC all pass, inbox confirmed)
 - CEO-App: Automatisch sichtbar (trial_active)
-- Demo-Video: Script bereit (docs/customers/doerfler-ag/demo_script.md), Aufnahme ausstehend
+- Vorstellungsseite: LIVE (flowsight.ch/kunden/doerfler-ag/vorstellung, PRs #414-#422)
+- Outreach-Mail: READY (send_outreach_mail.mjs, HTML mit Foto, Reply-To gunnar.wende@flowsight.ch)
+- Demo-Video: Speakflow finalisiert (4 Takes in vorstellung_script_v2.md), **AUFNAHME ALS NÄCHSTES**
+- Demo-Script: demo_script.md (Speakflow) + vorstellung_script_v2.md (Verpackung + Mail)
 - Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos
 - Ansprechpartner: Ramon + Luzian Dörfler (Geschäftsleitung seit 2004, 3. Generation)
 
@@ -32,6 +35,23 @@
 - Brand-Nummer: +41 43 443 52 00 (Peoplefone → Twilio → Retell)
 
 ## Updates
+
+### 2026-04-09 | CC | Voice Agent Fixes (Sales Day 9)
+- **Out-of-scope Fix (PR #424):** Off-topic Frage ("Steuererklärung?") während laufendem Intake beendete den Anruf. Edge-Condition verschärft: out_of_scope nur wenn NIEMALS Sanitär/Heizung besprochen.
+- **Language Gate Fix (PR #424):** IT/FR Sprachwechsel ignoriert ("Sprechen Sie italienisch?", "Si si"). Keyword-Liste erweitert (+italienisch, französisch, si si, parli, aiuto, etc.), widersprüchliche Prompt-Instruktion ("Antworte trotzdem auf Deutsch") ersetzt.
+- **Scope:** Alle 8 Intake-Agents (4 DE + 4 INTL) für Dörfler, Brunner, Weinberger, Leuthold.
+- **Published:** Alle Agents via retell_sync.mjs synced + published.
+- **Nächste Schritte:** Founder testet Voice während Take-Aufnahme.
+
+### 2026-04-07/08 | CC + Founder | Vorstellung + Outreach (Sales Day 7-8)
+- **Vorstellungsseite LIVE:** flowsight.ch/kunden/doerfler-ag/vorstellung (PRs #414-#422, 9 Iterationen)
+- **4 Video-Module:** Alltag → Telefon → Online → Bewertung (Loom-Platzhalter, URLs nach Aufnahme)
+- **Speakflow finalisiert:** 4 Takes in vorstellung_script_v2.md, Founder-approved
+- **Outreach-Mail READY:** `send_outreach_mail.mjs doerfler-ag <email>` — HTML mit Gunnar-Foto (Play-Button), klickbar → Vorstellungsseite
+- **E-Mail-Adresse:** gunnar.wende@flowsight.ch (korrigiert, überall konsistent)
+- **RLS Security Fix:** 6 Tabellen ohne RLS gefixt (Supabase Security Scan, PR #423)
+- **lessons-learned.md:** §5-§7 ergänzt (Script, Vorstellungsseite, Outreach)
+- **Nächste Schritte:** (1) Founder nimmt 4 Loom-Takes auf, (2) Loom-URLs in vorstellung.ts eintragen, (3) Mail 1 an Dörfler senden
 
 ### 2026-04-01 | CC | Phase A Provisioning (Sales Day 1)
 - **Trial provisioned:** 01.04.→15.04.2026, 15 Demo-Cases (sanitaer), follow_up 11.04.
