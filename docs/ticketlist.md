@@ -1,6 +1,10 @@
 # Ticketlist — FlowSight (SSOT)
 
-**Updated:** 2026-04-23 (Sales Day 23: **Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG** (Masterbetrieb 10/10). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet. Demo-Time-Architektur + DEMO_NO_DISPATCH env-Flag + Take 4 komplett (Termin → Reminder → D15 → Review Mobile → Closing Gold → Windows-Toast). Quality-Gates-Framework etabliert. Morgen: 3-Betrieb-Dry-Run Lens+Wälti+Stark.)
+**Updated:** 2026-04-25 Day-25 Morning — **🔊 AUDIO-PIPELINE PHASE A DONE (autonom Nacht 24→25.04.).** Während Founder schlief autonom gebaut: 13 Scripts unter `scripts/_ops/audio/`, 36 cleaned Founder-Audios, 15 Lisa-TTS (9 generic + 2 variant + 4 tenant greetings), 8 assemblierte Calls, 20 Take-Audios (4 Tenants × 5 Takes), 20 Preview-Videos, HTML-QG-Report. **80/80 Gates PASS.** Review: `docs/gtm/pipeline/06_video_production/_generated/QUALITY_GATE_REPORT.html`. Bible §35 ergänzt. **Nächster Schritt (Phase B):** Screenflow-Retiming (Take 2 93s→340s, Take 3 61s→170s, Take 4 106s→152s) + Take 1 Screenflow für Leins/Stark/Wälti. — Kontext Tag 24:
+
+**Updated:** 2026-04-24 Day-24 Evening — **🔒 PRODUCTION-BASELINE FIXED.** Pipeline Screenflow Take 2+3+4 ist 10/10 für alle 4 Referenz-Betriebe (Dörfler, Leins, Stark, Wälti). Round-15 abgeschlossen (FB42-FB60 alle gefixt, direkte Review-Page-Pop-Animation, Viewport-Meta-Root-Cause, No-Regression-Lock in PIPELINE_BIBLE §34). **Pipeline bereit für Scale 10-30 Betriebe/Tag.** Nächster Schritt: Audio-Layer (Founder-Aufnahme Take 2-4 Master + Audio×Screenflow-Mapping). — Kontext Tag 23:
+
+**Updated:** 2026-04-23 Late-Night (Sales Day 23: **3-Betrieb-Gold-Standard erreicht (Leins + Stark + Wälti).** Take 4 Review-Flow Round-3-Iteration: FB32 Samsung-Pop-Animation + FB34 Review-Layout + FB37 Dual-Selector-Fix + FB38 Reveal-Overlay Smart-Gate + FB39 Andreas Gerber deterministische Zeit + FB40 Wallpaper-Crop + FB41 Samsung One UI 6 Nav-Icons. Alle 3 Betriebe Take 2+3+4 neu gebaut (35/35 QG PASS pro Tenant). Pipeline-Bible §31 ergänzt. **Ready für Founder-Review + 10/Tag-Skalierung.**)
 **Rule:** CC updates after every deliverable. Founder reviews weekly.
 **Einziger Ticket-Tracker.** Alle offenen Tickets leben hier.
 **Bug-Klassen:** `[STOPP]` = blockiert E2E/Proof/Versand. Wird sofort gefixt. Alles andere = Ticketliste.
@@ -20,8 +24,8 @@
 - **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
 - **BLOCKER:** 0
 - **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN+DE LIVE (+41445054818), PCA structured extraction. Dashboard 6 Cards. Go-Live prep 90% complete, waiting for Paul's photos/videos. 35 PRs (#457-#467 + #479-#499).
-- **Phase:** Sales Day 23. Take 2+3+4 Pipeline komplett für Dörfler AG. Audio Take 1-4 hochgeladen. Nächste Schritte: 3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation (24.04.).
-- **Nächste Schritte (Tag 24, 24.04.):** **3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation.** Reihenfolge: (1) Take 2 × 3 Betriebe sequential (Lens, Wälti, Stark), (2) Take 3+4 Lens AG solo als Masterprobe, (3) Take 3+4 Dörfler + Wälti + Stark parallel. Quality-Gates-Script (`dry_run_qg.mjs`) parallel fertig bauen. Ziel: Pipeline reproducibly over 4 Betriebe, Loom-PiP-Integration final, Outreach-Phase 3 vorbereitet.
+- **Phase:** Sales Day 23 Late-Night. **Take 4 Review-Flow Gold-Standard für 3 Betriebe (Leins + Stark + Wälti).** FB32-FB41 gefixt: Samsung-Pop-from-Link Animation, Review-Layout-Konstanten, Dual-min-h-dvh-Selector-Falle, Reveal-Overlay Smart-Gate, deterministische Seed-Zeiten, Wallpaper-Crop, Samsung One UI 6 Nav-Icons (3-bar+square+chevron). Pipeline-Bible §31 ergänzt. Alle 3 Betriebe verifiziert Phone2-Ende + Review-Start auf identischer Y-Position.
+- **Nächste Schritte (Tag 24, 24.04.):** **Founder-Review 3-Betrieb-Set (Leins + Stark + Wälti Take 2/3/4).** Parallel: Audio+Voice-Layer Master-Segmente (Founder-Aufgabe). Danach: 10/Tag-Skalierung produktiv (run_pipeline_multi.mjs --parallel=2), Loom-PiP-Integration Audio-sync, Outreach-Phase vorbereitet. Take 1 (Website-Video) fehlt noch.
 - **CI/CD:** GitHub Actions (lint + build + Telegram notify + lifecycle-tick + morning-report). Branch Protection: PR required.
 
 ### How to Operate (Founder via Handy)

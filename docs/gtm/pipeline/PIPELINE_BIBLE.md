@@ -1,7 +1,10 @@
 # Gold-Contact-Pipeline — Die komplette Referenz
 
-**Version:** 1.7 | **Datum:** 2026-04-23
+**Version:** 2.0 — **PRODUCTION BASELINE** | **Datum:** 2026-04-24
 **Zweck:** Dieses Dokument beschreibt die GESAMTE Pipeline in allerhöchster Detailtiefe. Es dient als einzige Wahrheitsquelle für alle Beteiligten (Founder, CC, externe AI-Module). Wer dieses Dokument liest, versteht die Pipeline vollständig — von der Idee bis zur letzten Schraube.
+
+**🔒 PRODUCTION-BASELINE 24.04.2026 (Round-15 FINAL):**
+Pipeline Screenflow Take 2+3+4 ist **10/10 production-ready** für alle 4 Referenz-Betriebe (Dörfler, Leins, Stark, Wälti). Ab diesem Zeitpunkt ist dies der **DAUERHAFTE Ausgangszustand** — jeder neue Betrieb (Nr. 5 bis 100+) läuft durch exakt dieselbe Pipeline und erreicht automatisch dasselbe Niveau. Siehe **§34 Production-Baseline Lock** für die verbindliche Regel-Liste. Round-1 bis Round-15-Learnings (FB1-FB60) sind in §31-§33 dokumentiert und MÜSSEN bei jeder Pipeline-Änderung respektiert werden — keine Regression erlaubt.
 
 **Day-23-Status (23.04.2026):** Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG (Masterbetrieb, 10/10 durchgejagt). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29). Neu in §24-§28: Demo-Time-Architektur, DEMO_NO_DISPATCH env-Flag, Take 4 Feature-Set Final, Sidebar-Profile-Overlay + Phone-Platter-Backstop, Quality-Gates-Framework, 3-Betrieb-Dry-Run Plan (Lens + Wälti + Stark).
 
@@ -2417,5 +2420,1013 @@ node scripts/_ops/run_pipeline_multi.mjs \
 - `scripts/_ops/run_pipeline_multi.mjs` — S3 Multi-Tenant Runner
 - `scripts/_ops/pipeline/record_take4.mjs` — S4 Speed-Flag
 - Zielarchitektur D95 — Pipeline-Skalierungs-Architektur (Entscheidungs-Eintrag)
+
+---
+
+## §31 Take 4 Review Round-3 Learnings — FB32/FB34/FB37 (23.04.2026 EOD)
+
+**Kontext:** Leins AG Review-Round-3. Drei kritische Fixes im Take-4-Review-Flow,
+die sich pipeline-weit replizieren müssen.
+
+### FB32 — Samsung-Style Pop-from-Link Animation (Take 4 Phone2 → Review-Splice)
+
+**Problem:** Link-Click im SMS-Verlauf eröffnete Review mit radialer Brand-Farb-
+Expansion (blaue Welle füllt Screen). Wirkte nicht wie App-Opening, fühlte sich
+"plumpe" an. User-Referenz (FB33): Samsung One UI App-Open — App-Content ploppt
+zentralisiert von klein auf groß.
+
+**Lösung — `window.openReviewLink()` in `take2_samsung.html`:**
+- Mini-Review-Preview-DIV mit exaktem Review-Page-Layout (grau BG + 4px Brand-Bar
+  + white Card + "Leins AG" + Info + 5 Sterne placeholder)
+- Element ist fullscreen positioniert (412×(915-36)=879px), start transform
+  `translate(startX-W/2, startY-(36+PH/2)) scale(0.12)` → ploppt bei Link-Position klein
+- Target-Transform: `translate(0,0) scale(1)` mit Samsung One UI Easing
+  `cubic-bezier(0.2, 0.9, 0.1, 1)` über 560ms → wächst zentral auf fullscreen
+- Status-Bar (obere 36px) bleibt FREI (preview sitzt bei top:36px) damit Phone2-
+  Ende und Review-Start beide Samsung-Statusbar zeigen
+- Tap-Ring-Pulse 240ms auf Link-Position vor Pop startet
+
+**Skalierung:** Animation ist generisch über `CONFIG.firma` + `--brand-color` CSS-Var.
+Funktioniert automatisch für jeden Tenant.
+
+### FB34 — Review-Layout matcht FB35-Referenz
+
+**Problem:** Review-Page zu tight gegen Status-Bar. User wollte mehr grauen
+Abstand oben, subtile Brand-Linie, mehr Whitespace vor "Leins AG".
+
+**Lösung — `record_take4.mjs` CSS-Injection in recordReview:**
+```css
+html, body {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #f3f4f6 !important;  /* matcht bg-gray-100 → uniform Grey unter Statusbar */
+}
+.min-h-dvh.bg-gray-100 { padding-top: 140px !important; box-sizing: border-box !important; }
+.h-1\.5 { height: 4px !important; }      /* Brand-Bar subtil (FB35) */
+.pt-6 { padding-top: 60px !important; }   /* Whitespace vor Leins AG */
+```
+
+**Timing-Pattern für React-Hydration:**
+- `addInitScript` + `setInterval(inject, 30)` — greift bei React-Hydration zu spät,
+  erste ~2s Webm zeigen un-padded State
+- Fix: `await page.waitForSelector(".min-h-dvh.bg-gray-100")` + sofort `page.evaluate()`
+  mit inline-style `setProperty("padding-top", "140px", "important")` + `setInterval(apply, 40)`
+- Grey-Overlay `#f3f4f6` z=99999 opacity=1, fadet nach 1800ms hold → 500ms fade-out.
+  Überdeckt Hydration-Flash ohne Color-Shift (matches bg-gray-100)
+
+### FB37 — KRITISCH: Dual-.min-h-dvh-Selector-Falle
+
+**Problem:** `ReviewSurfaceClient.tsx` hat ZWEI Elemente mit class `min-h-dvh`:
+- Outer: `<div className="min-h-dvh bg-gray-100">` (grey container)
+- Inner: `<div className="mx-auto flex min-h-dvh ... bg-white">` (white card)
+
+CSS-Selector `.min-h-dvh { padding-top: 140px }` matcht BEIDE → Padding wird verdoppelt
+(140 outer + 140 inner + 4 brand-bar + 60 pt-6 = **344px** vor "Leins AG").
+
+**Lösung — IMMER class-combo-Selector für outer-only targeting:**
+```js
+document.querySelectorAll(".min-h-dvh.bg-gray-100")  // outer only
+// NICHT: document.querySelectorAll(".min-h-dvh")
+```
+
+Zusätzlich: Inner-Element explizit auf `padding-top: 0` reset zur Sicherheit:
+```js
+document.querySelectorAll(".min-h-dvh.bg-white").forEach((inner) => {
+  inner.style.setProperty("padding-top", "0", "important");
+});
+```
+
+**Regel für Pipeline:** Bei jedem Tailwind-Selector-Hack in CSS-Injection →
+PRÜFEN ob Klasse mehrfach im DOM vorkommt. Wenn ja, via zweite Klasse
+disambiguieren (hier: bg-gray-100 vs bg-white).
+
+### FB36/FB37 — Phone-Screens absolut identisch alignen (Pop-Ende + Review-Start)
+
+**Problem:** Preview-Pop endet mit Leins-AG-Layout; Review startet mit Leins-AG-Layout.
+Beide müssen VERTIKAL identisch sein — sonst "springt" beim Video-Cut das Heading.
+
+**Lösung — Cross-Layout-Invariante:**
+
+| Layer            | Preview (Phone2 Ende)              | Review (Review-Start)              |
+|------------------|------------------------------------|------------------------------------|
+| Status-Bar       | Samsung sms-screen (take2.html)    | ffmpeg-overlay via overlayPhoneChrome |
+| Grau-Padding     | Preview inner `padding-top: 104px` | `.min-h-dvh.bg-gray-100 padding-top: 140px` |
+| Brand-Bar        | 4px @ y=140 (36 + 104)             | 4px @ y=140 (.h-1\.5)              |
+| pt-6             | 60px                                | 60px                                |
+| Leins AG         | y=204                               | y=204                               |
+
+Die 36px-Asymmetrie zwischen Preview (inner 104px) und Review (inner 140px, ohne
+html-Padding) kompensiert exakt den oberen Status-Bar-Bereich, den Preview FREI lässt.
+
+### FB29 — Grey-Overlay Masking für Hydration
+
+Ersetzt Brand-Color-Overlay durch `#f3f4f6` (matches bg-gray-100). Review-Video
+startet mit opak-grauem Overlay, fadet nach 1800ms hold + 500ms → nahtloser
+Splice ohne Color-Shift zum Preview-Ende.
+
+### FB38a — Next.js 16 Dev-Badge-Kill (customElements.define Intercept)
+
+**Problem:** `nextjs-portal` Custom Element rendert den "1 Issue" Dev-Overlay-
+Badge bei manchen Tenants (Hydration-Warnings). Reines `element.remove()`
+oder CSS `display: none` reicht NICHT — React/Next.js re-hydriert den Portal
+schneller als das Interval firen kann. Badge taucht wieder auf.
+
+**Lösung (definitive):** Custom-Element-Registration unterbinden BEVOR der
+Portal sich registriert. `addInitScript` läuft vor jedem Page-Script:
+
+```js
+// Intercept customElements.define für ALLE nextjs-* Tags
+const origDefine = customElements.define.bind(customElements);
+customElements.define = function (name, ctor, options) {
+  if (typeof name === "string" && name.toLowerCase().startsWith("nextjs-")) {
+    return; // swallow registration → element wird nie aktiv
+  }
+  return origDefine(name, ctor, options);
+};
+
+// Defense-in-depth: attachShadow no-op für durchgeschlüpfte nextjs-* Elemente
+const origAttach = Element.prototype.attachShadow;
+Element.prototype.attachShadow = function (opts) {
+  if (this.tagName && this.tagName.toLowerCase().startsWith("nextjs-")) {
+    return document.createDocumentFragment(); // fake shadow root
+  }
+  return origAttach.call(this, opts);
+};
+```
+
+Plus erweiterter Remove-Killer mit setInterval 20ms + MutationObserver:
+```js
+const killBadges = () => {
+  document.querySelectorAll(
+    'nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-tools-button], ' +
+    '[data-nextjs-dialog-overlay], [data-issue-index], ' +
+    'button[aria-label*="issue" i], [aria-label*="Dev Tools" i], ' +
+    '[id^="nextjs-"]'
+  ).forEach(el => el.remove());
+};
+setInterval(killBadges, 20);
+new MutationObserver(killBadges).observe(document.documentElement, { childList: true, subtree: true });
+```
+
+**Warum verhält sich ein Tenant anders?** Dev-Overlay erscheint bei React-
+Hydration-Mismatches. Unterschiedliche Tenant-Daten (z.B. fehlende optional-
+Felder, andere Case-Count) können Hydration-Warnings triggern → Badge.
+Der customElements-Intercept ist tenant-agnostisch und killt die Badge-
+Infrastruktur komplett → nichts kann mehr angezeigt werden.
+
+**Verifiziert:** Leins (kein Badge ursprünglich), Stark + Wälti (hatten
+Badge) → nach FB38a alle clean.
+
+### FB38b — Leitsystem App-Open Reveal-Overlay Smart-Gate
+
+**Problem:** Beim App-Open-Transition (Samsung→Leitsystem) zeigt die Leitzentrale
+kurz einen un-gerenderten State: leere NEU-Card, falsches Jahr (z.B. "2028" statt
+"2026"). React-Hydration dauert länger als das feste 2200ms-Timeout des Reveal-
+Overlays. Bei Tenants mit 49+ Cases manifest sichtbar.
+
+**Lösung — record_leitsystem_take2.mjs `addInitScript`:**
+```js
+const MIN_HOLD_MS = 3500;
+const MAX_HOLD_MS = 6000;
+const startedAt = Date.now();
+const checkReady = () => {
+  const elapsed = Date.now() - startedAt;
+  const systemCardExists = !!document.querySelector('svg circle[stroke-dasharray]')
+    || !!document.querySelector('[class*="ring"]');
+  const kpiFilled = Array.from(document.querySelectorAll('[class*="kpi"]')).some(
+    el => /\d/.test(el.textContent || '')
+  );
+  const ready = (systemCardExists || kpiFilled) && elapsed >= MIN_HOLD_MS;
+  if (ready || elapsed >= MAX_HOLD_MS) fadeOut();
+  else setTimeout(checkReady, 100);
+};
+setTimeout(checkReady, MIN_HOLD_MS);
+```
+
+Überlay hält mindestens 3500ms, maximal 6000ms. Prüft parallel ob SystemCard-Ring
+oder KPI-Zahlen gerendert sind. Fade-out wenn beide Bedingungen erfüllt.
+
+### FB39 — Deterministische Seed-Zeiten aus demoTime
+
+**Problem:** `hoursAgo(N)` in seed_screenflow_from_config.mjs nutzt `Date.now()`
+→ recording-zeit-abhängig. Andreas Gerber "Abflussverstopfung" Case mit
+`hoursAgo(7)` landet je nach Tageszeit vor oder hinter dem Wizard-Case (Heute
+08:56). User erwartet stabile Sortierung: Gunnar Wende Leck auf Position 4,
+Andreas Gerber darunter.
+
+**Lösung — Seed deterministisch aus demoTime.today:**
+```js
+created_at: (() => {
+  const d = new Date(demoTime.today.y, demoTime.today.m - 1, demoTime.today.d);
+  d.setHours(7, 12, 0, 0);
+  return d.toISOString();
+})(),
+```
+
+Andreas jetzt IMMER "Heute 07:12" → vor Gunnar's 08:56 → sortiert darunter.
+Skaliert über alle Tenants weil demoTime.today ist Pipeline-Konstante.
+
+### FB40 — Homescreen-Wallpaper extends-to-bottom
+
+**Problem:** `homescreen_real.jpg` enthält eingebranntes weisses Samsung-Nav-
+Strip am Boden (bottom ~45px). Im Video wirkt der weisse Strip unter der
+dunklen Sunset-Wallpaper künstlich — kein echtes Samsung One UI Verhalten auf
+Homescreen.
+
+**Lösung — CSS Overflow-Crop:**
+```css
+#homescreen .home-bg {
+  height: 100%;  /* Revert zu 100%, damit baked-in Nav sichtbar */
+  width: 100%;
+  object-fit: cover;
+}
+```
+
+Plus: Compose-Overlay für Phone1/Phone2 ENTFERNT (keine zusätzliche weisse
+Nav darüber gelegt). Homescreen nutzt baked-in Samsung-Nav aus JPG (dunkler
+BG + weisse Icons, natürlich integriert in Wallpaper).
+
+### FB41 — Samsung One UI 6 authentische Nav-Icons
+
+**Problem:** Generische gerenderte Nav-Icons (rounded-square Recent + circle
+Home + chevron Back) wirken "dev-style". Real Samsung One UI 6 nutzt:
+- Recent: 3 vertikale Striche (|||)
+- Home: rounded-square outline (NICHT circle!)
+- Back: chevron (‹)
+
+**Lösung — SVG-Update in take2_samsung.html UND renderSamsungNav.mjs:**
+```html
+<!-- Recent: 3 vertical lines -->
+<svg stroke-width="1.6" stroke-linecap="round">
+  <line x1="7" y1="6" x2="7" y2="18"/>
+  <line x1="12" y1="6" x2="12" y2="18"/>
+  <line x1="17" y1="6" x2="17" y2="18"/>
+</svg>
+
+<!-- Home: rounded square rx=3.5 -->
+<svg stroke-width="1.6">
+  <rect x="4.5" y="4.5" width="15" height="15" rx="3.5"/>
+</svg>
+
+<!-- Back: chevron -->
+<svg stroke-width="1.9" stroke-linecap="round">
+  <polyline points="15 6 9 12 15 18"/>
+</svg>
+```
+
+Light-Mode: `#2a2a2a` Icons auf `#fff` bg (SMS + Review). Dark-Mode für
+Homescreen nicht benötigt (baked-in aus JPG).
+
+**Cross-Screen Konsistenz:** homescreen_real.jpg baked-in Nav matcht CSS-
+gerenderte Nav in sms-screen. Beim Transition homescreen→sms springt die Nav
+optisch nicht mehr.
+
+### Scaling-Impact
+
+Alle 4 Learnings sind:
+1. **Tenant-agnostisch** (nutzen nur `--brand-color` CSS-Var + `CONFIG.firma`)
+2. **Idempotent** (wiederholte Anwendung = gleiches Ergebnis)
+3. **Zero-Overhead** (kein Extra-Asset pro Tenant)
+
+→ **Keine Pipeline-Code-Änderung pro Betrieb nötig** — Wälti + Stark erben Leins-
+Fix automatisch, gleiche Qualität ohne Iteration.
+
+### Verifikations-Checkliste (pro Tenant)
+
+- [ ] Phone2 webm mid-pop (t=~4.7-5.0s) zeigt Mini-Review zentral wachsend
+- [ ] Phone2 webm end (t=~6.1-6.4s) zeigt Firma-Preview mit Status-Bar oben
+- [ ] Review webm @ t=0.8s schon 140px grau + thin Brand-Bar (Padding greift sofort)
+- [ ] Scene-Composite: Phone2-Ende + Review-Start Firma-Heading auf identischer Y-Position
+- [ ] Phone2 Homescreen (t=0.1s): Wallpaper durchgängig bis unten, baked-in dark Nav-Strip
+- [ ] Phone2 SMS (t=2s): weisse Nav-Bar unten mit authentischen Samsung-One-UI-6-Icons (||| □ ‹)
+- [ ] Leitsystem App-Open (Take 2, t=~35-38s): keine falsche Jahr-Dropdown, NEU-Card gefüllt
+- [ ] Case-Liste Order (Take 4): Gunnar Wende Leck auf Position 4, Andreas Gerber Abflussverstopfung darunter (Heute 07:12)
+
+---
+
+## §32 Take 2+4 Review Round-4 Learnings — FB42/FB43/FB44/FB45 (24.04.2026)
+
+**Kontext:** Stark-Haustechnik Round-4. Vier Polish-Probleme die sichtbar auf
+allen Betrieben greifen und die "High-End"-Wahrnehmung in den ersten Sekunden
+nach App-Open zerstören würden. Alle Fixes pipeline-only, kein App-Patch.
+
+### FB42 — KPI-Layout-Shift nach App-Open (Leitsystem)
+
+**Problem:** Nach App-Open-Animation (Samsung→Leitsystem) fadet das
+Reveal-Overlay. Für ~0.5s shiften KPI-Cards (Google-Count, Gold-Sterne,
+Source-Breakdown-Icons, Year-Dropdown-Width) bevor Layout stabil ist.
+Der WOW-Moment der Pop-Animation verpufft durch diese Reibung.
+
+**Root Cause:** FB38 Smart-Gate fadete sobald EINE KPI eine Ziffer enthielt.
+Weitere Daten (Google-Rating aus `modules`, Quellen-Breakdown-Counts,
+Period-Label "2026") wurden aber erst nach zusätzlichem Client-Fetch
+geladen → Grid reflow'te.
+
+**Lösung — Layout-Stability-Gate in `record_leitsystem_take2.mjs`:**
+```js
+const MIN_HOLD_MS = 4500;
+const MAX_HOLD_MS = 8000;
+const STABLE_FRAMES_NEEDED = 5;        // 5 × 100ms = 500ms layout-stable
+
+const hashLayout = () => {
+  const nodes = document.querySelectorAll(
+    '.grid > *, [class*="flow"] button, [class*="flow"] span, ' +
+    '[class*="ring"], svg circle[stroke-dasharray], h1, select'
+  );
+  let h = '';
+  nodes.forEach((n) => {
+    const r = n.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) return;
+    h += Math.round(r.top) + 'x' + Math.round(r.left) + 'x' +
+         Math.round(r.width) + 'x' + Math.round(r.height) + '|' +
+         (n.textContent || '').slice(0, 40) + '||';
+  });
+  return h;
+};
+
+const checkReady = () => {
+  const elapsed = performance.now() - startedAtPerf;
+  const currentHash = hashLayout();
+  if (currentHash === lastHash) stableFrames++;
+  else { stableFrames = 0; lastHash = currentHash; }
+  const layoutStable = stableFrames >= STABLE_FRAMES_NEEDED;
+  const ready = systemCardExists && layoutStable && fontsReady && elapsed >= MIN_HOLD_MS;
+  if (ready || elapsed >= MAX_HOLD_MS) fadeOut();
+  else setTimeout(checkReady, 100);
+};
+```
+
+**Warum `performance.now()` statt `Date.now()`:** FB43 pinnt `Date.now()` auf
+demo-Zeit (konstanter Wert), daher wäre Elapsed-Berechnung kaputt.
+`performance.now()` ist wallclock-unabhängig und stabil.
+
+**Warum `document.fonts.ready`:** Proportionale Ziffern-Fonts shiften bei
+Font-Swap. Gate wartet bis Fonts geladen sind.
+
+**Skalierung:** Greift für JEDEN Tenant + JEDEN App-Open (Take 2+3+4
+Leitsystem). Keine pro-Betrieb-Tuning nötig.
+
+### FB43 — Greeting muss demoTime-aware sein
+
+**Problem:** `getGreeting()` in `src/web/src/lib/ui/getGreeting.ts` nutzt
+`new Date().getHours()` → Wallclock. Recording um 20:30 Abend → Greeting
+"Guten Abend, Stark" — aber alle Screenflow-Szenen spielen um 08:08
+(morgens). Greeting MUSS "Guten Morgen" zeigen.
+
+**Anti-Option (verworfen):** App-Code patchen. Würde auch Live-System
+betreffen, Greeting im echten Leitstand würde sich nach Demo-Zeit richten.
+
+**Lösung — Date monkey-patch via `addInitScript` vor Page-Load:**
+```js
+await context.addInitScript((demoIsoArg) => {
+  const FAKE_NOW = new Date(demoIsoArg).getTime();
+  const OrigDate = Date;
+  function FakeDate(...args) {
+    if (!(this instanceof FakeDate)) return new OrigDate(FAKE_NOW).toString();
+    if (args.length === 0) return Reflect.construct(OrigDate, [FAKE_NOW], FakeDate);
+    return Reflect.construct(OrigDate, args, FakeDate);
+  }
+  FakeDate.prototype = OrigDate.prototype;
+  FakeDate.now = () => FAKE_NOW;
+  FakeDate.parse = OrigDate.parse;
+  FakeDate.UTC = OrigDate.UTC;
+  Object.setPrototypeOf(FakeDate, OrigDate);
+  globalThis.Date = FakeDate;
+}, demoNowIso);
+```
+
+Gepinnt wird:
+- Take 2: `demoTimes.phoneLeitsystemNav` (08:08)
+- Take 4: `demoTimes.terminSaveTime` (08:58) — deckt Akt1 + Akt2 ab
+
+**Kritischer Detail:** Nur `new Date()` mit 0 args + `Date.now()` werden
+gepinnt. `new Date(ISO-String)`, `new Date(ms)`, `Date.parse()`, `Date.UTC()`
+bleiben unverändert. Das schützt gegen Broken-Features wie Timeline-
+Rendering oder Case-Timestamps.
+
+**Side-Effect:** Alle anderen "Jetzt"-Anzeigen (z.B. "Heute 08:12" in
+Timeline) werden ebenfalls demo-aware — ist erwünscht, Demo wirkt kohärent.
+
+### FB44 — CEO Tenant-Switcher-Dropdown in Take 4 sichtbar
+
+**Problem:** In Take 4 Akt1/Akt2 (Sidebar-Profile-Overlay-Szene) wird der
+Tenant-Switcher-Dropdown "Stark Haustechnik GmbH ▼" unter dem Sidebar-Header
+sichtbar. FB62 CSS-Rule `[data-owner-only="tenant-switcher"] { display: none }`
+allein greift nicht zuverlässig — React hydratet den Node trotz CSS-Regel
+sichtbar in manchen Szenen (vermutlich Race zwischen CSS-Injection und
+Client-Hydration beim Sidebar-Render).
+
+**Lösung — Defense-in-Depth:**
+```css
+/* Verstärktes CSS in buildContext addInitScript */
+[data-owner-only="tenant-switcher"],
+[data-owner-only="tenant-switcher"] * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -99999px !important;
+}
+```
+
+Plus aktive DOM-Removal in `aggressiveKill` Interval (80ms):
+```js
+document.querySelectorAll('[data-owner-only="tenant-switcher"]')
+  .forEach((el) => { try { el.remove(); } catch {} });
+```
+
+Doppelschutz: CSS blendet aus bevor JS removt. JS removt für Szenen in denen
+CSS (aus welchem Grund auch immer) noch nicht greift.
+
+**App-Seite unchanged:** `TenantSwitcher.tsx` bleibt mit
+`data-owner-only="tenant-switcher"` Attribut — unser einziger Marker.
+
+### FB45/FB47 — Review-Page Initial-Render ≠ Final-Render
+
+**Problem:** Nach Samsung-Pop-from-Link (FB32, die schön animierte Mini-
+Preview) startet die Live `/review/[id]` Seite mit einem ~1-2s "Aufbau-
+State" (FB45: Brand-Bar fehlt, Sterne blass, Heading-Position leicht off),
+bis der Final-State (FB47: saturierte Brand-Bar oben, warm-goldene Sterne,
+korrekter Whitespace) steht. Das wirkt künstlich — die Pop-Animation baut
+Vertrauen auf ("High-End"), dann bricht es kurz.
+
+**Root Cause:** `ReviewSurfaceClient.tsx` ist `"use client"`. Tailwind-
+Klassen `.h-1\.5`, `.pt-6`, `.min-h-dvh.bg-gray-100` werden zwar CSS-
+inject'd, aber das `setInterval(inject, 30)` plus `MutationObserver` greifen
+erst nach React-Hydration. Für ~500-1800ms sieht man den Pre-Style-State.
+
+**Lösung — Smart-Gate auf Layout-Ready statt festem Timeout:**
+
+Grey-Overlay (`#f3f4f6` matcht `bg-gray-100`, nahtlos zum Phone2-Preview-
+Ende) hält aktiv bis:
+
+1. OUTER `.min-h-dvh.bg-gray-100` existiert MIT `padding-top >= 100px` computed
+2. Brand-Bar `.h-1\.5` existiert mit `height >= 3px` bounding-rect
+3. Firmen-Heading (`h1`/`h2`/`.text-xl`/`.font-bold`) hat Text-Content >= 3 Zeichen
+4. MIN_HOLD 2000ms erreicht
+
+Erst dann fadet das Overlay über 500ms aus. MAX_HOLD 5000ms als Safety-Net.
+
+```js
+const isLayoutReady = () => {
+  const outer = document.querySelector('.min-h-dvh.bg-gray-100');
+  if (!outer) return false;
+  const pt = parseInt(getComputedStyle(outer).paddingTop, 10) || 0;
+  if (pt < 100) return false;
+  const brandBar = document.querySelector('.h-1\\.5');
+  if (!brandBar) return false;
+  if (brandBar.getBoundingClientRect().height < 3) return false;
+  const heading = document.querySelector('h1, h2, .text-xl, .font-bold');
+  if (!heading || (heading.textContent || '').trim().length < 3) return false;
+  return true;
+};
+```
+
+**Effekt:** Im Video sieht der Zuschauer nur den Final-State FB47 — der
+Aufbau-State FB45 ist komplett vom Grey-Overlay maskiert. Der Übergang vom
+Phone2-Preview (grau+Brand-Bar+Heading) zur Live-Seite ist visuell unsichtbar
+(gleiche Farben, gleiche Brand-Bar, gleiche Heading-Y-Position).
+
+**Skalierung:** Greift für JEDEN Tenant. Smart-Gate prüft Computed-Styles,
+nicht Literal-Pixel-Werte — jeder Brand-Color + jeder Heading-Text wird
+korrekt erkannt.
+
+### Regel für alle künftigen Fixes (Pipeline-Discipline)
+
+Wenn ein Feedback auf EINEM Betrieb auftritt, IMMER prüfen:
+
+1. **Betroffene Betriebe:** Gilt der Fix auch für die anderen 3? (Dörfler,
+   Leins, Stark, Wälti) — meist ja, dann Pipeline-Change nicht Tenant-Change.
+2. **Betroffene Takes:** Gilt der Fix auch in Take 1/2/3? — meist ja.
+3. **Re-Run-Radius:** Welche Tenants müssen neu gerendert werden?
+4. **Bible-Update:** Neuer §-Block ODER Ergänzung in bestehendem §.
+5. **Anti-Drift:** Keine hardcodierten Tenant-Namen im Fix — Selectors und
+   Smart-Gates arbeiten immer Brand-/Content-agnostisch.
+
+### Verifikations-Checkliste (Round-4, pro Tenant)
+
+- [ ] App-Open Leitsystem (t=~0-500ms): KPI-Grid steht stabil, keine Shifts der Source-Breakdown-Icons oder Year-Dropdown-Width während Overlay fadet
+- [ ] Greeting nach App-Open: "Guten Morgen, {ShortName}" (nicht "Abend" oder "Tag")
+- [ ] Take 4 Akt1 + Akt2 Sidebar: KEIN Tenant-Dropdown unter Sidebar-Header sichtbar
+- [ ] Review-Video @ t=0-2.5s: reiner Grau-Screen (Overlay), dann Fade zum Final-State (kein Flash des Aufbau-States mit blassen Sternen)
+- [ ] Review @ t=2.5s: Brand-Bar (4px) + Firma-Heading + 5 Sterne sichtbar in finaler Farbe/Position
+
+---
+
+## §33 Universal Hydration Barrier — Architektur-Regel (24.04.2026)
+
+**Kontext:** Die Pipeline rendert ein **deterministisches** Video aus einer
+**non-deterministischen** React-Client-App. FB29, FB32, FB38, FB42, FB45 sind
+alle Varianten desselben strukturellen Problems: React hydriert
+asynchron, aber die Kamera läuft deterministisch — Mismatch = Flash/Shift
+im Video. Ad-hoc-Patches pro Szene sind Band-Aids; die strukturelle Lösung
+ist eine einheitliche **Hydration-Barrier-Regel**.
+
+### Die Regel
+
+> **Kein Frame wird im Video sichtbar, bevor die Szene visuell final ist.**
+
+Das bedeutet: Zwischen `page.goto(appUrl)` und dem ersten sichtbaren App-Frame
+sitzt IMMER eine Barrier (Full-Screen-Overlay), die aktiv prüft ob das Layout
+stabil ist. Erst dann fadet die Barrier aus. Die Barrier-Farbe matcht die
+vorherige Szene → nahtloser Splice ohne Color-Shift.
+
+### Drei Barrier-Typen
+
+| Typ | Hintergrund | Wann |
+|-----|-------------|------|
+| **BrandBarrier** | `brandColor` (Navy etc.) | Samsung→Leitsystem App-Open (FB32 Pop-Animation) |
+| **GreyBarrier** | `#f3f4f6` (bg-gray-100) | Phone2→Review-Page Splice (matcht Pop-Ende) |
+| **WhiteBarrier** | `#ffffff` | Case-Detail-Open, Einstellungen, Support |
+
+Jede Szene entscheidet ihre Barrier-Farbe basierend auf dem visuellen
+Ende der vorherigen Szene → null Flash, null Color-Shift.
+
+### Barrier-Ready-Kriterien (konfigurierbar pro Szene)
+
+Eine Barrier fadet aus, sobald ALLE Kriterien erfüllt sind:
+
+1. **MIN_HOLD erreicht** — Minimum-Dauer (z.B. 2000-4500ms je Szene)
+2. **Required Selectors existieren** — Szene-spezifische DOM-Elemente gerendert
+3. **Layout-Hash stabil** — 5 Frames (500ms) in Folge kein BoundingRect-Diff
+4. **Computed-Styles erfüllen Schwellen** — z.B. `padding-top >= 100px` auf `.bg-gray-100`
+5. **`document.fonts.ready`** — Font-Swap abgeschlossen
+6. **MAX_HOLD Safety-Net** — hart fadet nach max. (z.B. 8000ms)
+
+### Zusätzliche Universal-Kontext-Patches
+
+Jede Recording-Page bekommt VOR `page.goto()` identische Patches:
+
+| Patch | Zweck |
+|-------|-------|
+| **Date-pinning** (FB43) | `Date.now()` + `new Date()` auf demo-Zeit pinnen |
+| **Dev-Badge-Kill** (FB38a) | `customElements.define` + `attachShadow` intercept für `nextjs-*` Tags + aggressiver DOM-Remove |
+| **Tenant-Switcher-Kill** (FB44) | CSS + DOM-Remove für `[data-owner-only="tenant-switcher"]` |
+| **Push-Onboarding-Dismiss** | localStorage `ops-push-onboarding-dismissed = now` |
+| **Warning-Banner-Collapse** (FB104) | "Benachrichtigungen noch nicht versendet" visuell auf 0px kollabieren |
+
+### Geplante Library-Struktur (Folge-Refactor)
+
+```
+scripts/_ops/_lib/pipelineHydration.mjs
+  exports:
+    installDeterministicContext(context, {demoIso})
+      — Date-pin + Dev-Kill + TenantSwitcher-Kill + Push-Dismiss
+      — einzige Aufruf-Stelle am Anfang jeder Recording-Szene
+    createHydrationBarrier({bg, minHold, maxHold, requiredSelectors, requiredStyles, fadeMs})
+      — gibt addInitScript-String zurück
+      — wird via page.addInitScript(barrier) aktiviert
+```
+
+**Nach Refactor:** `record_leitsystem_take2.mjs`, `record_take4.mjs` und
+alle künftigen Recording-Scripts importieren die Lib. Pro-Szene werden nur
+die spezifischen Ready-Kriterien übergeben — keine duplizierten
+Overlay-Implementierungen mehr.
+
+### Regel für jede künftige Recording-Szene
+
+**Bevor neuer Recording-Code gemerged wird, MUSS der Author beantworten:**
+
+1. Welche Barrier-Farbe matcht den vorherigen Frame?
+2. Was sind die szene-spezifischen Ready-Kriterien (Selectors + Styles)?
+3. MIN_HOLD und MAX_HOLD je nach Komplexität (leitsystem: 4500/8000, review: 2000/5000)
+4. Welche Universal-Patches brauche ich (meist: alle 5 aus der Tabelle oben)?
+5. **Liegt MAX_HOLD unterhalb aller nachfolgenden Playwright-Timeouts für User-Aktionen (waitForSelector / click)?** → Falls nein: Timeouts anheben ODER `force: true` auf Clicks setzen.
+
+**Wenn diese 5 Fragen nicht beantwortet sind → kein Merge.**
+
+### Barrier-Timeout-Regel (Round-4-Regression, 24.04.)
+
+**Problem:** FB45 Grey-Overlay hält bis 5000ms (MAX_HOLD) + 500ms Fade. Review-
+Page Star/Chip/Submit-Clicks hatten Default-Timeouts 2000-3000ms. Folge:
+Clicks timeouten BEVOR Overlay fadet → Playwright-Visibility-Check schlägt
+fehl → Video zeigt un-bewertete Review-Page → Take 4 unbrauchbar.
+
+**Regel:**
+> **Barrier MAX_HOLD + Fade-Dauer MUSS IMMER < Timeout aller Playwright-User-Actions auf derselben Page sein.**
+
+**Konkrete Implementation:**
+```js
+// Barrier: MIN_HOLD 2000, MAX_HOLD 5000, Fade 500  → worst-case-hold 5500ms
+// Alle Playwright-Actions auf dieser Page:
+await page.waitForSelector(sel, { timeout: 10000 }); // > 5500
+await page.locator(sel).click({ timeout: 8000, force: true }); // > 5500 + force
+```
+
+**Warum `force: true`:** Playwright's Default-Click prüft ob Element
+visible + hit-testable ist. Overlay mit `opacity:1 + pointer-events:none`
+ist formal durchklickbar, aber manche Playwright-Versionen schlagen
+trotzdem auf Visibility-Checks Alarm. `force: true` überspringt die Checks
+und verlässt sich darauf, dass die Barrier-Logik `pointer-events:none` setzt.
+
+**Für Dispatched-Events (keine echten Playwright-Clicks):**
+```js
+// page.evaluate → direkter DOM-Event-Dispatch. Overlay ist irrelevant,
+// JS triggert die Handler direkt. Gut für Hover-States, animation-triggers.
+await page.evaluate((idx) => {
+  document.querySelectorAll('...')[idx].dispatchEvent(new MouseEvent('mouseenter'));
+}, i);
+```
+
+### Dritte Regel — Tenant-Specific Style-Forcing für Pre-Hydration
+
+**Problem (Round-5 FB45):** Inline-Styles wie `style={{ backgroundColor: brandColor }}`
+aus React-Props werden erst bei Client-Hydration angewendet (~1s Latenz).
+Dazwischen: Element hat zwar height via CSS-Injection, aber Farbe fehlt →
+visuell nicht final.
+
+**Regel:** Wenn ein Element einen **Brand-spezifischen CSS-Value** über React-
+Prop erhält (backgroundColor, color, border-color mit brand-color), dann
+MUSS der Pipeline-Script diesen Value zusätzlich via `addInitScript` als
+`!important` CSS injizieren — **bevor** die Page hydratet.
+
+```js
+// Brand-Color vor Hydration forcieren:
+await context.addInitScript((brandColorArg) => {
+  const css = document.createElement("style");
+  css.id = "fs-brand-bar-forced";
+  css.textContent = `.h-1\\.5 { background-color: ${brandColorArg} !important; }`;
+  document.documentElement.appendChild(css);
+}, brandColor);
+```
+
+**Konsequenz im Smart-Gate:** Zusätzlich zur `height >= 3px`-Prüfung nun auch
+**`backgroundColor` gegen `rgba(0,0,0,0)` / `transparent` / Alpha<0.5`** prüfen:
+
+```js
+const isTransparent = (color) => {
+  if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') return true;
+  const m = color.match(/^rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)$/);
+  return (m && m[4] !== undefined && parseFloat(m[4]) < 0.5);
+};
+const brandBar = document.querySelector('.h-1\\.5');
+if (isTransparent(getComputedStyle(brandBar).backgroundColor)) return false;
+```
+
+### Vierte Regel — DB-Reset als Safety-Net im Recording-Script
+
+**Problem:** Mehrfach-Re-Runs von record_take4 ohne insert_take4_lifecycle
+dazwischen → rating=5 bleibt in DB → Review-Page "Link ungültig" /
+validateVerifyToken prüft rating status.
+
+**Regel:** Jedes Recording-Script das DB-Zustand modifiziert, MUSS am Start
+einen idempotenten Safety-Reset machen — unabhängig davon ob die Pipeline
+es "sauber" aufruft:
+
+```js
+if (caseUuid) {
+  await sb.from("cases").update({
+    review_sent_at: null, review_rating: null,
+    review_received_at: null, review_text: null,
+    status: "neu",
+  }).eq("id", caseUuid);
+}
+```
+
+### Achte Regel — Direkte Page-Pop-Animation statt Replica-Overlay
+
+**Problem (Round-15 FB60):** Replica-Overlay führt ZWANGSLÄUFIG zu einem
+"zweiten Bild"-Effekt: Replica pop'nt → Replica fadet out → Real-Page wird
+sichtbar → User sieht ZWEI Layouts nacheinander, auch bei perfekter Pixel-
+Identität (Timing-Mismatch + Statusbar-Unterschied + Font-Hydration).
+
+**Regel:** Bei Cross-Scene-Transitions **animiere die Real-Page selbst**.
+Kein Replica-Overlay. Ein Screen, ein Pop, dann Interaktion.
+
+**Pattern:**
+```js
+await context.addInitScript((popArg) => {
+  // Wait for page root, then apply pop animation IN-PLACE
+  const applyPop = () => {
+    const root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return false;
+    root.style.setProperty("transform-origin", "0 0", "important");
+    root.style.setProperty(
+      "transform",
+      `translate(${centerX}px, ${centerY}px) scale(0.12)`,
+      "important"
+    );
+    root.style.setProperty("transition", "transform 560ms cubic-bezier(0.2,0.9,0.1,1)", "important");
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        root.style.setProperty("transform", "translate(0,0) scale(1)", "important");
+        // Nach Animation: Transform entfernen für native interaction
+        setTimeout(() => root.style.setProperty("transform", "none", "important"), 620);
+      }, 40);
+    });
+    return true;
+  };
+  const poll = () => { if (!applyPop()) setTimeout(poll, 20); };
+  poll();
+  new MutationObserver(() => { if (applyPop()) this.disconnect(); })
+    .observe(document.documentElement, { childList: true, subtree: true });
+}, popArgs);
+```
+
+**Zusatz-Patches:** Viewport-Meta injizieren (für 1:1 Layout-Rendering) +
+Grey-BG auf <html> früh setzen (kein White-Flash vor Hydration).
+
+**Pixel-Verifikation:** Nach Pop (t≈0.6s) Card-Center soll ≈ Viewport-Center
+sein. Tool: Python PIL bounding-box von White-Pixeln.
+
+### Siebte Regel — Replica-Overlay für Cross-Scene-Transitions
+
+**Problem (Round-7 FB48-FB54):** Bei Übergang Phone2-Pop → Review-Video
+entstand ein dreifacher visueller Sprung:
+1. Phone2-Ende: Mini-Review-Preview (gerendert aus take2_samsung.html)
+2. Review-Video-Start: **WEISSE FLÄCHE** (Grey-Overlay ≠ Pop-Layout)
+3. Review-Final: Content "rutscht von oben rein"
+
+Root Cause: Grey-Overlay war nur eine **Farbfläche** (#f3f4f6). Das Pop-Ende
+zeigte aber ein strukturiertes Layout (Brand-Bar + Heading + Info-Card +
+Sterne). User merkt deutlich den Wechsel.
+
+**Regel:** Wenn zwei Video-Szenen gespliced werden und die erste Szene
+**endet mit einem strukturierten Layout** (nicht nur Farbfläche), MUSS der
+Startscreen der zweiten Szene einen **Replica-Overlay** haben, der dieses
+Layout 1:1 nachbaut. Während Hydration sieht der Zuschauer pixel-identisches
+Layout. Erst wenn Real-Page hydriert ist, fadet der Replica-Overlay in
+200ms aus → Cross-Fade ist visuell unsichtbar weil Replica ≈ Real.
+
+**Pattern:**
+```js
+const replicaHtml = `<!-- Exakt dieselbe Struktur wie Szene-1-Ende -->`;
+
+await context.addInitScript((html) => {
+  const overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;z-index:99999;" +
+    "transition:opacity 200ms ease-out;pointer-events:none;";
+  overlay.innerHTML = html;
+  document.documentElement.appendChild(overlay);
+  // Smart-Gate: fadet aus wenn Real-Layout ready
+}, replicaHtml);
+```
+
+**Datum-Synchronisation:** Replica UND Szene-1-Ende UND Real-Page müssen
+DENSELBEN Textinhalt zeigen. Alle drei Quellen müssen aus **gemeinsamer
+Data-Source** (demoTime / tenant_config) kommen — keine hardcodierten
+Werte!
+
+**Anti-Pattern:** Grey-Overlay (nur Farbe) + "hoffen dass Hydration
+schnell genug ist" = sichtbarer Flash zwischen Farbe und Final-Layout.
+
+### Sechste Regel — API-Response-Interception statt DOM-Kampf gegen React
+
+**Problem (Round-6 FB44):** CSS `display:none` + aggressiveKill 80ms +
+MutationObserver reichten NICHT um TenantSwitcher zuverlässig zu unterdrücken.
+Bei Dörfler (Admin hat Zugang zu 8 Tenants, `tenants.length >= 2`) rendert
+React den Switcher schneller als unser Interval ihn removet. Folge: Dropdown
+"Dörfler AG ▼" sichtbar in Sidebar-Szenen.
+
+**Warum DOM-Kampf verliert:** React mounted den Switcher bei jeder relevanten
+Re-Render-Iteration neu. Unser 80ms-aggressiveKill hat einen 80ms-Window
+dazwischen wo der Switcher sichtbar bleibt. In diesem Window nimmt
+Playwright Frames auf → Bug im Video.
+
+**Sauberer Fix: Route-Interception an der Daten-Quelle.**
+`TenantSwitcher.tsx` hat die Regel `if (tenants.length < 2) return null;`.
+Wir beschneiden die Daten-Quelle so dass der Switcher selbst entscheidet
+NICHT zu rendern:
+
+```js
+await context.route("**/api/ops/tenants", async (route) => {
+  await route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify([{
+      id: tenant.id, name: t.name, slug,
+      color: t.brand_color, trial_status: null, is_demo: false,
+    }]),
+  });
+});
+```
+
+**Regel:** Wenn App-Logic auf API-Response basiert, ist Route-Interception
+der ELEGANTERE Fix als DOM-Manipulation. Vorteile:
+- Keine Race-Condition mit React-Re-Renders
+- Deterministisches Verhalten
+- Kein Kampf gegen Framework-Lifecycle
+- Einfach zu testen
+
+**Gilt für alle Recording-Contexts die Admin-Auth mit Zugriff auf mehrere
+Tenants nutzen** — muss in `setupLeitsystemContext()` (record_take4) +
+`setupMobileContext()` (record_leitsystem_take2) eingebaut werden.
+
+### Fünfte Regel — SMS_HMAC_SECRET als Infrastruktur-Requirement
+
+**Problem:** `.env.local` ohne `SMS_HMAC_SECRET` → Server-Side
+`validateVerifyToken` throws → Review-Page "Link ungültig" / alle
+HMAC-validated URLs brechen.
+
+**Regel:** Dev-Server-Start-Docs müssen `SMS_HMAC_SECRET` als
+env-Prefix erzwingen, falls `.env.local` ihn nicht enthält:
+
+```bash
+cd src/web && DEMO_NO_DISPATCH=1 SMS_HMAC_SECRET=demo-take4-secret npm run dev
+```
+
+Permanente Lösung: Founder muss `SMS_HMAC_SECRET` dauerhaft in
+`src/web/.env.local` setzen (für den Dev-Server). Production hat den Secret
+via Vercel Env.
+
+### Warum nicht App-seitig lösen?
+
+**Frage:** Könnte man nicht `ReviewSurfaceClient.tsx` in eine Server-Component
+umbauen, damit keine Hydration-Shifts mehr auftreten?
+
+**Antwort:** Ja, teilweise. Aber:
+- Live-App-Code wäre um Demo-Zwecke beeinträchtigt (Brand-Bar-Pre-Hydration
+  im Live-Review ist unnötig)
+- KPI-Grid (FlowBar) MUSS interaktiv sein (Period-Toggle, Dropdown) →
+  Client-Component unvermeidlich
+- Data-Fetches (Google-Rating, Review-Count) sind teils per Client-Fetch
+  implementiert → Server-Component würde Performance drücken
+
+**Konsequenz:** App-Code bleibt wie er ist. Die Pipeline respektiert die
+App-Realität und baut die Barrier drum herum. Das ist **die saubere
+Trennung** zwischen Produktentscheidungen und Video-Produktions-Pragmatik.
+
+---
+
+## §34 Production-Baseline Lock — 24.04.2026 🔒
+
+**Status:** Ab 24.04.2026 ist die Pipeline für Take 2+3+4 Screenflow
+**10/10 production-ready** und dient als **DAUERHAFTE Baseline** für alle
+zukünftigen Betriebe (Nr. 5 bis 100+). Dieser Paragraph ist **verbindlich**
+— keine Abweichung, kein Rollback, keine Regression.
+
+### Verifikation der Baseline
+
+Alle 4 Referenz-Betriebe haben Round-15 verifikation bestanden:
+- **Dörfler AG** — Take 2+3+4 ✓ 10/10
+- **Leins AG** — Take 2+3+4 ✓ 10/10
+- **Stark Haustechnik GmbH** — Take 2+3+4 ✓ 10/10
+- **Wälti & Sohn AG** — Take 2+3+4 ✓ 10/10 (Referenz-Betrieb Round-9 bis Round-15)
+
+### Round-Learnings, die nicht regressieren dürfen
+
+**Alle Round 1-15 Fixes MÜSSEN im Code verbleiben.** Jede Pipeline-Änderung
+muss diese Regeln einhalten. Neue FB-Runden ergänzen, aber ersetzen nicht.
+
+| Round | FBs | Was ist "frozen" |
+|-------|-----|------------------|
+| 1-6 | A1-A19, B1-B8, C1-C29, FB1-FB30 | Take 2+3+4 Feature-Set, Demo-Time, DEMO_NO_DISPATCH, Phone-Platter, Sidebar-Profile, Samsung-Chrome |
+| 3 | FB32/34/37/38a/38b/39/40/41 | Samsung-Pop-Animation, Review-Layout-Konstanten, Dual-min-h-dvh-Selector-Falle, Reveal-Overlay Smart-Gate, Samsung One UI 6 Nav-Icons |
+| 4 | FB42/43/44/45/47 | KPI-Layout-Stability, Date-Patch (Greeting), Tenant-Dropdown-Kill, Review-Layout Initial=Final |
+| 5 | FB45/47 10/10 | Brand-Color via CSS !important, Multi-Factor-Ready-Gate, Barrier-Timeout-Regel |
+| 6 | FB44 Round-6 | /api/ops/tenants Route-Interception statt DOM-Kampf |
+| 7-9 | FB48-57 | Replica-Datum aus demoTime, Pop-Animation von Phone2 nach Review-Video, Tap-Ring-Entfernung |
+| 10-12 | FB58 | Content-Visual-Center-Positioning (verworfen in Round-15) |
+| 14 | ROOT-CAUSE | **Viewport-Meta injizieren** (page rendert 1:1, keine 41%-Scaling-Falle) |
+| **15** | **FB60 FINAL** | **Direkte Real-Page-Pop-Animation** (kein Replica, ein Screen, ein Pop) |
+
+### Pipeline-Komponenten als Source of Truth
+
+**Änderungen an diesen Dateien wirken auf ALLE Betriebe. Testen mit Wälti vor Merge:**
+
+- `scripts/_ops/record_take4.mjs` — Take 4 Recording (7 Parts inkl. Review-Pop)
+- `scripts/_ops/record_leitsystem_take2.mjs` — Take 2 Leitsystem (FB42+FB43 Gate)
+- `scripts/_ops/pipeline_screenflow.mjs` — Orchestrator Take 2+3+4
+- `scripts/_ops/compose_take4_final.mjs` — Final-Compose Phone-Bezel-Assembly
+- `scripts/_ops/insert_take4_lifecycle.mjs` — DB-Setup vor Take 4
+- `scripts/_ops/seed_screenflow_from_config.mjs` — Seed pro Betrieb
+- `scripts/_ops/_lib/demo_time.mjs` — SSoT für alle Demo-Zeiten
+- `scripts/_ops/_lib/pipelineHydration.mjs` — Universal Hydration Barrier (Round-10+)
+- `scripts/_ops/_lib/renderPhoneBezel.mjs` / `renderSamsungNav.mjs` / `renderWindowsToast.mjs` / `renderSidebarProfile.mjs`
+- `scripts/_ops/screen_templates/sequences/take2_samsung.html` — Samsung-Phone-Sequenz
+- `docs/customers/<slug>/tenant_config.json` — SSoT pro Betrieb (keine CLI-Args!)
+
+### Regeln für jeden neuen Betrieb (Nr. 5 bis 100+)
+
+**So läuft ein NEUER Betrieb durch die Pipeline:**
+
+1. **Phase 1** (Extract+Decide) — `pipeline_run.mjs --url <website>` erzeugt `tenant_config.json`
+2. **Founder-Review** — `founder_review.md` prüfen, bei Bedarf `regenerate_review.mjs`
+3. **Provision** — `pipeline_run.mjs --from config` legt Tenant + Voice + Seed an
+4. **Phase 2** (Video-Screenflow) — `run_pipeline_multi.mjs --slugs=<slug> --takes=all --parallel=1`
+5. **Quality-Gates** laufen automatisch (Post-Take-QG). Alle `[QG]` Checks müssen PASSED sein.
+6. **Founder-Review** der 3 Output-Files `take2_complete.mp4`, `take3_with_loom.mp4`, `take4_with_loom.mp4`
+7. **Falls OK → Outreach-Phase**. Falls neue FBs → Pipeline-Bible §34 ergänzen, Fix rollout für ALLE Betriebe.
+
+### Anti-Drift-Commitment
+
+Wenn ein neuer FB auftritt:
+1. **Erst bei 1 Test-Betrieb fixen** (bevorzugt Wälti) bis es passt
+2. **Bible-Update** in dem entsprechenden §
+3. **Re-Run für die anderen 3 Referenz-Betriebe** zur Verifikation
+4. **Erst dann Outreach-Pipeline** (echte Betriebe)
+
+**Niemals:** Direkt in Outreach-Run einen Fix versuchen. Niemals: Bible-
+Update überspringen. Niemals: Einem Betrieb etwas geben, das die anderen 3
+nicht auch haben.
+
+### Skalierungs-Kapazität
+
+Mit Round-15-Baseline + `run_pipeline_multi.mjs --parallel=1`:
+- **~5 Min pro Betrieb** (alle 3 Takes, inkl. QG)
+- **10 Betriebe/Tag** bei seriell + manuellem Review
+- **20-30 Betriebe/Tag** bei semi-automatisiert (Founder approved per Telegram)
+- **100 Betriebe/Woche** erreichbar bei disziplinierter Anti-Drift
+
+### Letzte verbindliche Regel
+
+> Wenn ein FB auf einem Betrieb auftritt, betrifft er IMMER alle Betriebe.
+> Wenn ein Fix für einen Betrieb gut ist, muss er für alle gut sein.
+> Die Bible ist die EINZIGE Source of Truth für "was ist aktuell richtig".
+
+---
+
+## §35 Audio-Pipeline Baseline (Phase A — 2026-04-24/25 Autonomous Build)
+
+**Status:** 🟢 Phase A komplett (Audio-Assembly 10/10). Phase B pending (Screenflow-Retiming).
+
+### Was Phase A produziert
+
+Für jeden Betrieb (4 Referenz-Betriebe: Dörfler, Leins, Stark, Wälti):
+- Take 1 Audio: ~62s (Master.wav normalisiert)
+- Take 2 Notruf Audio: ~339s (Wrap-A + Call-Notruf + C + D + E + F)
+- Take 2 Preis Audio: ~335s (Wrap-A + Call-Preis + C + D + E + F)
+- Take 3 Audio: ~170s (A+B+C+D+E)
+- Take 4 Audio: ~152s (A+B+C+D+E)
+
+### Architektur (von innen nach außen)
+
+1. **Ebene Raw** — Founder-Audios liegen in `docs/gtm/pipeline/06_video_production/mini_takes/` und `master_takes/` (read-only, nie mutieren).
+2. **Ebene Clean** — `scripts/_ops/audio/clean_founder_audio.mjs` → `_clean/` Mirror-Tree. Entfernt Maus-Klick (tail-trim 280ms + fade-out 60ms + silence-remove -42dB), normalisiert auf -14 LUFS two-pass.
+3. **Ebene TTS** — `scripts/_ops/audio/generate_lisa_tts.mjs` → `_generated/lisa_tts/`. 9 generic Ela-Zeilen + 2 Varianten (#9 Notruf/Preis) + 1 Juniper-Zeile (Englisch) + per-Tenant Greeting. Content-addressed Cache (SHA-1 über Text) damit verschiedene Firmennamen nicht kollidieren.
+4. **Ebene Call-Assembly** — `scripts/_ops/audio/assemble_call.mjs` → `_generated/calls/<tenant>/call_<variant>.wav`. 21 Turns abwechselnd Agent/User, 150ms Gap zwischen Turns, Final-Two-Pass-Loudnorm.
+5. **Ebene Take-Assembly** — `scripts/_ops/audio/assemble_take2.mjs` + `assemble_take_simple.mjs` → `_generated/takes/<tenant>/take{N}.wav`. 250ms Gap zwischen Segmenten.
+6. **Ebene Preview** — `scripts/_ops/audio/build_preview_video.mjs` → `_generated/previews/<tenant>/take{N}_preview.mp4` + `_generated/audio_mp3/<tenant>/take{N}.mp3`.
+7. **Ebene Report** — `scripts/_ops/audio/quality_gate_report.mjs` → `_generated/QUALITY_GATE_REPORT.html` (single-file HTML mit embedded waveforms + MP3-Player + Video-Player).
+
+### Quality Gates (pro Ebene)
+
+**Per cleaned Founder segment:**
+- Loudness I = -14 LUFS ±1.5 (tolerant für kurze Clips, two-pass loudnorm applied)
+- True Peak ≤ -1.0 dBFS
+- Fallback: volumedetect mean_volume wenn ebur128 wegen Clip-Länge < 3s keine Integrated-Reading liefert
+
+**Per Lisa-TTS file:**
+- Gleiche Loudness-Gates
+- Zusätzlich: two-pass loudnorm nach initial mp3→wav-single-pass → Final ±1.0 LUFS
+
+**Per Call-Assembly:**
+- Duration = Summe aller Turns + 150ms × 20 Gaps ±1.5s Toleranz
+- Loudness ±1.0 LUFS (strict, weil final artifact)
+- Keine Clippings
+
+**Per Take-Assembly:**
+- Duration ±2s Toleranz
+- Keine internen Silences ≥1.8s ("natural pause threshold")
+- Loudness strict
+
+**Gesamt:** 80/80 Gates PASS bei Baseline-Run 2026-04-25.
+
+### Cross-Tenant-Shared vs Per-Tenant
+
+**Shared (1× gebaut, ∞× wiederverwendet):**
+- 36 cleaned Founder-Audios (5 Take-2-Wraps + 20 User-Turns + 5 Take-3-Wraps + 5 Take-4-Wraps + 1 Take-1-Master)
+- 9 generic Lisa-Zeilen (Agent #2-#8, #10, #11)
+- 2 variant Lisa-Zeilen (Agent #9 Notruf + #9 Preis)
+
+**Per-Tenant (1× pro Betrieb):**
+- Lisa-Greeting (Agent #1 mit `{{tenant_display_name}}`-Swap) — generiert via ElevenLabs mit Ela-Voice
+- Take-Assembly (Call benutzt tenant-specific Greeting, Rest ist shared)
+
+**Kosten-Profil pro neuem Tenant:**
+- 1 ElevenLabs-TTS-Call (~6s Audio)
+- 7 FFmpeg-Operations (TTS mp3→wav, 2 calls, 5 takes)
+- ~30 Sekunden Laufzeit pro Tenant nach Phase-A-Baseline
+
+### Multi-Branchen-Ready
+
+Ordner-Struktur unterstützt `industry`-Dimension:
+```
+_clean/mini_takes/Take2/_tenants/<slug>/<LETTER>.wav   # optional tenant override
+_clean/mini_takes/Take2/A.wav                           # generic fallback
+```
+Für neue Branche: neue Call-Scripts (`<branche>_notruf.txt` etc.), neue generic Lisa-Zeilen, neue Wrap-Audios. Pipeline-Scripts brauchen keine Änderung — sie lesen `tenant_config.json` für `industry`-Tag und wählen entsprechende Pfade.
+
+### Bermuda-Dreieck (Lip-Sync-Risiko)
+
+Lisa-Greeting-Dauer variiert pro Tenant (5.76s Leins → 6.59s Wälti, +14%). Im Face-PiP ist Lip-Sync nicht detailliert sichtbar (kleine Kachel). Entscheidung: Face-PiP visuell neutral halten (Option B3), Founder-Loom wird 1× pro Variante aufgenommen, nicht pro Tenant.
+
+### Anti-Drift-Commitment (Audio)
+
+Wie bei Screenflow (§34):
+1. Audio-FB bei Betrieb X → erst beim Test-Betrieb (Wälti) fixen
+2. Bible-§ aktualisieren
+3. Re-Assembly aller 4 Referenz-Betriebe
+4. Erst dann Outreach
+
+### Bekannte Offene Punkte (Phase B)
+
+1. **Screenflow-Retiming:** Take 2 93s → 340s, Take 3 61s → 170s, Take 4 106s → 152s. Playwright-Scripts brauchen Audio-Anchor-Config pro Satz.
+2. **Take 1 Screenflow fehlt** für Leins/Stark/Wälti (nur Dörfler hat take1_complete.mp4).
+3. **Founder-Review der Audio-Previews** (QG-Report.html) vor Phase-B-Start — falls Lisa-Zeilen klanglich nicht passen, nur die betreffende Zeile re-generieren (Cache-Key-Invalidierung durch Text-Edit).
 
 ---
