@@ -3430,3 +3430,279 @@ Wie bei Screenflow (§34):
 3. **Founder-Review der Audio-Previews** (QG-Report.html) vor Phase-B-Start — falls Lisa-Zeilen klanglich nicht passen, nur die betreffende Zeile re-generieren (Cache-Key-Invalidierung durch Text-Edit).
 
 ---
+
+
+## §46 Take-1-Architektur — Drei-Spuren-Pattern (28.04.2026 PM)
+
+> Status: **PRODUKTIV** — Take 1 Dörfler heute (28.04. PM) abgenommen mit
+> diesem Pattern. Generische Master-Spuren werden 1:1 für alle Folge-Tenants
+> wiederverwendet, nur das Brand-Panel ist tenant-spezifisch.
+
+### Architektur-Prinzip
+
+**Alles was getrennt aufgenommen werden kann, wird auch getrennt aufgenommen
+und im Composer gemuxt.** Take 1 ist die kanonische Demonstration dieser
+Architektur — drei Spuren laufen unabhängig in den Composer:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│   take1.wav         (audio,  generic, 63.6s)             │  ─┐
+│   take1_face.mp4    (face,   generic, 63.2s, no audio)   │  ─┤  3 Spuren
+│   Brand-Panel HTML  (visual, TENANT-specific render)     │  ─┘  → mux
+└──────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+              compose_take1_hero.mjs
+                          │
+                          ▼
+   _generated/previews/<slug>/take1_anchor.mp4 (review-stage)
+                          │
+              [Founder-Review + mark_approved]
+                          │
+                          ▼
+   _generated/takes/<slug>/take1_complete.mp4 (final, email-ready)
+```
+
+**Layout 1440×900:**
+- Linke Hälfte (720×900): Brand-Panel — Logo, Firmenname, Hook, Signatur
+  via HTML-Render aus `tenant_config.json` (Brand-Color, Firmenname).
+- Rechte obere Ecke (720×720): Face-Kreis — Founder-Aufnahme, generic.
+- Audio: founder voice, generic.
+
+### Generische vs. Tenant-spezifische Bestandteile
+
+| Spur | Generisch (1× für alle Tenants) | Tenant-spezifisch |
+|---|---|---|
+| Audio | ✓ `_generated/takes/<slug>/take1.wav` (kopiert von Master) | — |
+| Face/Video | ✓ `_generated/takes/<slug>/take1_face.mp4` (kopiert von Master) | — |
+| Brand-Panel | — | ✓ HTML-Render aus `tenant_config.json` (Logo, Brand-Color) |
+
+**Master-Quellen:** `master_takes/take1/take1_master.mp4` (Founder-Cut 0:00.8)
++ `master_takes/take1/Master.wav`. Diese werden via `cp` in jeden Tenant-
+Takes-Ordner kopiert (single source of truth, deterministisch).
+
+### Pipeline-Sequence für Folge-Tenant (5 Sekunden Founder-Touch)
+
+```bash
+# 1. Master-Spuren in Tenant-Takes-Ordner kopieren
+cp _generated/takes/doerfler-ag/take1.wav      _generated/takes/<slug>/take1.wav
+cp _generated/takes/doerfler-ag/take1_face.mp4 _generated/takes/<slug>/take1_face.mp4
+
+# 2. Build (defaults greifen, Brand-Panel rendert sich automatisch tenant-spezifisch)
+node scripts/_ops/compose_take1_hero.mjs --slug <slug>
+# → _generated/previews/<slug>/take1_anchor.mp4
+
+# 3. Founder reviewt das Anchor-File. Wenn OK:
+node scripts/_ops/mark_take_approved.mjs --slug <slug> --take 1
+# → _generated/takes/<slug>/take1_complete.mp4 (final, email-ready)
+```
+
+### Anchor vs. Complete — Pipeline-Convention
+
+Diese Konvention gilt **für ALLE Takes** (T1, T2, T3, T4), nicht nur Take 1:
+
+| Stage | Pfad | Zweck |
+|---|---|---|
+| **anchor** | `_generated/previews/<slug>/takeN_anchor.mp4` | Build-Output, Founder-Review-Stufe. Wird vom Composer geschrieben. |
+| **complete** | `_generated/takes/<slug>/takeN_complete.mp4` | Abgenommener Final-State. Wird von `mark_take_approved.mjs` geschrieben. Email-Pipeline liest ausschliesslich von hier. |
+
+Idempotenz: `mark_take_approved.mjs` ist ein no-op wenn complete schon
+neuer/gleich anchor ist. Re-build → re-approve nötig.
+
+### Master-Spuren-Pflege
+
+Die Master-Files in `master_takes/take1/` sind die **Wahrheit** für Take 1.
+Wenn Founder eine bessere Aufnahme macht:
+1. Neuer Cut in `master_takes/take1/take1_master.mp4`
+2. Neue Audio in `master_takes/take1/Master.wav`
+3. Re-distribution: `for slug in $(ls _generated/takes/); do cp master_takes/take1/take1_master.mp4 _generated/takes/$slug/take1_face.mp4; ...`
+4. Re-build all Tenants: `for slug in ...; do node compose_take1_hero.mjs --slug $slug; done`
+5. Founder re-reviewt + re-approved alle Tenants
+
+### Take-2/3/4 — Architektur-Diff zu Take 1
+
+Take 1 hat keine Maus-Integration und keinen Screen-Share — ist reines
+Hero-Intro. Take 2/3/4 sind komplexer (Screenflows + Audio-Sync + Loom-PiP):
+- T2 = Phone-Call-Replay mit Audio (notruf|preis Variante per emergency_policy)
+- T3 = Wizard-Flow (§43 Master-Source-Brand-Overlay LIVE)
+- T4 = Lifecycle-Demo (Case-Bewertung + Termin)
+
+Für T2/T3/T4 ist die Drei-Spuren-Architektur ähnlich, aber die Tracks sind:
+- Audio (assemblet aus Lisa-TTS + Founder-Voiceover)
+- Screenflow (Playwright-Recording, Take-spezifisch)
+- Loom-Face (Founder-PiP, Maus-Antizipation für T3+T4 — siehe §47 TODO)
+
+## §47 Loom-Master-Identity (29.04.2026 — Founder-Discovery aus Pauls Tag-2-Termin-Vorbereitung)
+
+> **Status: LIVE.** Bug-Fix in `apply_loom_take3.mjs`. T3 builds für alle 4 Tenants
+> nun timing-identisch (149.6-149.7s Variance < 0.1s).
+
+### Schmerzpunkt (Founder-Feedback 28.04. PM)
+
+Im Founder-Review der Take-3-Builds (Leins/Stark/Wälti, post §43-Refactor):
+> "Mein Loom/Face ist ab 1:44 nicht an der stelle und wird nicht so gezogen wie
+> bei unserer Dörfler AG schalblone. das muss identisch sein und für alle
+> betriebe Gleichwertend synchron!"
+
+§43 hat die **Wizard-Phase** master-identical gemacht (alle Tenants nutzen
+40.2s master-getimten branded wizard). Aber: `apply_loom_take3.mjs` las die
+Wizard-Dauer aus `take3_wizard.webm` (TENANT-original, 34.56-40.2s) statt
+aus `take3_wizard_branded.mp4` (master-getimt, 40.2s). Loom-Animation startete
+damit pro Tenant versetzt → Drift propagierte durch ganzen Take.
+
+### Architektur-Fix
+
+`apply_loom_take3.mjs` liest Wizard-Timing-Source nach Priorität:
+
+```
+1. take3_wizard_branded.mp4   (§43 Master-Source-Brand-Overlay-Output, 40.2s) ← preferred
+2. take3_wizard.webm          (TENANT-Original) ← Fallback mit Warning
+```
+
+`W = wizFullDur - 2.0` ergibt damit für alle Tenants die gleichen Animations-
+Trigger:
+- Hold-End:    W + 1.0s = 39.2s
+- Move-1-End:  W + 1.4s = 39.6s
+- Move-2-End:  W + 2.0s = 40.2s
+
+Loom-Position ab Move-2-Ende konstant bei `(40, 350)` — master-identisch
+über alle Tenants.
+
+### Verifikation
+
+T3-Anchor-Durations nach §47-Fix für alle 4 Tenants:
+- doerfler-ag: 149.7s
+- leins-ag: 149.7s
+- stark-haustechnik: 149.6s
+- waelti-sohn-ag: 149.7s
+
+Variance: 0.1s. Master-identisch. §40 Sharpness-Gate für alle 4: PASS.
+
+### Goldene Regel
+
+**Jedes Skript das eine Take-Komponente animiert (Loom, Mouse, Overlay, etc.)
+MUSS auf Master-Timing-Sources lesen, nicht auf Tenant-Original-Recordings.**
+
+Tenant-Original-Recordings sind variance-prone (OS-Scheduling, Recording-
+Latency, Hardware). Master-Source = `_branded.mp4` Output von §43-Pipeline.
+
+---
+
+## §48 Phone-Call-MP4 als Provisioning-Pflicht (29.04.2026)
+
+> **Status: GEFIXT für Stark T2 notruf + Wälti T2 preis.**
+> Pflicht für jeden neuen Tenant ab jetzt.
+
+### Schmerzpunkt
+
+Take 2 zeigt während Lisa-Call (~3 Min) ein extended Phone-Display mit Timer-
+counting. Der Source-File `_phone_extended_<variant>.mp4` (~168s, mit Bezel +
+Loom-Face overlay) muss pro Tenant×Variant existieren.
+
+**Bei Stark T2 notruf + Wälti T2 preis fehlte dieser File.** Die assemble_take2-
+Pipeline fiel zurück auf `phone_call_active.mp4` (~15s) und produzierte
+**Black-Screen für 0:45-3:23.8** im Anchor-Output.
+
+### Architektur
+
+```bash
+node --env-file=src/web/.env.local scripts/_ops/record_phone_call_visual.mjs \
+     --slug <slug> --variant <notruf|preis> --duration 165
+```
+
+Output: `_generated/calls/<slug>/_phone_extended_<variant>.mp4` (~168s, 1440x900,
+Bezel + Loom-overlay, kein Audio).
+
+**Variant-Wahl:**
+- `notruf` = wenn `voice_agent.emergency_policy` non-empty in tenant_config (Dörfler, Stark)
+- `preis` = wenn empty / Standard-Geschäftszeiten (Leins, Wälti)
+
+### Goldene Regel
+
+**Phase-2-Provisioning für JEDEN neuen Sanitär-Tenant MUSS `record_phone_call_visual.mjs`
+für die productive Variant aufrufen, BEVOR `assemble_take2.mjs` läuft.** Sonst
+Black-Screen-Bug.
+
+Provisioning-Hook in `provision_trial.mjs` (TODO):
+```js
+const variant = cfg.voice_agent.emergency_policy ? "notruf" : "preis";
+await runScript(`scripts/_ops/record_phone_call_visual.mjs --slug ${slug} --variant ${variant} --duration 165`);
+```
+
+---
+
+## §49 Take-4-§43-Migration (TODO — Reise-Carry-Forward)
+
+> **Status: ARCHITEKTUR-LÜCKE. Aktuell pre-§43, master-drift möglich.**
+> Estimated: 1-2 Tage Bauarbeit. Post-Reise.
+
+### Schmerzpunkt (Founder-Feedback 28.04. PM)
+
+> "Wir klicken bei Dörfler AG auf den 'Bewertung anfragen' Button bei ca. 0:50
+> und bei Wälti schon bei 0:46. Die ganze Screenflow passt nicht. Wir weichen
+> katastrophal stark von unserem Master ab."
+
+T4-Builds sind alle vom 27.04. — vor §43-Refactor + vor Auto-Cal v2. Click-
+Timings sind tenant-original (variance per Recording). Auto-Cal v2 wurde nie
+für T4 implementiert/angewendet.
+
+### Architektur (zu bauen)
+
+T4-§43 spiegelt T3-§43:
+
+1. **Master Recording** für die Click-Sequenz: `master_takes/sanitaer/take4_master.webm`
+2. **`build_take4_brand_overlay.mjs`** — analog zu `build_wizard_brand_overlay.mjs`
+3. **`splice_take4_master_branded.mjs`** — analog zu T3
+4. **`apply_loom_take4.mjs` Update** — read master-timing from `take4_master_branded.mp4`
+5. **Auto-Cal v2 für T4** — `phase_library_defs/take4_sanitaer.json` + per-tenant overrides
+6. **Re-Build** alle 4 Tenants T4 mit §43-Architektur
+
+### Goldene Regel
+
+**Kein Tenant-Anchor (T2/T3/T4) darf mit "alter Architektur" published werden.**
+Wenn ein Take noch nicht §43-migriert ist, blockiert das den Tenant aus der
+E-Mail-Pipeline. §50 Comprehensive Semantic QG (siehe unten) muss das prüfen.
+
+---
+
+## §50 Comprehensive Semantic Quality-Gate (TODO — Post-Reise-Architektur)
+
+> **Status: KONZEPT.** Aktuell gibt es nur technische QGs (PSNR, sharpness, audio-
+> loudness). Semantic QG fehlt.
+
+### Was es prüfen muss (User-Anforderung)
+
+| Sub-Gate | Prüfung | Threshold |
+|---|---|---|
+| **Audio↔Visual Match** | Click-Timestamps im Audio entsprechen den Click-Animations im Video | < 100ms Drift |
+| **Click-Timing-Diff vs Master** | Pro Phase: Click-Position-Time vs Master-Recording | < 50ms |
+| **Loom-Position-Diff vs Master** | Per-Frame Loom-Pixel-Position vs Master-Recording | < 2px |
+| **Branding-Korrektheit** | Header-Logo + Footer-Text + Brand-Color stimmt mit tenant_config | exact |
+| **Datums-Konsistenz** | Alle Datums-Anzeigen in Screen entsprechen demoTime() | exact |
+| **Case-Creation-Flow** | Wizard-Steps führen korrekt zum Dashboard-Case | full sequence verified |
+| **Call-Variant-Check** | T2-Variante (notruf/preis) entspricht emergency_policy | exact match |
+| **Phone-Call-MP4 vorhanden** | `_phone_extended_<variant>.mp4` existiert für Tenant | file exists, > 160s |
+
+### Architektur-Skizze
+
+```
+scripts/_ops/audio/comprehensive_semantic_qg.mjs
+  → reads anchor.mp4 + master_anchor.mp4 + tenant_config.json
+  → per Sub-Gate: berechnet Diff-Score
+  → Hard-Fail bei Threshold-Verletzung
+  → Telegram-Alert bei Drift
+  → JSON-Report für Audit-Trail
+```
+
+Output: `_generated/qg/<tenant>/take<N>_semantic_report.json` mit Pass/Fail
+pro Sub-Gate. Email-Pipeline-Gate: nur wenn alle 8 Sub-Gates PASS, kann Take
+in die finale E-Mail.
+
+### Warum das nicht-verhandelbar ist (User-Quote)
+
+> "Quality über alles" / "wir dürfen niemals an Quality einbüssen" / "10
+> unterschiedliche Betriebe pro Tag bei höchster Qualität"
+
+Bei 10/Tag manueller Founder-Review ist nicht skalierbar. Nur automated
+Semantic QG kann Master-Drift bei jedem Tenant fangen, bevor es zum Kunden
+geht.

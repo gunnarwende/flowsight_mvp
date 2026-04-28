@@ -1,0 +1,432 @@
+{
+  "take": 3,
+  "industry": "sanitaer",
+  "tenant": "stark-haustechnik",
+  "description": "Auto-generated 2026-04-28 via auto_calibrate_phase_library_v2.mjs (pixel-state-detection)",
+  "master": "doerfler-ag",
+  "masterDuration": 66.867,
+  "tenantDuration": 65.933,
+  "_calibration": {
+    "method": "v2_piecewise_linear",
+    "anchorsTotal": 5,
+    "anchorsDetected": 6,
+    "controlPoints": [
+      {
+        "masterT": 0,
+        "tenantT": 0,
+        "source": "sentinel_start"
+      },
+      {
+        "masterT": 32.75,
+        "tenantT": 32.75,
+        "source": "anchor:wizard_end_virtual"
+      },
+      {
+        "masterT": 38.2,
+        "tenantT": 38.2,
+        "source": "anchor:success_to_dashboard"
+      },
+      {
+        "masterT": 47.43,
+        "tenantT": 46.67,
+        "source": "anchor:dashboard_to_case_detail"
+      },
+      {
+        "masterT": 59.07,
+        "tenantT": 58.37,
+        "source": "anchor:case_back_to_dashboard"
+      },
+      {
+        "masterT": 61.27,
+        "tenantT": 60.33,
+        "source": "anchor:modal_opens"
+      },
+      {
+        "masterT": 64.87,
+        "tenantT": 63.93,
+        "source": "anchor:modal_closes"
+      },
+      {
+        "masterT": 66.87,
+        "tenantT": 65.93,
+        "source": "sentinel_end"
+      }
+    ],
+    "detectedAnchors": [
+      {
+        "id": "wizard_end_virtual",
+        "masterT": 32.75,
+        "tenantT": 32.75,
+        "drift": 0
+      },
+      {
+        "id": "success_to_dashboard",
+        "masterT": 38.2,
+        "tenantT": 38.2,
+        "drift": 0
+      },
+      {
+        "id": "dashboard_to_case_detail",
+        "masterT": 47.43,
+        "tenantT": 46.67,
+        "drift": -0.76
+      },
+      {
+        "id": "case_back_to_dashboard",
+        "masterT": 59.07,
+        "tenantT": 58.37,
+        "drift": -0.7
+      },
+      {
+        "id": "modal_opens",
+        "masterT": 61.27,
+        "tenantT": 60.33,
+        "drift": -0.94
+      },
+      {
+        "id": "modal_closes",
+        "masterT": 64.87,
+        "tenantT": 63.93,
+        "drift": -0.94
+      }
+    ]
+  },
+  "phases": [
+    {
+      "name": "wizard1_intro",
+      "range": [
+        6,
+        6.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard1_kategorie_leck",
+      "range": [
+        7.5,
+        8.3
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard1_prio_normal",
+      "range": [
+        8.5,
+        9.3
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard1_weiter_active",
+      "range": [
+        9.3,
+        10
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard1_to_2",
+      "range": [
+        10,
+        10.6
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_empty",
+      "range": [
+        10.6,
+        11.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_strasse_typing",
+      "range": [
+        11.5,
+        13.8
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_nr_typing",
+      "range": [
+        13.8,
+        14.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_plz_typing",
+      "range": [
+        14.5,
+        15.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_ort_typing",
+      "range": [
+        15.5,
+        17
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_complete",
+      "range": [
+        17,
+        17.8
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard2_to_3",
+      "range": [
+        17.8,
+        19.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard3_intro",
+      "range": [
+        19.5,
+        20.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard3_name_typing",
+      "range": [
+        20.5,
+        22
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard_break",
+      "range": [
+        21.9,
+        22
+      ],
+      "_source": "short_phase_identity"
+    },
+    {
+      "name": "wizard3_telefon_typing",
+      "range": [
+        22,
+        23.5
+      ],
+      "_source": "pre_anchor_identity"
+    },
+    {
+      "name": "wizard3_email_typing",
+      "range": [
+        23.5,
+        25.5
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "wizard3_beschr_focus",
+      "range": [
+        25.5,
+        26.5
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "wizard3_beschr_typing",
+      "range": [
+        26.5,
+        31
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "wizard3_beschr_done",
+      "range": [
+        31,
+        32.5
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "wizard3_submit",
+      "range": [
+        32.5,
+        33.5
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "success_screen",
+      "range": [
+        34,
+        34.1
+      ],
+      "_source": "short_phase_identity"
+    },
+    {
+      "name": "success_to_leit",
+      "range": [
+        38,
+        39.39
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "leit_face_hold",
+      "range": [
+        38.29,
+        38.38
+      ],
+      "_source": "anchored_interpolated_forced"
+    },
+    {
+      "name": "leit_dashboard_view",
+      "range": [
+        38.38,
+        43.52
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_back_full",
+      "range": [
+        58.75,
+        60.09
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "neuer_fall_modal",
+      "range": [
+        60.56,
+        64.56
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "leit_dashboard_intro",
+      "range": [
+        39.39,
+        41.69
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "leit_dashboard_kpi_neu",
+      "range": [
+        41.69,
+        43.52
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "leit_dashboard_kpi_bewertung",
+      "range": [
+        43.52,
+        45.35
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "leit_to_case",
+      "range": [
+        45.35,
+        46.74
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_detail_intro",
+      "range": [
+        46.74,
+        48.75
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_detail_uebersicht",
+      "range": [
+        48.75,
+        51.26
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_detail_beschreibung",
+      "range": [
+        51.26,
+        53.27
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_detail_kontakt",
+      "range": [
+        53.27,
+        55.28
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_detail_verlauf",
+      "range": [
+        55.28,
+        58.3
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "case_to_dashboard",
+      "range": [
+        58.3,
+        59.64
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "dashboard_after_case",
+      "range": [
+        59.64,
+        60.56
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "neuer_fall_modal_open",
+      "range": [
+        60.56,
+        62.06
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "neuer_fall_modal_view",
+      "range": [
+        62.06,
+        63.56
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "neuer_fall_modal_close",
+      "range": [
+        63.56,
+        64.56
+      ],
+      "_source": "anchored_interpolated"
+    },
+    {
+      "name": "dashboard_final",
+      "range": [
+        64.56,
+        65.57
+      ],
+      "_source": "post_anchor_extrapolated"
+    }
+  ]
+}

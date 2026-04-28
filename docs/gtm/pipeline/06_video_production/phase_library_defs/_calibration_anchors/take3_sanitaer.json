@@ -1,0 +1,53 @@
+{
+  "take": 3,
+  "industry": "sanitaer",
+  "version": 3,
+  "description": "Auto-Cal v2 KEY_EVENTS-Spec v3 (28.04.2026 abend). Lehre: pixel_brightness_recovery für success_appears war nicht universell zuverlässig (Tenants haben unterschiedliche Render-Timings für Foto-Box-Erscheinung). Stattdessen 5 Scene-Cut-Anchors mit weiteren Scan-Ranges. Stark + Wälti haben gegenüber Dörfler-Master ~-6.6s Drift im Leitsystem-Bereich — Scan-Ranges sind nun breit genug. Wizard-Region wird via piecewise-linear von (0,0)→(first_anchor) gemappt — funktioniert für alle 4 Tenants weil Wizard-Region im Verhältnis ähnlich kompressiert.",
+  "video": {
+    "expected_resolution": [1440, 900],
+    "fps": 30
+  },
+  "anchors": [
+    {
+      "id": "success_to_dashboard",
+      "master_t": 38.20,
+      "scan": [30, 41],
+      "detect": { "type": "scene_cut", "min_score": 0.05 },
+      "_phase_hint": "Übergang Erfolgsseite → Leitsystem-Dashboard (cuts to dashboard background). Tenants: Dörfler 38.20s · Leins 35.77s · Stark 32.57s · Wälti 32.57s."
+    },
+    {
+      "id": "dashboard_to_case_detail",
+      "master_t": 47.43,
+      "scan": [38, 51],
+      "detect": { "type": "scene_cut", "min_score": 0.05 },
+      "_phase_hint": "Klick auf Case → Case-Detail öffnet"
+    },
+    {
+      "id": "case_back_to_dashboard",
+      "master_t": 59.07,
+      "scan": [50, 62],
+      "detect": { "type": "scene_cut", "min_score": 0.05 },
+      "critical": true,
+      "_phase_hint": "Zurück zum Dashboard. Boundary für case_back_full."
+    },
+    {
+      "id": "modal_opens",
+      "master_t": 61.27,
+      "scan": [52, 64],
+      "detect": { "type": "scene_cut", "min_score": 0.05 },
+      "critical": true,
+      "_phase_hint": "Neuer-Fall-Modal öffnet (Cut auf Modal-Background)"
+    },
+    {
+      "id": "modal_closes",
+      "master_t": 64.87,
+      "scan": [55, 67],
+      "detect": { "type": "scene_cut", "min_score": 0.05 },
+      "_phase_hint": "Modal schließt → Dashboard wieder sichtbar"
+    }
+  ],
+  "self_test": {
+    "tolerance_seconds": 0.20,
+    "_note": "Self-test prüft: gefundenes tenant_t auf Master-Recording muss innerhalb ±tolerance des spec'd master_t liegen. Sonst Detection broken."
+  }
+}
