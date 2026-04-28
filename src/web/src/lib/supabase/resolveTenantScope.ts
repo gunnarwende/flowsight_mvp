@@ -18,14 +18,41 @@ export interface TenantScope {
   isAdmin: boolean;
   /** True if user has role=prospect (read-only + limited write). */
   isProspect: boolean;
+  /**
+   * True if this user is the FlowSight founder (cross-tenant access, sees
+   * Tenant-Switcher dropdown, can impersonate any customer). Distinct from
+   * isAdmin — customer-tenant admins like Paul also have isAdmin=true but
+   * must never see other customers. Sourced from FOUNDER_EMAILS env-allowlist.
+   */
+  isFounder: boolean;
   /** Supabase user ID. */
   userId: string;
+  /** Authenticated user's e-mail (drives founder allowlist). */
+  email: string | null;
   /** True when admin is viewing a tenant different from their JWT tenant_id. */
   isImpersonating: boolean;
   /** Admin's own tenant_id from JWT (for "Mein Betrieb" reset). */
   homeTenantId: string | null;
   /** Role override for testing: "techniker" when admin views as techniker. */
   viewAsRole: "techniker" | null;
+}
+
+/**
+ * Comma-separated list of founder e-mails. Initially hardcoded fallback,
+ * configurable via FOUNDER_EMAILS env so we can rotate without redeploy.
+ * Migrating to a staff.is_founder DB flag is tracked in the C1 architecture
+ * doc — until then this allowlist is the single source of truth.
+ */
+const FOUNDER_EMAILS = (
+  process.env.FOUNDER_EMAILS ?? "gunnar.wende@flowsight.ch"
+)
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+function isFounderEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return FOUNDER_EMAILS.includes(email.toLowerCase());
 }
 
 /**
@@ -68,11 +95,16 @@ export async function resolveTenantScope(): Promise<TenantScope | null> {
     if (roleCookie === "techniker") viewAsRole = "techniker";
   }
 
+  const email = user.email ?? null;
+  const isFounder = isFounderEmail(email);
+
   return {
     tenantId: activeTenantId,
     isAdmin,
     isProspect,
+    isFounder,
     userId: user.id,
+    email,
     isImpersonating,
     homeTenantId: jwtTenantId ?? null,
     viewAsRole,

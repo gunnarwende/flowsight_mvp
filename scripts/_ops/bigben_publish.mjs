@@ -187,6 +187,29 @@ function patchLivePrompt(livePrompt, todayBlock, rulesBlock, eventsBlock, lang) 
 
   p = rebuilt + p.slice(anchorMatch.index + 1); // +1 to keep the leading newline
 
+  // Step 2b — G11 Voice-Purist: scrub hardcoded event/sport claims from
+  // STATIC sections (Opening Hours, WHAT WE OFFER, NO-GO's). Without this
+  // the live prompt advertises "Quiz Night every Wednesday" / "Karaoke
+  // every Friday" etc. even though those events aren't in pub_events.
+  // Caller asks → Lisa promises → Paul can't deliver → trust broken. G11.
+  // Idempotent — re-running this is a no-op once already clean.
+  p = p.replace(/Wednesday: 16:00–23:00 \(Quiz Night!\)/g, "Wednesday: 16:00–23:00");
+  p = p.replace(/Friday: 16:00–00:00 \(Karaoke Night!\)/g, "Friday: 16:00–00:00");
+  p = p.replace(/Saturday: 16:00–00:00 \(Live Sport \+ Live Music!\)/g, "Saturday: 16:00–00:00");
+  p = p.replace(/Sunday: 16:00–22:00 \(Relaxed Sunday\)/g, "Sunday: 16:00–22:00");
+  p = p.replace(
+    /- Live Sport on big screens: Premier League, Champions League, Rugby, F1\n/g,
+    "- Live Sport on big screens (check what's on with Paul or in the upcoming events list)\n",
+  );
+  p = p.replace(
+    /- Events: Quiz Night \(Wed\), Karaoke \(Fri\), Live Music \(Sat\)\n/g,
+    "- Events: changing programme — see the upcoming events list below for what's actually scheduled\n",
+  );
+  p = p.replace(
+    "- NEVER invent events or matches that aren't in the events list",
+    "- NEVER invent events, matches or theme nights that aren't in the upcoming events list. NEVER claim weekly recurrings (e.g. 'every Wednesday') unless that exact event is currently scheduled. If asked about something not in the list, say it's not currently scheduled and offer to take a callback for Paul.",
+  );
+
   // Step 3 — strip ALL existing UPCOMING/KOMMENDE EVENTS blocks
   const stripEventsRe = new RegExp(
     `${SEP}\\s*\\n(?:UPCOMING EVENTS|KOMMENDE EVENTS)[^\\n]*\\n${SEP}\\s*\\n[\\s\\S]*?(?=${SEP}\\s*\\n[A-ZÄÖÜ])`,

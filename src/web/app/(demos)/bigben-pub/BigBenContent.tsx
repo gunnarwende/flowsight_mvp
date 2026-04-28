@@ -632,9 +632,12 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   const [showAllEvents, setShowAllEvents] = useState(false);
   const PREVIEW_COUNT = 3;
 
-  // Fetch events on mount
+  // Fetch events on mount.
+  // 365-day window (vs. 21 previously) — Paul curates events months in advance
+  // (e.g. summer Karaoke in May while we're in April). Cutting off at 21 days
+  // hid late-May events from the website even though they were in the DB.
   useEffect(() => {
-    fetch("/api/bigben-pub/events?days=21")
+    fetch("/api/bigben-pub/events?days=365")
       .then((r) => r.json())
       .then((d) => { setEvents(d.events ?? []); setLoaded(true); })
       .catch(() => setLoaded(true));

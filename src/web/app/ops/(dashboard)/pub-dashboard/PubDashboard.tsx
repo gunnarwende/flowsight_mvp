@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { PushEnableCard } from "@/src/components/ops/PushEnableCard";
 
 interface TodayEvent {
   id: string;
@@ -98,6 +99,10 @@ export function PubDashboard({
           {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
         </p>
       </div>
+
+      {/* Push enable card — visible until user has subscribed. Once active,
+          shows a "Send test" link so we can verify end-to-end during onboarding. */}
+      <PushEnableCard />
 
       {/* ── PENDING RESERVATIONS (compact alert) ──────── */}
       {pendingCount > 0 && (
