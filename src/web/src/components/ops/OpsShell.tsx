@@ -73,6 +73,7 @@ export function OpsShell({
   brandColor,
   staffRole,
   isAdmin,
+  isFounder,
   isImpersonating,
   activeTenantId,
   homeTenantId,
@@ -91,6 +92,12 @@ export function OpsShell({
   staffRole?: "admin" | "techniker";
   /** True if user is admin (show tenant switcher) */
   isAdmin?: boolean;
+  /**
+   * True if user is the FlowSight founder. Distinct from isAdmin so that
+   * customer-tenant admins (e.g. Paul of BigBen Pub) never see other
+   * customers' names. Only the founder gets the cross-tenant switcher.
+   */
+  isFounder?: boolean;
   /** True when admin views a different tenant (show impersonation banner) */
   isImpersonating?: boolean;
   /** Currently active tenant ID (for switcher) */
@@ -314,19 +321,22 @@ export function OpsShell({
   const sidebarContent = (
     <>
       {brandHeader}
-      {/* FB62: Tenant-Switcher ist ein Founder-Tool (System-weiter Cross-Tenant-Zugriff).
-          Normale Betriebs-Admins haben nur ihren eigenen Tenant — für die ist der Switcher
-          sinnlos und verwirrend. Sichtbar nur wenn Admin aktiv einen fremden Tenant
-          impersoniert (z.B. Founder-Zugriff auf Kunden-Leitsystem).
-          FB27: Auf Pub-Tenants wird der Switcher AUCH FÜR ADMINS versteckt — die Liste
-          würde sonst die Namen anderer Kunden leaken, falls der Founder die App auf
-          dem Kundengerät öffnet bevor der Kunde sich selbst eingeloggt hat. Stattdessen
-          ein winziger Escape-Button, der den Admin zurück in seine eigene Workspace
-          schickt (kein Dropdown, keine Kundennamen). */}
-      {isAdmin && isImpersonating && !isPubTenant && (
+      {/* Tenant-Switcher Strategie (Day-28-PM, post-Paul-Termin Iteration):
+          - isFounder: sieht den Switcher IMMER (auch auf Pub-Tenants), das ist
+            seine Cross-Tenant-Übersicht. Andere Kundennamen zu sehen ist hier
+            kein Leak sondern explizit das was er für seine Arbeit braucht.
+          - isAdmin && !isFounder: ist ein Customer-Tenant-Admin (z.B. Paul).
+            Sieht NIE einen Switcher und NIE die Namen anderer Kunden — auch
+            nicht wenn er versehentlich impersoniert oder die Cookie noch von
+            einem Founder-Test gesetzt ist. AdminBackToWorkspace als Escape.
+          - !isAdmin: Techniker oder Prospect — keine Cross-Tenant-Bewegung.
+          Der frühere FB27-Gate (isAdmin && !isPubTenant) hat den Founder
+          ausgesperrt sobald er einen Pub-Tenant testete. Korrekter Diskriminator
+          ist isFounder, nicht isPubTenant. Siehe docs/architecture/tenant_architecture.md */}
+      {isFounder && (
         <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} viewAsRole={viewAsRole} />
       )}
-      {isAdmin && isImpersonating && isPubTenant && (
+      {!isFounder && isAdmin && isImpersonating && (
         <AdminBackToWorkspace homeTenantId={homeTenantId ?? null} />
       )}
       {navLinks}

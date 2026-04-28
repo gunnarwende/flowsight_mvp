@@ -23,6 +23,8 @@ für die jeweils konkreten Vorfälle.
 | **G8** | **Per-Tenant-Entry-URL routet auf richtigen Home.** Pub → `/ops/pub-dashboard`, Sanitär → `/ops/cases`. Nie hardcoded. | FB25. URL `/ops/app/<slug>` ist die PWA-Install-Quelle, muss perfect sitzen. |
 | **G9** | **Cross-Plattform-Pfade.** `fileURLToPath` statt URL-Pfad-Regex. Windows ≠ Linux. | Cron failte stumm auf Linux mit "ENOENT: src/web/.env.local". |
 | **G10** | **Lessons Learned wird nach JEDEM Kunden ergänzt.** Innerhalb 24h nach Hand-Over. | Wissen verfällt. |
+| **G11** | **Voice-Agent macht ausschliesslich 100%-bestätigte Versprechen.** NIEMALS Recurrings, Events, Services oder Status-Aussagen die nicht aktuell in der Single Source of Truth stehen. Bei Unsicherheit: "Das ist aktuell nicht eingeplant — du kannst aber gerne deine Nummer hinterlassen, dann meldet sich [Owner]." | BigBen 28.04.: Lisa hat "every Wednesday Quiz Night" versprochen ohne dass Paul es eingetragen hatte. Caller kommt → Pub leer → Vertrauensverlust. Worst-Case-Beispiel für Sanitär: Stellenanzeige nicht mehr aktuell, aber Lisa nimmt Bewerbungen entgegen. |
+| **G12** | **Single Source of Truth pro Datenfeld + Voice-Knowledge-Tier.** Pro Kunde wird in Phase-1-Discovery `data_sources.md` erstellt: welche Quelle (DB / GBP / External-Website / Static) pflegt welches Feld, welcher Tier (T1-T4) wird angepeilt, welche Cadence pro Quelle. Lisa-Qualität = Coverage des Tier-Plans + Frische der Quellen. Detail: `docs/architecture/tenant_architecture.md` §3. | Naive Pauschalisierung "Website ist immer SoT" funktioniert nicht — manche Sanitär-Betriebe haben schwache Website + starkes GBP. Per-Kunde-Map ist Pflicht. |
 
 ---
 
@@ -69,17 +71,26 @@ KUNDE (autonom; Founder nur noch bei Eskalation)
 - [ ] Termin geblockt (Datum + Uhrzeit + Format: vor Ort / Remote)
 - [ ] `docs/customers/<slug>/onboarding_plan.md` ausgefüllt
 - [ ] `docs/customers/<slug>/links.md` angelegt (mind. Website + App-URL + Telefon)
+- [ ] **`docs/customers/<slug>/data_sources.md` erstellt (G12)**: pro Datenfeld die Quelle festgelegt (DB / GBP / Website / Static) + Cadence
+- [ ] **Voice-Knowledge-Tier-Ziel festgelegt (T1-T4)**: Standard T3, Premium T4
+- [ ] **Website-Audit (für T3+)**: Tiefe & Breadth dokumentiert, Stärken/Schwächen
+- [ ] **GBP-Audit**: was pflegt der Kunde dort? Wer hat Zugang?
+- [ ] **Customer-E-Mail für OTP-Login** notiert (für Phase-2 Pre-Provisioning)
 
 ### Phase 2 · Provisioning
 - [ ] `node scripts/_ops/provision_trial.mjs --slug <slug> ...` durchgelaufen
 - [ ] Tenant in DB existiert mit korrekten `modules` (Pub: events+reservations=true)
+- [ ] **Customer-User pre-provisioniert (B1-Pattern, kritisch!):** `auth.users` Eintrag für Customer-E-Mail mit `app_metadata.tenant_id` + `app_metadata.role=admin`. Plus `staff` Tabelle Eintrag. Sonst landet Customer beim OTP-Login auf Default-Tenant ("LS Guidance system"-Bug).
+- [ ] **Voice-Knowledge-Extract durchgeführt (T3-Pflicht):** `crawl-website.mjs` + LLM-Strukturierung → `docs/customers/<slug>/website_knowledge.json`. Seed in Voice-Agent-Prompt.
 - [ ] Voice-Agent in Retell published, Test-Call vom Founder OK
+- [ ] **Voice-Knowledge-Coverage-Test:** 20 typische Caller-Fragen, mind. 80% korrekte Antworten (T3) bzw. 95% (T4).
 - [ ] Per-Tenant-Cron eingerichtet (für Pubs: `BigBen Voice Daily Refresh` als Vorlage)
 - [ ] GH-Secrets `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RETELL_API_KEY` vorhanden
 - [ ] Smoke-Test des Crons via `gh workflow run "<Workflow-Name>"` grün
 - [ ] Website live + 200 (`flowsight.ch/<slug>`)
-- [ ] App-URL live + 200 (`flowsight.ch/ops/app/<slug>`)
+- [ ] App-URL live + 200 (`flowsight.ch/ops/app/<slug>`) — landet auf richtigem Home je nach Modul
 - [ ] App-Daten leer (events + reservations = 0)
+- [ ] `data_sources.md` Skripte funktionieren (jede source-cadence-Kombination einmal getriggert)
 
 ### Phase 3 · Live-Setup
 Pro-Kunde-Run-Sheet (Template `customer_runbook_template.md`). Generische Schritte:

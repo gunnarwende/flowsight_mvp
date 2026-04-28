@@ -47,20 +47,39 @@ function formatTime(time: string): string {
   return time.substring(0, 5);
 }
 
-function NoShowBadge({ count }: { count: number }) {
+function NoShowBadge({
+  count,
+  phone,
+  guestName,
+  onForgive,
+}: {
+  count: number;
+  phone: string;
+  guestName: string;
+  onForgive: (phone: string, guestName: string, count: number) => void;
+}) {
   if (count === 0) return null;
-  if (count === 1) {
-    return (
-      <span className="inline-flex items-center gap-0.5 rounded-full bg-yellow-100 px-1.5 py-0.5 text-[10px] font-bold text-yellow-800" title="1 previous no-show">
-        Yellow Card
-      </span>
-    );
-  }
+  const isYellow = count === 1;
+  const label = isYellow ? "Yellow Card" : "Red Card";
+  const cls = isYellow
+    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+    : "bg-red-100 text-red-700 hover:bg-red-200";
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700" title={`${count} previous no-shows`}>
-      Red Card
-    </span>
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); onForgive(phone, guestName, count); }}
+      title={`${count} previous no-show${count === 1 ? "" : "s"} — tap to review or forgive`}
+      className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold transition-colors cursor-pointer ${cls}`}
+    >
+      {label}
+    </button>
   );
+}
+
+interface ForgiveTarget {
+  phone: string;
+  guestName: string;
+  count: number;
 }
 
 const DAY_NAMES_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -127,7 +146,29 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
   const [saving, setSaving] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [forgiveTarget, setForgiveTarget] = useState<ForgiveTarget | null>(null);
+  const [forgiving, setForgiving] = useState(false);
   const lastSyncResult = useRef<{ synced: number; checked: number } | null>(null);
+
+  function openForgiveModal(phone: string, guestName: string, count: number) {
+    setForgiveTarget({ phone, guestName, count });
+  }
+
+  async function confirmForgive() {
+    if (!forgiveTarget) return;
+    setForgiving(true);
+    try {
+      await fetch("/api/bigben-pub/no-shows/forgive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: forgiveTarget.phone }),
+      });
+      setForgiveTarget(null);
+      router.refresh();
+    } finally {
+      setForgiving(false);
+    }
+  }
 
   // BigBen Live-Fix 28.04.: Auto-Sync Voice-Calls + Polling alle 30s.
   // Vorher: nur PubDashboard mounted triggerte sync-calls einmal.
@@ -439,7 +480,12 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="text-sm font-bold text-gray-900">{formatTime(r.reservation_time)}</span>
                         <span className="text-sm text-gray-600">{r.guest_name}</span>
-                        <NoShowBadge count={guestNoShows} />
+                        <NoShowBadge
+                          count={guestNoShows}
+                          phone={r.guest_phone}
+                          guestName={r.guest_name}
+                          onForgive={openForgiveModal}
+                        />
                         <span className="text-xs text-gray-400">· {r.party_size} guests</span>
                       </div>
                       {r.note && (
@@ -503,6 +549,50 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
           </div>
         </div>
       ))}
+
+      {/* No-show forgive modal — tap on Yellow/Red Card opens this. Lets Paul
+          flip past no_show rows for this guest's phone to "cancelled", which
+          resets the badge. Used when Paul decides a previous no-show wasn't
+          really one (good reason, miscommunication, etc.). */}
+      {forgiveTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={() => setForgiveTarget(null)}>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
+              <svg className="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+              </svg>
+            </div>
+            <h3 className="text-center text-lg font-bold text-gray-900">
+              Forgive {forgiveTarget.guestName}?
+            </h3>
+            <p className="mt-2 text-center text-sm text-gray-600 leading-relaxed">
+              {forgiveTarget.guestName} has{" "}
+              <strong className="text-gray-900">
+                {forgiveTarget.count} previous no-show{forgiveTarget.count === 1 ? "" : "s"}
+              </strong>{" "}
+              on file ({forgiveTarget.phone}).
+              <br />
+              Forgiving them flips those past entries to <em>cancelled</em> and resets the badge.
+            </p>
+            <div className="mt-6 flex gap-2">
+              <button
+                onClick={() => setForgiveTarget(null)}
+                disabled={forgiving}
+                className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              >
+                Keep badge
+              </button>
+              <button
+                onClick={confirmForgive}
+                disabled={forgiving}
+                className="flex-1 rounded-xl bg-gray-900 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-40 transition-colors"
+              >
+                {forgiving ? "Forgiving…" : "Forgive"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

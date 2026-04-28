@@ -86,6 +86,7 @@ export default async function DashboardLayout({
       brandColor={identity?.primaryColor ?? undefined}
       staffRole={staffRole}
       isAdmin={scope?.isAdmin}
+      isFounder={scope?.isFounder}
       isImpersonating={scope?.isImpersonating}
       activeTenantId={scope?.tenantId}
       homeTenantId={scope?.homeTenantId}

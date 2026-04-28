@@ -95,44 +95,23 @@ const { data: dbEvents } = await sb
 
 console.log(`DB events in horizon: ${dbEvents?.length || 0}`);
 
-// ─── Weekly Recurring auto-generieren (immer aktiv) ─────────────────────────
-// Quiz Mittwoch 20:00, Karaoke Freitag 20:00, Live Music Samstag (variable Zeit)
-const RECURRING = [
-  { dow: 3, time: "20:00", title: "Quiz Night", category: "event", note: "every Wednesday!" },
-  { dow: 5, time: "20:00", title: "Karaoke Night", category: "event", note: "every Friday!" },
-  { dow: 6, time: "21:00", title: "Live Music", category: "event", note: "every Saturday evening" },
-];
-
-const merged = [];
-for (let d = new Date(today); d <= horizonEnd; d = addDays(d, 1)) {
-  const dow = d.getDay();
-  const dateStr = d.toISOString().split("T")[0];
-  // DB events for this date
-  const dbForDate = (dbEvents || []).filter((e) => e.event_date === dateStr);
-  for (const e of dbForDate) {
-    merged.push({
-      date: new Date(d),
-      time: e.event_time?.slice(0, 5) || "",
-      title: e.title,
-      category: e.category,
-      source: "db",
-    });
-  }
-  // Recurring auto-fill (skip if DB already has same category for date)
-  for (const r of RECURRING) {
-    if (r.dow !== dow) continue;
-    const conflict = dbForDate.some((e) => e.category === r.category && e.title === r.title);
-    if (conflict) continue;
-    merged.push({
-      date: new Date(d),
-      time: r.time,
-      title: r.title,
-      category: r.category,
-      note: r.note,
-      source: "recurring",
-    });
-  }
-}
+// ─── PURIST MODE (G11 — Voice macht nur 100%-bestätigte Versprechen) ───────
+// Lisa kennt AUSSCHLIESSLICH was Paul in pub_events gepflegt hat. Keine
+// Hardcoded Recurrings. Wenn Paul Quiz/Karaoke/Live-Music regelmäßig macht
+// pflegt er die als Events ein — dann weiß Lisa sie. Sonst: nichts.
+//
+// Hintergrund: Pre-Live-Test 28.04. — Lisa hat Caller versprochen "Quiz
+// every Wednesday 20:00" obwohl kein DB-Event existierte. Paul hatte das
+// nie zugesagt. Wenn Caller anruft und das Versprechen nicht eingehalten
+// wird = Vertrauensverlust für den Betrieb. No-Go.
+const merged = (dbEvents ?? []).map((e) => ({
+  date: new Date(e.event_date + "T12:00:00"),
+  time: e.event_time?.slice(0, 5) || "",
+  title: e.title,
+  category: e.category,
+  note: e.recurring ? "recurring" : undefined,
+  source: "db",
+}));
 
 merged.sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
 
@@ -157,11 +136,11 @@ PRONUNCIATION — say dates the way humans speak, not how they're written:
 - "Wednesday, the 29th of April" or "April 29th" — NEVER "two nine April".
 - For times: "seven PM" or "seven in the evening" — never "nineteen hundred".`;
 
-// Tonight section
+// Tonight section — Purist: only confirmed events, otherwise generic positive
 const tonightEvents = merged.filter((e) => e.date.getTime() === today.getTime());
 const tonightStr = tonightEvents.length
   ? tonightEvents.map((e) => `${e.time} ${e.title}${e.note ? ` (${e.note})` : ""}`).join(", ")
-  : "Regular pub night, no special events. Live Sport may be on — ask at the bar.";
+  : "Regular pub night — good atmosphere, friendly crowd, a great pint at the bar. No specific event scheduled today.";
 
 // Future events
 const thisWeek = merged.filter((e) => e.date > today && e.date <= weekEnd);
@@ -173,18 +152,20 @@ const eventsSection = `═══════════════════
 UPCOMING EVENTS (${fmtShort(today)} — ${fmtShort(horizonEnd)})
 ═══════════════════════════════════════
 
+CRITICAL RULE — only confirm what is on this list. Paul curates this list himself.
+If a caller asks about a specific match, event, or theme night that is NOT below:
+DO NOT invent it, DO NOT promise weekly recurrings unless explicitly listed.
+Say: "Honestly, that's not currently scheduled — but you're welcome to talk to Paul,
+he often arranges things on the day. Want me to take your name and number so he can
+get back to you?"
+
 TONIGHT (${fmtShort(today)}): ${tonightStr}
 
 THIS WEEK:
-${thisWeek.length ? thisWeek.map(fmtEv).join("\n") : "(no special events scheduled)"}
+${thisWeek.length ? thisWeek.map(fmtEv).join("\n") : "(nothing specifically scheduled — pub is open as normal, talk to Paul about specific wishes)"}
 
 NEXT WEEK:
-${nextWeek.length ? nextWeek.map(fmtEv).join("\n") : "(check back closer to date)"}
-
-WEEKLY RECURRING (always-on):
-- Every Wednesday 20:00: Quiz Night
-- Every Friday 20:00: Karaoke Night
-- Every Saturday: Live Sport + Live Music in the evening
+${nextWeek.length ? nextWeek.map(fmtEv).join("\n") : "(nothing yet — Paul updates this list daily, check back closer to date)"}
 
 `;
 

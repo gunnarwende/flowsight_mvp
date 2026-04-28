@@ -24,6 +24,8 @@ Diese sind in `ONBOARDING_BIBLE.md` §1 als G1-G10 formalisiert. Hier die Geschi
 | G8 — Per-Tenant-Routing | BigBen 28.04. (FB25) | `/ops/app/bigben-pub` redirected hardcoded auf `/ops/cases` (Sanitär). Paul hätte leeren Sanitär-Dashboard gesehen statt Pub-Dashboard. |
 | G9 — Cross-Platform Pfade | BigBen 28.04. | Daily-Refresh-Skript funktionierte lokal (Windows) aber failte auf GitHub Actions (Linux) wegen URL-Pfad-Regex. Cron hätte morgen ohne Fix nichts updated. |
 | G10 — Lessons innerhalb 24h | meta | Vorfälle vergisst man schnell. 24h später ist Detail weg. |
+| G11 — Voice 100%-bestätigt | BigBen 28.04. PM (Pauls Termin) | Lisa versprach "Quiz every Wednesday" obwohl nicht in pub_events. Hardcoded Recurrings im Skript + WHAT WE OFFER. → wenn Caller kommt und nichts ist, Trust kaputt. Worst-Case: Sanitär-Stellenanzeige nicht mehr aktuell, Lisa nimmt trotzdem Bewerbungen entgegen. |
+| G12 — SoT pro Feld + Tier | BigBen 28.04. PM (Pauls Termin, Stellenanzeigen-Hypothese) | Naive Pauschalisierung "Website ist immer SoT" funktioniert nicht. Manche Sanitär-Betriebe haben schwache Website + starkes GBP. Per-Kunde-Source-Map ist Pflicht-Deliverable in Phase-1. |
 
 ---
 
@@ -65,7 +67,57 @@ Diese sind in `ONBOARDING_BIBLE.md` §1 als G1-G10 formalisiert. Hier die Geschi
 #### Time-Investment
 - **Bug-Fixes-Cluster (FB22-FB27 + Cron-Hardening + Path-Bug + Lessons):** ~5h Founder-CC-Pair-Programming am 28.04.
 - **Doku (Run-Sheet + Onboarding-Bible + Lessons):** ~1h
-- Erwartung: nächster Pub-Kunde sollte mit existierender Infrastruktur in <2h provisionable sein, Bug-Cluster 0.
+- **PM-Sprint (post-meeting B1-C1, FB27 nochmal verschärft + Tenant-Architektur):** ~5h
+- Erwartung: nächster Pub-Kunde sollte mit existierender Infrastruktur in <2h provisionable sein, Bug-Cluster <5.
+
+#### Post-Meeting Findings (28.04. PM nach Pauls Termin)
+Pauls Termin war eine Stunde frühere als geplant. Confidence: 60% smooth, 25% Reibung, 15% kaputt.
+
+**Was kaputt war ("LS Guidance system"-Bug):**
+- Paul OTP-loggte sich ein → seine `auth.users` hatte KEIN `app_metadata.tenant_id` → resolveTenantScope fiel auf Default-Tenant → Paul sah "Leitsystem" Default-Branding (Browser-übersetzt zu "Guidance system") mit Initialen "LS"
+- Founder hatte als Collateral seinen Switcher verloren weil FB27-Fix auf `isPubTenant` gegated war (Paul ist auch admin → Switcher sah ihn als customer-admin)
+
+**Architektur-Fix:**
+- `isFounder` als separater Diskriminator (Email-Allowlist initial, langfristig DB-Flag)
+- Customer-User-Pre-Provisioning vor OTP-Login: `app_metadata.tenant_id + role` setzen + `staff` Eintrag (B1-Pattern)
+- `tenant_architecture.md` als Querschnittsdokument
+
+**Lisa-Purist-Mode (G11):**
+- Hardcoded Recurrings (Quiz Wed, Karaoke Fri, Live Music Sat) entfernt
+- Static-Prompt-Sections (WHAT WE OFFER, OPENING HOURS) gescrubbt
+- NO-GO-Sektion verschärft: "NEVER claim weekly recurrings unless explicitly listed"
+- Callback-Antwort bei nicht-geplanten Anfragen: "talk to Paul, he might arrange it"
+
+**SSOT pro Feld (G12):**
+- Per-Kunde `data_sources.md` als neuer Phase-1-Deliverable
+- Vier Quell-Typen: DB / GBP / External-Website / Static
+- Voice-Knowledge-Tier-Modell (T1 Generic → T4 Long-Time-Employee)
+- 90% Sanitär-Kunden = External Website primary für T3-Wissen, NICHT Edge-Case
+
+**Reality-Check für 10/Tag E2E:**
+- Heute: 2-3 Kunden/Tag E2E mit Founder-Aktivbeteiligung
+- 10/Tag ist 4-6 Wochen weg, 20/Tag 8-10 Wochen
+- 4 strukturelle Lücken: Phase-Übergänge nicht automated, QGs nur in Phase 1, kein E2E-QG, Self-Service fehlt
+- 6-Wochen-Roadmap in `tenant_architecture.md` §6 dokumentiert
+
+**Push-Setup:**
+- 0 Push-Subscriptions in DB für ALLE Tenants (Founder + Customer)
+- Banner-only-Approach hat versagt (User klickt "später")
+- Persistent `PushEnableCard` ins Pub-Dashboard eingebaut
+- `/api/ops/push/send-test` für Verifikation während Onboarding
+
+**No-Show Override:**
+- NoShowBadge clickable mit Forgive-Modal
+- `/api/bigben-pub/no-shows/forgive` flippt past no_show → cancelled
+- Lisa bleibt aussen vor (versprach Founder + CC)
+
+#### Patterns die MORGEN für Folge-Kunden gelten
+1. **Phase 2 Pflicht: Customer-User pre-provisioniert** vor OTP-Login. Sonst "LS"-Bug.
+2. **Phase 1 Pflicht: data_sources.md** + Tier-Plan pro Datenfeld.
+3. **Phase 2 Pflicht: Voice-Knowledge-Extract** für T3+ (Website-Crawl + LLM-Strukturierung).
+4. **Phase 5 Pflicht: Voice-Knowledge-Coverage-Test** (20 Fragen, 80% bzw 95% Hürde).
+5. **Pub vs Sanitär Routing:** `/ops/app/[slug]` redirected nach Modulen.
+6. **Push:** persistente Card statt Banner — Customer kann jederzeit aktivieren.
 
 ---
 
