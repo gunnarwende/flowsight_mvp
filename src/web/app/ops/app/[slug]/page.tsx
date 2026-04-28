@@ -22,13 +22,14 @@ export async function generateMetadata({
     .eq("slug", slug)
     .single();
 
+  const displayName = tenant?.name ?? slug;
   return {
-    title: `${tenant?.name ?? "Leitsystem"} Leitsystem`,
+    title: displayName,
     manifest: `/api/ops/pwa/manifest?tenant=${tenant?.id ?? ""}`,
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
-      title: tenant?.name ?? "Leitsystem",
+      title: displayName,
     },
   };
 }
@@ -42,15 +43,19 @@ export default async function TenantAppPage({
   const supabase = getServiceClient();
   const { data: tenant } = await supabase
     .from("tenants")
-    .select("id, name")
+    .select("id, name, modules")
     .eq("slug", slug)
     .single();
+
+  const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+  const isPub = Boolean(modules.events) || Boolean(modules.reservations);
 
   return (
     <TenantAppClient
       name={tenant?.name ?? slug}
       tenantId={tenant?.id ?? ""}
       slug={slug}
+      isPub={isPub}
     />
   );
 }

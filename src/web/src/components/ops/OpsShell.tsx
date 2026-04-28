@@ -8,6 +8,7 @@ import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
 import { PushOnboardingBanner } from "./PushOnboardingBanner";
 import { UpdatePrompt } from "./UpdatePrompt";
 import { TenantSwitcher } from "./TenantSwitcher";
+import { AdminBackToWorkspace } from "./AdminBackToWorkspace";
 import { shortenDisplayName } from "@/src/lib/tenants/shortenDisplayName";
 
 // ---------------------------------------------------------------------------
@@ -316,9 +317,17 @@ export function OpsShell({
       {/* FB62: Tenant-Switcher ist ein Founder-Tool (System-weiter Cross-Tenant-Zugriff).
           Normale Betriebs-Admins haben nur ihren eigenen Tenant — für die ist der Switcher
           sinnlos und verwirrend. Sichtbar nur wenn Admin aktiv einen fremden Tenant
-          impersoniert (z.B. Founder-Zugriff auf Kunden-Leitsystem). */}
-      {isAdmin && isImpersonating && (
+          impersoniert (z.B. Founder-Zugriff auf Kunden-Leitsystem).
+          FB27: Auf Pub-Tenants wird der Switcher AUCH FÜR ADMINS versteckt — die Liste
+          würde sonst die Namen anderer Kunden leaken, falls der Founder die App auf
+          dem Kundengerät öffnet bevor der Kunde sich selbst eingeloggt hat. Stattdessen
+          ein winziger Escape-Button, der den Admin zurück in seine eigene Workspace
+          schickt (kein Dropdown, keine Kundennamen). */}
+      {isAdmin && isImpersonating && !isPubTenant && (
         <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} viewAsRole={viewAsRole} />
+      )}
+      {isAdmin && isImpersonating && isPubTenant && (
+        <AdminBackToWorkspace homeTenantId={homeTenantId ?? null} />
       )}
       {navLinks}
       {footer}
