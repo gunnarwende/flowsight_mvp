@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -87,6 +87,48 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const lastSyncResult = useRef<{ synced: number; checked: number } | null>(null);
+
+  // BigBen Live-Fix 28.04.: Auto-Sync Voice-Calls + Polling alle 30s.
+  // Vorher: nur PubDashboard mounted triggerte sync-calls einmal.
+  // Jetzt: ReservationManager triggert sync-calls bei Mount + alle 30s.
+  // Plus: wartet auf Promise BEFORE router.refresh() — Race-Condition fix.
+  useEffect(() => {
+    let cancelled = false;
+    async function syncOnce() {
+      if (cancelled) return;
+      try {
+        const res = await fetch("/api/bigben-pub/sync-calls");
+        const data = await res.json().catch(() => null);
+        if (!cancelled && data && typeof data.synced === "number") {
+          lastSyncResult.current = data;
+          if (data.synced > 0) {
+            // New reservations created → refresh page to show them
+            router.refresh();
+          }
+        }
+      } catch (_err) { /* best effort */ }
+    }
+    // Initial sync on mount
+    syncOnce();
+    // Periodic poll every 30s
+    const interval = setInterval(syncOnce, 30_000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [router]);
+
+  async function handleManualSync() {
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/bigben-pub/sync-calls");
+      const data = await res.json().catch(() => null);
+      if (data && typeof data.synced === "number") {
+        lastSyncResult.current = data;
+        router.refresh();
+      }
+    } catch (_err) { /* ignore */ }
+    setSyncing(false);
+  }
 
   // Manual reservation form — pre-filled for fast walk-in entry
   const [name, setName] = useState("");
@@ -168,6 +210,14 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
             </span>
           )}
         </h1>
+        <button
+          onClick={handleManualSync}
+          disabled={syncing}
+          className="text-xs font-medium text-gray-500 hover:text-gray-900 disabled:opacity-50"
+          title="Pull latest voice-call reservations from Retell"
+        >
+          {syncing ? "Syncing..." : "↻ Refresh calls"}
+        </button>
       </div>
 
       {/* Manual reservation button — for walk-in / bar reservations */}

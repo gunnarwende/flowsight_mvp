@@ -25,6 +25,8 @@ export async function GET() {
 
   const tenants = (data ?? []).map((t) => {
     const modules = (t.modules ?? {}) as Record<string, unknown>;
+    const hasEvents = Boolean(modules.events);
+    const hasReservations = Boolean(modules.reservations);
     return {
       id: t.id,
       name: t.name,
@@ -32,6 +34,7 @@ export async function GET() {
       color: typeof modules.primary_color === "string" ? modules.primary_color : "#64748b",
       trial_status: t.trial_status ?? null,
       is_demo: t.slug === "brunner-haustechnik",
+      is_pub: hasEvents || hasReservations,
     };
   });
 
