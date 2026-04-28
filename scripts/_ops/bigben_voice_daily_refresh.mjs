@@ -48,11 +48,14 @@ const DAYS_AHEAD = 14;
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// No leading zero on the day number — Retell's TTS reads "03 May" as
+// "zero three may" instead of "May third" / "third of May". Plain "3 May"
+// gets pronounced naturally.
 function fmtFull(d) {
-  return `${DAY_NAMES[d.getDay()]}, ${String(d.getDate()).padStart(2, "0")} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+  return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 }
 function fmtShort(d) {
-  return `${DAY_NAMES[d.getDay()].slice(0, 3)} ${String(d.getDate()).padStart(2, "0")} ${MONTH_NAMES[d.getMonth()]}`;
+  return `${DAY_NAMES[d.getDay()].slice(0, 3)} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
 }
 
 function addDays(d, n) {
@@ -147,7 +150,12 @@ When a caller says 'tomorrow' → ${fmtFull(tomorrow)}.
 When a caller says 'this weekend' → Saturday ${fmtFull(addDays(today, (6 - today.getDay() + 7) % 7 || 7))}.
 
 NEVER reference dates before ${fmtFull(today)} — those are in the past.
-NEVER invent a date — only use the events list below or compute relative to today.`;
+NEVER invent a date — only use the events list below or compute relative to today.
+
+PRONUNCIATION — say dates the way humans speak, not how they're written:
+- "Sunday, the 3rd of May" or "Sunday, May 3rd" — NEVER "zero three may" or "03 May".
+- "Wednesday, the 29th of April" or "April 29th" — NEVER "two nine April".
+- For times: "seven PM" or "seven in the evening" — never "nineteen hundred".`;
 
 // Tonight section
 const tonightEvents = merged.filter((e) => e.date.getTime() === today.getTime());
