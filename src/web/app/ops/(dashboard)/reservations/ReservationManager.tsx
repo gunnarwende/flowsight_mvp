@@ -63,6 +63,45 @@ function NoShowBadge({ count }: { count: number }) {
   );
 }
 
+const DAY_NAMES_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_NAMES_LONG_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTH_NAMES_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+interface ManualDayOption {
+  value: string;
+  short: string;
+  long: string;
+  isClosed: boolean;
+  prefix: string;
+}
+
+/** Today + next 14 days as English-locale options for Paul's walk-in form. */
+function buildManualDayOptions(): ManualDayOption[] {
+  const out: ManualDayOption[] = [];
+  const todayIso = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" });
+  const [ty, tm, td] = todayIso.split("-").map(Number);
+  for (let i = 0; i <= 14; i++) {
+    const d = new Date(Date.UTC(ty, tm - 1, td + i, 12, 0));
+    const iso = d.toISOString().split("T")[0];
+    const dow = d.getUTCDay();
+    const dayShort = DAY_NAMES_EN[dow];
+    const dayLong = DAY_NAMES_LONG_EN[dow];
+    const dayNum = d.getUTCDate();
+    const monthShort = MONTH_NAMES_EN[d.getUTCMonth()];
+    let prefix = "";
+    if (i === 0) prefix = "Today";
+    else if (i === 1) prefix = "Tomorrow";
+    out.push({
+      value: iso,
+      short: `${dayShort} ${dayNum} ${monthShort}`,
+      long: `${dayLong}, ${dayNum} ${monthShort}`,
+      isClosed: dow === 1,
+      prefix,
+    });
+  }
+  return out;
+}
+
 /** Return today's date as YYYY-MM-DD in Zurich timezone */
 function todayISO(): string {
   return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" });
@@ -220,86 +259,153 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
         </button>
       </div>
 
-      {/* Manual reservation button — for walk-in / bar reservations */}
+      {/* Add reservation — for walk-ins and phone bookings */}
       <button
         onClick={() => {
           if (!showForm) {
-            // Re-compute date/time each time the form opens for accurate walk-in defaults
             setDate(todayISO());
             setTime(nowRounded15());
           }
           setShowForm(!showForm);
         }}
-        className="w-full rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+        className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99]"
       >
-        {showForm ? "Cancel" : "+ Add Reservation"}
+        {showForm ? "Cancel" : "+ Add reservation"}
       </button>
 
-      {/* Manual form — quick entry for bar reservations */}
-      {showForm && (
-        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-3">
-          <p className="text-xs text-gray-400 font-medium">Walk-in / Phone</p>
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
-            autoFocus
-          />
-          <input
-            type="tel"
-            placeholder="Phone (optional)"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
-          />
-          <div className="flex gap-2">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
-            />
-            <select
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-24 rounded-lg border border-gray-200 px-2 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
-            >
-              {Array.from({ length: 40 }, (_, i) => {
-                const h = Math.floor(i / 4) + 14; // 14:00 to 23:45
-                const m = (i % 4) * 15;
-                if (h >= 24) return null;
-                const val = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-                return <option key={val} value={val}>{val}</option>;
-              })}
-            </select>
-            <select
-              value={guests}
-              onChange={(e) => setGuests(e.target.value)}
-              className="w-16 rounded-lg border border-gray-200 px-2 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
-            >
-              {[1,2,3,4,5,6,7,8,10,12,15,20].map((n) => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
+      {/* Manual form — modern, English-only locale */}
+      {showForm && (() => {
+        const days = buildManualDayOptions();
+        const selected = days.find((d) => d.value === date) ?? days[0];
+        return (
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-5">
+          <div className="flex items-baseline justify-between">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400">Walk-in / phone</p>
+            <p className="text-[11px] text-gray-400">No SMS sent at save</p>
           </div>
-          <input
-            type="text"
-            placeholder="Note (optional)"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:outline-none"
-          />
+
+          {/* Date — horizontal pill scroller, English locale */}
+          <div>
+            <div className="mb-2 flex items-baseline justify-between">
+              <label className="text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">Date</label>
+              <span className="text-[11px] text-gray-400">{selected.long}</span>
+            </div>
+            <div className="-mx-1 flex gap-1.5 overflow-x-auto pb-1 px-1" style={{ scrollbarWidth: "thin" }}>
+              {days.map((d) => {
+                const active = d.value === date;
+                return (
+                  <button
+                    key={d.value}
+                    type="button"
+                    onClick={() => !d.isClosed && setDate(d.value)}
+                    disabled={d.isClosed}
+                    title={d.isClosed ? "Closed on Mondays" : d.long}
+                    className={`flex-shrink-0 rounded-lg border px-3 py-2 text-center transition-all min-w-[58px] ${
+                      active
+                        ? "border-gray-900 bg-gray-900 text-white shadow-sm"
+                        : d.isClosed
+                        ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div className={`text-[9px] font-semibold uppercase tracking-wider ${active ? "text-white/80" : "text-gray-400"}`}>
+                      {d.prefix || DAY_NAMES_EN[new Date(d.value + "T12:00:00Z").getUTCDay()]}
+                    </div>
+                    <div className="text-sm font-bold leading-tight mt-0.5">
+                      {new Date(d.value + "T12:00:00Z").getUTCDate()}
+                    </div>
+                    <div className={`text-[9px] mt-0.5 ${active ? "text-white/80" : "text-gray-400"}`}>
+                      {MONTH_NAMES_EN[new Date(d.value + "T12:00:00Z").getUTCMonth()]}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Time + Guests */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">Time</label>
+              <select
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+              >
+                {Array.from({ length: 40 }, (_, i) => {
+                  const h = Math.floor(i / 4) + 14;
+                  const m = (i % 4) * 15;
+                  if (h >= 24) return null;
+                  const val = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+                  return <option key={val} value={val}>{val}</option>;
+                })}
+              </select>
+            </div>
+            <div>
+              <label className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">Guests</label>
+              <select
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+              >
+                {[1,2,3,4,5,6,7,8,10,12,15,20].map((n) => (
+                  <option key={n} value={n}>{n} {n === 1 ? "guest" : "guests"}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Name */}
+          <div>
+            <label className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">Name</label>
+            <input
+              type="text"
+              placeholder="Guest name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 placeholder:text-gray-400"
+              autoFocus
+            />
+          </div>
+
+          {/* Phone (optional) */}
+          <div>
+            <label className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">
+              Phone <span className="font-normal normal-case tracking-normal text-gray-400">— optional</span>
+            </label>
+            <input
+              type="tel"
+              placeholder="+41 79 ..."
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* Note (optional) */}
+          <div>
+            <label className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">
+              Note <span className="font-normal normal-case tracking-normal text-gray-400">— optional</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Birthday, outdoor seating, ..."
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 placeholder:text-gray-400"
+            />
+          </div>
+
           <button
             onClick={handleManualSave}
-            disabled={saving || !name.trim() || !date}
-            className="w-full rounded-lg bg-gray-900 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-colors hover:bg-gray-800"
+            disabled={saving || !name.trim() || !date || selected.isClosed}
+            className="w-full rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {saving ? "Saving..." : "Save"}
+            {saving ? "Saving..." : selected.isClosed ? "Closed on Mondays" : `Save reservation · ${selected.short} ${time}`}
           </button>
         </div>
-      )}
+        );
+      })()}
 
       {/* Reservations grouped by day */}
       {reservations.length === 0 && (

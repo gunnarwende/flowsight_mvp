@@ -24,6 +24,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const require = createRequire(import.meta.url);
@@ -33,8 +34,10 @@ const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
 
 const SLUG = "bigben-pub";
-// scripts/_ops/<this file>  →  ../.. = repo root
-const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname).replace(/^\//, ""), "..", "..");
+// scripts/_ops/<this file>  →  ../.. = repo root.
+// Use fileURLToPath for cross-platform correctness (the regex hack to strip
+// a leading slash from URL pathnames silently broke on Linux runners).
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const AGENT_PATHS = {
   en: path.join(REPO_ROOT, "retell", "exports", "bigben-pub_agent.json"),
 };
