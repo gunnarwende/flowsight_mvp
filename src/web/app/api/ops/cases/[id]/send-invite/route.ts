@@ -241,6 +241,22 @@ export async function POST(
     attendeeEmail: to,
   });
 
+  // ── Demo mode: skip dispatch (no Resend call, event still logged) ─────
+  if (process.env.DEMO_NO_DISPATCH === "1") {
+    await supabase.from("case_events").insert({
+      case_id: id,
+      event_type: "invite_sent",
+      title: "Terminbestätigung versendet",
+      metadata: { demo: true, case_label: caseLabel },
+    });
+    return respond(200, { ok: true, demo: true }, {
+      decision: "demo_no_dispatch",
+      scheduled_at_present: true,
+      recipient_present: true,
+      provider_message_id: null,
+    });
+  }
+
   // ── Send via Resend (inline, no helper — 1-log rule) ─────────────────
   try {
     Sentry.setTag("area", "email");

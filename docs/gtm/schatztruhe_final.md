@@ -327,7 +327,7 @@ ich wirklich.
 [THUMBNAIL — animierter Loom-Preview, klickbar]
 ▶ Video ansehen (2 Minuten)
 
-Falls es Sie interessiert, können Sie auch direkt
+Falls es Sie interessiert, können Sie auch direkt kostenlos
 testen: 043 505 11 01
 
 🔗 Ihr persönlicher Einstieg
@@ -589,7 +589,7 @@ ER DENKT:
 |-------|-----------|-------|-------|
 | **Mikrofon** | Rode NT-USB Mini | ~CHF 100 | USB-C, kompakt, professioneller Klang, kein Treiber |
 | **Mikrofon Alt.** | Blue Yeti Nano | ~CHF 90 | USB-A, bewährt |
-| **Kamera** | MacBook M1+ eingebaut | — | Reicht für 1080p Loom |
+| **Kamera** | MacBook M1+ eingebaut | — | Reicht für 1080p Loom | -> Hinweis: Founder hat externe Laptop direkt über Monitor (EMEET, Auto Focus, HD 1080P)
 | **Kamera wenn nötig** | Logitech C920 | ~CHF 80 | Für ältere Windows-Laptops |
 | **Licht** | Fenster links + A4-Papier rechts | — | Kostenlos, sehr gut |
 | **Licht wenn investiert** | Elgato Key Light Mini | ~CHF 100 | Gleichmässig, einstellbar |

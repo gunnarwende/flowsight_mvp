@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>S2 &mdash; Wizard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 390px; height: 844px;
+    overflow: hidden;
+    background: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* iOS Status Bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 28px 0 28px;
+    height: 54px;
+  }
+  .status-time { font-size: 16px; font-weight: 600; color: #1e293b; letter-spacing: -0.02em; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+
+  /* Header */
+  .header {
+    padding: 20px 24px 0 24px;
+  }
+  .header-brand {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 6px;
+  }
+  .gold-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #c9a227; flex-shrink: 0;
+  }
+  .brand-name {
+    font-size: 16px; font-weight: 600; color: #1e293b;
+    letter-spacing: -0.025em;
+  }
+  .step-label {
+    font-size: 13px; font-weight: 500; color: #94a3b8;
+    letter-spacing: 0.02em;
+    margin-left: 20px;
+  }
+  /* Progress bar */
+  .progress-track {
+    margin: 16px 24px 0 24px;
+    height: 3px; background: #e2e8f0; border-radius: 2px;
+  }
+  .progress-fill {
+    width: 33.3%; height: 100%; background: #c9a227; border-radius: 2px;
+  }
+
+  /* Title */
+  .form-title {
+    font-size: 24px; font-weight: 700; color: #0f172a;
+    letter-spacing: -0.025em;
+    padding: 28px 24px 0 24px;
+  }
+  .form-subtitle {
+    font-size: 14px; font-weight: 400; color: #64748b;
+    padding: 6px 24px 0 24px;
+  }
+
+  /* Category Cards */
+  .categories {
+    padding: 24px 24px 0 24px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cat-card {
+    display: flex; align-items: center; gap: 14px;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-card.selected {
+    border-color: #c9a227;
+    background: rgba(201,162,39,0.04);
+  }
+  .cat-icon {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f1f5f9;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .cat-card.selected .cat-icon {
+    background: rgba(201,162,39,0.10);
+  }
+  .cat-label {
+    font-size: 15px; font-weight: 500; color: #1e293b;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .cat-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .cat-card.selected .cat-check {
+    background: #c9a227;
+    border-color: #c9a227;
+  }
+
+  /* Powered by */
+  .powered {
+    position: absolute;
+    bottom: 40px; left: 0; right: 0;
+    text-align: center;
+    font-size: 12px; font-weight: 400; color: #94a3b8;
+    letter-spacing: 0.02em;
+  }
+  .powered span { font-weight: 500; color: #64748b; }
+
+  /* Home Indicator */
+  .home-indicator {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 3px;
+    background: rgba(15,23,42,0.15);
+  }
+</style>
+</head>
+<body>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">09:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#1e293b"/><rect x="4.5" y="3" width="3" height="9" rx="1" fill="#1e293b"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#1e293b"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#1e293b"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.1 3.6 12 4.4 13.4 5.8L14.8 4.4C13 2.6 10.6 1.5 8 1.5S3 2.6 1.2 4.4L2.6 5.8C4 4.4 5.9 3.6 8 3.6Z" fill="#1e293b"/><path d="M8 7.2C9.2 7.2 10.3 7.7 11.1 8.5L12.5 7.1C11.3 5.9 9.7 5.2 8 5.2S4.7 5.9 3.5 7.1L4.9 8.5C5.7 7.7 6.8 7.2 8 7.2Z" fill="#1e293b"/><circle cx="8" cy="10.5" r="1.5" fill="#1e293b"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="rgba(15,23,42,0.35)" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#1e293b"/><path d="M24 4.5C24.8 4.8 25.5 5.7 25.5 6.5S24.8 8.2 24 8.5V4.5Z" fill="rgba(15,23,42,0.4)"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="gold-dot"></div>
+      <span class="brand-name">Geb&auml;udetechnik GmbH</span>
+    </div>
+    <div class="step-label">Schritt 1 von 3</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill"></div></div>
+
+  <!-- Form Title -->
+  <div class="form-title">Was m&ouml;chten Sie melden?</div>
+  <div class="form-subtitle">W&auml;hlen Sie eine Kategorie</div>
+
+  <!-- Categories -->
+  <div class="categories">
+    <div class="cat-card">
+      <div class="cat-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C10 2 10 6 10 8C10 10 12 10 12 10H18C18 10 18 14 14 18C14 18 14 14 14 12C14 10 12 10 12 10H6C6 10 2 10 2 6C2 2 10 2 10 2Z" fill="#3b82f6" opacity="0.8"/></svg>
+      </div>
+      <span class="cat-label">Sanit&auml;r</span>
+      <div class="cat-check"></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L12 7L10 12L8 7L10 2ZM10 12C10 12 6 14 6 17C6 19 8 19 10 19C12 19 14 19 14 17C14 14 10 12 10 12Z" fill="#f59e0b" opacity="0.8"/></svg>
+      </div>
+      <span class="cat-label">Heizung</span>
+      <div class="cat-check"></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 2L7 11H11L7 18L13 9H9L13 2Z" fill="#f59e0b" opacity="0.8"/></svg>
+      </div>
+      <span class="cat-label">Elektro</span>
+      <div class="cat-check"></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10C5 7 8 8 10 10C12 12 15 13 17 10" stroke="#64748b" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M3 14C5 11 8 12 10 14C12 16 15 17 17 14" stroke="#64748b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <span class="cat-label">L&uuml;ftung / Klima</span>
+      <div class="cat-check"></div>
+    </div>
+    <div class="cat-card selected">
+      <div class="cat-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4V7M10 4L7 6M10 4L13 6" stroke="#c9a227" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="#c9a227" stroke-width="1.8" fill="none"/><path d="M4 13L7 11M16 13L13 11M10 16V13" stroke="#c9a227" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <span class="cat-label">Allgemein</span>
+      <div class="cat-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="powered">Powered by <span>FlowSight</span></div>
+  <div class="home-indicator"></div>
+</body>
+</html>

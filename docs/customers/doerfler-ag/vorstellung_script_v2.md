@@ -246,16 +246,18 @@ nicht einfach ins Leere laufen,
 sondern der Kunde
 zunächst sauber aufgefangen werden.
 
-Genau dafür habe ich für Sie
-eine digitale Assistentin vorbereitet,
-die übernimmt,
+Und genau dafür habe ich für Sie
+eine Assistentin vorbereitet,
+die dann übernimmt,
 wenn Sie gerade nicht direkt rangehen können.
 
 Ich rufe einmal kurz an.
 
 >>> JETZT ANRUFEN — PAUSE <<<
 
-Direkt nach dem Anruf
+Okay perfekt. 
+
+Und direkt nach dem Anruf
 erhält der Kunde eine SMS.
 
 So merkt der Kunde sofort:
@@ -263,55 +265,77 @@ Sein Anliegen ist angekommen,
 und er kann bei Bedarf
 direkt noch ein Foto vom Schaden nachreichen.
 
-Für Sie heisst das zunächst einmal:
+Für Sie heisst das:
 Sie können Ihr Kundengespräch
 oder Ihren Einsatz in Ruhe zu Ende führen,
 ohne unterbrochen zu werden
 und ohne dass das Anliegen verloren geht.
 
-Genau dafür habe ich Ihnen
-Ihre eigene Dörfler-App vorbereitet.
+Und danach ist es nicht einfach irgendwo erfasst,
+sondern direkt so da,
+dass Sie damit weiterarbeiten können.
 
-Egal ob ein Kunde anruft,
+Genau dafür für Ihren Betrieb
+Ihr eigenes Leitsystem vorbereitet.
+
+Und egal ob ein Kunde anruft,
 online etwas meldet
 oder Sie selbst etwas aufnehmen —
 alles läuft hier zusammen.
 
-Hier sehen Sie auf einen Blick,
+Sie sehen hier auf einen Blick,
 was neu ist,
 was bereits läuft,
 was erledigt ist
 und wie es bei den Bewertungen aussieht.
 
-Gerade das Thema Bewertungen ist bei 
-vielen Betrieben ein Thema,
-das im Alltag schnell untergeht.
+Und gerade beim Thema Bewertungen
+kennen Sie das sicherlich auch 
+aus eigener Erfahrung:
+
+Sehr gute Arbeit wird tagtäglich geleistet,
+führt im Alltag aber nicht automatisch dazu,
+dass daraus auch eine positive Bewertung entsteht.
+
+Und gleichzeitig möchte man
+nach sauber geleisteter Arbeit
+nicht jedes Mal noch aktiv
+um eine Bewertung bitten.
+
 Dafür habe ich aber auch noch
 einen ziemlich coolen Weg gefunden —
 zeige ich Ihnen gleich.
 
 Und wenn ich den Fall öffne,
-sehen Sie direkt,
+sehen Sie nicht einfach nur,
+dass etwas eingegangen ist.
+
+Sie sehen direkt,
 worum es geht,
 wie dringend es ist
-und was bereits erfasst wurde.
+uuund was bereits erfasst wurde (scroll down &up).
 
-Von hier aus können Sie den Fall
-direkt einem Ihrer Leute zuweisen
-und einen Einsatztermin festlegen —
-der landet dann auch direkt
-bei Ihrem Techniker auf dem Handy.
+Von hier aus
+geht es dann direkt weiter.
 
-So ist der Fall nicht nur irgendwo eingegangen,
-sondern so da,
-dass Sie direkt damit weiterarbeiten können.
+Sie können den Fall einordnen,
+einem Mitarbeiter zuweisen
+und einen Einsatztermin festlegen.
+
+
+So wird aus einem eingegangenen Anliegen
+ein sauberer Arbeitsfall,
+mit dem Sie direkt weiterarbeiten können.
 
 Und genau so haben Sie den aktuellen Stand
 nicht irgendwo im Kopf
 oder verteilt in einzelnen Nachrichten,
-sondern direkt im Fall —
-auch unterwegs auf der Baustelle
-sauber zur Hand.
+
+sondern zentral an einem Ort —
+sauber eingeordnet,
+nachvollziehbar
+und direkt einsatzbereit.
+
 
 
 ### TAKE 3 — Wenn ein Kunde lieber online meldet (Kamera klein, Desktop-Screen)
@@ -333,10 +357,10 @@ auch aussehen könnte:
 
 ein sauberer Aufbau,
 klare Leistungsbereiche,
-Ihr Einzugsgebiet,
 Ihre Bewertungen,
-Ihr Team
-und auch Ihre Geschichte —
+Ihr Team,
+Ihre Geschichte
+und auch Ihr Einzugsgebiet —
 die verdient aus meiner Sicht
 gerade in diesem Jubiläumsjahr
 einen sichtbaren Platz.
@@ -380,20 +404,18 @@ Und auf den Punkt mit den Bewertungen
 komme ich jetzt bewusst
 noch einmal zurück.
 
-Gerade das Thema Bewertungen ist bei
-vielen Betrieben ein Punkt,
-der im Alltag schnell untergeht.
-Dafür habe ich aber auch noch
+Dafür habe ich auch noch
 einen ziemlich coolen Weg gefunden.
 
-Natürlich nicht blind bei jedem Fall,
-sondern genau dort,
-wo Sie sagen:
-Das war sauber,
-da passt es jetzt.
+Aber zuerst:
+Damit der Einsatz
+auch wirklich stattfindet,
+bekommt der Kunde 24 Stunden vorher
+automatisch eine Erinnerung.
+So vermeiden Sie Leerfahrten.
 
-Denn wenn ein Fall
-wirklich sauber erledigt ist,
+Und wenn der Einsatz dann
+sauber erledigt ist,
 kann mit einem Klick
 direkt und gezielt
 eine Bewertung angefragt werden.

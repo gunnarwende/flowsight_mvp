@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; }
+  body { background: #000; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+/**
+ * Generic Samsung screen overlay renderer.
+ * Loads a base image, whites out text areas, draws new text.
+ *
+ * URL params:
+ *   base     = path/URL to base image (required)
+ *   overlays = JSON array of overlay instructions
+ *
+ * Each overlay: { x, y, w, h, bgColor, text, color, fontSize, fontWeight, textAlign, fontFamily, offsetY }
+ */
+const params = new URLSearchParams(window.location.search);
+const baseUrl = params.get('base') || '';
+const overlaysJson = params.get('overlays') || '[]';
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+const img = new Image();
+img.crossOrigin = 'anonymous';
+img.onload = () => {
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0);
+
+  // Apply overlays
+  const overlays = JSON.parse(overlaysJson);
+  for (const o of overlays) {
+    // Fill background rectangle to cover original text
+    ctx.fillStyle = o.bgColor || '#ffffff';
+    ctx.fillRect(o.x, o.y, o.w, o.h);
+
+    // Draw new text
+    if (o.text) {
+      ctx.fillStyle = o.color || '#000000';
+      const family = o.fontFamily || "'SamsungOne', -apple-system, 'Roboto', sans-serif";
+      ctx.font = `${o.fontWeight || '400'} ${o.fontSize || 40}px ${family}`;
+      ctx.textBaseline = 'top';
+
+      const align = o.textAlign || 'left';
+      let tx = o.x;
+      if (align === 'center') {
+        ctx.textAlign = 'center';
+        tx = o.x + o.w / 2;
+      } else if (align === 'right') {
+        ctx.textAlign = 'right';
+        tx = o.x + o.w;
+      } else {
+        ctx.textAlign = 'left';
+      }
+
+      ctx.fillText(o.text, tx, o.y + (o.offsetY || 0));
+    }
+  }
+
+  window._done = true;
+};
+img.onerror = () => {
+  console.error('Failed to load base image:', baseUrl);
+  window._done = true;
+};
+img.src = baseUrl;
+</script>
+</body>
+</html>

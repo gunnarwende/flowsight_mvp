@@ -238,7 +238,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "The caller wants to continue in German. Call the 'swap_to_de_agent' tool IMMEDIATELY. Say nothing else — just call the tool. NEVER use end_call."
+          "text": "The caller wants German. IMMEDIATELY call swap_to_de_agent. Do NOT speak ANY German words. Do NOT say Einen Moment. Do NOT announce the transfer in German. If you must say something, say it in the language you were just speaking (English/French/Italian): One moment please or Un instant or Un momento. Keep it to 3 words maximum. Then call the tool."
         },
         "name": "DE Transfer",
         "edges": [],
@@ -253,7 +253,7 @@
             "type": "agent_swap",
             "agent_id": "REPLACE_WITH_LEUTHOLD_DE_AGENT_ID",
             "name": "swap_to_de_agent",
-            "description": "Transfer the caller back to the German-speaking agent (Lisa). Execute this tool IMMEDIATELY — the caller wants German.",
+            "description": "Transfer to German agent. Execute IMMEDIATELY. Do NOT speak German.",
             "post_call_analysis_setting": "only_destination_agent"
           }
         ]

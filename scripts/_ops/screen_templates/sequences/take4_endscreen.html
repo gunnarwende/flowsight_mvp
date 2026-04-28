@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Abschluss</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  body {
+    background: radial-gradient(ellipse at center, var(--bg-light) 0%, var(--bg-dark) 70%, #000 120%);
+  }
+
+  /* Particles (subtile shimmer) */
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkle 4s ease-in-out infinite;
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+    50% { opacity: 0.8; transform: translateY(-12px) scale(1); }
+  }
+
+  /* Layout */
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Circle-Close Animation */
+  .circle-wrap {
+    width: 260px;
+    height: 260px;
+    position: relative;
+    margin-bottom: 56px;
+  }
+  .circle-svg {
+    transform: rotate(-90deg);
+  }
+  .circle-path {
+    fill: none;
+    stroke: rgba(255,255,255,0.92);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-dasharray: 816; /* 2π × 130 */
+    stroke-dashoffset: 816;
+    filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+    animation: drawCircle 1400ms cubic-bezier(0.65,0,0.35,1) 400ms forwards;
+  }
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+  .circle-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 200;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    opacity: 0;
+    animation: fadeIn 800ms ease-out 1500ms forwards;
+  }
+
+  /* Firmenname */
+  .firma {
+    font-size: 56px;
+    font-weight: 200;
+    letter-spacing: -1px;
+    text-align: center;
+    color: rgba(255,255,255,0.98);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: riseIn 900ms cubic-bezier(0.2,0,0.3,1) 1800ms forwards;
+  }
+  @keyframes riseIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tagline */
+  .tagline {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 1.8px;
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    opacity: 0;
+    animation: fadeIn 800ms ease-out 2500ms forwards;
+  }
+
+  /* Closing note (sehr dezent, unten) */
+  .closing-note {
+    position: absolute;
+    bottom: 48px;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.32);
+    opacity: 0;
+    animation: fadeIn 1000ms ease-out 3200ms forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <!-- Subtle particles (generated via JS) -->
+  <div id="particles"></div>
+
+  <div class="stage">
+    <div class="circle-wrap">
+      <svg class="circle-svg" width="260" height="260" viewBox="0 0 260 260">
+        <circle class="circle-path" cx="130" cy="130" r="130" />
+      </svg>
+      <div class="circle-inner">Leitsystem</div>
+    </div>
+    <div class="firma" id="firma">—</div>
+    <div class="tagline">ein Platz für alles, was reinkommt.</div>
+  </div>
+
+  <div class="closing-note">Vielen Dank</div>
+
+<script>
+const CONFIG = {
+  firma: "{{FIRMA}}",
+  brand: "{{BRAND}}"
+};
+
+function hexToRgb(h) {
+  const v = h.replace(/^#/, "");
+  const num = parseInt(v, 16);
+  return [num >> 16 & 0xff, num >> 8 & 0xff, num & 0xff];
+}
+function adjust(rgb, factor) {
+  return `rgb(${rgb.map((v) => Math.max(0, Math.min(255, Math.round(v * factor)))).join(",")})`;
+}
+
+const rgb = hexToRgb(CONFIG.brand || "#0b1220");
+document.documentElement.style.setProperty("--bg-light", adjust(rgb, 0.55));
+document.documentElement.style.setProperty("--bg-dark",  adjust(rgb, 0.18));
+document.getElementById("firma").textContent = CONFIG.firma;
+
+// Generate 18 particles at random positions
+const particles = document.getElementById("particles");
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = (Math.random() * 100) + "%";
+  p.style.top = (Math.random() * 100) + "%";
+  p.style.animationDelay = (Math.random() * 3) + "s";
+  p.style.animationDuration = (3 + Math.random() * 2) + "s";
+  particles.appendChild(p);
+}
+</script>
+</body>
+</html>

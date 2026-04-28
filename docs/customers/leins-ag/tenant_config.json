@@ -1,0 +1,170 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-04-20T09:54:51.968Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "leins-ag",
+    "name": "Leins AG",
+    "case_id_prefix": "LN",
+    "brand_color": "#1e5f8c",
+    "sms_sender_name": "Leins AG"
+  },
+  "voice_agent": {
+    "company_name": "Leins AG",
+    "domain": "Spenglerei, Sanitär, Heizung und Blitzschutz",
+    "owner_names": "Herbert Leins (Geschäftsgründer), Michael Leins (GL Sanitär & Heizung), Beat Leins (GL Spenglerei & Blitzschutz)",
+    "address": "Glärnischstrasse 18, 8810 Horgen",
+    "phone": "043 244 66 55",
+    "email": "info@leinsag.ch",
+    "website": "https://www.leinsag.ch",
+    "founded": "",
+    "team_section": "Herbert Leins (Geschäftsgründer), Michael Leins (GL Sanitär & Heizung), Beat Leins (GL Spenglerei & Blitzschutz), Tayfun Besinci (Techniker), Skender Bunjaku (Techniker), Renato Schmid (Hilfsmonteur) — 6 Personen",
+    "memberships": "",
+    "google_rating": "5 Sterne bei 9 Bewertungen",
+    "opening_hours": "Mo – Fr: 07.00–12.00 und 13.30–17.00",
+    "opening_hours_spoken": "Wir sind Montag bis Freitag von sieben bis zwölf und von halb zwei bis fünf Uhr für Sie erreichbar.",
+    "emergency_policy": "",
+    "services_list": "Spenglerei: Dachrinnen, Blechverkleidungen, Flachdach\nSanitär: Installationen, Reparaturen, Badsanierung\nHeizung: Heizungsersatz, Wartung, Wärmepumpen\nBlitzschutz: Blitzschutzanlagen, Erdung, Prüfungen",
+    "service_area": "8810 Horgen, 8800 Thalwil, 8802 Kilchberg, 8803 Rüschlikon, 8804 Au ZH, 8805 Richterswil, 8820 Wädenswil, 8942 Oberrieden",
+    "service_area_spoken": "Wir sind in Horgen und der näheren Umgebung für Sie da, also Thalwil, Kilchberg, Wädenswil und die umliegenden Gemeinden.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 9,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8810",
+      "8800",
+      "8802",
+      "8803",
+      "8804",
+      "8805",
+      "8820",
+      "8942"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Horgen",
+      "plz": "8810",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Dachrinne undicht, bei Regen tropft es an der Fassade — bitte um Offerte.",
+      "stadt": "Thalwil",
+      "plz": "8800",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Leins AG",
+    "firma_silben": 3,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "LN",
+    "modus": 2,
+    "google_stars": 5,
+    "video_hook": "5 Sterne bei 9 Google-Bewertungen.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@leinsag.ch"
+  },
+  "_seed_time": "2026-04-22T22:26:14.229Z",
+  "_wizard_time": "2026-04-22T22:56:14.229Z",
+  "_wizard_case_id": "a0926150-9830-44af-aa56-3ea22cb12925",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "LN-0050",
+  "_demo_now": "2026-04-23T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-04-23T06:04:00.000Z",
+  "_appointment_start": "2026-04-24T06:00:00.000Z",
+  "_appointment_end": "2026-04-24T08:00:00.000Z",
+  "_reminder_time": "2026-04-23T06:04:00.000Z",
+  "_completion_time": "2026-04-23T06:09:00.000Z",
+  "_review_sent_time": "2026-04-23T06:10:00.000Z",
+  "_review_rated_time": "2026-04-23T06:12:00.000Z",
+  "_review_token": "30f714a232bab090",
+  "_review_token_long": "30f714a232bab0906337482cd895589bcd5e8215137e8500e42809b1db077654",
+  "_case_created_at": "2026-04-22T15:04:00+00:00"
+}

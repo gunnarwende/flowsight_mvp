@@ -413,15 +413,19 @@ async function processPubReservationReminders(
 ): Promise<PubReminderResult[]> {
   const results: PubReminderResult[] = [];
 
-  // Tomorrow's date in Europe/Zurich timezone
+  // Check both TODAY and TOMORROW in Europe/Zurich timezone.
+  // Why both? A reservation made late evening for the next day would be missed
+  // if we only check "tomorrow" — the cron runs at 07:00 UTC, by which time
+  // "tomorrow" is already the day AFTER the reservation.
+  const todayStr = now.toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" }); // YYYY-MM-DD
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   const tomorrowStr = tomorrow.toLocaleDateString("sv-SE", { timeZone: "Europe/Zurich" }); // YYYY-MM-DD
 
-  // Query confirmed reservations for tomorrow that haven't been reminded yet
+  // Query confirmed reservations for today OR tomorrow that haven't been reminded yet
   const { data: reservations } = await supabase
     .from("pub_reservations")
     .select("id, guest_name, guest_phone, reservation_date, reservation_time, party_size")
-    .eq("reservation_date", tomorrowStr)
+    .in("reservation_date", [todayStr, tomorrowStr])
     .eq("status", "confirmed")
     .is("reminder_sent_at", null);
 
@@ -434,7 +438,9 @@ async function processPubReservationReminders(
     }
 
     const timeStr = r.reservation_time?.substring(0, 5) ?? "";
-    const smsBody = `Reminder: Your table at Big Ben Pub tomorrow at ${timeStr} for ${r.party_size} guests. We look forward to seeing you! — Big Ben Pub`;
+    const isToday = r.reservation_date === todayStr;
+    const whenLabel = isToday ? "today" : "tomorrow";
+    const smsBody = `Reminder: Your table at Big Ben Pub ${whenLabel} at ${timeStr} for ${r.party_size} guests. We look forward to seeing you! — Big Ben Pub`;
 
     const smsResult = await sendSms(r.guest_phone, smsBody, "BigBenPub");
 

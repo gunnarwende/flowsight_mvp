@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 358px; height: 772px;
+    font-family: -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    background: #000; overflow: hidden;
+  }
+
+  /* Samsung Status Bar */
+  .status-bar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+    height: 32px; padding: 6px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: transparent;
+    color: white; font-size: 12px; font-weight: 500;
+  }
+  .status-bar.dark { color: #1a1a1a; }
+  .status-left { display: flex; align-items: center; gap: 4px; }
+  .status-right { display: flex; align-items: center; gap: 6px; }
+  .status-right svg { width: 14px; height: 14px; }
+  .battery {
+    display: flex; align-items: center; gap: 2px;
+    font-size: 11px; font-weight: 600;
+  }
+  .battery-icon {
+    width: 20px; height: 10px; border: 1.5px solid currentColor;
+    border-radius: 2px; position: relative;
+  }
+  .battery-icon::after {
+    content: ''; position: absolute; right: -4px; top: 2px;
+    width: 2px; height: 4px; background: currentColor; border-radius: 0 1px 1px 0;
+  }
+  .battery-fill {
+    position: absolute; left: 1px; top: 1px; bottom: 1px;
+    background: currentColor; border-radius: 1px;
+  }
+
+  /* Samsung Nav Bar */
+  .nav-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 100;
+    height: 42px; display: flex; justify-content: center; align-items: center; gap: 80px;
+    background: transparent;
+  }
+  .nav-bar.light-bg { background: rgba(255,255,255,0.95); }
+  .nav-bar .nav-line { width: 36px; height: 4px; background: #666; border-radius: 2px; }
+  .nav-bar .nav-btn { width: 16px; height: 16px; }
+  .nav-bar .nav-btn.back {
+    width: 0; height: 0;
+    border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+    border-right: 10px solid #666;
+  }
+  .nav-bar .nav-btn.recent {
+    width: 14px; height: 14px;
+    border: 2px solid #666; border-radius: 2px;
+  }
+
+  /* Content area */
+  .content {
+    position: absolute; top: 32px; left: 0; right: 0; bottom: 42px;
+    overflow: hidden;
+  }
+  .content iframe {
+    width: 100%; height: 100%; border: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Status Bar (time is configurable) -->
+<div class="status-bar" id="statusBar">
+  <div class="status-left">
+    <span id="clock">15:00</span>
+    <span style="font-size:10px">⬙</span>
+  </div>
+  <div class="status-right">
+    <span style="font-size:10px">🔇</span>
+    <span style="font-size:9px">📶</span>
+    <span style="font-size:9px">📶</span>
+    <div class="battery">
+      <div class="battery-icon">
+        <div class="battery-fill" id="batteryFill" style="width:75%"></div>
+      </div>
+      <span id="batteryPct">81</span>
+    </div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content" id="content">
+  <!-- Will be filled dynamically -->
+</div>
+
+<!-- Nav Bar -->
+<div class="nav-bar" id="navBar">
+  <div class="nav-line"></div>
+  <div class="nav-btn recent"></div>
+  <div class="nav-btn back"></div>
+</div>
+
+<script>
+// Configure via URL params
+const params = new URLSearchParams(window.location.search);
+const clock = params.get('clock') || '15:00';
+const battery = params.get('battery') || '81';
+const darkStatus = params.get('dark_status') === 'true';
+
+document.getElementById('clock').textContent = clock;
+document.getElementById('batteryPct').textContent = battery;
+if (darkStatus) document.getElementById('statusBar').classList.add('dark');
+</script>
+</body>
+</html>

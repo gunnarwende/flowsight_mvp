@@ -1,0 +1,151 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-04-20T10:46:50.126Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "stark-haustechnik",
+    "name": "Stark Haustechnik GmbH",
+    "case_id_prefix": "SH",
+    "brand_color": "#003478",
+    "sms_sender_name": "Stark GmbH"
+  },
+  "voice_agent": {
+    "company_name": "Stark Haustechnik GmbH",
+    "domain": "Sanitär, Heizung, Lüftung und Solar",
+    "owner_names": "Shkelzen Malici, Jetmir Aliu",
+    "address": "Zürichstrasse 103, 8134 Adliswil",
+    "phone": "+41 79 961 76 91",
+    "email": "info@stark-haustechnik.ch",
+    "website": "https://www.stark-haustechnik.ch",
+    "founded": "",
+    "team_section": "Geschäftsleitung: Shkelzen Malici, Jetmir Aliu",
+    "memberships": "",
+    "google_rating": "4.8 Sterne bei 18 Bewertungen",
+    "opening_hours": "Montag-Freitag: 08:00-17:00",
+    "opening_hours_spoken": "Wir sind Montag bis Freitag von acht bis siebzehn Uhr für Sie erreichbar.",
+    "emergency_policy": "Pikettdienst — rund um die Uhr erreichbar, auch an Sonn- und Feiertagen. Bei Notfällen: +41 79 961 76 91 oder +41 76 310 29 71.",
+    "services_list": "Sanitär: Sanitäre Installationen, Reparaturen, Badsanierung\nHeizung: Heizungsinstallation, Wartung, Heizungsersatz\nLüftung: Lüftungsanlagen, Klimatechnik\nUmbau/Sanierung: Badsanierung, Heizungsersatz, Komplettrenovation\nEnergieberatung: Beratung für erneuerbare Energien, Wärmepumpen",
+    "service_area": "8001 Zürich, 8002 Zürich, 8003 Zürich, 8004 Zürich, 8005 Zürich, 8006 Zürich, 8008 Zürich, 8032 Zürich, 8037 Zürich, 8038 Zürich, 8041 Zürich, 8045 Zürich, 8048 Zürich, 8055 Zürich, 8134 Adliswil, 8135 Langnau am Albis",
+    "service_area_spoken": "Wir sind in Adliswil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Zürichstrasse hundertdrei in Adliswil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.8,
+    "google_review_count": 18,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8001",
+      "8002",
+      "8003",
+      "8004",
+      "8005",
+      "8006",
+      "8008",
+      "8032",
+      "8037",
+      "8038",
+      "8041",
+      "8045",
+      "8048",
+      "8055",
+      "8134",
+      "8135"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Adliswil",
+      "plz": "8134",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "beschreibung": "Der Anrufer steht im Keller knöcheltief im Wasser, vermutlich wegen eines Rohrbruchs. Die Kontaktdaten wurden vollständig aufgenommen.",
+      "stadt": "Zürich",
+      "plz": "8001",
+      "dringlichkeit": "Dringend"
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Zürich",
+      "plz": "8002",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Stark Haustechnik GmbH",
+    "firma_silben": 4,
+    "telefon_display": "+41 79 961 76 91",
+    "prefix": "SH",
+    "modus": 2,
+    "google_stars": 4.8,
+    "video_hook": "zuverlässig und zu fairen Preisen, um Ihnen die optimale Lösung zu bieten",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "info@stark-haustechnik.ch"
+  }
+}

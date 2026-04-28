@@ -1,0 +1,146 @@
+{
+  "_meta": {
+    "crawled_at": "2026-04-20T15:27:35.565Z",
+    "source_url": "https://www.doerflerag.ch",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.doerflerag.ch/",
+        "chars": 876
+      }
+    ]
+  },
+  "firma": {
+    "value": "Dörfler AG",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Hubstrasse 30, 8942 Oberrieden",
+    "source": "website_home",
+    "verified": true
+  },
+  "telefon": {
+    "value": "043 443 52 00, 043 443 52 01",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@doerflerag.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 4.7,
+    "review_count": 3,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Ihr Spezialist für Sanitär, Heizung, Spenglerei,",
+        "Sanitär"
+      ],
+      "Heizung": [
+        "Ihr Spezialist für Sanitär, Heizung, Spenglerei,",
+        "Heizungstechnik"
+      ],
+      "Rohrbruch/Leitungen": [
+        "Leitungsbau"
+      ],
+      "Solar/Erneuerbar": [
+        "Blitzschutz, Solartechnik und Reparaturservice.",
+        "Solartechnik"
+      ],
+      "Kundendienst": [
+        "Blitzschutz, Solartechnik und Reparaturservice."
+      ],
+      "Spenglerei": [
+        "Ihr Spezialist für Sanitär, Heizung, Spenglerei,",
+        "Spenglerei"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Schon seit der Gründung suchen wir den Kontakt zum",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#534cc5",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.doerflerag.ch",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Dörfler AG",
+    "uid": "CHE-110.607.871",
+    "ehraid": 742872,
+    "legal_seat": "Oberrieden",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-110.607.871",
+    "match_score": 100
+  }
+}

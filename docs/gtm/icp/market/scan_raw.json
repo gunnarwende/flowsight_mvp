@@ -1,0 +1,4668 @@
+[
+  {
+    "id": "ChIJRUVW4zEKkEcR-uTPkSp2BDc",
+    "name": "ofri",
+    "address": "Pfingstweidstrasse 6, 8005 Zürich",
+    "rating": 4.8,
+    "reviewCount": 920,
+    "website": "https://www.ofri.ch/?utm_source=google-my-business",
+    "phone": "+41 44 520 51 64",
+    "types": [
+      "roofing_contractor",
+      "painter",
+      "electrician",
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3964423497199903994&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ3T7y3TcMkEcR1_dsdRkNP38",
+    "name": "Roth-Kippe AG: Experten für Wärmepumpen, Klimaanlagen, Bau- und Eventheizung, Bautrocknung, Wasserschadensanierung",
+    "address": "Vogelaustrasse 40, 8953 Dietikon",
+    "rating": 4.9,
+    "reviewCount": 174,
+    "website": "https://www.roth-kippe.ch/",
+    "phone": "+41 44 744 71 71",
+    "types": [
+      "manufacturer",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9169061769345038295&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJacZLFP-lmkcRUkKM0E9F6Rg",
+    "name": "Colapelle - Sanitär, Heizung & Lüftung",
+    "address": "Bergholzweg 26, 8123 Maur",
+    "rating": 5,
+    "reviewCount": 142,
+    "website": "https://www.colapelle-sanitaer.ch/",
+    "phone": "+41 76 575 06 14",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1795042135587439186&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJnYZJdTsKkEcRkfgN_sEWT1Q",
+    "name": "Gebr. Knabenhans AG",
+    "address": "Hardstrasse 67, 8004 Zürich",
+    "rating": 4.9,
+    "reviewCount": 133,
+    "website": "http://www.knabenhans-ag.ch/",
+    "phone": "+41 44 493 30 10",
+    "types": [
+      "roofing_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6075099444792916113&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJuWUrdGkLkEcRrq9AfHVMCYg",
+    "name": "Knabenhans Sanitär & Heizung Zürich",
+    "address": "Hardstrasse 69, 8004 Zürich",
+    "rating": 4.9,
+    "reviewCount": 127,
+    "website": "https://knabenhans-ag.ch/sanitaer-zuerich/",
+    "phone": "+41 44 493 30 10",
+    "types": [
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9802450131428093870&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJDyJXCc-zmkcR5zhhaUNt0wA",
+    "name": "sanitärheizig.ch ag",
+    "address": "Neutalstrasse 12, 8852 Altendorf",
+    "rating": 5,
+    "reviewCount": 124,
+    "website": "http://www.sanitaerheizig.ch/",
+    "phone": "+41 55 442 88 08",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=59511356384164071&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ5Z6YlsG6mkcR4PNBpOZ5Ye8",
+    "name": "Sanitär Trachsel GmbH",
+    "address": "Lohwisstrasse 52, 8123 Maur",
+    "rating": 5,
+    "reviewCount": 122,
+    "website": "http://www.sanitaer-trachsel.ch/",
+    "phone": "+41 44 980 81 78",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17249202079310935008&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJBa_wOHOhmkcRNUT5FZevsqQ",
+    "name": "Burkhardt Gebäudetechnik AG",
+    "address": "Oberdorfstrasse 54, 8600 Dübendorf",
+    "rating": 4.7,
+    "reviewCount": 76,
+    "website": "https://www.burkhardt.ch/",
+    "phone": "+41 44 801 66 88",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "manufacturer",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11867741031518258229&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJnxIapBKZmkcRWitPll6697w",
+    "name": "Schorr Sanitär GmbH",
+    "address": "Grenzstrasse 11, 8406 Winterthur",
+    "rating": 4.9,
+    "reviewCount": 71,
+    "website": "https://www.schorr.ch/",
+    "phone": "+41 52 202 10 92",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13616556913789447002&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJzUCcXqMNkEcRqlZgac3IUBg",
+    "name": "Alpha Technik Sanitär Heizung GmbH",
+    "address": "Schlierenstrasse 14, 8902 Urdorf",
+    "rating": 5,
+    "reviewCount": 68,
+    "website": "https://www.alphasanitaer.ch/",
+    "phone": "+41 44 555 98 65",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1752121039608895146&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJF6xu6MALkEcRATu-FUSPWok",
+    "name": "ECO Haustechnik AG",
+    "address": "Baslerstrasse 44, 8048 Zürich",
+    "rating": 4.6,
+    "reviewCount": 66,
+    "website": "http://www.ecoag.ch/",
+    "phone": "+41 43 811 70 88",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9897380653685422849&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJSaOQTzcKkEcRA-CEIn3ZEys",
+    "name": "Lips Ernst AG",
+    "address": "Knüslistrasse 4, 8004 Zürich",
+    "rating": 4.4,
+    "reviewCount": 64,
+    "website": "http://www.ernstlips.ch/",
+    "phone": "+41 44 201 25 50",
+    "types": [
+      "roofing_contractor",
+      "health",
+      "consultant",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3104063699661676547&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJMQTXnJaZmkcRjJ6Ba6chXGo",
+    "name": "Hunziker Partner AG Technik im Gebäude",
+    "address": "Zürcherstrasse 14, 8401 Winterthur",
+    "rating": 4.6,
+    "reviewCount": 60,
+    "website": "http://www.hunzikerwin.ch/",
+    "phone": "+41 52 235 05 35",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7664037668824653452&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZ2QfP7qgmkcRdB4ij6lvPdE",
+    "name": "Guyer Wärme und Wasser AG",
+    "address": "Thurgauerstrasse 30, 8050 Zürich",
+    "rating": 4.4,
+    "reviewCount": 59,
+    "website": "https://guyer.ch/",
+    "phone": "+41 44 268 44 44",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15077329901547822708&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ610BF1EMkEcRiLtedzFY56I",
+    "name": "Rutz & Co AG",
+    "address": "Brunaustrasse 200, 8951 Weiningen",
+    "rating": 4.8,
+    "reviewCount": 59,
+    "website": "http://www.rutz-sanitaer-heizung.ch/",
+    "phone": "+41 44 750 28 28",
+    "types": [
+      "plumber",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11738447923243826056&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJAd9t-dKmmkcR3TKh6tQ2noE",
+    "name": "R. Werner AG",
+    "address": "Loorenstrasse 20, 8053 Zürich",
+    "rating": 4.7,
+    "reviewCount": 55,
+    "website": "https://r-werner.ch/",
+    "phone": "+41 44 422 06 88",
+    "types": [
+      "home_goods_store",
+      "building_materials_store",
+      "car_repair",
+      "manufacturer",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "supplier",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9339962965310386909&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVZK26oCgmkcRdobXXb2m2Vc",
+    "name": "Held & Partner GmbH",
+    "address": "Ueberlandstrasse 5, 8050 Zürich",
+    "rating": 4.9,
+    "reviewCount": 54,
+    "website": "http://www.held-partner.ch/",
+    "phone": "+41 44 350 40 70",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6330274083499378294&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJo90DopULkEcRU5KCYqDGBSE",
+    "name": "Koster AG",
+    "address": "Juchstrasse 11, 8048 Zürich",
+    "rating": 3.5,
+    "reviewCount": 52,
+    "website": "http://www.kosterag.ch/",
+    "phone": "+41 44 431 66 55",
+    "types": [
+      "supplier",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2379526370284966483&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJnYLTiQ8KkEcRnSZzQ2iLhK8",
+    "name": "Heizungsmacher AG",
+    "address": "Zürcherstrasse 39, 8952 Schlieren",
+    "rating": 4.9,
+    "reviewCount": 49,
+    "website": "https://www.heizungsmacher.ch/",
+    "phone": "+41 44 312 32 00",
+    "types": [
+      "general_contractor",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12647386933487675037&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJb_4pxr6hmkcRRpMWByJtH3s",
+    "name": "Emi AG Gebäudetechnik",
+    "address": "Brandbachstrasse 9, 8305 Dietlikon",
+    "rating": 4.6,
+    "reviewCount": 47,
+    "website": "https://www.emi-ag.ch/?utm_source=google&utm_medium=organic&utm_campaign=mybusiness",
+    "phone": "+41 44 833 16 16",
+    "types": [
+      "general_contractor",
+      "manufacturer",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8871929783858402118&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ82J_sW4KkEcRJVsd8LnuxYY",
+    "name": "Brühwiler Sanitär & Heizung AG",
+    "address": "Nordstrasse 205, 8037 Zürich",
+    "rating": 4.6,
+    "reviewCount": 46,
+    "website": "http://bruehwiler-sanitaer.ch/",
+    "phone": "+41 44 361 32 02",
+    "types": [
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9711430653859158821&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJd_ICeL6omkcRG3hSs8_a5KU",
+    "name": "Walter Leuthold Sanitäre Anlagen",
+    "address": "Seestrasse 98A, 8942 Oberrieden",
+    "rating": 4.9,
+    "reviewCount": 44,
+    "website": "http://www.walter-leuthold.ch/",
+    "phone": "+41 44 720 16 90",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11953919896549750811&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJox19TvitmkcR9K6E8kxuLfY",
+    "name": "Geiger AG Spenglerei Sanitär Heizung Planung",
+    "address": "Fälmisstrasse 15, 8833 Samstagern",
+    "rating": 4.7,
+    "reviewCount": 43,
+    "website": "http://www.geigerag.ch/",
+    "phone": "+41 44 787 08 08",
+    "types": [
+      "plumber",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17738955784047603444&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJC1gxC0ywmkcRdLDqzBctOr4",
+    "name": "Top Haustechnik AG",
+    "address": "Wädenswilerstrasse 13, 8712 Stäfa",
+    "rating": 5,
+    "reviewCount": 43,
+    "website": "http://www.tophaustechnik.ch/",
+    "phone": "+41 43 818 09 90",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13707317996100956276&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ0dfjKuyZmkcRfLoGzaLURiw",
+    "name": "Stähli Haustechnik AG",
+    "address": "Gewerbestrasse 6, 8404 Winterthur",
+    "rating": 4.4,
+    "reviewCount": 43,
+    "website": "http://www.staehli-haustechnik.ch/",
+    "phone": "+41 52 242 82 00",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3190471181728135804&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJTY15i33UeaQRAdPHbT0Mf34",
+    "name": "Thaler Haustechnik AG",
+    "address": "Industriestrasse 46, 8152 Opfikon",
+    "rating": 4.7,
+    "reviewCount": 42,
+    "website": "https://thalerhaustechnik.ch/",
+    "phone": "+41 43 321 66 30",
+    "types": [
+      "home_goods_store",
+      "building_materials_store",
+      "car_repair",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9115017628795523841&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJv2pUrqikmkcR7lfVLbcqeyM",
+    "name": "AQUA-Sanitär AG",
+    "address": "Riedikerstrasse 63b, 8616 Riedikon",
+    "rating": 4.9,
+    "reviewCount": 42,
+    "website": "http://www.aqua-sanitär.ch/",
+    "phone": "+41 44 984 02 02",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2556684179699226606&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ-fVe1H-gmkcRUwDuKnEJ1_s",
+    "name": "Steger Haustechnik AG",
+    "address": "Schwamendingenstrasse 94, 8050 Zürich",
+    "rating": 4.2,
+    "reviewCount": 41,
+    "website": "http://www.steger.ch/",
+    "phone": "+41 44 317 80 00",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18146983605168898131&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ9_27k_2umkcRdkVOf7LiFrQ",
+    "name": "Störi AG Wärmepumpen & Wärmetechnik",
+    "address": "Sonnenrain 2, 8832 Wollerau",
+    "rating": 4.6,
+    "reviewCount": 41,
+    "website": "http://www.stoeri.com/",
+    "phone": "+41 44 782 31 11",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12976808632582554998&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJh6_MJqgNkEcRFjxXpB1kUVo",
+    "name": "Lips Söhne AG Dietikon",
+    "address": "Lerzenstrasse 11A, 8953 Dietikon",
+    "rating": 4.3,
+    "reviewCount": 38,
+    "website": "http://www.lips-soehne.ch/",
+    "phone": "+41 44 740 40 12",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6508093015001086998&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJOWzowDSDmkcRKvzrt_fsXBM",
+    "name": "Peter Wärmepumpen GmbH, Wärmepumpen Boiler, Heizungen",
+    "address": "Fohlochstrass 7a, 8460 Marthalen",
+    "rating": 4.9,
+    "reviewCount": 38,
+    "website": "https://wp-tech.ch/",
+    "phone": "+41 52 317 00 44",
+    "types": [
+      "corporate_office",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1395250533264784426&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJy4xSpXYKkEcRtTVVJVWT5h8",
+    "name": "A. Baltensperger AG",
+    "address": "Langmauerstrasse 65, 8006 Zürich",
+    "rating": 4.6,
+    "reviewCount": 36,
+    "website": "http://www.baltensperger.ch/",
+    "phone": "+41 44 366 50 70",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2298686653727061429&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq9WFD6OkmkcRtvT94BuZIMg",
+    "name": "Neukom Marzolo AG",
+    "address": "Industriepark 3, 8610 Uster",
+    "rating": 3.9,
+    "reviewCount": 36,
+    "website": "https://www.neukom-marzolo.ch/de",
+    "phone": "+41 44 905 60 80",
+    "types": [
+      "manufacturer",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14420694351858234550&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJa4E7oXcMkEcRaPkxJEWvFKA",
+    "name": "Dober AG",
+    "address": "Friedaustrasse 6, 8952 Schlieren",
+    "rating": 4.5,
+    "reviewCount": 36,
+    "website": "https://haelg.ch/angebot/anlagenbau/schlieren/",
+    "phone": "+41 44 733 60 00",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11535037257097541992&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJx2Q5UgqhmkcRIeq2S5mB0Vk",
+    "name": "Bosshard Spenglerei & Sanitär AG",
+    "address": "Bahnhofstrasse 29, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 35,
+    "website": "http://www.sanitaer-bosshard.ch/",
+    "phone": "+41 44 821 64 27",
+    "types": [
+      "car_repair",
+      "supplier",
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6472096634908371489&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJI1IoCm2OlgYRNVZqK1fwXag",
+    "name": "Bolter Haustechnik GmbH",
+    "address": "Melchior Hirzel-Weg 14, 8910 Affoltern am Albis",
+    "rating": 5,
+    "reviewCount": 34,
+    "website": "http://www.bolterhaustechnik.ch/",
+    "phone": "+41 79 259 30 17",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12132117228387194421&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJi0lPm4YNkEcRqpxU6RAreFM",
+    "name": "Karakas Gebäudetechnik Sanitär & Heizung",
+    "address": "Schöneggstrasse 138, 8953 Dietikon",
+    "rating": 4.9,
+    "reviewCount": 34,
+    "website": "https://www.karakas-gebaudetechnik.ch/",
+    "phone": "+41 78 246 27 17",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6014604653987404970&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJrQRRR_27mkcRjEnPSg01uV8",
+    "name": "Züri Oberland Haustechnik GmbH",
+    "address": "Buchgrindelstrasse 11B, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 34,
+    "website": "http://www.zo-haustechnik.ch/",
+    "phone": "+41 44 932 35 35",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6897602635500571020&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJIxjj6RelmkcRdB86UMrIBdo",
+    "name": "Kaufmann Spenglerei und Sanitär AG",
+    "address": "Im Hanselmaa 6, 8132 Egg b. Zürich",
+    "rating": 4.5,
+    "reviewCount": 33,
+    "website": "http://www.kaufmann-egg.ch/",
+    "phone": "+41 44 986 29 00",
+    "types": [
+      "roofing_contractor",
+      "plumber",
+      "home_goods_store",
+      "building_materials_store",
+      "manufacturer",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "supplier",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15710183646406778740&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZdMoOSsLkEcR8-p5wfK5aI0",
+    "name": "Ochsner Wärmepumpen GmbH",
+    "address": "Uraniastrasse 18, 8001 Zürich",
+    "rating": 2.3,
+    "reviewCount": 33,
+    "website": "http://www.ochsner.com/",
+    "phone": null,
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10189598609204964083&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJz5NdI0SlmkcRQZzqf29gins",
+    "name": "Ammann + Schmid",
+    "address": "Freiestrasse 39, 8610 Uster",
+    "rating": 5,
+    "reviewCount": 32,
+    "website": "http://www.ammann-schmid.ch/",
+    "phone": "+41 43 399 25 99",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8902033645454924865&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJBftHu0enmkcRbNUIUJbHIEQ",
+    "name": "Hasler Haustechnik AG",
+    "address": "Seefeldstrasse 197, 8008 Zürich",
+    "rating": 3.6,
+    "reviewCount": 32,
+    "website": "https://www.hasler-haustechnik.ch/",
+    "phone": "+41 44 383 54 60",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4909143042235618668&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJY2LXexQKkEcRKuGJNR9OUuE",
+    "name": "Julius Kamber & Co AG",
+    "address": "Im Schossacher 17, 8600 Dübendorf",
+    "rating": 4.6,
+    "reviewCount": 30,
+    "website": "http://www.juliuskamber.ch/",
+    "phone": "+41 44 272 69 62",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16236125502573240618&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJvZlgLDOvmkcRm5NGtGM6Vqk",
+    "name": "Orlandini Sanitär Heizung GmbH",
+    "address": "Waldeggstrasse 8, 8810 Horgen",
+    "rating": 3.9,
+    "reviewCount": 29,
+    "website": "http://www.orlandini.ch/",
+    "phone": "+41 44 725 41 44",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12202004440307635099&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJGRPFCOOtmkcRfZuXCFB22zU",
+    "name": "Bäderberg GmbH",
+    "address": "Zugerstrasse 18, 8805 Richterswil",
+    "rating": 5,
+    "reviewCount": 29,
+    "website": "https://www.baederberg.ch/",
+    "phone": "+41 76 753 44 78",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3880825590023428989&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJncHd0CiymkcRYkn8gRzih2k",
+    "name": "Steimen Heizung Klima AG",
+    "address": "Fürtistrasse 15a, 8832 Wollerau",
+    "rating": 4.1,
+    "reviewCount": 29,
+    "website": "http://steimen.ch/",
+    "phone": "+41 44 787 59 59",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7604295107906128226&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ7dAQVmOZmkcRfgYfCZW-ICs",
+    "name": "Lyrenmann AG",
+    "address": "Weststrasse 4, 8400 Winterthur",
+    "rating": 4.7,
+    "reviewCount": 29,
+    "website": "http://www.lyrenmann.ch/",
+    "phone": "+41 52 224 08 08",
+    "types": [
+      "roofing_contractor",
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3107693290198075006&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJa9cW1k2nmkcRNpeu_836cu8",
+    "name": "Sutterlüti AG",
+    "address": "Feldeggstrasse 61, 8008 Zürich",
+    "rating": 4,
+    "reviewCount": 27,
+    "website": "http://www.sutterluetiag.ch/",
+    "phone": "+41 44 384 91 00",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17254128885074663222&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ4wKIzK8LkEcRZGKRJ9ClFR0",
+    "name": "Walter Caseri, Sanitäre Anlagen",
+    "address": "Winzerstrasse 14, 8049 Zürich",
+    "rating": 4.9,
+    "reviewCount": 27,
+    "website": "https://www.caseri.ch/",
+    "phone": "+41 44 344 30 00",
+    "types": [
+      "plumber",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2095763515046453860&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJy-nGRrO5mkcR_5cOUKvEzoc",
+    "name": "Rüegg AG Spengler Sanitär Heizung Solar",
+    "address": "Im Tobel 4, 8340 Hinwil",
+    "rating": 4.7,
+    "reviewCount": 27,
+    "website": "http://www.rubema.ch/",
+    "phone": "+41 44 937 10 10",
+    "types": [
+      "plumber",
+      "general_contractor",
+      "home_goods_store",
+      "manufacturer",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9785975280384251903&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJXfpcCkAGkEcRZSglURXeJAs",
+    "name": "SHS Haustechnik AG",
+    "address": "Sagistrasse 12, 8910 Affoltern am Albis",
+    "rating": 4.6,
+    "reviewCount": 27,
+    "website": "http://www.shs-haustechnik.ch/",
+    "phone": "+41 43 322 60 60",
+    "types": [
+      "car_repair",
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "supplier",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=803010816715860069&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJwXSr2yzp-UsRX_U06szfWTQ",
+    "name": "Bassler HausTechCare",
+    "address": "Freiestrasse 55, 8610 Uster",
+    "rating": 5,
+    "reviewCount": 26,
+    "website": "https://www.bassler-haustechcare.ch/",
+    "phone": "+41 76 534 57 87",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3772292234095162719&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ25F1rJS7mkcRZFWSfR3EpgM",
+    "name": "A.Schleh AG",
+    "address": "Motorenstrasse 53, 8620 Wetzikon",
+    "rating": 4.6,
+    "reviewCount": 25,
+    "website": "http://www.schleh.ch/",
+    "phone": "+41 43 931 40 40",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=263113259187590500&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJj6xFHY4PkEcR3FaLTM4vthg",
+    "name": "Schmid Gebäudetechnik GmbH",
+    "address": "Max-Högger-Strasse 6, 8048 Zürich",
+    "rating": 5,
+    "reviewCount": 25,
+    "website": "https://www.gebaeudetechnik-schmid.ch/",
+    "phone": "+41 56 631 30 01",
+    "types": [
+      "manufacturer",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1780663265765578460&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJYYvEG0GZmkcRL_pYd7N1Huo",
+    "name": "Sanitär Tech",
+    "address": "Riedhofstrasse 65, 8408 Winterthur",
+    "rating": 4.8,
+    "reviewCount": 24,
+    "website": "http://www.sanitaertech.ch/",
+    "phone": "+41 52 202 44 64",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16870050667838372399&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJdTD90Mx1kEcRCokjI-jEruk",
+    "name": "Fierz M. AG",
+    "address": "Feldstrasse 59, 8180 Bülach",
+    "rating": 4.7,
+    "reviewCount": 24,
+    "website": "https://www.mfierzag.ch/",
+    "phone": "+41 44 860 55 51",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16838612558085851402&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJAXeomlCmmkcRWbkGZ-wJqhs",
+    "name": "Scherer Heizungen AG",
+    "address": "Allmendstrasse 1, 8700 Küsnacht",
+    "rating": 4.7,
+    "reviewCount": 23,
+    "website": "https://www.scherer-heizungen.com/",
+    "phone": "+41 44 910 90 86",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1993416696010291545&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJDaZoRVQRm0cRGt3N_iRanqU",
+    "name": "Heeb AG Heizungsservice",
+    "address": "Rheinstrasse 5, 9434 Au",
+    "rating": 5,
+    "reviewCount": 23,
+    "website": "https://heebheizung.ch/",
+    "phone": "+41 71 747 58 58",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11934075177518619930&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ-TxBVlSZmkcR3TdU4wINo0k",
+    "name": "Wärmetec GmbH",
+    "address": "Wülflingerstrasse 272, 8408 Winterthur",
+    "rating": 4.8,
+    "reviewCount": 23,
+    "website": "http://www.waermetec.ch/",
+    "phone": "+41 52 202 44 55",
+    "types": [
+      "general_contractor",
+      "building_materials_store",
+      "home_goods_store",
+      "car_repair",
+      "manufacturer",
+      "store",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5306099092027619293&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJldhHPdAJkEcRrE5GKlurZpU",
+    "name": "Meier Tobler AG [Marché]",
+    "address": "Moosstrasse 2, 8803 Rüschlikon",
+    "rating": 5,
+    "reviewCount": 22,
+    "website": "https://www.meiertobler.ch/de/profis?utm_source=gmb&utm_medium=organic&utm_campaign=rueschlikon",
+    "phone": "+41 44 480 09 50",
+    "types": [
+      "wholesaler",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10765480367315373740&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJD52hoJKnmkcR-AerEcjeV88",
+    "name": "Hoppler Heizung Sanitär Service GmbH",
+    "address": "Förliweidstrasse 2, 8134 Adliswil",
+    "rating": 4.6,
+    "reviewCount": 22,
+    "website": "http://www.hoppler.ch/",
+    "phone": "+41 44 710 43 43",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14940655239696156664&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJSycxTW6vmkcRUutm_NGQ9hU",
+    "name": "Hersperger Meilen AG",
+    "address": "Schulhausstrasse 24, 8706 Meilen",
+    "rating": 4.4,
+    "reviewCount": 22,
+    "website": "http://www.hersperger-meilen.ch/",
+    "phone": "+41 44 925 55 55",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1582611550624475986&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJJWdBdigLkEcRMX2Emg48ZzU",
+    "name": "Kälin Sanitär + Heizung AG",
+    "address": "Freilagerstrasse 28, 8047 Zürich",
+    "rating": 4.2,
+    "reviewCount": 22,
+    "website": "https://www.kaelin-sanitaer.ch/",
+    "phone": "+41 44 493 30 40",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3848110440030960945&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJH6l8wqcNkEcRJFRkVcpbPiM",
+    "name": "Sanitär-Shop Dietikon, Sanitas Troesch",
+    "address": "Silbernstrasse 7, 8953 Dietikon",
+    "rating": 4.4,
+    "reviewCount": 22,
+    "website": "https://www.sanitastroesch.ch/shop-dietikon",
+    "phone": "+41 44 446 11 80",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2539568164457698340&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ1wPwDMq7mkcRoko9jOZv7o8",
+    "name": "Hediger Haustechnik GmbH Heizung + Sanitär",
+    "address": "Tannenrainstrasse 20, 8620 Wetzikon",
+    "rating": 4.6,
+    "reviewCount": 21,
+    "website": "https://www.hediger-gmbh.ch/",
+    "phone": "+41 44 932 32 10",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10371350027866819234&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJl6vtuEmkmkcRlzX7iIHaEyA",
+    "name": "Temperli Sanitär & Heizung GmbH",
+    "address": "Schwäntenmos 15, 8126 Zumikon",
+    "rating": 4.8,
+    "reviewCount": 21,
+    "website": "http://www.temperlisanitaer.ch/",
+    "phone": "+41 44 912 02 89",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2311431283654997399&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJARsvDdOnmkcRixb9wwfxFfs",
+    "name": "Widmer Sanitäre Anlagen GmbH",
+    "address": "Feldstrasse 4, 8800 Thalwil",
+    "rating": 4.6,
+    "reviewCount": 20,
+    "website": "https://www.sanitaer-widmer.ch/",
+    "phone": "+41 44 720 06 14",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18092632093686044299&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJEQb_in-omkcRwNxeYzuBNJs",
+    "name": "Jul. Weinberger AG, Thalwil",
+    "address": "Zürcherstrasse 73, 8800 Thalwil",
+    "rating": 4.4,
+    "reviewCount": 20,
+    "website": "https://julweinberger.ch/",
+    "phone": "+41 44 721 22 23",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11183705866737999040&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJtQghEY6vmkcRCSH5T7sfARo",
+    "name": "Ferrat Sanitär AG",
+    "address": "Tuntelnstrasse 5a, 8707 Uetikon am See",
+    "rating": 4.2,
+    "reviewCount": 20,
+    "website": "https://www.sanitaer-ferrat.ch/",
+    "phone": "+41 43 843 45 00",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1873813809323909385&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJwzBFeFihmkcRn1C00bKvfqA",
+    "name": "Dino Sanitär GmbH",
+    "address": "Schwerzenbachstrasse 1, 8117 Fällanden",
+    "rating": 4.4,
+    "reviewCount": 19,
+    "website": "https://www.dinosanitaer.ch/",
+    "phone": "+41 78 637 62 10",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11564874075691307167&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJB_CUq5a7mkcRFuSrYEQLKMQ",
+    "name": "planerpartner GmbH Haustechnikplanung Heizung, Lüftung, Sanitär",
+    "address": "Motorenstrasse 100A, 8620 Wetzikon",
+    "rating": 4.4,
+    "reviewCount": 19,
+    "website": "http://www.planerpartner.ch/",
+    "phone": "+41 43 817 20 20",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "manufacturer",
+      "store",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14134559818809861142&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJrf-uIhalmkcR_lPtBrZmmpc",
+    "name": "KMW Sanitär GmbH",
+    "address": "Ankenbüel 18b, 8126 Zumikon",
+    "rating": 5,
+    "reviewCount": 19,
+    "website": "http://www.kmw-sanitaer.ch/",
+    "phone": "+41 79 801 10 00",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10924156778126857214&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq6omsd6jmkcRCdHjWDdE62c",
+    "name": "AIT GEBÄUDETECHNIK GMBH",
+    "address": "Schuepisstrasse 18, 8603 Schwerzenbach",
+    "rating": 4.8,
+    "reviewCount": 19,
+    "website": "https://www.ait.ch/",
+    "phone": "+41 79 844 80 00",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7488153809938796809&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJn2Ij_eSnmkcRt7n_ye8O0xc",
+    "name": "Stark Haustechnik GmbH",
+    "address": "Zürichstrasse 103, 8134 Adliswil",
+    "rating": 4.8,
+    "reviewCount": 18,
+    "website": "http://www.stark-haustechnik.ch/",
+    "phone": "+41 79 961 76 91",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1716732306007243191&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJXxoE6GGnmkcRioujOEcGx18",
+    "name": "Fruet Sanitär AG",
+    "address": "Rumpumpsteig 2, 8038 Zürich",
+    "rating": 4.9,
+    "reviewCount": 18,
+    "website": "http://www.fruet.ch/",
+    "phone": "+41 44 482 13 70",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6901491856931261322&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJBf-DVvwLkEcRgMse_m1in8s",
+    "name": "Haustechnik Pitre Pena",
+    "address": "Wieslergasse 3, 8049 Zürich",
+    "rating": 5,
+    "reviewCount": 18,
+    "website": "https://haustechnik-sos.ch/",
+    "phone": "+41 76 406 03 14",
+    "types": [
+      "building_materials_store",
+      "supplier",
+      "general_contractor",
+      "home_goods_store",
+      "manufacturer",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14672554335550753664&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ09ihMz0KkEcR7xbQSMEgkUY",
+    "name": "Fäh AG",
+    "address": "Erismannstrasse 38, 8004 Zürich",
+    "rating": 4.8,
+    "reviewCount": 18,
+    "website": "http://www.faeh.ag/",
+    "phone": "+41 44 242 95 05",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5084881468800374511&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJezy-jsoLkEcRJf807kjfsho",
+    "name": "aqua lab",
+    "address": "Heinrichstrasse 237, 8005 Zürich",
+    "rating": 4.8,
+    "reviewCount": 18,
+    "website": "http://www.aqua-lab.ch/",
+    "phone": "+41 79 351 94 05",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "home_goods_store",
+      "store",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1923845495167713061&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJNRPXRZihmkcR_A_XwaXZiE8",
+    "name": "Halter Gebäudetechnik AG",
+    "address": "Alte Landstrasse 12, 8600 Dübendorf",
+    "rating": 4.8,
+    "reviewCount": 18,
+    "website": "https://www.halterag.ch/",
+    "phone": "+41 44 825 15 62",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5731069831773884412&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJifpudcu7mkcRD8ucfXsWH7w",
+    "name": "Gashi Sanitärinstallationen GmbH",
+    "address": "Hofstrasse 98, 8620 Wetzikon",
+    "rating": 4.8,
+    "reviewCount": 18,
+    "website": "http://gashi-sanitaer.ch/",
+    "phone": "+41 44 211 99 11",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13555578123052698383&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJHZi2aYd2kEcR_IZoCrUfG1M",
+    "name": "Geri Müller GmbH",
+    "address": "Herrenwisstrasse 30, 8180 Bülach",
+    "rating": 4.7,
+    "reviewCount": 18,
+    "website": "http://www.geri-mueller-haustechnik.ch/",
+    "phone": "+41 44 860 70 41",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5988414991943370492&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJUe6ggJULkEcRcfeR7MNXcT8",
+    "name": "Rutz & Co AG",
+    "address": "Badenerstrasse 47, 8004 Zürich",
+    "rating": 4.9,
+    "reviewCount": 17,
+    "website": "https://www.rutz-sanitaer-heizung.ch/",
+    "phone": "+41 44 750 28 73",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4571531595756992369&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJcahUdEeZmkcRXzvIUqUECv8",
+    "name": "Elto AG Sanitär Winterthur | Sanitär - Heizung - Haustechnik",
+    "address": "Stadthausstrasse 103, 8400 Winterthur",
+    "rating": 4.8,
+    "reviewCount": 17,
+    "website": "https://eltoag.ch/",
+    "phone": null,
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18377506337543699295&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJhR7rllGZmkcRAd3JRcQzsoY",
+    "name": "Paul Herzog AG",
+    "address": "Papiermühleweg 19, 8408 Winterthur",
+    "rating": 3.8,
+    "reviewCount": 17,
+    "website": "http://www.paulherzogag.ch/",
+    "phone": "+41 52 222 91 21",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9705877065014304001&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ3bp8LKYPDq8RwdwDQwtZdek",
+    "name": "T. Weber Sanitär-Heizung-Garten GmbH",
+    "address": "Affolternstrasse 12, 8908 Hedingen",
+    "rating": 5,
+    "reviewCount": 17,
+    "website": "http://www.twebergmbh.ch/",
+    "phone": "+41 79 551 46 01",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16822449888016194753&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJcxGKtygIkEcREoA7GmH6Qsk",
+    "name": "Vedovati Sanitäre-Anlagen",
+    "address": "Soodring 21, 8134 Adliswil",
+    "rating": 3.6,
+    "reviewCount": 16,
+    "website": "http://www.vedovati.ch/",
+    "phone": "+41 44 710 21 51",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14502429045045297170&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJw20bQemRmkcR3WC6lP46gLA",
+    "name": "Huber Haustechnik GmbH",
+    "address": "Dorfstrasse 19, 8352 Elsau",
+    "rating": 4.9,
+    "reviewCount": 16,
+    "website": "http://www.huber-haustechnik.ch/",
+    "phone": "+41 52 363 14 86",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12718230212785627357&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJWxNfBOGvmkcRkEyNzLiGpb0",
+    "name": "Brennwald + Heilig AG",
+    "address": "Tobelstrasse 8, 8708 Männedorf",
+    "rating": 4.5,
+    "reviewCount": 16,
+    "website": "http://www.brennwald-heilig.ch/",
+    "phone": "+41 44 922 15 55",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "roofing_contractor",
+      "supplier",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13665476772589554832&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJrQkip7ENkEcRjjKS6kKVjf8",
+    "name": "Sanitär Lushi AG",
+    "address": "Vogelsangstrasse 21/23, 8307 Illnau-Effretikon",
+    "rating": 5,
+    "reviewCount": 16,
+    "website": "http://www.slgt.ch/",
+    "phone": "+41 44 542 70 10",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18414538566023656078&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJb35BOzeumkcRrnfMymxlknA",
+    "name": "Kägi + Co Heizung Sanitär AG",
+    "address": "Reblaubenweg 1, 8820 Wädenswil",
+    "rating": 4.6,
+    "reviewCount": 15,
+    "website": "http://www.kaegi-co.ch/",
+    "phone": "+41 44 783 00 40",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8111657396780955566&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJkzw9hHAKkEcRkqH01wiOdMg",
+    "name": "Jacques Bosshard AG",
+    "address": "Schaffhauserstrasse 116A, 8057 Zürich",
+    "rating": 4.5,
+    "reviewCount": 15,
+    "website": "http://www.bosshardag.ch/",
+    "phone": "+41 44 360 46 66",
+    "types": [
+      "plumber",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14444326073518039442&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ_dDzjCKamkcR4uie550PEXM",
+    "name": "Rupp Haustechnik Sanitär GmbH",
+    "address": "Schaffhauserstrasse 37, 8400 Winterthur",
+    "rating": 4.7,
+    "reviewCount": 15,
+    "website": "http://www.rupp-haustechnik.ch/",
+    "phone": "+41 52 214 20 30",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8291425559836027106&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJBTsYOcOZmkcRFLO-PT7qjb4",
+    "name": "Heizungsmacher AG",
+    "address": "Technoparkstrasse 2, 8406 Winterthur",
+    "rating": 5,
+    "reviewCount": 15,
+    "website": "https://www.heizungsmacher.ch/",
+    "phone": "+41 44 312 32 00",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13730888391967290132&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJS9zJJoajmkcR2IJoXXkmj9M",
+    "name": "A-Z Bauservice",
+    "address": "Greifenseestrasse 25, 8604 Volketswil",
+    "rating": 5,
+    "reviewCount": 15,
+    "website": "https://a-zbauservice.ch/",
+    "phone": "+41 76 584 47 47",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15244445566372446936&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ2Tqfk8t1kEcRtk1f6Zmlp_c",
+    "name": "Brunner Sanitär AG, Bachenbülach",
+    "address": "Dorfstrasse 30, 8184 Bachenbülach",
+    "rating": 5,
+    "reviewCount": 15,
+    "website": "http://www.brunner-sanitaer.ch/",
+    "phone": "+41 44 591 99 95",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17845414128942796214&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVY9ca0P_j0cR7ZNNMLEOSV0",
+    "name": "Iten Sanitär AG",
+    "address": "Grepperstrasse 46, 6403 Küssnacht",
+    "rating": 4.7,
+    "reviewCount": 15,
+    "website": "http://www.itenag.ch/",
+    "phone": "+41 41 850 55 81",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6721920073009566701&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJe8rckHMKkEcRAMF_KuT6vgg",
+    "name": "Klinova AG",
+    "address": "Weinbergstrasse 148, 8006 Zürich",
+    "rating": 4,
+    "reviewCount": 15,
+    "website": "http://www.klinova.ch/",
+    "phone": "+41 44 350 70 75",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=630216855750951168&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJTRJMIzMIkEcRdCObgpF4gZ0",
+    "name": "Zirktech GmbH",
+    "address": "Leimbachstrasse 104, 8041 Zürich",
+    "rating": 4.7,
+    "reviewCount": 14,
+    "website": null,
+    "phone": "+41 44 524 23 28",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11349485102307156852&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJoZhgETAKkEcRkj_YBD4TpI8",
+    "name": "HEiZEN24 AG",
+    "address": "Flüelastrasse 27, 8047 Zürich",
+    "rating": 4.7,
+    "reviewCount": 14,
+    "website": "http://www.heizen24.ch/",
+    "phone": "+41 840 024 024",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "home_goods_store",
+      "store",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10350419000694423442&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJQWkcnlaZmkcR4pDqpD8h-9M",
+    "name": "Sager Haustechnik AG",
+    "address": "Wässerwiesenstrasse 53, 8408 Winterthur",
+    "rating": 4.7,
+    "reviewCount": 14,
+    "website": "https://www.sagerag.ch/",
+    "phone": "+41 52 222 19 32",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15274839118390661346&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJk93xCDexmkcRdZv-nzKl9mk",
+    "name": "Bodmer Hans AG",
+    "address": "Seestrasse 107, 8712 Stäfa",
+    "rating": 4.9,
+    "reviewCount": 14,
+    "website": "https://www.bodmerag.ch/",
+    "phone": "+41 44 926 11 49",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7635471855104465781&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJUX9k7fkLkEcRu7qredUxX00",
+    "name": "Lombardi Gebäudetechnik GmbH",
+    "address": "Badenerstrasse 333, 8003 Zürich",
+    "rating": 4.7,
+    "reviewCount": 14,
+    "website": "https://lombardi-gt.ch/",
+    "phone": "+41 44 272 66 90",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5575229656647056059&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZcHRqIOomkcRXIbm0er71ZU",
+    "name": "REHA Haustechnik AG",
+    "address": "Alte Landstrasse 32, 8800 Thalwil",
+    "rating": 4.7,
+    "reviewCount": 13,
+    "website": "https://www.reha-haustechnik.ch/?y_source=1_MTkxOTI3NDktNzE1LWxvY2F0aW9uLndlYnNpdGU%3D",
+    "phone": "+41 44 720 03 05",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10796812667653097052&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ8R-Y_JoLkEcRMaRoy5WJRL4",
+    "name": "Sanitär Heizung Zürich, Sprecher Sanitär AG",
+    "address": "Pflanzschulstrasse 47, 8004 Zürich",
+    "rating": 4.4,
+    "reviewCount": 13,
+    "website": "http://www.sprecher.ch/",
+    "phone": "+41 44 242 88 77",
+    "types": [
+      "plumber",
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13710234442078397489&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ32twEQKhmkcRwGxlaM74DCE",
+    "name": "HT Haustechnik AG",
+    "address": "Auenstrasse 10, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 13,
+    "website": "http://www.htzh.ch/",
+    "phone": "+41 44 201 32 32",
+    "types": [
+      "locksmith",
+      "building_materials_store",
+      "health",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "supplier",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2381551868370578624&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJQ3h7CX2ZmkcRVirSPIbPP-k",
+    "name": "Steimer Haustechnik AG",
+    "address": "Schützenstrasse 122, 8400 Winterthur",
+    "rating": 4.8,
+    "reviewCount": 13,
+    "website": "http://www.steimer-haustechnik.ch/",
+    "phone": "+41 52 209 06 10",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16807380509822954070&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJv8vbAEyhmkcR_sQETBmiATU",
+    "name": "WBW Wir Bewegen Wasser GmbH",
+    "address": "Ueberlandstrasse 245, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 13,
+    "website": "https://www.wir-bewegen-wasser.ch/",
+    "phone": "+41 44 830 86 00",
+    "types": [
+      "car_repair",
+      "supplier",
+      "general_contractor",
+      "home_goods_store",
+      "building_materials_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "manufacturer",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3819512188520154366&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJmz1WtgihmkcRJjc1JiFPeZs",
+    "name": "s3 GmbH",
+    "address": "Zürichstrasse 45, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 13,
+    "website": "https://s3-engineering.ch/de",
+    "phone": "+41 44 244 46 44",
+    "types": [
+      "consultant",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11203072551854356262&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJB8GhUDa5mkcRMMrc-1AMfC0",
+    "name": "Sunier AG Sanitär + Heizung",
+    "address": "Mühlestrasse 9, 8344 Bäretswil",
+    "rating": 4.8,
+    "reviewCount": 13,
+    "website": "http://www.sunier.ch/",
+    "phone": "+41 44 939 12 51",
+    "types": [
+      "plumber",
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3277508170781346352&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJTWnn2dYNkEcRBHc3LM_YaWc",
+    "name": "Friedrich Gebäudetechnik GmbH",
+    "address": "Grabenstrasse 5, 8952 Schlieren",
+    "rating": 4.3,
+    "reviewCount": 13,
+    "website": "https://www.friedrich-gebaeudetechnik.ch/",
+    "phone": "+41 44 777 78 79",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7451725442772858628&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJY17-NyummkcRez4JbI4iUc4",
+    "name": "Lang + Wälti GmbH",
+    "address": "Wiesenstrasse 22, 8800 Thalwil",
+    "rating": 4.4,
+    "reviewCount": 12,
+    "website": "http://www.lang-waelti.ch/",
+    "phone": "+41 44 720 16 15",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14866701840019963515&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJU1O59iIKkEcR3bTDI6qfYLA",
+    "name": "Ardy’s – Ihr Sanitär- & Heizungsexperte in der Region Zürich | 24h Notfalldienst",
+    "address": "Sihlfeldstrasse 80, 8004 Zürich",
+    "rating": 5,
+    "reviewCount": 12,
+    "website": "https://www.sanitaer-aargau1.ch/",
+    "phone": "+41 44 955 22 22",
+    "types": [
+      "building_materials_store",
+      "manufacturer",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "supplier",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12709333701532824797&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJw1ilGXyhmkcRVya6flvVgJ8",
+    "name": "Bruno Meyer Heizungen AG",
+    "address": "Im Schossacher 19, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 12,
+    "website": "http://www.brunomeyerheizungen.ch/",
+    "phone": "+41 44 822 04 80",
+    "types": [
+      "car_repair",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11493420837994374743&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJL66n-1WwmkcR9sLuOJIImEQ",
+    "name": "Weber AG",
+    "address": "Industriestrasse 9, 8712 Stäfa",
+    "rating": 3.9,
+    "reviewCount": 12,
+    "website": "http://weber-staefa.ch/",
+    "phone": "+41 43 477 22 33",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4942710015152538358&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJOXWxS4MLkEcRSja2AXvqrus",
+    "name": "Hauser & Schwerzmann Haustechnik AG",
+    "address": "Grabenstrasse 1, 8952 Schlieren",
+    "rating": 5,
+    "reviewCount": 12,
+    "website": "https://h-s-h.ch/de",
+    "phone": "+41 44 244 46 66",
+    "types": [
+      "general_contractor",
+      "manufacturer",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16982769058891314762&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ7Xcq8bkLkEcR8scTBSjiqrs",
+    "name": "ELCOTHERM AG",
+    "address": "Bernerstrasse N 182, 8064 Zürich",
+    "rating": 3.3,
+    "reviewCount": 12,
+    "website": "http://www.elco.ch/",
+    "phone": "+41 848 808 808",
+    "types": [
+      "corporate_office",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13522869492645087218&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJoyfXJOCnmkcRXXFu-MJ9Up4",
+    "name": "Wälti & Sohn AG",
+    "address": "Gartenweg 2, 8135 Langnau am Albis",
+    "rating": 5,
+    "reviewCount": 11,
+    "website": "http://waeltisohn.ch/",
+    "phone": "+41 44 713 03 04",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11408319082428002653&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJNc8ICwAJkEcRAZxnvNSwRag",
+    "name": "Luma Haustechnik GmbH",
+    "address": "Leimbachstrasse 153, 8041 Zürich",
+    "rating": 5,
+    "reviewCount": 11,
+    "website": "https://luma-haustechnik.ch/",
+    "phone": "+41 43 511 33 88",
+    "types": [
+      "corporate_office",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12125291999505390593&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ9XV-YFQLkEcRqlAMzI5zWb0",
+    "name": "Sigrist + Partner Sanitär- + Wärmetechnik AG",
+    "address": "Bernerstrasse N 208, 8064 Zürich",
+    "rating": 4.3,
+    "reviewCount": 11,
+    "website": "https://www.sigristpartner.ch/",
+    "phone": "+41 44 360 80 60",
+    "types": [
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13644063603241537706&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJPZjNjUq7mkcR00faGUWT0A4",
+    "name": "Sanitär-Shop Uster, Sanitas Troesch",
+    "address": "Aathalstrasse 82, 8610 Uster",
+    "rating": 4.7,
+    "reviewCount": 11,
+    "website": "https://www.sanitastroesch.ch/shop-uster",
+    "phone": "+41 55 225 15 70",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1067515036682569683&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJlWvQcqgNkEcRUqRygr1X8LI",
+    "name": "Ralph Bachmann Haustechnik AG",
+    "address": "Moosmattstrasse 2, 8953 Dietikon",
+    "rating": 4.5,
+    "reviewCount": 11,
+    "website": "https://www.bachmannhaustechnik.ch/",
+    "phone": "+41 44 742 08 08",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12893902204610716754&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJzaSs0u2fmkcRv-aqghrOAco",
+    "name": "Wäger Sanitär-Haustechnik AG",
+    "address": "Lindengartenstrasse 14, 8302 Kloten",
+    "rating": 5,
+    "reviewCount": 11,
+    "website": null,
+    "phone": "+41 44 813 04 16",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "home_goods_store",
+      "store",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14556142083894863551&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJU5gLkJFqZE4RXcFlF2Fxbjs",
+    "name": "Nikli Haustechnik GmbH",
+    "address": "Anemonenstrasse 40f, 8047 Zürich",
+    "rating": 4.9,
+    "reviewCount": 11,
+    "website": "https://www.nikli-haustechnik.ch/",
+    "phone": "+41 79 638 64 17",
+    "types": [
+      "corporate_office",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4282484957494231389&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJBdl7dEYKkEcRWouXo6Q8jKY",
+    "name": "Pestalozzi Haustechnik - Haustechcenter Zürich",
+    "address": "Förrlibuckstrasse 66, 8005 Zürich",
+    "rating": 5,
+    "reviewCount": 11,
+    "website": "https://www.pestalozzi-haustechnik.ch/de/zuerich.html",
+    "phone": "+41 43 818 23 13",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "government_office",
+      "manufacturer",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12001033784852450138&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVzllE5CnmkcRgO1i5FvfV1k",
+    "name": "Widmer + Co. AG Kilchberg",
+    "address": "Dorfstrasse 141, 8802 Kilchberg",
+    "rating": 4.3,
+    "reviewCount": 10,
+    "website": "https://www.widmer-heizung.ch/",
+    "phone": "+41 44 716 45 45",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6437859778116119936&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJV-9JVKmZmkcRZY8UyOxqxgc",
+    "name": "Home HwS GmbH",
+    "address": "Hegifeldstrasse 1A, 8404 Winterthur",
+    "rating": 5,
+    "reviewCount": 10,
+    "website": "https://homehws.ch/",
+    "phone": "+41 52 243 33 90",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=560252768855822181&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJfahizVK7mkcRdekdlWZup1I",
+    "name": "IWS Ideal Wärmeservice GmbH",
+    "address": "Pfäffikerstrasse 36, 8610 Uster",
+    "rating": 4.6,
+    "reviewCount": 10,
+    "website": "http://www.ideal-ws.ch/",
+    "phone": "+41 44 942 32 88",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5955850419088255349&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJMRHE_YO7mkcR3G6D8Oh8eKI",
+    "name": "GH Sanitär GmbH",
+    "address": "Widmenwiesstrasse 26, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 10,
+    "website": "https://www.gh-sanitaer.ch/",
+    "phone": "+41 76 306 56 12",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11707244571259006684&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJibiqIzawmkcRvgvaZe1CGSY",
+    "name": "Terrasi Sanitär",
+    "address": "Glärnischstrasse 58, 8712 Stäfa",
+    "rating": 4.6,
+    "reviewCount": 10,
+    "website": "http://www.terrasi-sanitaer.ch/",
+    "phone": "+41 44 926 11 35",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "home_goods_store",
+      "store",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2745299035242499006&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJRd4Ek8ALkEcRC--sOKksULQ",
+    "name": "H2O Haustechnik AG",
+    "address": "Fuchsiastrasse 14, 8048 Zürich",
+    "rating": 4.6,
+    "reviewCount": 10,
+    "website": "https://h2o-haustechnik.ch/",
+    "phone": "+41 43 495 06 81",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12992934030275833611&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJARsvDdOnmkcRwAefJZsDGnk",
+    "name": "Widmer + Partner Heizungen GmbH",
+    "address": "Alte Landstrasse 32, 8800 Thalwil",
+    "rating": 4.8,
+    "reviewCount": 9,
+    "website": "http://www.wipaheizungen.ch/",
+    "phone": "+41 44 720 60 61",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8726291192869750720&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ8-sN1MyomkcRKliu4KI4Ph8",
+    "name": "Leins AG",
+    "address": "Glärnischstrasse 18, 8810 Horgen",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "http://www.leinsag.ch/",
+    "phone": "+41 43 244 66 55",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2251299135937206314&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq6oe6tKomkcRNFs6snpU8gI",
+    "name": "Schaub Sanitär und Heizungstechnik GmbH",
+    "address": "Einsiedlerstrasse 263, 8810 Horgen",
+    "rating": 2.7,
+    "reviewCount": 9,
+    "website": "http://www.ssht.ch/",
+    "phone": "+41 44 726 29 03",
+    "types": [
+      "plumber",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=212325018392746804&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ9cGkacGomkcRqcijNDiM_lE",
+    "name": "Altner AG",
+    "address": "Seestrasse 260, 8810 Horgen",
+    "rating": 4.8,
+    "reviewCount": 9,
+    "website": "http://www.altner.ch/",
+    "phone": "+41 43 244 10 00",
+    "types": [
+      "car_repair",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5908313934185875625&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJnech-z2xmkcRV7uONqlD7vA",
+    "name": "SaniTop GmbH Sanitär & Heizung & Service",
+    "address": "Glarnerstrasse 17, 8805 Richterswil",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "https://sani-top.ch/",
+    "phone": "+41 79 574 12 99",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17360888007603698519&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJFVoP5aykmkcRl2xSt-3nLdY",
+    "name": "Tobler Hans AG für sanitäre Anlagen",
+    "address": "Kanalweg 6, 8610 Uster",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "https://yellow.local.ch/d/zDw9ZMILjZ0ORHZUfWQdQw",
+    "phone": "+41 43 305 92 22",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15433246506237455511&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJJwEkZaukmkcRvc_4qqpPecc",
+    "name": "Daniel Lang Spenglerei - Sanitär",
+    "address": "Wermatswilerstrasse 8, 8610 Uster",
+    "rating": 4.7,
+    "reviewCount": 9,
+    "website": "https://www.langsanitaer.ch/",
+    "phone": "+41 44 882 28 88",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14373607280161116093&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJF3OadI67mkcRBsnxUkMI7Ag",
+    "name": "ELGE AG Heizung - Sanitär - Lüftung",
+    "address": "Motorenstrasse 34, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "http://elge.ch/",
+    "phone": "+41 44 932 20 90",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=642897932054546694&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZTCtZaehmkcRManDVxkf3Jg",
+    "name": "Heierli Partner Haustechnik AG",
+    "address": "In Huebwiesen 9, 8600 Dübendorf",
+    "rating": 4.1,
+    "reviewCount": 9,
+    "website": "https://www.heierlipartner.ch/",
+    "phone": "+41 44 802 80 70",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11014712982348474673&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJOR6FJwC7mkcR-9xx7AH4ZAw",
+    "name": "Inag Gebäudetechnik AG",
+    "address": "Pfadacher 5, 8623 Wetzikon",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "http://www.inag.ag/",
+    "phone": "+41 44 931 70 90",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=893111313271741691&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJRwtbBoWfmkcRTWghZTR6C-o",
+    "name": "Ganz Sanitär / Heizung",
+    "address": "Stationsstrasse 9, 8424 Embrach",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "http://www.ganzsanitaer.ch/",
+    "phone": "+41 44 865 09 77",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16864707595072530509&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ28Aq9BmnmkcREpEA8AQ4e6s",
+    "name": "Bollmann + Brehm AG, Zollikon",
+    "address": "Dachslerenstrasse 10, 8702 Zollikon",
+    "rating": 5,
+    "reviewCount": 9,
+    "website": "http://www.bollmann-brehm.ch/",
+    "phone": "+41 44 391 46 77",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "supplier",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12356531596478681362&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJCdg18_cJkEcRVnJs9Lh1Khs",
+    "name": "Sanitär Sprenger + Hauser AG",
+    "address": "Brandschenkesteig 10, 8002 Zürich",
+    "rating": 3.4,
+    "reviewCount": 9,
+    "website": "https://www.sprengerhauser.ch/",
+    "phone": "+41 44 201 07 87",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1957506425281081942&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJdVoIMfukPksRb0bZ9gs1rns",
+    "name": "Albin Service AG - 24h Sanitär Notdienst, Ablauf-/ Kanalreinigung, Kanalsanierung, Bautrocknung, Leckortung",
+    "address": "Leutschenbachstrasse 95, 8050 Zürich",
+    "rating": 4.4,
+    "reviewCount": 9,
+    "website": "https://www.albin-service.ch/standorte/zuerich/",
+    "phone": "+41 43 543 20 21",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8912119038115137135&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJQ5YATQ0LkEcRVQxTgMK0uSs",
+    "name": "Longhitano HLKS GmbH",
+    "address": "Badenerstrasse 519, 8048 Zürich",
+    "rating": 4.3,
+    "reviewCount": 9,
+    "website": "http://www.longhitano-hlks.ch/",
+    "phone": "+41 44 578 48 80",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3150748161791954005&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJfVlCf5qomkcRtttqF-5CINc",
+    "name": "Pelair AG",
+    "address": "Freihofstrasse 5, 8942 Oberrieden",
+    "rating": 4.1,
+    "reviewCount": 8,
+    "website": "http://www.pelair.ch/",
+    "phone": "+41 44 721 06 16",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15501463507771775926&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJCfMmTOiumkcRjJb81OvOgo0",
+    "name": "Vivarte by Schaub Haustechnik AG",
+    "address": "Aaweiherstrasse 3, 8810 Horgen",
+    "rating": 4,
+    "reviewCount": 8,
+    "website": "http://www.vivarte-service.ch/",
+    "phone": "+41 44 718 20 10",
+    "types": [
+      "building_materials_store",
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10196940018606184076&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVc4w0ZOjmkcRXuMb1ardw2g",
+    "name": "SHL Installationen GmbH",
+    "address": "Ziegelhüttenweg 6, 8604 Volketswil",
+    "rating": 5,
+    "reviewCount": 8,
+    "website": "https://www.shlinstallationen.ch/",
+    "phone": null,
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7549121126192636766&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJB38Jg5WlmkcR_-v9hng0fjw",
+    "name": "Urs Frühauf",
+    "address": "Seestrasse 157, 8610 Uster",
+    "rating": 4.1,
+    "reviewCount": 8,
+    "website": null,
+    "phone": "+41 79 664 78 30",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4358979181606726655&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJweIPYBGhmkcRgnZyLzde_7E",
+    "name": "DM GmbH",
+    "address": "u. Geerenstrasse 38, 8600 Dübendorf",
+    "rating": 4.8,
+    "reviewCount": 8,
+    "website": "https://www.dm-gmbh.ch/",
+    "phone": "+41 43 543 10 70",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12826073854886704770&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ0aVGasmxmkcR4ljK7SnQEjA",
+    "name": "Ramunno Roberto",
+    "address": "Gerenstrasse 7, 8712 Stäfa",
+    "rating": 4.5,
+    "reviewCount": 8,
+    "website": "https://ramunno-sanitaer.ch/",
+    "phone": "+41 76 566 87 12",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3464059941903030498&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJD7I_A8ELkEcR9DVayySEI2E",
+    "name": "Blum Haustechnik AG",
+    "address": "Friedaustrasse 9, 8952 Schlieren",
+    "rating": 4.4,
+    "reviewCount": 8,
+    "website": "http://www.dbu.ch/de/Gebaeudetechnik.3.html",
+    "phone": "+41 44 438 80 30",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6999583539429258740&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJzYrBsGINkEcRjrcB5qzEaPA",
+    "name": "MD Haustechnik",
+    "address": "Küferweg 4, 8902 Urdorf",
+    "rating": 5,
+    "reviewCount": 8,
+    "website": "http://www.mdhaustechnik.ch/",
+    "phone": "+41 79 406 87 58",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17323312213552904078&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJezFx-rsLkEcRy_E9gK4PuiM",
+    "name": "Fäs Installationen AG",
+    "address": "Bernerstrasse N 210, 8064 Zürich",
+    "rating": 4.5,
+    "reviewCount": 8,
+    "website": "http://www.faesinstallationen.ch/",
+    "phone": "+41 43 321 77 04",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2574387379145929163&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJz-JA8RILkEcRdsgpQUAuyzE",
+    "name": "Cavegn Haustechnik",
+    "address": "Imbisbühlstrasse 71, 8049 Zürich",
+    "rating": 5,
+    "reviewCount": 8,
+    "website": "http://www.cavegn-ht.ch/",
+    "phone": "+41 77 486 28 58",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3588012381636774006&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJJ2tzAQyomkcRNA-bGWskH74",
+    "name": "Berchtold Ernst",
+    "address": "Sihlwaldstrasse 10, 8135 Langnau am Albis",
+    "rating": 4.4,
+    "reviewCount": 7,
+    "website": "http://www.berchtold-sanitaer.ch/",
+    "phone": "+41 44 713 13 61",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13699708633894031156&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJcUClZVelmkcR68wKWq_mBa0",
+    "name": "Sanitär Stocker",
+    "address": "Herrenweg 175, 8706 Meilen",
+    "rating": 4.9,
+    "reviewCount": 7,
+    "website": null,
+    "phone": "+41 44 923 02 25",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12467624784249408747&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJR5ya9TOvmkcRxd2E3NLbV6E",
+    "name": "Walderwerk GmbH",
+    "address": "Bahnhofstrasse 24, 8708 Männedorf",
+    "rating": 4.4,
+    "reviewCount": 7,
+    "website": "https://walderwerk.ch/",
+    "phone": "+41 79 743 89 78",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11626002661769534917&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJCZUZkd8JkEcR9E7gpz3yUWc",
+    "name": "Bühlmann Heizungen AG",
+    "address": "Seestrasse 354, 8038 Zürich",
+    "rating": 4.4,
+    "reviewCount": 7,
+    "website": "http://www.bmh-ag.ch/",
+    "phone": "+41 44 485 44 55",
+    "types": [
+      "car_repair",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7444998005643562740&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJTSZ-1iMKkEcRUjI4eBixJcw",
+    "name": "Theodor Roduner, Sanitäre Anlagen",
+    "address": "Idastrasse 47, 8003 Zürich",
+    "rating": 5,
+    "reviewCount": 7,
+    "website": "http://www.roduner-sanitaer.ch/",
+    "phone": null,
+    "types": [
+      "plumber",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14710358476529873490&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJLwckGyKStGwRHE-AMn36pAg",
+    "name": "Nosid GmbH Heizung & Sanitär",
+    "address": "Strahleggweg 30, 8400 Winterthur",
+    "rating": 5,
+    "reviewCount": 7,
+    "website": "https://www.nosid.ch/?utm_source=google&utm_medium=wix_google_business_profile&utm_campaign=10967618509586842304",
+    "phone": "+41 78 239 11 00",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "car_repair",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=622898064109096732&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJjY8Hx--fmkcR-z8w-jWySpQ",
+    "name": "Isler & Isler AG",
+    "address": "Dorfstrasse 5, 8302 Kloten",
+    "rating": 4,
+    "reviewCount": 7,
+    "website": "http://isler-sanitaer.ch/",
+    "phone": "+41 43 255 40 20",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "home_goods_store",
+      "store",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10685549010790399995&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJORzOLEmwmkcRmzJ6QWaHXKM",
+    "name": "W. Stecher AG – Heizung & Sanitär",
+    "address": "Grundstrasse 16A, 8712 Stäfa",
+    "rating": 4.4,
+    "reviewCount": 7,
+    "website": "https://www.stecher-staefa.ch/",
+    "phone": "+41 44 926 19 15",
+    "types": [
+      "home_goods_store",
+      "car_repair",
+      "general_contractor",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11771432399294575259&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ10bzbTQGkEcRuDFpYBurxX8",
+    "name": "Stieger Sanitär & Haustechnik GmbH",
+    "address": "Gartenstrasse 9, 8910 Affoltern am Albis",
+    "rating": 4.9,
+    "reviewCount": 7,
+    "website": "https://stieger-sanitaer-haustechnik.digitalone.site/",
+    "phone": "+41 79 475 22 89",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9206953147298820536&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJk3b8pJHmwagRgR5jpKHZff4",
+    "name": "Haustechnik Service Zürich",
+    "address": "Dörflistrasse 30, 8057 Zürich",
+    "rating": 5,
+    "reviewCount": 7,
+    "website": "https://hsz-ag.ch/",
+    "phone": "+41 44 521 15 15",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18338052545993449089&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZTURZ8ALkEcR3AVHWukrQvo",
+    "name": "AVENTA GmbH",
+    "address": "Bernerstrasse N 182, 8064 Zürich",
+    "rating": 5,
+    "reviewCount": 7,
+    "website": "https://www.aventa-bau.ch/",
+    "phone": "+41 43 200 00 90",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=18033024139186865628&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJeTpxXiYIkEcRFK6k1VEgtmA",
+    "name": "Sanitherm Sanitär Heizung GmbH",
+    "address": "Werdstrasse 5, 8134 Adliswil",
+    "rating": 3.7,
+    "reviewCount": 6,
+    "website": "http://www.sanitherm.ch/",
+    "phone": "+41 44 711 75 00",
+    "types": [
+      "plumber",
+      "supplier",
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6968793009251200532&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ65uSUJ2hmkcRGQaYcv1QF-0",
+    "name": "KEKA Sanitär & Heizung AG",
+    "address": "Rindermarkt 8, 8001 Zürich",
+    "rating": 4.7,
+    "reviewCount": 6,
+    "website": "http://www.keka-sanitaer.ch/",
+    "phone": "+41 43 540 64 66",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17084212760932779545&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJG5dbRUkKkEcRkDT3I_luNik",
+    "name": "Wanner Sanitär GmbH",
+    "address": "Förrlibuckstrasse 110, 8005 Zürich",
+    "rating": 4.3,
+    "reviewCount": 6,
+    "website": "http://www.wanner-sanitaer.ch/",
+    "phone": "+41 44 272 76 64",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2969683020626736272&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJx37dXg-hmkcRrMILi8_Apmo",
+    "name": "Balegra Sanitär GmbH",
+    "address": "Amselweg 4, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 6,
+    "website": null,
+    "phone": "+41 79 346 02 75",
+    "types": [
+      "public_bathroom",
+      "electronics_store",
+      "supplier",
+      "general_contractor",
+      "home_goods_store",
+      "building_materials_store",
+      "health",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7685041811777897132&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJvQG_6xKhmkcRvKBAGNEBO-U",
+    "name": "emal haustechnik ag",
+    "address": "Ringstrasse 14, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 6,
+    "website": "http://www.emal.ch/",
+    "phone": "+41 44 940 55 50",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16517798055878107324&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJdbh_q3ShmkcRBLaga5Ag_uI",
+    "name": "Mozzetti Sanitär AG",
+    "address": "Schulhausstrasse 27, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 6,
+    "website": "http://www.mozzettihaustechnik.ch/",
+    "phone": "+41 44 820 10 71",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16356546701309294084&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJl-T_6vANkEcRs485OdjoMtI",
+    "name": "Limmat Gebäudetechnik AG",
+    "address": "Lerzenstrasse 27, 8953 Dietikon",
+    "rating": 4.3,
+    "reviewCount": 6,
+    "website": "https://limmat-gt.ch/",
+    "phone": "+41 44 442 69 69",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "manufacturer",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15146424512171052979&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJh42Vz3S7mkcRNMf6qxbiZR4",
+    "name": "Thoma Heizungen AG",
+    "address": "Schönenwerdstrasse 96, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 6,
+    "website": "http://www.thoma-heizungen.ch/",
+    "phone": "+41 44 932 36 69",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2190405380788111156&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJt_LHF-6fmkcRxdPTYdoU9JA",
+    "name": "Hans Spillmann AG",
+    "address": "Kirchgasse 33, 8302 Kloten",
+    "rating": 3,
+    "reviewCount": 6,
+    "website": "http://www.spillmannag.ch/",
+    "phone": "+41 44 814 25 95",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10444996363955721157&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ4arcYZGlmkcRxf3rNe600k4",
+    "name": "KOSTER AG HERRLIBERG",
+    "address": "Dorf 38, 8704 Herrliberg",
+    "rating": 4.7,
+    "reviewCount": 6,
+    "website": "https://www.kosterag.ch/",
+    "phone": "+41 44 790 41 69",
+    "types": [
+      "supplier",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5679801015267491269&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJle28Nb2nmkcRGPsE_5O-PpM",
+    "name": "Oberle AG",
+    "address": "Alte Landstrasse 174, 8700 Küsnacht",
+    "rating": 4.2,
+    "reviewCount": 6,
+    "website": "http://www.oberle.ch/",
+    "phone": "+41 44 910 02 26",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10610127314979453720&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJUamnmTQJkEcRlOFy1DD9XIs",
+    "name": "Baur-Haustechnik AG",
+    "address": "Luzernerstrasse 9, 8903 Birmensdorf",
+    "rating": 4.3,
+    "reviewCount": 6,
+    "website": "http://www.bbhaustechnik.ch/",
+    "phone": "+41 44 737 25 92",
+    "types": [
+      "roofing_contractor",
+      "supplier",
+      "manufacturer",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10042179655293919636&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ092PNfqvmkcRs1-h_KDe9HU",
+    "name": "Villari service Heizung-Sanitär",
+    "address": "Unterpuntstrasse 30, 8636 Zürich",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.villari-service.ch/",
+    "phone": "+41 77 938 67 59",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8499663179769536435&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJl-betGGpmkcRKexJNnAj_5U",
+    "name": "reu gmbh",
+    "address": "Spinnereistrasse 10, 8135 Langnau am Albis",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "https://www.reu-gmbh.ch/",
+    "phone": "+41 44 713 34 05",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10808396595566603305&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ5ygCGhSmmkcR6Vbq8wuO-h8",
+    "name": "Oechsli - Sprenger AG",
+    "address": "Schiffländestrasse 17, 8703 Erlenbach",
+    "rating": 4.8,
+    "reviewCount": 5,
+    "website": "https://oechsli.ch/",
+    "phone": "+41 44 915 30 75",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2304310341341435625&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJX6--OnWumkcR_1Vnx1BnrBg",
+    "name": "Emil Schweizer GmbH",
+    "address": "Tanne 8, 8824 Schönenberg",
+    "rating": 4,
+    "reviewCount": 5,
+    "website": "https://www.schweizer-sanitaer-heizung.ch/",
+    "phone": "+41 44 788 15 52",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1777909549544986111&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJJ18s752ZmkcRkkvNHdX3tos",
+    "name": "Meissner Sanitärtechnik AG",
+    "address": "Büelrainstrasse 3, 8400 Winterthur",
+    "rating": 4.4,
+    "reviewCount": 5,
+    "website": "http://www.meissner-sanitaertechnik.ch/",
+    "phone": "+41 52 202 28 71",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10067506511733410706&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJlcTO0LKkmkcRLdOMxXpLZkw",
+    "name": "Sanitär Sunier Gmbh",
+    "address": "Blindenholzstrasse 1, 8610 Uster",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.sunier.ch/",
+    "phone": "+41 44 939 12 51",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5505170585179444013&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJExeld62jmkcRiczyzuGlYr8",
+    "name": "Masa Haustechnik Sanitär & Heizungen",
+    "address": "Glärnischweg 11, 8604 Volketswil",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.masa-haustechnik.ch/",
+    "phone": "+41 44 831 00 00",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13790767398220123273&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJL6QIQbQNkEcRq6ZIP1LDONY",
+    "name": "G. Stierli AG",
+    "address": "Bremgartnerstrasse 51, 8953 Dietikon",
+    "rating": 4.8,
+    "reviewCount": 5,
+    "website": "https://www.stierli-dietikon.ch/",
+    "phone": "+41 44 740 84 45",
+    "types": [
+      "roofing_contractor",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15436302480828835499&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJQ-jspHC7mkcRqNL9zhO73bg",
+    "name": "Käser AG",
+    "address": "Eichbühlstrasse 2, 8607 Seegräben",
+    "rating": 4,
+    "reviewCount": 5,
+    "website": "http://kaeser-ag.ch/",
+    "phone": "+41 44 932 17 17",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13321008966583308968&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJN7uf-X11kEcR0m-otnfBojY",
+    "name": "VIVAQUA AG",
+    "address": "VIVAQUA AG, Schützenmattstrasse 144, 8180 Bülach",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.vivaquaag.ch/",
+    "phone": "+41 75 415 00 20",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3936921744184995794&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZQHJfFAJkEcRPLN1xjSmajk",
+    "name": "BallaSanitär",
+    "address": "Wettswilerstrasse 1, 8903 Birmensdorf",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "https://www.ballasanitaer.ch/",
+    "phone": "+41 78 330 19 94",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4137301953291334460&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZ_fdxX8NkEcRwVuCanA2XnE",
+    "name": "Gruezh AG",
+    "address": "Lättenstrasse 37, 8952 Schlieren",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "https://www.gruezh.ch/",
+    "phone": "+41 44 521 14 14",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8169026630547823553&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ2RdCqp2nmkcRey84DCnXapg",
+    "name": "PSW Haustechnik AG",
+    "address": "Nidelbadstrasse 76, 8038 Zürich",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "https://pswag.ch/",
+    "phone": "+41 44 737 90 36",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10982827212595015547&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJc69iIce7mkcR9WgGNPb-nvg",
+    "name": "SPÖRRI GEBÄUDETECHNIK AG",
+    "address": "Wiesenstrasse 4, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.spgag.ch/",
+    "phone": "+41 44 552 22 88",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17915036701114657013&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJzcr5wpsKkEcRPAobaF5k7So",
+    "name": "Getec Zürich AG",
+    "address": "Schaffhauserstrasse 470, 8052 Zürich",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.getec.ch/",
+    "phone": "+41 44 318 83 00",
+    "types": [
+      "consultant",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3093238875709704764&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ3cPERp0KkEcRdQp2CvC9QJY",
+    "name": "ALCO Haustechnik AG",
+    "address": "Leutschenbachstrasse 45, 8050 Zürich",
+    "rating": 5,
+    "reviewCount": 5,
+    "website": "http://www.alco-haustechnik.ch/",
+    "phone": "+41 43 210 30 70",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10826862342863981173&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJD1tMA82omkcRyW8DLW3FYuA",
+    "name": "AZ-Gebäudetechnik AG",
+    "address": "Zugerstrasse 90, 8810 Horgen",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": "http://www.az-gebaeudetechnik.ch/",
+    "phone": "+41 44 915 88 88",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16168702684910809033&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJa1HutCepmkcRaNQ7iGIAhw4",
+    "name": "Scherrer Sanitär AG",
+    "address": "Albisstrasse 40, 8915 Hausen am Albis",
+    "rating": 4.8,
+    "reviewCount": 4,
+    "website": "https://scherrer-sanitaer.digitalone.site/",
+    "phone": "+41 44 764 07 80",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1046805861579347048&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ6dXjrHmvmkcR4wCUQzcpYyU",
+    "name": "Schaub Haustechnik",
+    "address": "Aaweiherstrasse 3, 8810 Horgen",
+    "rating": 4.3,
+    "reviewCount": 4,
+    "website": "https://www.schaub-haustechnik.ch/",
+    "phone": "+41 44 718 20 20",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2694042319431401699&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJf2UHRFKnmkcRYbo-t_VnPYI",
+    "name": "Goldenbohm AG",
+    "address": "Werkgasse 5, 8008 Zürich",
+    "rating": 4.8,
+    "reviewCount": 4,
+    "website": "http://www.goldenbohm.ch/",
+    "phone": "+41 44 261 66 44",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9384771503548971617&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZ8FnuJCXmkcRvpUAnJkDqwI",
+    "name": "AVAG Group AG | Sanitär | Heizung | Wärmepumpe",
+    "address": "Poststrasse 14B, 8805 Richterswil",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": "https://www.avaggroup.com/",
+    "phone": "+41 76 431 85 95",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=192251367375541694&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJyRu4jPitmkcReYJnCy6AxN0",
+    "name": "Wyss AG - Sanitär / Spenglerei",
+    "address": "Fälmisstrasse 5, 8833 Samstagern",
+    "rating": 4.5,
+    "reviewCount": 4,
+    "website": "https://www.wyss-ag.ch/",
+    "phone": "+41 44 784 42 11",
+    "types": [
+      "car_repair",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15980038313065546361&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ18_ivce5kUcROukMVPuTXxY",
+    "name": "Sanitärnotfalldienst",
+    "address": "Berninastrasse 15, 8057 Zürich",
+    "rating": 4,
+    "reviewCount": 4,
+    "website": "https://www.sanitärnotfall24.ch/",
+    "phone": "+41 62 756 19 17",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1612169899278133562&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZ6KaWKmkmkcRIeLCKPYFoHE",
+    "name": "Grimm + Kreutzer GmbH",
+    "address": "Aathalstrasse 3, 8610 Uster",
+    "rating": 4.3,
+    "reviewCount": 4,
+    "website": "http://grimm-kreutzer.ch/",
+    "phone": "+41 43 366 53 54",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8187550677363515937&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJdbPHfEgMkEcRj0SmIXLQFOA",
+    "name": "C. Baumgartner Sanitär GmbH",
+    "address": "Zürcherstrasse 146, 8953 Dietikon",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": null,
+    "phone": "+41 79 207 72 34",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16146759752639464591&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ0XU9G2zHmkcRcw9_n6uvQEo",
+    "name": "AP Gebäudetechnik",
+    "address": "Blaketen 6, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": "http://ap-gebaudetechnik.ch/",
+    "phone": "+41 44 599 29 94",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5350469508966322035&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ8zKEhbi7mkcRO0bpzlSPle0",
+    "name": "E. Schneiter GmbH",
+    "address": "Kratzstrasse 14, 8620 Wetzikon",
+    "rating": 4,
+    "reviewCount": 4,
+    "website": "http://www.schneiter-heizungen.ch/",
+    "phone": "+41 44 932 78 54",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17119747152930227771&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJvcxAam53kEcR1afSXQ1hB7E",
+    "name": "Adis Music Sanitär & Heizung",
+    "address": "Mülihaldenstrasse 6, 8427 Rorbas",
+    "rating": 4.8,
+    "reviewCount": 4,
+    "website": null,
+    "phone": "+41 76 280 23 95",
+    "types": [
+      "plumber",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12756271179586774997&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJG36Mve2vmkcRONpUnKJSNjQ",
+    "name": "Heinrich Steiger",
+    "address": "Kleindorfstrasse 89, 8707 Uetikon am See",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": "https://yellow.local.ch/d/BU4mApOZSSTeau8YhDMHwA",
+    "phone": "+41 44 920 48 57",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3762285397075614264&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq7qr_pD_j0cRnHPmcbH7COs",
+    "name": "Ehrler Heizung + Sanitär GmbH",
+    "address": "Meierskappelstrasse 1, 6403 Küssnacht",
+    "rating": 5,
+    "reviewCount": 4,
+    "website": "http://www.ehrler-heizungsanitaer.ch/",
+    "phone": "+41 41 850 39 62",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16936063138265461660&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJU3fEWpynmkcRvO-ANglXnZA",
+    "name": "T. Weber Sanitär-Heizung-Garten GmbH",
+    "address": "Bodenstrasse 30, 8800 Thalwil",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.twebergmbh.ch/",
+    "phone": "+41 79 551 46 01",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10420580809885937596&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJjbcbs_KpmkcRohR2akL0WOI",
+    "name": "Dörfler AG",
+    "address": "Hubstrasse 30, 8942 Oberrieden",
+    "rating": 4.7,
+    "reviewCount": 3,
+    "website": "http://www.doerflerag.ch/",
+    "phone": "+41 43 443 52 00",
+    "types": [
+      "car_repair",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16310054616613393570&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq6qWS0iumkcRcNBAXfaP53s",
+    "name": "Karakas Sanitär",
+    "address": "Stegstrasse 17, 8820 Wädenswil",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": null,
+    "phone": "+41 79 348 31 93",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8928263074574553200&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJJZDyOwe3mkcRYvf_slzZ5-0",
+    "name": "Reimann Sanitär AG",
+    "address": "Verenastrasse 27, 8832 Wollerau",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.dersanitaer.ch/",
+    "phone": "+41 55 210 55 62",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17142909498772420450&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ5WO8W9SjmkcRXGZcxQg0LIo",
+    "name": "Isenegger Sanitär & Heizung GmbH",
+    "address": "Industriestrasse 30, 8604 Volketswil",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.isenegger-sanitaer.ch/",
+    "phone": "+41 43 535 77 50",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9956390088484873820&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJmVCvowehmkcRB_F13tQOYB4",
+    "name": "RexHaustechnik GmbH",
+    "address": "Neugutstrasse 53, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": null,
+    "phone": null,
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2188765726330188039&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq6p6teW7mkcR-BGxguQfSRU",
+    "name": "Bayar Gmbh - Heizung, Sanitär und Kälte",
+    "address": "Schuepisstrasse 18, 8603 Schwerzenbach",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "https://bayar-gmbh.ch/",
+    "phone": "+41 44 501 04 37",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1533792214402011640&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJT-xY9cG7mkcRlXS8PSfoCtQ",
+    "name": "Fritz Gloor AG",
+    "address": "Turnhallenstrasse 10, 8620 Wetzikon",
+    "rating": 4.7,
+    "reviewCount": 3,
+    "website": "http://www.gloor-ing.ch/",
+    "phone": "+41 44 938 33 33",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15279279941044958357&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJr7RHT8gLkEcR2FHNJM_mEZs",
+    "name": "Sanitär Abazi GmbH",
+    "address": "Irchelstrasse 6b, 8180 Bülach",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.sanitärabazi.ch/",
+    "phone": "+41 79 503 62 36",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11173965927832965592&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJPYXaEnKfmkcRAVB4MiGvtlA",
+    "name": "Dr. Haustechnik GmbH",
+    "address": "Industriestrasse 30, 8302 Kloten",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.drhaustechnik.ch/",
+    "phone": "+41 76 824 62 22",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5816028525911101441&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJv1ECyhOlmkcRU3KvjE4T66k",
+    "name": "Leutenegger Sanitär und Spenglerei AG",
+    "address": "Forchstrasse 190, 8132 Hinteregg",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.sanitaer-leutenegger.ch/",
+    "phone": "+41 44 984 03 27",
+    "types": [
+      "roofing_contractor",
+      "consultant",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12243901240025510483&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJf9seLIMLkEcR2K-me_ALrGQ",
+    "name": "FAMAG Haustechnik Rohrreinigung",
+    "address": "Badenerstrasse 551, 8048 Zürich",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "http://www.famag-haustechnik.ch/",
+    "phone": "+41 44 586 45 18",
+    "types": [
+      "building_materials_store",
+      "supplier",
+      "manufacturer",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7254186227281604568&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJHVIxDEsLkEcRnWuznBEYBBg",
+    "name": "F2M Haustechnik GmbH",
+    "address": "Seebacherstrasse 66, 8052 Zürich",
+    "rating": 5,
+    "reviewCount": 3,
+    "website": "https://f2m.ch/",
+    "phone": "+41 79 378 14 33",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1730534620739627933&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ_z4A3s2nmkcRBTBh2cGuMAo",
+    "name": "Egli-Wärmetechnik",
+    "address": "Gotthardstrasse 44, 8800 Thalwil",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.egli-waermetechnik.ch/kontakt/index.html",
+    "phone": "+41 44 720 12 34",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=734278886860337157&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ76oQy9-nmkcR3VzM2UZLKiU",
+    "name": "Schär Heizungen GmbH",
+    "address": "Hintere Grundstrasse 12, 8135 Langnau am Albis",
+    "rating": 3.5,
+    "reviewCount": 2,
+    "website": "https://www.schaer-heizungen.ch/",
+    "phone": "+41 44 713 11 22",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2678035696099024093&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJKzyaSpcTkEcRViJ_tsEZLtk",
+    "name": "Sanitär Heizung 24h Service-Pikett - Alpha",
+    "address": "Schlierenstrasse 14, 8902 Urdorf",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://www.alphasanitaer.ch/",
+    "phone": "+41 44 555 98 65",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15649474074940219990&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJu8TkaFibmkcRcRmF-WoePVM",
+    "name": "Ari Haustechnik GmbH",
+    "address": "Wallrütistrasse 119a, 8404 Winterthur",
+    "rating": 3,
+    "reviewCount": 2,
+    "website": "https://www.arihaustechnik.ch/",
+    "phone": "+41 76 455 83 55",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5997983723528984945&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJP9H2-c6lmkcRpFi_tbU3S7Y",
+    "name": "Legler Sanitär",
+    "address": "Wermatswilerstrasse 8A, 8610 Uster",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.leglersanitaer.ch/",
+    "phone": "+41 79 678 95 43",
+    "types": [
+      "corporate_office",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13135653991734007972&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJgXjf3bcNkEcRyLYMeAkqbwE",
+    "name": "Paul Hardegger Sanitäre Anlagen",
+    "address": "Hasenbergstrasse 41, 8953 Dietikon",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.paul-hardegger.ch/",
+    "phone": "+41 44 740 79 51",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=103347536609982152&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJn5vR1gJ2kEcRpigN6MfkN_Q",
+    "name": "Ferri Haustechnik GmbH",
+    "address": "Binzackerstrasse 41, 8620 Wetzikon",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.ferri-gmbh.ch/",
+    "phone": "+41 44 939 15 81",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17597785616216303782&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJrwLpSU26mkcR7CMlRXhbDBI",
+    "name": "GN Haustechnik GmbH",
+    "address": "Grüenaustrasse 2, 8624 Grüt",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": null,
+    "phone": "+41 44 932 19 90",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1300514964517495788&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ00NkLN6xmkcRTnvRxQxeFo8",
+    "name": "Gebäudetechnik24 AG",
+    "address": "Asylstrasse 70, 8708 Männedorf",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://gebaeudetechnik24.ch/",
+    "phone": "+41 44 442 45 24",
+    "types": [
+      "home_goods_store",
+      "manufacturer",
+      "car_repair",
+      "general_contractor",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10310531805862787918&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq6pbn0ammkcRrjhyEk1GShM",
+    "name": "Benz + Cie. AG",
+    "address": "Freihofstrasse 20, 8700 Küsnacht",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.benz-cie.ch/",
+    "phone": "+41 44 368 31 91",
+    "types": [
+      "car_repair",
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "supplier",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1390000731833120942&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJZy-nF5mmmkcR6O4DFC2P9aE",
+    "name": "Hänggi AG, Heizungen",
+    "address": "Strubenacher 10, 8126 Zumikon",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.haenggi-heizungen.ch/",
+    "phone": "+41 44 919 81 81",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11670391433172610792&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ6-4Jm5unmkcRN8ToBB22T2U",
+    "name": "G. Nikollbibaj",
+    "address": "Zollerstrasse 16, 8703 Erlenbach",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://www.g-nikollbibaj.ch/",
+    "phone": "+41 43 833 97 23",
+    "types": [
+      "home_goods_store",
+      "general_contractor",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7300253756743533623&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJDeyU41yvmkcRu_TneXyovms",
+    "name": "Markus Billeter",
+    "address": "Oberer Bühlenweg 26, 8708 Männedorf",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://yellow.local.ch/d/jdljmCoewIGC1h4MrutpJw",
+    "phone": "+41 44 790 44 31",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7763828060207969467&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJFUEkCDkGkEcR6kltLjr74tA",
+    "name": "Bruno Aniello",
+    "address": "Breitenweg 8, 8910 Affoltern am Albis",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "http://www.ab-zhaustechnik.ch/",
+    "phone": "+41 44 760 15 57",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15051869131931208170&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJRamWU_QPkEcRtVAdhpcr4ic",
+    "name": "Duri Haustechnik GmbH",
+    "address": "Luzernerstrasse 14, 8903 Birmensdorf",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://duri-haustechnik.digitalone.site/",
+    "phone": "+41 76 341 03 95",
+    "types": [
+      "home_goods_store",
+      "store",
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2873907442005921973&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJD6L7IxanmkcRXxy9Qr7e8gg",
+    "name": "WEGO Gebäudetechnik GmbH",
+    "address": "Allmendstrasse 94, 8041 Zürich",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://wegogmbh.ch/",
+    "phone": "+41 44 905 99 80",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=644822605412244575&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJC4cIWKbPmkcRXw23B6_ZWI8",
+    "name": "Klimamentor - Klimaanlage, Lüftung, Wärmepumpe und Heizung Zürich und Ostschweiz",
+    "address": "Dorf 60, 8739 Rieden",
+    "rating": 5,
+    "reviewCount": 2,
+    "website": "https://klimamentor.ch/",
+    "phone": "+41 77 208 67 07",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=10329245091146173791&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJj3NPb8uomkcRLcf4mSSm-7c",
+    "name": "Widmer H. & Co. AG",
+    "address": "Seestrasse 203, 8810 Horgen",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://www.widmer-sanitaer.ch/",
+    "phone": "+41 44 725 47 00",
+    "types": [
+      "roofing_contractor",
+      "consultant",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13257372604227438381&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJdRCJ6QKpmkcR8kXumwDdzYE",
+    "name": "Eugster Sanitär & Heizung",
+    "address": "Albisstrasse 37, 8915 Hausen am Albis",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://yellow.local.ch/d/OHBT4nR3OH5_hH4z2kBOGQ",
+    "phone": "+41 44 764 01 26",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9353374995804210674&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ_Zab_B-vmkcRamjQMqaYqIQ",
+    "name": "Alarmstelle für Heizung & Sanitär. HEiZEN24 AG",
+    "address": "Rietwiesstrasse 101, 8810 Horgen",
+    "rating": 4,
+    "reviewCount": 1,
+    "website": null,
+    "phone": "+41 840 024 024",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9559058048678389866&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ372evZanmkcRn0kwUzUPXRE",
+    "name": "Pestalozzi Haustechnik - Haustechcenter Adliswil",
+    "address": "Moosstrasse 25/27, 8134 Adliswil",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.pestalozzi-haustechnik.ch/de/",
+    "phone": "+41 44 217 80 50",
+    "types": [
+      "home_goods_store",
+      "manufacturer",
+      "store",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "government_office",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1251172993182222751&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJubNkclavmkcR4Nz88zVspfE",
+    "name": "Seeblick Haustechnik GmbH",
+    "address": "Seestrasse 157A, 8820 Wädenswil",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://s-ht.ch/",
+    "phone": "+41 79 850 81 82",
+    "types": [
+      "general_contractor",
+      "building_materials_store",
+      "home_goods_store",
+      "manufacturer",
+      "store",
+      "supplier",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=17412442513280392416&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJF8XCfQ-vmkcR_gdXNRlphtM",
+    "name": "Zenginkinet Sanitär",
+    "address": "Holzmoosrütistrasse 42A, 8820 Wädenswil",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://zenginkinet-sanitar-8820.sitefree.ch/",
+    "phone": "+41 79 713 88 96",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15241985545872017406&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ6Q5OJKuvmkcRkJPIiWIXoS8",
+    "name": "Thomas Posanz",
+    "address": "Stoffelstrasse 5, 8804 Au ZH",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": null,
+    "phone": null,
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=3432050103018886032&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJrc_dYW-vmkcRE6o5Rah8GZk",
+    "name": "Sanitär Meier",
+    "address": "Dorfstrasse 51, 8706 Meilen",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.sanitaer-meier.ch/",
+    "phone": "+41 44 793 20 10",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11031985824378497555&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJcZcp2d-jmkcRVjNt6Npo10o",
+    "name": "Sanitär-Reparatur-Service, Markus Ott",
+    "address": "Industriestrasse 32, 8117 Fällanden",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://www.ott-sanitär.ch/",
+    "phone": "+41 79 420 67 07",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5392894368211088214&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJuxj29NyZmkcRuwyoUXZTUq4",
+    "name": "Dauti Heizung-Sanitär GmbH",
+    "address": "Büelhofstrasse 21, 8405 Winterthur",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": null,
+    "phone": "+41 52 233 25 24",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12561194078330948795&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ6VosTB-amkcRNgMVXGvDOoc",
+    "name": "Brovelli Sanitäre Haustechnik",
+    "address": "Grabenackerstrasse 28, 8404 Winterthur",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://brovelli.ch/",
+    "phone": "+41 52 242 19 40",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9744315609643287350&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ_2ak_3SbmkcR84mZUsLB55k",
+    "name": "W. Rokitzky AG",
+    "address": "Riedhofstrasse 67, 8408 Winterthur",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.rokitzky.ch/",
+    "phone": "+41 52 551 88 99",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=11090045647776745971&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJN1JKR2mbmkcRXp6qgeqs5ak",
+    "name": "Suremann Reto Sanitär- und Spengler-Reparaturen",
+    "address": "Hauswiesenweg 23, 8404 Winterthur",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://yellow.local.ch/d/HkXD-Y6cCN3PNSNrVIIm5w",
+    "phone": "+41 52 242 10 40",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=12242381285274328670&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJIbXwNLqhmkcR2HzaLSnm0RM",
+    "name": "WHS Haustech AG",
+    "address": "Marktgasse 2, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": null,
+    "phone": "+41 43 501 37 21",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1428175621390499032&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJx_8XAtR1kEcR5ErP2-8jpRA",
+    "name": "Oetiker E. AG",
+    "address": "Seemattstrasse 3, 8180 Bülach",
+    "rating": 1,
+    "reviewCount": 1,
+    "website": "https://yellow.local.ch/d/kwpeNZhFAtgEvJE5ly2ZYA",
+    "phone": "+41 44 860 15 39",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1199404388856056548&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJXZgdLaGfmkcRq8Wi-P_mWrw",
+    "name": "FH Wärmetechnik AG",
+    "address": "Gerlisberg 7, 8302 Kloten",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://www.fhwaerme.ch/",
+    "phone": "+41 44 813 49 40",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=13572414414096876971&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJm5ajHKOlmkcRhbmqYrXvCNk",
+    "name": "Sanitär Heizung Grüner Markus",
+    "address": "Im Tobel 26, 8706 Meilen",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://sanitaer-heizung.digitalone.site/",
+    "phone": "+41 44 923 57 76",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15639013268367522181&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJfzozlgimmkcRCPor-q4fWks",
+    "name": "Kaufmann Spenglerei und Sanitär AG",
+    "address": "Alte Bergstrasse 91, 8704 Herrliberg",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "http://www.kaufmann-egg.ch/",
+    "phone": "+41 44 915 10 22",
+    "types": [
+      "roofing_contractor",
+      "plumber",
+      "building_materials_store",
+      "supplier",
+      "home_goods_store",
+      "manufacturer",
+      "general_contractor",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5429687137130510856&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ7wX_QnivmkcRWhqVbXm86eo",
+    "name": "E. Hersperger Elektrotechnik",
+    "address": "Pfannenstielstrasse 142, 8706 Meilen",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.turbosar.ch/",
+    "phone": "+41 55 282 54 74",
+    "types": [
+      "supplier",
+      "manufacturer",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=16927267904164272730&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVVUZQGj_j0cRJKaC0DRIGYI",
+    "name": "Sanitär Stettler HLS GmbH",
+    "address": "Fännstrasse 52, 6403 Küssnacht",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.stettler-hls.ch/",
+    "phone": "+41 79 724 64 60",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=9374603491022120484&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJw2Hx_PMJkEcRw7UZVtqiDhM",
+    "name": "MR Gebäudetechnik AG",
+    "address": "Auenstrasse 10, 8600 Dübendorf",
+    "rating": 5,
+    "reviewCount": 1,
+    "website": "https://www.mr-gebaeudetechnik.ch/",
+    "phone": "+41 44 450 28 40",
+    "types": [
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1373213995025675715&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJES16ZOKnmkcRRbdkAbaBYyI",
+    "name": "Egli Wärmetechnik",
+    "address": "Südstrasse 10, 8800 Thalwil",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://yellow.local.ch/d/hnXXYIBqcrGhhmgWOTPBZA",
+    "phone": "+41 44 720 12 34",
+    "types": [
+      "supplier",
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2477966838691313477&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ__8vqs2omkcRRnjWUnLI8Ac",
+    "name": "Benzenhofer Heizungen AG",
+    "address": "Steinbruchstrasse 25, 8810 Horgen",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://benzenhofer-heizungen.digitalone.site/",
+    "phone": "+41 79 458 73 68",
+    "types": [
+      "general_contractor",
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=572177546017667142&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJGd4fppqomkcR_4HjIoph5HA",
+    "name": "Düssel Christian",
+    "address": "Langweg 6, 8942 Oberrieden",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://www.ofenbau-platten.ch/",
+    "phone": "+41 44 720 22 54",
+    "types": [
+      "wholesaler",
+      "general_contractor",
+      "home_goods_store",
+      "service",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=8134734072856674815&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJb3yfF_WnmkcRgtOc9CfC9U4",
+    "name": "Remer Heizungen & Sanitär",
+    "address": "Sihlstrasse 1, 8134 Adliswil",
+    "rating": null,
+    "reviewCount": 0,
+    "website": null,
+    "phone": "+41 44 784 47 76",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=5689667181115921282&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJVVhUCyOvmkcRV08VxcNpEtQ",
+    "name": "Schweizer Emil GmbH",
+    "address": "Schönenbergstrasse 200, 8820 Wädenswil",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://www.schweizer-sanitaer-heizung.ch/",
+    "phone": "+41 44 788 15 52",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=15281392775167561559&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJT-Bp2vutmkcR87S7V8XZjiA",
+    "name": "Bruno Zürcher",
+    "address": "Bergstrasse 170, 8833 Samstagern",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://yellow.local.ch/d/1sWS77vTOxI5fXCorTPXxw",
+    "phone": "+41 44 784 42 10",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2346051897510311155&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJa0fNdvG7mkcRah-Cxuwfjcg",
+    "name": "JAKOVA Sanitär & Heizung",
+    "address": "Stöcklerstrasse 6, 8610 Uster",
+    "rating": null,
+    "reviewCount": 0,
+    "website": null,
+    "phone": "+41 44 940 06 79",
+    "types": [
+      "general_contractor",
+      "car_repair",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14451241881104949098&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ6cjP2-u7mkcRjH7YYaEXfDs",
+    "name": "Schönau Sanitär + Heizung AG",
+    "address": "Eggstrasse 58a, 8620 Wetzikon",
+    "rating": null,
+    "reviewCount": 0,
+    "website": null,
+    "phone": "+41 44 950 11 44",
+    "types": [
+      "general_contractor",
+      "home_goods_store",
+      "store",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=4286326927248621196&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJv24i2tt1kEcRRN_uPcM60yg",
+    "name": "Dünki Marcel",
+    "address": "Berglistrasse 35, 8180 Bülach",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "http://www.sanitaerservice.ch/",
+    "phone": "+41 79 752 75 14",
+    "types": [
+      "service",
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2941759591835164484&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJq2DHgNSlmkcR-aqE_mJxm2s",
+    "name": "Sanitär Fabbri",
+    "address": "Limberg, 8127 Küsnacht",
+    "rating": null,
+    "reviewCount": 0,
+    "website": null,
+    "phone": "+41 44 911 04 52",
+    "types": [
+      "plumber",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=7753915853439281913&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJLfm7zeGvmkcRY6mBUAZ4p8k",
+    "name": "Bodmer Hans AG",
+    "address": "Gewerbestrasse 17, 8708 Männedorf",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "https://www.bodmerag.ch/",
+    "phone": "+41 44 920 56 56",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=14530714691250006371&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJFYt_wtyvmkcRgrc-7cCsf1k",
+    "name": "Koster AG, Heizung/Lüftung",
+    "address": "Emil-Staub-Strasse 2, 8708 Männedorf",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "http://www.kosterag.ch/home.html",
+    "phone": "+41 44 790 41 69",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=6449063136031848322&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJ7w_kVEsLkEcRHxqKkboc4g0",
+    "name": "MAS Sanitär + Heizung GmbH",
+    "address": "Schulstrasse 78, 8952 Schlieren",
+    "rating": null,
+    "reviewCount": 0,
+    "website": null,
+    "phone": "+41 44 730 63 61",
+    "types": [
+      "general_contractor",
+      "point_of_interest",
+      "service",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=1000393654860913183&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  },
+  {
+    "id": "ChIJf1j_MogKkEcRObP0wfyLyic",
+    "name": "Haustechnik Zürich GmbH",
+    "address": "Hofwiesenstrasse 273, 8050 Zürich",
+    "rating": null,
+    "reviewCount": 0,
+    "website": "http://haustechnikzuerich.ch/",
+    "phone": "+41 43 288 09 80",
+    "types": [
+      "point_of_interest",
+      "establishment"
+    ],
+    "mapsUrl": "https://maps.google.com/?cid=2867258030476800825&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+  }
+]

@@ -10,6 +10,7 @@ interface Tenant {
   color: string;
   trial_status: string | null;
   is_demo: boolean;
+  is_pub: boolean;
 }
 
 interface TenantSwitcherProps {
@@ -73,7 +74,15 @@ export function TenantSwitcher({ activeTenantId, homeTenantId, viewAsRole }: Ten
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tenantId, viewAsRole: role ?? null }),
     });
-    router.refresh();
+    // Route to the right landing page for the new tenant. Pub tenants do not
+    // have /ops/cases — staying on it would render an empty state.
+    const target = tenants.find((t) => t.id === tenantId);
+    const landing = target?.is_pub ? "/ops/pub-dashboard" : "/ops/cases";
+    if (window.location.pathname !== landing) {
+      router.push(landing);
+    } else {
+      router.refresh();
+    }
     setTimeout(() => setSwitching(false), 500);
   }
 
@@ -109,7 +118,7 @@ export function TenantSwitcher({ activeTenantId, homeTenantId, viewAsRole }: Ten
   });
 
   return (
-    <div ref={ref} className="relative px-5 pb-3 -mt-1">
+    <div ref={ref} data-owner-only="tenant-switcher" className="relative px-5 pb-3 -mt-1">
       {/* Trigger button */}
       <button
         onClick={() => setOpen((p) => !p)}

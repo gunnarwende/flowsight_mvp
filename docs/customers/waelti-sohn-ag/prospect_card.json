@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "slug": "waelti-sohn-ag",
+  "name": "Waelti & Sohn AG",
+  "generated_at": "2026-04-15T12:00:00Z",
+
+  "scoring": {
+    "icp_score": 8,
+    "tier": "HOT",
+    "trust": 2,
+    "gap": 2,
+    "reasons": [
+      "Trust 2: 4.6 bei 237 Reviews — digitale Dominanz in der Region, konsistente Qualitaet",
+      "Gap 2: Wix-Website vorhanden aber limitiert, kein digitales Fallmanagement",
+      "Contactable: Telefon verifiziert (+41 44 713 03 04)"
+    ]
+  },
+
+  "leckerli": {
+    "recommendation": "A+B-Full+C+D",
+    "best_demo_case": "Montag 09:00: 20+ Einsaetze geplant, Buero disponiert per Telefon — Lisa faengt Ueberlauf ab und erstellt Faelle automatisch",
+    "modus": 2
+  },
+
+  "company": {
+    "legal_name": "Waelti & Sohn AG",
+    "short_name": "Waelti",
+    "founding_year": 1983,
+    "gewerke": ["Sanitaer", "Heizung"],
+    "employees_estimate": "10-20",
+    "brand_color": null,
+    "note": "Brand Color nicht ermittelbar (Wix-Website client-rendered). Founder muss entscheiden oder CC crawlt mit Puppeteer."
+  },
+
+  "contact": {
+    "phone": "044 713 03 04",
+    "phone_e164": "+41447130304",
+    "email": null,
+    "email_note": "Keine E-Mail auf Website oder Verzeichnissen gefunden. 'Wuenscht keine Werbung' auf local.ch. Founder muss E-Mail beschaffen.",
+    "website": "https://waeltisohn.ch",
+    "address": {
+      "street": "Gartenweg 2",
+      "zip": "8135",
+      "city": "Langnau am Albis",
+      "canton": "ZH"
+    }
+  },
+
+  "anrede": "Founder muss Ansprechpartner klaeren (Firmenname = Familienname, aber keine Einzelperson auf Website identifiziert)",
+
+  "opening_hours": {
+    "regular": null,
+    "source": "Nicht auf Website oder Verzeichnissen gefunden",
+    "founder_confirmed": false,
+    "note": "KRITISCH: Oeffnungszeiten muessen vom Founder beschafft werden (Anruf oder Website-Crawl mit Puppeteer)"
+  },
+
+  "services": [
+    { "name": "Sanitaer", "slug": "sanitaer", "icon": "bath", "verified": true, "detail": "Kalt- und Warmwasserversorgung, Entwässerung" },
+    { "name": "Heizung", "slug": "heizung", "icon": "flame", "verified": true, "detail": "Service, Optimierung, Neuinstallation" },
+    { "name": "Beratung & Planung", "slug": "beratung", "icon": "tool", "verified": true, "detail": "Projekte fuer Privat und Gewerbe" },
+    { "name": "Kundendienst", "slug": "kundendienst", "icon": "wrench", "verified": false, "detail": "Angenommen basierend auf Betriebsgroesse — verifizieren" }
+  ],
+
+  "categories": [
+    "Sanitaer",
+    "Heizung",
+    "Verstopfung",
+    "Leck",
+    "Boiler",
+    "Rohrbruch",
+    "Allgemein",
+    "Angebot",
+    "Kontakt"
+  ],
+
+  "emergency": {
+    "enabled": null,
+    "phone_e164": "+41447130304",
+    "label": null,
+    "keywords_detected": [],
+    "note": "Kein Notdienst-Hinweis auf Website oder Verzeichnissen gefunden. Founder muss klaeren."
+  },
+
+  "reviews": {
+    "google_rating": 4.6,
+    "google_reviews": 237,
+    "google_url": "https://www.google.com/maps/place/W%C3%A4lti+%26+Sohn+AG",
+    "source": "Google Maps / ICP Stresstest-Profil"
+  },
+
+  "team": [],
+  "team_note": "Keine Teamnamen auf Website oder Verzeichnissen gefunden. Firmenname suggeriert Familienbetrieb (3 Generationen laut search.ch). Founder muss Ansprechpartner identifizieren.",
+
+  "service_area": {
+    "region": "Sihltal / Zimmerberg",
+    "gemeinden": [
+      "Langnau am Albis",
+      "Adliswil",
+      "Thalwil",
+      "Horgen",
+      "Oberrieden",
+      "Kilchberg",
+      "Rueschlikon",
+      "Gattikon"
+    ],
+    "note": "Abgeleitet aus Standort Langnau a.A. und regionaler Naehe. Verifizierung noetig."
+  },
+
+  "video_hook": "3 Generationen Sanitaer und Heizung seit 1983 in Langnau am Albis. 237 Google-Bewertungen — mit Abstand die meisten in der Region.",
+
+  "data_sources": [
+    "waeltisohn.ch (Wix, client-rendered — limitierte Daten)",
+    "search.ch (Adresse, Telefon, Services, Gruendung 1983, 3 Generationen)",
+    "local.ch (Adresse, 'Wuenscht keine Werbung')",
+    "Google Maps (4.6/237 Reviews)",
+    "ICP Stresstest-Profil (Profil 11)"
+  ],
+
+  "crawl_metadata": {
+    "pages_visited": 2,
+    "images_found": null,
+    "images_selected": null,
+    "crawled_at": "2026-04-15T12:00:00Z",
+    "crawler": "WebFetch (manual, Wix blocked full content extraction)"
+  },
+
+  "pain_types": ["fallverwaltung", "volumen"],
+
+  "provisioning_status": {
+    "leckerli_d_website": "N/A (Modus 2)",
+    "leckerli_b_lisa": "OFFEN",
+    "leckerli_c_e2e": "OFFEN",
+    "leckerli_a_video": "OFFEN",
+    "outreach": "OFFEN"
+  },
+
+  "open_questions": [
+    "KRITISCH: Oeffnungszeiten fehlen komplett — Founder muss beschaffen",
+    "KRITISCH: Ansprechpartner / GL-Name fehlt — Founder muss identifizieren (Herr Waelti?)",
+    "KRITISCH: E-Mail-Adresse fehlt — weder auf Website noch in Verzeichnissen",
+    "Notdienst-Policy klaeren (vorhanden oder nicht?)",
+    "Preis-Policy entscheiden (deflect oder Richtwerte?)",
+    "Brand Color fehlt (Wix-Website nicht crawlbar) — Founder entscheidet oder CC crawlt mit Puppeteer",
+    "Prospect-E-Mail fuer Magic Link (persoenliche Adresse des Entscheidungstraegers)"
+  ]
+}

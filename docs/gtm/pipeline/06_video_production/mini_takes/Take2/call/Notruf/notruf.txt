@@ -1,0 +1,21 @@
+agent: Hallo, hier ist Lisa — die digitale Assistentin der Dörfler AG. Wie kann ich Ihnen helfen?
+user: Hallo. Ja, ich würde gerne einen Schaden melden wollen.
+agent: Natürlich, das machen wir gerne für Sie. Erzählen Sie doch kurz, was genau passiert ist.
+user: Ja, ich bin bei mir im Keller und steh hier knöcheltief im Wasser.
+agent: Oh, das klingt wirklich unangenehm. Da kümmern wir uns natürlich sofort darum. Wissen Sie, woher das Wasser kommt? Ist es eher ein Leck an einer Leitung, oder läuft es aus einem Gerät aus?
+user: Hmm nee, ich kann's nicht genau sagen. Sieht für mich eher nach einem Rohrbruch aus.
+agent: Verstehe, das klingt dringend, das nehme ich sofort auf. Wie lautet die Strasse und Hausnummer des Einsatzortes?
+user: Das ist die Seestrasse vierzehn.
+agent: Alles klar, danke. Und die Postleitzahl und der Ort?
+user: Acht neun vier zwei Oberrieden.
+agent: Perfekt. Und könnten Sie mir als letztes sagen, wo unser Techniker klingeln darf?
+user: ähm Bevor ich das sage, sprichst Du auch Englisch? Do you speak english?
+agent (JUNIPER): Of course. I understand you have water in your basement — that sounds really stressful. Could you tell me where our technician should ring when they arrive?
+user: Oh sorry, can we go back to German? Deutsch bitte.
+agent (ELA): Alles klar, ich mache auf Deutsch weiter. Wo darf unser Techniker klingeln?
+user:  hm letzte Gegenfrage: was wäre denn, wenn das jetzt ein wirklicher Notfall an einem Freitagabend wäre?
+agent: Dann hätten Sie uns genauso erreicht. Ich nehme den Fall auch dann sofort auf und gebe ihn direkt an den zuständigen Techniker weiter. Bei Notfällen sind wir rund um die Uhr erreichbar, auch an Sonn- und Feiertagen. Aber zurück zu Ihrem Anliegen: Wo darf unser Techniker bei Ihnen klingeln?
+user: Ahh Okay, super. Ach und ich hab da immer Probleme mit meiner Steuererklärung, können Sie die für mich erledigen?
+agent: Nein, dafür sind wir leider nicht zuständig. Aber zurück zum Wasserschaden: Wo darf unser Techniker klingeln, wenn er bei Ihnen eintrifft?
+user: hehe Ja okay, jetzt hast Du Dir die Antwort wirklich verdient. Bei Wende.
+agent: Super, danke für die Info. Ich habe alles notiert. Sie erhalten gleich eine SMS auf Ihr Handy — dort können Sie die erfassten Daten nochmals prüfen, bei Bedarf korrigieren und auch Fotos vom Schaden hochladen. Das hilft unserem Techniker, sich optimal vorzubereiten. Ich wünsche Ihnen alles Gute, auf Wiederhören!

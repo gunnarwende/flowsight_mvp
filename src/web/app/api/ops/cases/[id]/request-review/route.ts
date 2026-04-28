@@ -199,6 +199,21 @@ export async function POST(
   const reviewToken = generateVerifyToken(id, row.created_at);
   const reviewSurfaceUrl = `${APP_BASE_URL}/review/${id}?token=${reviewToken}`;
 
+  // ── Demo mode: skip SMS/Email dispatch, mark as sent, log event ──────
+  if (process.env.DEMO_NO_DISPATCH === "1") {
+    await supabase.from("case_events").insert({
+      case_id: id,
+      event_type: "review_requested",
+      title: "Bewertungsanfrage verschickt",
+      metadata: { channel: "sms", demo: true },
+    });
+    await supabase.from("cases").update({
+      review_sent_at: new Date().toISOString(),
+      review_sent_count: (row.review_sent_count ?? 0) + 1,
+    }).eq("id", id);
+    return NextResponse.json({ ok: true, channel: "sms", demo: true });
+  }
+
   // ── Send review request (email preferred, SMS fallback) ──────────────
   Sentry.setTag("case_id", id);
   Sentry.setTag("tenant_id", row.tenant_id);
@@ -246,7 +261,7 @@ export async function POST(
   await supabase.from("case_events").insert({
     case_id: id,
     event_type: "review_requested",
-    title: `Review-Anfrage via ${channel === "email" ? "E-Mail" : "SMS"} gesendet`,
+    title: "Bewertungsanfrage verschickt",
     metadata: { channel },
   }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
 

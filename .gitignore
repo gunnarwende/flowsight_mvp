@@ -55,6 +55,10 @@ docs/redesign/redesign_website/production/
 *.prproj
 *.pproj
 
+# Pipeline V2 — per-tenant generated screenshot artifacts (reproducible from scripts)
+docs/gtm/pipeline/06_video_production/screenflows/*/
+!docs/gtm/pipeline/06_video_production/screenflows/_shared/
+
 # Exception: deployed website videos
 !src/web/public/videos/*.mp4
 
@@ -64,3 +68,25 @@ tmp/
 .vercel
 .env*.local
 production/
+
+# Audio pipeline derived artifacts (regenerated from sources via scripts/_ops/audio/*)
+docs/gtm/pipeline/06_video_production/_clean/
+docs/gtm/pipeline/06_video_production/_generated/
+
+# Scratch PNGs at repo root (from screenflow debugging rounds)
+/_fb*.png
+/_fb*.p
+/_ff_*.png
+/_final_*.png
+/_nav_*.png
+/_ph2_*.png
+/_qa_*.png
+/_scene_*.png
+/_sp2_*.png
+/_tmp_*.png
+/_v2_*.png
+/_verify_*.png
+/AUDIT_*.txt
+
+# Root-level stray scripting text (tracked in docs/gtm/ instead)
+/Final_generic_scripting.txt

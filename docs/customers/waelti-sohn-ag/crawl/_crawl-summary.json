@@ -1,0 +1,10 @@
+{
+  "source": "https://www.waeltisohn.ch",
+  "crawledAt": "2026-04-18T07:41:29.774Z",
+  "pagesVisited": 16,
+  "totalImageUrls": 372,
+  "downloaded": 156,
+  "duplicates": 13,
+  "skipped": 203,
+  "outputDir": "C:/flowsight_mvp/docs/customers/waelti-sohn-ag/crawl"
+}

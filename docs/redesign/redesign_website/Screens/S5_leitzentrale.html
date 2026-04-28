@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>S5 &mdash; Leitzentrale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 390px; height: 844px;
+    overflow: hidden;
+    background: #111827;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* iOS Status Bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 28px 0 28px;
+    height: 54px;
+  }
+  .status-time { font-size: 16px; font-weight: 600; color: #f1f5f9; letter-spacing: -0.02em; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+
+  /* Header */
+  .header {
+    padding: 12px 20px 0 20px;
+  }
+  .header-top {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-brand {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .gold-dot { width: 9px; height: 9px; border-radius: 50%; background: #c9a227; }
+  .brand-name { font-size: 15px; font-weight: 600; color: #f1f5f9; letter-spacing: -0.025em; }
+  .header-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #1a2332; border: 1px solid #2d3748;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: #94a3b8;
+  }
+  .header-greeting {
+    font-size: 20px; font-weight: 700; color: #f1f5f9;
+    letter-spacing: -0.025em;
+    margin-top: 14px;
+  }
+  .header-date-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 4px;
+  }
+  .header-date {
+    font-size: 13px; font-weight: 400; color: #64748b;
+  }
+  .period-toggle {
+    display: flex; gap: 2px;
+    background: #1a2332;
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .period-btn {
+    font-size: 11px; font-weight: 500; color: #64748b;
+    padding: 4px 10px; border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .period-btn.active {
+    background: #2d3748; color: #e2e8f0;
+  }
+
+  /* FlowBar KPIs */
+  .flowbar {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    padding: 16px 20px 0 20px;
+  }
+  .kpi-card {
+    background: #1a2332;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .kpi-accent-blue { background: #3b82f6; }
+  .kpi-accent-muted { background: #475569; }
+  .kpi-accent-green { background: #10b981; }
+  .kpi-accent-gold { background: #c9a227; }
+  .kpi-label {
+    font-size: 11px; font-weight: 600; color: #64748b;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-size: 28px; font-weight: 700; color: #f1f5f9;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .kpi-stars {
+    font-size: 22px; font-weight: 700; color: #f1f5f9;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .kpi-stars-icons {
+    display: flex; gap: 1px; margin-left: 4px;
+  }
+  .kpi-stars-icons svg { vertical-align: middle; }
+  .kpi-sub {
+    font-size: 11px; font-weight: 400; color: #475569;
+    margin-top: 4px;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px; background: #2d3748;
+    margin: 16px 20px 0 20px;
+  }
+
+  /* Case List */
+  .case-list {
+    padding: 14px 20px 0 20px;
+  }
+  .case-list-title {
+    font-size: 12px; font-weight: 600; color: #475569;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .case-card {
+    background: #1a2332;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .case-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .case-id {
+    font-size: 12px; font-weight: 600; color: #64748b;
+    letter-spacing: 0.02em;
+  }
+  .case-badge {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 6px;
+    letter-spacing: 0.02em;
+  }
+  .badge-neu { background: rgba(59,130,246,0.10); color: #60a5fa; }
+  .badge-geplant { background: rgba(139,92,246,0.10); color: #a78bfa; }
+  .badge-erledigt { background: rgba(16,185,129,0.10); color: #34d399; }
+  .case-name {
+    font-size: 15px; font-weight: 600; color: #f1f5f9;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+  .case-loc {
+    font-size: 13px; font-weight: 400; color: #64748b;
+    margin-bottom: 4px;
+  }
+  .case-desc {
+    font-size: 13px; font-weight: 400; color: #94a3b8;
+  }
+  .case-priority {
+    display: flex; align-items: center; gap: 5px;
+    margin-bottom: 4px;
+  }
+  .amber-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: #111827;
+    border-top: 1px solid #2d3748;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 0 30px 0;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .nav-label {
+    font-size: 10px; font-weight: 500; color: #475569;
+    letter-spacing: 0.02em;
+  }
+  .nav-label.active { color: #f1f5f9; }
+
+  /* Home Indicator */
+  .home-indicator {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 3px;
+    background: rgba(241,245,249,0.15);
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">09:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#f1f5f9"/><rect x="4.5" y="3" width="3" height="9" rx="1" fill="#f1f5f9"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#f1f5f9"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#f1f5f9"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.1 3.6 12 4.4 13.4 5.8L14.8 4.4C13 2.6 10.6 1.5 8 1.5S3 2.6 1.2 4.4L2.6 5.8C4 4.4 5.9 3.6 8 3.6Z" fill="#f1f5f9"/><path d="M8 7.2C9.2 7.2 10.3 7.7 11.1 8.5L12.5 7.1C11.3 5.9 9.7 5.2 8 5.2S4.7 5.9 3.5 7.1L4.9 8.5C5.7 7.7 6.8 7.2 8 7.2Z" fill="#f1f5f9"/><circle cx="8" cy="10.5" r="1.5" fill="#f1f5f9"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="rgba(241,245,249,0.35)" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#f1f5f9"/><path d="M24 4.5C24.8 4.8 25.5 5.7 25.5 6.5S24.8 8.2 24 8.5V4.5Z" fill="rgba(241,245,249,0.4)"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-brand">
+        <div class="gold-dot"></div>
+        <span class="brand-name">Geb&auml;udetechnik GmbH</span>
+      </div>
+      <div class="header-avatar">MG</div>
+    </div>
+    <div class="header-greeting">Guten Morgen, Marco</div>
+    <div class="header-date-row">
+      <span class="header-date">Donnerstag, 27. M&auml;rz</span>
+      <div class="period-toggle">
+        <span class="period-btn">7T</span>
+        <span class="period-btn active">30T</span>
+        <span class="period-btn">YTD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FlowBar -->
+  <div class="flowbar">
+    <div class="kpi-card">
+      <div class="kpi-accent kpi-accent-blue"></div>
+      <div class="kpi-label">Neu</div>
+      <div class="kpi-value">4</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent kpi-accent-muted"></div>
+      <div class="kpi-label">Bei uns</div>
+      <div class="kpi-value">3</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent kpi-accent-green"></div>
+      <div class="kpi-label">Erledigt</div>
+      <div class="kpi-value">15</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent kpi-accent-gold"></div>
+      <div class="kpi-label">Bewertung</div>
+      <div class="kpi-stars">
+        4.8
+        <div class="kpi-stars-icons">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="#c9a227"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.27 3.48 11.85l.67-3.93L1.3 5.14l3.94-.57L7 1z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="#c9a227"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.27 3.48 11.85l.67-3.93L1.3 5.14l3.94-.57L7 1z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="#c9a227"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.27 3.48 11.85l.67-3.93L1.3 5.14l3.94-.57L7 1z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="#c9a227"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.27 3.48 11.85l.67-3.93L1.3 5.14l3.94-.57L7 1z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="#c9a227"><path d="M7 1l1.76 3.57 3.94.57-2.85 2.78.67 3.93L7 10.27 3.48 11.85l.67-3.93L1.3 5.14l3.94-.57L7 1z"/></svg>
+        </div>
+      </div>
+      <div class="kpi-sub">9 erhalten &middot; 12 angefragt</div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider"></div>
+
+  <!-- Case List -->
+  <div class="case-list">
+    <div class="case-list-title">Aktuelle F&auml;lle</div>
+
+    <div class="case-card">
+      <div class="case-top">
+        <span class="case-id">GT-042</span>
+        <span class="case-badge badge-neu">Neu</span>
+      </div>
+      <div class="case-priority">
+        <div class="amber-dot"></div>
+        <span style="font-size:12px;font-weight:500;color:#f59e0b;">Dringend</span>
+      </div>
+      <div class="case-name">Eva Brunner</div>
+      <div class="case-loc">8038 Wollishofen</div>
+      <div class="case-desc">Problem vor Ort, bitte pr&uuml;fen</div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-top">
+        <span class="case-id">GT-041 &middot; Wartung</span>
+        <span class="case-badge badge-geplant">Geplant</span>
+      </div>
+      <div class="case-name">R. Keller</div>
+      <div class="case-loc">8800 Thalwil</div>
+      <div class="case-desc">J&auml;hrliche Kontrolle, Termin gew&uuml;nscht</div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-top">
+        <span class="case-id">GT-038 &middot; Kontrolle</span>
+        <span class="case-badge badge-erledigt">Erledigt <span style="color:#c9a227;">&#9733;</span></span>
+      </div>
+      <div class="case-name">P. Weber</div>
+      <div class="case-loc">8820 W&auml;denswil</div>
+      <div class="case-desc">Anlage gepr&uuml;ft</div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#f1f5f9" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5" stroke="#f1f5f9" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5" stroke="#f1f5f9" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5" stroke="#f1f5f9" stroke-width="1.5"/></svg>
+      <span class="nav-label active">Leitzentrale</span>
+    </div>
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="14" rx="2" stroke="#475569" stroke-width="1.5" fill="none"/><path d="M3 9H19" stroke="#475569" stroke-width="1.5"/><path d="M7 2V5M15 2V5" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="nav-label">Planung</span>
+    </div>
+    <div class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="8" cy="8" r="3.5" stroke="#475569" stroke-width="1.5" fill="none"/><circle cx="15" cy="8" r="3.5" stroke="#475569" stroke-width="1.5" fill="none"/><path d="M2 18C2 15 4.5 13 8 13C9 13 9.8 13.2 10.5 13.5" stroke="#475569" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M12 18C12 15 13.5 13 15 13C17.5 13 20 15 20 18" stroke="#475569" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+      <span class="nav-label">Team</span>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</body>
+</html>

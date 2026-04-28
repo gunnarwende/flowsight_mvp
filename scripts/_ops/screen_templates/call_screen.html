@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 358px; height: 698px; /* content area without status/nav bar */
+    font-family: -apple-system, 'Roboto', 'Segoe UI', sans-serif;
+    background: linear-gradient(160deg, #2c1b47 0%, #4a2d6b 30%, #8b4570 60%, #c4726a 85%, #d4956a 100%);
+    color: white; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* Call status bar */
+  .call-status {
+    margin-top: 24px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: rgba(255,255,255,0.9);
+  }
+  .call-status .phone-icon { font-size: 16px; }
+  .call-timer { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .call-menu { font-size: 20px; opacity: 0.7; margin-left: 8px; cursor: pointer; }
+
+  /* Contact name */
+  .contact-name {
+    margin-top: 40px;
+    font-size: 32px; font-weight: 300; letter-spacing: -0.5px;
+    text-align: center;
+  }
+  .contact-location {
+    margin-top: 8px;
+    font-size: 14px; color: rgba(255,255,255,0.6);
+  }
+
+  /* Record button */
+  .record-btn {
+    position: absolute; left: 20px; top: 280px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  /* Action buttons grid */
+  .actions {
+    position: absolute; bottom: 100px; left: 0; right: 0;
+    background: rgba(255,255,255,0.12);
+    border-radius: 24px 24px 0 0;
+    padding: 28px 24px 20px;
+  }
+  .actions-row {
+    display: flex; justify-content: space-around; margin-bottom: 20px;
+  }
+  .action-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: white; font-size: 11px; opacity: 0.9;
+  }
+  .action-btn .icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  /* End call button */
+  .end-call {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    width: 64px; height: 64px; border-radius: 50%;
+    background: #ff3b30;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,59,48,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="call-status">
+  <span style="font-size:18px">🛡️</span>
+  <span class="phone-icon">📞</span>
+  <span class="call-timer" id="timer">00:00</span>
+  <span class="call-menu">⋮</span>
+</div>
+
+<div class="contact-name" id="contactName">Dörfler AG Test</div>
+<div class="contact-location" id="contactLocation">Zürich</div>
+
+<div class="record-btn">🎙️</div>
+
+<div class="actions">
+  <div class="actions-row">
+    <div class="action-btn"><div class="icon">＋</div><span>Anruf<br>hinzufügen</span></div>
+    <div class="action-btn"><div class="icon">📹</div><span>Videoanruf</span></div>
+    <div class="action-btn"><div class="icon">🔷</div><span>Bluetooth</span></div>
+  </div>
+  <div class="actions-row">
+    <div class="action-btn"><div class="icon">🔊</div><span>Lautsprecher</span></div>
+    <div class="action-btn"><div class="icon">🔇</div><span>Stumm</span></div>
+    <div class="action-btn"><div class="icon">⊞</div><span>Tasten</span></div>
+  </div>
+</div>
+
+<div class="end-call">📕</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get('name') || 'Dörfler AG Test';
+const location = params.get('location') || 'Zürich';
+const startTime = parseInt(params.get('start_sec') || '0');
+
+document.getElementById('contactName').textContent = name;
+document.getElementById('contactLocation').textContent = location;
+
+// Animated timer
+let seconds = startTime;
+function updateTimer() {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  document.getElementById('timer').textContent =
+    String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  seconds++;
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+</script>
+</body>
+</html>

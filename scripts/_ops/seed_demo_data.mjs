@@ -218,7 +218,7 @@ async function main() {
     const loc = pick(CITIES);
     const firstName = pick(SWISS_FIRST_NAMES);
     const lastName = pick(SWISS_NAMES);
-    const daysAgo = Math.floor(Math.random() * 14) + 1; // 1–14 days ago
+    const daysAgo = Math.floor(Math.random() * 6) + 1; // 1–6 days ago (all visible in 7d filter)
     const createdAt = relativeDate(daysAgo);
     const status = STATUS_DISTRIBUTION[i % STATUS_DISTRIBUTION.length];
     const source = SOURCE_DISTRIBUTION[i % SOURCE_DISTRIBUTION.length];

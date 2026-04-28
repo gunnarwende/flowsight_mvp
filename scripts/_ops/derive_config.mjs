@@ -109,22 +109,70 @@ async function getExistingPrefixes() {
 // ── Helpers ──────────────────────────────────────────────────────────────
 
 /** Extract first 2 consonants from company name for case_id_prefix */
+/** Case-ID Prefix: 2 Buchstaben aus Firmenname. NIEMALS Zahlen. NIEMALS Umlaute (ÄÖÜ).
+ * "Wälti & Sohn AG" → "WS" (Initialen der Wörter)
+ * "Stark Haustechnik" → "SH"
+ * "Leins AG" → "LN" (Konsonanten)
+ * "Dörfler AG" → "DF" */
 function deriveCaseIdPrefix(companyName) {
-  const consonants = companyName
-    .replace(/[^a-zA-ZäöüÄÖÜ]/g, "")
-    .replace(/[aeiouäöü]/gi, "")
-    .toUpperCase();
-  return consonants.slice(0, 2) || companyName.replace(/\s/g, "").slice(0, 2).toUpperCase();
+  // Umlaute ersetzen: Ä→A, Ö→O, Ü→U
+  const clean = companyName
+    .replace(/[Ää]/g, "A").replace(/[Öö]/g, "O").replace(/[Üü]/g, "U");
+
+  // Strategy 1: Initialen der ersten 2 signifikanten Wörter
+  const words = clean
+    .replace(/\b(AG|GmbH|SA|Sarl|KlG|Genossenschaft|und|&)\b/gi, "")
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w.length > 1 && /^[A-Z]/i.test(w));
+  if (words.length >= 2) {
+    const prefix = (words[0][0] + words[1][0]).toUpperCase().replace(/[^A-Z]/g, "");
+    if (prefix.length === 2) return prefix;
+  }
+  // Strategy 2: Erste 2 Konsonanten des Firmennamens
+  const consonants = clean
+    .replace(/[^a-zA-Z]/g, "")
+    .replace(/[aeiou]/gi, "")
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "");
+  if (consonants.length >= 2) return consonants.slice(0, 2);
+  // Fallback: erste 2 Buchstaben
+  return clean.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase();
 }
 
-/** Derive SMS sender name: max 11 chars, ASCII alphanumeric only */
+/** Derive SMS sender name: max 11 chars, ASCII alphanumeric only.
+ * Strategy: "Firma Rechtsform" wenn ≤11 (z.B. "Stark GmbH", "Leins AG").
+ * Fallback: Firmenname ohne Rechtsform, gekürzt. */
 function deriveSMSSenderName(companyName) {
-  return companyName
+  const toAscii = (s) => s
     .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
     .replace(/Ä/g, "Ae").replace(/Ö/g, "Oe").replace(/Ü/g, "Ue")
     .replace(/[^a-zA-Z0-9\s]/g, "")
-    .replace(/\s+/g, "")
-    .slice(0, 11);
+    .trim();
+
+  // Try: "Firma Rechtsform" (e.g., "Stark GmbH", "Leins AG", "Doerfler AG")
+  // Use FIRST word of the company name (before any "Haustechnik", "Sanitär" etc.)
+  const legalMatch = companyName.match(/^(.+?)\s+(AG|GmbH|SA|Sàrl|KlG)$/i);
+  if (legalMatch) {
+    const fullName = toAscii(legalMatch[1]);
+    const firstWord = fullName.split(/\s+/)[0]; // "Stark" from "Stark Haustechnik"
+    const form = legalMatch[2];
+
+    // Try first word + form: "Stark GmbH" (10 chars)
+    const shortCandidate = `${firstWord} ${form}`;
+    if (shortCandidate.length <= 11) return shortCandidate;
+
+    // Try full name without spaces: "DoerflerAG"
+    const name = fullName.replace(/\s+/g, "");
+    const candidate = `${name} ${form}`;
+    if (candidate.length <= 11) return candidate;
+    // If too long with space, try without: "DoerflerAG"
+    const noSpace = `${name}${form}`;
+    if (noSpace.length <= 11) return noSpace;
+  }
+
+  // Fallback: just the name, no legal form
+  return toAscii(companyName).replace(/\s+/g, "").slice(0, 11);
 }
 
 /** Count syllables in German text (rough approximation) */
@@ -140,30 +188,44 @@ function deriveDomain(leistungen) {
   const hasHeizung = keys.some((k) => /heiz|wärme/i.test(k));
   const hasLueftung = keys.some((k) => /lüft|klima/i.test(k));
   const hasSpenglerei = keys.some((k) => /spengl|blech|dach/i.test(k));
+  const hasBlitzschutz = keys.some((k) => /blitz|erdung|fangstange/i.test(k));
   const hasGas = keys.some((k) => /gas/i.test(k));
+  const hasSolar = keys.some((k) => /solar|photovoltaik|erneuerbar/i.test(k));
 
   const parts = [];
   if (hasSanitaer) parts.push("Sanitär");
   if (hasHeizung) parts.push("Heizung");
   if (hasLueftung) parts.push("Lüftung");
   if (hasSpenglerei) parts.push("Spenglerei");
+  if (hasBlitzschutz) parts.push("Blitzschutz");
+  if (hasSolar) parts.push("Solar");
   if (hasGas) parts.push("Gas");
 
   if (parts.length === 0) return "Haustechnik";
-  if (parts.length <= 2) return parts.join(" und ");
-  return parts.slice(0, 2).join(" und ");
+  if (parts.length === 1) return parts[0];
+  if (parts.length === 2) return parts.join(" und ");
+  // ALLE Leistungsbereiche einbeziehen (Fix 1: Domain zu eng)
+  return parts.slice(0, -1).join(", ") + " und " + parts[parts.length - 1];
 }
 
-/** Derive wizard categories from services (max 5 custom) */
+/** Derive wizard categories: IMMER genau 3 Custom + 3 Fixed = 6 Kacheln.
+ * Top 3 = typische KUNDENPROBLEME für diesen Betrieb (nicht Leistungen!).
+ * Gold-Standard (Dörfler Sanitär+Heizung): Verstopfung, Leck, Heizung.
+ * Ein Wort, simpel, alltagsnah. */
 function deriveWizardCategories(leistungen) {
   const allServiceText = Object.entries(leistungen)
     .map(([cat, items]) => `${cat} ${Array.isArray(items) ? items.join(" ") : items}`)
     .join(" ");
 
-  const customCats = [];
+  // Step 1: Detect broad service areas
+  const hasSanitaer = /sanit|abfluss|WC|bad|rohr|wasser/i.test(allServiceText);
+  const hasHeizung = /heizung|heiz|wärme|radiat|thermostat/i.test(allServiceText);
+
+  // Step 2: Match against master category list
+  const matched = [];
   for (const mapping of SERVICE_TO_CATEGORY) {
-    if (mapping.keywords.test(allServiceText) && customCats.length < 5) {
-      customCats.push({
+    if (mapping.keywords.test(allServiceText)) {
+      matched.push({
         value: mapping.value,
         label: mapping.label,
         hint: mapping.hint,
@@ -172,16 +234,48 @@ function deriveWizardCategories(leistungen) {
     }
   }
 
-  // If no custom categories matched, add defaults based on common plumbing
-  if (customCats.length === 0) {
-    customCats.push(
-      { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Kanalisation", iconKey: "drain" },
-      { value: "Leck", label: "Leck", hint: "Wasserschaden, undichte Stelle", iconKey: "drop" },
-      { value: "Heizung", label: "Heizung", hint: "Heizung, Wärmepumpe", iconKey: "flame" },
-    );
+  // Step 3: Wenn "Sanitär" → Verstopfung + Leck sind IMMER typische Kundenprobleme
+  // (auch wenn die Wörter nicht explizit auf der Website stehen)
+  if (hasSanitaer) {
+    if (!matched.some((c) => c.value === "Verstopfung")) {
+      matched.unshift({ value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Kanalisation", iconKey: "drain" });
+    }
+    if (!matched.some((c) => c.value === "Leck")) {
+      matched.splice(1, 0, { value: "Leck", label: "Leck", hint: "Wasserschaden, undichte Stelle", iconKey: "drop" });
+    }
+  }
+  // Wenn "Heizung" → Heizung ist immer typisches Kundenproblem
+  if (hasHeizung && !matched.some((c) => c.value === "Heizung")) {
+    matched.push({ value: "Heizung", label: "Heizung", hint: "Heizung, Wärmepumpe", iconKey: "flame" });
   }
 
-  return [...customCats, ...FIXED_CATEGORIES];
+  // IMMER genau 3 Custom-Kategorien.
+  // Defaults für Sanitär/Heizung: Verstopfung, Leck, Heizung (Gold-Standard)
+  const DEFAULTS = [
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Kanalisation", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Wasserschaden, undichte Stelle", iconKey: "drop" },
+    { value: "Heizung", label: "Heizung", hint: "Heizung, Wärmepumpe", iconKey: "flame" },
+  ];
+
+  let customCats;
+  if (matched.length >= 3) {
+    // Genug Matches: nimm die Top 3
+    customCats = matched.slice(0, 3);
+  } else if (matched.length > 0) {
+    // Weniger als 3 Matches: fülle mit Defaults auf
+    customCats = [...matched];
+    for (const d of DEFAULTS) {
+      if (customCats.length >= 3) break;
+      if (!customCats.some((c) => c.value === d.value)) {
+        customCats.push(d);
+      }
+    }
+  } else {
+    // Keine Matches: verwende alle 3 Defaults
+    customCats = [...DEFAULTS];
+  }
+
+  return [...customCats.slice(0, 3), ...FIXED_CATEGORIES];
 }
 
 /** Derive pipe-separated categories for voice agent */
@@ -334,11 +428,133 @@ function deriveBetriebsspezifischeFrage(gruendung, leistungen, stellenangebote, 
 
 /** Derive case count from team size */
 function deriveCaseCount(teamGroesse) {
-  if (!teamGroesse) return 30; // default
-  if (teamGroesse <= 3) return 15;
-  if (teamGroesse <= 10) return 30;
-  if (teamGroesse <= 30) return 50;
-  return 80;
+  // Minimum 40-50 cases für realistischen Alltag (Founder-Feedback 19.04.)
+  if (!teamGroesse) return 50; // default: 50 (war 30)
+  if (teamGroesse <= 3) return 40;
+  if (teamGroesse <= 10) return 50;
+  if (teamGroesse <= 30) return 70;
+  return 100;
+}
+
+/** Phone demo case = IMMER Rohrbruch/Wasserschaden (aus Call-Script, Founder Decision 20.04.)
+ * Der Fall im Video-Anruf ist IMMER derselbe: Keller, knöcheltief im Wasser, Rohrbruch.
+ * Nur Stadt + PLZ sind betriebsspezifisch (aus Einzugsgebiet). */
+// FB33: Phone-Case aus Call-Script (mini_takes/Take2/call/Notruf/notruf.txt)
+// Der Call-Audio ist Master-Aufnahme für ALLE Sanitär-Betriebe. Inhalt konstant:
+//   - User: "Sieht für mich eher nach einem Rohrbruch aus" → kategorie
+//   - Lisa: "Das klingt dringend" → urgency
+//   - User: "Das ist die Seestrasse vierzehn" → strasse/hausnummer
+//   - User: "Acht neun vier zwei Oberrieden" → plz/stadt
+//   - User: "Bei Wende" (Klingelschild) → reporter_name
+function derivePhoneDemoCase(wizardCategories, serviceAreaPLZ, adresse) {
+  return {
+    kategorie: "Rohrbruch",
+    urgency: "dringend",
+    source: "voice",
+    reporter_name: "Wende", // FB50: nur Klingelschild, kein Vorname
+    reporter_phone: "076 489 89 80", // FB48: Anrufer-Nummer (nicht Lisa-Nummer)
+    beschreibung: "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+    strasse: "Seestrasse",
+    hausnummer: "14",
+    stadt: "Oberrieden",
+    plz: "8942",
+    dringlichkeit: "Dringend", // legacy UI label
+  };
+}
+
+// FB33: Notfall-Case (Position 1 im Leitsystem, rot markiert).
+// Default branchen-basiert. Sanitär = "Boiler defekt" (nicht Rohrbruch, weil
+// der Phone-Case selbst schon Rohrbruch ist — Duplikat vermeiden).
+const NOTFALL_DEFAULTS = {
+  "Sanitär und Heizung": { kategorie: "Boiler", beschreibung: "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker." },
+  "Sanitär": { kategorie: "Boiler", beschreibung: "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker." },
+  "Heizung": { kategorie: "Heizung", beschreibung: "Heizung komplett ausgefallen — Haus kühlt ab. Sofortmassnahme erforderlich." },
+  "Elektrik": { kategorie: "Stromausfall", beschreibung: "Kompletter Stromausfall im Haus. Kunde wartet auf Techniker." },
+  "Gastronomie": { kategorie: "Notfall", beschreibung: "Dringende Meldung im Betrieb." },
+};
+function deriveNotfallCase(domain) {
+  const d = (domain || "").toLowerCase();
+  for (const [key, value] of Object.entries(NOTFALL_DEFAULTS)) {
+    if (d.includes(key.toLowerCase())) return value;
+  }
+  return NOTFALL_DEFAULTS["Sanitär und Heizung"]; // safe default
+}
+
+// FB36/37: Fiktive Zürcher Festnetz-Nummer — KONSTANT für ALLE Betriebe.
+// Der Founder hat diese Nummer ausgewählt weil sie nirgends scharf/vergeben ist.
+// Visuell zieht sie durch: Brunner AG Test → 74 21, Gebrüder Au GmbH Test → 74 21, etc.
+// Nur der Firmenname variiert, die Nummer ist global dieselbe.
+const PIPELINE_TEST_PHONE = "+41 44 505 74 21";
+function deriveDisplayPhone(_slug) {
+  return PIPELINE_TEST_PHONE;
+}
+
+/** Derive the wizard demo case (Online-Fall: Zweitkategorie, Normal) */
+function deriveWizardDemoCase(wizardCategories, serviceAreaPLZ, adresse) {
+  // Secondary category = second non-fixed category, or "Allgemein"
+  const nonFixed = wizardCategories.filter((c) => !c.fixed);
+  const secondary = nonFixed.length >= 2 ? nonFixed[1] : nonFixed[0];
+  const cat = secondary ? secondary.value : "Allgemein";
+
+  // Pick a different city than phone case
+  const plzEntry = serviceAreaPLZ.length > 1 ? serviceAreaPLZ[1] : serviceAreaPLZ[0] || null;
+  const stadt = plzEntry ? plzEntry.city : extractCityFromAddress(adresse);
+  const plz = plzEntry ? plzEntry.plz : extractPLZFromAddress(adresse);
+
+  // Normal priority scenarios (Projekte/Anfragen — hier fliesst das Geld)
+  const scenarios = {
+    "Verstopfung": "Abfluss in der Dusche läuft langsam ab — kein Notfall, aber gerne zeitnah.",
+    "Heizung": "Möchten unsere Heizung ersetzen lassen, bitte um Offerte für Wärmepumpe.",
+    "Umbau/Sanierung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+    "Boiler": "Boiler ist alt, möchten Entkalkung oder Ersatz — bitte um Termin.",
+    "Lüftung": "Lüftung im Bad zieht nicht mehr richtig — gerne mal anschauen.",
+    "Allgemein": "Gerne eine Beratung für eine Komplettsanierung unseres Badezimmers.",
+    "Spenglerei": "Dachrinne undicht, bei Regen tropft es an der Fassade — bitte um Offerte.",
+  };
+  const beschreibung = scenarios[cat] || "Badsanierung geplant — möchten gerne eine Beratung und Offerte.";
+
+  return { kategorie: cat, beschreibung, stadt, plz, dringlichkeit: "Normal" };
+}
+
+/**
+ * Determine call proof variant: C (Notdienst) or B (Preis).
+ * DEFAULT = B (Preis) — always safe, always correct.
+ * C ONLY with STRONG evidence: explicit 24/7 or Pikett or "rund um die Uhr".
+ * Just the word "Notfall" alone is NOT enough (could be "Bei Notfall Feuerwehr rufen").
+ */
+function deriveCallProofVariante(notdienstValue) {
+  if (!notdienstValue) return "B";
+
+  const text = String(notdienstValue).toLowerCase();
+
+  // Strong evidence patterns — explicit 24/7 service
+  const strongEvidence = [
+    /24\s*(?:h|stunden)/,
+    /rund\s+um\s+die\s+uhr/,
+    /7\s*tage/,
+    /pikett/,
+    /auch\s+(?:an\s+)?(?:sonn|feier)/,
+    /jederzeit/,
+    /tag\s+und\s+nacht/,
+    /egal\s+(?:um\s+)?welche\s+(?:uhr)?zeit/,
+  ];
+
+  const hasStrongEvidence = strongEvidence.some((re) => re.test(text));
+
+  if (hasStrongEvidence) return "C";
+
+  // Only weak evidence (just "Notfall" or "Notdienst" without 24/7 context)
+  return "B";
+}
+
+function extractCityFromAddress(adresse) {
+  const m = adresse?.match(/\d{4}\s+([A-ZÄÖÜa-zäöü]+(?:\s+[a-zäöü]+)*)/);
+  return m ? m[1] : "";
+}
+
+function extractPLZFromAddress(adresse) {
+  const m = adresse?.match(/(\d{4})/);
+  return m ? m[1] : "";
 }
 
 /** Derive weighted categories for seed data */
@@ -599,7 +815,7 @@ async function main() {
   const firmaDisplay = firma;
   const firmaSilben = countSyllables(firma);
   const telefonDisplay = formatPhoneDisplay(primaryPhone(telefon));
-  const videoPrefix = firma.replace(/\s/g, "").slice(0, 2).toUpperCase();
+  const videoPrefix = finalPrefix; // IMMER identisch mit case_id_prefix
   const videoHook = deriveVideoHook(gruendung, werte, googleRating, googleReviewCount, firma);
   console.log(`  video_hook: ${videoHook}`);
 
@@ -609,8 +825,15 @@ async function main() {
   // Seed
   const caseCount = deriveCaseCount(teamGroesse);
   const categoriesWeighted = deriveCategoriesWeighted(wizardCategories);
-  const teamNames = inhaber ? inhaber.split(",").map((n) => n.trim()) : [];
+  // Dummy-Staff-Namen (erkennbar als Demo-Daten, keine echten Namen)
+  const staffNames = ["Max Mustermann", "Anna Beispiel", "Peter Muster"];
   const featuredCase = deriveFeaturedCase(wizardCategories, serviceAreaPLZ, adresse);
+  const phoneDemoCase = derivePhoneDemoCase(wizardCategories, serviceAreaPLZ, adresse);
+  const wizardDemoCase = deriveWizardDemoCase(wizardCategories, serviceAreaPLZ, adresse);
+  const notfallCase = deriveNotfallCase(domain);
+  const displayPhone = deriveDisplayPhone(slug);
+  console.log(`  display_phone (fiktiv, für Video): ${displayPhone}`);
+  console.log(`  notfall_case (${domain}): ${notfallCase.kategorie}`);
 
   // ── Founder actions ──
   const founderActions = [];
@@ -618,9 +841,11 @@ async function main() {
   if (!brandColor) founderActions.push({ field: "brand_color", reason: "Brand Color nicht extrahierbar. Default: #64748b (slate).", default: "#64748b" });
   if (!oeffnungszeiten) founderActions.push({ field: "oeffnungszeiten", reason: "Öffnungszeiten nicht auf Website. Founder muss beschaffen.", default: "Bitte kontaktieren Sie uns telefonisch" });
   if (!inhaber) founderActions.push({ field: "inhaber", reason: "Inhaber/GL nicht auf Website identifiziert.", default: null });
-  // Video hook and betriebsspezifische_frage are optional confirmations
-  founderActions.push({ field: "video_hook", reason: `Auto-generiert: "${videoHook}". Bestätigung optional.`, default: videoHook });
-  founderActions.push({ field: "betriebsspezifische_frage", reason: `Auto-generiert: "${betriebsFrage}". Bestätigung optional.`, default: betriebsFrage });
+  // video_hook: Optional für E-Mail/Video. Auto-Vorschlag wird verwendet wenn nicht angepasst.
+  // betriebsspezifische_frage: OBSOLET — ersetzt durch call_proof_variante (Notruf/Preis). Nicht mehr als PFLICHT.
+  if (videoHook) {
+    founderActions.push({ field: "video_hook", reason: `Optional — für E-Mail oder Video-Subtitle. Auto-Vorschlag: "${videoHook}".`, default: videoHook });
+  }
 
   // ── Build config ──
   const config = {
@@ -670,23 +895,34 @@ async function main() {
       case_count: caseCount,
       google_rating: googleRating,
       google_review_count: googleReviewCount,
-      team_names: teamNames,
+      staff_names: staffNames,
       categories_weighted: categoriesWeighted,
       service_area_plz: serviceAreaPLZ.map((p) => p.plz),
       featured_case: featuredCase,
+      phone_demo_case: phoneDemoCase,
+      notfall_case: notfallCase, // FB33: Position 1 im Leitsystem, rot markiert
+      wizard_demo_case: wizardDemoCase,
+      include_2025_data: true,
     },
 
     video: {
       firma_display: firmaDisplay,
       firma_silben: firmaSilben,
-      telefon_display: telefonDisplay,
+      // FB30: telefon_display UND display_phone = FIKTIVE Nummer. Die echte
+      // va.phone bleibt separat für echte Calls. Im Video darf die echte
+      // Nummer NIE erscheinen (Testviewer würden beim echten Betrieb landen).
+      telefon_display: displayPhone,
+      display_phone: displayPhone,
       prefix: videoPrefix,
       modus: 2,
       google_stars: googleRating,
       video_hook: videoHook,
-      kontext_variante: "B",
-      betriebsspezifische_frage: betriebsFrage,
-      betriebsspezifische_antwort: "",
+      // betriebsspezifische_frage: OBSOLET — ersetzt durch call_proof_variante (Notruf/Preis)
+      call_proof_variante: deriveCallProofVariante(notdienst),
+    },
+
+    prospect: {
+      email: primaryEmail(email) || "",
     },
   };
 
@@ -699,64 +935,122 @@ async function main() {
   const reviewItems = founderActions.filter((a) => a.default === null);
   const optionalItems = founderActions.filter((a) => a.default !== null);
 
+  const proofVariante = config.video.call_proof_variante;
+  const proofLabel = proofVariante === "C" ? "Notdienst (Variante C)" : "Preis (Variante B)";
+
   let reviewMd = `# Founder Review: ${firma}\n\n`;
   reviewMd += `**Slug:** ${slug}\n`;
-  reviewMd += `**Generated:** ${new Date().toISOString().slice(0, 10)}\n`;
-  reviewMd += `**Source:** crawl_extract.json\n\n`;
+  reviewMd += `**Datum:** ${new Date().toISOString().slice(0, 10)}\n`;
+  reviewMd += `**Pipeline-Phase:** Phase 1 → Founder Review → dann Provision\n\n`;
+  reviewMd += `---\n\n`;
+
+  // ── Was wurde automatisch gemacht ──
+  reviewMd += `## Was die Pipeline automatisch gemacht hat\n\n`;
+  reviewMd += `1. **Website gecrawlt** (Playwright): ${crawl._meta?.pages_crawled?.length || "?"} Seiten\n`;
+  reviewMd += `2. **Zefix verifiziert:** ${crawl._zefix?.official_name || "nicht gefunden"} (${crawl._zefix?.uid || "keine UID"})\n`;
+  reviewMd += `3. **Google Places:** ${googleRating || "-"}★ bei ${googleReviewCount || 0} Bewertungen\n`;
+  reviewMd += `4. **Entscheidungsmatrix:** 23 Voice-Agent-Platzhalter befüllt, ${wizardCategories.length} Wizard-Kategorien, ${serviceAreaPLZ.length} PLZs\n`;
+  reviewMd += `5. **Call-Proof:** ${proofLabel} (${proofVariante === "C" ? "Betrieb hat Notdienst → Lisa zeigt 24/7-Erreichbarkeit" : "Kein Notdienst erkannt → Lisa zeigt professionellen Preis-Deflekt"})\n`;
+  reviewMd += `6. **Voice Agent JSON** generiert: \`voice_agent_de.json\`\n\n`;
 
   if (reviewItems.length > 0) {
-    reviewMd += `## MUSS bestätigt werden (${reviewItems.length} Punkte)\n\n`;
+    reviewMd += `---\n\n`;
+    reviewMd += `## PFLICHT — Founder muss bestätigen (${reviewItems.length} Punkte)\n\n`;
+    reviewMd += `> **So geht's:** Unten die Felder prüfen. Vorschlag okay? → Weiter. Anpassen? → Wert direkt in \`tenant_config.json\` ändern.\n`;
+    reviewMd += `> **Datei:** \`docs/customers/${slug}/tenant_config.json\`\n\n`;
     for (let i = 0; i < reviewItems.length; i++) {
       const item = reviewItems[i];
       reviewMd += `### ${i + 1}. ${item.field}\n`;
       reviewMd += `${item.reason}\n`;
-      reviewMd += `**Dein Input:** _________________\n\n`;
+      if (item.suggested) {
+        reviewMd += `**Auto-Vorschlag:** ${item.suggested}\n`;
+        reviewMd += `**→ Okay?** Dann nichts tun. **→ Anpassen?** In \`tenant_config.json\` → \`video.${item.field}\` ändern.\n\n`;
+      } else {
+        reviewMd += `**→ Muss befüllt werden** in \`tenant_config.json\`\n\n`;
+      }
     }
   } else {
-    reviewMd += `## Keine zwingenden Entscheidungen nötig\n\n`;
-    reviewMd += `Alle Pflichtfelder konnten automatisch abgeleitet werden.\n\n`;
+    reviewMd += `## ✅ Alle Pflichtfelder automatisch abgeleitet\n\n`;
+    reviewMd += `Keine manuelle Eingabe nötig. Direkt weiter mit Provision.\n\n`;
   }
 
-  if (optionalItems.length > 0) {
-    reviewMd += `## Optional bestätigen\n\n`;
-    for (const item of optionalItems) {
-      reviewMd += `- **${item.field}:** ${item.default}\n`;
-      reviewMd += `  _${item.reason}_\n`;
-    }
+  reviewMd += `---\n\n`;
+  reviewMd += `## Konfiguration prüfen\n\n`;
+  reviewMd += `Stimmt das? Wenn etwas falsch ist → in \`tenant_config.json\` korrigieren.\n\n`;
+  reviewMd += `| Feld | Wert | Stimmt? |\n|------|------|--------|\n`;
+  reviewMd += `| Firma | ${firma} | |\n`;
+  reviewMd += `| Zefix UID | ${crawl._zefix?.uid || "nicht gefunden"} | |\n`;
+  reviewMd += `| Google | ${googleRating || "-"}★ / ${googleReviewCount || 0} Reviews | |\n`;
+  reviewMd += `| Domain | ${domain} | |\n`;
+  reviewMd += `| Case-ID Prefix | ${finalPrefix} | |\n`;
+  reviewMd += `| SMS Sender | ${smsSenderName} | |\n`;
+  reviewMd += `| Brand Color | ${config.tenant.brand_color} | |\n`;
+  reviewMd += `| Wizard-Kategorien | ${wizardCategories.map((c) => c.value).join(", ")} | |\n`;
+  reviewMd += `| Seed Cases | ${caseCount} | |\n`;
+  const plzList = serviceAreaPLZ.slice(0, 8).map((p) => `${p.plz} ${p.city}`).join(", ") + (serviceAreaPLZ.length > 8 ? ` (+${serviceAreaPLZ.length - 8} weitere)` : "");
+  reviewMd += `| Einzugsgebiet (${serviceAreaPLZ.length} PLZs) | ${plzList} | |\n`;
+  reviewMd += `| Call-Proof | ${proofLabel} | |\n`;
+  reviewMd += `| Phone-Fall | ${config.seed.phone_demo_case?.kategorie} (${config.seed.phone_demo_case?.dringlichkeit}) | |\n`;
+  reviewMd += `| Wizard-Fall | ${config.seed.wizard_demo_case?.kategorie} (${config.seed.wizard_demo_case?.dringlichkeit}) | |\n`;
+  reviewMd += `| Prospect E-Mail | ${config.prospect?.email || "FEHLT"} | |\n`;
+  reviewMd += `| Video Hook | ${videoHook} | |\n`;
+
+  // ── Voice Agent Preview — Was Lisa konkret sagen wird ──
+  reviewMd += `\n---\n\n`;
+  reviewMd += `## Was Lisa sagen wird (Voice Agent Preview)\n\n`;
+  reviewMd += `> Das sind die konkreten Antworten die Lisa am Telefon gibt. Stimmt etwas nicht → in \`tenant_config.json\` unter \`voice_agent.*\` korrigieren.\n\n`;
+
+  reviewMd += `**Greeting:** "Hallo, hier ist Lisa — die digitale Assistentin der ${firma}. Wie kann ich Ihnen helfen?"\n\n`;
+
+  reviewMd += `**Öffnungszeiten-Frage:** "${config.voice_agent.opening_hours_spoken}"\n\n`;
+
+  reviewMd += `**Einzugsgebiet-Frage:** "${config.voice_agent.service_area_spoken}"\n\n`;
+
+  reviewMd += `**Preis-Frage:** "${config.voice_agent.price_deflect}"\n\n`;
+
+  reviewMd += `**Chef sprechen:** "Die Geschäftsleitung ist gerade im Einsatz. Kann ich Ihnen weiterhelfen, oder soll ich eine Rückruf-Nachricht aufnehmen?"\n\n`;
+
+  reviewMd += `**Termin-Frage:** "Für Termine senden Sie am besten eine kurze Nachricht an ${config.voice_agent.email} — das Team kann das dann direkt einplanen."\n\n`;
+
+  reviewMd += `**Adresse:** "${config.voice_agent.address_spoken}"\n\n`;
+
+  reviewMd += `**Stellen/Bewerbung:** "${config.voice_agent.jobs_spoken}"\n\n`;
+
+  if (config.voice_agent.emergency_policy) {
+    reviewMd += `**Notdienst:** "${config.voice_agent.emergency_policy.slice(0, 200)}"\n\n`;
   }
 
-  reviewMd += `\n## Abgeleitete Konfiguration (Zusammenfassung)\n\n`;
-  reviewMd += `| Feld | Wert |\n|------|------|\n`;
-  reviewMd += `| Firma | ${firma} |\n`;
-  reviewMd += `| Domain | ${domain} |\n`;
-  reviewMd += `| Case-ID Prefix | ${finalPrefix} |\n`;
-  reviewMd += `| SMS Sender | ${smsSenderName} |\n`;
-  reviewMd += `| Brand Color | ${config.tenant.brand_color} |\n`;
-  reviewMd += `| Wizard-Kategorien | ${wizardCategories.map((c) => c.value).join(", ")} |\n`;
-  reviewMd += `| Seed Cases | ${caseCount} |\n`;
-  reviewMd += `| Service Area PLZs | ${serviceAreaPLZ.length} |\n`;
-  reviewMd += `| Video Hook | ${videoHook} |\n`;
-  reviewMd += `| Betriebsfrage | ${betriebsFrage} |\n`;
+  reviewMd += `**Leistungen:** ${config.voice_agent.services_list ? config.voice_agent.services_list.slice(0, 300) : "(leer)"}${config.voice_agent.services_list?.length > 300 ? "..." : ""}\n\n`;
+
+  reviewMd += `**Scope (Domain):** Lisa nimmt Anliegen im Bereich **${domain}** auf. Alles andere → out_of_scope.\n\n`;
+
+  reviewMd += `**Kategorien für Intake:** ${voiceCategories}\n\n`;
+
+  // ── Nächster Schritt ──
+  reviewMd += `---\n\n`;
+  reviewMd += `## Nächster Schritt\n\n`;
+  reviewMd += `Wenn alles stimmt:\n`;
+  reviewMd += `\`\`\`bash\n`;
+  reviewMd += `node --env-file=src/web/.env.local scripts/_ops/pipeline_run.mjs --slug ${slug} --from provision\n`;
+  reviewMd += `\`\`\`\n\n`;
+  reviewMd += `Das provisioniert: Supabase Tenant + Voice Agent + ${caseCount} Demo-Cases + Prospect-Zugang.\n`;
 
   const reviewPath = join(customerDir, "founder_review.md");
   await writeFile(reviewPath, reviewMd, "utf-8");
   console.log(`--- Saved: ${reviewPath} ---`);
 
   // ── Summary ──
-  const criticalCount = founderActions.filter((a) => a.default === null).length;
-  const optionalCount = founderActions.filter((a) => a.default !== null).length;
+  const pflichtCount = founderActions.filter((a) => a.default === null).length;
 
   console.log("\n=== VALIDATION REPORT ===");
-  if (criticalCount === 0) {
-    console.log("  READY TO PROVISION.");
+  if (pflichtCount === 0) {
+    console.log("  READY FOR PIPELINE.");
   } else {
-    console.log(`  ${criticalCount} critical item(s) need Founder input.`);
-  }
-  console.log(`  ${optionalCount} optional confirmation(s).`);
-  if (criticalCount > 0) {
-    console.log("\n  Founder must confirm:");
+    console.log(`  ${pflichtCount} PFLICHT-Item(s) — Founder muss bestätigen.`);
+    console.log("\n  Founder muss bestätigen:");
     for (const a of founderActions.filter((x) => x.default === null)) {
-      console.log(`    - ${a.field}: ${a.reason}`);
+      const short = a.suggested ? ` (Vorschlag: "${a.suggested}")` : "";
+      console.log(`    - ${a.field}${short}`);
     }
   }
   console.log(`\n  Config: ${configPath}`);

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Bewertungs-Logik</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1440px; height: 900px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
+    overflow: hidden;
+    color: #0f172a;
+  }
+
+  .title {
+    position: absolute;
+    top: 48px; left: 50%; transform: translateX(-50%);
+    font-size: 30px; font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #0f172a;
+    text-align: center;
+  }
+  .title .sub {
+    display: block;
+    font-size: 15px; font-weight: 400; color: #64748b;
+    margin-top: 8px;
+  }
+
+  .split {
+    position: absolute;
+    top: 170px; left: 64px; right: 64px; bottom: 80px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 40px 36px;
+    box-shadow: 0 6px 30px rgba(15, 23, 42, 0.08),
+                0 1px 0 rgba(255,255,255,0.6) inset;
+    display: flex; flex-direction: column; gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card.gold { border-top: 4px solid #f59e0b; }
+  .card.intern { border-top: 4px solid #ef4444; }
+
+  .stars {
+    display: flex; gap: 4px; align-items: center;
+  }
+  .star {
+    width: 36px; height: 36px;
+  }
+  .star.filled { color: #f59e0b; }
+  .star.dim { color: #e2e8f0; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 15px; font-weight: 600;
+    width: fit-content;
+  }
+  .badge.gold {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.35);
+  }
+  .badge.intern {
+    background: #fee2e2;
+    color: #b91c1c;
+    box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.35);
+  }
+
+  .card h2 {
+    font-size: 22px; font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+
+  .card p {
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.55;
+  }
+
+  .action-row {
+    margin-top: auto;
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .action-row .icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .icon.google {
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+  }
+  .icon.lock {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .action-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #0f172a;
+  }
+  .action-hint {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  .big-arrow {
+    position: absolute;
+    right: 40px; top: 40px;
+    width: 32px; height: 32px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+  <div class="title">
+    Was passiert nach der Bewertung?
+    <span class="sub">FlowSight entscheidet automatisch — basierend auf der Sternzahl.</span>
+  </div>
+
+  <div class="split">
+    <!-- LEFT: 5 Sterne → Gold + Google -->
+    <div class="card gold">
+      <div class="stars">
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+      </div>
+      <span class="badge gold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        Gold-Bewertung
+      </span>
+      <h2>Bei 4 oder 5 Sternen</h2>
+      <p>Die Bewertung wird automatisch auf Google veröffentlicht. Jeder Gold-Kunde stärkt Ihren Ruf öffentlich.</p>
+      <div class="action-row">
+        <div class="icon google">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.23c0-.73-.07-1.42-.2-2.1H12v4h5.4a4.6 4.6 0 01-2 3v2.5h3.3c1.9-1.78 3-4.4 3-7.4z"/><path fill="#34A853" d="M12 21.75c2.7 0 4.96-.9 6.6-2.42l-3.3-2.5c-.9.6-2.05.96-3.3.96-2.55 0-4.7-1.72-5.47-4.04H3.13v2.53A9.75 9.75 0 0012 21.75z"/><path fill="#FBBC05" d="M6.53 13.75a5.86 5.86 0 010-3.74V7.48H3.13a9.75 9.75 0 000 9.04l3.4-2.77z"/><path fill="#EA4335" d="M12 5.97c1.47 0 2.78.5 3.82 1.5l2.86-2.86A9.6 9.6 0 0012 2.25 9.75 9.75 0 003.13 7.48l3.4 2.53c.77-2.32 2.92-4.04 5.47-4.04z"/></svg>
+        </div>
+        <div>
+          <div class="action-label">Auf Google veröffentlicht</div>
+          <div class="action-hint">Öffentlich sichtbar · verstärkt Ihre Online-Reputation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 1-3 Sterne → Intern -->
+    <div class="card intern">
+      <div class="stars">
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star dim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star dim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+        <svg class="star dim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.77l-6.18 3.24L7 14.13 2 9.26l6.91-1z"/></svg>
+      </div>
+      <span class="badge intern">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h-1V6a5 5 0 00-10 0v2H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V10a2 2 0 00-2-2z"/></svg>
+        Intern zur Prüfung
+      </span>
+      <h2>Bei 1 bis 3 Sternen</h2>
+      <p>Die Bewertung landet NICHT auf Google, sondern zuerst intern bei der Geschäftsführung. Sie reagieren, bevor der Frust öffentlich wird.</p>
+      <div class="action-row">
+        <div class="icon lock">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div>
+          <div class="action-label">Intern aufgefangen</div>
+          <div class="action-hint">Geschäftsführung alarmiert · bleibt geschützt</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -26,26 +26,26 @@
 ### Mail 1 — Erstkontakt
 
 ```
-Betreff: Kurze Idee für Ihren Betrieb, Herr Leuthold
+Betreff: Kurzes Video für Walter Leuthold
 
 Guten Tag Herr Leuthold
 
-Mein Name ist Gunnar Wende, ich wohne ebenfalls in Oberrieden.
+Mein Name ist Gunnar Wende, ich wohne ebenfalls hier in Oberrieden.
 
-Ich kenne Ihren Betrieb — Sie haben eine starke Reputation hier in der Region
-und Ihre Google-Bewertungen sprechen für sich.
+Ich habe mir in den letzten Tagen ein paar Gedanken zu Ihrem Betrieb gemacht und dazu ein kurzes Video für Sie aufgenommen.
 
-Ich habe mir ein paar Gedanken gemacht und ein kurzes Video für Sie aufgenommen.
-Darin zeige ich Ihnen, was ich mir für Ihren Betrieb konkret überlegt habe.
+Darin zeige ich Ihnen, was ich mir für Walter Leuthold konkret überlegt habe.
 
 Hier ist der Link:
 [Loom-Video-Link]
 
-Ich möchte Ihnen damit nichts verkaufen. Mich interessiert einfach,
-wie das auf Sie als erfahrenen Handwerker wirkt.
+Ich möchte Ihnen damit nichts verkaufen. Ich würde mich einfach freuen, wenn Sie mir ein ehrliches Feedback geben, wie das auf Sie wirkt.
 
-Falls es Sie anspricht, richte ich Ihnen das gern so ein, dass Sie es selbst
-einmal durchspielen können — ganz unkompliziert und ohne Verpflichtung.
+Falls Sie möchten, richte ich Ihnen das danach gern so ein, dass Sie es selbst einmal mit typischen Situationen aus dem Alltag durchspielen können — ganz unkompliziert und ohne jede Verpflichtung.
+
+Für ein kurzes Gespräch komme ich auch gern persönlich vorbei — wir sind ja nur ein paar Strassenschilder voneinander entfernt.
+
+Ich wünsche Ihnen schon jetzt frohe Ostern und ein paar schöne sonnige freie Tage. 
 
 Freundliche Grüsse
 Gunnar Wende
@@ -79,75 +79,130 @@ node --env-file=src/web/.env.local scripts/_ops/activate_prospect.mjs \
 
 ## Script
 
-### 1. Intro — Nachbar, Respekt (~15s)
+### 1. Intro — persönlich, ruhig, lokal (~15s)
 
-> "Grüezi Herr Leuthold. Mein Name ist Gunnar Wende, ich wohne ebenfalls hier in Oberrieden. Ich habe mir ein paar Gedanken gemacht und möchte Ihnen kurz zeigen, was daraus entstanden ist."
+Grüezi Herr Leuthold
 
----
+Mein Name ist Gunnar Wende. Ich wohne ebenfalls hier in Oberrieden.
 
-### 2. Alltag eines Ein-Mann-Betriebs (~25s)
+Ich habe mir ein paar Gedanken zu Ihrem Betrieb gemacht und dazu dieses kurze Video für Sie aufgenommen.
 
-> "Als Ein-Mann-Betrieb kennen Sie das wahrscheinlich gut: Sie sind beim Kunden, die Hände sind voll — und genau dann klingelt das Telefon. Ein anderer Kunde braucht etwas Dringendes. Und wenn Sie nicht rangehen, ist der Moment vorbei.
->
-> Ich habe mich gefragt, wie man das so auffangen kann, dass nichts verloren geht — ohne dass Sie dafür jemanden einstellen müssen."
+Ich möchte Ihnen kurz zeigen, was daraus entstanden ist.
 
-**Warum so:** Ein-Mann-Betrieb = erreichbarkeit ist existenziell. Nicht "Sie haben ein Problem", sondern "Sie kennen das".
 
 ---
 
-### 3. Telefonischer Weg — Live-Demo (~60s)
+### 2. Alltag aufmachen — ohne Fingerzeig (~25s)
 
-> "Ich zeige Ihnen den telefonischen Weg, weil man daran den Ablauf am schnellsten versteht."
->
-> [Nummer anrufen: 044 505 30 19, Lautsprecher]
->
-> [Fall schildern: "Guten Tag, bei mir tropft es unter der Spüle. Mein Name ist Meier, Dorfstrasse 5, 8942 Oberrieden."]
->
-> [Anruf beenden, SMS zeigen]
->
-> "Und schon kommt die SMS mit dem Korrekturlink — falls etwas falsch verstanden wurde, kann der Kunde es direkt anpassen."
+Bei einem Betrieb wie Ihrem läuft im Alltag vieles gleichzeitig zusammen — Telefon, Baustelle, Rückfragen, manchmal auch etwas Dringendes.
+
+Gerade wenn man viel selbst macht, ist jeder Anruf zuerst einmal eine Unterbrechung.
+
+Und ich habe mich gefragt, wie man das so auffangen könnte, dass daraus nicht einfach nur Unterbruch entsteht, sondern ein sauberer nächster Schritt — für den Kunden, für den Betrieb und später auch nach aussen.
+
+Im Grunde gibt es dafür bei Ihnen drei Wege: jemand ruft an, jemand meldet es schriftlich, oder etwas wird direkt im Betrieb beziehungsweise nach einem Gespräch vor Ort aufgenommen.
+
+Ich zeige Ihnen zuerst den telefonischen Weg, weil man daran den Ablauf am schnellsten versteht.
+
+
+---
+
+### 3. Ein typischer Fall — telefonisch (~60s)
+
+Nehmen wir an, ich habe gerade ein Problem und erreiche Sie nicht direkt, weil Sie auf der Baustelle sind oder in einem Kundengespräch.
+
+Dann sollte aus diesem Anruf nicht einfach nur eine Unterbrechung entstehen, sondern ein sauber aufgenommener Fall.
+
+Ich rufe einmal kurz an.
+
+Grüezi, bei uns tropft im Keller Wasser aus einem Rohr.
+Es ist kein akuter Notfall, aber wir würden das gern rasch anschauen lassen.
+Die Adresse ist [Adresse].
+Mein Name ist [Name].
+Erreichbar bin ich unter dieser Nummer.
+
+Und jetzt schauen Sie mal — ich bekomme gleich eine SMS.
+
+Da ist der Korrekturlink drin. Falls etwas falsch verstanden wurde, kann ich es direkt anpassen. Und ich kann auch gleich noch ein Foto vom Schaden hochladen.
+
 
 ---
 
 ### 4. Leitzentrale (~40s)
 
-> [Leitzentrale zeigen]
->
-> "Der Fall landet direkt in Ihrer Leitzentrale. Nichts geht verloren, nichts muss zusammengesucht werden.
->
-> Sie sehen sofort: worum geht es, wie dringend, was wurde erfasst. Und das Ganze funktioniert auch als App auf dem Handy — Sie haben es immer dabei.
->
-> Wenn der Job erledigt ist, können Sie mit einem Klick eine Bewertungsanfrage schicken."
+Und genau dieser Fall landet jetzt direkt in der Leitzentrale.
 
-**Warum so:** "Nichts geht verloren" = Kernversprechen für Ein-Mann-Betrieb. App = mobil auf der Baustelle.
+Das heisst: Nichts geht verloren, nichts muss später wieder zusammengesucht werden, und man kann direkt damit weiterarbeiten.
 
----
+Hier sieht man sofort, worum es geht, wie dringend es ist, was schon erfasst wurde, wer zuständig ist und ob schon ein Termin gesetzt ist.
 
-### 5. Website + Meldungsformular (~30s)
+Und wenn unterwegs oder vor Ort noch etwas dazukommt — ein Foto, eine Notiz, eine Änderung — kann das direkt ergänzt werden, auch mobil.
 
-> [Website zeigen]
->
-> "Ich habe mir erlaubt, eine Website für Ihren Betrieb aufzusetzen. Ihre fünf Leistungsbereiche sind drin, Ihre Google-Bewertungen — die sich mit 4.9 Sternen wirklich sehen lassen können — und das Meldungsformular.
->
-> So können Kunden auch schriftlich melden, wenn sie lieber nicht anrufen."
+So bleibt aus einer Anfrage nicht einfach nur ein kurzer Kontakt, sondern etwas, das der Betrieb wirklich übernehmen und weiterführen kann.
 
-**Warum so:** Google-Bewertung hervorheben = echtes Kompliment. Nicht erfunden.
 
 ---
 
-### 6. Bewertungen (~20s)
+### 5. Ein typischer Fall — schriftlich über die Website (~30s)
 
-> "Ihre 44 Google-Bewertungen sind beeindruckend. Was dieses System macht: es hilft Ihnen, dass nach jedem sauber erledigten Auftrag auch wirklich eine Bewertung zustande kommt — nicht als Automatismus, sondern gezielt dort, wo es passt."
+Dasselbe geht übrigens auch schriftlich über die Website.
+
+Ich habe für Ihren Betrieb auch einmal vorgedacht, wie so ein klarer Einstieg heute aussehen könnte — nicht nur optisch, sondern auch so, dass Anliegen sauber reinkommen können.
+
+Wenn jemand lieber kurz schreibt statt anruft, kann das Anliegen dort über das Meldungsformular genauso sauber erfasst werden.
+
+Zum Beispiel mit Thema, Dringlichkeit, Adresse und Foto.
+
+Und auch dieser Fall landet danach wieder am gleichen Ort: in der Leitzentrale.
+
 
 ---
 
-### 7. Abschluss (~20s)
+### 6. Direkt aus dem Betrieb heraus(~20s)
 
-> "Mehr wollte ich Ihnen gar nicht zeigen. Mich interessiert: Macht das für einen Betrieb wie Ihren Sinn? Was würden Sie anders machen?
->
-> Wenn Sie sagen, das ist spannend — melden Sie sich kurz bei mir mit der E-Mail-Adresse, die Sie dafür nutzen möchten. Dann richte ich Ihnen das ein, damit Sie es selbst ausprobieren können."
+Und wenn etwas direkt bei Ihnen im Betrieb, nach einem Gespräch oder vor Ort entsteht, kann es genauso manuell in der Leitzentrale aufgenommen werden.
+
+Das heisst: egal ob telefonisch, schriftlich oder direkt intern aufgenommen — am Ende läuft alles an einem Ort zusammen.
+
+Und genau das finde ich stark, weil man dadurch nicht drei verschiedene Ablagen hat, sondern einen sauberen Überblick.
+
 
 ---
+
+### 7. Nachlauf / Bewertung / Aussenwirkung(~20s)
+
+Was bei einem Betrieb wie Ihrem ebenfalls wichtig ist: Gute Arbeit passiert jeden Tag — aber nach aussen wird sie oft viel zu wenig sichtbar.
+
+Gerade wenn ein Einsatz gut gelaufen ist, wäre genau dann oft der richtige Moment für eine kurze Rückmeldung oder Bewertung.
+
+Nicht bei jedem und nicht einfach irgendwann, sondern gezielt dort, wo es wirklich passt.
+
+So bleibt gute Arbeit nicht nur intern sauber abgewickelt, sondern wird im besten Fall auch nach aussen sichtbar.
+
+Im Kern wäre das für Ihren Betrieb ein durchgehender Ablauf: vom ersten Kontakt über die Bearbeitung bis zum sauberen Abschluss.
+
+Also nicht einfach noch etwas Zusätzliches, sondern etwas, das Ihnen im Alltag Arbeit abnimmt, Dinge sauber zusammenführt und gute Arbeit am Ende auch sichtbarer macht.
+
+
+---
+
+### 8 Abschluss / Feedback
+
+
+Mehr wollte ich Ihnen im Grunde gar nicht zeigen.
+
+Wie schon in der Mail erwähnt:
+
+Ich möchte Ihnen damit nichts verkaufen.
+
+Mich würde einfach interessieren, wie das auf Sie wirkt — was daran für Sie stimmig ist, was Sie anders machen würden, oder was Sie anders bräuchten.
+
+Wenn Sie möchten, geben Sie mir einfach kurz ein Zeichen.
+
+Dann richte ich Ihnen das gern sauber ein, und Sie können es ganz unverbindlich einmal selbst mit typischen Situationen aus dem Alltag durchspielen.
+
+Vielen Dank für Ihre Zeit, Herr Leuthold.
+
 
 ## Dont's
 
