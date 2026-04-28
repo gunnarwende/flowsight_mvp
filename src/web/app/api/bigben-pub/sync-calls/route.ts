@@ -110,6 +110,12 @@ export async function GET() {
         synced++;
         try {
           const { sendOpsPush } = await import("@/src/lib/push/sendOpsPush");
+          // Count pending after insert for accurate App-Icon-Badge
+          const { count: pendingCount } = await supabase
+            .from("pub_reservations")
+            .select("id", { count: "exact", head: true })
+            .eq("tenant_id", tenant.id)
+            .eq("status", "pending");
           await sendOpsPush({
             tenantId: tenant.id,
             eventType: "case",
@@ -117,6 +123,7 @@ export async function GET() {
             body: `${guestName} · ${partySize} guests · ${time}`,
             url: "/ops/reservations",
             tag: `res-voice-${call.call_id}`,
+            badgeCount: pendingCount ?? 1,
           });
         } catch { /* best effort */ }
       }

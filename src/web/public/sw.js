@@ -53,6 +53,10 @@ self.addEventListener("message", (event) => {
 });
 
 // ── Push Notifications ─────────────────────────────────────────────────────
+// Tenant-agnostisch: title + url + tag kommen aus payload (gesetzt vom Caller
+// in sendOpsPush). Fallback auf generic FlowSight-Branding wenn payload fehlt.
+// iOS App-Icon-Badge (die Zahl rechts oben) wird via navigator.setAppBadge
+// gesetzt — Paul-Feedback 28.04. PM. Erfordert iOS 16.4+ und PWA-Install.
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
@@ -67,32 +71,70 @@ self.addEventListener("push", (event) => {
     body: payload.body ?? "",
     icon: "/api/ceo/pwa/icon?size=192",
     badge: "/api/ceo/pwa/icon?size=96",
-    tag: payload.tag ?? "flowsight-ceo",
-    data: { url: payload.url ?? "/ceo/pulse" },
+    tag: payload.tag ?? "flowsight",
+    data: { url: payload.url ?? "/" },
     vibrate: [100, 50, 100],
   };
 
-  event.waitUntil(self.registration.showNotification(payload.title ?? "FlowSight CEO", options));
+  // App-Icon-Badge (number on icon). Server can pass payload.badgeCount,
+  // otherwise we increment by 1 each push. iOS clears on click.
+  const setBadge = async () => {
+    try {
+      if ("setAppBadge" in self.navigator) {
+        const count = typeof payload.badgeCount === "number"
+          ? payload.badgeCount
+          : 1;
+        await self.navigator.setAppBadge(count);
+      }
+    } catch { /* badge API unavailable, ignore */ }
+  };
+
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(payload.title ?? "FlowSight", options),
+    setBadge(),
+  ]));
 });
 
 // ── Notification Click ─────────────────────────────────────────────────────
+// URL-aware tab focus: match the payload URL's base path (/ops, /ceo, /kunden,
+// etc.) instead of hardcoding /ceo. Then clear the app-icon-badge — Paul
+// tapped, so the "you have new" signal can go away.
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const url = event.notification.data?.url ?? "/ceo/pulse";
+  const url = event.notification.data?.url ?? "/";
+  const basePath = url.split("/")[1] || "";  // "/ops/reservations" → "ops"
+
+  const clearBadge = async () => {
+    try {
+      if ("clearAppBadge" in self.navigator) {
+        await self.navigator.clearAppBadge();
+      }
+    } catch { /* ignore */ }
+  };
 
   event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      // Focus existing CEO tab if open
-      for (const client of clients) {
-        if (client.url.includes("/ceo") && "focus" in client) {
-          client.navigate(url);
-          return client.focus();
+    Promise.all([
+      clearBadge(),
+      self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+        // Prefer existing tab on the same base path (e.g. another /ops/* tab)
+        for (const client of clients) {
+          if (basePath && client.url.includes("/" + basePath + "/") && "focus" in client) {
+            client.navigate(url);
+            return client.focus();
+          }
         }
-      }
-      // Open new tab
-      return self.clients.openWindow(url);
-    })
+        // Otherwise: any tab from same origin, navigate it
+        for (const client of clients) {
+          if ("focus" in client) {
+            client.navigate(url);
+            return client.focus();
+          }
+        }
+        // No open tab: open new
+        return self.clients.openWindow(url);
+      }),
+    ])
   );
 });
 

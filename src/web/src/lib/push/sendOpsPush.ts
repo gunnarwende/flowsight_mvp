@@ -15,6 +15,11 @@ export async function sendOpsPush(opts: {
   body: string;
   url?: string;
   tag?: string;
+  /** App-Icon-Badge count (iOS 16.4+, PWA installed). When set, the SW will
+   *  call navigator.setAppBadge(badgeCount) on receive. Caller should pass the
+   *  current count of pending items (e.g. pending_reservations) so the badge
+   *  reflects state, not a per-event +1. */
+  badgeCount?: number;
   targetUserId?: string;
 }): Promise<{ sent: number; failed: number }> {
   try {
@@ -61,6 +66,7 @@ export async function sendOpsPush(opts: {
       body: opts.body,
       url: opts.url ?? "/ops/cases",
       tag: opts.tag,
+      badgeCount: opts.badgeCount,
     });
 
     let sent = 0;
