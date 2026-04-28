@@ -1,0 +1,59 @@
+name: BigBen Voice Daily Refresh
+
+on:
+  schedule:
+    # Daily at 05:00 UTC (07:00 CEST / 06:00 CET) — before pub opens.
+    # Updates Lisa's voice prompt with TODAY's date + future events,
+    # then publishes both EN + DE conversation flows to Retell.
+    - cron: "0 5 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    name: refresh-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        run: cd src/web && npm ci
+
+      - name: Run BigBen voice daily refresh
+        id: refresh
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+        run: |
+          OUTPUT=$(node scripts/_ops/bigben_voice_daily_refresh.mjs 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+
+          # Capture last 30 lines for Telegram
+          TAIL=$(echo "$OUTPUT" | tail -30)
+          echo "report<<REPORT_EOF" >> "$GITHUB_OUTPUT"
+          echo "$TAIL" >> "$GITHUB_OUTPUT"
+          echo "REPORT_EOF" >> "$GITHUB_OUTPUT"
+
+          exit $STATUS
+
+      - name: Notify Telegram on failure
+        if: failure()
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPORT: ${{ steps.refresh.outputs.report }}
+        run: |
+          BODY="🔴 BigBen Voice Daily Refresh FAILED%0A%0A${REPORT}"
+          curl -sS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            -d text="${BODY}" \
+            -d disable_web_page_preview=true \
+            -o /dev/null
