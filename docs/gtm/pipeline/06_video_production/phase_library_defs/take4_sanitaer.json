@@ -1,0 +1,34 @@
+{
+  "take": 4,
+  "industry": "sanitaer",
+  "title": "Take 4 — Wie gute Arbeit sichtbar wird (Status-Lifecycle + Bewertung)",
+  "description": "Dörfler-Founder zeigt Lifecycle. Source: take4_with_loom.mp4 (~105.8s, ohne Cursor §39).",
+  "sources": {
+    "original": "screenflows/{tenant}/take4_with_loom.mp4"
+  },
+  "phases": [
+    { "name": "dashboard_intro", "category": "Leitsystem", "desc": "Dashboard initial — 2s lead silence + Hook 'Zum Schluss'", "source": "original", "range": [0.0, 3.5] },
+    { "name": "dashboard_kpi_overview", "category": "Leitsystem", "desc": "Dashboard view stable — KPI-Erklärung", "source": "original", "range": [3.5, 11.4] },
+    { "name": "dashboard_to_case", "category": "Übergang", "desc": "Klick in Case 'Leck DA-0050'", "source": "original", "range": [11.4, 13.8] },
+    { "name": "case_initial_neu", "category": "Leitsystem", "desc": "Case Detail — Status NEU + Bearbeiten-Click", "source": "original", "range": [13.8, 17.5] },
+    { "name": "case_status_dropdown", "category": "Leitsystem", "desc": "Status-Dropdown geöffnet, Hover-Highlight Neu→In Arbeit", "source": "original", "range": [17.5, 19.5] },
+    { "name": "case_status_inarbeit", "category": "Leitsystem", "desc": "Status auf 'In Arbeit' gesetzt", "source": "original", "range": [19.5, 22.0] },
+    { "name": "case_termin_picker", "category": "Leitsystem", "desc": "Termin-Picker — Kalender + Slot-Auswahl", "source": "original", "range": [22.0, 28.0] },
+    { "name": "case_termin_set", "category": "Leitsystem", "desc": "Termin gesetzt + Übernehmen + 'Termin versenden' Btn visible (Source 28-34: PRE-CLICK Btn appears + visible)", "source": "original", "range": [28.0, 34.0] },
+    { "name": "case_inarbeit_view", "category": "Leitsystem", "desc": "CLICK 'Termin versenden' (Source 35 = Click @ Build 0:24,0) + 'Wird versendet...' + Verlauf-Update + Case In Arbeit", "source": "original", "range": [34.0, 43.0] },
+    { "name": "phone_reminder_pip", "category": "Phone", "desc": "Phone #1 — Reminder-SMS PiP, NUR Phone-visible (slide-in + voll + slide-out)", "source": "original", "range": [43.0, 47.0] },
+    { "name": "case_inarbeit_view_post", "category": "Leitsystem", "desc": "Case In Arbeit Verlauf nach Phone-#1, Web-View 'wirken lassen' bis Erledigt-Hover", "source": "original", "range": [47.0, 54.0] },
+    { "name": "case_status_erledigt_hover", "category": "Leitsystem", "desc": "Status-Dropdown #2 geöffnet, Hover-Highlight bis Erledigt", "source": "original", "range": [54.0, 58.0] },
+    { "name": "case_status_erledigt", "category": "Leitsystem", "desc": "Status auf ERLEDIGT gesetzt + Speichern-Click + Save-Action", "source": "original", "range": [58.0, 65.0] },
+    { "name": "case_bewertung_pre", "category": "Leitsystem", "desc": "Save complete + Verlauf-Update + 'Bewertung anfragen' Btn visible NICHT geklickt — wirken lassen. §40 Sharpness-Gate auto-snaps freeze-anchor auf schärfsten Frame im Tail.", "source": "original", "range": [65.0, 67.0] },
+    { "name": "case_bewertung_pending", "category": "Leitsystem", "desc": "CLICK-MOMENT 'Bewertung anfragen' (Source 67-69: pre-click → click → post-click transition). Click happens mid-phase visually.", "source": "original", "range": [67.0, 69.0] },
+    { "name": "case_bewertung_button", "category": "Leitsystem", "desc": "POST-CLICK static — 'Bewertungsanfrage gesendet' + 5★ orange Gesendet (Source 69-75: post-click web-view, Builder freezt letztes Frame 75 für target_dur > source_dur).", "source": "original", "range": [69.0, 75.0] },
+    { "name": "phone_sms_appears", "category": "Phone", "desc": "Phone #2 — Slide-in (Source 75 = fade-in start) + SMS-Thread initial sichtbar (alle 3 SMS: 08:08 Bestätigung, 09:02 Reminder, 09:04 Bewertungs-Link)", "source": "original", "range": [75.0, 78.0] },
+    { "name": "phone_sms_thread", "category": "Phone", "desc": "Phone #2 — SMS-Thread voll sichtbar, Fokus auf Bewertungs-SMS 'Vielen Dank für Ihr Vertrauen'", "source": "original", "range": [78.0, 82.0] },
+    { "name": "phone_rating_intro", "category": "Phone", "desc": "Phone #2 — Bewertungs-Page öffnet ('Wie war unser Service?' + Auftrag/Ort/Datum), 5 leere Sterne sichtbar", "source": "original", "range": [82.0, 85.0] },
+    { "name": "phone_rating_stars", "category": "Phone", "desc": "Phone #2 — 5★ ausgewählt + 'Vielen Dank für Ihre tolle Bewertung' + Schlagwort-Buttons (Schnell & zuverlässig, Saubere Arbeit, Kompetente Beratung, Jederzeit wieder) + Bewertung-abschliessen-Btn", "source": "original", "range": [85.0, 90.0] },
+    { "name": "phone_rating_submit", "category": "Phone", "desc": "Phone #2 — Submit-Click → 'Vielen Dank für Ihre Bewertung!' Erfolgs-Page (grüner Check-Mark)", "source": "original", "range": [90.0, 94.0] },
+    { "name": "case_review_done", "category": "Leitsystem", "desc": "Case Verlauf zeigt 'Bewertet' 5★ — Lifecycle abgeschlossen", "source": "original", "range": [94.0, 101.0] },
+    { "name": "dashboard_final", "category": "Leitsystem", "desc": "Dashboard final — KPIs updated, Outro auf statischem Frame", "source": "original", "range": [101.0, 105.5] }
+  ]
+}

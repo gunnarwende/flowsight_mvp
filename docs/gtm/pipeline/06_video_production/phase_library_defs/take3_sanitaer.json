@@ -1,0 +1,438 @@
+{
+  "take": 3,
+  "industry": "sanitaer",
+  "title": "Take 3 — Wizard + Leitsystem-Demo",
+  "description": "Founder zeigt Meldungs-Formular (3 Schritte) → Erfolg → Leitsystem-Dashboard → Case-Detail → Neuer-Fall-Modal. Source: take3_complete.mp4 (60s) frame-by-frame verifiziert. [27.04. shifted +6s for sync-padded recordings]",
+  "sources": {
+    "original": "screenflows/{tenant}/take3_with_loom.mp4"
+  },
+  "phases": [
+    {
+      "name": "wizard1_intro",
+      "category": "Wizard",
+      "desc": "Meldung erfassen Step 1 — leere Auswahl, alle Kategorien sichtbar. Range bewusst auf [6, 6.5] beschränkt (28.04.) — bei 6.6+ beginnt Leck-Hover-Vorstufe, Auto-Snap würde sonst auf eine Highlight-Vorform schnappen und Leck wäre während der gesamten 56s Intro-Phase subtil markiert.",
+      "source": "original",
+      "range": [
+        6,
+        6.5
+      ]
+    },
+    {
+      "name": "wizard1_kategorie_leck",
+      "category": "Wizard",
+      "desc": "Kategorie 'Leck' wird hellblau highlighted (Klick)",
+      "source": "original",
+      "range": [
+        7.5,
+        8.3
+      ]
+    },
+    {
+      "name": "wizard1_prio_normal",
+      "category": "Wizard",
+      "desc": "Priorität 'Normal' wird hellblau highlighted",
+      "source": "original",
+      "range": [
+        8.5,
+        9.3
+      ]
+    },
+    {
+      "name": "wizard1_weiter_active",
+      "category": "Wizard",
+      "desc": "Weiter-Button aktiv (blau), Auswahl komplett",
+      "source": "original",
+      "range": [
+        9.3,
+        10
+      ]
+    },
+    {
+      "name": "wizard1_to_2",
+      "category": "Übergang",
+      "desc": "Übergang Step 1 → Step 2",
+      "source": "original",
+      "range": [
+        10,
+        10.6
+      ]
+    },
+    {
+      "name": "wizard2_empty",
+      "category": "Wizard",
+      "desc": "Adresse-Form leer (Strasse/Nr/PLZ/Ort)",
+      "source": "original",
+      "range": [
+        10.6,
+        11.5
+      ]
+    },
+    {
+      "name": "wizard2_strasse_typing",
+      "category": "Wizard",
+      "desc": "Strasse 'Bahnhofstrasse' wird getippt",
+      "source": "original",
+      "range": [
+        11.5,
+        13.8
+      ]
+    },
+    {
+      "name": "wizard2_nr_typing",
+      "category": "Wizard",
+      "desc": "Hausnummer '19' getippt",
+      "source": "original",
+      "range": [
+        13.8,
+        14.5
+      ]
+    },
+    {
+      "name": "wizard2_plz_typing",
+      "category": "Wizard",
+      "desc": "PLZ '8542' getippt",
+      "source": "original",
+      "range": [
+        14.5,
+        15.5
+      ]
+    },
+    {
+      "name": "wizard2_ort_typing",
+      "category": "Wizard",
+      "desc": "Ort 'Oberrieden' getippt",
+      "source": "original",
+      "range": [
+        15.5,
+        17
+      ]
+    },
+    {
+      "name": "wizard2_complete",
+      "category": "Wizard",
+      "desc": "Alle Adressfelder gefüllt, Weiter aktiv",
+      "source": "original",
+      "range": [
+        17,
+        17.8
+      ]
+    },
+    {
+      "name": "wizard2_to_3",
+      "category": "Übergang",
+      "desc": "Übergang Step 2 → Step 3",
+      "source": "original",
+      "range": [
+        17.8,
+        19.5
+      ]
+    },
+    {
+      "name": "wizard3_intro",
+      "category": "Wizard",
+      "desc": "Kontakt-Form mit pre-filled Name (Wendel Brunner)",
+      "source": "original",
+      "range": [
+        19.5,
+        20.5
+      ]
+    },
+    {
+      "name": "wizard3_name_typing",
+      "category": "Wizard",
+      "desc": "Name 'Gunnar Wende' wird angepasst/getippt",
+      "source": "original",
+      "range": [
+        20.5,
+        22
+      ]
+    },
+    {
+      "name": "wizard_break",
+      "category": "Wizard",
+      "desc": "Pause-Phase nach 'Kontaktdaten ergänzt' — Audio hat 2s Stille (Tipp-Synchronisation), Visual freeze auf Step 3 mit Name eingegeben",
+      "source": "original",
+      "range": [
+        21.9,
+        22
+      ],
+      "note": "FB101: Stable-frame freeze während 2s Audio-Pause. Audio hat hier inserted silence."
+    },
+    {
+      "name": "wizard3_telefon_typing",
+      "category": "Wizard",
+      "desc": "Telefon '076 489 89 80' getippt",
+      "source": "original",
+      "range": [
+        22,
+        23.5
+      ]
+    },
+    {
+      "name": "wizard3_email_typing",
+      "category": "Wizard",
+      "desc": "E-Mail 'gunnar.wende@flowsight.ch' getippt",
+      "source": "original",
+      "range": [
+        23.5,
+        25.5
+      ]
+    },
+    {
+      "name": "wizard3_beschr_focus",
+      "category": "Wizard",
+      "desc": "Beschreibung-Feld fokussiert, leer mit blinkendem Cursor",
+      "source": "original",
+      "range": [
+        25.5,
+        26.5
+      ]
+    },
+    {
+      "name": "wizard3_beschr_typing",
+      "category": "Wizard",
+      "desc": "Beschreibung 'Irgendwas scheint undicht zu sein' wird getippt",
+      "source": "original",
+      "range": [
+        26.5,
+        31
+      ]
+    },
+    {
+      "name": "wizard3_beschr_done",
+      "category": "Wizard",
+      "desc": "Beschreibung komplett, Meldung-absenden Button aktiv",
+      "source": "original",
+      "range": [
+        31,
+        32.5
+      ],
+      "note": "FB106: end 27→26.5 — bei sec 26.9 wechselt source auf Success-Screen, Freeze leaked"
+    },
+    {
+      "name": "wizard3_submit",
+      "category": "Wizard",
+      "desc": "Submit-Klick + Übergang zu Success-Screen",
+      "source": "original",
+      "range": [
+        32.5,
+        33.5
+      ],
+      "note": "FB106: range angepasst auf transition-Moment (26.5 = beschr_done end, 27.5 = success bereits sichtbar)"
+    },
+    {
+      "name": "success_screen",
+      "category": "Erfolg",
+      "desc": "'Meldung aufgenommen' Erfolgsseite + Loom Face TOP-RIGHT (Start des Face-Move)",
+      "source": "original",
+      "range": [
+        34,
+        34.1
+      ],
+      "note": "FB108: kurz auf 0.1s — danach übernimmt leit_dashboard_view nahtlos ab Source 28.1 für continuous Face-Move"
+    },
+    {
+      "name": "success_to_leit",
+      "category": "Übergang",
+      "desc": "Übergang Erfolgsseite → Leitsystem-Dashboard",
+      "source": "original",
+      "range": [
+        38,
+        39.5
+      ]
+    },
+    {
+      "name": "leit_face_hold",
+      "category": "Leitsystem",
+      "desc": "FB109: 1s static — Leitsystem-Background visible, Founder-Face still top-right (pre-move). Source [32.3, 32.4] freeze.",
+      "source": "original",
+      "range": [
+        38.3,
+        38.4
+      ],
+      "needs_anchored": true,
+      "_flag_note": "needs_anchored=true (28.04.): Loom-Position ist source-time-abhängig (top-right pre-move). Auto-Cal v2 darf hier NICHT short_phase_identity anwenden — Master-Werte würden bei Tenants mit früherem success-cut (Leins: cut@35.77 statt master 38.20) auf Post-Flight-Loom zeigen. Anchored Mapping liefert korrekte pre-flight-Position."
+    },
+    {
+      "name": "leit_dashboard_view",
+      "category": "Leitsystem",
+      "desc": "FB109: Founder-Face MOVE (top-right → final left-pos) + Dashboard-View. Source startet bei 32.4 (= direkt nach leit_face_hold) — Move-Animation natural Speed.",
+      "source": "original",
+      "range": [
+        38.4,
+        44
+      ]
+    },
+    {
+      "name": "case_back_full",
+      "category": "Leitsystem",
+      "desc": "FB110: PURE Dashboard (Case zu, Modal noch nicht offen). Source [53.5, 55.0].",
+      "source": "original",
+      "range": [
+        59.5,
+        61
+      ],
+      "note": "FB110: end 55.5→55.0 — bei sec 55.5 öffnet schon Modal. Jetzt Range endet vor Modal-Trigger."
+    },
+    {
+      "name": "neuer_fall_modal",
+      "category": "Leitsystem",
+      "desc": "FB107 Sammel-Phase: 'Neuer Fall'-Modal kompletter Lifecycle (öffnet → sichtbar → schließt). Ersetzt neuer_fall_modal_open + view + close.",
+      "source": "original",
+      "range": [
+        61.5,
+        65.5
+      ]
+    },
+    {
+      "name": "leit_dashboard_intro",
+      "category": "Leitsystem",
+      "desc": "Leitsystem 'Guten Morgen, Dörfler' erscheint, KPIs 3/6/21/4.7, NEU mit rotem Dot",
+      "source": "original",
+      "range": [
+        39.5,
+        42
+      ]
+    },
+    {
+      "name": "leit_dashboard_kpi_neu",
+      "category": "Leitsystem",
+      "desc": "Fokus auf KPI 'NEU' (3, hellblau highlighted) — neuer Fall ist da",
+      "source": "original",
+      "range": [
+        42,
+        44
+      ]
+    },
+    {
+      "name": "leit_dashboard_kpi_bewertung",
+      "category": "Leitsystem",
+      "desc": "Fokus auf KPI 'BEWERTUNG' (4.7, gelb highlighted)",
+      "source": "original",
+      "range": [
+        44,
+        46
+      ]
+    },
+    {
+      "name": "leit_to_case",
+      "category": "Übergang",
+      "desc": "Übergang Dashboard → Case-Detail (Klick auf Wende-Eintrag)",
+      "source": "original",
+      "range": [
+        46,
+        47.5
+      ]
+    },
+    {
+      "name": "case_detail_intro",
+      "category": "Leitsystem",
+      "desc": "Case 'Leck DA-0050' Detailansicht erscheint (Übersicht + Beschreibung + Kontakt sichtbar)",
+      "source": "original",
+      "range": [
+        47.5,
+        49.5
+      ]
+    },
+    {
+      "name": "case_detail_uebersicht",
+      "category": "Leitsystem",
+      "desc": "Übersicht-Card im Fokus (Status Neu, Priorität Normal, Zustand Offen, Termin Offen)",
+      "source": "original",
+      "range": [
+        49.5,
+        52
+      ]
+    },
+    {
+      "name": "case_detail_beschreibung",
+      "category": "Leitsystem",
+      "desc": "Beschreibung-Card sichtbar ('Irgendwas scheint undicht zu sein')",
+      "source": "original",
+      "range": [
+        52,
+        54
+      ]
+    },
+    {
+      "name": "case_detail_kontakt",
+      "category": "Leitsystem",
+      "desc": "Kontakt-Card mit Name/Telefon/E-Mail/Adresse",
+      "source": "original",
+      "range": [
+        54,
+        56
+      ]
+    },
+    {
+      "name": "case_detail_verlauf",
+      "category": "Leitsystem",
+      "desc": "Verlauf-Card: Fall erstellt via Website, Bestätigungs-SMS gesendet, Sichten und einrichten",
+      "source": "original",
+      "range": [
+        56,
+        59
+      ]
+    },
+    {
+      "name": "case_to_dashboard",
+      "category": "Übergang",
+      "desc": "Übergang Case-Detail → zurück zum Dashboard",
+      "source": "original",
+      "range": [
+        59,
+        60.5
+      ]
+    },
+    {
+      "name": "dashboard_after_case",
+      "category": "Leitsystem",
+      "desc": "Dashboard-Ansicht nach Case-Schließen",
+      "source": "original",
+      "range": [
+        60.5,
+        61.5
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_open",
+      "category": "Leitsystem",
+      "desc": "'Neuer Fall'-Modal öffnet sich (manuelle Falleingabe)",
+      "source": "original",
+      "range": [
+        61.5,
+        63
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_view",
+      "category": "Leitsystem",
+      "desc": "Modal sichtbar — Felder Kunde/Kategorie/Priorität/Telefon/Mail/Adresse/Beschreibung",
+      "source": "original",
+      "range": [
+        63,
+        64.5
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_close",
+      "category": "Übergang",
+      "desc": "Modal schließt sich",
+      "source": "original",
+      "range": [
+        64.5,
+        65.5
+      ]
+    },
+    {
+      "name": "dashboard_final",
+      "category": "Leitsystem",
+      "desc": "Finale Dashboard-Ansicht (Outro)",
+      "source": "original",
+      "range": [
+        65.5,
+        66.5
+      ]
+    }
+  ]
+}
