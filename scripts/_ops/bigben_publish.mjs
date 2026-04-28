@@ -55,17 +55,27 @@ async function post(p, b) {
 
 const SEP = "═══════════════════════════════════════";
 
-// ── EN extractor: pulls the TODAY'S DATE + UPCOMING EVENTS blocks
-//    from the local source-of-truth JSON (already patched by daily_refresh).
+// ── Extract a delimited block from the local SoT JSON.
+//
+// Block ends at the first of: next ═══ section, or "IMPORTANT RULES"
+// (which is a non-═══ section header in the local prompt structure).
+// Without the IMPORTANT RULES boundary the today block silently captures
+// IMPORTANT RULES + PERSONA, which then get duplicated on every publish.
 function extractLocalSection(prompt, header) {
   const startRe = new RegExp(`${SEP}\\s*\\n${header}.*?\\n${SEP}\\s*\\n`, "s");
   const m = prompt.match(startRe);
   if (!m) return null;
   const startIdx = m.index;
   const afterHeader = startIdx + m[0].length;
-  const nextSep = prompt.indexOf(`\n${SEP}\n`, afterHeader);
-  const endIdx = nextSep === -1 ? prompt.length : nextSep + 1;
-  return prompt.slice(startIdx, endIdx);
+
+  const candidates = [
+    prompt.indexOf(`\n${SEP}\n`, afterHeader),
+    prompt.indexOf("\nIMPORTANT RULES", afterHeader),
+    prompt.indexOf("\nPERSONA", afterHeader),
+  ].filter((i) => i !== -1);
+
+  const endIdx = candidates.length === 0 ? prompt.length : Math.min(...candidates);
+  return prompt.slice(startIdx, endIdx).trimEnd();
 }
 
 // ── DE renderer: builds German versions of the date + events block
@@ -129,35 +139,71 @@ ${eventsBody}`;
   return { todayBlock, eventsBlock };
 }
 
-// ── Live patcher: surgically replace top-of-prompt "CRITICAL FACTS"
-//    block + the existing UPCOMING EVENTS block, regardless of formatting.
-function patchLivePrompt(livePrompt, todayBlock, eventsBlock, lang) {
+// ── Deep-clean live patcher.
+//
+// Strategy: anchor on the FIRST ═══ section header that we know is canonical
+// (PUB INFORMATION / RESERVATIONS / WHAT WE OFFER). Everything before that
+// anchor — duplicates, corrupted blocks, garbage from earlier buggy runs —
+// gets wiped and rebuilt from local SoT. Then insert/replace events block
+// in front of RESERVATIONS.
+//
+// Result is fully idempotent: no matter what state the live prompt is in,
+// the output is exactly one today block + one rules+persona block + the
+// canonical sections + one events block + RESERVATIONS onward.
+function patchLivePrompt(livePrompt, todayBlock, rulesBlock, eventsBlock, lang) {
   let p = livePrompt;
 
-  // Replace top block: either "CRITICAL FACTS:" (EN) / "CRITICAL: HEUTE ist" (DE)
-  //    The block runs from start of prompt up to (but not including) "IMPORTANT RULES".
-  // We anchor on either marker, then everything before "IMPORTANT RULES" is replaced.
-  const topAnchorEn = /^CRITICAL FACTS:[\s\S]*?(?=\nIMPORTANT RULES)/m;
-  const topAnchorDe = /^CRITICAL: HEUTE[\s\S]*?(?=\nIMPORTANT RULES)/m;
-  const newTop = todayBlock; // no trailing newline — caller will keep \nIMPORTANT RULES
-
-  if (lang === "en" && topAnchorEn.test(p)) {
-    p = p.replace(topAnchorEn, newTop);
-  } else if (lang === "de" && topAnchorDe.test(p)) {
-    p = p.replace(topAnchorDe, newTop);
-  } else if (/^TODAY is /m.test(p)) {
-    p = p.replace(/^[\s\S]*?(?=\nIMPORTANT RULES)/m, newTop);
-  } else {
-    console.warn(`  ⚠ ${lang.toUpperCase()}: top date block not found — prepending`);
-    p = newTop + "\n\n" + p;
+  // Step 1 — find the canonical anchor: first ═══ followed by PUB INFORMATION.
+  // This is the boundary between "header content" (today, rules, persona —
+  // which we rebuild) and "stable body" (pub info, what we offer, etc.).
+  const anchorRe = new RegExp(`\\n${SEP}\\s*\\nPUB INFORMATION`);
+  const anchorMatch = p.match(anchorRe);
+  if (!anchorMatch || anchorMatch.index == null) {
+    console.warn(`  ⚠ ${lang.toUpperCase()}: PUB INFORMATION anchor not found — falling back to bare prepend`);
+    return todayBlock + "\n\n" + rulesBlock + "\n\n" + p;
   }
 
-  // Replace UPCOMING EVENTS section: from `═══` + UPCOMING EVENTS up to next `═══`
-  const evRe = new RegExp(`${SEP}\\s*\\n(?:UPCOMING EVENTS|KOMMENDE EVENTS).*?\\n${SEP}\\s*\\n[\\s\\S]*?(?=${SEP}\\s*\\n(?:RESERVATIONS|RESERVIERUNGEN))`, "s");
-  if (evRe.test(p)) {
-    p = p.replace(evRe, eventsBlock + "\n\n");
+  // Step 2 — wipe everything before the anchor, rebuild from local blocks.
+  // Live prompt's first line (intro: "You are the digital assistant...") is
+  // kept by re-extracting it from the local SoT prompt (always line 0).
+  const intro = "You are the digital assistant for Big Ben Pub in Oberrieden, Switzerland.";
+  const introLine = lang === "en"
+    ? `${intro} You answer calls in English by default.`
+    : `${intro} Du beantwortest Anrufe auf Deutsch.`;
+
+  const rebuilt = [
+    introLine,
+    "",
+    todayBlock,
+    "",
+    rulesBlock,
+    "",
+  ].join("\n");
+
+  p = rebuilt + p.slice(anchorMatch.index + 1); // +1 to keep the leading newline
+
+  // Step 3 — strip ALL existing UPCOMING/KOMMENDE EVENTS blocks
+  const stripEventsRe = new RegExp(
+    `${SEP}\\s*\\n(?:UPCOMING EVENTS|KOMMENDE EVENTS)[^\\n]*\\n${SEP}\\s*\\n[\\s\\S]*?(?=${SEP}\\s*\\n[A-ZÄÖÜ])`,
+    "g",
+  );
+  let stripped = 0;
+  p = p.replace(stripEventsRe, () => {
+    stripped += 1;
+    return "";
+  });
+  if (stripped > 0) {
+    console.log(`  · ${lang.toUpperCase()}: stripped ${stripped} existing events block(s)`);
+  }
+
+  // Step 4 — insert clean events block before RESERVATIONS / RESERVIERUNGEN
+  const reservationsRe = new RegExp(`${SEP}\\s*\\n(?:RESERVATIONS|RESERVIERUNGEN)`);
+  const resMatch = p.match(reservationsRe);
+  if (resMatch && resMatch.index != null) {
+    p = p.slice(0, resMatch.index) + eventsBlock + "\n\n" + p.slice(resMatch.index);
   } else {
-    console.warn(`  ⚠ ${lang.toUpperCase()}: UPCOMING EVENTS section not found — skipping events update`);
+    console.warn(`  ⚠ ${lang.toUpperCase()}: RESERVATIONS section not found — appending events at end`);
+    p = p + "\n\n" + eventsBlock;
   }
 
   return p;
@@ -179,6 +225,17 @@ async function main() {
   const todayEn = todayBlockEn.trimEnd();
   const eventsEn = eventsBlockEn.trimEnd();
 
+  // Extract the canonical IMPORTANT RULES + PERSONA block from local SoT.
+  // We use this as the authoritative source when reconstructing live prompts —
+  // older live prompts may have duplicated copies from buggy earlier runs.
+  const rulesIdx = sourcePrompt.indexOf("\nIMPORTANT RULES");
+  const firstSepAfterRules = sourcePrompt.indexOf(`\n${SEP}`, rulesIdx);
+  if (rulesIdx === -1 || firstSepAfterRules === -1) {
+    console.error("FATAL: IMPORTANT RULES section missing in local JSON.");
+    process.exit(2);
+  }
+  const rulesBlockEn = sourcePrompt.slice(rulesIdx + 1, firstSepAfterRules).trimEnd();
+
   const { todayBlock: todayDe, eventsBlock: eventsDe } = buildDeBlocks(sourcePrompt);
 
   console.log(`Local blocks ready: today_en=${todayEn.length}c, events_en=${eventsEn.length}c, today_de=${todayDe.length}c, events_de=${eventsDe.length}c`);
@@ -196,11 +253,15 @@ async function main() {
     const agentId = ids[`${lang}_agent_id`];
     const today = lang === "en" ? todayEn : todayDe;
     const events = lang === "en" ? eventsEn : eventsDe;
+    // For DE we use the same canonical EN rules block — it contains LLM
+    // instructions which Lisa-DE follows the same way; the agent's language
+    // setting handles the actual response language.
+    const rules = rulesBlockEn;
 
     console.log(`━━━ ${lang.toUpperCase()} flow ${flowId} ━━━`);
     const flow = await get(`/get-conversation-flow/${flowId}`);
     const before = flow.global_prompt ?? "";
-    const after = patchLivePrompt(before, today, events, lang);
+    const after = patchLivePrompt(before, today, rules, events, lang);
     console.log(`  prompt: ${before.length}c → ${after.length}c (Δ${after.length - before.length})`);
 
     if (dryRun) {
@@ -232,9 +293,34 @@ async function main() {
       console.log(`  ⚠ Could not unpin phone numbers: ${e.message}`);
     }
     console.log("");
+
+    // ── Post-publish verification ──────────────────────────────────────
+    // Re-fetch both flows and assert today's date string is in each prompt.
+    // Without this we'd never notice if a publish silently kept yesterday's
+    // copy (Retell caching / partial updates / etc.).
+    console.log("━━━ Post-publish verification ━━━");
+    const todayStr = todayEn.match(/Today is ([^.]+)\./)?.[1]?.trim() ?? "";
+    const todayDeStr = todayDe.match(/Heute ist ([^.]+)\./)?.[1]?.trim() ?? "";
+    if (!todayStr || !todayDeStr) {
+      console.error(`  ✗ Could not derive today's date string for verification`);
+      process.exit(4);
+    }
+    for (const lang of ["en", "de"]) {
+      const flowId = ids[`${lang}_flow_id`];
+      const expected = lang === "en" ? todayStr : todayDeStr;
+      const live = await get(`/get-conversation-flow/${flowId}`);
+      const livePrompt = live.global_prompt ?? "";
+      if (!livePrompt.includes(expected)) {
+        console.error(`  ✗ ${lang.toUpperCase()} flow does NOT contain "${expected}" — publish FAILED to take effect`);
+        console.error(`    live prompt head: ${livePrompt.slice(0, 200)}`);
+        process.exit(5);
+      }
+      console.log(`  ✓ ${lang.toUpperCase()} flow verified contains "${expected}"`);
+    }
+    console.log("");
   }
 
-  console.log(`✓ BigBen voice ${dryRun ? "(dry-run)" : "PUBLISHED LIVE"} at ${new Date().toISOString()}`);
+  console.log(`✓ BigBen voice ${dryRun ? "(dry-run)" : "PUBLISHED LIVE + VERIFIED"} at ${new Date().toISOString()}`);
 }
 
 main().catch((e) => {
