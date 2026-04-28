@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { getServiceClient } from "@/src/lib/supabase/server";
-import { sendSms } from "@/src/lib/sms/sendSms";
 
 /**
  * POST /api/bigben-pub/reserve — Table reservation for Big Ben Pub.
  *
  * 1. Saves to pub_reservations (status = pending)
- * 2. SMS notification to Paul (owner)
- * 3. SMS confirmation to guest ("received, we'll confirm shortly")
+ * 2. Push notification to Paul (owner) — he confirms in the app
+ *
+ * NO SMS to the guest at submit time. Guest only receives an SMS once
+ * Paul actually confirms in the app (via /api/bigben-pub/reservations/[id]
+ * PATCH). Sending a "request received" SMS at submit would be misread as
+ * confirmation and creates a confusing two-SMS flow.
  */
-
-const PAUL_PHONE = process.env.BIGBEN_OWNER_PHONE ?? "";
 
 export async function POST(req: Request) {
   const base = { _tag: "bigben_reservation", stage: "api" };
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // Format date for display
+    // Format date for display (used in push notification body)
     const dateObj = new Date(date + "T12:00:00");
     const dateStr = dateObj.toLocaleDateString("en-GB", {
       weekday: "long",
@@ -79,21 +80,7 @@ export async function POST(req: Request) {
       month: "long",
     });
 
-    // ── SMS to guest (received, not yet confirmed) ─────────────────
-    const guestSms = [
-      `Hi ${name}!`,
-      ``,
-      `Your reservation request at Big Ben Pub:`,
-      `${dateStr} at ${time}, ${guests} ${Number(guests) === 1 ? "guest" : "guests"}.`,
-      ``,
-      `Paul will confirm shortly.`,
-      `Alte Landstrasse 20, 8942 Oberrieden`,
-    ]
-      .join("\n");
-
-    const guestResult = await sendSms(phone, guestSms, "BigBenPub");
-
-    // Push notification to Paul (no SMS — he uses the app)
+    // Push notification to Paul (no guest SMS — that fires only on confirm)
     if (tenant) {
       import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
         sendOpsPush({
@@ -110,13 +97,12 @@ export async function POST(req: Request) {
     console.log(
       JSON.stringify({
         ...base,
-        decision: "sent",
+        decision: "saved_pending",
         name,
         date,
         time,
         guests,
         source,
-        sms_guest: guestResult.sent ? "sent" : guestResult.reason,
         db: tenant ? "saved" : "no_tenant",
       }),
     );
