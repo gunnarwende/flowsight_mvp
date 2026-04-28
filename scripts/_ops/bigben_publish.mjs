@@ -122,7 +122,12 @@ Wenn ein Anrufer "morgen" sagt → ${tomorrowDe}.
 Wenn ein Anrufer "dieses Wochenende" sagt → Samstag ${weekendDe}.
 
 NIEMALS Daten vor heute referenzieren — die liegen in der Vergangenheit.
-NIEMALS ein Datum erfinden — nur die Eventliste unten oder relativ zu heute berechnen.`;
+NIEMALS ein Datum erfinden — nur die Eventliste unten oder relativ zu heute berechnen.
+
+AUSSPRACHE — Daten so sagen wie Menschen sprechen, nicht wie geschrieben:
+- "Sonntag, der 3. Mai" oder "Sonntag, 3. Mai" — NIEMALS "null drei Mai" oder "0 3 Mai".
+- "Mittwoch, der 29. April" oder "29. April" — NIEMALS "zwei neun April".
+- Uhrzeiten: "neunzehn Uhr" oder "sieben Uhr abends" — natürlich aussprechen.`;
 
   // Extract the UPCOMING EVENTS section verbatim (English content is fine — Lisa-DE
   // can read English event titles; the surrounding header is German).

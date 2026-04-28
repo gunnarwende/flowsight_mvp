@@ -1,14 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export function TenantAppClient({ name, tenantId, slug }: { name: string; tenantId: string; slug: string }) {
-  const [status, setStatus] = useState("Leitsystem wird geladen...");
+export function TenantAppClient({
+  name,
+  tenantId: _tenantId,
+  slug,
+  isPub,
+}: {
+  name: string;
+  tenantId: string;
+  slug: string;
+  isPub: boolean;
+}) {
+  const status = isPub ? "Loading your dashboard..." : "Leitsystem wird geladen...";
 
   useEffect(() => {
-    // Navigate to the API route which sets the cookie via Set-Cookie header
-    // and redirects to /ops/cases. This is a full page navigation (not fetch),
-    // so the browser processes the Set-Cookie before following the redirect.
+    // Full-page navigation to API route (Set-Cookie header + redirect to the
+    // tenant's home: /ops/pub-dashboard for pub tenants, /ops/cases otherwise).
     window.location.href = "/api/ops/tenant-app/" + encodeURIComponent(slug) + "?_t=" + Date.now();
   }, [slug]);
 
