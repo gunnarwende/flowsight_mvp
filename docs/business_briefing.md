@@ -2,7 +2,8 @@
 
 > Dieses Dokument ist der komplette Kontext für ChatGPT, Claude und externe Partner.
 > Copy-paste als System-Prompt oder ersten Message. Deckt Business, Produkt, Technik und Strategie ab.
-> Letzte Aktualisierung: 2026-04-23 EOD (Sales Day 23 EOD. **Pipeline-Skalierungs-Refactor S1-S4 gebaut + 3-Betrieb-Dry-Run PASS (Leins + Wälti + Stark).** S1 Customer-Registry-Fallback (tenants ohne explizite TS-Datei laden automatisch aus tenant_config.json, `generateStaticParams` kein Rebuild mehr), S2 Shared-Asset-Cache (bezel/masks/nav/sidebar einmalig in `_shared/`, ~5-10s/Tenant eingespart), S3 Multi-Tenant Pipeline Runner (`run_pipeline_multi.mjs --slugs=a,b,c --parallel=N`, batch-parallel + Summary-Report, skalierbar für 10/Tag), S4 Speed-Flag `--speed=fast|normal|demo` in record_take4.mjs. 4 Betriebe × 3 Takes = 12 Videos, 35/35 QG PASS pro Tenant, total ~5min/Tenant. Nächster Schritt: Founder-Review Take 1-4 für alle 4 Betriebe + finaler Feedback-Loop + Audio+Voice-Layer Founder-Aufgabe.)
+> Letzte Aktualisierung: 2026-04-28 Day-28 nachmittag (**PIPELINE-CUT für BigBen Live morgen.** §43 Master-Source-Brand-Overlay LIVE, alle 4 Sanitär-Tenants T3 10/10. Aktiver Fokus: BigBen Pub Live-Schaltung 29.04.) — vorher:
+> 2026-04-27 Day-27 EOD (**🏗️ SKALIERUNGS-MASCHINE LIVE.** PIPELINE_BIBLE §40-§45 verbindlich. §43 Single-Source-Master + Brand-Overlay-Architektur. §44 **Pipeline-Standard NICHT-VERHANDELBAR**: HIGH-END + PERSÖNLICH + ZERO TECH ERRORS + MAX SKALIERBAR + AUDIO-AUTHORITY HEILIG + DATEN-AUTHORITY SAKROSANKT. Heute gebaut: Master-Wizard-Source-Convention, `build_wizard_brand_overlay.mjs`, SHORT-Greeting-Bucket, Take-2-Schedule-Generator, 10-Sub-Gate Quality-Gate. Quality: Take 2 preis Leins + Take 4 Dörfler/Leins + Take 3 Dörfler ABGENOMMEN. Take 3 Leins 9/10 wartet auf Auto-Calibration v2. Backup `_backup_27_04_evening_pre_skalability_v2/` (502 MB + RESTORE.md). Nächster Schritt bei Re-Login: Auto-Calibration v2 via Pixel-State-Detection bauen → `RESUME_HERE.md` + PIPELINE_BIBLE §43+§45. Day-26-Kontext:) 2026-04-26 Day-26 Evening (**🎬 TAKE 2+3 DÖRFLER ABGENOMMEN, TAKE 4 IM REVIEW.** Phase B-2 Screenflow-Retiming abgeschlossen für Dörfler. Take 2 Notruf+Preis ✅ final. Take 3 ✅ 28 Segmente mit Loom-Face-Move. Take 4 erster Build durch (18 Segmente, Custom Per-Segment-Gaps 1.1/2.0/3.0/2.0s). Pipeline-Bible §36-§38: Audio/Screen/Schedule-Triade + Take-3-Workflow + Per-Segment-Loudnorm Pflicht. 12 neue Architektur-Patterns FB100-FB111 jetzt SOP. Tag-23-Kontext:) 2026-04-23 Late-Night (Sales Day 23. **Take-4-Review-Flow Gold-Standard für alle 3 Betriebe (Leins + Stark + Wälti) erreicht. Round-3-Iteration: FB32-FB41 gefixt.** Milestones: FB32 Samsung-Pop-from-Link Animation (Mini-Review-Preview ploppt zentral aus SMS-Link, Samsung One UI Easing), FB34 Review-Layout (140px grey padding + 4px brand-bar + 60px pt-6 für Leins-AG-Heading), FB37 Dual-.min-h-dvh Selector-Falle aufgelöst (CSS-Selector muss outer via `.bg-gray-100` disambiguieren, sonst doppelt padding), FB38 Reveal-Overlay Smart-Gate (MIN_HOLD 3500ms + checkReady-Polling für Hydration-Flash-Schutz), FB39 deterministische Seed-Zeiten (Andreas Gerber Heute 07:12 aus demoTime.today statt wallclock-hoursAgo), FB40 Homescreen-Wallpaper crop (height:105% Overflow hinter Viewport), FB41 Samsung One UI 6 authentische Nav-Icons (3-bar Recent + rounded-square Home + chevron Back, dark-bg auf Homescreen via wallpaper vs light-bg auf SMS/Review). Alle 3 Betriebe: Take 2 ~153s + Take 3 ~61s + Take 4 ~106s = ~5min/Tenant. 35/35 QG PASS pro Tenant. Pipeline-Bible §31 dokumentiert komplette Round-3-Learnings. Production-Ready für 10/Tag-Skalierung. Nächster Schritt: Founder-Review + Audio-Layer + Outreach-Freigabe.)
 
 ---
 
@@ -398,6 +399,26 @@ Phase B-5: Delivery        → Nur bei Conversion (Vertrag, Portierung)
 
 **Operating Model:** `docs/gtm/operating_model.md`
 **Pipeline:** `docs/sales/pipeline.md` + `docs/sales/pipeline.csv`
+
+### Zwei Maschinen — die End-to-End-Skalierung
+
+FlowSight skaliert über **zwei** Maschinen, die nahtlos ineinander greifen:
+
+```
+PROSPECT ──→ [PIPELINE-MASCHINE]   ──→ [ONBOARDING-MASCHINE]   ──→ KUNDE
+              demo + outreach           live-setup + hand-over
+```
+
+| Maschine | Zweck | Bible | Lessons-Learned |
+|---|---|---|---|
+| **Pipeline-Maschine** | Pre-Conversion: Demo-Video personalisiert, Outreach, Trial provisionieren | `docs/gtm/pipeline/PIPELINE_BIBLE.md` | `docs/customers/lessons-learned.md` |
+| **Onboarding-Maschine** | Post-Conversion: Live-Setup, Hand-Over, Validation, Convert | `docs/gtm/onboarding/ONBOARDING_BIBLE.md` | `docs/gtm/onboarding/lessons_learned.md` |
+
+Beide Maschinen lösen denselben Bottleneck: **Founder-Zeit pro Kunde**. Jeder neue Kunde, der durch beide Maschinen läuft, hinterlässt Lessons-Learned-Einträge → die Maschinen werden je Kunde 1× besser.
+
+**Onboarding-Maschine North Star:** Founder kann 5 Kunden pro Woche onboarden ohne Kontextwechsel. Heute: 1-2/Tag mit voller Aufmerksamkeit. Gap → Stufe 1-3 Roadmap in `docs/gtm/onboarding/ONBOARDING_BIBLE.md` §5.
+
+**Erster Kunde durch beide Maschinen:** Big Ben Pub (Paul, Oberrieden) — Live ab 29.04.2026.
 
 ---
 
