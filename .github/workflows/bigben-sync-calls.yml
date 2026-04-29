@@ -1,0 +1,62 @@
+name: BigBen Sync Calls
+
+# Polls Retell for recent BigBen calls every 5 minutes (GitHub Actions
+# minimum cron interval). Without this cron, voice reservations only get
+# turned into pub_reservations + push notifications when Paul has the app
+# open — meaning callers who reserve while Paul is away from the phone
+# wouldn't reach his iOS App-Icon-Badge for hours.
+#
+# Why polling not webhook: Retell's webhook_url fires unreliably for the
+# BigBen agent (see docs/customers/bigben-pub/status.md — root cause unclear,
+# Retell-seitig). Polling via /api/retell/v2/list-calls is the workaround
+# that has been stable since 2026-04-16.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # every 5 minutes (GH Actions floor)
+  workflow_dispatch: {}
+
+# Hard cap concurrency: if a previous run is still going (Retell slow,
+# Vercel cold start, etc.), we cancel the queued one rather than stacking.
+concurrency:
+  group: bigben-sync-calls
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: poll-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger sync-calls
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          LIFECYCLE_TICK_SECRET: ${{ secrets.LIFECYCLE_TICK_SECRET }}
+        run: |
+          RESPONSE=$(curl -sS -m 60 -w "\n%{http_code}" \
+            -X POST "${APP_URL}/api/bigben-pub/sync-calls" \
+            -H "Authorization: Bearer ${LIFECYCLE_TICK_SECRET}" \
+            -H "Content-Type: application/json")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP ${HTTP_CODE}"
+          echo "Body: ${BODY}"
+
+          # Soft-fail: a single 5xx shouldn't page the founder. Only hard-fail
+          # on auth (401) or repeated outage. Telegram only on synced > 0 or
+          # auth failure — silent on "0 synced, 0 checked" (the common case).
+          if [ "$HTTP_CODE" = "401" ]; then
+            echo "::error::Auth failed — LIFECYCLE_TICK_SECRET mismatch"
+            exit 1
+          fi
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "::warning::HTTP ${HTTP_CODE} — transient, will retry next tick"
+            exit 0
+          fi
+
+          SYNCED=$(echo "$BODY" | jq -r '.synced // 0')
+          if [ "$SYNCED" -gt 0 ]; then
+            echo "✓ ${SYNCED} new reservation(s) synced + pushed"
+          fi
