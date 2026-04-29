@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
 
 /**
@@ -6,8 +7,33 @@ import { getServiceClient } from "@/src/lib/supabase/server";
  * and create pub_reservations from calls with confirmed reservation.
  *
  * Only processes calls from the last 2 hours. Idempotent via call_id.
+ *
+ * Two callers:
+ *   1. In-app polling (PubDashboard / ReservationManager) — runs while Paul
+ *      has the app open. No auth header.
+ *   2. GH Actions cron `BigBen Sync Calls` (every 5 min) — runs even when
+ *      Paul's app is closed, so a phone reservation reliably triggers a push
+ *      within ~5 min. Authed via Bearer LIFECYCLE_TICK_SECRET.
  */
+export async function POST(req: NextRequest) {
+  // Bearer check for the cron path. Without this the GH Actions runner
+  // would have no way to differentiate from public traffic, and we'd open
+  // the Retell quota up to anyone hitting the URL.
+  const auth = req.headers.get("authorization") ?? "";
+  const expected = `Bearer ${process.env.LIFECYCLE_TICK_SECRET ?? ""}`;
+  if (!process.env.LIFECYCLE_TICK_SECRET || auth !== expected) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  return runSync();
+}
+
 export async function GET() {
+  // Public/session-cookie path used by the in-app polling. Keeps current
+  // behavior so the dashboard refresh keeps working without code changes.
+  return runSync();
+}
+
+async function runSync() {
   const apiKey = process.env.RETELL_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "no_api_key" }, { status: 500 });
 
