@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { PushEnableCard } from "@/src/components/ops/PushEnableCard";
+import { PushStatusIndicator } from "@/src/components/ops/PushStatusIndicator";
 
 interface TodayEvent {
   id: string;
@@ -95,13 +96,17 @@ export function PubDashboard({
       {/* Header */}
       <div>
         <h1 className="text-lg font-bold text-gray-900">{tenantName}</h1>
-        <p className="text-xs text-gray-400">
-          {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
-        </p>
+        <div className="mt-0.5 flex items-center gap-2">
+          <p className="text-xs text-gray-400">
+            {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Zurich" })}
+          </p>
+          <PushStatusIndicator />
+        </div>
       </div>
 
-      {/* Push enable card — visible until user has subscribed. Once active,
-          shows a "Send test" link so we can verify end-to-end during onboarding. */}
+      {/* Push enable card — only visible while NOT subscribed. Once active
+          the card returns null; status moves to PushStatusIndicator above
+          and the test path lives on /ops/help (FB28). */}
       <PushEnableCard />
 
       {/* ── PENDING RESERVATIONS (compact alert) ──────── */}
