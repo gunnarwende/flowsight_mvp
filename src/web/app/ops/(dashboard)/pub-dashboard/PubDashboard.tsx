@@ -58,6 +58,7 @@ export function PubDashboard({
   upcomingReservations,
   noShowMap,
   sourceStats,
+  pendingCallbackCount,
 }: {
   tenantName: string;
   todayEvents: TodayEvent[];
@@ -67,6 +68,7 @@ export function PubDashboard({
   upcomingReservations: UpcomingReservation[];
   noShowMap: Record<string, number>;
   sourceStats: Record<string, number>;
+  pendingCallbackCount: number;
 }) {
   const router = useRouter();
 
@@ -127,6 +129,29 @@ export function PubDashboard({
             </p>
           </div>
           <svg className="w-4 h-4 text-amber-400 flex-shrink-0 ml-auto" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      )}
+
+      {/* ── PENDING CALLBACKS (compact alert) ──────────── */}
+      {pendingCallbackCount > 0 && (
+        <button
+          onClick={() => router.push("/ops/callbacks")}
+          className="w-full rounded-xl bg-blue-50 border border-blue-200 px-4 py-3 flex items-center gap-3 text-left transition-all hover:bg-blue-100 active:scale-[0.98]"
+        >
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white animate-pulse flex-shrink-0">
+            {pendingCallbackCount}
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-blue-900">
+              {pendingCallbackCount === 1 ? "1 callback to make" : `${pendingCallbackCount} callbacks to make`}
+            </p>
+            <p className="text-xs text-blue-700 truncate">
+              Suppliers, partners — people waiting for you to call back
+            </p>
+          </div>
+          <svg className="w-4 h-4 text-blue-400 flex-shrink-0 ml-auto" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </button>
