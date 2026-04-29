@@ -42,7 +42,13 @@ const AGENT_PATHS = {
   en: path.join(REPO_ROOT, "retell", "exports", "bigben-pub_agent.json"),
 };
 
-const DAYS_AHEAD = 14;
+// 60 days = ~2 months. Originally 14 — but Paul curates events months in
+// advance (e.g. Karaoke 30.05. eingetragen 28.04., war für Lisa unsichtbar
+// weil 31 Tage > 14 Horizont). 60 lets her reliably know everything Paul
+// has on the calendar, without bloating the prompt with noise from far-out
+// placeholder events. The Website itself uses a 365-day window; the voice
+// prompt has tighter limits because every event eats prompt tokens.
+const DAYS_AHEAD = 60;
 
 // ─── Datum-Helpers ───────────────────────────────────────────────────────────
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -93,7 +99,20 @@ const { data: dbEvents } = await sb
   .order("event_date")
   .order("event_time");
 
-console.log(`DB events in horizon: ${dbEvents?.length || 0}`);
+// Diagnostic logging — every cron run prints what Lisa actually knows about.
+// When Paul says "Lisa weiss nichts von Karaoke 30. Mai" we can now check the
+// last cron output to see whether the event was even in the horizon window.
+const evList = dbEvents ?? [];
+console.log(`DB events in horizon (${DAYS_AHEAD}d): ${evList.length}`);
+if (evList.length > 0) {
+  for (const e of evList) {
+    const dateStr = new Date(e.event_date + "T12:00:00").toISOString().split("T")[0];
+    const timeStr = e.event_time?.slice(0, 5) || "—";
+    console.log(`  · ${dateStr} ${timeStr} [${e.category}] ${e.title}`);
+  }
+} else {
+  console.log("  (no events scheduled — Lisa will say 'no specific event scheduled')");
+}
 
 // ─── PURIST MODE (G11 — Voice macht nur 100%-bestätigte Versprechen) ───────
 // Lisa kennt AUSSCHLIESSLICH was Paul in pub_events gepflegt hat. Keine
