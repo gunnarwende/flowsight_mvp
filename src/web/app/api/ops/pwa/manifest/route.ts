@@ -1,4 +1,5 @@
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
+import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
 
 /**
@@ -9,10 +10,16 @@ import { resolveTenantIdentity } from "@/src/lib/tenants/resolveTenantIdentity";
  * not "FlowSight". Identity Contract R4 compliance.
  *
  * Fallback for unauthenticated: generic "Leitsystem".
+ *
+ * start_url is tenant-module-aware: Pub tenants land on /ops/pub-dashboard,
+ * not the Sanitär /ops/cases surface (FB29 — Paul opened the PWA from the
+ * home screen and saw the Sanitär Leitsystem with "Guten Abend, Big" header).
  */
 export async function GET(request: Request) {
   let name = "Leitsystem";
   let shortName = "Leitsystem";
+  let startUrl = "/ops/cases";
+  let description = "Fälle, Termine und Team auf einen Blick.";
 
   // Support ?tenant=UUID for per-tenant PWA installation (from /ops/app/[slug])
   const { searchParams } = new URL(request.url);
@@ -26,6 +33,21 @@ export async function GET(request: Request) {
       if (identity) {
         shortName = identity.leitsystemName;
         name = `${identity.leitsystemName} Leitsystem`;
+      }
+
+      // Module-aware start_url: pubs go to /ops/pub-dashboard so the home-screen
+      // icon never opens the Sanitär Leitsystem (FB29).
+      const supabase = getServiceClient();
+      const { data: tenant } = await supabase
+        .from("tenants")
+        .select("modules")
+        .eq("id", tenantIdParam)
+        .single();
+      const modules = (tenant?.modules ?? {}) as Record<string, unknown>;
+      const isPub = Boolean(modules.events) || Boolean(modules.reservations);
+      if (isPub) {
+        startUrl = "/ops/pub-dashboard";
+        description = "Reservierungen, Events und Gäste auf einen Blick.";
       }
     } else {
       // Default: resolve from auth session
@@ -49,8 +71,8 @@ export async function GET(request: Request) {
   const manifest = {
     name,
     short_name: shortName,
-    description: "Fälle, Termine und Team auf einen Blick.",
-    start_url: "/ops/cases",
+    description,
+    start_url: startUrl,
     scope: "/ops",
     display: "standalone" as const,
     display_override: ["standalone"],

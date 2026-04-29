@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
@@ -22,6 +23,22 @@ export default async function OpsCasesPage({
 
   const supabase = getServiceClient();
   const scope = await resolveTenantScope();
+
+  // FB29 defensive guard: if the active tenant is a Pub (events/reservations
+  // module), bounce to /ops/pub-dashboard. This catches stale browser cache,
+  // shared links, and any path that bypasses the manifest start_url change.
+  // Without this, Paul could still see "Guten Abend, Big" + Sanitär KPIs.
+  if (scope?.tenantId) {
+    const { data: tenantModuleCheck } = await supabase
+      .from("tenants")
+      .select("modules")
+      .eq("id", scope.tenantId)
+      .single();
+    const mods = (tenantModuleCheck?.modules ?? {}) as Record<string, unknown>;
+    if (Boolean(mods.events) || Boolean(mods.reservations)) {
+      redirect("/ops/pub-dashboard");
+    }
+  }
 
   // ── Tenant scope (ALWAYS filter when tenantId present — even for admins)
   // Prevents tenant identity leak: Weinberger Leitstand must never show Brunner cases.
