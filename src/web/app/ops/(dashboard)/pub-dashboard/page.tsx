@@ -37,6 +37,7 @@ export default async function PubDashboardPage() {
     { data: upcomingRes },
     { data: noShowRows },
     { data: sourceRows },
+    { count: pendingCallbackCount },
   ] = await Promise.all([
     // Today's events
     supabase
@@ -94,6 +95,12 @@ export default async function PubDashboardPage() {
       .from("pub_reservations")
       .select("source")
       .eq("tenant_id", tenantId),
+    // Pending callback requests (suppliers / business / Lisa-flagged)
+    supabase
+      .from("pub_callback_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .eq("status", "pending"),
   ]);
 
   // Build no-show map: phone -> count
@@ -122,6 +129,7 @@ export default async function PubDashboardPage() {
       upcomingReservations={upcomingRes ?? []}
       noShowMap={noShowMap}
       sourceStats={sourceStats}
+      pendingCallbackCount={pendingCallbackCount ?? 0}
     />
   );
 }

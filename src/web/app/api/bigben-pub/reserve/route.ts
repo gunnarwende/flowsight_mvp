@@ -81,15 +81,22 @@ export async function POST(req: Request) {
     });
 
     // Push notification to Paul (no guest SMS — that fires only on confirm).
-    // Counts pending reservations AFTER insert so the iOS App-Icon-Badge
-    // reflects the real "you have N waiting" state, not just +1 per push.
+    // App-Icon-Badge counts pending reservations + pending callbacks so it
+    // reflects the full "things waiting for me" queue, not just one type.
     if (tenant) {
-      const { count: pendingCount } = await supabase
-        .from("pub_reservations")
-        .select("id", { count: "exact", head: true })
-        .eq("tenant_id", tenant.id)
-        .eq("status", "pending");
-      const badgeCount = pendingCount ?? 1;
+      const [resRes, cbRes] = await Promise.all([
+        supabase
+          .from("pub_reservations")
+          .select("id", { count: "exact", head: true })
+          .eq("tenant_id", tenant.id)
+          .eq("status", "pending"),
+        supabase
+          .from("pub_callback_requests")
+          .select("id", { count: "exact", head: true })
+          .eq("tenant_id", tenant.id)
+          .eq("status", "pending"),
+      ]);
+      const badgeCount = (resRes.count ?? 0) + (cbRes.count ?? 0);
 
       import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
         sendOpsPush({
@@ -99,7 +106,7 @@ export async function POST(req: Request) {
           body: `${name} — ${dateStr} at ${time}, ${guests} ${Number(guests) === 1 ? "guest" : "guests"}`,
           url: "/ops/reservations",
           tag: `reservation-${date}-${name}`,
-          badgeCount,
+          badgeCount: badgeCount || 1,
         })
       ).catch(() => {});
     }

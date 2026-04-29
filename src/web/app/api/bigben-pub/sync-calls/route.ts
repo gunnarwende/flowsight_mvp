@@ -79,16 +79,84 @@ async function runSync() {
       (existing ?? []).map((r: { note: string | null }) => r.note?.match(/call_id:([a-z0-9_]+)/)?.[1]).filter(Boolean)
     );
 
+    // Callbacks live in their own table — parallel "already-handled" set so
+    // the same Retell call_id never produces a duplicate callback row.
+    const { data: existingCb } = await supabase
+      .from("pub_callback_requests")
+      .select("call_id")
+      .eq("tenant_id", tenant.id);
+    const callbackHandledIds = new Set(
+      (existingCb ?? [])
+        .map((r: { call_id: string | null }) => r.call_id)
+        .filter((v): v is string => Boolean(v)),
+    );
+
     let synced = 0;
+    let callbacksSynced = 0;
     for (const call of recentCalls) {
-      if (!call.call_id || syncedIds.has(call.call_id)) continue;
+      if (!call.call_id) continue;
       if (call.call_status !== "ended") continue;
 
       const transcript = call.transcript ?? "";
       const lower = transcript.toLowerCase();
-
-      // Check if this is a reservation call — use structured analysis first, transcript fallback
       const analysis = call.call_analysis?.custom_analysis_data ?? {};
+
+      // ── Branch 1: callback request ─────────────────────────────────
+      // Lisa's promise phrase is the canonical signal — the prompt's
+      // CALLBACK REQUESTS section requires the exact phrase "noted that
+      // down for Paul" / "note that for Paul". Transcript-pattern only
+      // for now (PCA fields not yet wired), same playbook reservations
+      // used before structured extraction.
+      const isCallback = !callbackHandledIds.has(call.call_id) && (
+        analysis.callback_requested === true ||
+        analysis.call_type === "callback" ||
+        lower.includes("noted that down for paul") ||
+        lower.includes("note that for paul") ||
+        lower.includes("paul will call you back") ||
+        lower.includes("call you back as soon as he can")
+      );
+
+      if (isCallback) {
+        const callerName = (typeof analysis.caller_name === "string" && analysis.caller_name) ||
+          (typeof analysis.guest_name === "string" && analysis.guest_name) ||
+          extractName(transcript, analysis);
+        const topic = (typeof analysis.topic === "string" && analysis.topic) ||
+          extractCallbackTopic(transcript);
+        const callerPhone = call.from_number ?? "";
+
+        const { error: cbErr } = await supabase.from("pub_callback_requests").insert({
+          tenant_id: tenant.id,
+          caller_name: callerName === "Phone Guest" ? null : callerName,
+          caller_phone: callerPhone,
+          topic,
+          call_id: call.call_id,
+          transcript_excerpt: transcript.slice(0, 500),
+          status: "pending",
+        });
+
+        if (!cbErr) {
+          callbacksSynced++;
+          try {
+            const { sendOpsPush } = await import("@/src/lib/push/sendOpsPush");
+            const badgeCount = await computePubBadgeCount(supabase, tenant.id);
+            await sendOpsPush({
+              tenantId: tenant.id,
+              eventType: "case",
+              title: "Callback request",
+              body: `${callerName || "Caller"}${topic ? ` · ${topic}` : ""}`,
+              url: "/ops/callbacks",
+              tag: `callback-${call.call_id}`,
+              badgeCount,
+            });
+          } catch { /* best effort */ }
+        }
+        // Pure callback — don't double-classify as reservation
+        continue;
+      }
+
+      if (syncedIds.has(call.call_id)) continue;
+
+      // ── Branch 2: reservation ──────────────────────────────────────
       const isReservation = analysis.is_reservation === true ||
         analysis.call_type === "reservation" || analysis.call_type === "mixed" ||
         // Transcript fallback for older calls without structured analysis
@@ -136,12 +204,7 @@ async function runSync() {
         synced++;
         try {
           const { sendOpsPush } = await import("@/src/lib/push/sendOpsPush");
-          // Count pending after insert for accurate App-Icon-Badge
-          const { count: pendingCount } = await supabase
-            .from("pub_reservations")
-            .select("id", { count: "exact", head: true })
-            .eq("tenant_id", tenant.id)
-            .eq("status", "pending");
+          const badgeCount = await computePubBadgeCount(supabase, tenant.id);
           await sendOpsPush({
             tenantId: tenant.id,
             eventType: "case",
@@ -149,16 +212,53 @@ async function runSync() {
             body: `${guestName} · ${partySize} guests · ${time}`,
             url: "/ops/reservations",
             tag: `res-voice-${call.call_id}`,
-            badgeCount: pendingCount ?? 1,
+            badgeCount,
           });
         } catch { /* best effort */ }
       }
     }
 
-    return NextResponse.json({ synced, checked: recentCalls.length });
+    return NextResponse.json({ synced, callbacksSynced, checked: recentCalls.length });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
+}
+
+// Combined badge count = pending reservations + pending callbacks. Paul's
+// iOS App-Icon-Badge should reflect the sum of "things waiting for me",
+// not just one queue. Keeping it lazy (count queries) so we don't have to
+// maintain a denormalised counter.
+async function computePubBadgeCount(
+  supabase: ReturnType<typeof getServiceClient>,
+  tenantId: string,
+): Promise<number> {
+  const [resRes, cbRes] = await Promise.all([
+    supabase
+      .from("pub_reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .eq("status", "pending"),
+    supabase
+      .from("pub_callback_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .eq("status", "pending"),
+  ]);
+  return (resRes.count ?? 0) + (cbRes.count ?? 0);
+}
+
+// Quick-and-dirty topic extraction: take the caller's reason phrase if the
+// transcript shows one of the typical patterns. Falls back to null and the
+// dashboard renders just the name.
+function extractCallbackTopic(transcript: string): string | null {
+  const lower = transcript.toLowerCase();
+  // Lisa's question is "what's it about? a delivery, a question, something else?"
+  // Caller's reply typically follows.
+  const m = transcript.match(/(?:it's about|it is about|regarding|about (?:a |the )?|wegen|geht um)\s+([^.!?\n]{3,80})/i);
+  if (m) return m[1].trim().replace(/\s+/g, " ");
+  // Fallback: scan for known supplier/business keywords
+  const kw = lower.match(/\b(delivery|invoice|payment|supplier|order|product|contract|partnership|collaboration|meeting|appointment|lieferung|rechnung|zahlung|lieferant|bestellung|vertrag|treffen|termin)\b/);
+  return kw ? kw[1] : null;
 }
 
 // --- Extraction helpers ---

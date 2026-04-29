@@ -237,6 +237,29 @@ function patchLivePrompt(livePrompt, todayBlock, rulesBlock, eventsBlock, lang) 
   return p;
 }
 
+// ── Ensure a body section is present in the live prompt.
+//
+// The publish flow preserves the LIVE body verbatim (PUB INFORMATION onward).
+// When we add a new structural section to local SoT — e.g. CALLBACK REQUESTS —
+// it only reaches LIVE on the first run after the section was added. After
+// that the section is already present and we leave it untouched (idempotent).
+//
+// Lang-aware: insert the canonical EN section into both EN and DE flows. The
+// LLM follows English instructions in either language because of the agent's
+// language setting; this matches how the existing reservation flow works.
+function ensureBodySection(prompt, sectionHeader, sectionBody, anchorBefore) {
+  const present = new RegExp(`${SEP}\\s*\\n${sectionHeader}`).test(prompt);
+  if (present) return prompt;
+
+  const anchorRe = new RegExp(`${SEP}\\s*\\n${anchorBefore}`);
+  const m = prompt.match(anchorRe);
+  if (!m || m.index == null) {
+    // Anchor missing — append at end as a last resort. Better than silent loss.
+    return prompt + "\n\n" + sectionBody.trim() + "\n";
+  }
+  return prompt.slice(0, m.index) + sectionBody.trim() + "\n\n" + prompt.slice(m.index);
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -245,9 +268,13 @@ async function main() {
 
   const todayBlockEn = extractLocalSection(sourcePrompt, "TODAY'S DATE");
   const eventsBlockEn = extractLocalSection(sourcePrompt, "UPCOMING EVENTS");
+  const callbackBlock = extractLocalSection(sourcePrompt, "CALLBACK REQUESTS");
   if (!todayBlockEn || !eventsBlockEn) {
     console.error("FATAL: TODAY'S DATE / UPCOMING EVENTS missing in local JSON.");
     process.exit(2);
+  }
+  if (!callbackBlock) {
+    console.warn("  ⚠ CALLBACK REQUESTS missing in local JSON — feature will not be active");
   }
   // Strip trailing blank line if present
   const todayEn = todayBlockEn.trimEnd();
@@ -289,7 +316,12 @@ async function main() {
     console.log(`━━━ ${lang.toUpperCase()} flow ${flowId} ━━━`);
     const flow = await get(`/get-conversation-flow/${flowId}`);
     const before = flow.global_prompt ?? "";
-    const after = patchLivePrompt(before, today, rules, events, lang);
+    let after = patchLivePrompt(before, today, rules, events, lang);
+    // Ensure the new structural CALLBACK section is in the live prompt.
+    // First publish after add → injection. Every following run → no-op.
+    if (callbackBlock) {
+      after = ensureBodySection(after, "CALLBACK REQUESTS", callbackBlock, "PRICES");
+    }
     console.log(`  prompt: ${before.length}c → ${after.length}c (Δ${after.length - before.length})`);
 
     if (dryRun) {
