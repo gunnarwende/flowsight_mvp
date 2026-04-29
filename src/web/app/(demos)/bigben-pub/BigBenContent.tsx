@@ -53,21 +53,14 @@ const t = {
     reviewsLabel: "Reviews",
     reviewsTitle: "What our guests say.",
     reviewsOnGoogle: "on Google",
+    reviewsSeeAll: "See all reviews on Google",
     galleryLabel: "Gallery",
     galleryTitle: "See for yourself.",
     reserveLabel: "Reservations",
     reserveTitle: "Book your table.",
     reserveDesc: "Pick a date, time and party size — we'll confirm your reservation by SMS.",
-    hoursLabel: "Opening Hours",
-    hoursTitle: "When to find us.",
-    monday: "Monday",
-    tuesday: "Tuesday",
-    wednesday: "Wednesday",
-    thursday: "Thursday",
-    friday: "Friday",
-    saturday: "Saturday",
-    sunday: "Sunday",
-    closed: "Closed",
+    findUsLabel: "Find Us",
+    findUsTitle: "Drop by.",
     followUs: "Follow us on Instagram",
   },
   de: {
@@ -115,21 +108,14 @@ const t = {
     reviewsLabel: "Bewertungen",
     reviewsTitle: "Was unsere Gäste sagen.",
     reviewsOnGoogle: "auf Google",
+    reviewsSeeAll: "Alle Bewertungen auf Google",
     galleryLabel: "Galerie",
     galleryTitle: "Überzeug dich selbst.",
     reserveLabel: "Reservierung",
     reserveTitle: "Reservier deinen Tisch.",
     reserveDesc: "Wähle Datum, Uhrzeit und Personenzahl — wir bestätigen per SMS.",
-    hoursLabel: "Öffnungszeiten",
-    hoursTitle: "Wann du uns findest.",
-    monday: "Montag",
-    tuesday: "Dienstag",
-    wednesday: "Mittwoch",
-    thursday: "Donnerstag",
-    friday: "Freitag",
-    saturday: "Samstag",
-    sunday: "Sonntag",
-    closed: "Geschlossen",
+    findUsLabel: "Finden",
+    findUsTitle: "Vorbeischauen.",
     followUs: "Folge uns auf Instagram",
   },
 } as const;
@@ -408,6 +394,21 @@ export function BigBenContent() {
               </div>
             ))}
           </div>
+
+          {/* See all reviews — links out to public Google Maps listing */}
+          <div className="mt-10 flex justify-center">
+            <a
+              href="https://www.google.com/maps/place/Big+Ben+Pub/@47.2723156,8.562489,14.25z/data=!4m8!3m7!1s0x479aa89b342321f9:0x67127cbd2a207a2b!8m2!3d47.2788735!4d8.5749821!9m1!1b1!16s%2Fg%2F1wbrwrmg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-[#3a2e26] bg-[#1e1611] px-7 py-3 text-sm font-semibold text-[#f0e8dc] transition-all hover:border-[#a2774b] hover:bg-[#2a1f1a]"
+            >
+              {s.reviewsSeeAll}
+              <svg className="h-4 w-4 text-[#a2774b]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -492,43 +493,32 @@ export function BigBenContent() {
         </div>
       </section>
 
-      {/* ── HOURS & LOCATION ────────────────────────────────────── */}
+      {/* ── FIND US (Address + Map; Hours pflegt Paul auf Google Business) ── */}
       <section className="py-24">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <div className="grid gap-14 lg:grid-cols-2">
-            {/* Hours */}
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
-                {s.hoursLabel}
-              </p>
-              <h2 className="mt-3 font-serif text-3xl font-bold">{s.hoursTitle}</h2>
-              <div className="mt-8 space-y-3">
-                <HoursRow day={s.monday} hours={s.closed} closed />
-                <HoursRow day={s.tuesday} hours="16:00 – 23:00" />
-                <HoursRow day={s.wednesday} hours="16:00 – 23:00" />
-                <HoursRow day={s.thursday} hours="16:00 – 23:00" />
-                <HoursRow day={s.friday} hours="16:00 – 00:00" />
-                <HoursRow day={s.saturday} hours="16:00 – 00:00" />
-                <HoursRow day={s.sunday} hours="16:00 – 22:00" />
-              </div>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[#a2774b]">
+            {s.findUsLabel}
+          </p>
+          <h2 className="mt-3 text-center font-serif text-4xl font-bold">{s.findUsTitle}</h2>
 
-              <div className="mt-10 flex flex-col gap-3 text-sm text-[#b0a090]">
-                <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
-                <a href="tel:+41764458942" className="block hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
-                <a
-                  href="https://www.instagram.com/bigbenpubzh/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 font-medium text-[#a2774b] transition-colors hover:text-[#e74c3c]"
-                >
-                  <IcInstagram />
-                  {s.followUs}
-                </a>
-              </div>
+          <div className="mt-10 grid gap-10 lg:grid-cols-5">
+            {/* Contact info */}
+            <div className="flex flex-col gap-4 text-sm text-[#b0a090] lg:col-span-2 lg:justify-center">
+              <p className="font-medium text-[#f0e8dc]">Alte Landstrasse 20, 8942 Oberrieden</p>
+              <a href="tel:+41764458942" className="block hover:text-[#f0e8dc] transition-colors">+41 76 445 89 42</a>
+              <a
+                href="https://www.instagram.com/bigbenpubzh/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 font-medium text-[#a2774b] transition-colors hover:text-[#e74c3c]"
+              >
+                <IcInstagram />
+                {s.followUs}
+              </a>
             </div>
 
             {/* Map */}
-            <div className="overflow-hidden rounded-2xl shadow-lg">
+            <div className="overflow-hidden rounded-2xl shadow-lg lg:col-span-3">
               <iframe
                 title="Big Ben Pub Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2706.8!2d8.5835!3d47.2727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479aa9a6e3e3e3e3%3A0x0!2sBig+Ben+Pub+Oberrieden!5e0!3m2!1sde!2sch!4v1"
@@ -827,13 +817,3 @@ function DynamicEvents({ lang }: { lang: Lang }) {
   );
 }
 
-function HoursRow({ day, hours, closed }: { day: string; hours: string; closed?: boolean }) {
-  return (
-    <div className="flex items-center justify-between border-b border-[#3a2e26] pb-3">
-      <span className="text-sm font-medium">{day}</span>
-      <span className={`text-sm ${closed ? "text-[#5a4d40]" : "text-[#a89478]"}`}>
-        {hours}
-      </span>
-    </div>
-  );
-}
