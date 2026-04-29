@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PushTestCard } from "@/src/components/ops/PushTestCard";
 
 const FAQ_ITEMS = [
   {
@@ -77,6 +78,11 @@ export default function HelpPage() {
           </a>
         </div>
       </div>
+
+      {/* Notifications — moved here from the dashboard banner so the dashboard
+          stays clean once activation is done. The "Send test" path lives here
+          for onboarding diagnostics. */}
+      <PushTestCard />
 
       {/* FAQ */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm divide-y divide-gray-100">
