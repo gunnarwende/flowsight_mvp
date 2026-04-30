@@ -89,15 +89,26 @@ const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_R
 const { data: tenant } = await sb.from("tenants").select("id").eq("slug", SLUG).single();
 if (!tenant) { console.error("✗ tenant not found"); process.exit(2); }
 
-const { data: dbEvents } = await sb
+// IMPORTANT: select only columns that actually exist in pub_events. Earlier
+// version selected `recurring, recurring_day` which never existed → Postgres
+// error 42703, error was silently swallowed (code only destructured `data`,
+// not `error`), Lisa saw 0 events for days. Bug discovered 30.04. when Paul
+// reported Lisa knew nothing about events he had pflegt in the App.
+const eventsRes = await sb
   .from("pub_events")
-  .select("category, title, event_date, event_time, recurring, recurring_day")
+  .select("category, title, event_date, event_time")
   .eq("tenant_id", tenant.id)
   .eq("is_active", true)
   .gte("event_date", today.toISOString().split("T")[0])
   .lte("event_date", horizonEnd.toISOString().split("T")[0])
   .order("event_date")
   .order("event_time");
+
+if (eventsRes.error) {
+  console.error("✗ pub_events query failed:", eventsRes.error);
+  process.exit(3);
+}
+const dbEvents = eventsRes.data;
 
 // Diagnostic logging — every cron run prints what Lisa actually knows about.
 // When Paul says "Lisa weiss nichts von Karaoke 30. Mai" we can now check the
@@ -128,7 +139,6 @@ const merged = (dbEvents ?? []).map((e) => ({
   time: e.event_time?.slice(0, 5) || "",
   title: e.title,
   category: e.category,
-  note: e.recurring ? "recurring" : undefined,
   source: "db",
 }));
 
