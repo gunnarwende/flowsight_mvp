@@ -3706,3 +3706,489 @@ in die finale E-Mail.
 Bei 10/Tag manueller Founder-Review ist nicht skalierbar. Nur automated
 Semantic QG kann Master-Drift bei jedem Tenant fangen, bevor es zum Kunden
 geht.
+
+---
+
+## §53 Crash & Recovery — 29.04.2026 (Lessons Learned)
+
+> **WICHTIG:** Lies vor jeder weiteren Pipeline-Arbeit `docs/gtm/pipeline/RESUME_HERE.md`.
+> Es enthält den exakten Stand wo wir nach dem Crash sind.
+
+### Was kaputt gemacht wurde (Chronologie)
+
+**Phase 1 — Mausphase 29.04. nachts (~01:00-01:30):**
+- §51 Maus-Antizipation in 3 Recording-Scripts integriert
+- Pipeline für Dörfler T3 + T4 mit Maus laufen lassen
+- Hat alle Source-Recordings (`take3_complete.mp4`, `take3_with_loom.mp4`,
+  `take4_*.webm`) **überschrieben**
+- `auto_calibrate_phase_library_v2` regenerierte das Override mit kaputten
+  Anchor-Detections (4/5 statt 5/5)
+- **Founder-Reaktion:** "Maus ist Spielwiese. Audio↔Screen passt nicht."
+
+**Phase 2 — Lisa-Greeting-Anchor §52 (29.04. vormittag):**
+- 4-Bucket Greeting (SHORT/MEDIUM/LONG/ULTRA) implementiert
+- Dynamic Ring-Gap mit GREETING_END_ANCHOR_S=14.30
+- T2 Anchors für alle 4 Tenants neu gebaut
+- **Founder-Reaktion:** "Mapping ist absolut falsch gemappt"
+- Phase 2 brach Mapping zwischen Audio-Anchor und phone_call_active
+
+**Phase 3 — Loom-Surgical-Overlay-Versuch (29.04. nachmittag — gescheitert):**
+- master_takes/take2/leins-ag_preis.mp4 mit FFmpeg overlay+enable extending
+- Loom-Face top-right (805,20), 260×260, circle-mask, enable='between(t,45.1,209.8)'
+- **Problem:** FFmpeg auf 1440×900 H.264 mit overlay+enable filter EXTREM langsam
+- Versucht: medium preset, ultrafast, h264_amf, split-and-concat
+- **Resultat:** 1h+ Encoding pro Anchor, Files >300MB, kein abgeschlossener Build
+
+### Was Recovery gerettet hat
+
+**Apr-27-Backup ist Gold:**
+- Verzeichnis: `_backup_27_04_evening_pre_skalability_v2/` (502 MB)
+- Enthält: `previews/` für Dörfler + Leins (T1-T4 Anchors), `screenflows/` (T3 Source files), `transcripts/`, `takes/` (Audio Master)
+- Restored: 9 Anchors → `_generated/previews/`
+- 5 davon nach Founder-Review als approved markiert + `master_takes/` kopiert
+
+### Lessons Learned (NICHT-VERHANDELBAR)
+
+1. **NIEMALS Source-Recordings überschreiben ohne Backup.** Vor JEDEM Pipeline-Run der `take*_complete.mp4` neu schreibt: erst aktuellen Stand nach `_old_<datum>.mp4` kopieren.
+
+2. **NIEMALS `auto_calibrate_phase_library_v2` ohne Backup-Awareness laufen lassen.** Es überschreibt manuell-getunte Calibration-Points. Vorher: `cp <override>.json <override>.json.bak_<datum>`.
+
+3. **TaskStop allein killt ffmpeg subprocesses NICHT.** Nach TaskStop IMMER `Stop-Process -Name ffmpeg -Force` (PowerShell).
+
+4. **Niemals Maus oder ähnliche Visual-Layer direkt im Recording integrieren.** Layer (Maus, Loom-during-call) gehören in eine post-production Schicht oder als HTML-Layer im Template.
+
+5. **mark_take_approved.mjs Convention:** Sobald Founder einen Take 10/10 abnimmt: SOFORT nach `master_takes/take<N>/<slug>[_variant].mp4` kopieren.
+
+6. **Apr-27-Backup ist Read-Only-Reference.** Nicht modifizieren.
+
+7. **FFmpeg Re-Encode auf 1440×900 H.264 ist auf dieser Hardware zu langsam für iterative Workflows.** Surgical Overlay-Approach mit `enable='between(t,...)'` dauert 1h+ pro File.
+
+### Approved-Liste post-Recovery (in `master_takes/`)
+
+| Take | Tenant | Pfad |
+|------|--------|------|
+| T1 | Dörfler AG | `master_takes/take1/doerfler-ag.mp4` |
+| T1 | Leins AG | `master_takes/take1/leins-ag.mp4` |
+| T2 Preis | Leins AG | `master_takes/take2/leins-ag_preis.mp4` (= Schablone-Master) |
+| T4 | Dörfler AG | `master_takes/take4/doerfler-ag.mp4` |
+| T4 | Leins AG | `master_takes/take4/leins-ag.mp4` |
+
+### Pending Founder-Verifikation (in `_generated/previews/`)
+
+| Take | Tenant | Quelle | Known Issue |
+|------|--------|--------|-------------|
+| T2 Notruf | Dörfler | Apr 27 Backup | Loom-during-call MISSING |
+| T2 Preis | Leins | master_takes copy | Loom-during-call MISSING |
+| T3 | Dörfler | Apr 27 Source + corrected phase library [6, 6.5] | — |
+| T3 | Leins | Apr 27 Source + apply_loom_take3 §43-Position | — |
+
+### TODO post-Resume
+
+1. Founder verifiziert die 4 PENDING-Anchors (Mapping OK?)
+2. Loom-during-call Fix via HTML-Layer in `take2_samsung.html` (Approach C, nicht FFmpeg)
+3. Re-Build Leins T2 Preis MIT Loom (neue Schablone-Master)
+4. Build Dörfler T2 Notruf, Stark T2 Notruf, Wälti T2 Preis (Pipeline mit gleicher Schablone)
+5. Build Stark T3 + Wälti T3 (§43 Master-Source-Brand-Overlay)
+6. QG-Spec gemeinsam definieren (per Take)
+7. `mark_take_approved.mjs` Skript bauen
+
+---
+
+## §54 T2 Anchor-Build — Splice-Architektur (29./30.04.2026)
+
+> **Status: LIVE.** `apply_loom_take2.mjs` ist jetzt der einzige Pfad zum T2-Anchor-Build.
+
+### Architektur
+
+T2-Anchor wird in 4 Chunks gespliced (re-encode pro Chunk, dann concat):
+
+```
+[1/4] pre-call:  master[0..45.1]                            (homescreen, search, dialing)
+[2/4] call:      phone-extended[0..pe_dur] (V) + master[45.1..CALL_END_TOTAL] (A)
+[3/4] post-call: master[CALL_END_TOTAL..ende]               (SMS-popup, app-open, leitsystem)
+[4/4] concat:    pre + call + post → take2_<variant>_anchor.mp4
+```
+
+- **Master = SoT für Audio.** Audio kommt durchgehend aus `master_takes/take2/<slug>_<variant>.mp4`. NIE aus phone-extended.
+- **Phone-extended = SoT für Phone-Visual während Call.** Loom-PiP, Anruf-aktiv-Screen, Anruf-beendet-Hold sind alle bereits dort eingebaut (durch `record_phone_call_visual.mjs`).
+- **Master ist sowohl Input als auch Output.** Erste Iteration: master = Apr-27-Backup-Anchor. Nach Founder-Approval: `mark_take_approved.mjs` kopiert _anchor.mp4 → master_takes. Nächste Iteration: master = approved-Vorgänger.
+
+### Goldene Regel
+
+**Audio NIE durch Splice anfassen.** Wenn ein Take Audio-Drift hat: am Master-File gefixt werden, nicht über phone-extended gemockt.
+
+---
+
+## §55 wizard_branded.mp4 als Hard-Gate vor T3-Build (29.04.2026)
+
+> **Status: LIVE.** §55-Hard-Gate verhindert T3-Drift durch fehlende Master-Source.
+
+`apply_loom_take3.mjs` bricht ab wenn `take3_wizard_branded.mp4` fehlt — fällt nicht silently auf TENANT-Original-`take3_wizard.webm` zurück (das war der §47-Bug). Hard-Gate fängt diese Klasse von Drift-Bugs an der Quelle ab.
+
+```js
+if (!existsSync(wizardBranded)) {
+  console.error("✗ no wizard_branded — run §43 master-source-brand-overlay first");
+  process.exit(2);
+}
+```
+
+---
+
+## §56 Universal CALL_END_TOTAL — dynamisch aus phone-extended-Dauer (30.04.2026)
+
+> **Status: LIVE.** `apply_loom_take2.mjs`. Behebt den Anruf-beendet-Hold-Cutoff in allen 4 Tenants × 2 Varianten.
+
+### Schmerzpunkt (29./30.04. QG-Discovery)
+
+Vorher: `CALL_END_TOTAL` war hartkodiert (`213.3` Notruf, `209.8` Preis). Phone-extended ist 169.5s (Notruf) bzw 166.5s (Preis) — ihre letzten 2-2.5s sind die "Anruf beendet · 02:46"-Hold-Phase. Splice-Window 45.1..213.3 = 168.2s konsumierte phone-extended nur 0..168.2s — schnitt also den Anruf-beendet-Hold 1.3s vor seinem Ende ab. **Ergebnis:** Master sprang nach kurzem Hold direkt auf SMS-Popup, Anruf-beendet-Screen kaum sichtbar (Founder-Feedback: "Anruf-beendet screen missing").
+
+### Architektur-Fix
+
+```js
+// Universal: phone-extended IMMER vollständig durchspielen.
+const CALL_END_TOTAL = parseFloat((CALL_START + peDur).toFixed(3));
+```
+
+Splice-Window ist jetzt exakt = Phone-Extended-Dauer. Nichts wird abgeschnitten. Master-Visual übernimmt erst nach dem vollen Anruf-beendet-Hold mit dem SMS-Popup-Visual — das ~0.7s vor dem SMS-Ding-Audio-Cue im Master fired (natürlicher "popup-then-ding"-Look).
+
+### Verifikation (QG)
+
+Vor §56: alle 3 Problem-Tenants FAIL @ 212s (SSIM 0.42 vs Dörfler-Gold).
+Nach §56: Stark/Wälti PASS 0/108, Leins 1/108 (boundary-edge artifact 0.0s, harmlos).
+
+### Goldene Regel
+
+**Splice-Window darf phone-extended NIE clippen.** Phone-extended-Source ist die einzige SoT für Phone-Visual während call_active + call_ended. Wer das clippt, schneidet den Hold-Frame ab.
+
+### Eigenschaften
+
+- **Variant-agnostisch:** funktioniert identisch für 169.5s Notruf und 166.5s Preis.
+- **Tenant-agnostisch:** kein per-tenant Config nötig.
+- **Skalierbar:** zukünftige Tenants kriegen das automatisch.
+
+---
+
+## §57 Anruf-beendet Display synchron zu live-Timer (30.04.2026)
+
+> **Status: LIVE.** Fix in `take2_samsung.html`.
+
+### Schmerzpunkt (Founder-Feedback Leins T2 Preis)
+
+> "Anruf aktiv-Screen zählt bis 02:47, dann Anruf beendet · 02:43 — der Screen davor lief länger als der danach."
+
+Live-Timer im aktiven Call zählte mit `setInterval(1s)`. Anruf-beendet-Display nutzte einen statischen `anruf_dauer` URL-Param. Wegen `setInterval`-Drift + Timing-Versatz zwischen `startTimer()` und Playwright-Wait konnten beide divergieren (typisch 1-4s Differenz).
+
+### Architektur-Fix
+
+In `window.endCall()`: snap das Anruf-beendet-Display auf den letzten Live-Timer-Wert.
+
+```js
+window.endCall = function() {
+  stopTimer();
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById("ended-duration").textContent =
+    String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  showScreen("call-ended");
+};
+```
+
+### Verifikation
+
+Vorher (Leins T2 Preis): Anruf aktiv → 02:47, Anruf beendet · 02:43. **4s Drift.**
+Nachher (Leins T2 Preis post-§57-Fix): Anruf aktiv → 02:45, Anruf beendet · 02:46. **1s Diff = 1 setInterval-Tick = OK.**
+
+### Goldene Regel
+
+**Live-Counter und Static-Display müssen aus DERSELBEN Variable lesen.** Live-Counter mit setInterval kann immer drift haben — also macht den Static-Display auch dynamisch (snap-to-current-counter im Übergangs-Moment).
+
+---
+
+## §58 T2 High-End Quality Gate (30.04.2026)
+
+> **Status: LIVE.** `scripts/_ops/quality_gate_take2.mjs`. Vergleich gegen Dörfler-Gold-Master.
+
+### Architektur (5-Layer reduziert auf 1: was funktioniert)
+
+Anfänglich 5-Layer-Plan (Audio-Phase-Truth, Visual-Phase-Detection, Drift-Map, Audio-Cue Sync, Visual-Quality). Practical: **direkter Phone-Region Color-SSIM-Vergleich** gegen Dörfler-Gold-Reference funktioniert allein.
+
+```
+Reference (immutable): master_takes/take2/doerfler-ag_notruf.mp4 (founder-approved Apr 28)
+Target:                _generated/previews/<slug>/take2_<variant>_anchor.mp4
+Method:                Phone-region (x=375 y=20 w=400 h=860) Color-SSIM, every 2s
+Window:                Phone-active phases (0..215s) — danach driftet phone-region natürlich
+Threshold:             SSIM < 0.92 = drift
+Variant time-shift:    Preis call_active 45.1-209.3 → 45.1-206.8 (proportional scale)
+```
+
+### Lessons Learned (warum die einfachen Versionen failten)
+
+1. **Whole-frame SSIM @ 0.70 threshold:** alles passed (Drift-Floor zu hoch wegen unterschiedlicher Brand-Color-Bereiche im Wrap).
+2. **Grayscale SSIM:** versteckte Bezel-Color-Leaks (Stark blau, Wälti slate-blue) komplett.
+3. **Voll-Sample (alle 380s):** post-phone Drift bei 256-374s ist Noise, nicht Signal — verdrängte echte Hotspots.
+4. **Phone-region + Color + 0..215s + 0.92 threshold:** scharf genug für reale Defekte (212s Anruf-beendet-Cutoff @ SSIM 0.42), narrow genug um nicht zu rauschen.
+
+### Output
+
+- Per-tenant JSON: `_generated/qg/<slug>/take2_<variant>_drift.json`
+- Console: PASS/FAIL + Top-3 drift hotspots
+- Diag-Frames: `_generated/qg/_diag/`
+
+### Goldene Regel
+
+**QG-Threshold + Sampling-Window iterativ kalibrieren.** Erst wenn QG bei einem KNOWN-broken Build FAILen will UND bei KNOWN-good Builds PASSEN — erst dann ist die Konfiguration scharf.
+
+---
+
+## §59 Loom-Avatar per-Tenant (30.04.2026)
+
+> **Status: LIVE für T2.** Folgt für T3 (Pipeline-Plumbing offen).
+
+### Hierarchy
+
+```
+1. screenflows/<slug>/loom_avatar.mp4         ← tenant-specific founder-recorded Loom (T2)
+2. screenflows/_shared/_loom_fallback.mp4     ← legacy generic founder
+3. video_example/Video_default.mp4            ← oldest legacy
+
+Resolved by record_phone_call_visual.mjs: 1 wins if exists, else 2, else 3.
+```
+
+Für T3:
+
+```
+1. screenflows/<slug>/loom_t3.mp4             ← tenant-specific T3 Loom
+2. screenflows/_shared/loom_t3_final.mp4      ← universal T3 Loom (founder-recorded)
+3. video_example/Video_default.mp4            ← legacy
+
+Resolved by apply_loom_take3.mjs.
+```
+
+### Mini-Takes Source
+
+Founder-recorded mini_takes (`docs/gtm/pipeline/06_video_production/mini_takes/`) enthalten die "echten" Looms mit korrekt synchroner Voice-Spur:
+
+- `Take2/Video Notfall complete (20sec_ende).mp4` — cut from 0:20 → `screenflows/doerfler-ag/loom_avatar.mp4`
+- `Take2/Video Preis complete (43sec_ende).mp4` — cut from 0:43 → `screenflows/leins-ag/loom_avatar.mp4`
+- `Take3/alles_letzter Abschnitt (1_44_ende).mp4` — cut from 1:44 → `screenflows/_shared/loom_t3_final.mp4`
+
+### Goldene Regel
+
+**Loom-Source NIE im Recording-Skript hartkodieren.** Convention: per-tenant override + shared fallback + legacy fallback.
+
+---
+
+## §60 Take 4 Master-Schablone (Dörfler AG, 30.04.2026 — Founder-abgenommen)
+
+> **Status: LIVE für Dörfler AG.** Architektur-Vorlage für alle Take 4 Builds (Sanitär heute, Elektriker/Garage/Gärtner zukünftig).
+
+### Zielarchitektur
+
+Take 4 hat **3 Phasen** — small Loom (Sidebar) → xfade Iris-Animation → big Loom (full canvas):
+
+```
+Master timeline (177.1s)
+═══════════════════════════════════════════════════════════════════
+0:00 ─────────────────────── 1:37 ── 1:39 ─────────────────── 2:57
+│                              │      │                          │
+│  PHASE 1: small Loom         │      │  PHASE 2: big Loom       │
+│  Position (40, 350) ∅170     │      │  ∅900 centered           │
+│  Sidebar (Profile-Foto)      │      │  +40px shift_x (FB12)    │
+│                              │      │                          │
+│  • hflip (FB9 mirror)        │      │  • chunk_c offset 0      │
+│  • shift_x = -30 (centered)  │      │  • aligned with End.wav  │
+│  • -ss 0.46 (sync offset)    │      │                          │
+│                              │      │                          │
+└──────────────── fade out ────┘      └──── fade in ─────────────┘
+                97s ──────────── 99s ─── (xfade circleopen iris)
+                hide-circle UNDER fade   smooth crop transition
+```
+
+### Audio-Architektur
+
+```
+0:00 ────────────────── 1:37 ── (1.95s pause) ── End.wav (77.7s, +0.6 dB) ── 0:42 silence ──── 2:57
+└── Original master ─┘                          (loudness-matched zu pre)
+```
+
+- **End.wav** = D-Segment + E-Segment konkateniert (vom Founder-recorded mini_takes/Take4/End.wav)
+- Loudness-normalisiert auf master-pre-Lautstärke (target ~-14.16 LUFS)
+- Pause 1.95s zwischen Master-pre und End.wav-Speech (sync zu Loom-recording)
+- End.wav internal silence 1.21s + 1.95s manual pause = 3.16s Übergangs-Stille bei xfade
+
+### Schritte (für jeden Tenant)
+
+1. **Source-Materials:**
+   - `mini_takes/Take4/Video start letzter Abschnitt.mp4` (Loom 1, ~6:14)
+   - `mini_takes/Take4/Video End letzter Abschnitt.mp4` (Loom 2, ~2:55)
+   - `mini_takes/Take4/End.wav` (Audio D+E concat, 77.73s)
+   
+2. **Cut Loom-Sources** (founder-spezifizierte Times):
+   - part1 = "Video start letzter Abschnitt" 4:31-6:11 → `screenflows/_shared/loom_t4_part1.mp4` (100s)
+   - part2 = "Video End letzter Abschnitt" 1:33-end → `screenflows/_shared/loom_t4_part2.mp4` (82.6s)
+   
+3. **Run `apply_loom_take4_grow.mjs --slug <tenant>`:**
+   - Renders chunk_a (anchor + small Loom from part1, ∅170 @ 40,350) for 0..99s
+   - Renders chunk_c (navy + big Loom from part2, ∅900 centered, -ss 0) for 97..end
+   - xfade=circleopen offset=97 duration=2 (iris reveal)
+   - Output: take4_anchor.mp4 (177s, NEW Loom content baked in)
+
+4. **Apply Phase 1 Small Loom Final-Effects** (single ffmpeg pass):
+   - Loom-Source: `screenflows/_shared/loom_t4_part1.mp4` with -ss 0.46 (sync calibration)
+   - Filter: `hflip` (FB9 mirror) + `scale=170:170:force_original_aspect_ratio=increase` + `crop=170:170:(in_w-170)/2-30:(in_h-170)/2` (shift_x=-30 centering)
+   - Alphamerge with circle mask ∅170
+   - `fade=t=out:st=97:d=2:alpha=1` (smooth fade-out during xfade)
+   - Hide-circle navy ∅170 underneath fade-out (covers chunk_a's old non-mirrored Loom)
+   - **Order matters:** hide-circle first, fade-Loom on top → mirrored Loom fades to navy (no double-Loom-flicker, FB12-fix)
+
+5. **Apply Big Loom Centering** (FB12-Fix):
+   - Loom-Source: `screenflows/_shared/loom_t4_part2.mp4` with `-itsoffset 97` (aligns part2[0] with master 97s = xfade-start)
+   - Crop with shift_x=+40 (founder rechts-lastig → moved left in output)
+   - `fade=t=in:st=97:d=2:alpha=1` (smooth fade-in over xfade window 97-99s)
+   - `enable='gte(t,97)'` (active from xfade-start to end)
+   - **Smooth transition:** my +40 shift gradually fades over chunk_c iris-reveal — no "boom" jump at 99s
+
+6. **Apply Audio Replacement:**
+   - master_audio[0..97] + 1.95s silence + End_normalized.wav (+0.6 dB volume) + 0.42s silence pad
+   - Total = 177.1s
+   - Loudness check: post-1:37 LUFS should match pre-1:37 LUFS (~-14.16 ± 0.1)
+
+### Sync-Calibration-Verfahren (universell)
+
+Für jede Anpassung (small Loom offset, big Loom offset, audio pause, crop centering, etc.):
+
+1. **Coarse:** 11 verify clips @ ±0.5 around mittel, 0.1s steps, 10s long → `Verify/<scope>/`
+2. **Fine:** 11 clips @ 0.01s steps in narrowed range
+3. Founder picks Sweet-Spot
+4. Apply globally to master
+
+### LUFS-Konsistenz (Hard-Gate vor Founder-Approval)
+
+```
+Tenant Take 1 LUFS ≈ Take 2 ≈ Take 3 ≈ Take 4    (Range max 1 dB)
+Pre-1:37-LUFS ≈ Post-1:37-LUFS innerhalb Take 4   (Range max 0.5 dB)
+```
+
+Audio-Replacement-Step muss IMMER loudness-matched sein. Audio-Source (End.wav) wird via `loudnorm I=-14.16 LRA=11 tp=-1.5 linear=true` zu master-pre-section LUFS gebracht. Final volume-fine-adjust über `volume=N dB` filter.
+
+### Goldene Regeln Take 4
+
+1. **End.wav startet bei xfade-start (master 97s), nicht xfade-end.** Audio + big Loom video aus selber Recording-Session — beim xfade-start aligned.
+
+2. **Hide-circle navy MUSS unter fade-out Loom liegen.** Sonst sieht man durch fade-out das chunk_a-OLD-non-mirrored-Loom durchscheinen → "doppelte Gesichter" (FB12).
+
+3. **Big Loom +shift_x animiert via fade-in 97-99s.** Reine `enable='gte(t,99)'` ohne fade verursacht "boom" content jump bei 99s → unprofessionell.
+
+4. **`-itsoffset MASTER_TIME` ist Pflicht für Loom-Overlays die NICHT bei master t=0 starten.** Sonst läuft Loom von master t=0 mit -ss=N und ist bei target time bereits "frozen" (overlay shortest=1, Loom-stream zu Ende).
+
+5. **Loudness-Match End.wav an master-pre-section vor Splice.** 0.5 dB Differenz ist hörbar.
+
+---
+
+## §61 Pipeline-Skalierung Sanitär → andere Module (Reise-Carry-Forward)
+
+> **Status: Konzept.** Aktuell only Sanitär. Future: Elektriker, Garage, Gärtner.
+
+### Modul-Hierarchy
+
+```
+mini_takes/Take{1..4}/         ← per-modul Loom-Recordings + Audio-Segments
+└── End.wav                    ← per-modul (D+E concat for T4)
+└── Video start letzter Abschnitt.mp4  ← per-modul (Loom T4 Phase 1)
+└── Video End letzter Abschnitt.mp4    ← per-modul (Loom T4 Phase 2)
+
+screenflows/_shared/           ← cross-tenant within module
+└── loom_t4_part1.mp4          ← cut from mini_takes
+└── loom_t4_part2.mp4
+└── _mask_circle_*.png
+
+screenflows/<tenant>/          ← per-tenant tenant-specifische Loom (override)
+└── loom_avatar.mp4            ← T2 Loom for this tenant (optional override)
+```
+
+### Skalierungs-Pfad
+
+1. **Pro neuer Modul (z.B. Elektriker):** Founder records Take 4 Loom + Audio in `mini_takes/elektriker/Take4/`
+2. **Cut once:** part1 + part2 in `screenflows/_shared_elektriker/loom_t4_part1.mp4`
+3. **Sync calibration once** für die Modul-Master (offsets pro modul-spezifischen Recording)
+4. **Per-tenant pipeline run:** apply_loom_take4_grow + Phase 1 + audio replacement
+5. **LUFS-Check:** pro tenant T1-T4 in 1 dB Korridor
+
+### Goldene Regel
+
+**Maus-Layer + Founder-Loom sind die EINZIGEN module-spezifischen Komponenten.** Phone-Bezel, Leitsystem-UI, Voice-Agent — alles cross-modul reusable.
+
+---
+
+## §62 T3 Loom-After-Build Architektur (30.04.2026 — FB16-Lehre)
+
+> **Status: LIVE für alle 4 T3-Tenants (Dörfler/Leins/Stark/Wälti). Pipeline-Standard.**
+
+### Schmerzpunkt (FB14, FB15, FB16)
+
+OLD-Loom-Replacement durch Overlay-on-Overlay (`_t3_loom_overlay.mjs`) failed:
+- Founder: "versuchst du es noch immer zu überdecken? das wird nie skalierend funktionieren."
+- Animation-Curve-Mismatch zwischen master.bak's gebakenem Loom und neuem Overlay → 2 sichtbare Looms während move-window
+- Pixel-Tracking + ∅240-Forgiveness ∅240 vs ∅200 — dauerhaft brüchig
+
+Nach Pipeline-Rebuild via `build_from_phase_schedule.mjs` (mit NEW-Loom-baked-in 66s Source) kam zweiter Bug: Phase-Schedule-Builder freezt während Sharpness-Anchor-Phasen das gesamte Source-Frame inkl. Loom-Face → Loom war oft eingefroren (Founder: "Loomvideo öfters eingefroren bspw. zwischen 0:11-0:50").
+
+### Architektur-Fix
+
+**Reihenfolge:** Loom KOMMT NACH dem Phase-Build, nicht VORHER.
+
+```
+1. NEW Loom Recording        → mini_takes/Take3/Take3_cut.mp4 (universal founder-face)
+2. Place per-tenant Loom     → screenflows/<tenant>/loom_t3.mp4 (tenant-spezifisch override)
+3. Temp-swap source          → cp take3_complete.mp4 take3_with_loom.mp4
+4. Phase-Build (no-loom)     → LOOM_GUARD_SKIP=1 build_from_phase_schedule
+                                → _generated/previews/<tenant>/take3_anchor.mp4 (149s, no loom)
+5. Restore source            → mv take3_with_loom.NEWLOOM_BAKED.mp4.tmp take3_with_loom.mp4
+6. Apply Loom durchgehend    → apply_loom_to_t3_master.mjs --slug X --w 105.0
+                                → master_takes/take3/<tenant>.mp4 (149s, continuous Loom)
+```
+
+### Kritische Parameter
+
+- **W = 105.0** (master time, alle Tenants identisch via gleiche Schedule):
+  - HOLD an WZ bis 106.0s
+  - MOVE 106.0 → 107.0s (1s, easeOutCubic + smoothstep)
+  - ML ab 107.0s
+- **Schedule-Anker:** `leit_face_hold` (104.5-105.5) ist die Audio-Erzählung WÄHREND HOLD. Move beginnt 0.5s NACH `leit_face_hold` Ende — Founder-Direktive: "genau eine halbe Sekunde später beginnen".
+- **Loom-Diameter:** ∅200 (master-identisch über alle Tenants).
+
+### Verifikation
+
+Loom-Continuity-Check via SHA256-Hash auf Loom-Region-Crops bei verschiedenen Timestamps:
+```bash
+for t in 11 20 30 40 50; do
+  ffmpeg -ss $t -i master.mp4 -frames:v 1 -vf "crop=200:200:1060:80" /tmp/loom_$t.png
+done
+sha256sum /tmp/loom_*.png | awk '{print $1}' | sort -u | wc -l
+# Expected: == 5 (alle unterschiedlich = no freeze)
+```
+
+### Goldene Regel (Pipeline-Standard ab 30.04.2026)
+
+**Loom = Layer ÜBER dem Phase-Build, NIE in der Source.** Audio + Screenflow + Loom = **drei unabhängige Layer**, gemerged in dieser Reihenfolge:
+
+```
+Layer 1: Screenflow (66s with-loom OR no-loom — egal)
+       ↓ build_from_phase_schedule (cuts/freezes nach audio)
+Layer 2: Audio-synced Anchor (149s, screenflow-aspekte gefroren)
+       ↓ apply_loom_to_t3_master (continuous overlay)
+Layer 3: Final Master (149s, Loom plays continuously)
+```
+
+Bei Phase-Build mit Loom IN der Source: Loom-Frames werden in Sharpness-Freeze-Phasen mit-eingefroren → Loom-Discontinuity. Architektur-Lehre: **Loom NIE in der Phase-Build-Source.**
+
+### Skalierung — was als Nächstes ansteht
+
+**Pipeline-Standard für T3 alle Module:** Same Architektur für Elektriker/Garage/Gärtner. Founder records eine universelle `mini_takes/<modul>/Take3/Take3_cut.mp4`, Pipeline ist tenant-loose.
+
+**Mouse-Layer (T3 + T4):** Per `scripts/_ops/mouse_layer/{record,render}.mjs` — Founder-Recording 1× pro Modul, dann pro Tenant Render. Architektur: Mouse-Layer kommt NACH Loom-Layer (Reihenfolge: Audio → Screenflow → Loom → Mouse).
+
+**Founder-Sichtung:** Leins/Stark/Wälti T3 mit NEW Loom + W=105.0 sind built (149.4-149.7s Variance < 0.3s). Founder muss visuell abnehmen ob Loom-Sync-Qualität master-identisch ist.
+
+---
+

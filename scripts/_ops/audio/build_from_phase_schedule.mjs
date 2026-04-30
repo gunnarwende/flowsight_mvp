@@ -86,7 +86,7 @@ for (const [key, template] of Object.entries(def.sources)) {
 // Source-Time 10s. Mit Loom (Founder-Face Center, neue FB7-Position): brightness
 // ~140 (Hautfarbe). Ohne Loom (weisser Hintergrund): brightness ~249.
 // Threshold 200 (robust).
-if (take === "3") {
+if (take === "3" && !process.env.LOOM_GUARD_SKIP) {
   const sourceFile = sources.original;
   if (sourceFile && fs.existsSync(sourceFile)) {
     try {

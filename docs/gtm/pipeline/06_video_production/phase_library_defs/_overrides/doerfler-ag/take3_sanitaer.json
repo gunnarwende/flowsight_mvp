@@ -2,7 +2,7 @@
   "take": 3,
   "industry": "sanitaer",
   "tenant": "doerfler-ag",
-  "description": "Auto-generated 2026-04-28 via auto_calibrate_phase_library_v2.mjs (pixel-state-detection)",
+  "description": "Auto-generated 2026-04-29 via auto_calibrate_phase_library_v2.mjs (pixel-state-detection)",
   "master": "doerfler-ag",
   "masterDuration": 66.867,
   "tenantDuration": 66.867,
@@ -98,7 +98,7 @@
         6,
         6.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard1_kategorie_leck",
@@ -106,7 +106,7 @@
         7.5,
         8.3
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard1_prio_normal",
@@ -114,7 +114,7 @@
         8.5,
         9.3
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard1_weiter_active",
@@ -122,7 +122,7 @@
         9.3,
         10
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard1_to_2",
@@ -130,7 +130,7 @@
         10,
         10.6
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_empty",
@@ -138,7 +138,7 @@
         10.6,
         11.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_strasse_typing",
@@ -146,7 +146,7 @@
         11.5,
         13.8
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_nr_typing",
@@ -154,7 +154,7 @@
         13.8,
         14.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_plz_typing",
@@ -162,7 +162,7 @@
         14.5,
         15.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_ort_typing",
@@ -170,7 +170,7 @@
         15.5,
         17
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_complete",
@@ -178,7 +178,7 @@
         17,
         17.8
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard2_to_3",
@@ -186,7 +186,7 @@
         17.8,
         19.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard3_intro",
@@ -194,7 +194,7 @@
         19.5,
         20.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard3_name_typing",
@@ -202,7 +202,7 @@
         20.5,
         22
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard_break",
@@ -218,7 +218,7 @@
         22,
         23.5
       ],
-      "_source": "anchored_interpolated"
+      "_source": "pre_anchor_identity"
     },
     {
       "name": "wizard3_email_typing",
