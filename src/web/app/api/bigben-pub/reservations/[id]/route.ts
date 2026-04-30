@@ -75,9 +75,15 @@ export async function PATCH(
         "BigBenPub"
       );
     } else if (newStatus === "declined") {
+      // Paul's wording (FB30, 30.04.): keep walk-ins as positive option,
+      // drop "fully booked" / phone-callback framing — too rejection-y.
+      // Hard cap: SMS must stay <=160 chars (single segment, otherwise
+      // double-billed). Base template = 137 chars, leaves 23 chars for
+      // first name. Truncate first name if longer to stay safe.
+      const firstName = (res.guest_name ?? "there").split(" ")[0].slice(0, 22);
       await sendSms(
         res.guest_phone,
-        `Hi ${res.guest_name}, sorry — we're fully booked for ${dateStr} at ${timeStr}. Give us a call at 044 680 17 77 and we'll find another time. Cheers, Paul`,
+        `Hi ${firstName}, we're not taking more reservations but keep some tables free for walk-ins (first come, first served). Hope ok, see and take care!`,
         "BigBenPub"
       );
     }
