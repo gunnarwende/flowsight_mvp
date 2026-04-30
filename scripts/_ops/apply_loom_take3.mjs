@@ -32,7 +32,14 @@ const ML_x = 40, ML_y = 350;
 const LOOM_DIAMETER = 200;
 
 const screenflowDir = join("docs", "gtm", "pipeline", "06_video_production", "screenflows", slug);
-const loomSource = join("docs", "gtm", "pipeline", "06_video_production", "video_example", "Video_default.mp4");
+// Loom-Source-Resolution (priorisiert):
+//   1. screenflows/<slug>/loom_t3.mp4 — tenant-specific T3 Loom (founder-recorded)
+//   2. screenflows/_shared/loom_t3_final.mp4 — universal T3 Loom from mini_takes
+//   3. video_example/Video_default.mp4 — legacy fallback
+const loomT3Tenant = join(screenflowDir, "loom_t3.mp4");
+const loomT3Shared = join("docs", "gtm", "pipeline", "06_video_production", "screenflows", "_shared", "loom_t3_final.mp4");
+const loomT3Legacy = join("docs", "gtm", "pipeline", "06_video_production", "video_example", "Video_default.mp4");
+const loomSource = existsSync(loomT3Tenant) ? loomT3Tenant : (existsSync(loomT3Shared) ? loomT3Shared : loomT3Legacy);
 const inputPath = join(screenflowDir, "take3_complete.mp4");
 const outputPath = join(screenflowDir, "take3_with_loom.mp4");
 
@@ -66,7 +73,38 @@ const probe = spawnSync("ffprobe", [
   "-v", "error", "-show_entries", "format=duration", "-of", "default=nk=1:nw=1", wizardForTiming,
 ]);
 const wizFullDur = parseFloat(probe.stdout.toString().trim()) || 40.2;
-const W = Math.max(10, wizFullDur - 2.0);
+
+// PIPELINE_BIBLE §57 (29.04. EOD — Founder-Findings T3 Loom-Drift):
+// Loom-Move-Trigger MUSS tenant-spezifisches success_to_dashboard-Timing
+// nutzen, nicht hardcoded "wizFullDur - 2.0". Hintergrund: Splice +
+// auto_calibrate_phase_library_v2 produzieren tenant-spezifische
+// scene-cut-Anchors. Bei master-Wizard (40.2s, all tenants) wäre Master-
+// Position für success_to_dashboard 38.2s. Aber nach Splice mit tenant-
+// spezifischem leitsystem.webm hat die Source unterschiedliche Timings
+// (Leins 35.77, Wälti 38.47, Stark 35.43). Hardcoded W=38.2 würde Loom
+// bei manchen Tenants zu spät bewegen.
+//
+// Lese override-File, suche success_to_dashboard tenantT. Falls override
+// fehlt: Fallback auf master-Position (38.2s = wizFullDur - 2.0).
+let W = Math.max(10, wizFullDur - 2.0);
+const overridePath = `docs/gtm/pipeline/06_video_production/phase_library_defs/_overrides/${slug}/take3_sanitaer.json`;
+if (existsSync(overridePath)) {
+  try {
+    const override = JSON.parse((await import("node:fs")).readFileSync(overridePath, "utf8"));
+    const cps = override?._calibration?.controlPoints || [];
+    const success = cps.find((cp) => cp.source === "anchor:success_to_dashboard");
+    if (success && typeof success.tenantT === "number" && success.tenantT > 10) {
+      W = success.tenantT;
+      console.log(`  using tenant-specific success_to_dashboard from override: ${W.toFixed(2)}s (master: 38.20s)`);
+    } else {
+      console.log(`  override has no success_to_dashboard tenantT — using master fallback ${W.toFixed(2)}s`);
+    }
+  } catch (e) {
+    console.warn(`  ⚠ override parse failed: ${e.message} — using master fallback ${W.toFixed(2)}s`);
+  }
+} else {
+  console.log(`  no override file at ${overridePath} — using master fallback ${W.toFixed(2)}s`);
+}
 console.log(`Take 3 Loom apply (slug=${slug}):`);
 console.log(`  WZ-Position: (${WZ_x}, ${WZ_y})  ML-Position: (${ML_x}, ${ML_y})`);
 console.log(`  wizard-ende @ t=${W.toFixed(2)}s, hold 1s, move-1 400ms, move-2 600ms`);
