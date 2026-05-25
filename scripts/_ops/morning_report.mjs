@@ -39,14 +39,40 @@ const supabase = createClient(url, key, {
 const now = new Date();
 const h24ago = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
 const h48ago = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+const h6ago = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString();
 const d7ago = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-// 1. Cases created in last 24h (by source), excluding archived
-const { data: recent, error: e1 } = await supabase
-  .from("cases")
-  .select("id, source, urgency")
-  .neq("status", "archived")
-  .gte("created_at", h24ago);
+// Production-tenant scope: only `trial_status = 'converted'` counts as live operating.
+// Prospect/demo tenants (trial_status='interested' or null) carry seed/demo data
+// that would otherwise dominate stuck_48h and backlog counts and cause false RED alerts.
+const { data: prodTenants, error: ePT } = await supabase
+  .from("tenants")
+  .select("id, slug, modules")
+  .eq("trial_status", "converted");
+if (ePT) console.error("Query production tenants:", ePT.message);
+
+const prodTenantIds = prodTenants?.map((t) => t.id) ?? [];
+const sanitaerTenantIds = (prodTenants ?? [])
+  .filter((t) => t.modules?.website_wizard || t.modules?.voice)
+  .filter((t) => !(t.modules?.events || t.modules?.reservations))
+  .map((t) => t.id);
+const pubTenantIds = (prodTenants ?? [])
+  .filter((t) => t.modules?.events || t.modules?.reservations)
+  .map((t) => t.id);
+
+// If no production tenants yet: skip the cases queries entirely and leave counts at 0.
+// (Was previously aggregating across all tenants → demo seed pollution.)
+const hasSanitaerProd = sanitaerTenantIds.length > 0;
+
+// 1. Cases created in last 24h (by source), excluding archived — sanitaer-prod only
+const { data: recent, error: e1 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id, source, urgency")
+      .neq("status", "archived")
+      .in("tenant_id", sanitaerTenantIds)
+      .gte("created_at", h24ago)
+  : { data: [], error: null };
 if (e1) console.error("Query recent:", e1.message);
 
 const cases24h = recent?.length ?? 0;
@@ -54,58 +80,76 @@ const voiceCount = recent?.filter((c) => c.source === "voice").length ?? 0;
 const wizardCount = recent?.filter((c) => c.source === "wizard").length ?? 0;
 const notfallCount = recent?.filter((c) => c.urgency === "notfall").length ?? 0;
 
-// 2. Backlog: status = 'new'
-const { count: backlogNew, error: e2 } = await supabase
-  .from("cases")
-  .select("id", { count: "exact", head: true })
-  .eq("status", "new");
+// 2. Backlog: status = 'new' — sanitaer-prod only
+const { count: backlogNew, error: e2 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new")
+      .in("tenant_id", sanitaerTenantIds)
+  : { count: 0, error: null };
 if (e2) console.error("Query backlog:", e2.message);
 
-// 3. Stuck: status = 'new' AND created > 48h ago
-const { count: stuck48h, error: e3 } = await supabase
-  .from("cases")
-  .select("id", { count: "exact", head: true })
-  .eq("status", "new")
-  .lt("created_at", h48ago);
+// 3. Stuck: status = 'new' AND created > 48h ago — sanitaer-prod only
+const { count: stuck48h, error: e3 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new")
+      .in("tenant_id", sanitaerTenantIds)
+      .lt("created_at", h48ago)
+  : { count: 0, error: null };
 if (e3) console.error("Query stuck:", e3.message);
 
-// 4. Scheduled today (excluding archived)
+// 4. Scheduled today (excluding archived) — sanitaer-prod only
 const todayStart = new Date(now);
 todayStart.setHours(0, 0, 0, 0);
 const todayEnd = new Date(now);
 todayEnd.setHours(23, 59, 59, 999);
-const { count: scheduledToday, error: e4 } = await supabase
-  .from("cases")
-  .select("id", { count: "exact", head: true })
-  .neq("status", "archived")
-  .gte("scheduled_at", todayStart.toISOString())
-  .lte("scheduled_at", todayEnd.toISOString());
+const { count: scheduledToday, error: e4 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id", { count: "exact", head: true })
+      .neq("status", "archived")
+      .in("tenant_id", sanitaerTenantIds)
+      .gte("scheduled_at", todayStart.toISOString())
+      .lte("scheduled_at", todayEnd.toISOString())
+  : { count: 0, error: null };
 if (e4) console.error("Query scheduled:", e4.message);
 
-// 5. Done in last 7 days
-const { count: done7d, error: e5 } = await supabase
-  .from("cases")
-  .select("id", { count: "exact", head: true })
-  .eq("status", "done")
-  .gte("updated_at", d7ago);
+// 5. Done in last 7 days — sanitaer-prod only
+const { count: done7d, error: e5 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "done")
+      .in("tenant_id", sanitaerTenantIds)
+      .gte("updated_at", d7ago)
+  : { count: 0, error: null };
 if (e5) console.error("Query done:", e5.message);
 
-// 6. Review requests sent in last 7 days
-const { count: reviewsSent7d, error: e6 } = await supabase
-  .from("cases")
-  .select("id", { count: "exact", head: true })
-  .not("review_sent_at", "is", null)
-  .gte("review_sent_at", d7ago);
+// 6. Review requests sent in last 7 days — sanitaer-prod only
+const { count: reviewsSent7d, error: e6 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id", { count: "exact", head: true })
+      .not("review_sent_at", "is", null)
+      .in("tenant_id", sanitaerTenantIds)
+      .gte("review_sent_at", d7ago)
+  : { count: 0, error: null };
 if (e6) console.error("Query reviews:", e6.message);
 
-// 7. Oldest open case
-const { data: oldestRow, error: e7 } = await supabase
-  .from("cases")
-  .select("id, created_at")
-  .eq("status", "new")
-  .order("created_at", { ascending: true })
-  .limit(1)
-  .maybeSingle();
+// 7. Oldest open case — sanitaer-prod only
+const { data: oldestRow, error: e7 } = hasSanitaerProd
+  ? await supabase
+      .from("cases")
+      .select("id, created_at")
+      .eq("status", "new")
+      .in("tenant_id", sanitaerTenantIds)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle()
+  : { data: null, error: null };
 if (e7) console.error("Query oldest:", e7.message);
 
 let oldestAge = "none";
@@ -147,6 +191,41 @@ try {
   }
 } catch (e) {
   console.error("Retell agent_hangup check failed:", e.message);
+}
+
+// ---------------------------------------------------------------------------
+// Pub-Mode: pending reservations + age (production-pub tenants only)
+// Catches the "Damien Cusack scenario" — a real customer reservation that
+// sits PENDING because the operator never confirmed it.
+// ---------------------------------------------------------------------------
+
+let pubPendingTotal = 0;
+let pubPendingStale = 0; // older than 6h
+let pubOldestPendingAge = "none";
+
+if (pubTenantIds.length > 0) {
+  const { data: pubPending, error: ePub } = await supabase
+    .from("pub_reservations")
+    .select("id, created_at")
+    .eq("status", "pending")
+    .in("tenant_id", pubTenantIds);
+  if (ePub) console.error("Query pub pending:", ePub.message);
+
+  pubPendingTotal = pubPending?.length ?? 0;
+  pubPendingStale = (pubPending ?? []).filter(
+    (r) => new Date(r.created_at).getTime() < new Date(h6ago).getTime(),
+  ).length;
+
+  const oldest = (pubPending ?? []).reduce(
+    (acc, r) => (!acc || new Date(r.created_at) < new Date(acc.created_at) ? r : acc),
+    null,
+  );
+  if (oldest) {
+    const ageMs = now.getTime() - new Date(oldest.created_at).getTime();
+    const ageH = Math.floor(ageMs / (1000 * 60 * 60));
+    const ageD = Math.floor(ageH / 24);
+    pubOldestPendingAge = ageD > 0 ? `${ageD}d ${ageH % 24}h` : `${ageH}h`;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -236,6 +315,9 @@ try {
 }
 
 // 9. Resend API key validation (lightweight — call /domains, no quota cost)
+// Restricted send-only keys (best practice) return 401 with body
+// `{ name: "restricted_api_key" }` on /domains; that is still a VALID key
+// for sending. Treat it as OK to avoid false RED alerts.
 let resendOk = false;
 try {
   const resendKey = process.env.RESEND_API_KEY;
@@ -244,7 +326,12 @@ try {
       headers: { Authorization: `Bearer ${resendKey}` },
       signal: AbortSignal.timeout(5000),
     });
-    resendOk = rRes.ok;
+    if (rRes.ok) {
+      resendOk = true;
+    } else if (rRes.status === 401) {
+      const body = await rRes.json().catch(() => ({}));
+      resendOk = body?.name === "restricted_api_key";
+    }
   }
 } catch {
   resendOk = false;
@@ -254,8 +341,8 @@ try {
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0 || agentHangupCount > 0;
-const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0;
+const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0 || agentHangupCount > 0 || pubPendingStale > 0;
+const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0 || pubPendingTotal > 0;
 const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
 
 // ---------------------------------------------------------------------------
@@ -287,6 +374,13 @@ const report = [
   `tick_stale:     ${staleCount}${staleNames ? ` (${staleNames})` : ""}`,
   `━━━ VOICE ━━━━━━━━━━`,
   `agent_hangup:   ${agentHangupCount}${agentHangupCount > 0 ? " ⚠ AGENT HAT AUFGELEGT" : ""}`,
+  ...(pubTenantIds.length > 0
+    ? [
+        `━━━ PUB ━━━━━━━━━━━━`,
+        `pending_reserv: ${pubPendingTotal}${pubPendingStale > 0 ? ` ⚠ ${pubPendingStale} >6h` : ""}`,
+        `oldest_pending: ${pubOldestPendingAge}`,
+      ]
+    : []),
   `━━━ HEALTH ━━━━━━━━━`,
   `api:            ${healthOk ? "OK" : "FAIL"}`,
   `db:             ${healthDb}`,
