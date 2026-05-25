@@ -1,5 +1,7 @@
 # Ticketlist — FlowSight (SSOT)
 
+**Updated:** 2026-05-25 Re-Entry Pfingstmontag — **🌋 POST-REISE Operative Hygiene + Strategie-Pivot.** PR #525 (Morning-Report tenant-scope + Pub-Mode + Resend) merged. Damien-Cusack-Fall (23.05. 2× pending) = Founder-Action heute. Dörfler T3 with-mouse-MP4 gerendert (5.8 MB, 1113 Mouse-Events). Strategische Entscheidungen: Premium-Pricing 1.5-2.5k CHF/Mo, Max-10/Monat-Cap, Website-Modul tot, ICP 300-400 statt 5'400, Self-Service-Onboarding geparkt bis Kunde 5+. Neue Docs: `docs/sales/discovery_questions.md`, `docs/gtm/icp_filter.md`, `docs/gtm/loom_cta_v2.md`. **Offene Punkte heute:** Damien-Call (Founder), T4 Mouse-Recording (Founder), 14.05.-agent_hangup-Investigation. Day-30-Pre-Reise-Kontext:
+
 **Updated:** 2026-04-30 Day-30 Pre-Reise EOD — **🎬 T3 LOOM-AFTER-BUILD ARCHITEKTUR LIVE für alle 4 Tenants. PIPELINE_BIBLE §62 etabliert.** FB14/FB15/FB16: Overlay-on-Overlay-Approach veto'd ("wird nie skalierend funktionieren"). Architektur-Pivot: Loom kommt NACH Phase-Build via `apply_loom_to_t3_master.mjs`. 4 Tenants × T3 mit NEW Loom (mini_takes/Take3/Take3_cut.mp4) + W=105.0 (0.5s später als initial — Founder-Wahl) gebaut. Loom-Continuity verifiziert (no freeze). Master-Backup gesichert. **Carry-Forward (post-Reise):** T3+T4 Mouse-Layer (per `scripts/_ops/mouse_layer/`), Founder-Sichtung Leins/Stark/Wälti T3, Onboarding-Maschine + 6-Wochen-Roadmap. Day-30-Mittag-Kontext:
 
 **Updated:** 2026-04-30 Day-30 Mittag — **🏆 DÖRFLER AG T1-T4 KOMPLETT ABGENOMMEN.** Take 4 Master-Schablone gebaut: 3-Phasen (small Loom mit FB9 mirror+shift+offset+fade-out 97-99s, hide-circle navy darunter gegen FB12-Doppel-Flicker; big Loom +40 shift mit fade-in 97-99s smooth iris-transition; audio End.wav loudness-matched +0.6dB ab master 97s mit 1.95s pause). PIPELINE_BIBLE §60 (T4 Schablone) + §61 (Modul-Skalierung) ergänzt. Noch offen: Maus-Layer Phase 4 für T3+T4 (heute home-office vor Founder-Reise). Day-30-Late-Night-T2-Kontext:
@@ -57,10 +59,16 @@ Keine.
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|
-| T3.1 | **Founder-Sichtung Leins/Stark/Wälti T3 (NEW Loom)** | Visuelle Abnahme der 3 weiteren T3 Master mit NEW Loom + W=105.0 (Dörfler abgenommen) | OFFEN — post-Reise |
-| T3.2 | **Mouse-Layer T3 Recording** | `node scripts/_ops/mouse_layer/record.mjs --slug doerfler-ag --take 3` → render via `render.mjs` | OFFEN — post-Reise |
-| T3.3 | **Mouse-Layer T4 Recording** | Analog T3 für Take 4 | OFFEN — post-Reise |
-| T3.4 | **Mouse-Layer Skalierung Leins/Stark/Wälti** | T3+T4 Mouse-Render pro Tenant nach Approve Schablone | OFFEN — post-Reise |
+| RE1 | **Paul anrufen → Damien-Cusack-Reservation** | 2× pending Reservierungen 23.05. für 24.05. 17:00 (Irisches Hurling-Match). Paul nie bestätigt. Damien `+41796366248` zurückrufen lassen. | OFFEN — HEUTE |
+| RE2 | **Dörfler T3 with-mouse-MP4 reviewen** | `master_takes/take3/doerfler-ag_with_mouse.mp4` (5.8 MB) — 4489 frames mit 1113 Mouse-Events. Approve oder Re-record. | OFFEN — HEUTE |
+| RE3 | **14.05.-agent_hangup-Investigation** | Retell call_id im Zeitfenster 2026-05-14 14:56:27 (von +41784053440, dur=24s, disconnect=agent_hangup). Wieso hat Lisa aufgelegt? Transcript analysieren. | OFFEN |
+| T3.1 | **Founder-Sichtung Leins/Stark/Wälti T3 (NEW Loom)** | Visuelle Abnahme der 3 weiteren T3 Master mit NEW Loom + W=105.0 (Dörfler abgenommen) | OFFEN — Pfingstwoche |
+| T3.2 | **Mouse-Layer T3 Recording (Dörfler)** | DONE: with_mouse.mp4 rendered 25.05. (5.8 MB). Wartet auf Founder-Approve (RE2). | DONE — Review pending |
+| T3.3 | **Mouse-Layer T4 Recording (Dörfler)** | `node scripts/_ops/mouse_layer/record.mjs --slug doerfler-ag --take 4` — Founder im Browser klickt ▶. Nach Aufnahme: `render.mjs`. | OFFEN — Founder-Touch |
+| T3.4 | **Mouse-Layer Skalierung Leins/Stark/Wälti** | T3+T4 Mouse-Render pro Tenant nach Approve Schablone (sollten tenant-agnostic sein, Pfad identisch) | OFFEN — nach RE2 |
+| GTM1 | **ICP-Re-Filtering 5'400→300-400** | Bestehende Marktanalyse durch ICP-Filter-v2 jagen (`docs/gtm/icp_filter.md`). Crawler `crawl-website.mjs` + `crawl_google_reviews.mjs` mit Keyword-Match erweitern. | OFFEN |
+| GTM2 | **Loom-CTA Variante A Audio-Re-Recording** | `docs/gtm/loom_cta_v2.md` Variante A. Speakflow-Template aktualisieren + Audio-Take 4 Closing neu aufnehmen. | OFFEN |
+| GTM3 | **Premium-Pricing-Implementierung** | Pricing-Page + Outreach-Templates auf 1'500-2'500 CHF/Mo umstellen. Stripe-Side später. | OFFEN |
 | RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | DONE — 26.03. |
 | RM2.2 | **Lisa auf Support-Tickets trainieren** | Voice Agent soll Support-Anfragen sauber verarbeiten | OFFEN |
 | KAL1 | **Outlook OAuth App anlegen** | Azure App Registration für Kalender-Integration (Phase 2). Anleitung: `docs/runbooks/founder_kalender_setup.md` | DONE — 26.03. |
