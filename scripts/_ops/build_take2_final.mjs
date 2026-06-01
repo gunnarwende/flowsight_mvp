@@ -61,6 +61,22 @@ console.log(`  short_name    : ${cfg?.short_name || cfg?.firma || "N/A"}`);
 console.log(`  today         : ${new Date().toISOString().slice(0, 10)}`);
 console.log(``);
 
+// ── Phone-Extended self-sufficiency (01.06.) ───────────────────────────────
+// build_from_phase_schedule (STEP 2) braucht _generated/calls/<slug>/
+// _phone_extended_<variant>.mp4 (Live-Telefon-Call, visuell gerendert). War vorher
+// manuell pro Betrieb → NEUE Betriebe failten mit BLACK-Phone. Jetzt generate-if-
+// missing via record_phone_call_visual (self-contained file://-Render, kein Live-Call).
+// Dauer = kanonische Call-Active-Länge pro Variante (notruf ~165s / preis ~162s).
+const phoneExtended = join(REPO_ROOT, PIPE, "_generated", "calls", slug, `_phone_extended_${variant}.mp4`);
+if (!existsSync(phoneExtended)) {
+  const callDur = variant === "notruf" ? "165" : "162";
+  console.log(`──── STEP 0.5: Phone-Extended fehlt → generiere (${variant}, ${callDur}s) ────`);
+  const r = spawnSync("node", ["--env-file=src/web/.env.local",
+    "scripts/_ops/record_phone_call_visual.mjs", "--slug", slug, "--variant", variant, "--duration", callDur],
+    { cwd: REPO_ROOT, stdio: "inherit" });
+  if (r.status !== 0) { console.error("✗ STEP 0.5 FAILED: phone-extended generation"); process.exit(r.status || 1); }
+}
+
 function step(label, cmd, argv, env = {}) {
   console.log(`\n──── ${label} ────`);
   const r = spawnSync(cmd, argv, {

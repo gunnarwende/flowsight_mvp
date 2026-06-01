@@ -279,9 +279,9 @@ export const weinbergerAg: CustomerSite = {
   // Categories: values match voice agent (weinberger-ag_agent.json)
   // Voice: Sanitär, Heizung, Lüftung, Badsanierung, Boiler, Rohrbruch, Verstopfung, Notfall
   categories: [
-    { value: "Sanitär", label: "Sanitär", hint: "Installation, Reparatur", iconKey: "bath" },
+    { value: "Verstopfung", label: "Verstopfung", hint: "Abfluss, WC, Leitung", iconKey: "drain" },
+    { value: "Leck", label: "Leck", hint: "Tropft, feucht, Wasserschaden", iconKey: "drop" },
     { value: "Heizung", label: "Heizung", hint: "Wärmepumpe, Ausfall, Wartung", iconKey: "flame" },
-    { value: "Lüftung", label: "Lüftung", hint: "Raumklima, Komfortlüftung", iconKey: "snowflake" },
     ...FIXED_CATEGORIES,
   ],
 
