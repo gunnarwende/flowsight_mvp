@@ -8,7 +8,7 @@ import { ServiceWorkerRegistration } from "./ServiceWorkerRegistration";
 import { PushOnboardingBanner } from "./PushOnboardingBanner";
 import { UpdatePrompt } from "./UpdatePrompt";
 import { TenantSwitcher } from "./TenantSwitcher";
-import { AdminBackToWorkspace } from "./AdminBackToWorkspace";
+// import { AdminBackToWorkspace } from "./AdminBackToWorkspace"; // T4-V8 (31.05.): removed from sidebar
 import { shortenDisplayName } from "@/src/lib/tenants/shortenDisplayName";
 
 // ---------------------------------------------------------------------------
@@ -70,6 +70,7 @@ const NAV_ITEMS: NavItem[] = [
 export function OpsShell({
   userEmail,
   tenantName,
+  caseIdPrefix,
   brandColor,
   staffRole,
   isAdmin,
@@ -86,6 +87,13 @@ export function OpsShell({
 }: {
   userEmail: string;
   tenantName?: string;
+  /**
+   * Official 2-letter tenant code (case_id_prefix, e.g. "LN" for Leins AG).
+   * Single source of truth for the brand short-code — used in case-IDs (LN-0050),
+   * SMS sender, review-toast logo AND the sidebar avatar. Passing it here keeps
+   * the sidebar consistent with everything else; falls back to word-initials.
+   */
+  caseIdPrefix?: string;
   /** Tenant brand color hex (e.g. "#004994"). Falls back to neutral slate if not set. */
   brandColor?: string;
   /** Staff role for RBAC — techniker sees limited nav */
@@ -120,13 +128,19 @@ export function OpsShell({
   // FB60: Header-Shortener strippt GmbH/AG/Sohn wenn name > 22 chars
   // ("Stark Haustechnik GmbH" → "Stark Haustechnik"). Skalierbar.
   const displayName = shortenDisplayName(tenantName);
-  const initials = tenantName
-    ? tenantName
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((w) => w[0]?.toUpperCase() ?? "")
-        .join("")
-    : "LS";
+  // Sidebar avatar short-code: prefer the official case_id_prefix (single source
+  // of truth — matches case-IDs + review-toast logo). Fall back to word-initials
+  // ("Leins AG" → "LA") only if no prefix is set. Avoids divergence like
+  // sidebar "LA" vs case-IDs "LN" for tenants whose prefix ≠ word-initials.
+  const initials =
+    caseIdPrefix?.toUpperCase() ||
+    (tenantName
+      ? tenantName
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((w) => w[0]?.toUpperCase() ?? "")
+          .join("")
+      : "LS");
   const color = brandColor ?? "#64748b";
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobilePreview, setMobilePreview] = useState(false);
@@ -336,9 +350,10 @@ export function OpsShell({
       {isFounder && (
         <TenantSwitcher activeTenantId={activeTenantId ?? null} homeTenantId={homeTenantId ?? null} viewAsRole={viewAsRole} />
       )}
-      {!isFounder && isAdmin && isImpersonating && (
-        <AdminBackToWorkspace homeTenantId={homeTenantId ?? null} />
-      )}
+      {/* T4-V8 (31.05.): AdminBackToWorkspace-Button entfernt — er war im
+          Demo-Recording als störender Element sichtbar. Component-File bleibt
+          für eventuelle Wiederherstellung. Customer-Tenant-Admins (z.B. Paul)
+          haben dafür weiterhin Footer-Link "Abmelden" + Logout-Flow. */}
       {navLinks}
       {footer}
     </>

@@ -15,7 +15,7 @@
  *   node --env-file=src/web/.env.local scripts/_ops/record_wizard_take3.mjs --slug doerfler-ag
  */
 
-import { readFile, mkdir, copyFile, rm } from "node:fs/promises";
+import { readFile, mkdir, copyFile, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
@@ -23,6 +23,20 @@ import { chromium } from "playwright";
 const args = process.argv.slice(2);
 const slug = args.find((a) => a.startsWith("--slug"))?.split("=")[1] || "doerfler-ag";
 const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || "http://localhost:3000";
+
+// ── DETERMINISTIC MODE V2c (29.05): T3 pipeline per-field typing speeds
+// kalibriert auf Apr-30 Schablone (canonical 42-phase override).
+// Apr-30 typing-speeds gemessen aus Phase-Library src-ranges / char-count.
+const TYPE_DELAY_STRASSE = 165;   // 14ch / 2.3s → 165ms (was 95)
+const TYPE_DELAY_NR      = 250;   // 2ch / 0.5s → 250ms (was 95)
+const TYPE_DELAY_PLZ     = 250;   // 4ch / 1.0s → 250ms (was 95)
+const TYPE_DELAY_ORT     = 150;   // 10ch / 1.5s → 150ms (was 95)
+const TYPE_DELAY_NAME    = 125;   // 12ch / 1.5s → 125ms (was 70)
+const TYPE_DELAY_PHONE   = 77;    // 13ch / 1.0s → 77ms (was 70)
+const TYPE_DELAY_EMAIL   = 74;    // 25ch / 1.86s → 74ms (was 70)
+const TYPE_DELAY_DESC    = 119;   // 35ch / 4.17s → 119ms (was 95)
+const TYPE_BACKSPACE_DELAY = 70;
+const TYPO_PAUSE_MS = 350;
 
 const configPath = join("docs", "customers", slug, "tenant_config.json");
 const config = JSON.parse(await readFile(configPath, "utf-8"));
@@ -54,39 +68,52 @@ console.log(`\n=== Take 3 Wizard Recording: ${t.name} (${slug}) ===\n`);
 console.log(`  Wizard-Header-Phone (lokal): ${wizardHeaderPhone}`);
 console.log(`  case label (mocked):         ${caseLabel}`);
 
+// V2c DETERMINISTIC: per-field delay (Apr-30 calibrated).
 async function typeLikeHuman(page, selector, text, opts = {}) {
-  // Mikro-Irregularität: 50-130ms pro Buchstabe.
-  const delayBase = opts.base ?? 70;
-  const delayJitter = opts.jitter ?? 60;
+  const delay = opts.delay ?? TYPE_DELAY_STRASSE;
   const locator = page.locator(selector);
   await locator.click();
   await locator.fill(""); // clear any existing
   for (const ch of text) {
-    await locator.type(ch, { delay: delayBase + Math.random() * delayJitter });
+    await locator.type(ch, { delay });
   }
 }
 
-async function typeWithTypo(page, selector, text, typoPoint, wrongSuffix) {
-  // Tippe bis typoPoint dann wrongSuffix dann Backspace×|wrongSuffix| dann Rest.
+async function typeWithTypo(page, selector, text, typoPoint, wrongSuffix, opts = {}) {
+  // V2c DETERMINISTIC: tippe bis typoPoint → wrongSuffix → backspace → rest.
+  const delay = opts.delay ?? TYPE_DELAY_DESC;
   const locator = page.locator(selector);
   await locator.click();
   await locator.fill("");
   const before = text.slice(0, typoPoint);
   const rest = text.slice(typoPoint);
   for (const ch of before) {
-    await locator.type(ch, { delay: 60 + Math.random() * 70 });
+    await locator.type(ch, { delay });
   }
   // Vertipper
   for (const ch of wrongSuffix) {
-    await locator.type(ch, { delay: 60 + Math.random() * 70 });
+    await locator.type(ch, { delay });
   }
-  await page.waitForTimeout(350); // "merken"
+  await page.waitForTimeout(TYPO_PAUSE_MS); // "merken"
   for (let i = 0; i < wrongSuffix.length; i++) {
-    await locator.press("Backspace", { delay: 70 });
+    await locator.press("Backspace", { delay: TYPE_BACKSPACE_DELAY });
   }
   for (const ch of rest) {
-    await locator.type(ch, { delay: 60 + Math.random() * 70 });
+    await locator.type(ch, { delay });
   }
+}
+
+// ── Event log infrastructure (V2 deterministic pipeline) ──
+// recordingStart pin set AFTER context.newPage() so it aligns with playwright
+// recordVideo timeline. logEvent appends {name, recording_t (seconds)}.
+let _recordingStart = null;
+const _events = [];
+function pinRecordingStart() { _recordingStart = Date.now(); }
+function logEvent(name) {
+  if (_recordingStart === null) throw new Error("logEvent called before pinRecordingStart()");
+  const recording_t = (Date.now() - _recordingStart) / 1000;
+  _events.push({ name, recording_t: Number(recording_t.toFixed(3)) });
+  console.log(`  [EVT ${name.padEnd(28)} @ ${recording_t.toFixed(2)}s]`);
 }
 
 const outBase = join("docs", "gtm", "pipeline", "06_video_production", "screenflows", slug);
@@ -261,6 +288,10 @@ async function removeFb67Cover() {
 
 
 const page = await context.newPage();
+// V2 pin: from this moment playwright recordVideo is recording. All
+// subsequent logEvent() calls map to master-time-from-zero.
+pinRecordingStart();
+logEvent("recording_start");
 // Capture console messages from page (Debug FB67)
 page.on("console", (msg) => {
   if (msg.text().includes("[FB67]")) console.log("  page:", msg.text());
@@ -282,7 +313,7 @@ const mockPayload = {
 
 await page.route("**/api/cases", async (route) => {
   if (route.request().method() === "POST") {
-    console.log("  [Mock] POST /api/cases intercepted → returning DA-0050");
+    console.log(`  [Mock] POST /api/cases intercepted → returning ${caseLabel}`);
     await route.fulfill({
       status: 201,
       contentType: "application/json",
@@ -314,9 +345,15 @@ console.log(`  [FB67] Phone-Patch: ${r1}+${r2}+${r3} nodes (initial+hydration+sa
 // Cover entfernen — erst jetzt ist die echte Phone-Nummer nicht mehr sichtbar.
 await removeFb67Cover();
 await page.waitForTimeout(400); // Fade-Out abwarten
+logEvent("wizard_step1_ready");
 
-console.log("  C1: Wizard Step 1 loaded, pausing to show initial state ...");
-await page.waitForTimeout(2000);
+// PIPELINE_BIBLE §62: Initial-Dwell auf 8s kalibriert auf Apr-30 Canonical
+// Phase-Library Override (wizard1_intro src=[6.0, 6.5]; wizard1_kategorie_leck
+// src=[7.5, 8.3]). Splice trimmt `-ss 2.0` von wizard.webm → source[0]
+// =recording_t[2.0]. Damit source-time 7.5 = wizard step1 pre-click freeze
+// muss leck_click bei recording_t ≥ 9.5s passieren (= 8s dwell + ~1s lead-in).
+console.log("  C1: Wizard Step 1 loaded, dwelling 8s to align with Apr-30 canonical ...");
+await page.waitForTimeout(8000);
 
 // Re-patch vor C2 (falls React neu gerendert hat)
 await forcePatchPhones(wizardHeaderPhone);
@@ -327,66 +364,72 @@ await applyWizardStyles();
 // Playwright click bubbles to parent <button>.
 await page.locator('button').filter({ has: page.locator('text=Leck') }).first()
   .click({ timeout: 8000 });
+logEvent("leck_clicked");
 console.log("  C2: 'Leck' ausgewählt");
-await page.waitForTimeout(1200);
+await page.waitForTimeout(600);  // Apr-30: 1.0s gap leck→normal (V2c was 1.2s)
 
 // ── C3: Click Normal urgency ──
 await page.locator('button').filter({ has: page.locator('text=Normal') }).first()
   .click({ timeout: 8000 });
+logEvent("normal_clicked");
 console.log("  C3: 'Normal' ausgewählt");
-await page.waitForTimeout(1500);
+await page.waitForTimeout(600);  // Apr-30: 0.7s gap normal→weiter (V2c was 1.5s)
 
 // ── Click Weiter ──
 await page.locator('button:has-text("Weiter")').first().click();
+logEvent("weiter_to_step2");
 console.log("  → Step 2");
-await page.waitForTimeout(1500);
+await page.waitForTimeout(800);  // Apr-30: ~1s step1→step2 transition (V2c was 1.5s)
 await forcePatchPhones(wizardHeaderPhone);
 await applyWizardStyles(); // Header survives step change
 
-// ── C4-C5: Live-type address fields ──
-// Strasse-Feld
-await typeLikeHuman(page, 'input[placeholder*="Bahnhofstrasse"], input[name="street"]', STREET);
-await page.waitForTimeout(400);
-// Nr-Feld
-await typeLikeHuman(page, 'input[placeholder*="12a"], input[name="house_number"]', HOUSE_NUMBER);
-await page.waitForTimeout(400);
-// PLZ-Feld
-await typeLikeHuman(page, 'input[placeholder*="8000"], input[name="plz"]', PLZ);
-await page.waitForTimeout(400);
-// Ort-Feld
-await typeLikeHuman(page, 'input[placeholder*="Zürich"], input[name="city"]', CITY);
+// ── C4-C5: Live-type address fields (Apr-30 per-field speed) ──
+logEvent("addr_typing_start");
+await typeLikeHuman(page, 'input[placeholder*="Bahnhofstrasse"], input[name="street"]', STREET, { delay: TYPE_DELAY_STRASSE });
+await page.waitForTimeout(200);  // Apr-30 inter-field ~0.2s
+await typeLikeHuman(page, 'input[placeholder*="12a"], input[name="house_number"]', HOUSE_NUMBER, { delay: TYPE_DELAY_NR });
+await page.waitForTimeout(200);
+await typeLikeHuman(page, 'input[placeholder*="8000"], input[name="plz"]', PLZ, { delay: TYPE_DELAY_PLZ });
+await page.waitForTimeout(200);
+await typeLikeHuman(page, 'input[placeholder*="Zürich"], input[name="city"]', CITY, { delay: TYPE_DELAY_ORT });
+logEvent("addr_typing_done");
 console.log("  C5: Adresse live getippt");
-await page.waitForTimeout(1500);
+await page.waitForTimeout(600);  // Apr-30 wizard2_complete = 0.8s (V2c was 1.5s)
 
 // ── Click Weiter ──
 await page.locator('button:has-text("Weiter")').first().click();
+logEvent("weiter_to_step3");
 console.log("  → Step 3");
-await page.waitForTimeout(1500);
+await page.waitForTimeout(800);  // Apr-30 wizard2_to_3 + wizard3_intro intro ~1s (V2c was 1.5s)
 await forcePatchPhones(wizardHeaderPhone);
 await applyWizardStyles();
 
-// ── Step 3: Pre-fill Name/Phone/Email ──
-// Use selectors based on label text proximity. The wizard has labels above inputs.
-await typeLikeHuman(page, 'input[name="contactName"], input[id*="name"], input[aria-label*="Name"]', REPORTER_NAME, { base: 50, jitter: 40 });
-await page.waitForTimeout(400);
-await typeLikeHuman(page, 'input[name="contactPhone"], input[type="tel"]', REPORTER_PHONE, { base: 50, jitter: 40 });
-await page.waitForTimeout(400);
-await typeLikeHuman(page, 'input[name="contactEmail"], input[type="email"]', REPORTER_EMAIL, { base: 50, jitter: 40 });
-await page.waitForTimeout(600);
+// ── Step 3: Pre-fill Name/Phone/Email (Apr-30 per-field speed) ──
+logEvent("contact_typing_start");
+await typeLikeHuman(page, 'input[name="contactName"], input[id*="name"], input[aria-label*="Name"]', REPORTER_NAME, { delay: TYPE_DELAY_NAME });
+await page.waitForTimeout(200);  // Apr-30 inter-field ~0.2s
+await typeLikeHuman(page, 'input[name="contactPhone"], input[type="tel"]', REPORTER_PHONE, { delay: TYPE_DELAY_PHONE });
+await page.waitForTimeout(200);
+await typeLikeHuman(page, 'input[name="contactEmail"], input[type="email"]', REPORTER_EMAIL, { delay: TYPE_DELAY_EMAIL });
+await page.waitForTimeout(300);  // before desc focus
+logEvent("contact_typing_done");
 
 // ── C6: Live-type description WITH typo+correction ──
 // "Irgendetwas" — user types "Irgendwtas" (typo "wt" instead of "et"),
 // pauses, deletes 4 chars ("wtas"), then corrects.
 // Typo at position 6 ("Irgend" | "wtas" [typo] → backspace ×4 → "etwas")
+logEvent("desc_typing_start");
 await typeWithTypo(
   page,
   'textarea[name="description"], textarea[id*="description"], textarea',
   DESCRIPTION,
   6,       // position after "Irgend"
-  "wtas"   // typo
+  "wtas",  // typo
+  { delay: TYPE_DELAY_DESC }
 );
+logEvent("desc_typing_done");
 console.log("  C6: Beschreibung live getippt (mit Vertipper+Korrektur)");
-await page.waitForTimeout(1200);
+await page.waitForTimeout(600);  // Apr-30 wizard3_beschr_done ~1.4s, V2c had 1.2s
 
 // FB122: KEIN scroll — aggressive CSS oben sorgt dafür dass alles auf 900px passt.
 // Verify: scrollHeight sollte ≤ viewport sein. Wenn nicht, logge Warnung.
@@ -397,19 +440,22 @@ const needScroll = await page.evaluate(() => {
 if (needScroll) {
   console.warn("  ⚠ Step 3 overflow — content > viewport, CSS muss noch kompakter");
 }
-await page.waitForTimeout(1000);
+await page.waitForTimeout(300);  // Apr-30 short hold pre-submit (V2c was 1000)
 
 // ── Click "Meldung absenden" → mocked API → success page ──
 await page.locator('button:has-text("Meldung absenden")').first().click();
+logEvent("submit_clicked");
 console.log("  → Submit geklickt");
-await page.waitForTimeout(1500);
+await page.waitForTimeout(800);  // wait for success transition (V2c was 1500)
 await forcePatchPhones(wizardHeaderPhone);
 await applyWizardStyles(); // Success-Page kann Phone enthalten
-await page.waitForTimeout(1500);
+await page.waitForTimeout(500);  // settle (V2c was 1500)
 
 // ── C7: Success-Page ──
-console.log("  C7: Success-Page sichtbar (DA-0050)");
-await page.waitForTimeout(2500);
+logEvent("success_page_visible");
+console.log(`  C7: Success-Page sichtbar (${caseLabel})`);
+await page.waitForTimeout(800);  // Apr-30 ~0.1s success_screen but +brief hold (V2c was 2500)
+logEvent("wizard_recording_end");
 
 // Save video BEFORE closing context (Playwright requires live context).
 const recVideo = page.video();
@@ -422,6 +468,17 @@ if (recVideo) {
 await context.close();
 await browser.close();
 await rm(outDir, { recursive: true, force: true });
+
+// ── V2 DETERMINISTIC: write event log for override generator ──
+const eventLogPath = join(outBase, "take3_wizard_event_log.json");
+await writeFile(eventLogPath, JSON.stringify({
+  slug,
+  recorder: "wizard_take3",
+  version: "v2_deterministic",
+  generated_at: new Date().toISOString(),
+  events: _events,
+}, null, 2));
+console.log(`  ✓ Event log: ${eventLogPath} (${_events.length} events)`);
 
 const kb = Math.round((await import("node:fs")).statSync(finalPath).size / 1024);
 console.log(`\n✅ Saved: ${finalPath} (${kb} KB)\n`);

@@ -27,8 +27,9 @@
   .status-bar {
     position: absolute; top: 0; left: 0; right: 0;
     height: 36px;
-    /* FB2+FB13: Icons 8px weiter von den Rändern (phone-bezel frisst sonst Rand). */
-    padding: 8px 38px;
+    /* FB2+FB13: Icons 8px weiter von den Rändern (phone-bezel frisst sonst Rand).
+       GB19 (31.05. PM): padding 38→48 — bezel-inner-curve R=46 verdeckt sonst die Status-Bar-Endpunkte. */
+    padding: 8px 48px;
     display: flex; justify-content: space-between; align-items: center;
     font-size: 12px; font-weight: 500;
     z-index: 100;
@@ -109,7 +110,9 @@
     position: absolute; top: 0; left: 0; right: 0;
     height: 40px; z-index: 5;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 16px 4px;
+    /* GB19 (31.05. PM): padding 16→44 horizontal — bezel-Inner-Curve R=46 verdeckt
+       sonst die äußeren Status-Bar-Elemente (Uhr links, Battery-Pill rechts). */
+    padding: 10px 44px 4px;
     backdrop-filter: blur(22px) saturate(1.3);
     -webkit-backdrop-filter: blur(22px) saturate(1.3);
     background: linear-gradient(180deg, rgba(20,28,42,0.72) 0%, rgba(20,28,42,0.25) 60%, rgba(20,28,42,0) 100%);
@@ -488,6 +491,9 @@
     height: 48px; display: flex; justify-content: center; align-items: center; gap: 80px;
     color: #bbb; font-size: 16px;
   }
+  /* T4 31.05. PM: SMS-Screen + Call-Screen brauchen Samsung 3-Button-Nav
+     statt Gesture-Line (FB5-Reopen, REF Apr-30 zeigt dunkle Buttons auf weiß). */
+  .samsung-nav.light { color: #5f6368; font-size: 18px; gap: 90px; }
 
   /* ══════════════════════════════════════════════════════════
      SCREEN 6: SMS NOTIFICATION + THREAD
@@ -554,7 +560,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="currentColor" opacity="0.9"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="currentColor" opacity="0.9"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-            <span class="battery-pill" style="display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
+            <span class="battery-pill" style="display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg><span class="batt-num">71</span></span>
     </span>
   </div>
   <!-- Dynamische Uhr (über dem Screenshot-Widget) — FB44: initial leer -->
@@ -576,7 +582,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1a1a" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="#1a1a1a"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
+            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg><span class="batt-num">71</span></span>
     </div>
   </div>
 
@@ -687,7 +693,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="#fff"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="#fff"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-            <span style="background:rgba(255,255,255,0.22);color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
+            <span style="background:rgba(255,255,255,0.22);color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg><span class="batt-num">71</span></span>
     </div>
   </div>
 
@@ -736,7 +742,11 @@
     <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.956.956 0 010-1.36C3.34 8.75 7.46 7 12 7s8.66 1.75 11.71 4.72c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85a.993.993 0 01-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
   </div>
 
-  <div class="nav-bar"><div class="nav-line"></div></div>
+  <div class="samsung-nav">
+    <span>|||</span>
+    <span>○</span>
+    <span>&lt;</span>
+  </div>
 </div>
 
 <!-- ══ SCREEN 5: ANRUF BEENDET — FB20.2 Samsung Original ══ -->
@@ -748,7 +758,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1a1a" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="#1a1a1a"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
+            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg><span class="batt-num">71</span></span>
     </div>
   </div>
 
@@ -788,7 +798,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1a1a" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z"/></svg>
       <svg width="15" height="12" viewBox="0 0 24 20" fill="#1a1a1a"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>
       <svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>
-            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>
+            <span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e" style="flex-shrink:0;"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg><span class="batt-num">71</span></span>
     </div>
   </div>
 
@@ -829,7 +839,11 @@
     <span class="checkmarks">✓✓</span>
   </div>
 
-  <div class="nav-bar light"><div class="nav-line"></div></div>
+  <div class="samsung-nav light">
+    <span>|||</span>
+    <span>○</span>
+    <span>&lt;</span>
+  </div>
 </div>
 
 <!-- ══ SMS NOTIFICATION BANNER (overlays homescreen) ════ -->
@@ -858,6 +872,9 @@ const CONFIG = {
   anrufDauer: parseInt(params.get("anruf_dauer") || "191"),
   initial: params.get("initial") || "S",
   brandColor: params.get("brand_color") || "#003478",
+  // Akku-Stand: T2=86 (frischer Akku, früher Zeitpunkt), T4=71 (später, wenn Handy
+  // als Proof reinkommt). Default 71 = T4. T2-Loader (produce_screenflow) übergibt 86.
+  battery: params.get("battery") || "71",
   // Timing overrides for the sequence
   dialDelay: parseInt(params.get("dial_delay") || "2000"),
   ringDuration: parseInt(params.get("ring_duration") || "3000"),
@@ -871,6 +888,8 @@ function applyConfig() {
   // Homescreen (clock-display → CONFIG.uhrzeit on ALL instances)
   document.querySelectorAll(".clock-display").forEach(el => el.textContent = CONFIG.uhrzeit);
   document.querySelectorAll(".date-display").forEach(el => el.textContent = CONFIG.datum);
+  // Akku auf ALLEN Phone-Screens (Call, SMS, Home) konsistent setzen (T2=86 / T4=71).
+  document.querySelectorAll(".batt-num").forEach(el => el.textContent = CONFIG.battery);
 
   // Contact / Kontaktsuche
   document.getElementById("contact-initial").textContent = CONFIG.initial;
@@ -902,13 +921,16 @@ function applyConfig() {
   document.getElementById("sms-sender").textContent = CONFIG.smsSender;
   document.getElementById("notif-sender").textContent = CONFIG.smsSender;
   document.getElementById("sms-ref").textContent = CONFIG.caseRef;
-  document.getElementById("sms-day").innerHTML = CONFIG.datum + " · <span id='sms-time'>" + addMinutes(CONFIG.uhrzeit, mins + 1) + "</span>";
-  document.getElementById("sms-timestamp").textContent = addMinutes(CONFIG.uhrzeit, mins + 1);
+  // FB48 (27.05): sms_time-override aus URL-Param, fallback auf Math.floor-calc.
+  const smsTimeOverride = params.get("sms_time");
+  const smsTime = smsTimeOverride || addMinutes(CONFIG.uhrzeit, mins + 1);
+  document.getElementById("sms-day").innerHTML = CONFIG.datum + " · <span id='sms-time'>" + smsTime + "</span>";
+  document.getElementById("sms-timestamp").textContent = smsTime;
 
   // Update status bar clock after call
   const endTime = addMinutes(CONFIG.uhrzeit, mins);
   document.querySelector("#call-ended .clock-display").textContent = endTime;
-  document.querySelector("#sms-screen .clock-display").textContent = addMinutes(CONFIG.uhrzeit, mins + 1);
+  document.querySelector("#sms-screen .clock-display").textContent = smsTime;
 }
 
 function addMinutes(timeStr, mins) {
@@ -931,6 +953,9 @@ window.getCallEndTime = function() {
 };
 
 window.getSmsTime = function() {
+  // Founder 27.05: explicit sms_time override für genaues "08:08" anstatt floor-Math.
+  const override = params.get("sms_time");
+  if (override) return override;
   const mins = Math.floor(CONFIG.anrufDauer / 60) + 1;
   return addMinutes(CONFIG.uhrzeit, mins);
 };
@@ -982,7 +1007,12 @@ function startTimer() {
   document.getElementById("call-status-text").textContent = "Anruf aktiv";
   document.getElementById("pulse-ring").classList.add("hidden");
   timerInterval = setInterval(() => {
-    timerSeconds++;
+    // FB33: Clamp timer at anrufDauer so live timer never drifts past the
+    // target call duration. Without clamp, setInterval lag pushed timer to
+    // 02:50 when target was 02:47.
+    if (timerSeconds < CONFIG.anrufDauer) {
+      timerSeconds++;
+    }
     const m = Math.floor(timerSeconds / 60);
     const s = timerSeconds % 60;
     el.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
@@ -1011,6 +1041,15 @@ async function sleep(ms) {
 // Expose control functions for Playwright
 window.endCall = function() {
   stopTimer();
+  // FB33: Use anrufDauer (the target) instead of live timerSeconds —
+  // guarantees "Anruf beendet · MM:SS" matches the spec exactly. With the
+  // timer-clamp above, live timer also stays at anrufDauer; this is defence
+  // in depth (covers cases where endCall fires before clamp catches up).
+  timerSeconds = CONFIG.anrufDauer;
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById("ended-duration").textContent =
+    String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
   showScreen("call-ended");
 };
 

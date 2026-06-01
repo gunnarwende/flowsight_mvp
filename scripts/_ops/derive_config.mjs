@@ -15,7 +15,7 @@
  *   --validate   Check existing tenant_config.json for completeness (no generation)
  */
 
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -93,51 +93,79 @@ const SERVICE_TO_CATEGORY = [
   { keywords: /umbau|sanier|renovier|bad|neubau|renovation/i, value: "Umbau/Sanierung", label: "Umbau/Sanierung", hint: "Umbau, Bad-Renovation", iconKey: "wrench" },
 ];
 
-// ── Existing prefixes (from known customers) ─────────────────────────────
-// Used for uniqueness check
-async function getExistingPrefixes() {
-  const prefixes = new Set();
+// ── Existing prefixes (from real tenant configs) ─────────────────────────
+// Sustainable uniqueness: read the ACTUAL case_id_prefix from every existing
+// tenant_config.json (not a hardcoded list that drifts from reality). Excludes
+// the current slug so re-deriving an existing tenant doesn't collide with itself.
+async function getExistingPrefixes(currentSlug) {
+  const prefixes = new Set(["FS"]); // FlowSight reserved
   try {
     const customersDir = join("docs", "customers");
-    // Check known customer configs
-    const knownPrefixes = ["DF", "BH", "WL", "WB", "FS"]; // Dörfler, Brunner, Walter-Leuthold, Weinberger, FlowSight
-    for (const p of knownPrefixes) prefixes.add(p);
+    const entries = await readdir(customersDir, { withFileTypes: true });
+    for (const e of entries) {
+      if (!e.isDirectory() || e.name === currentSlug) continue;
+      const cfgPath = join(customersDir, e.name, "tenant_config.json");
+      if (!existsSync(cfgPath)) continue;
+      try {
+        const cfg = JSON.parse(await readFile(cfgPath, "utf-8"));
+        const p = cfg?.tenant?.case_id_prefix;
+        if (p) prefixes.add(String(p).toUpperCase());
+      } catch { /* ignore malformed config */ }
+    }
   } catch { /* ignore */ }
   return prefixes;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-/** Extract first 2 consonants from company name for case_id_prefix */
-/** Case-ID Prefix: 2 Buchstaben aus Firmenname. NIEMALS Zahlen. NIEMALS Umlaute (ÄÖÜ).
- * "Wälti & Sohn AG" → "WS" (Initialen der Wörter)
- * "Stark Haustechnik" → "SH"
- * "Leins AG" → "LN" (Konsonanten)
- * "Dörfler AG" → "DF" */
+/** Case-ID Prefix: 2 Großbuchstaben, deterministisch aus Firmenname.
+ *
+ * REGEL (nachhaltig, ein einziger Pfad): Anfangsbuchstaben der ERSTEN 2 echten
+ * Wörter (≥2 Zeichen, beginnt mit Buchstabe). Die Rechtsform (AG/GmbH) wird
+ * NICHT entfernt — dadurch wird "Leins AG" → "LA", konsistent mit "Dörfler AG"
+ * → "DA". Das alte Strippen der Rechtsform ließ Ein-Wort-Namen ("X AG") auf
+ * eine Konsonanten-Strategie durchfallen ("Leins AG" → "LN") — driftete von
+ * den manuell gesetzten echten Prefixes (DA) ab. Umlaute normalisiert.
+ * NIEMALS Zahlen, NIEMALS Umlaute.
+ *   "Dörfler AG"        → "DA"
+ *   "Leins AG"          → "LA"
+ *   "Stark Haustechnik" → "SH"
+ *   "Wälti & Sohn AG"   → "WS"   (& ist kein echtes Wort)
+ *   "Orlandini"         → "OR"   (1 Wort → erste 2 Buchstaben)
+ */
 function deriveCaseIdPrefix(companyName) {
-  // Umlaute ersetzen: Ä→A, Ö→O, Ü→U
   const clean = companyName
     .replace(/[Ää]/g, "A").replace(/[Öö]/g, "O").replace(/[Üü]/g, "U");
-
-  // Strategy 1: Initialen der ersten 2 signifikanten Wörter
   const words = clean
-    .replace(/\b(AG|GmbH|SA|Sarl|KlG|Genossenschaft|und|&)\b/gi, "")
-    .trim()
     .split(/\s+/)
-    .filter((w) => w.length > 1 && /^[A-Z]/i.test(w));
-  if (words.length >= 2) {
-    const prefix = (words[0][0] + words[1][0]).toUpperCase().replace(/[^A-Z]/g, "");
-    if (prefix.length === 2) return prefix;
+    .map((w) => w.replace(/[^a-zA-Z]/g, ""))
+    .filter((w) => w.length >= 2);
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return clean.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase() || "FS";
+}
+
+/** Kollisions-Auflösung OHNE Zahlen: alternative 2-Buchstaben-Kombis aus den
+ * Buchstaben des Firmennamens, bis eine freie gefunden ist. */
+function resolvePrefixCollision(companyName, taken) {
+  const clean = companyName
+    .replace(/[Ää]/g, "A").replace(/[Öö]/g, "O").replace(/[Üü]/g, "U");
+  const words = clean
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-zA-Z]/g, ""))
+    .filter((w) => w.length >= 2);
+  const first = words[0] || clean.replace(/[^a-zA-Z]/g, "");
+  const candidates = [];
+  if (words[1]) candidates.push(first[0] + words[1][1]);     // w0[0]+w1[1]
+  candidates.push(first[0] + (first[1] || ""));               // w0[0]+w0[1]
+  candidates.push(first[0] + (first[2] || ""));               // w0[0]+w0[2]
+  for (let i = 2; i < words.length; i++) candidates.push(first[0] + words[i][0]);
+  for (const ch of first.slice(1)) candidates.push(first[0] + ch); // w0[0]+jeder weitere Buchstabe
+  for (const c of candidates) {
+    const up = (c || "").toUpperCase();
+    if (/^[A-Z]{2}$/.test(up) && !taken.has(up)) return up;
   }
-  // Strategy 2: Erste 2 Konsonanten des Firmennamens
-  const consonants = clean
-    .replace(/[^a-zA-Z]/g, "")
-    .replace(/[aeiou]/gi, "")
-    .toUpperCase()
-    .replace(/[^A-Z]/g, "");
-  if (consonants.length >= 2) return consonants.slice(0, 2);
-  // Fallback: erste 2 Buchstaben
-  return clean.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase();
+  return null;
 }
 
 /** Derive SMS sender name: max 11 chars, ASCII alphanumeric only.
@@ -762,16 +790,16 @@ async function main() {
 
   // Tenant
   const caseIdPrefix = deriveCaseIdPrefix(firma);
-  const existingPrefixes = await getExistingPrefixes();
+  const existingPrefixes = await getExistingPrefixes(slug);
   let finalPrefix = caseIdPrefix;
   if (existingPrefixes.has(finalPrefix)) {
-    // Add a digit to make unique
-    for (let i = 2; i <= 9; i++) {
-      const candidate = `${finalPrefix[0]}${i}`;
-      if (!existingPrefixes.has(candidate)) {
-        finalPrefix = candidate;
-        break;
-      }
+    // Kollision → alternative Buchstaben-Kombi (NIEMALS Zahlen).
+    const alt = resolvePrefixCollision(firma, existingPrefixes);
+    if (alt) {
+      console.log(`  ⚠ prefix collision: ${finalPrefix} taken → ${alt}`);
+      finalPrefix = alt;
+    } else {
+      console.log(`  ⚠ prefix collision: ${finalPrefix} taken, no free 2-letter combo — needs manual choice`);
     }
   }
   console.log(`  case_id_prefix: ${finalPrefix} (from "${firma}")`);
@@ -973,6 +1001,27 @@ async function main() {
     reviewMd += `## ✅ Alle Pflichtfelder automatisch abgeleitet\n\n`;
     reviewMd += `Keine manuelle Eingabe nötig. Direkt weiter mit Provision.\n\n`;
   }
+
+  // ── BESTÄTIGEN: high-impact, extraktions-unsichere Felder — IMMER vorlegen ──
+  // Hybrid-Modell (01.06.2026): Auto-Extraktion dieser 3 Felder ist prinzipiell
+  // unzuverlässig — brand_color verwechselt Akzent/CTA mit der Marken-Farbe,
+  // Öffnungszeiten/Inhaber hängen am individuellen HTML jeder Seite. Darum werden
+  // sie IMMER mit Auto-Wert (Entwurf) zur schnellen Bestätigung vorgelegt, statt
+  // still vertraut zu werden. ~1 Min/Betrieb, robust + skaliert auf 10/Tag.
+  reviewMd += `---\n\n`;
+  reviewMd += `## ⚠️ BESTÄTIGEN für die Video-Takes (jetzt — ~30 Sek)\n\n`;
+  reviewMd += `> Nur EIN Feld ist für die Demo-Videos kritisch UND aus der Website schwer zuverlässig zu extrahieren:\n\n`;
+  reviewMd += `| Feld | Auto-Wert (Entwurf) | Quelle | Korrektur-Pfad |\n|------|------|------|------|\n`;
+  reviewMd += `| **Brand-Farbe** | ${config.tenant.brand_color}${!brandColor ? " ⚠️ DEFAULT" : ""} | ${crawl.brand_color?.source || "default"} | \`tenant.brand_color\` |\n\n`;
+  reviewMd += `Der Algorithmus kann die Marken-Farbe nicht sicher von einem Akzent/CTA-Ton unterscheiden — **immer kurz visuell gegen die Website abgleichen.** Firma, Prefix (\`${finalPrefix}\`), Wizard-Kategorien & Google-Rating sind via Zefix/Google zuverlässig und brauchen i.d.R. keine Korrektur.\n\n`;
+  reviewMd += `---\n\n`;
+  reviewMd += `## 📞 Für den Voice-Agent (SPÄTER — erst vor der Telefon-Schaltung)\n\n`;
+  reviewMd += `> Diese Felder erscheinen in KEINEM Video — sie steuern nur die LIVE-Telefonassistentin (Lisa). Erst bestätigen/befüllen, wenn der Prospect positiv reagiert und ein Telefon-Setup ansteht (kleiner Funnel, NICHT Teil des 10/Tag-Video-Outreach).\n\n`;
+  reviewMd += `| Feld | Auto-Wert | Korrektur-Pfad |\n|------|------|------|\n`;
+  reviewMd += `| Öffnungszeiten | ${openingHoursFormatted || "⚠️ (fehlt)"} | \`voice_agent.opening_hours\` |\n`;
+  reviewMd += `| Inhaber/GL | ${inhaber || "⚠️ (nicht gefunden)"} | \`voice_agent.owner_names\` |\n`;
+  reviewMd += `| Team | ${(teamSection || "").slice(0, 40) || "⚠️ (nicht gefunden)"} | \`voice_agent.team_section\` |\n`;
+  reviewMd += `| Einzugsgebiet (Voice-Text) | ${(config.voice_agent.service_area || "").slice(0, 40) || "⚠️"} | \`voice_agent.service_area\` |\n\n`;
 
   reviewMd += `---\n\n`;
   reviewMd += `## Konfiguration prüfen\n\n`;

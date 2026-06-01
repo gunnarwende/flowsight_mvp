@@ -54,6 +54,69 @@ const displayPhone = config.video?.display_phone || "+41 44 505 74 21";
 
 console.log(`\n=== Take 4 v2 Recording: ${t.name} (${slug}) ===\n`);
 
+// ── Event-Logging Infrastructure (Option B, 30.05.) ──
+// Logs deterministic event-timestamps per phase-boundary.
+// Used by event_log_to_override.mjs → build_from_phase_schedule auto-calibrate.
+// NO waitUntilT — recording timing stays natural (no drift force).
+const _partEvents = {};
+let _currentPart = 0;
+let _partStart = null;
+function pinPartStart(partIdx) {
+  _currentPart = partIdx;
+  _partStart = Date.now();
+  if (!_partEvents[partIdx]) _partEvents[partIdx] = [];
+  _partEvents[partIdx].push({ name: "part_start", recording_t: 0 });
+  console.log(`  [PART ${partIdx} start]`);
+}
+function logEvt(name) {
+  if (_partStart === null) return;
+  const rt = (Date.now() - _partStart) / 1000;
+  _partEvents[_currentPart].push({ name, recording_t: Number(rt.toFixed(3)) });
+  console.log(`  [EVT P${_currentPart} ${name.padEnd(28)} @ ${rt.toFixed(2)}s]`);
+}
+async function writeEventLog() {
+  const eventLogPath = join(outBase, "take4_event_log.json");
+  const allEvents = [];
+  for (const part of Object.keys(_partEvents).sort((a,b) => Number(a)-Number(b))) {
+    for (const ev of _partEvents[part]) {
+      allEvents.push({ part: Number(part), ...ev });
+    }
+  }
+  // Spec-aligned part_webm_offsets: skip webm preamble before first meaningful event.
+  // Per take4_master_spec.json, each Part should start at master_t = sum(prev parts' allocated dur).
+  // Offset = recording_t of "first visible content" event per part (skips page-load preamble).
+  // Mapping (first-visible-content event per part):
+  //   P1: "dashboard_visible" — first KPI tiles render
+  //   P3: "phone_homescreen_visible" — Phone Lockscreen rendered
+  //   P4: "inarbeit_view_post_visible" — Case-Detail rendered
+  //   P5: "phone_sms_thread_visible" — Phone Day-2 thread rendered
+  //   P6: "review_start" — Review page first render (no preamble usually)
+  //   P7: "closing_start" — Dashboard rendered
+  const FIRST_CONTENT_EVENT = {
+    1: "dashboard_visible",
+    3: "phone_homescreen_visible",
+    4: "inarbeit_view_post_visible",
+    5: "phone_sms_thread_visible",
+    6: "review_start",
+    7: "case_review_done_visible",  // skip Part 7 page-load preamble (FAIL @ master 85)
+  };
+  const part_webm_offsets = {};
+  for (const [partStr, eventName] of Object.entries(FIRST_CONTENT_EVENT)) {
+    const part = Number(partStr);
+    const ev = (_partEvents[part] || []).find((e) => e.name === eventName);
+    part_webm_offsets[part] = ev ? Math.max(0, ev.recording_t - 0.3) : 0; // -0.3s buffer
+  }
+  const log = {
+    slug,
+    recorder: "take4_event_logged_v2_offsets",
+    generated_at: new Date().toISOString(),
+    part_webm_offsets,
+    events: allEvents,
+  };
+  await (await import("node:fs/promises")).writeFile(eventLogPath, JSON.stringify(log, null, 2));
+  console.log(`\n✓ event_log: ${eventLogPath} (${allEvents.length} events, offsets=${JSON.stringify(part_webm_offsets)})`);
+}
+
 function fmtTime(iso) {
   const d = new Date(iso);
   return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
@@ -108,6 +171,26 @@ async function setupLeitsystemContext(browser, recordDir, cookies) {
   }
   await context.addInitScript(() => {
     try { localStorage.setItem("ops-push-onboarding-dismissed", Date.now().toString()); } catch {}
+    // FB27 (31.05. PM): force greeting text to "Guten Morgen" via DOM-replace.
+    // (real-time getGreeting() changes based on build-time; pipeline needs deterministic).
+    // Non-invasive: only mutates the visible greeting span text, not Date globals.
+    try {
+      const fixGreeting = () => {
+        document.querySelectorAll("*").forEach((el) => {
+          if (el.children.length > 0) return;
+          const t = el.textContent || "";
+          if (/^Guten (Tag|Abend),/.test(t.trim())) {
+            el.textContent = t.replace(/Guten (Tag|Abend)/, "Guten Morgen");
+          }
+        });
+      };
+      fixGreeting();
+      setInterval(fixGreeting, 50);
+      try {
+        const obs = new MutationObserver(() => fixGreeting());
+        obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+      } catch {}
+    } catch {}
     const css = `
       /* FB76/Dev-Badges aggressiv weg */
       nextjs-portal, [data-nextjs-dialog], [data-nextjs-toast], [data-nextjs-toast-wrapper],
@@ -120,6 +203,21 @@ async function setupLeitsystemContext(browser, recordDir, cookies) {
       }
       /* FB62 Tenant-Switcher weg */
       [data-owner-only="tenant-switcher"] { display: none !important; }
+      /* T4-V8 (31.05.): "Admin: back to workspace" Escape-Button im Sidebar weg */
+      [data-owner-only="admin-back"] { display: none !important; }
+      /* T4-V8d (31.05.): Cover bottom-left dev-badge mit sidebar-dark rect.
+         FIX 31.05. PM: body::after wurde von nextjs-portal überlagert weil
+         portal-host an <html> hängt (außerhalb body-stacking-context).
+         Echter <div> auf documentElement via JS (siehe ensureDevBadgeCover). */
+      #fs-devbadge-cover {
+        position: fixed !important;
+        bottom: 0 !important; left: 0 !important;
+        width: 220px !important; height: 48px !important;
+        background: rgb(0,5,15) !important;
+        z-index: 2147483647 !important;
+        pointer-events: none !important;
+        display: block !important;
+      }
       /* FB75 Content-Padding */
       main.md\\:ml-64 > *:not(.full-bleed) {
         max-width: 1080px !important; margin-left: auto !important; margin-right: auto !important;
@@ -164,6 +262,56 @@ async function setupLeitsystemContext(browser, recordDir, cookies) {
     };
     inject();
     setInterval(inject, 120);
+    // T4-V8e (31.05. PM): Dev-Badge-Cover als echter <div> auf documentElement.
+    // body::after rendert NICHT über portal-host der an <html> hängt — daher
+    // muss der Cover SELBST auf <html> sein, im selben stacking-context.
+    const ensureDevBadgeCover = () => {
+      const host = document.body || document.documentElement;
+      if (!host) return;
+      let cover = document.getElementById("fs-devbadge-cover");
+      if (!cover) {
+        cover = document.createElement("div");
+        cover.id = "fs-devbadge-cover";
+        cover.setAttribute("data-fs-purpose", "cover-devbadge");
+      }
+      // CRITICAL: re-append to make it LAST child of body — last-child wins
+      // stacking-order when z-index is equal, AND positioned-element of
+      // body's stacking context beats nextjs-portal that may be a sibling.
+      if (cover.parentElement !== host || host.lastElementChild !== cover) {
+        host.appendChild(cover);
+      }
+      // Inline style is final authority (CSS-rule may be defeated by portal).
+      cover.style.cssText =
+        "position:fixed !important;bottom:0 !important;left:0 !important;" +
+        "width:240px !important;height:52px !important;" +
+        "background:rgb(0,5,15) !important;" +
+        "z-index:2147483647 !important;" +
+        "pointer-events:none !important;display:block !important;" +
+        "isolation:isolate !important;" +
+        "transform:translateZ(0) !important;";
+    };
+    ensureDevBadgeCover();
+    setInterval(ensureDevBadgeCover, 100);
+    try {
+      const obsCover = new MutationObserver(() => ensureDevBadgeCover());
+      obsCover.observe(document.documentElement, { childList: true, subtree: false });
+    } catch {}
+    // T4-V8c (31.05.): Shadow-Root-Content leeren statt host removen.
+    // Next.js re-erstellt den host wenn entfernt, aber shadow-root-innerHTML="" hält stand.
+    const nukePortal = () => {
+      document.querySelectorAll("nextjs-portal").forEach((p) => {
+        try {
+          if (p.shadowRoot) p.shadowRoot.innerHTML = "";
+          p.setAttribute("style", "display:none!important;visibility:hidden!important;position:fixed;left:-99999px;top:-99999px;width:0;height:0;");
+        } catch {}
+      });
+    };
+    nukePortal();
+    setInterval(nukePortal, 50);  // ~30fps cadence
+    try {
+      const obs = new MutationObserver(() => nukePortal());
+      obs.observe(document.documentElement, { childList: true, subtree: true });
+    } catch {}
     // Aggressive Dev-Badge-Suppression: remove by attribute AND by visual
     // heuristic (fixed-position element with "issue" text in bottom-left corner).
     const aggressiveKill = () => {
@@ -197,6 +345,34 @@ async function setupLeitsystemContext(browser, recordDir, cookies) {
           }
         } catch {}
       });
+      // T4-V8 (31.05.): Inline-style override for nextjs-portal host element.
+      // CSS rules can be overridden by :host { all: initial } inside shadow root,
+      // so direct style attribute is the only reliable kill.
+      try {
+        document.querySelectorAll("nextjs-portal").forEach((p) => {
+          p.setAttribute("style", "display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important;position:fixed;left:-9999px;top:-9999px;");
+        });
+      } catch {}
+      // Belt-and-suspenders text-match kill
+      try {
+        document.querySelectorAll("*").forEach((el) => {
+          if (el.children.length > 5) return;
+          const txt = (el.textContent || "").trim();
+          if (txt.length > 30) return;
+          if (/^\d*\s*Issues?$/i.test(txt) || /^Build Error$/i.test(txt) || /^\d+\s*errors?$/i.test(txt)) {
+            let n = el;
+            for (let i = 0; i < 8 && n; i++) {
+              const cs = getComputedStyle(n);
+              if (cs.position === "fixed" || cs.position === "absolute") {
+                n.remove();
+                return;
+              }
+              n = n.parentElement;
+            }
+            el.remove();
+          }
+        });
+      } catch {}
       // FB97/FB104: Warning-Banner VISUELL unsichtbar (aber Button im DOM,
       // Playwright kann "Trotzdem speichern" trotzdem clicken). Wir kollabieren
       // den Wrapper mit opacity/height=0, nicht remove().
@@ -264,6 +440,8 @@ async function recordAkt1(browser, cookies) {
   await mkdir(tmpDir, { recursive: true });
   const context = await setupLeitsystemContext(browser, tmpDir, cookies);
   const page = await context.newPage();
+  pinPartStart(1);
+  logEvt("recording_start");
 
   // FB78: Start mit D1 Fallliste.
   await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded" });
@@ -273,27 +451,52 @@ async function recordAkt1(browser, cookies) {
     const later = page.locator('button:has-text("Später")');
     if (await later.count() > 0) { await later.first().click(); await page.waitForTimeout(w(300)); }
   } catch {}
+  logEvt("dashboard_visible");
   console.log("  D1: Fallübersicht sichtbar");
-  await page.waitForTimeout(w(4500)); // D1 länger zeigen (+2s)
+  // ── ANKER-ARCHITEKTUR (01.06.2026) ───────────────────────────────────────
+  // akt1-Aktionen werden an FESTE Master-Zeiten geankert (= Dörfler R24, die Basis
+  // des universellen Cursor-Layers) statt an blinde waitForTimeouts. Deterministisch:
+  //   master(jetzt) = rt() − dashboardVisibleRt + 0.3
+  // weil compose offset1 exakt auf dashboard_visible kalibriert (offset1 = dvRt − 0.3).
+  // → der universelle Cursor sitzt bei JEDEM Betrieb zehntelsekunden-genau. Vorher
+  // produzierten blinde Waits pro Betrieb eine andere Kadenz (Leins +0.85/+0.46 vs
+  // Dörfler = holprig). Der Anker wartet nur (nie rückwärts); funktioniert, weil die
+  // Aufnahme natürlich ≤ den Zielzeiten liegt.
+  const nowRt = () => (Date.now() - _partStart) / 1000;  // recording_t wie in logEvt
+  const dashboardVisibleRt = nowRt();
+  const holdUntilMaster = async (M, label) => {
+    const targetRt = dashboardVisibleRt + (M - 0.3);
+    const remMs = (targetRt - nowRt()) * 1000;
+    if (remMs > 0) { await page.waitForTimeout(remMs); }
+    else { console.warn(`  ⚠ anchor "${label}" master ${M}s schon um ${(-remMs).toFixed(0)}ms überschritten (Aufnahme langsamer als Ziel)`); }
+  };
 
-  // Click DA-0050 row → Case-Detail
+  // Click DA-0050 row → Case-Detail @ master 9.61 (Dörfler R24)
   try {
     const row = page.locator(`tr:has-text("${caseLabel}"), a:has-text("${caseLabel}")`).first();
     await row.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(w(400));
+    await holdUntilMaster(9.61, "case_click");
+    logEvt("case_click");
     await row.click({ force: true });
-    console.log("  → Case-Detail öffnen");
+    console.log("  → Case-Detail öffnen @9.61");
   } catch {
+    await holdUntilMaster(9.61, "case_click");
+    logEvt("case_click");
     await page.goto(`${baseUrl}/ops/cases/${caseUuid}?_hb=1`, { waitUntil: "domcontentloaded" });
   }
-  await page.waitForTimeout(w(5000)); // D2 Ruhezeit (+2s)
+  // Case-Detail rendert nach Click. Anker: "neu sichtbar" @12.09, Bearbeiten @13.55 (R24).
+  await holdUntilMaster(12.09, "case_initial_neu_visible");
+  logEvt("case_initial_neu_visible");
+  await holdUntilMaster(13.55, "bearbeiten_click");
 
   // Click Bearbeiten (pencil icon)
   try {
     await page.locator('button[title="Bearbeiten"]').first().click({ timeout: 5000 });
+    logEvt("bearbeiten_click");
     console.log("  D3: Bearbeiten geklickt");
   } catch (e) { console.warn("  Bearbeiten fail:", e.message); }
-  await page.waitForTimeout(w(2800));
+  // MASTER-TIMING: REF macht Bearbeiten+Dropdown atomisch (<0,1s). Vorher 2,8s → 0,1s.
+  await page.waitForTimeout(w(100));
 
   // FB79/96: Status-Dropdown VISUELL öffnen (synthetic overlay).
   // Native <select> zeigt Dropdown-Liste nicht zuverlässig unter Playwright.
@@ -321,33 +524,59 @@ async function recordAkt1(browser, cookies) {
         fontSize: "14px",
         overflow: "hidden",
       });
-      // FB103: Richtiger Index für "In Arbeit" highlight (nicht "Geplant"!).
+      // FB1 (31.05.): Animierter Hover durch Optionen Neu→Geplant→In Arbeit→Warten→In Arbeit.
+      // Cycle highlights um Mouse-Hover zu simulieren wie REF.
       const targetIdx = options.findIndex((o) => /in\s?arbeit/i.test(o.label));
       overlay.innerHTML = options.map((o, i) =>
-        `<div style="padding:10px 14px;color:#1a1a1a;${i === targetIdx ? 'background:#eff6ff;font-weight:500;' : ''}">${o.label}</div>`
+        `<div data-opt-idx="${i}" style="padding:10px 14px;color:#1a1a1a;transition:background 80ms;">${o.label}</div>`
       ).join("");
       document.body.appendChild(overlay);
+      // Hover sequence: Neu(0)→Geplant(1)→In Arbeit(2)→Warten(3)→In Arbeit(2 final)
+      const hoverSeq = [0, 1, 2, 3, 2];
+      const hoverDur = 600; // ms per option
+      let stepIdx = 0;
+      const cycle = () => {
+        overlay.querySelectorAll("[data-opt-idx]").forEach((d) => {
+          d.style.background = "";
+          d.style.fontWeight = "";
+        });
+        const optIdx = hoverSeq[stepIdx];
+        const el = overlay.querySelector(`[data-opt-idx="${optIdx}"]`);
+        if (el) {
+          el.style.background = "#eff6ff";
+          el.style.fontWeight = "500";
+        }
+        stepIdx++;
+        if (stepIdx < hoverSeq.length) setTimeout(cycle, hoverDur);
+      };
+      cycle();
     });
-    console.log("  D4: Status-Dropdown visuell offen (In Arbeit hervorgehoben)");
+    logEvt("status_dropdown_open");
+    console.log("  D4: Status-Dropdown animated hover (Neu→Geplant→In Arbeit→Warten→In Arbeit)");
   } catch (e) { console.warn("  Dropdown-overlay fail:", e.message); }
-  await page.waitForTimeout(w(3500)); // Hold auf offenem Dropdown
+  // Anker status_inarbeit @16.99 (R24). Deckt die ~3.0s Hover-Animation (dropdown@~13.66 → 16.99 ≈ 3.3s).
+  await holdUntilMaster(16.99, "status_inarbeit_set");
 
   try {
     // Close visual dropdown
     await page.evaluate(() => document.getElementById("fb96-dropdown")?.remove());
     const statusSelect = page.locator('select').first();
     await statusSelect.selectOption({ label: "In Arbeit" });
+    logEvt("status_inarbeit_set");
     console.log("  D5/D6: Status → In Arbeit");
   } catch (e) { console.warn("  Status fail:", e.message); }
-  await page.waitForTimeout(w(2800));
+  // Anker Termin-Picker @19.2 (R24)
+  await holdUntilMaster(19.2, "termin_picker_open");
 
   // Termin öffnen
   try {
     const terminInput = page.locator('input[placeholder*="Termin"], button:has-text("Termin wählen")').first();
     await terminInput.click({ timeout: 5000 });
+    logEvt("termin_picker_open");
     console.log("  D7: Termin-Picker geöffnet");
   } catch (e) { console.warn("  Termin-Picker fail:", e.message); }
-  await page.waitForTimeout(w(2000));
+  // Spec M05 termin_picker 19.4-23.3 (3.9s) — picker hold before slot picking
+  await page.waitForTimeout(w(1300));
 
   // Click target date + time slots — C4/C7: DYNAMISCH aus demo_time.
   const apptStart = config._appointment_start;
@@ -360,25 +589,115 @@ async function recordAkt1(browser, cookies) {
   const vonStr = fmtCH.format(new Date(apptStart));  // e.g. "08:00"
   const bisStr = fmtCH.format(new Date(apptEnd));    // e.g. "10:00"
   try {
+    // FB2A (31.05.): Monatsübergangs-Bug Fix via DOM-traversal innerhalb des Pickers.
+    // Picker uses unknown framework (lucide icons als SVG). Find next-arrow via heuristic:
+    // it's the RIGHTMOST button in the calendar header (left of month label).
+    const today = new Date();
+    const apptDate = new Date(apptStart);
+    const monthsForward = (apptDate.getFullYear() - today.getFullYear()) * 12
+                         + (apptDate.getMonth() - today.getMonth());
+    for (let i = 0; i < monthsForward; i++) {
+      const clicked = await page.evaluate(() => {
+        // FB2A-v2 (31.05. PM): Scoped DOM-traversal. NIEMALS globaler Button-Scan —
+        // letzter Build hat dabei die Löschen-Trash-Icon-Button getroffen
+        // → "Diesen Fall wirklich löschen?" Dialog im Video. NIE WIEDER.
+        //
+        // Strategie:
+        //   1. Finde Element mit Text "Mai 2026" / "Juni 2026" etc. (month-label).
+        //   2. Steige bis zum Calendar-Header-Container hoch (max 4 Levels).
+        //   3. Suche Buttons NUR in diesem Container, nimm den, dessen
+        //      bounding-rect.x > monthLabel.x liegt (= rechts davon).
+        //   4. Fallback ist KEIN globaler Click — return null statt Risiko.
+        const monthRegex = /(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s+20\d{2}/;
+        // Suche das Element mit dem KÜRZESTEN textContent das den Monat enthält
+        // (Innermost label, nicht body). Picker-Header in r2_20s.png zeigt
+        // "‹  Mai 2026  ›" — entweder in einem <button>/<div>, oder die 3
+        // Teile in Geschwister-Elements.
+        const allEls = [...document.querySelectorAll('*')];
+        let labelEl = null;
+        let labelTxtLen = 9999;
+        for (const el of allEls) {
+          const ts = (el.textContent || '').trim();
+          if (ts.length > 40 || ts.length < 6) continue;
+          if (!monthRegex.test(ts)) continue;
+          // bevorzuge Elemente mit wenigen children + sichtbar
+          if (el.children.length > 3) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width <= 0 || r.height <= 0 || r.y < 0 || r.y > 800) continue;
+          if (ts.length < labelTxtLen) {
+            labelEl = el; labelTxtLen = ts.length;
+          }
+        }
+        if (!labelEl) return { found: null, reason: 'no-month-label' };
+        const labelRect = labelEl.getBoundingClientRect();
+        // Suche Container hoch
+        let container = labelEl;
+        for (let lvl = 0; lvl < 5; lvl++) {
+          const btns = [...container.querySelectorAll('button')];
+          if (btns.length >= 2) {
+            // Nimm Button rechts vom Label
+            const right = btns.filter(b => {
+              const r = b.getBoundingClientRect();
+              return r.x > labelRect.x + labelRect.width / 2
+                  && Math.abs(r.y - labelRect.y) < 100
+                  && r.width < 80 && r.height < 80;
+            });
+            if (right.length >= 1) {
+              // Nimm den NÄCHSTEN (kleinster x über labelRect.right)
+              right.sort((a, b) => a.getBoundingClientRect().x - b.getBoundingClientRect().x);
+              const tgt = right[0];
+              const tr = tgt.getBoundingClientRect();
+              tgt.click();
+              return { found: 'scoped-next', x: Math.round(tr.x), y: Math.round(tr.y), w: Math.round(tr.width), lvl };
+            }
+          }
+          container = container.parentElement;
+          if (!container) break;
+        }
+        return { found: null, reason: 'no-scoped-button' };
+      });
+      console.log(`  Picker next-arrow attempt ${i+1}/${monthsForward}: ${JSON.stringify(clicked)}`);
+      if (clicked.found === null) {
+        console.warn(`  Picker month-nav ABORT: ${clicked.reason} — keine destruktive Fallback-Aktion.`);
+        break;
+      }
+      await page.waitForTimeout(w(350));
+    }
+    if (monthsForward > 0) console.log(`  Picker: navigated ${monthsForward} month(s) forward → target ${apptDate.toISOString().slice(0,10)}`);
     const dayBtn = page.locator(`button, td, span`).filter({ hasText: new RegExp(`^${apptDay}$`) }).first();
     await dayBtn.click({ timeout: 3000 });
-    await page.waitForTimeout(w(700));
+    await page.waitForTimeout(w(400));  // Slots rendern lassen
+    // Anker Slot-Pick-START @21.64 (R24) — die ~0.52s von+bis-Sequenz endet dann mit
+    // slots_set @~22.16 (= Dörfler R24). Absorbiert die variable Monats-Navigation davor.
+    await holdUntilMaster(21.64, "termin_slots_start");
+    // ROBUST slot pick (30.05.): bisSlot is usually LAST occurrence of bisStr
+    // (after von-column "10:00" and any footer text "08:00-10:00").
     const vonSlot = page.locator(`text=/^${vonStr.replace(":", "\\:")}$/`).first();
     await vonSlot.scrollIntoViewIfNeeded().catch(() => {});
     await vonSlot.click({ timeout: 3000 });
     await page.waitForTimeout(w(400));
-    const bisSlot = page.locator(`text=/^${bisStr.replace(":", "\\:")}$/`).nth(1);
+    // Try .last() first (typically BIS-column entry after VON entry), fallback to .nth(1)
+    const bisAll = page.locator(`text=/^${bisStr.replace(":", "\\:")}$/`);
+    const bisCount = await bisAll.count();
+    let bisIdx = bisCount > 0 ? bisCount - 1 : 1; // .last() index, or fallback .nth(1)
+    if (bisCount < 2) bisIdx = 0;
+    const bisSlot = bisAll.nth(bisIdx);
     await bisSlot.scrollIntoViewIfNeeded().catch(() => {});
-    await bisSlot.click({ timeout: 3000 });
-    console.log(`  D8: ${vonStr}-${bisStr} gesetzt (aus demo_time)`);
+    await bisSlot.click({ timeout: 3000, force: true });
+    logEvt("termin_slots_set");
+    console.log(`  D8: ${vonStr}-${bisStr} gesetzt (bisIdx=${bisIdx}/${bisCount})`);
   } catch (e) { console.warn("  Slot fail:", e.message); }
-  await page.waitForTimeout(w(2800));
+  // Anker Übernehmen @24.01 (R24)
+  await holdUntilMaster(24.01, "uebernehmen_click");
 
   try {
     await page.locator('button:has-text("Übernehmen")').first().click({ timeout: 3000 });
+    logEvt("uebernehmen_click");
     console.log("  D9: Übernehmen");
   } catch {}
-  await page.waitForTimeout(w(2800));
+  // Spec M06 termin_set 23.3-23.8 (0.5s) — minimal wait before termin_versenden_click
+  await page.waitForTimeout(w(500));
+  logEvt("termin_versenden_btn_visible");
 
   // A11: "Termin versenden" klicken (statt Speichern+Trotzdem). Bei DEMO_NO_DISPATCH=1
   // setzt das Server-seitig appointment_sent_at + invite_sent-Event OHNE echten
@@ -387,6 +706,7 @@ async function recordAkt1(browser, cookies) {
     const terminBtn = page.locator('button:has-text("Termin versenden")').first();
     await terminBtn.waitFor({ state: "visible", timeout: 4000 });
     await terminBtn.click({ timeout: 4000 });
+    logEvt("termin_versenden_click");
     console.log("  D10 (A11): Termin versenden — saves + DEMO-dispatches");
   } catch (e) {
     console.warn("  Termin versenden fail, falle zurück auf Speichern:", e.message);
@@ -397,18 +717,37 @@ async function recordAkt1(browser, cookies) {
       if (await trotzdem.count() > 0) await trotzdem.first().click({ timeout: 2000 });
     } catch {}
   }
-  await page.waitForTimeout(w(1500)); // Show "Wird versendet…" → "Gesendet" confirmation
+  // MASTER-TIMING (30.05.): REF Apr 30 case_inarbeit_view phase = 4,8s (23,7-28,5).
+  // FB24 (31.05. PM): 700ms war zu kurz — Backend insert von invite_sent fire-and-forget,
+  // DB-write lief NACH patchLatestEventTime → invite_sent zeigte Live-Time (14:49) statt 09:02.
+  // Wait erhöht auf 2500ms + patch wiederholt nach Reload als belt-and-suspenders.
+  await page.waitForTimeout(w(2500));
 
-  // C3: Alle Events der "In Arbeit + Termin"-Aktion auf demoNow patchen
+  // C3: Alle Events der "In Arbeit + Termin"-Aktion auf reminderSent patchen.
+  // FB24: invite_sent + melder_termin_notified MUSS Reminder-Zeit (09:02) sein damit
+  // Verlauf "Termineinladung gesendet · 31.05, 09:02" zeigt (nicht Live-Time).
   const demoNowIso = config._demo_now || new Date().toISOString();
-  await patchLatestEventTime(caseUuid, "invite_sent", demoNowIso);
-  await patchLatestEventTime(caseUuid, "melder_termin_notified", demoNowIso);
+  const reminderIso = config._reminder_time || demoNowIso;
+  const confirmationIso = config._confirmation_sent_time || demoNowIso;
+  await patchLatestEventTime(caseUuid, "invite_sent", reminderIso);
+  await patchLatestEventTime(caseUuid, "melder_termin_notified", reminderIso);
   await patchLatestEventTime(caseUuid, "fields_updated", demoNowIso);
   await patchLatestEventTime(caseUuid, "status_changed", demoNowIso);  // Neu→In Arbeit
   await patchLatestEventTime(caseUuid, "assignee_assignment", demoNowIso);
+  // FB24 (31.05. PM): Bestätigungs-SMS-Event (sms_sent) auch fixen — sonst Live-Time im Verlauf.
+  await patchLatestEventTime(caseUuid, "sms_sent", confirmationIso);
+  await patchLatestEventTime(caseUuid, "case_created", confirmationIso);
   // Reload damit Verlauf patched Zeiten zeigt
   await page.reload({ waitUntil: "domcontentloaded", timeout: 10000 }).catch(() => {});
-  await page.waitForTimeout(w(2500));
+  await page.waitForTimeout(w(1200));
+  // FB24 retry: patch invite_sent ein 2. Mal nach Reload (falls erstes Mal race condition)
+  await patchLatestEventTime(caseUuid, "invite_sent", reminderIso);
+  await patchLatestEventTime(caseUuid, "melder_termin_notified", reminderIso);
+  await patchLatestEventTime(caseUuid, "sms_sent", confirmationIso);
+  await patchLatestEventTime(caseUuid, "case_created", confirmationIso);
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 10000 }).catch(() => {});
+  await page.waitForTimeout(w(800));
+  logEvt("inarbeit_view_visible");
 
   const target = join(outBase, "take4_01_akt1.webm");
   if (existsSync(target)) await rm(target);
@@ -436,8 +775,11 @@ async function recordBrandCut(browser) {
     recordVideo: { dir: tmpDir, size: { width: 1440, height: 900 } },
   });
   const page = await context.newPage();
+  pinPartStart(2);
+  logEvt("cut_start");
   await page.goto("file:///" + tmpHtml.replace(/\\/g, "/"));
   await page.waitForTimeout(w(1400));
+  logEvt("cut_end");
 
   const target = join(outBase, "take4_02_cut.webm");
   if (existsSync(target)) await rm(target);
@@ -458,13 +800,17 @@ async function recordPhoneDay1(browser) {
   // FB126: Reminder-Tag verwenden (24h VOR Termin), NICHT seedTime.
   const reminderTimeIso = config._reminder_time || new Date().toISOString();
   const rD = new Date(reminderTimeIso);
+  // GB19 (31.05. PM): Datum-Format = "Sonntag, 31. Mai" (Take 2 Style), NICHT "31.05".
+  const DE_WEEKDAYS = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+  const DE_MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+  const longDateDE = (d) => `${DE_WEEKDAYS[d.getDay()]}, ${d.getDate()}. ${DE_MONTHS[d.getMonth()]}`;
   const urlParams = new URLSearchParams({
     firma: t.name,
     telefon: displayPhone,
     sms_sender: t.name,
     case_ref: caseLabel,
     uhrzeit: String(rD.getHours()).padStart(2, "0") + ":" + String(rD.getMinutes()).padStart(2, "0"),
-    datum: String(rD.getDate()).padStart(2, "0") + "." + String(rD.getMonth() + 1).padStart(2, "0"),
+    datum: longDateDE(rD),
     initial: t.name.slice(0, 2).toUpperCase(),
     brand_color: brandColor,
   });
@@ -477,6 +823,8 @@ async function recordPhoneDay1(browser) {
     recordVideo: { dir: tmpDir, size: { width: 412, height: 915 } },
   });
   const page = await context.newPage();
+  pinPartStart(3);
+  logEvt("phone_day1_start");
   // Block take2_samsung.html auto-run: inject playwright marker + override.
   await page.addInitScript(() => {
     // URL is set separately; we just ensure auto-run path skips standalone part.
@@ -504,18 +852,29 @@ async function recordPhoneDay1(browser) {
     return `${wd} ${dd}.${mm}.`;
   })();
 
+  // FB7 (31.05.): Phone-clock UND SMS-timestamp MÜSSEN identisch sein (Vertrauen).
+  // Persistent setInterval forced — Template könnte clock später überschreiben via applyConfig.
   await page.evaluate((args) => {
     if (window.showScreen) window.showScreen("homescreen");
+    // Persistent clock-force via interval to overwrite any subsequent template updates
+    window.__forceClockTime = args.barTime;
+    if (window.__forceClockInterval) clearInterval(window.__forceClockInterval);
+    window.__forceClockInterval = setInterval(() => {
+      document.querySelectorAll(".clock-display").forEach((el) => { el.textContent = window.__forceClockTime; });
+    }, 80);
     if (window.updateAllClocks) window.updateAllClocks(args.barTime);
-    // C17: Bestätigungs-SMS Timestamp überschreiben (einige Minuten her)
+    // REF FB17 (31.05. PM): Bestätigungs-SMS Timestamp = bestaetTime (08:08),
+    // NICHT phone-clock-barTime (09:02). FB7-Identität gilt nur Phone-Clock = Reminder-SMS.
     const timestampEl = document.getElementById("sms-timestamp");
     if (timestampEl) timestampEl.textContent = args.bestaetTime;
     const dayEl = document.getElementById("sms-day");
     if (dayEl) dayEl.innerHTML = `${args.bestaetDay} · <span id="sms-time">${args.bestaetTime}</span>`;
     if (window.showSmsNotification) window.showSmsNotification();
-  }, { barTime: rTime, bestaetTime: bestaetHHMM, bestaetDay: bestaetDayLabel });
+  }, { barTime: rTime, bestaetDay: bestaetDayLabel, bestaetTime: bestaetHHMM });
+  logEvt("phone_homescreen_visible");
   console.log(`  Homescreen ${rTime} + Bestätigungs-SMS ${bestaetDayLabel} ${bestaetHHMM}`);
   await page.waitForTimeout(w(2200));
+  logEvt("sms_notif_visible");
 
   // SMS-Thread öffnen + Reminder einblenden — C7: TerminTime aus demo_time.
   const apptStartIso = config._appointment_start;
@@ -540,8 +899,11 @@ async function recordPhoneDay1(browser) {
     adresse: terminAdresse,
     phone: displayPhone,
   });
+  logEvt("sms_thread_opened");
   console.log(`  → SMS-Thread mit Reminder (Termin ${apptHHMM}, ${terminAdresse})`);
-  await page.waitForTimeout(w(2200));
+  // Spec take4_master_spec.json: P01 phone_day1_reminder duration 6.5s. Extend hold.
+  await page.waitForTimeout(w(3200));
+  logEvt("phone_day1_end");
 
   const target = join(outBase, "take4_03_phone_day1.webm");
   if (existsSync(target)) await rm(target);
@@ -559,20 +921,27 @@ async function recordAkt2(browser, cookies) {
   await mkdir(tmpDir, { recursive: true });
   const context = await setupLeitsystemContext(browser, tmpDir, cookies);
   const page = await context.newPage();
+  pinPartStart(4);
+  logEvt("recording_start");
 
   await page.goto(`${baseUrl}/ops/cases/${caseUuid}?_hb=1`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(w(4000));
+  // FB Zone4: Log inarbeit_view_post_visible early, then hold ~5s in settled view
+  // before opening edit-mode. REF master 33.5-39 = 5.5s closed-form period.
+  await page.waitForTimeout(w(800));
+  logEvt("inarbeit_view_post_visible");
+  await page.waitForTimeout(w(4500));
   try {
     const later = page.locator('button:has-text("Später")');
     if (await later.count() > 0) { await later.first().click(); await page.waitForTimeout(w(300)); }
   } catch {}
 
-  // Bearbeiten
+  // Bearbeiten (now ~5s after inarbeit_view_post_visible event)
   try {
     await page.locator('button[title="Bearbeiten"]').first().click({ timeout: 5000 });
+    logEvt("bearbeiten2_click");
     console.log("  D11: Bearbeiten");
   } catch {}
-  await page.waitForTimeout(w(2800));
+  await page.waitForTimeout(w(1000));
 
   // FB87/96: Status-Dropdown VISUELL öffnen für Erledigt (synthetic overlay).
   try {
@@ -597,37 +966,61 @@ async function recordAkt2(browser, cookies) {
         fontSize: "14px",
         overflow: "hidden",
       });
-      // FB103: Richtiger Index für "Erledigt" highlight.
+      // FB8 (31.05.): Animierter Hover durch Optionen Status #2 — letztes step Erledigt.
       const targetIdx = options.findIndex((o) => /erledigt/i.test(o.label));
       overlay.innerHTML = options.map((o, i) =>
-        `<div style="padding:10px 14px;color:#1a1a1a;${i === targetIdx ? 'background:#eff6ff;font-weight:500;' : ''}">${o.label}</div>`
+        `<div data-opt2-idx="${i}" style="padding:10px 14px;color:#1a1a1a;transition:background 80ms;">${o.label}</div>`
       ).join("");
       document.body.appendChild(overlay);
+      // Hover sequence: In Arbeit(current,2)→Warten(3)→Erledigt(4)
+      const hoverSeq = [2, 3, 4];
+      const hoverDur = 700;
+      let stepIdx = 0;
+      const cycle = () => {
+        overlay.querySelectorAll("[data-opt2-idx]").forEach((d) => {
+          d.style.background = "";
+          d.style.fontWeight = "";
+        });
+        const optIdx = hoverSeq[stepIdx];
+        const el = overlay.querySelector(`[data-opt2-idx="${optIdx}"]`);
+        if (el) {
+          el.style.background = "#eff6ff";
+          el.style.fontWeight = "500";
+        }
+        stepIdx++;
+        if (stepIdx < hoverSeq.length) setTimeout(cycle, hoverDur);
+      };
+      cycle();
     });
-    console.log("  D12: Status-Dropdown visuell offen (Erledigt hervorgehoben)");
+    logEvt("status_dropdown2_open");
+    console.log("  D12: Status-Dropdown #2 animated hover (In Arbeit→Warten→Erledigt)");
   } catch (e) { console.warn("  Dropdown-overlay fail:", e.message); }
-  await page.waitForTimeout(w(3500));
+  await page.waitForTimeout(w(2400)); // = 3*700ms + 300ms buffer
 
   try {
     await page.evaluate(() => document.getElementById("fb96-dropdown2")?.remove());
     const statusSelect = page.locator('select').first();
     await statusSelect.selectOption({ label: "Erledigt" });
+    logEvt("status_erledigt_set");
     console.log("  D13: Status → Erledigt");
   } catch (e) { console.warn("  Status fail:", e.message); }
-  await page.waitForTimeout(w(2800));
+  // FB9 (31.05.): Speichern soll @ master 43.0 sein. Status_erledigt_set @ ~master 42.5,
+  // Speichern click ~0.5s später. Reduced 1700→400ms.
+  await page.waitForTimeout(w(400));
 
   // A12 Step 1: "Speichern" oben — Termin wurde nicht geändert, also kein Warning.
   try {
     await page.locator('button:has-text("Speichern")').first().click({ timeout: 3000 });
+    logEvt("erledigt_speichern_click");
     console.log("  D14: Speichern oben (Status → Erledigt wird persistiert)");
   } catch {}
-  await page.waitForTimeout(w(2800));
+  await page.waitForTimeout(w(1000));
   // Fallback: Trotzdem falls Warning trotz allem auftaucht
   try {
     const trotzdem = page.locator('button:has-text("Trotzdem speichern")');
     if (await trotzdem.count() > 0) await trotzdem.first().click({ timeout: 1500 });
   } catch {}
-  await page.waitForTimeout(w(1800));
+  await page.waitForTimeout(w(1000));
 
   // A12 Step 2: Scroll runter zum Verlauf/Bewertung-Bereich.
   try {
@@ -635,11 +1028,16 @@ async function recordAkt2(browser, cookies) {
     await verlaufHeader.scrollIntoViewIfNeeded({ timeout: 3000 });
     console.log("  D14b: Scroll zu Verlauf");
   } catch (e) { console.warn("  Scroll fail:", e.message); }
-  await page.waitForTimeout(w(3500));
+  // FB Zone4: Log bewertung_pre_visible BEFORE the settle so the phase mapping
+  // has real "button visible, not clicked" time before click event.
+  // Schedule-tuned: case_bewertung_pre = master 44.8-49.8 (5s window, ends with click).
+  logEvt("bewertung_pre_visible");
+  await page.waitForTimeout(w(2500));
 
   // A12 Step 3: "Bewertung anfragen"-Button klicken.
   try {
     await page.locator('button:has-text("Bewertung anfragen")').first().click({ timeout: 5000 });
+    logEvt("bewertung_anfragen_click");
     console.log("  D15: Bewertung anfragen geklickt (DEMO_NO_DISPATCH)");
   } catch (e) { console.warn("  Bewertung fail:", e.message); }
 
@@ -672,7 +1070,10 @@ async function recordAkt2(browser, cookies) {
   try {
     await page.locator('h3:has-text("Verlauf")').first().scrollIntoViewIfNeeded({ timeout: 2000 });
   } catch {}
-  await page.waitForTimeout(w(2000)); // Hold nach Reload — Verlauf mit patched Zeit
+  // Zone5-Hold: extend post-click visibility to fill Part 4's 33.5s schedule slot.
+  // Master 49.8-67.0 (17.2s) shows "Bewertung angefragt" + Verlauf-patched-times.
+  await page.waitForTimeout(w(8500));
+  logEvt("akt2_end");
 
   const target = join(outBase, "take4_04_akt2.webm");
   if (existsSync(target)) await rm(target);
@@ -701,7 +1102,12 @@ async function recordPhoneDay2(browser) {
     sms_sender: t.name,
     case_ref: caseLabel,
     uhrzeit: statusBarHHMM,
-    datum: String(reviewSentD.getDate()).padStart(2, "0") + "." + String(reviewSentD.getMonth() + 1).padStart(2, "0"),
+    // GB19 (31.05. PM): Datum-Format = "Sonntag, 31. Mai" (Take 2 Style)
+    datum: (() => {
+      const DE_WD = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+      const DE_MO = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+      return `${DE_WD[reviewSentD.getDay()]}, ${reviewSentD.getDate()}. ${DE_MO[reviewSentD.getMonth()]}`;
+    })(),
     initial: t.name.slice(0, 2).toUpperCase(),
     brand_color: brandColor,
   });
@@ -714,9 +1120,22 @@ async function recordPhoneDay2(browser) {
     recordVideo: { dir: tmpDir, size: { width: 412, height: 915 } },
   });
   const page = await context.newPage();
+  pinPartStart(5);
+  logEvt("phone_day2_start");
   await page.addInitScript(() => { window.__t4PhoneMode = true; });
   await page.goto(fullUrl);
   await page.waitForTimeout(w(300));
+  // FB24-followup (31.05. PM): Phone-Day-2 clock muss = statusBarHHMM (09:04) sein.
+  // Template setzt sms-screen .clock-display auf smsTime = uhrzeit + (anrufDauer/60+1) → 09:08.
+  // Forcing clock via setInterval (gleicher Pattern wie Phone-Day-1).
+  await page.evaluate((args) => {
+    window.__forceClockTime = args.statusBarTime;
+    if (window.__forceClockInterval) clearInterval(window.__forceClockInterval);
+    window.__forceClockInterval = setInterval(() => {
+      document.querySelectorAll(".clock-display").forEach((el) => { el.textContent = window.__forceClockTime; });
+    }, 80);
+  }, { statusBarTime: statusBarHHMM });
+  logEvt("phone_sms_thread_visible");
 
   // C16+C17: Alle 3 SMS statisch mit demo-time Timestamps.
   // SMS 1 Bestätigung: reminderSent - 15 Min (heute 07:45 — vor einigen Min)
@@ -783,6 +1202,7 @@ async function recordPhoneDay2(browser) {
   });
   console.log("  Alle 3 SMS statisch preloaded (FB107)");
   await page.waitForTimeout(w(5000));
+  logEvt("phone_day2_end");
 
   const target = join(outBase, "take4_05_phone_day2.webm");
   if (existsSync(target)) await rm(target);
@@ -816,31 +1236,81 @@ async function recordReview(browser) {
     recordVideo: { dir: tmpDir, size: { width: 412, height: 915 } },
   });
 
-  // Padding für Samsung-Chrome-Overlay (36 top + 56 bottom).
-  // FB14 (23.04.): padding-top 36→96 damit Review-Card 60px Abstand von Status-Bar hat
-  // (vorher hing der Content unter der Status-Bar). Overlay selbst bleibt 36px top.
-  await context.addInitScript(() => {
+  // FB26 (31.05. PM): Chrome via initScript mit setInterval-retry — fires sobald body
+  // existiert (frame 1). Vorher: 500ms-Wait + page.evaluate = >1s Delay sichtbar.
+  // padding-top 96px (status-bar 36 + 60px gap zu "Dörfler AG" header) per Founder-Wunsch.
+  const reviewClockText = (() => {
+    const t = new Date(config._review_sent_time || config._reminder_time || Date.now());
+    return new Intl.DateTimeFormat("de-CH", { timeZone: "Europe/Zurich", hour: "2-digit", minute: "2-digit" }).format(t);
+  })();
+  await context.addInitScript((args) => {
     const css = `
-      body { padding-top: 96px !important; padding-bottom: 56px !important; }
-      body > div:first-child { min-height: calc(100dvh - 152px) !important; }
-      /* Dev-Badges killen (auch Next.js Portal in Shadow-DOM) */
+      body { padding-top: 96px !important; padding-bottom: 56px !important; margin: 0 !important; }
       nextjs-portal, [data-nextjs-dialog], [data-nextjs-toast],
       button[data-nextjs-dev-tools-button] { display: none !important; }
     `;
+    const STATUS_BAR_HTML =
+      `<span>${args.clock}</span>` +
+      `<span style="display:flex;align-items:center;gap:6px;">` +
+        `<svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1a1a" opacity="0.9"><path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0z"/></svg>` +
+        `<svg width="15" height="12" viewBox="0 0 24 20" fill="#1a1a1a"><path d="M12 3C7.5 3 3.4 4.8 0 7.4l12 15 12-15C20.6 4.8 16.5 3 12 3z"/></svg>` +
+        `<svg width="14" height="12" viewBox="0 0 24 18" fill="#1a1a1a"><rect x="1" y="12" width="3" height="5"/><rect x="6" y="8" width="3" height="9"/><rect x="11" y="4" width="3" height="13"/><rect x="16" y="0" width="3" height="17"/></svg>` +
+        `<span style="background:#2a2a2a;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:2px;"><svg width="7" height="10" viewBox="0 0 24 24" fill="#22c55e"><path d="M7 2v11h3v9l7-12h-4l3-8z"/></svg>71</span>` +
+      `</span>`;
+    const STATUS_BAR_STYLE =
+      "position:fixed !important;top:0 !important;left:0 !important;right:0 !important;" +
+      "height:36px !important;background:#ffffff !important;" +
+      "display:flex !important;justify-content:space-between !important;align-items:center !important;" +
+      "padding:8px 48px 4px !important;z-index:2147483647 !important;" +
+      "font-family:'SamsungOne','Segoe UI',sans-serif !important;" +
+      "font-size:13px !important;color:#1a1a1a !important;font-weight:500 !important;" +
+      "box-sizing:border-box !important;";
+    const NAV_BAR_STYLE =
+      "position:fixed !important;bottom:0 !important;left:0 !important;right:0 !important;" +
+      "height:48px !important;background:#ffffff !important;" +
+      "display:flex !important;justify-content:center !important;align-items:center !important;" +
+      "gap:90px !important;z-index:2147483647 !important;" +
+      "color:#5f6368 !important;font-size:18px !important;box-sizing:border-box !important;";
     const inject = () => {
-      if (document.getElementById("t4-review-css")) return;
-      const s = document.createElement("style");
-      s.id = "t4-review-css"; s.textContent = css;
-      (document.head || document.documentElement).appendChild(s);
+      const root = document.documentElement;
+      if (!document.getElementById("t4-review-css") && document.head) {
+        const s = document.createElement("style");
+        s.id = "t4-review-css"; s.textContent = css;
+        document.head.appendChild(s);
+      }
+      if (!root) return;
+      let sb = document.getElementById("t4-review-statusbar");
+      if (!sb) {
+        sb = document.createElement("div");
+        sb.id = "t4-review-statusbar";
+        sb.innerHTML = STATUS_BAR_HTML;
+      }
+      sb.style.cssText = STATUS_BAR_STYLE;
+      if (sb.parentElement !== root) root.appendChild(sb);
+      let nb = document.getElementById("t4-review-navbar");
+      if (!nb) {
+        nb = document.createElement("div");
+        nb.id = "t4-review-navbar";
+        nb.innerHTML = `<span>|||</span><span>○</span><span>&lt;</span>`;
+      }
+      nb.style.cssText = NAV_BAR_STYLE;
+      if (nb.parentElement !== root) root.appendChild(nb);
     };
+    // Run as early as possible — even before DOMContentLoaded
     inject();
-    setInterval(inject, 150);
-  });
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", inject, { once: true });
+    }
+    setInterval(inject, 80);  // FB26: 80ms = ~12fps anchor refresh, zehntelsekunden-flüssig
+  }, { clock: reviewClockText });
 
   const page = await context.newPage();
+  pinPartStart(6);
+  logEvt("review_start");
   await page.goto(reviewUrl, { waitUntil: "domcontentloaded", timeout: 20000 });
   await page.waitForTimeout(w(2000));
-  console.log("  Review-Page geladen (initial state)");
+  logEvt("rating_intro_visible");
+  console.log("  Review-Page geladen (initial state, chrome via initScript)");
 
   // C9: Stars sequenziell 1→2→3→4→5 aufziehen via Hover-Rating-Update.
   // ReviewSurfaceClient füllt Sterne bei onMouseEnter(n) sichtbar bis n.
@@ -859,6 +1329,7 @@ async function recordReview(browser) {
     }
     // Final: auf Stern 5 clicken damit rating state persistiert (= positive phase)
     await page.locator('button[aria-label*="Sterne"]').nth(4).click({ timeout: 2000 });
+    logEvt("rating_stars_clicked");
     console.log("  5 Sterne sequenziell aufgezogen + geclickt (C9)");
   } catch (e) { console.warn("  Star click fail:", e.message); }
   await page.waitForTimeout(w(1400));
@@ -876,9 +1347,13 @@ async function recordReview(browser) {
   try {
     const submitBtn = page.locator('button:has-text("Bewertung abschliessen"), button:has-text("Ohne Google abschliessen")').first();
     await submitBtn.click({ timeout: 3000 });
+    logEvt("rating_submit_click");
     console.log("  Bewertung abschliessen → Done-View");
   } catch (e) { console.warn("  Submit fail:", e.message); }
-  await page.waitForTimeout(w(3000)); // Hold auf Done-View
+  // Spec take4_master_spec.json: P02 phone_day2 + Done-View total 13.0s (master 72-85).
+  // Extend done-view hold to fill Part 6 slot.
+  await page.waitForTimeout(w(3700));
+  logEvt("review_done_visible");
 
   const target = join(outBase, "take4_06_review.webm");
   if (existsSync(target)) await rm(target);
@@ -913,18 +1388,26 @@ async function recordClosingDashboard(browser, cookies) {
   await mkdir(tmpDir, { recursive: true });
   const context = await setupLeitsystemContext(browser, tmpDir, cookies);
   const page = await context.newPage();
+  pinPartStart(7);
+  logEvt("closing_start");
 
-  // Case-Detail zuerst (2s)
+  // Case-Detail zuerst — Spec M19 review_done_view 85.0-89.2 (4.2s)
   await page.goto(`${baseUrl}/ops/cases/${caseUuid}?_hb=1`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(w(4000));
+  logEvt("case_review_done_visible");
   console.log("  Closing: Case-Detail mit Gold-Review");
-  await page.waitForTimeout(w(3500));
+  // Spec: case visible until master 89.2 (4.2s after start at 85). Then transition.
+  // case_review_done @ master 85 (after offset). Tuned: 2.7s case-hold + page.goto ~1.5s → dashboard @ master ~89.2.
+  await page.waitForTimeout(w(2700));
 
-  // Fallübersicht
+  // Fallübersicht — Spec M20 dashboard_final 89.2-96.9
   await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(w(3000));
+  await page.waitForTimeout(w(800));
+  logEvt("dashboard_final_visible");
   console.log("  Closing: Fallübersicht mit Gold-Case");
-  await page.waitForTimeout(w(2500));
+  // Hold dashboard ~7s (M20 lasts 89.2-96.9 = 7.7s)
+  await page.waitForTimeout(w(7000));
+  logEvt("closing_end");
 
   const target = join(outBase, "take4_07_closing.webm");
   if (existsSync(target)) await rm(target);
@@ -952,5 +1435,7 @@ try {
 } finally {
   await browser.close();
 }
+
+await writeEventLog();
 
 console.log("\n=== Take 4 Recording Complete (7 parts, A19 close-circle entfernt) ===\n");

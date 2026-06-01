@@ -129,6 +129,7 @@ async function produceTake2Samsung() {
     initial: (va.company_name || t.name).charAt(0),
     anruf_dauer: "191", // Will be controlled externally later
     brand_color: t.brand_color || "#003478",
+    battery: "86", // T2 = frischer Akku 86% (T4 zeigt später 71% als Proof; Default im Template = 71)
     playwright: "true", // Prevents auto-advance
   });
 
