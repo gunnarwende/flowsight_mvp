@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { chromium } from "playwright";
 import { renderPhoneBezel, ensureContentMask } from "./_lib/renderPhoneBezel.mjs";
+import { ensureCircleMask, buildCircleLoomFilter } from "./_lib/renderLoomCircle.mjs";
 import { getDemoTimes } from "./_lib/demo_time.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -39,8 +40,18 @@ function getArg(name) {
 const slug = getArg("slug");
 const variant = getArg("variant");
 const durationSec = Number(getArg("duration") || 165);
+// FB38: anrufDauer (Display-Zielwert für Timer + "Anruf beendet · MM:SS") kann separat
+// vom durationSec (Recording-Dauer) gesetzt werden. Erlaubt: "Anruf beendet 02:47" zeigen,
+// obwohl die Recording-Phase nur 166s lang ist (für Master-Splice-Timing). Default = durationSec.
+const displayDurationSec = Number(getArg("display-duration") || durationSec);
+// PIPELINE_BIBLE §60 — Loom-Continuity-Fix (26.05.):
+// Loom-Avatar wird über die GESAMTE Master-Timeline (0-380s) baked.
+// Bei Splice via apply_loom_take2.mjs ist phone_extended bei output t=CALL_START
+// → loom_avatar muss bei call-start ihren bereits-laufenden Zeitpunkt zeigen, nicht t=0.
+// Default 45.1s matched CALL_START in apply_loom_take2.mjs. Tenant-Override via CLI.
+const loomOffsetSec = Number(getArg("loom-offset") || 45.1);
 if (!slug || !["notruf", "preis"].includes(variant)) {
-  console.error("usage: --slug <tenant> --variant <notruf|preis> --duration <seconds>");
+  console.error("usage: --slug <tenant> --variant <notruf|preis> --duration <seconds> [--loom-offset 45.1]");
   process.exit(1);
 }
 
@@ -62,6 +73,16 @@ const displayPhone = vid.display_phone || vid.telefon_display || va.phone || "+4
 const brandColor = t.brand_color || "#003478";
 const initial = (va.company_name || t.name || "?").charAt(0).toUpperCase();
 const demoTime = getDemoTimes({ skipGate: true });
+
+// FB1/FB2/FB4/FB6 (26.05.) — Datum dynamisch aus demoTime, nicht hardcoded.
+// Produziert "Dienstag, 26. Mai" pro Pipeline-Run-Tag.
+function getTodayGerman() {
+  const parts = new Intl.DateTimeFormat("de-CH", {
+    timeZone: "Europe/Zurich",
+    weekday: "long", day: "numeric", month: "long",
+  }).formatToParts(demoTime.phoneCallStartTime).reduce((a, p) => { a[p.type] = p.value; return a; }, {});
+  return `${parts.weekday}, ${parts.day}. ${parts.month}`;
+}
 
 // ─── Step 1: Record Samsung HTML with custom call duration ─────────────────
 const browser = await chromium.launch({ headless: true });
@@ -85,11 +106,11 @@ const params = new URLSearchParams({
   sms_sender: t.name,
   case_ref: t.case_id_prefix || "XX",
   uhrzeit: "08:04",
-  datum: "Freitag, 24. April",
+  datum: getTodayGerman(),
   initial,
-  anruf_dauer: String(Math.round(durationSec)),
+  anruf_dauer: String(Math.round(displayDurationSec)),
   brand_color: brandColor,
-  batt: "86",
+  battery: "86",  // FIX 01.06.: take2_samsung.html liest Param "battery" (NICHT "batt") → sonst Default 71. T2=86.
   playwright: "true",
 });
 console.log(`recording phone call visual (${variant}, ${durationSec}s call duration)...`);
@@ -107,8 +128,12 @@ await page.waitForTimeout(durationSec * 1000);
 
 // End the call
 await page.evaluate(() => window.endCall());
-console.log(`  → Call ended, holding "Anruf beendet" screen 3.5s`);
-await page.waitForTimeout(3500);
+// FB38: 5.8s wait (statt 3.5) → ended-screen sichtbar lange genug, dass nach Splice in
+// Master die User-spec 3.5s Display-Dauer eingehalten wird. Recording-Offset zwischen
+// HTML-startTimer und tatsächlichem call-active-Start kostet ~2.3s.
+const endedScreenWaitMs = 5800;
+console.log(`  → Call ended, holding "Anruf beendet" screen ${endedScreenWaitMs/1000}s`);
+await page.waitForTimeout(endedScreenWaitMs);
 
 const videoPath = await page.video().path();
 await context.close();
@@ -144,7 +169,7 @@ const samsungDur = parseFloat(probe.stdout.toString().trim()) || (durationSec + 
 // Note: extended_phone sec 0 wird "Anruf aktiv 00:01" zeigen. Phase phone_dialing aus
 // take2_complete.mp4 (range 4.5-9.0) zeigt das Wird-angerufen davor.
 const trimStart = 11.0;
-const trimDur = durationSec + 3.5;
+const trimDur = durationSec + 5.8;
 const trimmedWebm = join(tmpDir, "samsung_trimmed.webm");
 const trim = spawnSync("ffmpeg", [
   "-hide_banner", "-y",
@@ -188,13 +213,20 @@ let filterComplex =
 
 let outLabel = "[withphone]";
 if (loomFile) {
-  composeArgs.push("-stream_loop", "-1", "-i", loomFile); // [4] loom video
-  filterComplex +=
-    `;[4:v]fps=30,scale=${FACE_DIAMETER}:${FACE_DIAMETER}:force_original_aspect_ratio=increase,` +
-    `crop=${FACE_DIAMETER}:${FACE_DIAMETER},format=yuva420p,` +
-    `geq=lum='p(X,Y)':a='if(hypot(X-${FACE_DIAMETER/2},Y-${FACE_DIAMETER/2}) < ${FACE_DIAMETER/2 - 2},255,0)'[facec];` +
-    `[withphone][facec]overlay=805:20:format=auto[final]`;
-  outLabel = "[final]";
+  // Circle-Mask Pattern (renderLoomCircle.mjs) statt inline-geq —
+  // letzteres warf bei manchen ffmpeg-builds "Missing ')' or too many args"
+  // wegen verschachtelter if/hypot-Auswertung. Pattern ist gleich wie in
+  // apply_loom_take3.mjs erprobt.
+  const { circleMaskPng } = ensureCircleMask({ outDir: tmpDir, diameter: FACE_DIAMETER });
+  if (circleMaskPng) {
+    // PIPELINE_BIBLE §60 — Loom-Continuity: -ss seekt loom_avatar zur Master-Splice-Position.
+    composeArgs.push("-ss", String(loomOffsetSec), "-stream_loop", "-1", "-i", loomFile); // [4] loom video at offset
+    composeArgs.push("-loop", "1", "-t", String(trimDur), "-i", circleMaskPng);    // [5] circle mask
+    filterComplex +=
+      `;` + buildCircleLoomFilter({ loomIdx: 4, maskIdx: 5, diameter: FACE_DIAMETER, label: "facec" }) +
+      `;[withphone][facec]overlay=805:20:format=auto:shortest=0[final]`;
+    outLabel = "[final]";
+  }
 }
 composeArgs.push("-filter_complex", filterComplex);
 composeArgs.push("-map", outLabel);
