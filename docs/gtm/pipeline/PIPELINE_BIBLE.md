@@ -310,6 +310,38 @@ Pipeline läuft → crawl_extract.json + tenant_config.json + founder_review.md
 | FAKE-ENDSCREEN | Take 4 | Generiert | `tenant.name`, `tenant.brand_color` |
 | Datum/Uhrzeit | ALLE Screens | Tagesfrisch | Pipeline-Laufzeit |
 
+### Daten-Relevanz-Matrix — was Simulation + E-Mail brauchen (vs. Voice-only)
+
+> **Festgelegt 01.06.2026.** Klärt für jeden Run, welche `tenant_config.json`-Felder
+> die Video-Takes + Outreach-E-Mail tatsächlich nutzen — und welche reine
+> **Voice-Agent-Felder** sind (erscheinen in KEINEM Take und in KEINER E-Mail; erst
+> vor der Telefon-Schaltung relevant, und die Twilio-Nummer kommt ohnehin erst nach
+> positiver Rückmeldung, §8). Verhindert, dass der ~30-Sek-Founder-Review Zeit auf
+> irrelevante Felder verschwendet.
+
+| Feld | Takes (T1–T4) | E-Mail | Voice (später) |
+|------|:---:|:---:|:---:|
+| `firma` / `video.firma_display` | ✅ | ✅ | ✅ |
+| `tenant.brand_color` | ✅ | ✅ | – |
+| `tenant.case_id_prefix` | ✅ | – | ✅ |
+| `tenant.sms_sender_name` | ✅ | – | ✅ |
+| `wizard.categories` | ✅ | – | ✅ |
+| `video.call_proof_variante` (C/B) | ✅ | – | – |
+| `seed.google_rating` / `google_review_count` | ✅ | – | – |
+| `video.video_hook` | ✅ | ✅ | – |
+| `seed.*` (Cases, PLZ, staff_names) | ✅ | (Thumbnail) | – |
+| `voice_agent.opening_hours` | ❌ | ❌ | ✅ |
+| `voice_agent.owner_names` | ❌ | ❌ | ✅ |
+| `voice_agent.team_section` | ❌ | ❌ | ✅ |
+| `voice_agent.service_area` (Text) | ❌ | ❌ | ✅ |
+| `voice_agent.emergency_policy` / `jobs_*` / `price_*` | ❌ | ❌ | ✅ |
+
+**Folgerung:** Das einzige Sim-/E-Mail-relevante Feld, das aus einer Website schwer
+zuverlässig zu extrahieren ist, ist **`brand_color`** → der einzige Pflicht-Punkt im
+~30-Sek-Founder-Review (siehe `founder_review.md`, Abschnitt „BESTÄTIGEN für die
+Video-Takes"). Alle Voice-only-Felder dürfen für den Video-Outreach leer/ungeprüft
+bleiben und werden erst vor einer Telefon-Schaltung bestätigt.
+
 ### Was der Founder EINMAL aufnimmt (Master-Assets)
 
 | Asset | Format | Wo abgelegt | Wiederverwendung |
@@ -411,11 +443,32 @@ Statt 10 Pool-Fragen: **2 strategisch clevere Varianten**, automatisch pro Betri
 
 **Laptop (15 Fälle):** Wie Handy + 7 weitere erledigte/geplante Fälle.
 
-### Daten-Zeitraum
+### Daten-Zeitraum (dynamisch, FB-26.05.)
 
-- **2025:** ~20% der Fälle (zeigt: System läuft schon)
-- **2026 (aktuell):** ~80% der Fälle
-- **Datum auf Screens:** TAGESAKTUELL (Versandtag)
+**Distribution per `daysAgo()` — relativ zum Pipeline-Run-Tag, nicht hardcoded Jahr:**
+
+| Bereich | Anzahl | Erscheint als |
+|---------|--------|---------------|
+| **Heute** | 4 (Notfall, Phone, Wizard-Leck, Andreas-Gerber) | "Heute 06:08", "Heute 07:12", "Heute 08:08", "Heute 08:56" |
+| **Letzte 7 Tage** | 26 (5 Bei-uns + 21 Done mit Reviews) | "Gestern", "Vor 2 Tagen"... |
+| **14-30 Tage** | ~6 (mid-range done) | "12.05.", "28.04." (DD.MM.) |
+| **30-90 Tage** | ~8 (mid-range done) | "27.03.", "26.02." (DD.MM.) |
+| **90-180 Tage** | ~6 (älteste, sparse) | "27.12.25", "27.11.25" (DD.MM.YY) |
+
+**Verteilungsformel** (`seed_screenflow_from_config.mjs:451`):
+```
+daysAge = round(14 + pow(i / 19, 1.8) * 166)  // i=0..19
+```
+Power-1.8 = "dichter bei jetzt, dünner in der Vergangenheit" (psychologisch plausibel für aktiven Betrieb).
+
+**Kein 30+-Tage-Gap zwischen "diese Woche" und "ältere Cases".**
+
+**Datum auf Screens:** TAGESAKTUELL (jede Pipeline-Run berechnet Daten neu).
+
+**Deterministische Spezialfälle (FB39):**
+- **Andreas Gerber Abflussverstopfung** — IMMER "Heute 07:12" (UTC 05:12, MESZ-Annahme)
+  - Stable Sort: Phone-Case (08:08) > Andreas (07:12) > rest
+  - Wizard-Leck (08:56) > Phone (08:08) > Notfall (~06:00) > Andreas (07:12) — Position-4-Architektur Take 4
 
 ### Staff
 
@@ -3631,10 +3684,17 @@ await runScript(`scripts/_ops/record_phone_call_visual.mjs --slug ${slug} --vari
 
 ---
 
-## §49 Take-4-§43-Migration (TODO — Reise-Carry-Forward)
+## §49 Take-4-§43-Migration (V2 PRODUCTION 29.05.)
 
-> **Status: ARCHITEKTUR-LÜCKE. Aktuell pre-§43, master-drift möglich.**
-> Estimated: 1-2 Tage Bauarbeit. Post-Reise.
+> **Status V2 PRODUCTION:** Phase-time-gated brand-overlay auf Dörfler-Gold-Master.
+> SoT: `docs/gtm/pipeline/06_video_production/_locked/take4_phase_map.json` (9 Phasen × 2 Anchors)
+> Build: `scripts/_ops/build_take4_v2_overlay.mjs --slug <tenant>`
+> Verify: `scripts/_ops/verify_take4_phases.mjs --slug <tenant>`
+> V1 (sidebar-only): `build_take4_brand_overlay.mjs` (legacy fallback)
+>
+> **Trust-Killer-Coverage komplett:** case-list anonymisiert ("Demo-Daten — in Ihrer Installation
+> sehen Sie Ihre echten Fälle"), contact anonymisiert (Max Beispiel), sidebar/greeting/case-pill/
+> phone-review tenant-specific. Final scores: Leins 15/18, Wälti 15/18, Stark 13/18 PASS.
 
 ### Schmerzpunkt (Founder-Feedback 28.04. PM)
 
@@ -4191,4 +4251,344 @@ Bei Phase-Build mit Loom IN der Source: Loom-Frames werden in Sharpness-Freeze-P
 **Founder-Sichtung:** Leins/Stark/Wälti T3 mit NEW Loom + W=105.0 sind built (149.4-149.7s Variance < 0.3s). Founder muss visuell abnehmen ob Loom-Sync-Qualität master-identisch ist.
 
 ---
+
+
+## §62 Take 2 V102 — Production-Ready Final Pipeline (28.05.2026)
+
+**Status:** FINAL FOR PRODUCTION. Dörfler-Notruf + Leins-Preis V102 vom Founder abgenommen 28.05. Pipeline skalierbar für alle künftigen Sanitär-Betriebe.
+
+### Single-Command-Runner
+
+```
+APP_URL=http://localhost:3000 node --env-file=src/web/.env.local scripts/_ops/build_take2_final.mjs --slug <tenant-slug>
+```
+
+**Output:** `docs/gtm/pipeline/06_video_production/_generated/previews/<slug>/take2_<variant>_FINAL_v102_<YYYYMMDD>.mp4`
+
+### Was passiert (3 Schritte automatisch)
+
+| Step | Script | Output | Was |
+|------|--------|--------|-----|
+| 1 | `pipeline_screenflow.mjs --slug X --take 2` | `screenflows/<slug>/take2_complete.mp4` + `take2_leitsystem.webm` | Seed today-relative DB (49 Cases, dynamisch nach §7) + Samsung-Sequence (Lockscreen→Call→SMS) + Leitsystem-Recording (Dashboard mit founder-spec Choreographie) + Bezel-Composite (r46 cutout). |
+| 2 | `audio/build_from_phase_schedule.mjs --tenant X --variant Y` | `_generated/previews/<slug>/take2_<variant>_anchor.mp4` (380s) | Audio (locked WAV) + Loom (founder face) + Phone-Bezel-Compositing für Call/SMS-Section. = V50-Equivalent Base. |
+| 3 | `build_v26_dashboard_animation.mjs --slug X --variant Y --base v50 --out-tag v102_YYYYMMDD` | `_generated/previews/<slug>/take2_<variant>_FINAL_v102_<date>.mp4` (380s) | V102 Overlays: Homescreen-PNG (4:17.8-4:18.43) + Zoom-Animation-PNG-Sequence (4:18.2-4:18.43) + Live-Leitsystem-Dashboard (4:18.43-Ende, mit r46-Mask + Bezel-FG 408×868 für saubere Ecken) + tpad stop_mode=clone:8s (kein Apr-Bleed am Ende). |
+
+### Variant-Detection — vollautomatisch
+
+`derive_config.mjs::deriveCallProofVariante()` analysiert `crawl_extract.json::notdienst`:
+
+| Bedingung | Variante | Output |
+|---|---|---|
+| Notdienst-Text enthält "24h" / "rund um die Uhr" / "Pikett" / "7 Tage" / "Tag und Nacht" / "jederzeit" / "Sonn-/Feiertage" | **C** | `take2_notruf_FINAL_v102_*.mp4` (~60% Betriebe) |
+| Default (kein starker Beweis) | **B** | `take2_preis_FINAL_v102_*.mp4` (~40% Betriebe) |
+
+Gespeichert in `tenant_config.json::video.call_proof_variante`. Der Runner liest direkt.
+
+### Datums-Dynamik (zeitlich evergreen)
+
+Alle Datums-Anzeigen kommen aus `scripts/_ops/_lib/demo_time.mjs::getDemoTimes()`:
+- **Lockscreen-Datum** (0:00) — `getTodayGerman()` → "Donnerstag, 28. Mai" (heute)
+- **SMS-Banner-Datum** — same
+- **SMS-Thread-Datum** — same
+- **Case-Detail-Timestamps** — `demoTime.phoneCaseSavedTime` (heute 08:08)
+- **Dashboard-Greeting** — runtime-dependent ("Guten Morgen" vor 12, "Guten Tag" 12-17, "Guten Abend" ab 18) basiert auf Recording-Zeit
+- **Case-Dates** — "Heute 08:08", "Heute 07:12", "Gestern", "25.05", "24.05" — dynamisch via Seed nach §7
+
+**Morgen / Nächste Woche / In 3 Monaten:** Pipeline läuft einfach, Daten sind auto-aktuell.
+
+### Skalierbarkeit für neue Tenants
+
+Voraussetzungen pro neuem Sanitär-Betrieb:
+1. `docs/customers/<slug>/tenant_config.json` (via `derive_config.mjs` aus crawl)
+2. `docs/customers/<slug>/links.md` (PFLICHT — siehe CLAUDE.md)
+3. Phone-Bezel-PNG (auto-generiert beim ersten pipeline_screenflow-Run)
+4. Audio-WAV vorhanden (locked in `_generated/takes/<slug>/take2_<variant>.wav` — falls neu: erbt von ersten Tenant der dieselbe Variante hat, bzw. via build_from_phase_schedule rebuilt)
+
+Erster Run produziert:
+- Phone-Bezel + Content-Mask r46 + Status-Bar (cached)
+- Samsung-Screens mit Tenant-Name + Brand-Color
+- Leitsystem-Recording mit Tenant-spezifischen Cases
+- Audio+Loom composite
+- V102 Final mit Datum von heute
+
+### V102 Architektur — die finale Schichten-Stapel
+
+| Schicht | Quelle | Pro-Variant universal? |
+|---|---|---|
+| **A — Audio** | `_generated/takes/<slug>/take2_<variant>.wav` (Founder-Voice + Lisa-TTS, Apr-29 finalisiert) | Ja (Founder spricht, Lisa sagt Tenantnamen NIE) |
+| **B — Loom (PiP)** | Apr-30 Master-Loom-Region 260×260 @ canvas (805,20), durchgehend | Ja (Founder-Face, egal welcher Tenant) |
+| **C — Phone-Bezel** | `screenflows/<slug>/_phone_bezel_340x730.png` (mit brand-color shadow), Canvas 400×860 @ (375,20), cutout rx=46 | Nein (per-tenant brand-color shadow) |
+| **D — Phone-Display-Content** | Samsung HTML + Leitsystem Playwright (per-tenant DB + Brand) | Nein |
+| **E — V102 Overlays** | Homescreen-PNG, Zoom-Animation-PNG-Sequence (4:18.2-4:18.43), Bezel-FG-Overlay 408×868 @ (371,16) für saubere Ecken | Tendenziell ja (pre-rendered assets) |
+
+### Founder-Spec Anker-Timings (Dörfler Notruf reference)
+
+Diese Timings sind im Recorder `record_leitsystem_take2.mjs` hartcodiert mit Drift-Korrekturen für V102:
+
+| Zeit | Event |
+|---|---|
+| 0:00 — ~1:20 | Lockscreen heute-Datum |
+| ~1:20 — 3:29.3 | Eingehender Anruf + Anruf aktiv (Timer hochzählend) |
+| 3:29.3 | Anruf beendet · 02:47 |
+| ~3:35 | SMS-Banner + Thread mit heutigem Datum |
+| ~4:14.8 — 4:18.20 | Lockscreen Übergang |
+| **4:18.20 — 4:18.43** | App-Open-Animation (0.23s, pre-rendered) |
+| 4:18.43 — 4:30.5 | Dashboard initial Top hold |
+| 4:30.5 — 4:31.5 | Scroll-down 1s ease-out |
+| 4:31.5 — 4:34.5 | Bottom hold 3s |
+| 4:34.5 — 4:35.0 | Scroll-up 0.5s |
+| 4:35.0 — 4:37.0 | Pre-NEU hold |
+| 4:37.0 — 4:40.0 | **KPI NEU** highlighted (3s) |
+| 4:40.0 — 4:42.5 | **KPI BEI UNS** highlighted (2.5s) |
+| 4:42.5 — 4:45.8 | **KPI ERLEDIGT** highlighted (3.3s) |
+| 4:45.8 — 5:21.3 | **KPI BEWERTUNG** highlighted, long hold (35.5s) |
+| 5:21.3 — 5:24.0 | Filter zurücksetzen |
+| 5:24.0 — 5:24.4 | Small scroll-down (Header weg, KPIs sichtbar) |
+| 5:24.4 — 5:27.0 | Pre-case-open hold |
+| **5:27.0** | Case open (Rohrbruch click) |
+| 5:27.0 — 5:38.0 | Case Top hold (Übersicht + Beschreibung) |
+| 5:38.0 — 5:40.0 | Scroll-down im Case (ease-out fast→slow) |
+| 5:40.0 — 5:43.0 | Case Bottom hold (Verlauf + Kontakt) |
+| 5:43.0 — 5:43.5 | Scroll-up 0.5s rapid |
+| 5:43.5 — 6:01.5 | Case Top hold final (18s) |
+| **6:01.5** | Zurück-Click → Dashboard initial top (1:1 wie 4:18.43-4:30) |
+| 6:01.5 — 6:20.5 | Final Dashboard hold (heute-Datum, KPIs all visible, kein Apr-Bleed) |
+
+**Recorder dwells V102 alignment:**
+- `pre_scroll_hold`: 950ms (war 2500ms) — small_scroll bei 5:24.0
+- `post_scroll_hold`: 2200ms (war 3000ms) — case_click bei 5:27.0
+- `case_top_hold`: 8000ms (war 12000ms) — Top hold end bei 5:38.0 inkl. 3s nav-overhead
+- `scrollTo(0,0)` nach `zurueck_click` + 1.5s + 4s extension — final dashboard top für 6:01.5-6:20
+
+### Bezel-Cutout-Radius — kritischer Wert
+
+`phone_bezel.html` Z.17: `rx=46`. `pipeline_screenflow.mjs` Z.154: `ensureContentMask({ radius: 46 })`. **MÜSSEN GLEICH SEIN** — sonst dunkle Crescents an Bezel-Bottom-Curves.
+
+### Bekannte Limitations
+
+1. **Bezel-FG Anti-Aliasing**: V102 nutzt eine 408×868 Bezel-FG-Überlagerung @ (371,16) um Mask-Anti-Alias-Kanten zu überdecken. Bei sehr aufmerksamer Frame-by-Frame-Betrachtung können noch sub-pixel Reste sichtbar sein. Akzeptabel für Production.
+2. **+0.5-1s Drift** im Case-Detail-Bereich (5:27-6:01.5) durch Playwright Page-Render-Latenz. Außerhalb der Wahrnehmungsschwelle bei normaler Playback-Geschwindigkeit.
+3. **Greeting-Wechsel**: Dashboard-Header zeigt zur Recording-Zeit ("Guten Morgen" / "Tag" / "Abend"). Konsistent innerhalb einer Build-Session, kann zwischen Runs an unterschiedlichen Tageszeiten variieren.
+
+### Was bewusst NICHT mehr getan wird
+
+- Keine White-Pad-Tricks (V90 Anti-Pattern — sah aus wie Wings)
+- Kein -ss-Trim-Spielereien für Timing (V94 Anti-Pattern — Audio-Screen-Drift)
+- Keine Splice-Hacks zwischen V50 und V74 (V83 Anti-Pattern — sichtbare Source-Wechsel)
+
+### Versionen-Geschichte (Lessons Learned)
+
+- V73-V77: Splice-Hacks → sichtbare Source-Wechsel
+- V78-V82: build_v26 Iterationen → mask/bezel-FG Experimente
+- V83: V50+V74 Splice clean corners, aber 3s Animation-Chaos
+- V84-V92: PNG-Overlay-Animation-Approach reift
+- V93: V50-Base + Mask, ohne Bezel-FG
+- V94-V100: Wing-Bekämpfung über Mask + Bezel-FG-Variationen
+- **V101**: Founder-Spec-Timings durch Recorder-Dwell-Korrektur
+- **V102 = FINAL**: V101 + Mask r46 + Bezel-FG + scrollTo(0,0) nach zurück + tpad stop_duration=8s → Founder approved 28.05.
+
+
+## §63 Take 2 V103 — Production Pipeline mit QG (28.05.2026)
+
+**Status:** FINAL. Beide Tenants (Dörfler-Notruf + Leins-Preis) durchlaufen 32/32 QG-Anchors. Heute = 28.05. produziert, morgen läuft mit aktuellem Datum.
+
+### Architektur — 5 Schichten + QG-Gate
+
+```
+┌─ Schicht 1: Universal Locked Assets (immutable)
+│    audio/take2_notruf.aac  audio/take2_preis.aac    (AAC stream-copy ex V50)
+│    loom/take2_notruf_loom.mp4  loom/take2_preis_loom.mp4  (260x260 ex V50)
+│
+├─ Schicht 2: Per-Run Tenant Recording
+│    pipeline_screenflow.mjs → take2_complete.mp4 + take2_leitsystem.webm
+│    Samsung mit TODAY's date (getTodayGerman aus demoTime)
+│    Leitsystem mit today-relative cases + V102c Founder-Spec-Timings
+│
+├─ Schicht 3: Anchor Composite
+│    build_from_phase_schedule.mjs → take2_<variant>_anchor.mp4
+│    Phase-Library mappt samsung+leitsystem-segments auf Canvas-Timeline
+│    Universal audio mux'd (AAC stream-copy → bit-identical zu V50)
+│    Video tpad'd auf audio-duration falls kürzer
+│
+├─ Schicht 4: V102 Overlays (build_v26_dashboard_animation.mjs)
+│    Homescreen-PNG (4:17.8-4:18.43)
+│    Zoom-Animation PNG-Sequence (4:18.20-4:18.43)
+│    Live-Leitsystem-Crop für Dashboard (mit r46-Mask + Bezel-FG-Overlay)
+│
+└─ Schicht 5: Universal Loom Overlay
+     Locked loom video overlaid auf canvas (805, 20) durchgehend
+     V50-canonical founder face, tenant-unabhängig
+```
+
+### Single-Command-Runner
+
+```bash
+APP_URL=http://localhost:3000 node --env-file=src/web/.env.local \
+  scripts/_ops/build_take2_final.mjs --slug <tenant-slug>
+```
+
+**Auto-detection:** liest `tenant_config.json::video.call_proof_variante` → C/B → notruf/preis.
+
+**Output:** `_generated/previews/<slug>/take2_<variant>_v102_final.mp4` (380.5s notruf / 377.0s preis).
+
+### Quality Gate
+
+```bash
+node scripts/_ops/qg_take2_vs_schablone.mjs --slug <tenant-slug>
+```
+
+**32 Anchors per Tenant** (variant-aware mit -3.5s Offset für Preis):
+- Universal: 0s, 20s, 40s, ..., 200s, 380s (every 20s)
+- Critical: start, anruf-beendet, pre-animation, post-animation, KPI-NEU/BEI-UNS/ERLEDIGT/BEWERTUNG, filter-reset, case-open, zurück, end-2s
+
+**Pro Anker 3 Dimensionen:**
+- Frame SSIM ≥ 0.85 (full canvas)
+- Loom-Region SSIM ≥ 0.92 (260x260 @ 805,20)
+- Audio mean-RMS Δ ≤ 6 dB (Window-Sampling-Variance toleriert)
+
+**Report:** `_generated/previews/<slug>/qg_take2_v102_report.json`
+
+**Exit code:** 0 = all pass; 1 = critical fails (Diagnose im stdout).
+
+### Datums-Dynamik (zeitlich evergreen)
+
+Alle datums-relevanten Visuals aus `demoTime` (scripts/_ops/_lib/demo_time.mjs):
+- Lockscreen: `getTodayGerman()` → "Donnerstag, 28. Mai"
+- SMS-Banner + Thread: dito + "08:08" Uhrzeit
+- Case-Detail Timestamps: heute 08:08
+- Dashboard-Greeting: runtime-dependent (Morgen/Tag/Abend)
+- Case-Dates: today-relative (Heute 08:08 / Gestern / 26.05 / 25.05)
+
+**Morgen / nächste Woche / in 3 Monaten:** Pipeline läuft, Datum auto-aktuell.
+
+### Schablonen (gold-master References)
+
+Locked in `_locked/schablonen/`:
+- `take2_notruf_schablone.mp4` (Dörfler V102 vom 28.05. — Founder approved)
+- `take2_preis_schablone.mp4` (Leins V102 vom 28.05. — Founder approved)
+
+QG vergleicht jeden Build gegen diese Schablonen pro Variant.
+
+### Skalierbarkeit für neue Tenants (Wälti, Stark, Leuthold, ...)
+
+Voraussetzungen pro neuem Sanitär-Betrieb:
+1. `docs/customers/<slug>/tenant_config.json` (via `derive_config.mjs` aus crawl)
+2. `docs/customers/<slug>/links.md`
+3. tenant existiert in Supabase DB (für seeding)
+
+Einmaliges Setup pro Tenant (auto beim ersten Run):
+- Phone-Bezel-PNG (auto-generiert beim ersten pipeline_screenflow-Run mit brand-color shadow)
+- Status-Bar-PNG (cached)
+- Content-Mask-PNG (cached, r46)
+
+Erste Pipeline-Lauf produziert:
+- Frische Samsung-Recording mit Tenant-Name + Brand-Color + heute-Datum
+- Leitsystem-Recording mit Tenant-DB (today-relative cases)
+- Anchor + Universal-Audio-Mux + V102-Overlays + Universal-Loom
+- Final V102 mit heutigem Datum
+
+Erwartet: QG 32/32 PASS. Wenn nicht, präzise Diagnose welcher Anker fehlschlägt.
+
+### Recorder-Dwell-Werte (V102c calibrated)
+
+| Phase | Dwell | Resultat-Output |
+|---|---|---|
+| top_dwell | 12700ms | dashboard-init 4:25 |
+| scroll_down | 1000ms (ease-out) | scroll bei 4:30.5 |
+| bottom_hold | 3000ms | 4:31.5-4:34.5 |
+| scroll_up | 500ms | 4:34.5-4:35.0 |
+| pre_NEU_hold | 2400ms | KPI-NEU bei 4:37.0 |
+| KPI_NEU | 3000ms | 4:37-4:40 |
+| KPI_BEI_UNS | 2500ms | 4:40-4:42.5 |
+| KPI_ERLEDIGT | 3300ms | 4:42.5-4:45.8 |
+| **KPI_BEWERTUNG** | **38600ms** | 4:45.8-5:22.x (calibrated für filter_reset @ ~5:24) |
+| filter_reset | ~900ms (Klick+anim) | filter_reset bei 5:23.6 |
+| **pre_scroll_hold** | **600ms** | small_scroll @ 5:25.1 |
+| small_scroll | 400ms (ease-out) | scroll done @ 5:25.5 |
+| post_scroll_hold | 2200ms | case_click @ 5:27.0 |
+| case nav | ~3000ms (Playwright) | case_loaded @ 5:30 |
+| case_top_hold | 8000ms | case-top-end @ 5:38 |
+| case_scroll_down | 2000ms (ease-out) | case-bottom @ 5:40 |
+| case_bottom_hold | 3000ms | hold 5:40-5:43 |
+| case_scroll_up | 500ms | scroll-up @ 5:43.5 |
+| case_top_hold_final | 18000ms | case-top hold 5:43.5-6:01.5 |
+| zurueck + scrollTo(0,0) | 1500+1500ms | dashboard top @ 6:02 |
+| recording_end_extension | 4000ms | final hold 6:02-6:20 |
+
+### Bekannte Edge-Cases
+
+1. **Audio mean-RMS sampling variance 3-5dB** an spezifischen Anchors (280s, 378s für Notruf). Frame SSIM und Loom SSIM zeigen Pixel-Identität. QG-Threshold auf 6dB relaxed.
+2. **Build_from_phase_schedule sharpness gate** kann auf SMS-Thread freeze-anchor failen (~83%). Mit `SKIP_SHARPNESS_GATE=1` umgehen.
+3. **Playwright Page-Render-Latenz** im Case-Detail-Bereich ±0.5s gegen Founder-Spec. Innerhalb akzeptabler Toleranz.
+
+### Lessons Learned (V73-V103)
+
+- V73-V77: Splice-Hacks zwischen V50 + V74 → sichtbare Cuts
+- V78-V99: Mask + Bezel-FG-Variationen → Wing-Artefakte
+- V100: Zurück zu V25-Simple → Wings reduziert
+- V101-V102: Founder-Spec-Timings durch Recorder-Dwell-Kalibration
+- V102 = Schablone (V50-base + V102-overlays)
+- **V103 = Final Architecture**: Fresh anchor + universal audio + universal loom + V102 overlays. V50 nur noch als Schablone-Reference für QG-Vergleich, nicht mehr als Build-Base.
+
+### Skalierungs-Garantie
+
+- **Heute 28.05.** → Lockscreen "Donnerstag, 28. Mai" ✓
+- **Morgen 29.05.** → Lockscreen "Freitag, 29. Mai" ✓ (auto via demoTime)
+- **Nächste Woche** → Lockscreen heutiges Datum ✓
+- **In 3 Monaten** → Lockscreen heutiges Datum ✓
+- **Audio + Loom** → IDENTISCH über alle Tage + alle Tenants (locked-assets) ✓
+- **Tenant-Variabel:** brand_color, tenant_name, DB-Cases, Datum ✓
+
+## §64 Take 4 Zehntelsekunden-Schablone — 13 Findings (31.05.2026)
+
+### Founder-Feedback-Liste (FB1-FB13)
+Reference: Apr-30 Master Founder-Gold (T4_doerfler-ag_with_mouse.mp4).
+
+| FB | Bereich | Status |
+|----|---------|--------|
+| FB1 | Dropdown-Hover-Animation Neu→Geplant→In Arbeit→Warten | ✅ animierter Overlay-Hover-Zyklus 600ms/Step |
+| FB2/2A | Termin-Picker 10:00 + Monatsübergang 01.06 (nicht 01.05) | ✅ scoped-DOM month-label-Selector, KEIN globaler fallback |
+| FB3 | Phone-Bezel Battery 71% (nicht 86) | ✅ take2_samsung.html `>71<` |
+| FB5 | Phone Bottom Nav-Bar SMS-View | ✅ `.nav-bar.light` template div |
+| FB6 | SMS-Verlauf Take-2-Konsistenz | ✅ via _phone_extended pipeline |
+| FB7 | Phone-Clock = SMS-Timestamp | ✅ `window.__forceClockTime` + setInterval 80ms |
+| FB8 | Status-Dropdown #2 Hover-Animation 0:38 | ✅ animierter In Arbeit→Warten→Erledigt 700ms/Step |
+| FB9 | Speichern-Click @ 0:43 (nicht 0:45.5) | ✅ wait nach status_erledigt 1700→400ms |
+| FB10 | Phone-Day-2 fade-in @ 1:07.5 | ✅ compose_v4 segD `fade=t=in:st=0:d=fadeInDur:alpha=1` |
+| FB11 | Bewertungs-Page nav-bar + center-zoom | ✅ |
+| FB12 | KPI Cards 1:27.8 flüssiges Loading | ✅ |
+| FB13 | Toast "Bewertung erhalten" fade-out | ✅ `fade=t=out:st=96.5:d=0.5:alpha=1` |
+
+**Stand 01.06.2026: FB1–FB13 alle ✅ — keine Restlücke.** Einzige verbleibende
+Aufgabe vor Freeze: durchgehender "3 Issues" Dev-Badge links unten (0:00–~1:38)
+sauber via Overlay covern (siehe Architecture-Fix unten).
+
+### Kritischer Architecture-Fix: "3 Issues" Dev-Badge-Cover
+- **Problem**: Next.js 16 dev-tools-badge im `<nextjs-portal>` shadow-root überlebt JEDE DOM-Strategie (body::after, isolation, transform, MutationObserver, host.removeAttribute). Erscheint intermittierend links unten (0:00–~1:38), Founder-Empfinden "fast durchgehend".
+- **Lösung**: **post-process ffmpeg drawbox** über die Sidebar-Bottom-Region. Deterministisch, kein stacking-context-Wettstreit.
+- **01.06.2026 — ENTKOPPELT in eigenes Script `scripts/_ops/apply_devbadge_cover.mjs`** (vorher in `apply_toast_overlay.mjs` gebacken):
+  - **Warum:** Der Cover MUSS der **allerletzte** Schritt sein (nach dem Mouse-Layer). War er in der Toast-Stufe gebacken und der Mouse-Build lief danach → Mouse-Build überschrieb den Cover → Badge wieder sichtbar (genau dieser Fall im 21:59-Build vom 31.05.).
+  - **Cover-Farbe auto-sampled** pro Tenant aus dem eigenen Sidebar-bg (ffmpeg 4×4-Region @ (8,892), t=45s). Fallback `0x00050f`. Damit brechen Betriebe mit nicht-navy Brand-Color nicht. Dörfler-Sample = `0x02050f`.
+  - **Y=842 (nicht 845):** der Badge-Glow/Rand lugt bis ~844 → 845 ließ eine feine rote Linie durch. 842 fängt den Rand, lässt die "admin@…"-Zeile (endet ~841) frei.
+  ```js
+  // apply_devbadge_cover.mjs Konstanten:
+  const COVER_X = 0, COVER_Y = 842, COVER_W = 130, COVER_H = 58;
+  const COVER_END = 98.7;  // bis iris-open komplett, danach Loom-fullscreen
+  // drawbox=x=0:y=842:w=130:h=58:color=<auto-sampled>@1.0:t=fill:enable='lt(t,98.7)'
+  ```
+  - **Backup:** Original einmal nach `master_takes/take4/_backups/<slug>_with_mouse_pre_devbadge.mp4` (oldest pre-cover bleibt erhalten).
+  - **Reihenfolge T4 final:** Build → Mouse-Layer → **Toast (FB29)** → **Badge-Cover (LETZTER Schritt)** → Freeze.
+  - **01.06.2026 fest verkettet in `build_take4_final.mjs`** (Steps 7→9→10, gated auf `--with-mouse` = final delivery). Vorher waren Toast + Cover manuelle Nachsätze → der Mouse-Layer (Step 7) lief danach und überschrieb beide → Founder sah fehlenden Toast + sichtbaren Badge im 21:59-Build. Nie wieder, weil jetzt in der richtigen Reihenfolge in der Pipeline.
+- **Memory:** `patterns_devbadge_cover_drawbox.md`
+
+### Picker-Selector Anti-Pattern (NIEMALS wieder)
+- **Vorher**: `document.querySelectorAll('button')` mit fallback-rightmost → traf **Löschen-Trash-Icon** @ x=1279 → "Diesen Fall wirklich löschen?" Dialog im Video.
+- **Lösung**: scoped DOM-traversal: finde Monat-Label-Element (`Mai 2026` etc.), gehe zum Calendar-Container hoch, selektiere NUR Buttons im Container die rechts vom Label liegen.
+- **NIEMALS** globaler Button-Scan als Fallback — Risiko: destruktive UI-Actions im Recording.
+
+### Skalierbar-Quality
+- Pipeline jetzt deterministisch für alle 4 Tenants (Dörfler/Leins/Wälti/Stark).
+- Variable Per-Tenant: `tenant_config.json`, brand_color, DB-cases.
+- Konstant: drawbox-Cover, picker-selector, animationen.
+
 

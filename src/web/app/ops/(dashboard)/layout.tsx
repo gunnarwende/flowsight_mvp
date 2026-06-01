@@ -83,6 +83,7 @@ export default async function DashboardLayout({
     <OpsShell
       userEmail={user.email ?? ""}
       tenantName={identity?.displayName ?? undefined}
+      caseIdPrefix={identity?.caseIdPrefix ?? undefined}
       brandColor={identity?.primaryColor ?? undefined}
       staffRole={staffRole}
       isAdmin={scope?.isAdmin}

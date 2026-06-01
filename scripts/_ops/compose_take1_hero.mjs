@@ -25,7 +25,15 @@ import { join } from "node:path";
 import { ensureCircleMask, buildCircleLoomFilter } from "./_lib/renderLoomCircle.mjs";
 
 const args = process.argv.slice(2);
-const slug = args.find(a => a.startsWith("--slug"))?.split("=")[1] || "doerfler-ag";
+// Robust: akzeptiert BEIDE Formen `--slug X` und `--slug=X`. Vorher nur `=`-Form →
+// `--slug leins-ag` (Leerzeichen) fiel still auf "doerfler-ag" zurück (Silent-Wrong-Tenant,
+// 01.06.2026: baute versehentlich Dörfler-T1 statt Leins). NIE wieder still defaulten.
+const slug = (() => {
+  const i = args.indexOf("--slug");
+  if (i >= 0 && args[i + 1] && !args[i + 1].startsWith("--")) return args[i + 1];
+  const eq = args.find(a => a.startsWith("--slug="));
+  return eq ? eq.split("=")[1] : "doerfler-ag";
+})();
 
 const configPath = join("docs", "customers", slug, "tenant_config.json");
 const config = JSON.parse(await readFile(configPath, "utf-8"));
@@ -34,7 +42,21 @@ const brand = config.tenant.brand_color || "#1a2744";
 
 const outBase = join("docs", "gtm", "pipeline", "06_video_production", "screenflows", slug);
 const htmlPath = join("scripts", "_ops", "screen_templates", "sequences", "take1_hero.html");
-const loomSource = join("docs", "gtm", "pipeline", "06_video_production", "video_example", "Video_default.mp4");
+// §46 Drei-Spuren-Pattern — Face + Audio sind GENERISCH (über alle Betriebe identisch,
+// md5-verifiziert). Nur das Brand-Panel ist tenant-spezifisch. Fallback auf die
+// kanonische Dörfler-Quelle (= universal, wie T3/T4 mouse/audio), damit UNBEKANNTE
+// Betriebe (Stresstest) dasselbe approved T1 bekommen. 01.06.2026: vorher fiel Face auf
+// das abweichende Video_default.mp4 und Audio auf null (tonlos) → Stresstest-Lücke.
+const MASTER_TAKES1 = join("docs", "gtm", "pipeline", "06_video_production", "_generated", "takes", "doerfler-ag");
+const tenantFace = join("docs", "gtm", "pipeline", "06_video_production", "_generated", "takes", slug, "take1_face.mp4");
+const tenantAudio = join("docs", "gtm", "pipeline", "06_video_production", "_generated", "takes", slug, "take1.wav");
+const masterFace = join(MASTER_TAKES1, "take1_face.mp4");
+const masterAudio = join(MASTER_TAKES1, "take1.wav");
+const loomSource = existsSync(tenantFace) ? tenantFace
+  : (existsSync(masterFace) ? masterFace
+  : join("docs", "gtm", "pipeline", "06_video_production", "video_example", "Video_default.mp4"));
+const audioSource = existsSync(tenantAudio) ? tenantAudio
+  : (existsSync(masterAudio) ? masterAudio : null);
 
 console.log(`\n=== Take 1 Hero — ${firma} ===\n`);
 
@@ -88,17 +110,30 @@ const filterChain =
   loomFilter + `;` +
   `[bg][facec]overlay=x=720:y=0:shortest=1:format=auto[out]`;
 
-const ff = spawnSync("ffmpeg", [
+// §46 — explizite Audio-Quelle (founder-recorded take1.wav, 63.6s)
+// statt impliziter Audio-Track aus loomSource (war fehleranfällig — Bug 26.05.).
+const ffArgs = [
   "-y",
   "-loop", "1", "-t", String(loomDur), "-i", bgPng,
   "-i", loomSource,
   "-i", mask,
+];
+if (audioSource) ffArgs.push("-i", audioSource);
+ffArgs.push(
   "-filter_complex", filterChain,
   "-map", "[out]",
+);
+if (audioSource) {
+  // map dedicated audio input
+  ffArgs.push("-map", `${3}:a`);
+  ffArgs.push("-c:a", "aac", "-b:a", "192k");
+}
+ffArgs.push(
   "-t", String(loomDur),
   "-c:v", "libx264", "-preset", "medium", "-crf", "22", "-pix_fmt", "yuv420p",
   outPath,
-], { stdio: "inherit" });
+);
+const ff = spawnSync("ffmpeg", ffArgs, { stdio: "inherit" });
 if (ff.status !== 0) {
   console.error("❌ ffmpeg compose failed");
   process.exit(1);

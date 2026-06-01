@@ -16,6 +16,7 @@
 - Vorstellungsseite: LIVE (flowsight.ch/kunden/doerfler-ag/vorstellung, PRs #414-#422)
 - Outreach-Mail: READY (send_outreach_mail.mjs, HTML mit Foto, Reply-To gunnar.wende@flowsight.ch)
 - Demo-Video: Speakflow finalisiert (4 Takes in vorstellung_script_v2.md), **AUFNAHME ALS NÄCHSTES**
+- **Take 4 Video: FINAL/GOLDMASTER (01.06.2026)** — `_locked/take4_R24_lockedmaster_20260601/`. R24 = FB29-Toast + Badge-Cover + Pipeline-Verkettung. Schablone für alle Sanitär-Tenants eingefroren. Master: `master_takes/take4/doerfler-ag_with_mouse.mp4`.
 - Demo-Script: demo_script.md (Speakflow) + vorstellung_script_v2.md (Verpackung + Mail)
 - Pain Types: erreichbarkeit, aussenwirkung, bewertung, notfall, buerochaos
 - Ansprechpartner: Ramon + Luzian Dörfler (Geschäftsleitung seit 2004, 3. Generation)

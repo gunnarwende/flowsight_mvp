@@ -168,63 +168,76 @@ async function crawlPage(page, url, pageKey) {
 
 async function extractBrandColor(page) {
   try {
-    const color = await page.evaluate(() => {
-      // Strategy 1: Header/nav background
-      const header = document.querySelector("header, nav, [role='banner']");
-      if (header) {
-        const bg = getComputedStyle(header).backgroundColor;
-        if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent" && bg !== "rgb(255, 255, 255)") {
-          return bg;
-        }
+    // Collect weighted color candidates from the most reliable brand-signals first.
+    const candidates = await page.evaluate(() => {
+      const out = [];
+      const push = (c, weight) => { if (c) out.push({ c, weight }); };
+
+      // S0: <meta name="theme-color"> — explicit brand signal, highest trust.
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta?.content) push(meta.content, 100);
+
+      // S1: CSS custom properties on :root (--primary / --brand / --accent ...).
+      const rootStyle = getComputedStyle(document.documentElement);
+      for (const name of ["--primary","--primary-color","--brand","--brand-color",
+        "--color-primary","--accent","--accent-color","--main-color","--theme-color","--bs-primary"]) {
+        const v = rootStyle.getPropertyValue(name).trim();
+        if (v) push(v, 90);
       }
 
-      // Strategy 2: First h1 or h2 color
+      // S2: header/nav background.
+      const header = document.querySelector("header, nav, [role='banner'], .header, #header, .navbar");
+      if (header) push(getComputedStyle(header).backgroundColor, 70);
+
+      // S3: CTA / primary buttons background.
+      for (const sel of ["a.btn",".btn-primary","button.btn",".cta","[class*='primary']",
+        "a[class*='button']",".button","[class*='btn']"]) {
+        const el = document.querySelector(sel);
+        if (el) push(getComputedStyle(el).backgroundColor, 60);
+      }
+
+      // S4: link colors by frequency.
+      const freq = {};
+      for (const l of Array.from(document.querySelectorAll("a")).slice(0, 40)) {
+        const c = getComputedStyle(l).color;
+        if (c) freq[c] = (freq[c] || 0) + 1;
+      }
+      for (const [c, n] of Object.entries(freq)) push(c, 30 + n);
+
+      // S5: h1/h2 text color.
       for (const tag of ["h1", "h2"]) {
         const el = document.querySelector(tag);
-        if (el) {
-          const c = getComputedStyle(el).color;
-          if (c && c !== "rgb(0, 0, 0)" && c !== "rgb(255, 255, 255)" && c !== "rgba(0, 0, 0, 0)") {
-            return c;
-          }
-        }
+        if (el) push(getComputedStyle(el).color, 20);
       }
-
-      // Strategy 3: Primary button background
-      const btn = document.querySelector("a.btn, button.btn, .cta, [class*='primary'], a[class*='button']");
-      if (btn) {
-        const bg = getComputedStyle(btn).backgroundColor;
-        if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent" && bg !== "rgb(255, 255, 255)") {
-          return bg;
-        }
-      }
-
-      // Strategy 4: Most common non-black/white color in first 500px
-      const links = document.querySelectorAll("a");
-      const colorCounts = {};
-      for (const link of Array.from(links).slice(0, 20)) {
-        const c = getComputedStyle(link).color;
-        if (c && c !== "rgb(0, 0, 0)" && c !== "rgb(255, 255, 255)") {
-          colorCounts[c] = (colorCounts[c] || 0) + 1;
-        }
-      }
-      const sorted = Object.entries(colorCounts).sort((a, b) => b[1] - a[1]);
-      if (sorted.length > 0) return sorted[0][0];
-
-      return null;
+      return out;
     });
 
-    if (!color) return null;
+    // Parse any rgb()/rgba()/#hex to [r,g,b]; reject neutrals (grey/white/black).
+    const toRgb = (s) => {
+      if (!s) return null;
+      s = String(s).trim();
+      let m = s.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
+      if (m) return [+m[1], +m[2], +m[3]];
+      m = s.match(/^#([0-9a-f]{6})$/i);
+      if (m) return [parseInt(m[1].slice(0,2),16), parseInt(m[1].slice(2,4),16), parseInt(m[1].slice(4,6),16)];
+      m = s.match(/^#([0-9a-f]{3})$/i);
+      if (m) return [parseInt(m[1][0]+m[1][0],16), parseInt(m[1][1]+m[1][1],16), parseInt(m[1][2]+m[1][2],16)];
+      return null;
+    };
+    const chroma = ([r,g,b]) => Math.max(r,g,b) - Math.min(r,g,b);
+    // Reject: near-grey (chroma<25), near-white, near-black — these are never a brand color.
+    const reject = (rgb) => chroma(rgb) < 25 || (rgb[0]>235&&rgb[1]>235&&rgb[2]>235) || (rgb[0]<18&&rgb[1]<18&&rgb[2]<18);
 
-    // Convert rgb(...) to hex
-    const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-    if (rgbMatch) {
-      const r = parseInt(rgbMatch[1]);
-      const g = parseInt(rgbMatch[2]);
-      const b = parseInt(rgbMatch[3]);
-      return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    let best = null, bestScore = -1;
+    for (const { c, weight } of candidates) {
+      const rgb = toRgb(c);
+      if (!rgb || reject(rgb)) continue;
+      const score = weight + chroma(rgb); // prominent AND saturated wins
+      if (score > bestScore) { bestScore = score; best = rgb; }
     }
-
-    return color;
+    if (!best) return null;
+    const [r,g,b] = best;
+    return `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
   } catch {
     return null;
   }
@@ -527,7 +540,9 @@ function extractOeffnungszeiten() {
       }
     }
 
-    // Strategy 2: Look for day-time patterns anywhere (day first: "Mo-Fr 08:00-17:00")
+    // Strategy 2: Look for day-time patterns anywhere (day first: "Mo-Fr 08:00-17:00").
+    // Captures an OPTIONAL second time range ("… und 13.30-17.00") — same as Strategy 1,
+    // sonst geht der Nachmittag verloren (Leins-Fall 01.06.: "Mo-Fr 07-12 und 13.30-17").
     const dayTimeRe = new RegExp(
       `(${DAY})` +                                // first day
       `(?:[\\s\\-–—]*(?:bis\\s+)?` +              // optional separator
@@ -535,7 +550,9 @@ function extractOeffnungszeiten() {
       `\\s*[:;\\s]+` +                            // separator before time
       `${TIME}` +                                 // start time
       `(?:${TSEP})` +                             // time separator
-      `${TIME}`,                                  // end time
+      `${TIME}` +                                 // end time
+      `(?:\\s*(?:und|,|&|\\/)\\s*` +              // optional second time range
+      `${TIME}(?:${TSEP})${TIME})?`,              // second start-end time
       "gi"
     );
     const dayTimeMatches = [...text.matchAll(dayTimeRe)];
@@ -543,7 +560,9 @@ function extractOeffnungszeiten() {
       const hours = {};
       for (const dm of dayTimeMatches) {
         const dayRange = dm[2] ? `${dm[1]}-${dm[2]}` : dm[1];
-        hours[dayRange] = `${dm[3]}-${dm[4]}`;
+        let time = `${dm[3]}-${dm[4]}`;
+        if (dm[5] && dm[6]) time += ` und ${dm[5]}-${dm[6]}`;
+        hours[dayRange] = time;
       }
       return { value: hours, source: sourceTag(key), verified: true };
     }
