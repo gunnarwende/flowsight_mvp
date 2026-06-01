@@ -77,6 +77,19 @@ if (!existsSync(phoneExtended)) {
   if (r.status !== 0) { console.error("✗ STEP 0.5 FAILED: phone-extended generation"); process.exit(r.status || 1); }
 }
 
+// ── Greeting self-sufficiency (01.06.) — per-Tenant-Audio mit korrektem Lisa-Greeting ─
+// build_from_phase_schedule (STEP 2) nutzt _generated/takes/<slug>/take2_<variant>.wav,
+// sonst locked Fallback (= Varianten-Master-Greeting → FALSCHER Firmenname, z.B. Stark→
+// "Dörfler"). Hier generate-if-missing: in-place-Greeting-Swap (locked Master + per-
+// Tenant-Greeting im fixen Slot 44–51s) → korrekter Firmenname, Sync byte-genau erhalten.
+const tenantAudio = join(REPO_ROOT, PIPE, "_generated", "takes", slug, `take2_${variant}.wav`);
+if (!existsSync(tenantAudio)) {
+  console.log(`──── STEP 0.6: per-Tenant-Audio fehlt → Lisa-Greeting-Swap (${variant}) ────`);
+  const r = spawnSync("node", ["scripts/_ops/audio/swap_tenant_greeting.mjs", "--slug", slug, "--variant", variant],
+    { cwd: REPO_ROOT, stdio: "inherit" });
+  if (r.status !== 0) { console.error("✗ STEP 0.6 FAILED: greeting swap"); process.exit(r.status || 1); }
+}
+
 function step(label, cmd, argv, env = {}) {
   console.log(`\n──── ${label} ────`);
   const r = spawnSync(cmd, argv, {
