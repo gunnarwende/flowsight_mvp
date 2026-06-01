@@ -471,22 +471,48 @@ async function recordAkt1(browser, cookies) {
     else { console.warn(`  ⚠ anchor "${label}" master ${M}s schon um ${(-remMs).toFixed(0)}ms überschritten (Aufnahme langsamer als Ziel)`); }
   };
 
-  // Click DA-0050 row → Case-Detail @ master 9.61 (Dörfler R24)
+  // ── Deterministischer Liste→Detail-Sprung (01.06.2026) ──────────────────
+  // Problem: nach row.click rendert das Detail render-zeit-abhängig (0.4–1.4s) →
+  // der sichtbare Sprung driftete pro Betrieb (Stark@~10, Leins@~11) → Cursor-Mismatch
+  // 0:09–0:26. Fix: Liste als Screenshot-Overlay EINFRIEREN, Detail dahinter REAL
+  // rendern lassen (zustands-gesteuert via waitFor), dann den Sprung exakt bei
+  // kanonisch CASE_REVEAL_T enthüllen → für JEDEN Betrieb identisch, cursor-synchron.
+  const CASE_REVEAL_T = 11.0; // Leins-Referenz (Founder-abgenommen), direkt vor Cursor-Bearbeiten @~11.4
+  const detailReady = page.locator('button[title="Bearbeiten"]').first();
+  const row = page.locator(`tr:has-text("${caseLabel}"), a:has-text("${caseLabel}")`).first();
+  let rowFound = true;
+  try { await row.scrollIntoViewIfNeeded(); } catch { rowFound = false; }
+  await holdUntilMaster(9.61, "case_click");
+  // 1. Liste einfrieren (Screenshot-Overlay über dem Viewport)
   try {
-    const row = page.locator(`tr:has-text("${caseLabel}"), a:has-text("${caseLabel}")`).first();
-    await row.scrollIntoViewIfNeeded();
-    await holdUntilMaster(9.61, "case_click");
-    logEvt("case_click");
-    await row.click({ force: true });
-    console.log("  → Case-Detail öffnen @9.61");
-  } catch {
-    await holdUntilMaster(9.61, "case_click");
-    logEvt("case_click");
-    await page.goto(`${baseUrl}/ops/cases/${caseUuid}?_hb=1`, { waitUntil: "domcontentloaded" });
-  }
-  // Case-Detail rendert nach Click. Anker: "neu sichtbar" @12.09, Bearbeiten @13.55 (R24).
-  await holdUntilMaster(12.09, "case_initial_neu_visible");
+    const listShot = (await page.screenshot()).toString("base64");
+    await page.evaluate((b64) => {
+      const ov = document.createElement("div");
+      ov.id = "fs-freeze-list";
+      Object.assign(ov.style, { position: "fixed", inset: "0", zIndex: "2147483646",
+        backgroundImage: `url(data:image/png;base64,${b64})`, backgroundSize: "cover", backgroundPosition: "center" });
+      document.body.appendChild(ov);
+    }, listShot);
+  } catch (e) { console.warn("  freeze-overlay fail:", e.message); }
+  logEvt("case_click");
+  // 2. Navigieren HINTER dem Overlay via SPA-DOM-Klick (KEIN goto, KEIN ?_hb=1).
+  // 01.06. Lehre: goto?_hb=1 (Force-Save-Modus) unterdrückt den "Termin versenden"-
+  // Button → Regression. DOM-.click() triggert die SPA-Navigation direkt am Element,
+  // ignoriert die Overlay-Occlusion UND bleibt im Normalmodus (Versenden erscheint).
+  const navOk = await page.evaluate((label) => {
+    const el = [...document.querySelectorAll('tr, a, [role="row"]')].find((e) => (e.textContent || "").includes(label));
+    if (!el) return false;
+    (el.querySelector("a") || el).click();
+    return true;
+  }, caseLabel).catch(() => false);
+  if (!navOk) { await page.goto(`${baseUrl}/ops/cases/${caseUuid}`, { waitUntil: "domcontentloaded" }).catch(() => {}); }
+  // Auf ECHTEN Detail-Render warten (zustands-gesteuert, nicht Timer)
+  await detailReady.waitFor({ state: "visible", timeout: 8000 }).catch(() => console.warn("  ⚠ detail render >8s"));
+  // 3. Reveal exakt bei kanonisch 11.0s → deterministischer Sprung
+  await holdUntilMaster(CASE_REVEAL_T, "case_detail_reveal");
+  await page.evaluate(() => document.getElementById("fs-freeze-list")?.remove());
   logEvt("case_initial_neu_visible");
+  console.log(`  → Detail-Sprung deterministisch @${CASE_REVEAL_T}s`);
   await holdUntilMaster(13.55, "bearbeiten_click");
 
   // Click Bearbeiten (pencil icon)

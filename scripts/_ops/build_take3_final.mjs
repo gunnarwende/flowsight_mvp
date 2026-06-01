@@ -123,6 +123,13 @@ copyFileSync(tWithLoom, tWithLoomBak);
 copyFileSync(tComplete, tWithLoom);
 console.log(`  ✓ swapped (backup at ${tWithLoomBak})`);
 
+// ── STEP 5a: Auto-generate take3 schedule aus Recording-Event-Log ───────────
+// 01.06.2026: take3.schedule war per-Tenant manuell → Stresstest-Fail für NEUE
+// Betriebe. Jetzt deterministisch: beschr_typing = recorded desc-Dauer, Downstream
+// um Delta geshiftet (aus Master + take3_wizard_event_log.json).
+logStep(5.4, "Generate take3 schedule (event-log + master)");
+runNode("scripts/_ops/audio/generate_take3_schedule.mjs", ["--tenant", slug]);
+
 // ── STEP 5b: build_from_phase_schedule → take3_anchor.mp4 (149s no-loom)
 logStep(5.5, "build_from_phase_schedule → take3_anchor.mp4");
 const env = { ...process.env, SKIP_SHARPNESS_GATE: "1", LOOM_GUARD_SKIP: "1" };
