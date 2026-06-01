@@ -4609,3 +4609,23 @@ Stresstest: weinberger (preis) + walter (notruf) parallel durch T2/T3/T4, optisc
 - **Daten-Sync:** Wizard-Kategorien kommen aus Legacy `src/web/src/lib/customers/<slug>.ts` (`getCustomer`), NICHT tenant_config → müssen sanitär-spezifisch sein + "Leck" enthalten (Demo-Narrativ).
 
 **Verify-Prinzip:** IMMER optisch am echten Frame (accurate-seek `-ss` NACH `-i`) gegen Soll, NIE metrisch. Fing reveal-late + falsche Kategorien, die Metriken durchwinkten.
+
+## §66 Quality Gates — Stresstest-Lessons (01.06.2026, Founder-Review)
+
+Diese 4 Checks MÜSSEN als automatische Gates in den Build (Founder-Direktive: „weniger
+Founder-Tätigkeiten" — nicht mehr jedes Video manuell prüfen):
+
+1. **T2 Akku = 86** im Call-Frame (Status-Bar Pixel/Crop-Check vs 86-Referenz).
+   Wurzel-Bug (gefixt): `record_phone_call_visual` sendete `batt=86`, `take2_samsung.html`
+   liest aber Param **`battery`** (Default 71). T2=86, T4=71.
+2. **T2 KPI-Timing**: NEU-Klick @master 4:37,2 ±0,2s (Event-Log `kpi_neu_click` vs Schedule).
+   Wurzel: KPI-Sektion in `record_leitsystem_take2` NICHT geankert → akkum. Drift. Fix =
+   holdUntilMaster vor KPI-Klicks (analog T4-Reveal@11.0).
+3. **Voice-Greeting** = korrekter Firmenname (PR #533, swap_tenant_greeting; Slot 44–51s).
+4. **T4 Stern/Maus-Sync** @1:13.5 ±0,1s: Stern-Fill-Frame vs universeller Maus-Position.
+   Wurzel: Review-Stern-Sektion (Part 6 `record_take4`) NICHT geankert → driftet pro Build
+   gg. universellen Maus-Layer. Fix = Stern-Fill an Master-Zeit ankern.
+
+**Prinzip:** Jede Fehlerklasse, die der Founder im Review findet, wird zum automatischen
+Gate → fängt es beim nächsten Build selbst ab. Verify-visuell-am-echten-Frame (accurate-
+seek `-ss` NACH `-i`), nie nur metrisch.
