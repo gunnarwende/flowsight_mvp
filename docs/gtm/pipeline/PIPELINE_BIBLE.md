@@ -4592,3 +4592,20 @@ sauber via Overlay covern (siehe Architecture-Fix unten).
 - Konstant: drawbox-Cover, picker-selector, animationen.
 
 
+
+## §65 Parallel-Safety + Self-Sufficiency (01.06.2026 — PR #529/#530)
+
+Stresstest: weinberger (preis) + walter (notruf) parallel durch T2/T3/T4, optisch verifiziert.
+
+**Parallel-Recording (mehrere Betriebe gleichzeitig):**
+- **Auth-Wurzel:** `verify-code` macht `generateLink`/`verifyOtp` für DENSELBEN GoTrue-User `admin@flowsight.ch` → gleichzeitige Lanes kollidieren (eine 500 `session_error`). NICHT die OTP-Tabelle. Fix: eindeutiger OTP-Code pro Slug (`take4_<slug>` etc.) + scoped delete + **retry-with-backoff** in record_take4/leit2/leit3. Skaliert auf N Lanes.
+- Per-Slug-Outputs sind isoliert → Cross-Tenant-Parallel safe. ABER: derselbe Slug NIE 2× parallel (Same-Tenant-Clobber der Zwischendateien).
+
+**T4-Reveal zehntelsekunden-genau:** freeze+nav @master 8.0 (statt 9.61) → 3.0s Render-Budget → `holdUntilMaster(11.0)` wartet für JEDEN Betrieb vorwärts → Reveal exakt @11.0 (vorher Tenant-Jitter durch Render-Overrun).
+
+**Self-Sufficiency für NEUE Betriebe (Per-Tenant-Prerequisite-Kette):** Pipeline ist für vorbereitete Betriebe robust, für neue nicht turnkey. Lösungsmuster:
+- **Universal-Fallback** wenn Per-Tenant-Asset fehlt: T3-Loom (`_shared/loom_t3_final.mp4`), Phone-Bezel (`_shared/_phone_bezel_340x730.png`). Asset ist tenant-neutral → copy statt Hard-Fail.
+- **generate-if-missing:** take2-Schedule (aus Master), phone-extended (`record_phone_call_visual`, file://-Render, Dauer notruf 165s/preis 162s). Master-Tenant doerfler-ag MUSS notruf+preis-Schedule haben.
+- **Daten-Sync:** Wizard-Kategorien kommen aus Legacy `src/web/src/lib/customers/<slug>.ts` (`getCustomer`), NICHT tenant_config → müssen sanitär-spezifisch sein + "Leck" enthalten (Demo-Narrativ).
+
+**Verify-Prinzip:** IMMER optisch am echten Frame (accurate-seek `-ss` NACH `-i`) gegen Soll, NIE metrisch. Fing reveal-late + falsche Kategorien, die Metriken durchwinkten.
