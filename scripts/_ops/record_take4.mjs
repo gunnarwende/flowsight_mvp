@@ -136,18 +136,32 @@ await mkdir(outBase, { recursive: true });
 // ── Auth-Cookies ──
 async function getAuthCookies() {
   const email = "admin@flowsight.ch";
-  await sb.from("otp_codes").delete().eq("email", email);
-  await sb.from("otp_codes").insert({
-    email, code: "take4v2",
-    expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-    used: false,
-  });
-  const resp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code: "take4v2" }),
-  });
-  if (resp.status !== 200) { console.error("Auth failed"); process.exit(1); }
-  return resp.headers.getSetCookie() || [];
+  // Parallel-safe OTP (01.06.): eindeutiger Code pro Slug + Delete NUR auf den
+  // eigenen Code (sonst killen sich parallele Tenant-Runs den Code/used-Flag).
+  const otpCode = `take4_${slug}`;
+  // Root-Fix Parallel-Auth: die verify-code-Route macht admin.generateLink +
+  // verifyOtp für DENSELBEN GoTrue-User (admin@flowsight.ch). Zwei gleichzeitige
+  // Lanes kollidieren → eine bekommt 500 session_error (verifiziert 01.06.).
+  // Retry-with-backoff+jitter de-synct die Lanes: die verlierende wartet kurz und
+  // holt einen frischen Link, wenn keine andere gerade generiert. Skaliert auf N.
+  const MAX = 8;
+  for (let attempt = 1; attempt <= MAX; attempt++) {
+    await sb.from("otp_codes").delete().eq("email", email).eq("code", otpCode);
+    await sb.from("otp_codes").insert({
+      email, code: otpCode,
+      expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      used: false,
+    });
+    const resp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code: otpCode }),
+    });
+    if (resp.status === 200) return resp.headers.getSetCookie() || [];
+    if (attempt === MAX) { console.error(`Auth failed after ${MAX} attempts (status ${resp.status})`); process.exit(1); }
+    const backoff = 400 * attempt + Math.floor(Math.random() * 600);
+    console.warn(`  ⚠ auth contention (status ${resp.status}), retry ${attempt}/${MAX} in ${backoff}ms`);
+    await new Promise((r) => setTimeout(r, backoff));
+  }
 }
 
 async function setupLeitsystemContext(browser, recordDir, cookies) {
@@ -482,7 +496,15 @@ async function recordAkt1(browser, cookies) {
   const row = page.locator(`tr:has-text("${caseLabel}"), a:has-text("${caseLabel}")`).first();
   let rowFound = true;
   try { await row.scrollIntoViewIfNeeded(); } catch { rowFound = false; }
-  await holdUntilMaster(9.61, "case_click");
+  // 01.06.2026 PARALLEL-HÄRTUNG: Freeze+Navigation FRÜH (master 8.0) statt 9.61.
+  // Wurzel des Tenant-Jitters: Budget freeze→reveal war nur 1.39s; der Detail-Render
+  // (detailReady.waitFor, render-zeit-abhängig) überschritt es pro Betrieb verschieden
+  // (walter +53ms, weinberger +188ms) → holdUntilMaster(11.0) wartete NIE vorwärts →
+  // Reveal driftete. Jetzt 3.0s Budget: Detail rendert mit Vorlauf hinter dem Overlay
+  // fertig (~9.5), holdUntilMaster(11.0) wartet für JEDEN Betrieb vorwärts → Reveal
+  // exakt @11.0, zehntelsekunden-genau & betriebsunabhängig. Frozen Liste = live Liste
+  // (statisch) → optisch identisch; Cursor-Layer klickt unverändert ~9.6 darüber.
+  await holdUntilMaster(8.0, "case_freeze_start");
   // 1. Liste einfrieren (Screenshot-Overlay über dem Viewport)
   try {
     const listShot = (await page.screenshot()).toString("base64");
@@ -494,7 +516,6 @@ async function recordAkt1(browser, cookies) {
       document.body.appendChild(ov);
     }, listShot);
   } catch (e) { console.warn("  freeze-overlay fail:", e.message); }
-  logEvt("case_click");
   // 2. Navigieren HINTER dem Overlay via SPA-DOM-Klick (KEIN goto, KEIN ?_hb=1).
   // 01.06. Lehre: goto?_hb=1 (Force-Save-Modus) unterdrückt den "Termin versenden"-
   // Button → Regression. DOM-.click() triggert die SPA-Navigation direkt am Element,
@@ -506,9 +527,11 @@ async function recordAkt1(browser, cookies) {
     return true;
   }, caseLabel).catch(() => false);
   if (!navOk) { await page.goto(`${baseUrl}/ops/cases/${caseUuid}`, { waitUntil: "domcontentloaded" }).catch(() => {}); }
-  // Auf ECHTEN Detail-Render warten (zustands-gesteuert, nicht Timer)
+  // Auf ECHTEN Detail-Render warten (zustands-gesteuert, nicht Timer). Endet jetzt mit
+  // Vorlauf (~master 9.0–9.5) weit vor dem 11.0-Reveal.
   await detailReady.waitFor({ state: "visible", timeout: 8000 }).catch(() => console.warn("  ⚠ detail render >8s"));
-  // 3. Reveal exakt bei kanonisch 11.0s → deterministischer Sprung
+  logEvt("case_click");  // Telemetrie-Marker (visueller Cursor-Klick ~9.6 via Layer)
+  // 3. Reveal exakt bei kanonisch 11.0s → deterministischer Sprung (wartet vorwärts)
   await holdUntilMaster(CASE_REVEAL_T, "case_detail_reveal");
   await page.evaluate(() => document.getElementById("fs-freeze-list")?.remove());
   logEvt("case_initial_neu_visible");
