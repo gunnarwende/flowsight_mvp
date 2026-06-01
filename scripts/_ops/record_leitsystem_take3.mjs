@@ -12,11 +12,22 @@
  *   node --env-file=src/web/.env.local scripts/_ops/record_leitsystem_take3.mjs --slug doerfler-ag
  */
 
-import { readFile, mkdir, copyFile, rm } from "node:fs/promises";
+import { readFile, mkdir, copyFile, rm, writeFile } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
 import { createRequire } from "node:module";
+
+// ── V2 DETERMINISTIC event log (T3 pipeline) ──
+let _recordingStart = null;
+const _events = [];
+function pinRecordingStart() { _recordingStart = Date.now(); }
+function logEvent(name) {
+  if (_recordingStart === null) throw new Error("logEvent called before pinRecordingStart()");
+  const recording_t = (Date.now() - _recordingStart) / 1000;
+  _events.push({ name, recording_t: Number(recording_t.toFixed(3)) });
+  console.log(`  [EVT ${name.padEnd(28)} @ ${recording_t.toFixed(2)}s]`);
+}
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -39,23 +50,34 @@ console.log(`  Target case: ${caseLabel}`);
 
 // ── Auth: admin@flowsight.ch OTP ──
 const email = "admin@flowsight.ch";
-await sb.from("otp_codes").delete().eq("email", email);
-await sb.from("otp_codes").insert({
-  email, code: "recording3",
-  expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-  used: false,
-});
-
-const authResp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email, code: "recording3" }),
-});
-if (authResp.status !== 200) {
-  console.error("Auth failed:", authResp.status);
-  process.exit(1);
+// Parallel-safe OTP (01.06.): eindeutiger Code pro Slug + Delete NUR auf den
+// eigenen Code (sonst killen sich parallele Tenant-Runs gegenseitig → 500).
+const otpCode = `leit3_${slug}`;
+// Root-Fix Parallel-Auth (01.06.): verify-code macht generateLink+verifyOtp für
+// DENSELBEN GoTrue-User → gleichzeitige Lanes kollidieren (eine 500). Retry-with-
+// backoff+jitter de-synct die Lanes → robust für N parallele Betriebe.
+async function getAdminCookies() {
+  const MAX = 8;
+  for (let attempt = 1; attempt <= MAX; attempt++) {
+    await sb.from("otp_codes").delete().eq("email", email).eq("code", otpCode);
+    await sb.from("otp_codes").insert({
+      email, code: otpCode,
+      expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      used: false,
+    });
+    const resp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code: otpCode }),
+    });
+    if (resp.status === 200) return resp.headers.getSetCookie() || [];
+    if (attempt === MAX) { console.error(`Auth failed after ${MAX} attempts (status ${resp.status})`); process.exit(1); }
+    const backoff = 400 * attempt + Math.floor(Math.random() * 600);
+    console.warn(`  ⚠ auth contention (status ${resp.status}), retry ${attempt}/${MAX} in ${backoff}ms`);
+    await new Promise((r) => setTimeout(r, backoff));
+  }
 }
-const setCookies = authResp.headers.getSetCookie() || [];
+const setCookies = await getAdminCookies();
 console.log(`  Auth OK, ${setCookies.length} cookies`);
 
 // ── Setup Playwright ──
@@ -107,7 +129,8 @@ await context.addInitScript(() => {
       display: none !important; visibility: hidden !important; opacity: 0 !important;
     }
     /* FB62: Tenant-Switcher ist Founder-only. In Video-Recordings verbergen. */
-    [data-owner-only="tenant-switcher"] {
+    [data-owner-only="tenant-switcher"],
+    [data-owner-only="admin-back"] {
       display: none !important;
     }
     /* Dev-Badge unten links "1 issue" */
@@ -132,12 +155,16 @@ await context.addInitScript(() => {
 });
 
 const page = await context.newPage();
+// V2 pin: from this moment playwright recordVideo records.
+pinRecordingStart();
+logEvent("recording_start");
 
 // FB62 + FB72 + FB68 persistent styles + Dev-Badge-Kill.
 async function ensureSwitcherHidden() {
   await page.addStyleTag({
     content: `
-      [data-owner-only="tenant-switcher"] { display: none !important; }
+      [data-owner-only="tenant-switcher"],
+      [data-owner-only="admin-back"] { display: none !important; }
       /* FB75: Content etwas mehr Atemluft links+rechts — 48px statt 32px. */
       main.md\\:ml-64 > *:not(.full-bleed) {
         max-width: 1080px !important;
@@ -161,12 +188,14 @@ async function ensureSwitcherHidden() {
     `,
   }).catch(() => {});
   await page.evaluate(() => {
-    document.querySelectorAll('[data-owner-only="tenant-switcher"]').forEach((el) => {
+    document.querySelectorAll('[data-owner-only="tenant-switcher"],[data-owner-only="admin-back"]').forEach((el) => {
       el.style.display = "none";
     });
-    // FB68 badge kill + persistent
+    // FB68 badge kill + admin-back persistent removal
     const kill = () => {
       document.querySelectorAll('nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-tools-button], [data-issues-collapsed]').forEach((el) => el.remove());
+      // V2c-fix: persistent admin-back removal (React re-renders after navigation)
+      document.querySelectorAll('[data-owner-only="admin-back"],[data-owner-only="tenant-switcher"]').forEach((el) => el.remove());
       document.querySelectorAll("body > div, body > button").forEach((el) => {
         const s = getComputedStyle(el);
         if (s.position === "fixed" && parseInt(s.bottom) < 50 && parseInt(s.left) < 50 &&
@@ -202,7 +231,9 @@ await context.addInitScript(`
 // ── C8: Navigate to /ops/cases, show list with new DA-0050 ──
 await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded", timeout: 20000 });
 await ensureSwitcherHidden();
+logEvent("cases_list_loaded");
 await page.waitForTimeout(5000); // Let full page load (skeleton, cards)
+logEvent("cases_list_ready");
 
 // Dismiss push banner if still visible
 try {
@@ -220,8 +251,8 @@ console.log("  C8: Case-Liste geladen");
 // im Sidebar (das einzige das dazu passt ist der TenantSwitcher).
 const hiddenCount = await page.evaluate(() => {
   let count = 0;
-  // Primary: data attribute
-  document.querySelectorAll('[data-owner-only="tenant-switcher"]').forEach((el) => {
+  // Primary: data attributes (tenant-switcher + admin-back)
+  document.querySelectorAll('[data-owner-only="tenant-switcher"],[data-owner-only="admin-back"]').forEach((el) => {
     el.style.display = "none";
     count++;
   });
@@ -278,18 +309,24 @@ if (!clicked) {
     process.exit(1);
   }
 }
+logEvent("case_opened");
 
 await ensureSwitcherHidden();
 await page.waitForTimeout(3500);
+logEvent("case_top_dwell_end");
 
 // ── C9 scroll choreography: Übersicht → Beschreibung+Kontakt → Verlauf → back up ──
 console.log("  C9: Case-Detail Scroll...");
 await page.evaluate(() => window.scrollTo({ top: 250, behavior: "smooth" }));
+logEvent("case_scroll_mid_start");
 await page.waitForTimeout(3000);
 await page.evaluate(() => window.scrollTo({ top: 500, behavior: "smooth" }));
+logEvent("case_scroll_bottom_start");
 await page.waitForTimeout(3000);
 await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+logEvent("case_scroll_up_start");
 await page.waitForTimeout(2000);
+logEvent("case_scroll_up_end");
 
 // ── Click Zurück button → C10: Liste wieder ──
 try {
@@ -298,23 +335,32 @@ try {
 } catch {
   await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded" });
 }
+logEvent("back_to_list");
 await ensureSwitcherHidden();
 await page.waitForTimeout(3000);
+logEvent("list_visible");
 
 // ── C11: Click "+ Neuer Fall" button → Modal ──
 try {
   await page.locator('button:has-text("Neuer Fall"), a:has-text("Neuer Fall")').first().click();
+  logEvent("neuer_fall_clicked");
   console.log("  C11: '+ Neuer Fall' Modal geöffnet");
   await page.waitForTimeout(3500); // show modal content
 
   // ── C12: Click Abbrechen → Modal schliesst ──
   await page.locator('button:has-text("Abbrechen")').first().click({ timeout: 3000 });
+  logEvent("abbrechen_clicked");
   console.log("  C12: Modal geschlossen");
-  await page.waitForTimeout(2000);
+  // Apr-30 calibration: dashboard_final phase needs source[63.06-64.07]. With
+  // current splice + Apr-30 canonical 42-phase override, leit recording needs
+  // ~33s total to cover override's last source-range. V2c was too long, V2d
+  // needs final hold ~5s to extend to 33s+.
+  await page.waitForTimeout(5000);
 } catch (e) {
   console.warn(`  Neuer-Fall Modal step skipped: ${e.message}`);
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(5000);
 }
+logEvent("leit_recording_end");
 
 await context.close();
 await browser.close();
@@ -332,6 +378,17 @@ const finalPath = join(outBase, "take3_leitsystem.webm");
 if (existsSync(finalPath)) await rm(finalPath);
 await copyFile(join(outDir, webmFile), finalPath);
 await rm(outDir, { recursive: true, force: true });
+
+// ── V2 DETERMINISTIC: write event log ──
+const eventLogPath = join(outBase, "take3_leit_event_log.json");
+await writeFile(eventLogPath, JSON.stringify({
+  slug,
+  recorder: "leitsystem_take3",
+  version: "v2_deterministic",
+  generated_at: new Date().toISOString(),
+  events: _events,
+}, null, 2));
+console.log(`  ✓ Event log: ${eventLogPath} (${_events.length} events)`);
 
 const kb = Math.round(statSync(finalPath).size / 1024);
 console.log(`\n✅ Saved: ${finalPath} (${kb} KB)\n`);

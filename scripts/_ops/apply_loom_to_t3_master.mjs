@@ -53,11 +53,26 @@ const yExpr =
 
 const masterIn = `docs/gtm/pipeline/06_video_production/_generated/previews/${slug}/take3_anchor.mp4`;
 const masterOut = `docs/gtm/pipeline/06_video_production/master_takes/take3/${slug}.mp4`;
-const loomPath = `docs/gtm/pipeline/06_video_production/screenflows/${slug}/loom_t3.mp4`;
-const maskPath = `docs/gtm/pipeline/06_video_production/screenflows/_shared/_mask_circle_200.png`;
+const SFLOW = "docs/gtm/pipeline/06_video_production/screenflows";
+const maskPath = `${SFLOW}/_shared/_mask_circle_200.png`;
+
+// Loom = Founder-Gesicht über dem Wizard, tenant-neutral (kein Betriebs-Bezug).
+// 01.06.: Universal-Fallback wenn der Betrieb (noch) keinen eigenen Loom hat →
+// Stresstest/NEUE Betriebe failten vorher hart (exit 2). Gleiche kanonische
+// Quelle wie apply_loom_take3.mjs (_shared/loom_t3_final.mp4).
+const UNIVERSAL_LOOM = `${SFLOW}/_shared/loom_t3_final.mp4`;
+let loomPath = `${SFLOW}/${slug}/loom_t3.mp4`;
+if (!existsSync(loomPath)) {
+  if (existsSync(UNIVERSAL_LOOM)) {
+    console.warn(`⚠ kein eigener Loom (${loomPath}) → Universal-Fallback: ${UNIVERSAL_LOOM}`);
+    loomPath = UNIVERSAL_LOOM;
+  } else {
+    console.error(`✗ no loom (weder tenant noch universal): ${loomPath} / ${UNIVERSAL_LOOM}`);
+    process.exit(2);
+  }
+}
 
 if (!existsSync(masterIn)) { console.error(`✗ no master input: ${masterIn}`); process.exit(2); }
-if (!existsSync(loomPath)) { console.error(`✗ no loom: ${loomPath}`); process.exit(2); }
 
 console.log(`apply_loom_to_t3_master:`);
 console.log(`  master-in:  ${masterIn}`);

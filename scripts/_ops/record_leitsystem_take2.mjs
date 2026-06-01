@@ -39,25 +39,34 @@ async function main() {
   // für admin@flowsight.ch mit display_name = tenant short name an, damit das
   // Greeting "Guten Tag, Dörfler" statt "Admin" zeigt.
   const email = "admin@flowsight.ch";
-  await sb.from("otp_codes").delete().eq("email", email);
-  await sb.from("otp_codes").insert({
-    email, code: "recording1",
-    expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-    used: false,
-  });
-
-  const authResp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code: "recording1" }),
-  });
-
-  if (authResp.status !== 200) {
-    console.error("Auth failed:", authResp.status);
-    process.exit(1);
+  // Parallel-safe OTP (01.06.): eindeutiger Code pro Slug + Delete NUR auf den
+  // eigenen Code (sonst killen sich parallele Tenant-Runs gegenseitig → 500).
+  const otpCode = `leit2_${slug}`;
+  // Root-Fix Parallel-Auth (01.06.): verify-code macht generateLink+verifyOtp für
+  // DENSELBEN GoTrue-User → gleichzeitige Lanes kollidieren (eine 500). Retry-with-
+  // backoff+jitter de-synct die Lanes → robust für N parallele Betriebe.
+  async function getAdminCookies() {
+    const MAX = 8;
+    for (let attempt = 1; attempt <= MAX; attempt++) {
+      await sb.from("otp_codes").delete().eq("email", email).eq("code", otpCode);
+      await sb.from("otp_codes").insert({
+        email, code: otpCode,
+        expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+        used: false,
+      });
+      const resp = await fetch(`${baseUrl}/api/ops/auth/verify-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otpCode }),
+      });
+      if (resp.status === 200) return resp.headers.getSetCookie() || [];
+      if (attempt === MAX) { console.error(`Auth failed after ${MAX} attempts (status ${resp.status})`); process.exit(1); }
+      const backoff = 400 * attempt + Math.floor(Math.random() * 600);
+      console.warn(`  ⚠ auth contention (status ${resp.status}), retry ${attempt}/${MAX} in ${backoff}ms`);
+      await new Promise((r) => setTimeout(r, backoff));
+    }
   }
-
-  const setCookies = authResp.headers.getSetCookie() || [];
+  const setCookies = await getAdminCookies();
   console.log("Auth OK, cookies:", setCookies.length);
 
   // ── Setup Playwright ──
@@ -117,6 +126,22 @@ async function main() {
   // next.config devIndicators:false noch. Kombination aus CSS + MutationObserver
   // + Interval-Guard killt sie nachhaltig.
   await page.addInitScript(() => {
+    // FB74c (28.05): Minimal proven kill, runs FIRST so a downstream throw in
+    // the complex kill below can't break suppression. The probe at
+    // scripts/_probe_indicator2.mjs confirmed Next.js 16 wraps the indicator in
+    //   <nextjs-portal>#shadow > #devtools-indicator.nextjs-toast[data-nextjs-toast]
+    // Removing the portal host removes the shadow content along with it.
+    const minimalKill = () => {
+      try {
+        document
+          .querySelectorAll('nextjs-portal, [data-nextjs-toast], #devtools-indicator')
+          .forEach((el) => el.remove());
+      } catch (e) {}
+    };
+    minimalKill();
+    setInterval(minimalKill, 50);
+    new MutationObserver(minimalKill).observe(document.documentElement, { childList: true, subtree: true });
+
     const css = `
       nextjs-portal, [data-nextjs-dialog], [data-nextjs-toast], [data-nextjs-toast-wrapper],
       [class*="nextjs"], [id*="nextjs"], [class*="__next-build"], [class*="__next"],
@@ -144,20 +169,74 @@ async function main() {
     };
     injectStyle();
     setInterval(injectStyle, 200);
+    // FB51 nuclear: kill Next.js dev indicators across shadow DOM
+    const killShadow = (root) => {
+      if (!root) return;
+      try {
+        root.querySelectorAll && root.querySelectorAll('*').forEach((el) => {
+          try {
+            const cl = (el.className && typeof el.className === "string") ? el.className : "";
+            const id = el.id || "";
+            const txt = (el.textContent || "").slice(0, 100);
+            if (cl.match(/issue|nextjs|dev-tools|toast/i) ||
+                id.match(/issue|nextjs/i) ||
+                txt.match(/^\s*\d+\s+Issues?\s*$/i)) {
+              el.remove();
+            }
+            if (el.shadowRoot) killShadow(el.shadowRoot);
+          } catch (e) {}
+        });
+      } catch (e) {}
+    };
     const killBadges = () => {
-      document.querySelectorAll('nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-tools-button], [data-issues-collapsed], [aria-label*="issue" i]').forEach((el) => el.remove());
-      document.querySelectorAll("body > div, body > button").forEach((el) => {
-        const s = getComputedStyle(el);
-        const bottom = parseInt(s.bottom);
-        const left = parseInt(s.left);
-        if (s.position === "fixed" && bottom < 50 && (left < 50 || left > 300) &&
-            (el.textContent || "").match(/issue/i)) {
-          el.remove();
-        }
+      // FB74b (28.05): Next.js 16 introduced new tag names + the previous
+      // text-regex required ≤4 children. The "2 Issues" badge has more
+      // children (icon + label + close + spacer) → the V73 splice still
+      // showed it. Drop the children-count gate, add tag names and a
+      // bottom-left red-background catch-all.
+      document.querySelectorAll([
+        'nextjs-portal', 'nextjs-dev-tools', 'nextjs-dev-overlay',
+        'nextjs-static-indicator', 'nextjs-build-watcher',
+        '[data-nextjs-toast]', '[data-nextjs-dev-tools-button]',
+        '[data-nextjs-dev-tools]', '[data-issues-collapsed]', '[data-issues]',
+        '[aria-label*="issue" i]', '[aria-label*="Dev Tools" i]',
+        '[class*="nextjs-toast"]', '[class*="nextjs-static-indicator"]',
+        '[class*="dev-tools"]', '[class*="dev-indicator"]'
+      ].join(',')).forEach((el) => el.remove());
+      // Walk every shadow root we can reach.
+      document.querySelectorAll('*').forEach((host) => {
+        if (host.shadowRoot) { try { killShadow(host.shadowRoot); } catch (e) {} }
+      });
+      killShadow(document.body);
+      // "N Issues" text match — drop children-count constraint, allow nested.
+      document.querySelectorAll('*').forEach((el) => {
+        try {
+          const txt = (el.textContent || "").trim();
+          if (/\d+\s*Issues?/i.test(txt) && txt.length < 80) {
+            const s = getComputedStyle(el);
+            if (s.position === "fixed" || el.closest('[style*="fixed"]')) {
+              (el.closest('[style*="fixed"]') || el).remove();
+            }
+          }
+        } catch (e) {}
+      });
+      // Catch-all: any FIXED bottom-left element with reddish background.
+      document.querySelectorAll('*').forEach((el) => {
+        try {
+          const s = getComputedStyle(el);
+          if (s.position !== "fixed") return;
+          const bottom = parseInt(s.bottom);
+          const left = parseInt(s.left);
+          if (!(bottom >= 0 && bottom < 100 && left >= 0 && left < 100)) return;
+          const m = (s.backgroundColor || '').match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+          if (!m) return;
+          const r = +m[1], g = +m[2], b = +m[3];
+          if (r > 150 && g < 100 && b < 100) el.remove();
+        } catch (e) {}
       });
     };
     killBadges();
-    setInterval(killBadges, 150);
+    setInterval(killBadges, 100);
     // Also intercept the error overlay creation
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
@@ -231,6 +310,17 @@ async function main() {
   // FB1: Recording-Start-Zeitstempel (für Status-Bar-Switch beim Fall-Detail-Öffnen).
   const recordingStartMs = Date.now();
 
+  // Event-Log: emits recording_t for every choreography landmark. Used by
+  // _gen_t2_override.mjs to auto-generate phase source ranges (eliminates the
+  // "guess source-time from frame-sampling" loop). recording_t = seconds since
+  // playwright recording started (page.goto about:blank).
+  const events = [];
+  const logEvent = (name) => {
+    const t = (Date.now() - recordingStartMs) / 1000;
+    events.push({ name, recording_t: Number(t.toFixed(3)) });
+    console.log(`  [event] ${name} @ recording_t=${t.toFixed(3)}s`);
+  };
+
   // Tenant-Scope wurde bereits oben per context.addCookies gesetzt.
   // Jetzt zur App navigieren — der Cookie greift ab der ersten Request.
   await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "domcontentloaded", timeout: 20000 });
@@ -288,21 +378,75 @@ async function main() {
   console.log("  B5: Übersicht geladen");
   await page.waitForTimeout(3000);
 
-  // ── B6.1-B6.3: Slow scroll down then up ──
-  // FB13: LANGSAMER scrollen
-  await page.evaluate(() => window.scrollTo({ top: 300, behavior: "smooth" }));
-  await page.waitForTimeout(2500);
-  await page.evaluate(() => window.scrollTo({ top: 600, behavior: "smooth" }));
-  await page.waitForTimeout(2500);
-  console.log("  B6.2: Gescrollt nach unten");
+  // Founder-spec 28.05: fast-start-then-decel scroll down (1s) + bottom hold (3s) + rapid up (0.3s).
+  //  Schedule (V62-output time):
+  //    leit_dashboard_initial   4:17,8-4:30,5 (12.7s)
+  //    leit_list_scroll_down    4:30,5-4:31,5 (1.0s, ease-out)
+  //    leit_list_bottom         4:31,5-4:34,5 (3.0s HOLD)
+  //    leit_list_scroll_up      4:34,5-4:34,8 (0.3s rapid)
+  //    leit_kpi_neu             4:37,2-... (gap of 2.4s at top before click)
+  logEvent("top_dwell_start");
+  await page.waitForTimeout(12700);
+  logEvent("top_dwell_end");
+  console.log("  Phase A: Initial top dwell (12.7s)");
 
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-  await page.waitForTimeout(2500);
-  console.log("  B6.3: Zurück nach oben");
+  // Linear scroll (no easing).
+  const scrollTo = async (top, durationMs) => {
+    const currentTop = await page.evaluate(() => window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+    const delta = top - currentTop;
+    if (Math.abs(delta) < 5) return;
+    const steps = Math.max(10, Math.floor(durationMs / 50));
+    const stepDelta = delta / steps;
+    const stepMs = durationMs / steps;
+    for (let i = 0; i < steps; i++) {
+      await page.mouse.wheel(0, stepDelta);
+      await page.waitForTimeout(stepMs);
+    }
+  };
+
+  // Ease-out scroll (fast start → slow end) for realistic "schwung" motion.
+  const scrollToEaseOut = async (top, durationMs) => {
+    const currentTop = await page.evaluate(() => window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+    const delta = top - currentTop;
+    if (Math.abs(delta) < 5) return;
+    const steps = Math.max(20, Math.floor(durationMs / 25));
+    // ease-out cubic: f(t) = 1 - (1-t)^3
+    const stepMs = durationMs / steps;
+    let lastProgress = 0;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const eased = 1 - Math.pow(1 - t, 3);
+      const stepDelta = (eased - lastProgress) * delta;
+      lastProgress = eased;
+      await page.mouse.wheel(0, stepDelta);
+      await page.waitForTimeout(stepMs);
+    }
+  };
+
+  // Phase B: scroll-down 1s ease-out (fast→slow, bottom reached at 4:31.5)
+  logEvent("scroll_down_start");
+  await scrollToEaseOut(800, 1000);
+  logEvent("scroll_down_end");
+  console.log("  Phase B: Scroll-down ease-out (1.0s)");
+
+  // Phase C: bottom HOLD 3s
+  await page.waitForTimeout(3000);
+  logEvent("bottom_hold_end");
+  console.log("  Phase C: Bottom hold (3.0s)");
+
+  // Phase D: scroll UP 0.5s ease-out (fast→slow)
+  logEvent("scroll_up_start");
+  await scrollToEaseOut(0, 500);
+  logEvent("scroll_up_end");
+  console.log("  Phase D: Scroll up ease-out (0.5s)");
+
+  // Gap: 2.4s at top before NEU click (canonical schedule expects NEU at 4:37,2)
+  await page.waitForTimeout(2400);
+  logEvent("pre_neu_hold_end");
 
   // ── B7-B10: KPI Klicks ──
   // FB14: Fix Selektoren — KPI Cards sind klickbare Divs
-  async function clickKPI(label) {
+  async function clickKPI(label, dwellMs = 2000) {
     try {
       // FlowBar KPI cards are <button> elements containing a <span> with the label text.
       // The label is in a span with "uppercase tracking-wider" classes.
@@ -334,8 +478,8 @@ async function main() {
       }, label);
 
       if (clicked) {
-        await page.waitForTimeout(2000);
-        console.log(`  KPI "${label}" geklickt ✓`);
+        await page.waitForTimeout(dwellMs);
+        console.log(`  KPI "${label}" geklickt ✓ (dwell ${dwellMs}ms)`);
         return true;
       }
     } catch (e) {
@@ -345,24 +489,54 @@ async function main() {
     return false;
   }
 
-  // B7: Neu
-  await clickKPI("NEU");
-  // B8: Bei uns
-  await clickKPI("BEI UNS");
-  // B9: Erledigt
-  await clickKPI("ERLEDIGT");
-  // B10: Bewertung
-  await clickKPI("BEWERTUNG");
+  // Founder-spec 28.05: KPI dwells calibrated to V66 schedule
+  // NEU 4:37,0-4:40,0 (3.0s) → BEI UNS 4:40,0-4:42,5 (2.5s) → ERLEDIGT 4:42,5-4:45,8 (3.3s) → BEWERTUNG 4:45,8-5:21,3 (35.5s)
+  logEvent("kpi_neu_click");
+  await clickKPI("NEU", 3000);
+  logEvent("kpi_neu_dwell_end");
+  logEvent("kpi_bei_uns_click");
+  await clickKPI("BEI UNS", 2500);
+  logEvent("kpi_bei_uns_dwell_end");
+  logEvent("kpi_erledigt_click");
+  await clickKPI("ERLEDIGT", 3300);
+  logEvent("kpi_erledigt_dwell_end");
+  logEvent("kpi_bewertung_click");
+  // V102c (28.05): BEWERTUNG dwell 37500→38600ms — measured drift left
+  // filter_reset_click at 5:22.92 (still 1.08s early). Extra 1.1s closes gap.
+  await clickKPI("BEWERTUNG", 38600);
+  logEvent("kpi_bewertung_dwell_end");
 
-  // B11: Filter zurücksetzen
+  // Filter zurücksetzen
   try {
     const resetBtn = page.locator('text=Filter zurücksetzen').first();
     if (await resetBtn.count() > 0) {
+      logEvent("filter_reset_click");
       await resetBtn.click();
-      await page.waitForTimeout(1500);
+      await page.waitForTimeout(800);
+      logEvent("filter_reset_done");
       console.log("  Filter zurückgesetzt ✓");
     }
   } catch {}
+
+  // Force-scroll back to top so we have a clean "Guten Abend visible" pre-scroll state.
+  // Filter-reset may leave page scrolled; this normalises the position.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  // V102c (28.05): pre_scroll_hold 500→600ms to balance BEWERTUNG +1.1s such
+  // that gap filter_reset_click→small_scroll_start = 1.5s (founder spec).
+  await page.waitForTimeout(600);
+  logEvent("pre_scroll_hold_end");
+
+  // Founder-spec 28.05: small scroll-down 0.4s (just hide Guten Abend header + filter buttons,
+  // KPIs still visible), then hold ~3s before case-click.
+  logEvent("small_scroll_start");
+  await scrollToEaseOut(120, 400);
+  logEvent("small_scroll_end");
+  console.log("  Small scroll-down 0.4s (hide header, keep KPIs)");
+  // V101 alignment: post_scroll_hold reduced 3000→2200ms so case_click lands at
+  // output 5:27.0 accounting for 3s page-load navigation overhead.
+  await page.waitForTimeout(2200);
+  logEvent("post_scroll_hold_end");
+  console.log("  Hold 2.2s before case-click (V101 alignment)");
 
   // ── B12: Scroll to Phone-Case (eindeutig via reporter_name) + click ──
   // FB33: Phone-Case hat reporter_name "Gunnar Wende" aus notruf.txt-Script —
@@ -371,32 +545,8 @@ async function main() {
   const phoneReporter = config.seed?.phone_demo_case?.reporter_name || "Wende";
   const phoneCat = config.seed?.phone_demo_case?.kategorie || "Rohrbruch";
 
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-  await page.waitForTimeout(1500);
-  await page.evaluate(() => window.scrollTo({ top: 100, behavior: "smooth" }));
-  await page.waitForTimeout(1500);
-
-  // Click auf Phone-Case. Case-Rows nutzen onClick + router.push (kein <a href>).
-  // Strategie: (1) text-locator click mit force, (2) direct URL lookup via Supabase.
+  // FB51/52: Direct nav to phone case
   let caseClicked = false;
-  try {
-    const phoneLocator = page.locator(`text=${phoneReporter}`).first();
-    if (await phoneLocator.count() > 0) {
-      // force: true umgeht Visibility/Stability-Checks
-      await phoneLocator.scrollIntoViewIfNeeded({ timeout: 2000 });
-      await page.waitForTimeout(500);
-      await phoneLocator.click({ force: true, timeout: 3000 });
-      // URL-Change abwarten
-      await page.waitForTimeout(2000);
-      const currentUrl = page.url();
-      if (currentUrl.includes("/ops/cases/") && !currentUrl.endsWith("/ops/cases")) {
-        caseClicked = true;
-        console.log(`  Case via text-click geöffnet: ${currentUrl.split("/").pop()}`);
-      }
-    }
-  } catch (e) {
-    console.log(`  Text-click fehlgeschlagen: ${e.message.slice(0, 60)}`);
-  }
 
   // Fallback: Direkte URL-Navigation via Supabase-Lookup (Phone-Case = jüngster voice-source dringend)
   if (!caseClicked) {
@@ -413,8 +563,10 @@ async function main() {
         .single();
       if (phoneCase) {
         console.log(`  Direct navigation to case ${phoneCase.seq_number}...`);
+        logEvent("case_click");
         await page.goto(`${baseUrl}/ops/cases/${phoneCase.id}`, { waitUntil: "domcontentloaded", timeout: 10000 });
         await page.waitForTimeout(1000);
+        logEvent("case_loaded");
         caseClicked = true;
       }
     } catch (e) {
@@ -435,10 +587,9 @@ async function main() {
       console.warn(`  FB1 config write warning: ${e.message}`);
     }
 
-    // FB26: Warten bis Case-Detail WIRKLICH geladen ist
-    await page.waitForTimeout(5000);
-    await page.waitForSelector(`text=${phoneCat}`, { timeout: 5000 }).catch(() => {});
-    await page.waitForTimeout(1000);
+    // FB51 (27.05): Shorter load wait — direct nav loads fast
+    await page.waitForTimeout(800);
+    await page.waitForSelector(`text=${phoneCat}`, { timeout: 3000 }).catch(() => {});
     console.log(`  B13: Phone-Case "${phoneCat} / ${phoneReporter}" geöffnet ✓`);
 
     // FB42: Komplette Scroll-Choreo durch ALLE Sektionen.
@@ -458,58 +609,76 @@ async function main() {
     console.log(`  Sektionen (h3): ${pageInfo.sections.join(" | ")}`);
     console.log(`  Kontakt: ${pageInfo.hasKontakt}, Verlauf: ${pageInfo.hasVerlauf}, Anhänge: ${pageInfo.hasAnhaenge}`);
 
-    // B14: Top = Übersicht (Status/Priorität/Zuständig/Termin)
-    await page.waitForTimeout(2500);
-    console.log("  B14: Übersicht");
+    // Founder-spec 28.05: case-detail choreography
+    //   Top hold (11s) → scroll-down 2s ease-out → bottom hold 3s → scroll-up 0.5s ease-out → top hold (18s) → Zurück
 
-    // B15: Scroll zu ~600px — Beschreibung + Kontakt sichtbar
-    await page.evaluate(() => {
-      const root = document.scrollingElement || document.documentElement;
-      root.scrollTo({ top: 600, behavior: "smooth" });
-    });
-    await page.waitForTimeout(2500);
-    console.log("  B15: Beschreibung + Kontakt");
+    // V101 alignment (28.05): case_top_hold reduced 12000→8000ms. Founder spec
+    // wants case_top from 5:27 to 5:38 = 11s WALL-CLOCK total. Page-load adds
+    // ~3s before case_top_hold_start, so internal hold of 8s yields ~11s total.
+    logEvent("case_top_hold_start");
+    await page.waitForTimeout(8000);
+    logEvent("case_top_hold_end");
+    console.log("  Case top hold (8s; ~11s total incl nav)");
 
-    // B15b: Scroll zu ~1200px — Verlauf
-    await page.evaluate(() => {
-      const root = document.scrollingElement || document.documentElement;
-      root.scrollTo({ top: 1200, behavior: "smooth" });
-    });
-    await page.waitForTimeout(2500);
-    console.log("  B15b: Verlauf");
+    // Scroll-down 2s ease-out (fast→slow) to bottom
+    logEvent("case_scroll_down_start");
+    await scrollToEaseOut(1400, 2000);
+    logEvent("case_scroll_down_end");
+    console.log("  Case scroll-down ease-out (2.0s)");
 
-    // B15c: Scroll ganz nach unten
-    await page.evaluate(() => {
-      const root = document.scrollingElement || document.documentElement;
-      root.scrollTo({ top: root.scrollHeight, behavior: "smooth" });
-    });
-    await page.waitForTimeout(2500);
-    console.log("  B15c: Interne Notizen + Anhänge");
+    // Bottom hold 3s
+    await page.waitForTimeout(3000);
+    logEvent("case_bottom_hold_end");
+    console.log("  Case bottom hold (3s)");
 
-    // B16: Zurück ganz nach oben (smooth)
-    await page.evaluate(() => {
-      const root = document.scrollingElement || document.documentElement;
-      root.scrollTo({ top: 0, behavior: "smooth" });
-    });
-    await page.waitForTimeout(2500);
-    console.log("  B16: Zurück zur Übersicht");
+    // Rapid scroll-up 0.5s ease-out (fast→slow) back to top
+    logEvent("case_scroll_up_start");
+    await scrollToEaseOut(0, 500);
+    logEvent("case_scroll_up_end");
+    console.log("  Case scroll-up ease-out (0.5s)");
+
+    // V104f (29.05): Reverted to 11000ms. V104e at 11650ms went +3.2s LATE
+    // (return at 6:04.7 vs 6:01.5 target). V104d at 11000ms was -0.65s EARLY
+    // (return at 6:00.85). Variance of ~3-4s observed across runs due to
+    // upstream cumulative dwell jitter. 11000ms gives best-case median result.
+    // TODO: replace with post-record trim-by-event-timestamp for deterministic
+    // results regardless of recording variance.
+    await page.waitForTimeout(11000);
+    logEvent("case_top_hold_final_end");
+    console.log("  Case top hold final (11s — V104f median calibration)");
 
     // B17: Back to overview (list)
+    logEvent("zurueck_click");
     try {
       await page.locator('text=Zurück').first().click();
-      await page.waitForTimeout(3000);
-      console.log("  B17: Zurück zur Fall-Liste ✓");
+      await page.waitForTimeout(1500);
+      // V102 (28.05): scrollTo(0,0) after zurück so the final dashboard view
+      // matches the initial dashboard top (4:18-4:30 state). Founder spec:
+      // 6:01.5 → 6:20 should show 1:1 dashboard initial standbild.
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(1500);
+      logEvent("list_visible");
+      console.log("  B17: Zurück zur Fall-Liste + scrollTo(0,0) ✓");
     } catch {
       await page.goBack();
-      await page.waitForTimeout(3000);
-      console.log("  B17: Zurück (goBack) ✓");
+      await page.waitForTimeout(1500);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(1500);
+      logEvent("list_visible");
+      console.log("  B17: Zurück (goBack) + scrollTo(0,0) ✓");
     }
+    // V102: extend recording so final dashboard-top state covers 6:01.5–6:20.
+    // Recorder previously ended at recording_t ~135 which mapped to output ~6:18.6,
+    // leaving 1.4s of V50-base bleed. Add 4s extra so overlay covers full 6:20.
+    await page.waitForTimeout(4000);
+    logEvent("recording_end_extended");
   } else {
     console.log(`  ⚠️ Phone-Case mit reporter "${phoneReporter}" nicht in Case-Liste gefunden`);
   }
 
-  // Final pause
-  await page.waitForTimeout(2000);
+  // FB53: Final pause extended to 7s so pipeline overlay covers to master 380.5
+  await page.waitForTimeout(7000);
+  logEvent("recording_end");
 
   // ── Stop recording ──
   const videoPath = await page.video().path();
@@ -520,6 +689,11 @@ async function main() {
   const finalPath = join(outBase, "take2_leitsystem.webm");
   await copyFile(videoPath, finalPath);
   await rm(outDir, { recursive: true, force: true });
+
+  // Persist event log alongside the recording.
+  const eventLogPath = join(outBase, "take2_event_log.json");
+  await writeFile(eventLogPath, JSON.stringify({ tenant: slug, recording_start_ms: recordingStartMs, events }, null, 2), "utf-8");
+  console.log(`  event log: ${eventLogPath} (${events.length} events)`);
 
   const size = statSync(finalPath).size;
   console.log(`\n✅ Saved: ${finalPath} (${Math.round(size / 1024)} KB)`);
