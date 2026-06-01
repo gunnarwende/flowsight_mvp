@@ -46,12 +46,12 @@ async function listCalls(limit) {
     limit,
     filter_criteria: {},
   };
-  const data = await retellFetch("/v2/list-calls", {
+  const data = await retellFetch("/v3/list-calls", {
     method: "POST",
     body: JSON.stringify(body),
   });
-  // Retell returns array directly or wrapped — handle both
-  return Array.isArray(data) ? data : data.calls ?? data.data ?? [];
+  // v3 returns { items, ... }; handle legacy array/calls/data too.
+  return Array.isArray(data) ? data : data.items ?? data.calls ?? data.data ?? [];
 }
 
 /**

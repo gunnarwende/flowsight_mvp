@@ -50,7 +50,7 @@ async function runSync() {
     // Only calls from last 2 hours
     const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
 
-    const res = await fetch("https://api.retellai.com/v2/list-calls", {
+    const res = await fetch("https://api.retellai.com/v3/list-calls", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -61,7 +61,9 @@ async function runSync() {
     });
 
     if (!res.ok) return NextResponse.json({ error: "retell_error" }, { status: 502 });
-    const calls = await res.json();
+    // v3 list-calls: { items, pagination_key, has_more } statt Top-Level-Array.
+    const _cr = await res.json();
+    const calls = Array.isArray(_cr) ? _cr : (_cr.items ?? []);
     if (!Array.isArray(calls)) return NextResponse.json({ synced: 0 });
 
     // Filter to recent calls only

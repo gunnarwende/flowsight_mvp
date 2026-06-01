@@ -134,7 +134,8 @@ async function main() {
   await patch("/update-phone-number/+41445054818", { inbound_agent_id: enAgent.agent_id });
 
   // Verify all numbers
-  const nums = await get("/list-phone-numbers");
+  const _pn = await get("/v2/list-phone-numbers");  // v2: { items, ... }
+  const nums = _pn.items ?? _pn;
   for (const n of nums) console.log(n.phone_number, "->", n.inbound_agent_id || "UNASSIGNED!");
 
   // Save

@@ -57,7 +57,7 @@ const fixAgentId = getArg("--agent");
 try {
   // ── Fetch all data ──────────────────────────────────────────────────
   const [phones, agents] = await Promise.all([
-    retellGet("/list-phone-numbers"),
+    retellGet("/v2/list-phone-numbers").then((r) => r.items ?? r),  // v2: { items, ... }
     retellGet("/list-agents"),
   ]);
 
