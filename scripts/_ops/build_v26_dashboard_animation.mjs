@@ -17,7 +17,7 @@
  *   node scripts/_ops/build_v26_dashboard_animation.mjs --slug doerfler-ag --variant notruf --base v25
  */
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, copyFileSync } from "node:fs";
 import { join } from "node:path";
 
 const args = process.argv.slice(2);
@@ -81,6 +81,16 @@ const smsPng = `${PIPE}/screenflows/${slug}/_sms_thread.png`;
 // fully-opaque alpha at the curves matching master video's rendering.
 const bezelDir = `${PIPE}/screenflows/${slug}`;
 const bezelFg = `${bezelDir}/_phone_bezel_340x730.png`;
+// 01.06.: Universal-Bezel-Fallback. Die Phone-Bezel (340×730) ist tenant-neutral
+// (reiner Telefon-Rahmen, identisch über alle Betriebe). NEUE Betriebe haben noch
+// keine eigene Kopie → aus _shared kopieren statt hart zu failen (analog T3-Loom).
+if (!existsSync(bezelFg)) {
+  const sharedBezel = `${PIPE}/screenflows/_shared/_phone_bezel_340x730.png`;
+  if (existsSync(sharedBezel)) {
+    copyFileSync(sharedBezel, bezelFg);
+    console.warn(`  ⚠ kein eigener Bezel → Universal-Fallback aus _shared`);
+  }
+}
 const out = `${PIPE}/_generated/previews/${slug}/take2_${variant}_FINAL_${outTag}.mp4`;
 
 for (const p of [v25, leit, homescreen, mask, maiDashFrame, statusBar, bezelFg, bridgePng, smsPng]) {
