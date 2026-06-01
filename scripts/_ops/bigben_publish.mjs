@@ -340,7 +340,8 @@ async function main() {
   if (!dryRun) {
     console.log("━━━ Unpin phone numbers ━━━");
     try {
-      const phones = await get("/list-phone-numbers");
+      const _pn = await get("/v2/list-phone-numbers");  // v2: { items, ... }
+      const phones = _pn.items ?? _pn;
       for (const p of phones) {
         if ((p.inbound_agent_id === ids.en_agent_id || p.inbound_agent_id === ids.de_agent_id) && p.inbound_agent_version != null) {
           await patch(`/update-phone-number/${encodeURIComponent(p.phone_number)}`, {

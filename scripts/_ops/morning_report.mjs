@@ -169,13 +169,15 @@ let agentHangupCalls = [];
 try {
   const retellKey = process.env.RETELL_API_KEY?.replace(/^"|"$/g, "");
   if (retellKey) {
-    const retellResp = await fetch("https://api.retellai.com/v2/list-calls", {
+    const retellResp = await fetch("https://api.retellai.com/v3/list-calls", {
       method: "POST",
       headers: { "Authorization": `Bearer ${retellKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ limit: 100, sort_order: "descending" }),
     });
     if (retellResp.ok) {
-      const calls = await retellResp.json();
+      // v3 list-calls: { items, pagination_key, has_more } statt Top-Level-Array.
+      const _cr = await retellResp.json();
+      const calls = _cr.items ?? _cr;
       const cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000).getTime();
       agentHangupCalls = (calls || []).filter(c => {
         const start = c.start_timestamp || 0;

@@ -341,7 +341,8 @@ try {
 
   async function unpinPhoneNumbers(agentId) {
     try {
-      const phones = await retellGet("/list-phone-numbers");
+      const _pn = await retellGet("/v2/list-phone-numbers");  // v2: { items, ... }
+      const phones = _pn.items ?? _pn;
       for (const p of phones) {
         if (p.inbound_agent_id === agentId && p.inbound_agent_version != null) {
           await retellPatch(`/update-phone-number/${encodeURIComponent(p.phone_number)}`, {
