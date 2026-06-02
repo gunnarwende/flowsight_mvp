@@ -118,25 +118,39 @@ if (take === "2") {
 // Maus-Sweep-Fenster liegen. Kalibriert 02.06. an echten Frames (1440x900):
 // gut = all-gold @~73,5s U≈114 / Walter-alt = @75,3s U≈127 (spät+verschoben).
 if (take === "4") {
-  const r = spawnSync("ffmpeg", ["-hide_banner", "-ss", "71", "-i", video, "-t", "7",
-    "-vf", "crop=250:44:815:426,signalstats,metadata=print:key=lavfi.signalstats.UAVG",
-    "-f", "null", "-"], { encoding: "utf8", maxBuffer: 1 << 26 });
-  const lines = (r.stderr || "").split("\n");
-  let t = null, minU = 999, minT = null;
-  for (const ln of lines) {
-    let m = ln.match(/pts_time:\s*([\d.]+)/); if (m) { t = parseFloat(m[1]); continue; }
-    m = ln.match(/UAVG=([\d.]+)/);
-    if (m && t != null) { const u = parseFloat(m[1]); if (u < minU) { minU = u; minT = t; } }
+  // REFERENZ-BASIERT (02.06. v2): vergleiche die Stern+Maus-Region an den Sweep-Frames
+  // mit Stark (founder-abgenommene Gold-Referenz) via SSIM. Robust gegen die hell-
+  // goldenen Sterne (kein fragiles Helligkeits-Threshold wie v1, das verrauscht war und
+  // fälschlich übergangen wurde). SSIM fängt BEIDES: Position (Layout-Reflow → Sterne
+  // verschoben) UND Timing (Fill-Offset → andere Anzahl gefüllter Sterne pro Frame).
+  // Crop = Phone-Stern+Maus-Bereich, OHNE Header/Name (name-/datums-unabhängig).
+  const refSlug = argVal("--ref-slug", "stark-haustechnik");
+  const REF = `docs/gtm/pipeline/07_stresstest/${refSlug}/T4_bewertung.mp4`;
+  // ENGER Crop auf die 5-Sterne-Reihe (kalibriert 02.06.): der weite Crop verwässerte
+  // die SSIM mit statischem Phone-Hintergrund (kaputt 0,969 ≈ gut 0,989, nicht trennbar).
+  // Eng auf die Sternreihe @Mid-Fill (74,0–74,4s) trennt: gut min≈0,97 / desync min≈0,91.
+  const CROP = "crop=250:48:815:425";
+  const TIMES = ["74.0", "74.2", "74.4"];
+  const SSIM_MIN = 0.94;
+  if (slug === refSlug) {
+    gate("G_T4_STARSYNC (Referenz selbst)", true, `${slug} ist die Gold-Referenz`);
+  } else if (!existsSync(REF)) {
+    gate("G_T4_STARSYNC Stark-Referenz", false, `Referenz fehlt: ${REF}`);
+  } else {
+    let minSsim = 1, worstT = null;
+    for (const ts of TIMES) {
+      const wp = join(TMP, `t4_w_${ts}.png`), sp = join(TMP, `t4_s_${ts}.png`);
+      ff(["-ss", ts, "-i", video, "-frames:v", "1", "-vf", CROP, wp]);
+      ff(["-ss", ts, "-i", REF, "-frames:v", "1", "-vf", CROP, sp]);
+      const r = spawnSync("ffmpeg", ["-hide_banner", "-i", wp, "-i", sp, "-lavfi", "ssim", "-f", "null", "-"], { encoding: "utf8" });
+      const m = (r.stderr || "").match(/All:\s*([\d.]+)/);
+      const s = m ? parseFloat(m[1]) : 0;
+      if (s < minSsim) { minSsim = s; worstT = ts; }
+    }
+    gate("G_T4_STARSYNC Maus+Sterne = Stark-Referenz (SSIM)",
+      minSsim >= SSIM_MIN,
+      `min SSIM=${minSsim.toFixed(3)} @${worstT}s vs ${refSlug} (≥${SSIM_MIN} = Höhe+Geschwindigkeit+Zeitpunkt wie Stark)`);
   }
-  const allGold = minT != null ? 71 + minT : null;
-  const goldPresent = minU < 122;            // Sterne gold an kanonischer Position (fängt Layout-Reflow)
-  // Kanonisches Fenster aus den founder-abgenommenen Betrieben kalibriert (02.06.):
-  // Stark @74,77s, Weinberger @74,80s (U≈114). Walter-alt @75,33s (spät) bzw.
-  // über-korrigiert @73,50s (zu früh) → beide ausserhalb.
-  const inWindow = allGold != null && allGold >= 74.2 && allGold <= 75.2; // Maus-Sweep-Fenster
-  gate("G_T4_STARSYNC Maus führt Stern-Fill @~1:13,5",
-    goldPresent && inWindow,
-    `all-gold @${allGold != null ? allGold.toFixed(2) : "?"}s (U=${minU.toFixed(0)}); erwartet 74,2–75,2s & U<122 (führt die Maus den Fill?)`);
 }
 
 console.log(`\n═══ Ergebnis: ${findings.length === 0 ? "✅ ALL PASS" : `❌ ${findings.length} FAIL`} (${slug} T${take}) ═══`);

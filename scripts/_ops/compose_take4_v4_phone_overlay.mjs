@@ -50,15 +50,12 @@ if (!existsSync(logPath)) { console.error(`✗ missing event log: ${logPath}`); 
 const log = JSON.parse(readFileSync(logPath, "utf-8"));
 const offsets = log.part_webm_offsets || {};
 
-// ── T4 Stern/Maus-Sync (02.06.): Wurzel = NUR Layout-Reflow, NICHT Timing. ──
-// Die Stern-Fill-Zeit ist betriebsübergreifend deterministisch (gleicher
-// record_take4-Code, offset[6]=0 für alle → composed all-gold konsistent @~74,8s).
-// Der Walter-Bug war ausschliesslich der 2-zeilige Firmenname, der die Sternreihe
-// nach unten schob (weg von der universellen Maus). Fix sitzt an der Quelle:
-// 1-zeiliger Header in ReviewSurfaceClient (Position deterministisch). Kein
-// compose-Trim nötig — ein Trim-Anker hier hat (min-UAVG = beliebiger Plateau-
-// Frame, kein Fill-Onset) sogar über-korrigiert. Schutz übernimmt G_T4_STARSYNC
-// (qg_video) am finalen Master. offset[6] bleibt = Event-Log-Wert.
+// ── T4 Stern/Maus-Sync (02.06.): Timing-Determinismus NICHT hier ───────────
+// Der Stern-Fill-Zeitpunkt der per-Tenant-Live-Aufnahme jittert (recordVideo-Latenz) und
+// ist über compose-Trim/Anker nicht sauber/skalierbar zu fixen (mehrfach probiert). Gelöst
+// wird er deterministisch im FINALEN Schritt: apply_canonical_stars.mjs legt die farb-
+// neutrale Stern-Innenregion von Stark (Gold-Referenz) im fixen Fenster über den Master.
+// offset[6] bleibt daher der Event-Log-Wert (Part 6 wie gehabt platziert).
 
 const parts = {
   1: join(sfDir, "take4_01_akt1.webm"),

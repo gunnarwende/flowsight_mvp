@@ -152,9 +152,9 @@
     "email": "mail@walter-leuthold.ch"
   },
   "_seed_time": "2026-06-02T06:04:00.000Z",
-  "_take2_detail_switch_sec": 87.54,
+  "_take2_detail_switch_sec": 92.197,
   "_wizard_time": "2026-06-02T06:56:00.000Z",
-  "_wizard_case_id": "117349ca-23cb-4da6-9c46-2cc397ec7ebf",
+  "_wizard_case_id": "098e8423-4f0d-4589-93da-a5cd04919329",
   "_wizard_seq_number": 50,
   "_wizard_case_label": "WL-0050",
   "_demo_now": "2026-06-02T06:04:00.000Z",
@@ -165,7 +165,7 @@
   "_completion_time": "2026-06-02T07:02:00.000Z",
   "_review_sent_time": "2026-06-02T07:04:00.000Z",
   "_review_rated_time": "2026-06-02T07:06:00.000Z",
-  "_review_token": "8f484c982f42d74c",
-  "_review_token_long": "8f484c982f42d74cf671204f240fd3d0a4bd8c64d5a4bea2bcb1d135910156fe",
+  "_review_token": "260f663e1715401e",
+  "_review_token_long": "260f663e1715401e56b630222fbef3be25677d2bd511b1c809794b832983e289",
   "_case_created_at": "2026-06-02T06:56:00+00:00"
 }

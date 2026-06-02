@@ -10,7 +10,7 @@
 export const AGENT_LINES = {
   1: {
     // tenant-specific; {{tenant_display_name}} replaced at render time
-    text: "Hallo, hier ist Lisa — die digitale Assistentin der {{tenant_display_name}}. Wie kann ich Ihnen helfen?",
+    text: "Hallo, hier ist Lisa — die digitale Assistentin {{tenant_connector}} {{tenant_display_name}}. Wie kann ich Ihnen helfen?",
     voice: "ela",
     lang: "de",
     kind: "tenant",
@@ -109,7 +109,18 @@ export function resolveAgentTurn(turnId, { variant, tenantDisplayName }) {
   }
   if (entry.kind === "tenant") {
     if (!tenantDisplayName) throw new Error(`tenantDisplayName required for turn ${turnId}`);
-    return { ...entry, text: entry.text.replace(/{{\s*tenant_display_name\s*}}/g, tenantDisplayName), id: turnId };
+    // Connector "der"/"von" (Founder 02.06.): Firma MIT Rechtsform (AG/GmbH/…) → "der
+    // Stark Haustechnik GmbH"; Personenname/Einzelfirma OHNE Rechtsform → "von Walter
+    // Leuthold" (sonst grammatikalisch schief: "der Walter Leuthold").
+    const hasLegalForm = /\b(AG|GmbH|SA|S[àa]rl|KlG|KG|OHG|GbR|e\.?K\.?|Co\.?)\b/i.test(tenantDisplayName);
+    const connector = hasLegalForm ? "der" : "von";
+    return {
+      ...entry,
+      text: entry.text
+        .replace(/{{\s*tenant_connector\s*}}/g, connector)
+        .replace(/{{\s*tenant_display_name\s*}}/g, tenantDisplayName),
+      id: turnId,
+    };
   }
   return { ...entry, id: turnId };
 }

@@ -1359,6 +1359,11 @@ async function recordReview(browser) {
   await page.goto(reviewUrl, { waitUntil: "domcontentloaded", timeout: 20000 });
   await page.waitForTimeout(w(2000));
   logEvt("rating_intro_visible");
+  // HINWEIS (02.06.): Der Stern-Fill-Zeitpunkt dieser Live-Aufnahme jittert (recordVideo-
+  // Latenz). Das wird NICHT hier gelöst, sondern deterministisch in der finalen Pipeline:
+  // apply_canonical_stars.mjs legt die farb-neutrale Stern-Innenregion von Stark (Gold-
+  // Referenz) im fixen Fenster über den Master → Stern-Slot millisekunde-gleich für alle,
+  // Header/Brand-Farbe/Fall bleiben per-Tenant. Warm-up/Scene-Anker verworfen (war fummelig).
   console.log("  Review-Page geladen (initial state, chrome via initScript)");
 
   // C9: Stars sequenziell 1→2→3→4→5 aufziehen via Hover-Rating-Update.
