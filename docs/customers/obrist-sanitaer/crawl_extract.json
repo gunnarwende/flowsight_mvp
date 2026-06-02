@@ -1,0 +1,159 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-02T12:53:22.197Z",
+    "source_url": "https://www.obrist-sanitaer.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.obrist-sanitaer.ch/",
+        "chars": 1175
+      },
+      {
+        "key": "team",
+        "url": "https://www.obrist-sanitaer.ch/team",
+        "chars": 966
+      },
+      {
+        "key": "kontakt",
+        "url": "https://www.obrist-sanitaer.ch/kontakt",
+        "chars": 609
+      },
+      {
+        "key": "impressum",
+        "url": "https://www.obrist-sanitaer.ch/impressum",
+        "chars": 37692
+      }
+    ]
+  },
+  "firma": {
+    "value": "Obrist Sanitär",
+    "source": "founder_corrected",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Beat Obrist",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Edlibachstrasse 40, 6345 Neuheim",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "079 668 68 48, 041 755 28 48",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@obrist-sanitaer.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": "24/7-Service: 079 668 68 48 041 755 28 48 info@obrist-sanitaer.ch SANITÄR HEIZUNG TEAM KONTAKT 24/7 NOTFALL + − Leaflet | © OpenStreetMap contributors Kontaktieren Sie uns. Beat Obrist und sein Team f",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "079 668 68 48"
+  },
+  "google": {
+    "rating": 4.7,
+    "review_count": 10,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1985",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "SANITÄR",
+        "Ihr Partner im Sanitär- und Heizungsbereich aus Neuheim im Kanton Zug.",
+        "Sanitäranlagen",
+        "Planung und Bau von Sanitäranlagen in Neuheim, Menzingen, Baar, Zug und Umgebung.",
+        "Wir sind 24/7 für Sie einsatzbereit und kümmern uns um sanitäre oder heizungstechnische Notfälle."
+      ],
+      "Heizung": [
+        "HEIZUNG",
+        "Ihr Partner im Sanitär- und Heizungsbereich aus Neuheim im Kanton Zug.",
+        "Heizungsanlagen",
+        "Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen.",
+        "Wir sind 24/7 für Sie einsatzbereit und kümmern uns um sanitäre oder heizungstechnische Notfälle."
+      ],
+      "Umbau/Sanierung": [
+        "Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen."
+      ],
+      "Beratung/Planung": [
+        "Planung und Bau von Sanitäranlagen in Neuheim, Menzingen, Baar, Zug und Umgebung."
+      ],
+      "Kundendienst": [
+        "24/7-Service: 079 668 68 48",
+        "Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen.",
+        "Notfallservice 24/7",
+        "Wir bieten seit 1985 umfassenden Service rund um die Bereiche Sanitär- und Heizungsanlagen im Kanton Zug und der Region."
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "Gebäudetechnik"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Ihr Partner im Sanitär- und Heizungsbereich aus Neuheim im Kanton Zug.",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#1389ca",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.obrist-sanitaer.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "24h Notdienst, Laden, ISO zertifiziert",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": null
+}

@@ -9,9 +9,23 @@ import type { CustomerSite, CustomerCategory } from "./types";
  * auf beliebig viele Betriebe ohne pro-Tenant TS-Boilerplate.
  */
 
-// Repo-Root — diese Datei liegt unter src/web/src/lib/customers → 4× hoch
-const REPO_ROOT = resolve(__dirname, "..", "..", "..", "..", "..");
-const CUSTOMERS_DIR = join(REPO_ROOT, "docs", "customers");
+// docs/customers robust auflösen. FIX 02.06.: vorher nur __dirname-relativ — im Next.js-
+// Bundle zeigt __dirname NICHT auf die Repo-Wurzel → docs/customers nicht gefunden →
+// Fallback lieferte null → 404 für ALLE config-only Tenants (3000-Blocker!). Jetzt mehrere
+// Kandidaten probieren (next dev cwd = src/web; prod cwd = repo; source-relativ als Fallback).
+function resolveCustomersDir(): string {
+  const candidates = [
+    join(process.cwd(), "..", "docs", "customers"), // next dev: cwd = src/web
+    join(process.cwd(), "docs", "customers"),        // cwd = repo root
+    join(process.cwd(), "..", "..", "docs", "customers"),
+    resolve(__dirname, "..", "..", "..", "..", "..", "docs", "customers"), // source-relativ
+  ];
+  for (const c of candidates) {
+    try { if (existsSync(c)) return c; } catch { /* ignore */ }
+  }
+  return candidates[0];
+}
+const CUSTOMERS_DIR = resolveCustomersDir();
 
 function configPath(slug: string): string {
   return join(CUSTOMERS_DIR, slug, "tenant_config.json");

@@ -1,0 +1,138 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-02T12:53:22.185Z",
+    "source_url": "https://schaub-haustechnik.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://schaub-haustechnik.ch/",
+        "chars": 471
+      },
+      {
+        "key": "team",
+        "url": "https://schaub-haustechnik.ch/ueber-uns",
+        "chars": 1075
+      },
+      {
+        "key": "kontakt",
+        "url": "https://schaub-haustechnik.ch/kontakt",
+        "chars": 717
+      }
+    ]
+  },
+  "firma": {
+    "value": "Schaub Haustechnik GmbH",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Team Bünyamin Kökden, Edin Arifagic Geschäftsleitung",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Aaweiherstrasse 3, 8810 Horgen",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 44 718 20 20, 044 718 20 20",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "kontakt@schaub-haustechnik.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Montag-Donnerstag": "7.30-12.00 und 13.00-17.00"
+    },
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "notdienst": {
+    "value": "en +41 44 718 20 20 kontakt@schaub-haustechnik.ch 24/7 Service Schaub Haustechnik Home Dienstleistungen Unternehmen Referenzen Kontakt Du bist hier: Startseite » Kontakt Öffnungszeiten Montag–Donners",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "+41 44 718 20 20"
+  },
+  "google": {
+    "rating": 4.3,
+    "review_count": 4,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Kundendienst": [
+        "24/7 Service"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Wir arbeiten mit starken Partnern",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#e73744",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://schaub-haustechnik.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Familienbetrieb, 24h Notdienst",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Schaub Haustechnik GmbH",
+    "uid": "CHE-362.756.367",
+    "ehraid": 1570497,
+    "legal_seat": "Horgen",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-362.756.367",
+    "match_score": 80
+  }
+}

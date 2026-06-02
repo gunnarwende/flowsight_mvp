@@ -8,6 +8,21 @@ Pipeline Screenflow Take 2+3+4 ist **10/10 production-ready** für alle 4 Refere
 
 **Day-23-Status (23.04.2026):** Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG (Masterbetrieb, 10/10 durchgejagt). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29). Neu in §24-§28: Demo-Time-Architektur, DEMO_NO_DISPATCH env-Flag, Take 4 Feature-Set Final, Sidebar-Profile-Overlay + Phone-Platter-Backstop, Quality-Gates-Framework, 3-Betrieb-Dry-Run Plan (Lens + Wälti + Stark).
 
+> ## ⚠️ LAUF-MODUS (Stand 02.06.2026) — bis auf Weiteres SEQUENZIELL
+>
+> **Empfehlung: Betriebe sequenziell (1 nach dem anderen) durch die Pipeline, bis Parallel sauber re-getestet ist.**
+>
+> **Wichtige Ehrlichkeit (Befund 02.06.):** Der 4-Betrieb-Stresstest (waelti/schaub/marti/obrist, alle preis)
+> failte T2/T3 — aber die Ursache waren **Onboarding-Config-Bugs, NICHT Parallel-Last** (dieselben Fehler
+> traten auch SEQUENZIELL auf):
+> - **T2-Fail:** `generate_take2_schedule` leitete die Variante aus `emergency_policy` ab, `build_take2_final`
+>   aus `call_proof_variante` → bei preis-Betrieben Widerspruch → falsche Schedule-Variante → STEP-2-Fail.
+>   **GEFIXT** (eine Wahrheitsquelle = call_proof_variante + `--variant`-Override).
+> - **T3-Fail:** `record_wizard_take3` → `locator.click` Timeout (8s) auf die Kategorie. Bei neuen Tenants
+>   konsistent (parallel + sequenziell), bei waelti nicht → **Wurzel noch offen** (Onboarding-Robustheit, nicht Last).
+>
+> **Parallel-Safety ist damit UNVERIFIZIERT** (der Test war von den Config-Bugs verfälscht — nicht „bewiesen unsafe"). Theoretisches Risiko bei gleichzeitigen Aufnahmen auf einem Dev-Server (CPU/Server-Contention) bleibt offen. Vorgehen: Config-Robustheit härten → DANN sauberer Parallel-Re-Test. Bis dahin sequenziell.
+
 ---
 
 ## 1. Idee & Vision

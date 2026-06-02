@@ -1,0 +1,109 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-02T12:53:22.207Z",
+    "source_url": "https://www.xn--martisanitr-u8a.ch/ueber-mich.html",
+    "crawler": "playwright",
+    "pages_crawled": []
+  },
+  "firma": {
+    "value": "Marti Sanitär",
+    "source": "founder_corrected",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "telefon": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "email": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 4.6,
+    "review_count": 14,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {},
+    "source": "not_found",
+    "verified": false
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "brand_color": {
+    "value": "#2a5fb0",
+    "source": "logo_van (Option1)",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.xn--martisanitr-u8a.ch/ueber-mich.html",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "_zefix": null
+}
