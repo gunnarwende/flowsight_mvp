@@ -36,11 +36,14 @@ if (!slug || !["notruf", "preis"].includes(variant)) {
   process.exit(1);
 }
 
-// Founder-validierter Greeting-Slot (identisch für beide Varianten: Lisa-Greeting
-// ~45.3–50.7s, Anrufer-Line @~51.4s → Slot davor mit Sicherheitsabstand).
-const G_START = 44.0;
-const G_DUR = 7.0;
-const G_END = G_START + G_DUR; // 51.0
+// Greeting-Slot ist VARIANT-SPEZIFISCH (per STT 01.06. verifiziert):
+//   notruf: Lisa-Greeting ~44–50s, Anrufer-Line @~51.4s  → Slot [44.0, 51.0] (7.0s)
+//   preis:  Lisa-Greeting ~40–46s, Anrufer-Line @~46.9s  → Slot [40.0, 46.5] (6.5s)
+// Vorher FALSCH: [44,51] für beide → preis-Greeting (Leins) blieb stehen (Weinberger-Bug).
+const SLOT = variant === "notruf" ? { start: 44.0, dur: 7.0 } : { start: 40.0, dur: 6.5 };
+const G_START = SLOT.start;
+const G_DUR = SLOT.dur;
+const G_END = G_START + G_DUR;
 
 function ff(argv, label) {
   const r = spawnSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...argv], { stdio: "inherit" });
