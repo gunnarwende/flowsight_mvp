@@ -765,7 +765,20 @@ async function main() {
   }
 
   // ── Extract raw values ──
-  const firma = crawl.firma?.value || prospect?.company?.legal_name || slug;
+  // ANKER (02.06.): Firmenname = Marken-/Kurzname OHNE Branchen-Zusatz. Crawler liefert
+  // oft "Marke, Branchenzusatz" (z.B. "Walter Leuthold, Sanitär-Spenglerei") → der Zusatz
+  // sprengt das Video-Layout (Take 4: 2-zeiliger Review-Header schiebt die Sternreihe weg
+  // von der universellen Maus → Stern/Maus-Desync) und gehört take-übergreifend nicht in
+  // den Namen. Regel: alles ab dem ersten Komma abschneiden (Marke = Teil davor). Greift
+  // nur bei Komma-Namen; "Stark Haustechnik GmbH" / "Jul. Weinberger AG" bleiben unberührt.
+  const firmaRaw = crawl.firma?.value || prospect?.company?.legal_name || slug;
+  const firma = (() => {
+    const brand = String(firmaRaw).split(",")[0].trim();
+    if (brand && brand !== String(firmaRaw).trim()) {
+      console.log(`  ⚠ Firmenname normalisiert: "${firmaRaw}" → "${brand}" (Branchen-Zusatz entfernt; in founder_review prüfen)`);
+    }
+    return brand || String(firmaRaw);
+  })();
   const inhaber = crawl.inhaber?.value || (prospect?.team?.length > 0 ? prospect.team.map((t) => t.name || t).join(", ") : null);
   const adresse = crawl.adresse?.value || (prospect?.contact?.address ? `${prospect.contact.address.street}, ${prospect.contact.address.zip} ${prospect.contact.address.city}` : "");
   const telefon = crawl.telefon?.value || prospect?.contact?.phone || "";

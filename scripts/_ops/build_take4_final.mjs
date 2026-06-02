@@ -175,6 +175,13 @@ if (withMouse) {
 
   logStep(10, 'Dev-Badge "3 Issues" cover (ALLERLETZTER Schritt)');
   run("node", ["scripts/_ops/apply_devbadge_cover.mjs", "--slug", slug]);
+
+  // STEP 11: Deterministischer Stern/Maus-Sync — farb-neutrale Stern-Innenregion der
+  // Gold-Referenz (Stark) im fixen Fill-Fenster über den Master legen. Macht den Stern-
+  // Slot millisekunde-gleich für ALLE Betriebe (Maus trifft immer), Header/Brand/Fall
+  // bleiben per-Tenant. Löst den recordVideo-Jitter deterministisch + skalierbar.
+  logStep(11, "Canonical Stern/Maus-Sync (farb-neutrale Stark-Region im Fill-Fenster)");
+  run("node", ["scripts/_ops/apply_canonical_stars.mjs", "--slug", slug]);
 }
 
 // ── STEP 8: QG ──

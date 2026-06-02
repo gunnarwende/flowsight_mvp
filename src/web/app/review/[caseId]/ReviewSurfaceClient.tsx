@@ -183,8 +183,12 @@ export function ReviewSurfaceClient({
 
         {/* Content */}
         <div className="flex flex-1 flex-col px-6 pb-8 pt-6">
-          {/* Header */}
-          <h1 className="text-[26px] font-bold leading-tight" style={{ color: brandColor }}>
+          {/* Header — 1-zeilig (truncate). Firmenname = korrekter kurzer Name (ohne
+              Branchen-Zusatz, an der Quelle in tenant_config verankert), passt auf 1 Zeile
+              @26px → Sternreihe bleibt auf kanonischer y-Höhe = wo die Video-Maus (Take 4)
+              sweept. truncate ist nur Sicherheitsnetz: sollte je ein zu langer Name
+              durchrutschen, bleibt das Layout 1-zeilig (statt Reflow) + QG-Gate fängt es. */}
+          <h1 className="truncate text-[26px] font-bold leading-tight" style={{ color: brandColor }}>
             {companyName}
           </h1>
           <p className="mt-1.5 text-[15px] text-gray-500">

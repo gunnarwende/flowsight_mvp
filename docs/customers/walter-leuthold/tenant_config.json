@@ -1,0 +1,171 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-01T09:38:38.432Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "walter-leuthold",
+    "name": "Walter Leuthold",
+    "case_id_prefix": "WL",
+    "brand_color": "#1e73be",
+    "sms_sender_name": "WalterLeuth"
+  },
+  "voice_agent": {
+    "company_name": "Walter Leuthold",
+    "domain": "Sanitär und Spenglerei",
+    "owner_names": "Walter Leuthold",
+    "address": "Seestrasse 98a, 8942 Oberrieden",
+    "phone": "+41 44 720 16 90",
+    "email": "mail@walter-leuthold.ch",
+    "website": "https://walter-leuthold.ch/",
+    "founded": "2001",
+    "team_section": "Geschäftsleitung: Walter Leuthold",
+    "memberships": "",
+    "google_rating": "4.9 Sterne bei 44 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "rtung Spengler Auf dem Dach Am Haus Kontakt 7/24h Notfall Kontakt Walter Leuthold Sanitär Haustechnik & Spenglerei Seestrasse 98a 8942 Oberrieden Schweiz +41 44 720 16 90 +41 79 417 74 41 Kontak",
+    "services_list": "Sanitär: Sanitär, Sanitär Haustechnik, Für Ihre Gesundheit, Entspannung und Hygiene sorgt sich Ihr Sanitär. Dank perfekt funktionierenden sanitären Installatio, Sie denken beim Begriff Sanitär sicher zuerst an das Badezimmer mit den Armaturen für Lavabo, Badewanne und Dusche. Aber\nBoiler/Warmwasser: Um Ihnen ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern b, Für Ihre Gesundheit, Entspannung und Hygiene sorgt sich Ihr Sanitär. Dank perfekt funktionierenden sanitären Installatio\nKundendienst: Reparaturen\nSpenglerei: Spenglerei",
+    "service_area": "8800 Thalwil, 8802 Kilchberg, 8803 Rüschlikon, 8804 Au ZH, 8805 Richterswil, 8810 Horgen, 8820 Wädenswil, 8942 Oberrieden",
+    "service_area_spoken": "Wir sind in Oberrieden und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Seestrasse 98a, 8942 Oberrieden.",
+    "categories": "Verstopfung | Leck | Boiler | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Boiler",
+        "label": "Boiler",
+        "hint": "Warmwasser, Entkalkung",
+        "iconKey": "thermometer"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.9,
+    "google_review_count": 44,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Boiler": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8800",
+      "8802",
+      "8803",
+      "8804",
+      "8805",
+      "8810",
+      "8820",
+      "8942"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Kilchberg",
+      "plz": "8802",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Walter Leuthold",
+    "firma_silben": 10,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "WL",
+    "modus": 2,
+    "google_stars": 4.9,
+    "video_hook": "Seit 2001 für Sie da.",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "mail@walter-leuthold.ch"
+  },
+  "_seed_time": "2026-06-02T06:04:00.000Z",
+  "_take2_detail_switch_sec": 92.197,
+  "_wizard_time": "2026-06-02T06:56:00.000Z",
+  "_wizard_case_id": "098e8423-4f0d-4589-93da-a5cd04919329",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "WL-0050",
+  "_demo_now": "2026-06-02T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-02T06:08:00.000Z",
+  "_appointment_start": "2026-06-03T06:00:00.000Z",
+  "_appointment_end": "2026-06-03T08:00:00.000Z",
+  "_reminder_time": "2026-06-02T07:02:00.000Z",
+  "_completion_time": "2026-06-02T07:02:00.000Z",
+  "_review_sent_time": "2026-06-02T07:04:00.000Z",
+  "_review_rated_time": "2026-06-02T07:06:00.000Z",
+  "_review_token": "260f663e1715401e",
+  "_review_token_long": "260f663e1715401e56b630222fbef3be25677d2bd511b1c809794b832983e289",
+  "_case_created_at": "2026-06-02T06:56:00+00:00"
+}
