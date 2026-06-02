@@ -140,6 +140,19 @@ async function produceTake2Samsung() {
   console.log(`  Datum: ${getTodayGerman()}`);
   console.log(`  Recording...`);
 
+  // ANCHOR (Walter-Offset-Fix 02.06.): Encoder-Warm-up auf about:blank BEVOR die
+  // Sequenz lädt. Playwrights recordVideo verschluckt die ersten ~2-3s (Encoder-
+  // Startlatenz, varianzbehaftet). Bei Walter wurde so der KOMPLETTE Pre-Call-
+  // Homescreen verschluckt → take2_complete[0.3,2.0] landete auf der Suche → ganzes
+  // T2 ~36s verschoben. Die neutrale Warm-up-Seite absorbiert die Latenz, danach
+  // wird die Sequenz (Homescreen→Suche→Dialing) ab ihrem echten Start sauber
+  // encodiert. Die INTERNE Sequenz-Timeline (SMS@+27s etc.) bleibt 1:1 erhalten;
+  // nur der Trim-Punkt wird in pipeline_screenflow dynamisch auf den Homescreen-
+  // Start gesetzt (detectHomescreenStart). Recording läuft ab Page-Erstellung.
+  await page.goto("about:blank", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(5000);
+  console.log("  Encoder warm-up (5s on blank) — homescreen anchor secured");
+
   await page.goto(`${fileUrl}?${params}`, { waitUntil: "domcontentloaded" });
 
   // Wait for sequence: homescreen → contact → dialing → call active

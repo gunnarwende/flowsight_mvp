@@ -134,10 +134,19 @@ function probeDuration(p) {
   return parseFloat(r.stdout.toString().trim()) || 0;
 }
 
+// ANCHOR (02.06.): dynamischer Samsung-Trim aus pipeline_screenflow-Sidecar
+// (= detektierter Homescreen-Start). Fallback 0.3 für Alt-Recordings ohne Sidecar.
+const samsungTrimPath = join(sfDir, "_samsung_trim.json");
+let SAMSUNG_TRIM = 0.3;
+if (existsSync(samsungTrimPath)) {
+  try { SAMSUNG_TRIM = Number(JSON.parse(readFileSync(samsungTrimPath, "utf-8")).homescreen_start) || 0.3; } catch {}
+}
+console.log(`  → ANCHOR Samsung-Trim (homescreen_start): ${SAMSUNG_TRIM.toFixed(3)}s`);
+
 if (existsSync(samsungPathRec) && existsSync(slugClipPath)) {
   const samsungDur = probeDuration(samsungPathRec);
   const slugClipDur = probeDuration(slugClipPath);
-  const samsungTrim = 0.3;
+  const samsungTrim = SAMSUNG_TRIM;
   const leitTrim = 2.0;
   const leitStartInTake2Complete = (samsungDur - samsungTrim) + slugClipDur;
   writeFileSync(offsetPath, JSON.stringify({
@@ -182,57 +191,26 @@ if (!SKIP_ANCHOR) {
   );
 }
 
-// V103 architecture (28.05.): ALWAYS use fresh anchor + enforce universal audio +
-// extend video to universal-audio-duration. V50 is no longer referenced.
-// Universal audio = AAC stream-copy from V50 → bit-identical to V50's audio
-// (no decode+encode cycle that would alter bits).
-const lockedAudio = join(PIPE, "_locked", "audio", `take2_${variant}.aac`);
-if (!existsSync(lockedAudio)) {
-  console.error(`✗ universal locked audio missing: ${lockedAudio}`);
-  process.exit(3);
-}
-
-// Probe durations
-function probeDur(p) {
-  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], { encoding: "utf-8" });
-  return parseFloat(r.stdout.trim());
-}
-const lockedAudioDur = probeDur(lockedAudio);
-const anchorDur = probeDur(anchorPath);
-console.log(`  locked audio dur : ${lockedAudioDur.toFixed(3)}s`);
-console.log(`  anchor video dur : ${anchorDur.toFixed(3)}s`);
-const padNeeded = Math.max(0, lockedAudioDur - anchorDur);
-
-// Step 2b: anchor + universal audio + duration-pad to audio length
+// FIX 02.06. (Greeting-Leak, systemisch): Der Anchor (build_from_phase_schedule)
+// nutzt bereits das per-Tenant-Audio mit korrektem Lisa-Greeting (swap_tenant_greeting,
+// PR #533) — universeller Content + KORREKTER Firmenname + Sync-Proof. Die alte
+// V103-Logik (28.05., ÄLTER als der Greeting-Swap) muxte hier stattdessen das
+// universelle _locked/audio/take2_<variant>.aac (Dörfler-Master-Greeting) per
+// `-map 1:a` rein → überschrieb den Swap → ALLE Betriebe hatten im Final den
+// Dörfler-Greeting (per STT belegt: Walter+Stark = "Dörfler AG"). Zusätzlich hatte
+// die locked .aac einen kaputten Dauer-Header (format=duration meldete 1637s statt
+// echten 380.5s → 21 Min Standbild-Pad). Beides entfällt: Anchor IST die Base.
 const newBaseTag = "base";
-const baseUnpadded = join(PIPE, "_generated", "previews", slug, `take2_${variant}_FINAL_${newBaseTag}_raw.mp4`);
 const newBasePath = join(PIPE, "_generated", "previews", slug, `take2_${variant}_FINAL_${newBaseTag}.mp4`);
-
-if (padNeeded > 0.01) {
-  console.log(`  → padding video +${padNeeded.toFixed(3)}s to match locked audio`);
-  step("STEP 2b: Pad anchor video + mux locked universal AAC (stream-copy)", "ffmpeg", [
-    "-y", "-hide_banner", "-loglevel", "error",
-    "-i", anchorPath, "-i", lockedAudio,
-    "-filter_complex", `[0:v]tpad=stop_mode=clone:stop_duration=${padNeeded.toFixed(3)}[v]`,
-    "-map", "[v]", "-map", "1:a",
-    "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p",
-    "-c:a", "copy", // stream-copy AAC → bit-identical to V50 audio
-    "-shortest",
-    newBasePath,
-  ]);
-} else {
-  step("STEP 2b: Mux locked AAC stream-copy onto anchor", "ffmpeg", [
-    "-y", "-hide_banner", "-loglevel", "error",
-    "-i", anchorPath, "-i", lockedAudio,
-    "-c:v", "copy",
-    "-c:a", "copy",
-    "-map", "0:v:0", "-map", "1:a:0",
-    "-shortest",
-    newBasePath,
-  ]);
-}
+step("STEP 2b: Anchor → base (Video + per-Tenant-Audio mit korrektem Greeting, stream-copy)", "ffmpeg", [
+  "-y", "-hide_banner", "-loglevel", "error",
+  "-i", anchorPath,
+  "-c", "copy",
+  "-map", "0:v:0", "-map", "0:a:0",
+  newBasePath,
+]);
 const baseTag = newBaseTag;
-console.log(`  Base (anchor + universal audio): ${newBasePath}`);
+console.log(`  Base (anchor video + per-Tenant-Greeting-Audio): ${newBasePath}`);
 
 // ── STEP 2c: Generate dynamic homescreen + bridge-dashboard PNGs (per-run, today's date)
 // Replaces the locked /c/tmp/v26/homescreen_mai.png which has 26.05 baked-in.
@@ -310,9 +288,13 @@ console.log(`  → legacy path overridden: ${legacyHomescreen}`);
 // instead of SMS thread during 3:37-3:48 canvas window. SMS PNG overlay
 // fixes this analog to the HS overlay covering phone_homescreen_post_sms.
 const smsPng = join(PIPE, "screenflows", slug, "_sms_thread.png");
-step("STEP 2c-4: Extract SMS thread frame from samsung.webm (t=30)", "ffmpeg", [
+// ANCHOR (02.06.): SMS-Extract relativ zum dynamischen Homescreen-Start. Alt-
+// Kalibrierung war t=30 bei Trim 0.3 → relativer Offset 29.7s. Neu = trim + 29.7,
+// sonst frisst der Encoder-Warm-up am Webm-Anfang den Bezug (SMS-Thread verschoben).
+const smsExtractT = (SAMSUNG_TRIM + 29.7).toFixed(2);
+step(`STEP 2c-4: Extract SMS thread frame from samsung.webm (t=${smsExtractT}, anchor-relative)`, "ffmpeg", [
   "-y", "-hide_banner", "-loglevel", "error",
-  "-ss", "30", "-i", samsungWebm, "-frames:v", "1",
+  "-ss", smsExtractT, "-i", samsungWebm, "-frames:v", "1",
   "-vf", "scale=320:712",
   smsPng,
 ]);

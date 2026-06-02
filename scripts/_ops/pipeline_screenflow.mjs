@@ -68,20 +68,62 @@ function ensureAppOpenClip() {
   }
 }
 
+// ── ANCHOR (Walter-Offset-Fix 02.06.): Homescreen-Start dynamisch detektieren ──
+// produce_screenflow warmt den Encoder auf about:blank vor → die Sequenz wird ab
+// ihrem echten Start encodiert, aber der Webm-Start enthält je nach Aufnahme-
+// Latenz unterschiedlich viel Warm-up-Frames. Statt fixem `-ss 0.3` (verschluckte
+// bei Walter den Homescreen) detektieren wir den ersten Homescreen-Frame via YAVG-
+// Helligkeitsband und trimmen exakt dort. Signatur (template-getrieben, betriebs-
+// unabhängig): blank=weiß ~250, Homescreen(Zürichsee-Wallpaper) ~95-150,
+// Suche(weiße Tastatur) ~210+, Dialing(dunkel-lila) ~60-80.
+function detectHomescreenStart(webmPath) {
+  const r = spawnSync("ffmpeg", [
+    "-hide_banner", "-i", webmPath, "-t", "14",
+    "-vf", "signalstats,metadata=print:key=lavfi.signalstats.YAVG",
+    "-f", "null", "-",
+  ], { encoding: "utf-8", maxBuffer: 1 << 26 });
+  const lines = (r.stderr || "").split("\n");
+  const samples = [];
+  let curT = null;
+  for (const ln of lines) {
+    let m = ln.match(/pts_time:\s*([\d.]+)/);
+    if (m) { curT = parseFloat(m[1]); continue; }
+    m = ln.match(/YAVG=([\d.]+)/);
+    if (m && curT != null) samples.push({ t: curT, y: parseFloat(m[1]) });
+  }
+  const inBand = (y) => y >= 90 && y <= 155; // Homescreen-Band
+  for (let i = 0; i < samples.length; i++) {
+    if (!inBand(samples[i].y)) continue;
+    const t0 = samples[i].t;
+    const window = samples.filter((s) => s.t >= t0 && s.t < t0 + 0.5);
+    if (window.length >= 2 && window.every((s) => inBand(s.y))) {
+      console.log(`── ANCHOR: Homescreen-Start detektiert @${t0.toFixed(3)}s (YAVG=${samples[i].y.toFixed(0)}, sustained ≥0.5s)`);
+      return Math.max(0, t0);
+    }
+  }
+  console.warn(`⚠ ANCHOR: kein Homescreen-Frame im YAVG-Band gefunden — Fallback -ss 0.3 (Recording evtl. defekt!)`);
+  return 0.3;
+}
+
 const runTake2 = take === "2" || take === "all";
 const runTake3 = take === "3" || take === "all";
 const runTake4 = take === "4" || take === "all";
 
-// FB10: Canvas-BG = brand_color. Früher hart "#0b1220" Navy → sichtbarer Kontrast-Bruch
-// an Phone-Bezel-Ecken wenn Leitsystem-BG brand_color ist. Jetzt einheitlich.
-// Tenant-Config liefert brand_color, Fallback Navy.
+// FB10 (Apr-30): Canvas-BG = brand_color (Tenant-Color).
+// FB-Reverted (26.05.): Founder will Apr-30-Look = Navy #0b1220 als Default.
+// Env-Override CANVAS_BG erlaubt explicit-set ("#0b1220" für Navy, etc).
+// Tenant-brand_color nur wenn CANVAS_BG=tenant gesetzt.
 let canvasBg = "#0b1220";
-try {
-  const cfg = JSON.parse(readFileSync(join("docs", "customers", slug, "tenant_config.json"), "utf-8"));
-  const bc = cfg.tenant?.brand_color;
-  if (bc) canvasBg = bc.startsWith("#") ? bc : `#${bc}`;
-} catch {}
-console.log(`── Canvas-BG (FB10 brand_color): ${canvasBg}`);
+if (process.env.CANVAS_BG === "tenant") {
+  try {
+    const cfg = JSON.parse(readFileSync(join("docs", "customers", slug, "tenant_config.json"), "utf-8"));
+    const bc = cfg.tenant?.brand_color;
+    if (bc) canvasBg = bc.startsWith("#") ? bc : `#${bc}`;
+  } catch {}
+} else if (process.env.CANVAS_BG && process.env.CANVAS_BG.startsWith("#")) {
+  canvasBg = process.env.CANVAS_BG;
+}
+console.log(`── Canvas-BG: ${canvasBg}  (default Navy; CANVAS_BG=tenant override available)`);
 
 // ══════════════════════════════════════════════════════════════════════════
 // STEP 1: Seed — DB + _seed_time (nur bei Take 2 oder all)
@@ -145,8 +187,12 @@ if (runTake2) {
   const bezelHelper = await import("./_lib/renderPhoneBezel.mjs");
   // FB10: brand_color als Bezel-Shadow-Farbe — Ecken-Aura harmoniert mit Leitsystem-BG.
   const bezelPath = await bezelHelper.renderPhoneBezel({ outDir: screenflowDir, shadowColor: canvasBg });
+  // FB-Ecken (28.05): radius MUST match phone_bezel.html inner cutout rx=46.
+  // Previously 40 → 6px mismatch revealed as dark crescents at bottom corners
+  // against white dashboard background (V74 had this, V35/V50 didn't because
+  // _rebuild_t2_no_drawbox.mjs used r46). Sync to 46 for all future builds.
   const contentMaskPath = await bezelHelper.ensureContentMask({
-    outDir: screenflowDir, width: 320, height: 712, radius: 40,
+    outDir: screenflowDir, width: 320, height: 712, radius: 46,
   });
   console.log(`── Phone bezel: ${bezelPath}`);
   console.log(`── Content mask (rounded): ${contentMaskPath}`);
@@ -156,10 +202,18 @@ if (runTake2) {
   const leitSwitchSec = Math.max(0, detailSwitchRawSec - 2.0);
   console.log(`── FB1: Status-Bar-Switch bei Leitsystem-Sekunde ${leitSwitchSec.toFixed(2)} (raw=${detailSwitchRawSec.toFixed(2)})`);
 
+  // ANCHOR: dynamischer Samsung-Trim = detektierter Homescreen-Start (statt fix 0.3).
+  // Sidecar für build_take2_final (Leit-Offset STEP 1.5 + SMS-Extract STEP 2c-4).
+  const samsungTrim = detectHomescreenStart(samsungPath);
+  const { writeFileSync } = await import("node:fs");
+  writeFileSync(join(screenflowDir, "_samsung_trim.json"),
+    JSON.stringify({ homescreen_start: samsungTrim, detected_at: "pipeline_screenflow", legacy_default: 0.3 }, null, 2));
+  console.log(`── ANCHOR: Samsung-Trim = ${samsungTrim.toFixed(3)}s (take2_complete startet am Homescreen)`);
+
   const tmpMobile = join(screenflowDir, "_take2_mobile_tmp.mp4");
   runStep("STEP 4a (Take 2): Concat 3 mobile parts + FB1 bar-switch + FB3 dev-badge-cover", "ffmpeg", [
     "-y",
-    "-ss", "0.3", "-i", samsungPath,
+    "-ss", String(samsungTrim.toFixed(3)), "-i", samsungPath,
     "-i", slugClip,
     "-ss", "2.0", "-i", leitPath,
     "-loop", "1", "-t", "120", "-i", statusBarPath,
@@ -167,11 +221,9 @@ if (runTake2) {
     "-filter_complex",
     "[0:v]fps=30,scale=412:914,setsar=1,setpts=PTS-STARTPTS[s];" +
     "[1:v]fps=30,scale=412:914,setsar=1,setpts=PTS-STARTPTS[c];" +
-    "[2:v]fps=30,scale=412:878,setsar=1,setpts=PTS-STARTPTS[lraw];" +
-    // FB3 (23.04.): Dev-Badge "2 Issues" erscheint am Ende wenn Back-Nav zur Fall-Liste.
-    // Drawbox überdeckt permanent die untere linke Ecke (Position Next.js Dev Tools).
-    // Farbe = Leitsystem-Sidebar-Nav-Hintergrund (nahezu schwarz-navy), fließender Übergang.
-    "[lraw]drawbox=x=0:y=820:w=160:h=58:color=#010610:t=fill[lscaled];" +
+    "[2:v]fps=30,scale=412:878,setsar=1,setpts=PTS-STARTPTS[lscaled];" +
+    // FB61 (27.05.): Drawbox removed — production-mode recording (port 3001) has
+    // no Next.js dev badge, so the cover-up is no longer needed.
     // Pad Leitsystem-Part auf 412×914 (oben 36px schwarz für Bar-Platz)
     "[lscaled]pad=412:914:0:36:color=black[lpad];" +
     "[3:v]fps=30,scale=412:36,setsar=1[bar1];" +
