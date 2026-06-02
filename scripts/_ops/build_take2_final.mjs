@@ -176,7 +176,7 @@ if (existsSync(eventLogPath) && existsSync(offsetPath)) {
 const t2sched = join(PIPE, "_generated", "transcripts", slug, `take2_${variant}.schedule`);
 if (!existsSync(t2sched)) {
   step("STEP 1.6: Generate take2 schedule (from master + config)", node,
-    ["scripts/_ops/audio/generate_take2_schedule.mjs", "--tenant", slug]);
+    ["scripts/_ops/audio/generate_take2_schedule.mjs", "--tenant", slug, "--variant", variant]);
 }
 
 // ── STEP 2: build_from_phase_schedule (anchor = V50-equivalent base) ────────

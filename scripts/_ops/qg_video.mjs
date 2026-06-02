@@ -90,12 +90,18 @@ if (take === "2") {
     // Robust: ein distinktives Firmenwort (len≥4, ohne Rechtsform) muss im Greeting
     // vorkommen. STT verschreibt sich oft leicht (Jul→Juhl, Stark Haustechnik→Starkhaus)
     // → wir prüfen das LÄNGSTE/distinktivste Wort + erlauben Fuzzy-Substring.
-    const normT = text.toLowerCase().replace(/[^a-zäöü]/g, "");
-    const words = companyName.replace(/\b(AG|GmbH|Sanitär-?Spenglerei|Spenglerei|Haustechnik)\b/gi, " ")
-      .split(/[\s.,&-]+/).map((w) => w.toLowerCase().replace(/[^a-zäöü]/g, "")).filter((w) => w.length >= 4);
-    const fallbackWords = companyName.split(/[\s.,&-]+/).map((w) => w.toLowerCase().replace(/[^a-zäöü]/g, "")).filter((w) => w.length >= 4);
-    const cand = (words.length ? words : fallbackWords);
-    const hit = cand.find((w) => normT.includes(w) || normT.includes(w.slice(0, Math.max(4, w.length - 2))));
+    // FIX 02.06.: Umlaut-Deburr + Fuzzy-Match. Whisper verhört Schweizer Namen oft
+    // (Wälti→Welti, Sohn→Onzon, Jul→Juhl) + Umlaute → exakter Substring failt fälschlich.
+    // Deburr (ä→a etc.) auf STT + Name, dann Levenshtein-Toleranz über Schiebefenster.
+    const deburr = (s) => s.toLowerCase().replace(/ä/g, "a").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ß/g, "ss").replace(/[^a-z]/g, "");
+    const normT = deburr(text);
+    const strip = /\b(AG|GmbH|SA|S[àa]rl|KlG|Sanitär-?Spenglerei|Spenglerei|Haustechnik|Sanitär|Heizung)\b/gi;
+    const toWords = (n) => n.split(/[\s.,&|/-]+/).map(deburr).filter((w) => w.length >= 4);
+    const words = toWords(companyName.replace(strip, " "));
+    const cand = (words.length ? words : toWords(companyName));
+    const lev = (a, b) => { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; };
+    const fuzzyIn = (w) => { if (normT.includes(w)) return true; const tol = Math.max(1, Math.floor(w.length / 4)); for (let i = 0; i + w.length <= normT.length; i++) if (lev(w, normT.slice(i, i + w.length)) <= tol) return true; return false; };
+    const hit = cand.find(fuzzyIn);
     gate("G_GREETING Firmenname in Lisa-Greeting", !!hit,
       `erwartet eines von [${cand.join(", ")}] | STT: "${text.slice(0, 90)}…"`);
   }

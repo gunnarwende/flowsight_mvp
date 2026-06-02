@@ -40,14 +40,22 @@ if (!tenant) {
   process.exit(1);
 }
 
-// Variant-Decision via emergency_policy
+// Variant-Decision: EINE Wahrheitsquelle = video.call_proof_variante (C→notruf, B→preis),
+// identisch zu build_take2_final. FIX 02.06.: vorher emergency_policy → widersprach bei
+// preis-Betrieben dem Build (B/preis vs voll/notruf) → falsche Schedule-Variante → STEP-2-Fail.
+// --variant Override (vom Build-Runner durchgereicht); emergency_policy nur Alt-Fallback.
 const cfgPath = path.join(REPO_ROOT, "docs", "customers", tenant, "tenant_config.json");
 const cfg = JSON.parse(fs.readFileSync(cfgPath, "utf8"));
+const variantArg = (argVal("--variant") || "").trim().toLowerCase();
+const proofVariante = (cfg.video?.call_proof_variante || "").trim().toUpperCase();
 const emergencyPolicy = (cfg.voice_agent?.emergency_policy || "").trim();
-const variant = emergencyPolicy ? "notruf" : "preis";
+const variant = variantArg === "notruf" || variantArg === "preis"
+  ? variantArg
+  : proofVariante === "C" ? "notruf"
+  : proofVariante === "B" ? "preis"
+  : (emergencyPolicy ? "notruf" : "preis");
 console.log(`tenant: ${tenant}`);
-console.log(`emergency_policy: ${emergencyPolicy ? "VOLL → notruf" : "LEER → preis (fallback)"}`);
-console.log(`variant: ${variant}`);
+console.log(`variant: ${variant} (source: ${variantArg ? "--variant" : proofVariante ? "call_proof_variante=" + proofVariante : "emergency_policy-fallback"})`);
 
 // Parse helpers
 function parseScheduleFile(file) {

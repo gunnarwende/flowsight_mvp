@@ -112,13 +112,19 @@ export function resolveAgentTurn(turnId, { variant, tenantDisplayName }) {
     // Connector "der"/"von" (Founder 02.06.): Firma MIT Rechtsform (AG/GmbH/…) → "der
     // Stark Haustechnik GmbH"; Personenname/Einzelfirma OHNE Rechtsform → "von Walter
     // Leuthold" (sonst grammatikalisch schief: "der Walter Leuthold").
-    const hasLegalForm = /\b(AG|GmbH|SA|S[àa]rl|KlG|KG|OHG|GbR|e\.?K\.?|Co\.?)\b/i.test(tenantDisplayName);
+    const legalFormRe = /\b(AG|GmbH|SA|S[àa]rl|KlG|KG|OHG|GbR|e\.?K\.?|Co\.?)\b/i;
+    const hasLegalForm = legalFormRe.test(tenantDisplayName);
     const connector = hasLegalForm ? "der" : "von";
+    // GESPROCHENER Name OHNE Rechtsform (02.06.): niemand sagt am Telefon „GmbH/AG", und
+    // lange Namen sprengen sonst den fixen Greeting-Slot (preis 6,5s / notruf 7,0s) →
+    // Build-Fail bei langen Firmen (z.B. „Schaub Haustechnik GmbH" = 7,15s). Rechtsform
+    // strippen kürzt + klingt natürlicher; Connector der/von bleibt anhand der Original-Form.
+    const spokenName = tenantDisplayName.replace(legalFormRe, "").replace(/\s{2,}/g, " ").trim();
     return {
       ...entry,
       text: entry.text
         .replace(/{{\s*tenant_connector\s*}}/g, connector)
-        .replace(/{{\s*tenant_display_name\s*}}/g, tenantDisplayName),
+        .replace(/{{\s*tenant_display_name\s*}}/g, spokenName),
       id: turnId,
     };
   }

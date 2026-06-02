@@ -1,27 +1,27 @@
 {
   "_meta": {
-    "crawled_at": "2026-04-20T10:46:50.686Z",
-    "source_url": "https://www.waeltisohn.ch",
+    "crawled_at": "2026-06-02T12:53:22.186Z",
+    "source_url": "https://www.sanitaer-kilchberg.ch/",
     "crawler": "playwright",
     "pages_crawled": [
       {
         "key": "home",
-        "url": "https://www.waeltisohn.ch/",
-        "chars": 2865
+        "url": "https://www.sanitaer-kilchberg.ch/",
+        "chars": 2897
       },
       {
         "key": "team",
-        "url": "https://www.waeltisohn.ch/team",
+        "url": "https://www.sanitaer-kilchberg.ch/team",
         "chars": 528
       },
       {
         "key": "services",
-        "url": "https://www.waeltisohn.ch/dienstleistungen",
-        "chars": 2701
+        "url": "https://www.sanitaer-kilchberg.ch/dienstleistungen",
+        "chars": 2709
       },
       {
         "key": "impressum",
-        "url": "https://www.waeltisohn.ch/impressum",
+        "url": "https://www.sanitaer-kilchberg.ch/impressum",
         "chars": 1006
       }
     ]
@@ -156,12 +156,12 @@
     "verified": true
   },
   "brand_color": {
-    "value": "#213a5c",
-    "source": "website_home",
+    "value": "#003366",
+    "source": "website (Option2)",
     "verified": true
   },
   "website_url": {
-    "value": "https://www.waeltisohn.ch",
+    "value": "https://www.sanitaer-kilchberg.ch/",
     "source": "input",
     "verified": true
   },

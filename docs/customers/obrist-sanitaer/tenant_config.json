@@ -1,37 +1,37 @@
 {
   "_derived_from": "crawl_extract.json",
-  "_derived_at": "2026-06-02T13:09:25.389Z",
+  "_derived_at": "2026-06-02T12:56:51.339Z",
   "_founder_actions_needed": [],
   "tenant": {
-    "slug": "waelti-sohn-ag",
-    "name": "Wälti & Sohn AG",
-    "case_id_prefix": "WS",
-    "brand_color": "#003366",
-    "sms_sender_name": "Waelti AG"
+    "slug": "obrist-sanitaer",
+    "name": "Obrist Sanitär",
+    "case_id_prefix": "OS",
+    "brand_color": "#1389ca",
+    "sms_sender_name": "ObristSanit"
   },
   "voice_agent": {
-    "company_name": "Wälti & Sohn AG",
-    "domain": "Sanitär, Heizung und Solar",
-    "owner_names": "Heinz Wälti",
-    "address": "Gartenweg 2, 8135 Langnau am Albis",
-    "phone": "044 713 03 04",
-    "email": "info@waeltisohn.ch",
-    "website": "https://www.sanitaer-kilchberg.ch/",
-    "founded": "1952",
-    "team_section": "Geschäftsleitung: Heinz Wälti",
-    "memberships": "",
-    "google_rating": "5 Sterne bei 11 Bewertungen",
+    "company_name": "Obrist Sanitär",
+    "domain": "Sanitär und Heizung",
+    "owner_names": "Beat Obrist",
+    "address": "Edlibachstrasse 40, 6345 Neuheim",
+    "phone": "079 668 68 48",
+    "email": "info@obrist-sanitaer.ch",
+    "website": "https://www.obrist-sanitaer.ch/",
+    "founded": "1985",
+    "team_section": "Geschäftsleitung: Beat Obrist",
+    "memberships": "Gebäudetechnik",
+    "google_rating": "4.7 Sterne bei 10 Bewertungen",
     "opening_hours": "",
     "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
-    "emergency_policy": "",
-    "services_list": "Sanitär: SANITÄR, WC, Defekter WC Sitz, WC-Rollenhalter, Griffe, ...), Installationen von WC`s die mit Wasser reinigen\nHeizung: HEIZUNG, Heizkörper / Radiatoren / Ventile, Fehlender Komfort (Heizstaab), Reparaturen von bestehenden Heizkörpern, Installation von Thermostatventilen\nBoiler/Warmwasser: Boiler Service (Entkalkung)\nRohrbruch/Leitungen: Geräusche von Wasser und Abwasserleitungen\nVerstopfung/Abfluss: Verstopfte Abläufe, Geräusche von Wasser und Abwasserleitungen\nUmbau/Sanierung: Umbau\nSolar/Erneuerbar: Integration von erneuerbaren Energien in bestehende Systeme\nBeratung/Planung: Unterbaumöbel (Beratung und Montage), Beratung für Heizungsersatz, Karriereberatung\nKundendienst: Service, SERVICE, Boiler Service (Entkalkung), Wartung und Unterhalt",
-    "service_area": "8001 Zürich, 8002 Zürich, 8003 Zürich, 8004 Zürich, 8005 Zürich, 8006 Zürich, 8008 Zürich, 8032 Zürich, 8037 Zürich, 8038 Zürich, 8041 Zürich, 8045 Zürich, 8048 Zürich, 8055 Zürich, 8134 Adliswil, 8135 Langnau am Albis",
-    "service_area_spoken": "Wir sind in Langnau am Albis und der näheren Umgebung für Sie da.",
+    "emergency_policy": "24/7-Service: 079 668 68 48 041 755 28 48 info@obrist-sanitaer.ch SANITÄR HEIZUNG TEAM KONTAKT 24/7 NOTFALL + − Leaflet | © OpenStreetMap contributors Kontaktieren Sie uns. Beat Obrist und sein Team f",
+    "services_list": "Sanitär: SANITÄR, Ihr Partner im Sanitär- und Heizungsbereich aus Neuheim im Kanton Zug., Sanitäranlagen, Planung und Bau von Sanitäranlagen in Neuheim, Menzingen, Baar, Zug und Umgebung., Wir sind 24/7 für Sie einsatzbereit und kümmern uns um sanitäre oder heizungstechnische Notfälle.\nHeizung: HEIZUNG, Ihr Partner im Sanitär- und Heizungsbereich aus Neuheim im Kanton Zug., Heizungsanlagen, Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen., Wir sind 24/7 für Sie einsatzbereit und kümmern uns um sanitäre oder heizungstechnische Notfälle.\nUmbau/Sanierung: Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen.\nBeratung/Planung: Planung und Bau von Sanitäranlagen in Neuheim, Menzingen, Baar, Zug und Umgebung.\nKundendienst: 24/7-Service: 079 668 68 48, Installation, Sanierung, Reparatur und Wartung von Heizungsanlagen., Notfallservice 24/7, Wir bieten seit 1985 umfassenden Service rund um die Bereiche Sanitär- und Heizungsanlagen im Kanton Zug und der Region.",
+    "service_area": "6345 Neuheim",
+    "service_area_spoken": "Wir sind in Neuheim und der näheren Umgebung für Sie da.",
     "price_section": "",
     "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
     "jobs_section": "",
     "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
-    "address_spoken": "Sie finden uns an der Gartenweg 2, 8135 Langnau am Albis.",
+    "address_spoken": "Sie finden uns an der Edlibachstrasse 40, 6345 Neuheim.",
     "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
   },
   "wizard": {
@@ -79,8 +79,8 @@
   },
   "seed": {
     "case_count": 50,
-    "google_rating": 5,
-    "google_review_count": 11,
+    "google_rating": 4.7,
+    "google_review_count": 10,
     "staff_names": [
       "Max Mustermann",
       "Anna Beispiel",
@@ -95,28 +95,13 @@
       "Kontakt": 5
     },
     "service_area_plz": [
-      "8001",
-      "8002",
-      "8003",
-      "8004",
-      "8005",
-      "8006",
-      "8008",
-      "8032",
-      "8037",
-      "8038",
-      "8041",
-      "8045",
-      "8048",
-      "8055",
-      "8134",
-      "8135"
+      "6345"
     ],
     "featured_case": {
       "kategorie": "Verstopfung",
       "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
-      "stadt": "Langnau am Albis",
-      "plz": "8135",
+      "stadt": "Neuheim",
+      "plz": "6345",
       "dringlichkeit": "Dringend"
     },
     "phone_demo_case": {
@@ -139,32 +124,32 @@
     "wizard_demo_case": {
       "kategorie": "Leck",
       "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
-      "stadt": "Zürich",
-      "plz": "8002",
+      "stadt": "Neuheim",
+      "plz": "6345",
       "dringlichkeit": "Normal"
     },
     "include_2025_data": true
   },
   "video": {
-    "firma_display": "Wälti & Sohn AG",
-    "firma_silben": 4,
+    "firma_display": "Obrist Sanitär",
+    "firma_silben": 5,
     "telefon_display": "+41 44 505 74 21",
     "display_phone": "+41 44 505 74 21",
-    "prefix": "WS",
+    "prefix": "OS",
     "modus": 2,
-    "google_stars": 5,
-    "video_hook": "Seit 1952 für Sie da.",
+    "google_stars": 4.7,
+    "video_hook": "Seit 1985 für Sie da.",
     "call_proof_variante": "B"
   },
   "prospect": {
-    "email": "info@waeltisohn.ch"
+    "email": "info@obrist-sanitaer.ch"
   },
   "_seed_time": "2026-06-02T06:04:00.000Z",
-  "_take2_detail_switch_sec": 88.558,
+  "_take2_detail_switch_sec": 85.51,
   "_wizard_time": "2026-06-02T06:56:00.000Z",
-  "_wizard_case_id": "7bba6484-3669-4e05-ae11-87a97fb73c38",
+  "_wizard_case_id": "7f869cbe-4e95-48d1-9181-eda935852851",
   "_wizard_seq_number": 50,
-  "_wizard_case_label": "WS-0050",
+  "_wizard_case_label": "OS-0050",
   "_demo_now": "2026-06-02T06:04:00.000Z",
   "_confirmation_sent_time": "2026-06-02T06:08:00.000Z",
   "_appointment_start": "2026-06-03T06:00:00.000Z",
@@ -173,7 +158,7 @@
   "_completion_time": "2026-06-02T07:02:00.000Z",
   "_review_sent_time": "2026-06-02T07:04:00.000Z",
   "_review_rated_time": "2026-06-02T07:06:00.000Z",
-  "_review_token": "3794a5b04dd7bee3",
-  "_review_token_long": "3794a5b04dd7bee3568a11873065ae18a88e9343c2b40092052e5efc598f2ded",
+  "_review_token": "7f6bad50b6e05c17",
+  "_review_token_long": "7f6bad50b6e05c17fec880575315a0c0792e4a9664018e56e149f8e52ae3b494",
   "_case_created_at": "2026-06-02T06:56:00+00:00"
 }
