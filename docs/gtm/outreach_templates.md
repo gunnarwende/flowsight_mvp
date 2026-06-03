@@ -6,6 +6,20 @@
 
 ---
 
+## ⚠️ MODELL-UPDATE 03.06.2026 — Umsetzung 04.06. (überschreibt Teile der März-Templates unten)
+
+Die März-Templates basieren auf einem überholten Modell (Test-Telefonnummer + Website-Link als Beweis, weicher „Feedback"-CTA). **Neues Modell, gelockt 03.06.** (Details: Memory `project_email_phase_kickoff`, STATUS-EOD-Block):
+
+- **Ein Link statt drei:** keine Test-Nummer (Twilio erst nach Ja), kein kalter Website-Link. Der Beweis = eine **private Beweis-Seite `/p/[token]`** pro Betrieb (mobil-first, noindex) mit den **4 personalisierten Video-Takes** + Tracking. „Mail = Deckel, Seite = Schatz."
+- **CTA = Variante A** (`loom_cta_v2.md`): Termin-Window + Founder-Follow-up („Ich bin Donnerstag 10-12 Uhr 15 Min erreichbar … sonst schreibe ich Ihnen Freitag nochmal."). NICHT das weiche „schreiben Sie zurück".
+- **Copy-Leitprinzip: „echter Mensch schlägt glatte Maschine".** Menschlichkeit im TON + ehrlicher CTA („sagen Sie's mir, wenn's nichts ist") — NICHT Selbst-Entschuldigung/„Fehler" (untergräbt Kompetenz). Desktop-Format der Videos als **Echtheits-Beweis** umdeuten („kein Mockup — Ihr echtes System, live"). Querformat-Hinweis gehört auf die SEITE, nicht in die Mail.
+- **Ansprechpartner:** Inhaber **mit Namen** (Anreicherung Impressum/Zefix/LinkedIn), nicht `info@`.
+- **Kadenz (tracking-gesteuert):** Tag 0 Mail → Tag 3 Reminder (geschaut-aber-still vs. nicht-geöffnet unterschiedlich) → Tag 6-7 Anruf (priorisiert nach Watch-Signal, mit den 3 Discovery-Fragen aus `discovery_questions.md`) → Pause (max 3 Touches) → Video löschen nach 14 Tagen ohne Engagement.
+
+→ **TODO 04.06.:** Konkretes neues Template (Betreff + Body, Variante-A-CTA, Menschlich-Prinzip) hier ausformulieren, sobald Beweis-Seite + Bunny stehen.
+
+---
+
 ## Grundregeln
 
 1. **Kein Template-Gefuehl.** Jede E-Mail liest sich wie ein persoenlicher Brief.
