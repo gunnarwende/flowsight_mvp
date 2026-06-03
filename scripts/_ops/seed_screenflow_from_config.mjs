@@ -239,9 +239,12 @@ async function main() {
     ...existingModules,
     google_review_avg: seed.google_rating ?? existingModules.google_review_avg ?? 4.8,
     google_review_count: seed.google_review_count ?? existingModules.google_review_count ?? 10,
+    // FIX 03.06.: primary_color aus config.tenant.brand_color syncen. WURZEL Schaub-Bug:
+    // Leitsystem (resolveTenantIdentity) liest modules.primary_color aus der DB; der Seed
+    // synct es vorher NICHT → alte (rote) Onboard-Farbe blieb trotz Config-Fix (#2b6cb0).
+    // config = SSOT → primary_color immer aus config überschreiben (gilt für alle Betriebe).
+    ...(t.brand_color ? { primary_color: t.brand_color } : {}),
     // Phase A: notification_email NOT set (so Founder gets alerts, not prospect)
-    // If prospect.email exists and should receive alerts, uncomment:
-    // notification_email: prospectEmail,
   };
 
   // B5 (Scalability Gate): Auch case_id_prefix + name in tenants syncen —
@@ -293,6 +296,18 @@ async function main() {
   // Friesenstrasse 58. Ort bleibt dynamisch aus voice_agent.address damit
   // der Notfall geografisch zum Betrieb passt (Dörfler → Oberrieden etc.).
   // Vorher: Daten identisch mit Phone-Case → visuell verwirrend.
+  //
+  // FB-26.05. (Founder): Notfall created_at = T-1 (GESTERN), nicht hoursAgo(2).
+  // Begründung: Demo-Narrative startet bei 08:04 (Phone-Call). hoursAgo(2)
+  // produziert "Heute 12:29" je nach Pipeline-Run-Zeit → liegt narrativ NACH
+  // dem 08:08 Phone-Case → "Zukunft relativ zum Demo-Zeitpunkt".
+  // T-1 (gestern Nachmittag) = älter als Phone-Call → logisch konsistent.
+  const notfallCreatedAt = (() => {
+    // YESTERDAY 16:25 Zürich (= UTC 14:25 MESZ Sommerzeit).
+    // demoTime.today ist Zürich-deterministisch — gilt für Take 2/3/4 identisch.
+    const d = new Date(Date.UTC(demoTime.today.y, demoTime.today.m - 1, demoTime.today.d - 1, 14, 25, 0));
+    return d.toISOString();
+  })();
   cases.push({
     tenant_id: TID,
     category: notfallCat,
@@ -307,7 +322,7 @@ async function main() {
     plz: ownLocation.plz,
     description: notfallCaseConfig.beschreibung ||
       `${notfallCat} komplett defekt — kein Warmwasser. Kunde wartet auf Techniker.`,
-    created_at: hoursAgo(2),
+    created_at: notfallCreatedAt,
     is_demo: false,
   });
 
@@ -345,27 +360,41 @@ async function main() {
     is_demo: false,
   };
 
-  // ── Case 2: WIZARD CASE (Take 3 demo — different category) ──
-  const wizCat = wizardCase.kategorie ||
-    categories.find((c) => c !== phoneCat && c !== notfallCat) ||
-    categories[1] || categories[0];
+  // ── Case 2: WIZARD CASE — NICHT mehr im Seed.
+  // FB-26.05.: Wizard-Case wird ausschliesslich von `insert_take3_wizard_case.mjs`
+  // VOR Take-3-Recording erstellt. Im Seed enthalten = sichtbar in T2-Case-List bei 08:08
+  // → User sieht Leck-Case schon in T2, obwohl er erst T3 entstehen soll.
+  // (Vorher: Andreas Gerber als wizard-slot, dann zu Wende geändert → Duplikat-Bug.
+  //  Jetzt: kein wizard-slot im Seed, sauber sequential.)
+
+  // ── Case 2: Andreas Gerber Abflussverstopfung "Heute 07:12" — DETERMINISTIC ──
+  // PIPELINE_BIBLE FB39 + §31 Take 4 Position-4-Architektur:
+  // Andreas IMMER bei demoTime.today + 07:12 (deterministisch, unabhängig von hoursAgo/Date.now).
+  // Stable sort: Phone-Case (08:08) > Andreas (07:12) > rest.
+  // Mit Wizard-Leck (08:56) ergibt sich: Leck > Phone > Notfall > Andreas (Position-4-Spec).
+  const andreasTime = (() => {
+    const d = new Date(Date.UTC(demoTime.today.y, demoTime.today.m - 1, demoTime.today.d, 5, 12, 0));
+    // Zürich-Zeit 07:12 = UTC 05:12 (Sommerzeit, MESZ +02:00)
+    // (im Winter: 06:12 UTC = 07:12 CET, +01:00. Wir nutzen MESZ-Annahme für Demo-Tage.)
+    return d.toISOString();
+  })();
+  const verstopfungCat = categories.find((c) => /verstopfung/i.test(c)) ||
+    categories.find((c) => /abfluss/i.test(c)) || categories[0];
+  const kilchberg = cities.find((c) => c.city === "Kilchberg") || cities[Math.min(2, cities.length - 1)];
   cases.push({
     tenant_id: TID,
-    category: wizCat,
-    status: "new",
+    category: verstopfungCat,
+    status: "in_arbeit",
     urgency: "normal",
     source: "wizard",
-    reporter_name: REPORTER_NAMES[2],
-    contact_phone: "+41791234567",
-    street: STREETS[1],
-    house_number: "8",
-    city: cities[1]?.city || phoneCity.city,
-    plz: cities[1]?.plz || phoneCity.plz,
-    description: wizardCase.beschreibung ||
-      `${wizCat} über Online-Formular gemeldet.`,
-    // FB5+FB6+FB7: Wizard-Case bei demoTime.wizardSubmitTime (heute 08:56).
-    // Vorher: minutesAgo(60) → "gestern" wenn Pipeline nachts lief.
-    created_at: demoTime.iso.wizardSubmitTime,
+    reporter_name: "Andreas Gerber",
+    contact_phone: "+41763729145",
+    street: "Dorfstrasse",
+    house_number: "12",
+    city: kilchberg.city,
+    plz: kilchberg.plz,
+    description: `${verstopfungCat} in ${kilchberg.city}.`,
+    created_at: andreasTime,
     is_demo: false,
   });
 
@@ -465,12 +494,18 @@ async function main() {
     });
   }
 
-  // ── Cases 30-49: 20× Older cases (2025) for pagination ──
+  // ── Cases 30-49: 20× Mid-range cases (14-180 days ago) — fills the gap ──
+  // FB-26.05. (Founder): Keine 30+-Tage-Lücke zwischen "diese Woche" und "alte 2025"-Daten.
+  // Verteilung Log-style (denser-near-now):
+  //   i=0 →  14d,  i=5 → ~28d,  i=10 → ~58d,  i=15 → ~107d,  i=19 → 180d
+  // Why: User filtert in Take 2 auf KPIs (Neu/In Arbeit/Erledigt/Bewertung).
+  // Sobald scrollend in der Liste, muss eine plausible Zeitverteilung sichtbar sein —
+  // keine Lücke wo Betrieb monatelang "tot" wirkt.
   for (let i = 0; i < 20; i++) {
     const cat = categories[i % categories.length] || categories[0];
     const loc = cities[i % cities.length];
-    const month = 3 + (i % 10);
-    const day = Math.min(28, 5 + i);
+    // Power-1.8 spread: dense recent, sparse old (psychologisch plausibel)
+    const daysAge = Math.round(14 + Math.pow(i / 19, 1.8) * 166);
     cases.push({
       tenant_id: TID,
       category: cat,
@@ -479,10 +514,12 @@ async function main() {
       source: pick(["voice", "wizard", "manual"]),
       reporter_name: REPORTER_NAMES[(i + 15) % REPORTER_NAMES.length],
       contact_phone: phone(i + 20),
+      street: STREETS[i % STREETS.length],
+      house_number: String(7 + i * 4),
       city: loc.city,
       plz: loc.plz,
       description: `${cat} in ${loc.city}.`,
-      created_at: `2025-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}T10:00:00Z`,
+      created_at: daysAgo(daysAge),
       is_demo: false,
     });
   }
