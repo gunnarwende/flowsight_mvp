@@ -28,12 +28,6 @@ export default function MarketingLayout({
               Funktionen
             </a>
             <Link
-              href="/pricing"
-              className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
-            >
-              Preise
-            </Link>
-            <Link
               href="/live-erleben"
               className="text-sm font-medium text-navy-900/60 transition-colors hover:text-navy-900"
             >
@@ -104,14 +98,6 @@ export default function MarketingLayout({
                   >
                     Funktionen
                   </a>
-                </li>
-                <li>
-                  <Link
-                    href="/pricing"
-                    className="transition-colors hover:text-gold-400"
-                  >
-                    Preise
-                  </Link>
                 </li>
                 <li>
                   <Link

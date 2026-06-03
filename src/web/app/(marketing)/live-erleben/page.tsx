@@ -151,7 +151,7 @@ export default function LiveErlebenPage() {
               { q: "Funktioniert das mit meiner bestehenden Nummer?", a: "Ja. Wir richten eine Rufumleitung ein, die greift, wenn Sie nicht erreichbar sind." },
               { q: "Was passiert bei einem Notfall?", a: "Die Telefonassistentin erkennt die Dringlichkeit und markiert den Fall als Notfall. Sie erhalten sofort eine Benachrichtigung." },
               { q: "Wie sicher sind meine Daten?", a: "Alle Daten verschlüsselt. Keine Gesprächsaufnahmen. Server in der EU. DSGVO-konform." },
-              { q: "Was kostet FlowSight?", a: "Standard ab CHF 299/Monat, Professional ab CHF 499. Monatlich kündbar, keine Bindung." },
+              { q: "Was kostet FlowSight?", a: "Das hängt von Betriebsgrösse und Fallvolumen ab — wir finden gemeinsam die passende Lösung. Schreiben Sie uns kurz, dann melden wir uns für ein unverbindliches Gespräch." },
             ] as const).map((item) => (
               <details key={item.q} className="group py-4">
                 <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-navy-900 [&::-webkit-details-marker]:hidden">
