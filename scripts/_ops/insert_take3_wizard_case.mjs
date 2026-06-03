@@ -70,16 +70,17 @@ const wizardTime = demoTime.wizardSubmitTime;
 console.log(`  Wizard-Time (demoTime SSoT): ${wizardTime.toISOString()}`);
 
 // ── Delete prior Take-3 wizard-case (idempotent re-run) ──
-// Identify by reporter_name + reporter_phone + source="wizard" + street="Bahnhofstrasse"
-// + house_number="15" — unique combination for this scripted demo case.
+// FIX 03.06.: ALLE source=wizard + status=new löschen (nicht nur der Gunnar-Wende/
+// Bahnhofstrasse-15-Key). WURZEL Walter-KPI=3: ein STALE Wizard-Case (alter Reporter
+// "Andreas Gerber", Bahnhofstrasse 8) aus einem prä-Umstellungs-Build überlebte den
+// engen Delete → 3. offener Fall → KPI „Neu"=3. Der Demo-Wizard ist der EINZIGE
+// source=wizard+status=new (Seed-Andreas ist wizard+in_arbeit) → breiter Delete sicher.
 const { error: delErr } = await sb
   .from("cases")
   .delete()
   .eq("tenant_id", TID)
   .eq("source", "wizard")
-  .eq("reporter_name", REPORTER_NAME)
-  .eq("street", "Bahnhofstrasse")
-  .eq("house_number", "15");
+  .eq("status", "new");
 
 if (delErr) {
   console.warn("Prior wizard-case delete warning:", delErr.message);
