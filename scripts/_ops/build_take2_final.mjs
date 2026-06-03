@@ -82,9 +82,14 @@ if (!existsSync(phoneExtended)) {
 // sonst locked Fallback (= Varianten-Master-Greeting → FALSCHER Firmenname, z.B. Stark→
 // "Dörfler"). Hier generate-if-missing: in-place-Greeting-Swap (locked Master + per-
 // Tenant-Greeting im fixen Slot 44–51s) → korrekter Firmenname, Sync byte-genau erhalten.
+// FIX 03.06.: IMMER regenerieren (war generate-if-missing). Wurzel Wälti-T2-Fail: ein
+// STALE per-Tenant-Audio aus einem alten/kaputten Build (1.22s statt 8.55s Verbindungs-
+// Pause) wurde durchgereicht, weil die Datei existierte → Swap übersprungen. Der Swap ist
+// schnell + deterministisch (locked Master + per-Tenant-Greeting) → Always-Regenerate
+// eliminiert das Altlast-Risiko bei jedem Re-Run (10/Tag-Maschine, Re-Builds).
 const tenantAudio = join(REPO_ROOT, PIPE, "_generated", "takes", slug, `take2_${variant}.wav`);
-if (!existsSync(tenantAudio)) {
-  console.log(`──── STEP 0.6: per-Tenant-Audio fehlt → Lisa-Greeting-Swap (${variant}) ────`);
+{
+  console.log(`──── STEP 0.6: Lisa-Greeting-Swap (${variant}, always-regenerate aus locked Master) ────`);
   const r = spawnSync("node", ["scripts/_ops/audio/swap_tenant_greeting.mjs", "--slug", slug, "--variant", variant],
     { cwd: REPO_ROOT, stdio: "inherit" });
   if (r.status !== 0) { console.error("✗ STEP 0.6 FAILED: greeting swap"); process.exit(r.status || 1); }

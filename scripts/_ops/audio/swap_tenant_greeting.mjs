@@ -36,11 +36,14 @@ if (!slug || !["notruf", "preis"].includes(variant)) {
   process.exit(1);
 }
 
-// Greeting-Slot ist VARIANT-SPEZIFISCH (per STT 01.06. verifiziert):
-//   notruf: Lisa-Greeting ~44–50s, Anrufer-Line @~51.4s  → Slot [44.0, 51.0] (7.0s)
-//   preis:  Lisa-Greeting ~40–46s, Anrufer-Line @~46.9s  → Slot [40.0, 46.5] (6.5s)
-// Vorher FALSCH: [44,51] für beide → preis-Greeting (Leins) blieb stehen (Weinberger-Bug).
-const SLOT = variant === "notruf" ? { start: 44.0, dur: 7.0 } : { start: 40.0, dur: 6.5 };
+// Greeting-Slot (per STT 03.06. an Weinberger-GOLD verifiziert — BEIDE Varianten):
+//   Verbindungs-Pause 33.04→41.60 (8.55s), Beep 41.60→42.69, dann Lisa-Greeting ab ~44.0s,
+//   Anrufer-Line @~51.4s. → Slot [44.0, 51.0] (7.0s) für notruf UND preis (identische
+//   Pre-Call-Struktur; Varianten divergieren erst bei Agent-#9/Call-Frage, viel später).
+// FIX 03.06.: preis war fälschlich [40.0, 6.5] → schnitt 1.6s in die Verbindungs-Pause
+//   (33.04→41.60) → Pause auf 6.99s verkürzt (Wälti-T2-Fail). Gold zeigt: preis-Greeting
+//   startet wie notruf bei 44.0, NICHT 40. Slot vereinheitlicht.
+const SLOT = { start: 44.0, dur: 7.0 };
 const G_START = SLOT.start;
 const G_DUR = SLOT.dur;
 const G_END = G_START + G_DUR;

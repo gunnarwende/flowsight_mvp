@@ -40,7 +40,13 @@ const REF = join(REPO_ROOT, PIPE, "_locked", "take4", "canonical_stars_ref.mp4")
 // Referenz-Clip ist die Stern-Innenregion ab Master 71,5s (crop 350x340 @ x=775,y=362).
 const REF_START = 71.5;       // Master-Zeit, bei der der Referenz-Clip beginnt
 const OV_X = 775, OV_Y = 362; // Overlay-Position (= Crop-Ursprung der Region im 1440x900-Master)
-const WIN_START = 72.0, WIN_END = 75.0; // Fill-Fenster (Maus-Sweep) — danach per-Tenant-Chips
+// Fenster (03.06.): bis 76.3 erweitert. WURZEL Schaub-Doppelstern: der per-Tenant Part-6-
+// Fill jittert (recordVideo) und leakte bei 75.33–76.13 NACH dem alten Fenster-Ende 75.0 →
+// zweiter sichtbarer Fill. Die Region zeigt nach dem Fill nur GENERISCHEN Post-Rating-Zustand
+// (5 Sterne + „Vielen Dank" + generische Chips + blauer Button — kein tenant-spezifischer
+// Text; Branding einheitlich Sanitär-blau). Weinberger-Ref bis 76.5 deckt das ab → jeder
+// Betrieb spiegelt Weinberger deterministisch, kein Doppelstern bei beliebigem Jitter.
+const WIN_START = 72.0, WIN_END = 76.3;
 
 const master = join(REPO_ROOT, PIPE, "master_takes", "take4", `${slug}_with_mouse.mp4`);
 if (!existsSync(master)) { console.error(`✗ master fehlt: ${master}`); process.exit(2); }

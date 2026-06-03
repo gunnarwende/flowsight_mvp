@@ -77,15 +77,15 @@ console.log(`║  build_take3_final.mjs — ${slug.padEnd(26)} ║`);
 console.log(`║  V2 Deterministic Pipeline                        ║`);
 console.log(`╚════════════════════════════════════════════════════╝`);
 
-// ── STEP 1+2: Recordings ──
-if (!skipRecord) {
-  logStep(1, "Wizard recording (deterministic)");
-  runNode("scripts/_ops/record_wizard_take3.mjs", [`--slug=${slug}`]);
-
-  logStep(2, "Leitsystem recording");
-  runNode("scripts/_ops/record_leitsystem_take3.mjs", [`--slug=${slug}`]);
-} else {
-  console.log("\n  --skip-record: reusing existing recordings");
+// ── STEP 1+2: ENTFERNT (03.06. Effizienz-Fix, ~73s/Build gespart, 0 Qualitätsverlust).
+// WURZEL: STEP 3 (pipeline_screenflow --take 3) ruft record_wizard_take3 + record_leitsystem_take3
+// SELBST auf (pipeline_screenflow.mjs:304/309) und überschreibt die Recordings + Event-Logs.
+// Downstream (_gen_t3_override, generate_take3_schedule) liest NUR die Event-Logs — und die
+// stammen aus STEP 3. Die früheren STEP 1/2 nahmen also identisch nochmal auf (Doppel-Recording).
+// --skip-record bleibt für reine Post-Process-Re-Runs: dann überspringt auch STEP 3 die Aufnahme
+// nicht von selbst — aber für Re-Runs nutzt man --skip-record + vorhandene take3_*.webm/logs.
+if (skipRecord) {
+  console.log("\n  --skip-record: reusing existing recordings (STEP 3 nutzt vorhandene webms/logs)");
   for (const f of ["take3_wizard.webm", "take3_leitsystem.webm",
                    "take3_wizard_event_log.json", "take3_leit_event_log.json"]) {
     if (!existsSync(join(sfDir, f))) {
