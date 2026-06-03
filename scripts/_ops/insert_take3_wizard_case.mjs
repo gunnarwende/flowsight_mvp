@@ -160,4 +160,22 @@ const configUpdate = {
 await writeFile(configPath, JSON.stringify(configUpdate, null, 2), "utf-8");
 console.log(`✓ _wizard_time + _wizard_case_label geschrieben in tenant_config.json`);
 
+// ── G_T3_KPI_NEU (Daten-Gate, 03.06.): Leitsystem-KPI „Neu" zeigt in T3 die Zahl der
+// status='new'-Fälle. SOLL = 2 (Phone-Case aus Seed + dieser Wizard-Leck-Case). Stale Wälti
+// zeigte 3 (alter Seed-Zustand). OCR einer kleinen KPI-Zahl ist fragil → wir prüfen die
+// Datenquelle direkt: genau 2 offene Fälle. ≠2 = Seed inkonsistent → vor T3-Record fixen.
+const { count: newCount, error: cntErr } = await sb
+  .from("cases")
+  .select("id", { count: "exact", head: true })
+  .eq("tenant_id", TID)
+  .eq("status", "new");
+if (cntErr) {
+  console.warn(`⚠ G_T3_KPI_NEU: Zählung fehlgeschlagen: ${cntErr.message}`);
+} else if (newCount !== 2) {
+  console.error(`❌ G_T3_KPI_NEU FAIL: ${newCount} status='new'-Fälle (SOLL 2 = Phone+Wizard). Seed inkonsistent — vor T3-Record bereinigen!`);
+  process.exit(2);
+} else {
+  console.log(`✅ G_T3_KPI_NEU: 2 offene Fälle (Phone + Wizard) → Leitsystem-KPI „Neu" = 2 korrekt`);
+}
+
 console.log(`\n=== DONE ===\n`);

@@ -6,11 +6,17 @@
  * Exit 0 = alle Gates PASS. Exit 1 = ≥1 FAIL (+ Finding-Report). Spec: quality_gates.md.
  *
  * Gates (implementiert):
- *   - G_GREETING (T2): STT der Call-Start-Region → "Assistentin der <X>" muss = tenant.name
- *     (fängt Weinberger=Leins-Bug). Braucht OPENAI_API_KEY.
- *   - G_START0 (alle): Frame@0:00 darf nicht schwarz/leer sein; T2 = Homescreen-Struktur
- *     (SSIM vs Stark-Referenz) → fängt Offset/Schieflage (Walter T2).
- *   - G_BATTERY (T2): Akku im Call = 86 (Crop-Helligkeit/Template vs Referenz).
+ *   - G_START0 (alle): Frame@0:00 nicht schwarz/leer.
+ *   - G_HOMESCREEN0 (T2): Phone-Interior @0:00 = Homescreen (nicht Suche/Dialing) — Walter-Offset.
+ *   - G_GREETING (T2): STT Call-Start → Firmenname (fängt Greeting-Leak). Braucht OPENAI_API_KEY.
+ *   - G_T2_PAUSE (T2): Verbindungs-Pause 8.55s @33.04 (Gold Walter+Weinberger; stale = verkürzt).
+ *   - G_T2_BEEP (T2): Verbindungs-Ton @41.7–42.6s hörbar (Fehlen = Alarm, Obrist „kein Piepen").
+ *   - G_T2_TAIL (T2): nur letzte ≤2.5s still (stale Wälti = 15s Schluss-Stille).
+ *   - G_T4_STARSYNC (T4): Stern+Maus = Weinberger-Referenz (SSIM ≥0.94).
+ *   - G_T4_CASEOPEN (T4): Case-Detail @11.0s (SSIM-Bracket; stale Walter @8s = desync).
+ *   - G_T4_DOUBLESTAR (T4): genau 1 Gold-Fill-Region [73,80] (≥2 = Doppelstern, Obrist).
+ *   - G_T3_KPI_NEU: in insert_take3_wizard_case.mjs (Daten-Gate, 2 offene Fälle).
+ *   SOLL-Anker + Entscheide: PIPELINE_BIBLE §66/§67.
  *
  * Usage:
  *   node --env-file=src/web/.env.local scripts/_ops/qg_video.mjs --slug <slug> --take <2|3|4> --video <path>
@@ -50,6 +56,44 @@ function probeCropBrightness(videoPath, cropFilter, ts = "0") {
     "-f", "null", "-"], { encoding: "utf8" });
   const m = (r.stderr || "").match(/YAVG=([\d.]+)/); return m ? parseFloat(m[1]) : null;
 }
+function videoDuration(p) {
+  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "default=nk=1:nw=1", p], { encoding: "utf8" });
+  return parseFloat((r.stdout || "").trim()) || 0;
+}
+// Stille-Regionen [{start,end}] via silencedetect.
+function probeSilences(p, noiseDb = -45, minDur = 0.8) {
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-i", p, "-af", `silencedetect=noise=${noiseDb}dB:d=${minDur}`, "-f", "null", "-"], { encoding: "utf8" });
+  const out = []; let cur = null;
+  for (const m of (r.stderr || "").matchAll(/silence_(start|end):\s*(-?[\d.]+)/g)) {
+    if (m[1] === "start") cur = { start: parseFloat(m[2]) };
+    else if (cur) { cur.end = parseFloat(m[2]); out.push(cur); cur = null; }
+  }
+  if (cur) { cur.end = videoDuration(p); out.push(cur); }
+  return out;
+}
+// mittlere Lautstärke (dB) eines Zeitbereichs via volumedetect (−91 ≈ totale Stille).
+function meanVolumeDb(p, ss, to) {
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-ss", String(ss), "-to", String(to), "-i", p, "-af", "volumedetect", "-f", "null", "-"], { encoding: "utf8" });
+  const m = (r.stderr || "").match(/mean_volume:\s*(-?[\d.]+)\s*dB/); return m ? parseFloat(m[1]) : null;
+}
+// SSIM eines Frames @ts (volles Bild) gegen ein Referenz-PNG desselben Videos.
+function ssimFrameVsRef(p, ts, refPng) {
+  const a = join(TMP, `ssf_${ts}.png`);
+  ff(["-ss", String(ts), "-i", p, "-frames:v", "1", a]);
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-i", a, "-i", refPng, "-lavfi", "ssim", "-f", "null", "-"], { encoding: "utf8" });
+  const m = (r.stderr || "").match(/All:\s*([\d.]+)/); return m ? parseFloat(m[1]) : 0;
+}
+// UAVG-Zeitreihe (Chroma-U) eines Crops über [ss,ss+dur] in EINEM ffmpeg-Pass → [{t,u}].
+function uavgSeries(p, cropFilter, ss, dur) {
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-copyts", "-ss", String(ss), "-t", String(dur), "-i", p,
+    "-vf", `${cropFilter},signalstats,metadata=print:key=lavfi.signalstats.UAVG`, "-an", "-f", "null", "-"], { encoding: "utf8" });
+  const out = []; let t = null;
+  for (const m of (r.stderr || "").matchAll(/pts_time:([\d.]+)|UAVG=([\d.]+)/g)) {
+    if (m[1] !== undefined) t = parseFloat(m[1]);
+    else if (t !== null) { out.push({ t, u: parseFloat(m[2]) }); t = null; }
+  }
+  return out;
+}
 
 console.log(`\n═══ QG-Video: ${slug} T${take} (${companyName}) ═══`);
 console.log(`  video: ${video}`);
@@ -71,6 +115,30 @@ if (take === "2") {
   gate("G_HOMESCREEN0 Phone@0:00 = Homescreen (nicht Suche/Dialing)",
     yPhone !== null && yPhone >= 90 && yPhone <= 180,
     `Phone-Interior YAVG=${yPhone?.toFixed(0)} (erwartet 90-180; Suche≈225 / Dialing≈70 / schwarz<20)`);
+}
+
+// ── G_T2_PAUSE / G_T2_BEEP / G_T2_TAIL (T2): Audio-Struktur ────────────────
+// SOLL (Gold Walter+Weinberger+locked-Master, gemessen 03.06.): Verbindungs-Pause
+// (Wählen→Lisa-Greeting) = 8.55s ab @33.04s. Verkürzte Pause (stale Marti 7.0 / Stark 1.34)
+// = Audio rutscht zu früh → Beep/Greeting/Rest desync. Beep/Verbindungston = kurzes Tonsegment
+// direkt nach der Pause (~41.7–42.6s) — Fehlen = Alarm (Obrist „kein Piepen"). Tail: nur die
+// letzten ≤2.5s dürfen still sein (stale Wälti: 15s Schluss-Stille = Audio bricht zu früh ab).
+if (take === "2") {
+  const dur = videoDuration(video);
+  const sil = probeSilences(video, -45, 0.8);
+  const pause = sil.find((s) => Math.abs(s.start - 33.04) < 1.2 && (s.end - s.start) > 4.0);
+  const pauseDur = pause ? pause.end - pause.start : 0;
+  gate("G_T2_PAUSE Verbindungs-Pause 8.55s @33.04",
+    !!pause && Math.abs(pauseDur - 8.55) <= 0.35 && Math.abs(pause.start - 33.04) <= 0.3,
+    pause ? `Pause ${pauseDur.toFixed(2)}s @${pause.start.toFixed(2)}s (SOLL 8.55s @33.04 ±0.35/0.3)` : "keine Pause ~33s (Audio verschoben/kaputt — stale Build?)");
+  const beepDb = meanVolumeDb(video, 41.7, 42.6);
+  gate("G_T2_BEEP Verbindungs-Ton vorhanden (nicht 'kein Piepen')",
+    beepDb !== null && beepDb > -45,
+    `mean_volume @41.7–42.6s = ${beepDb === null ? "n/a" : beepDb.toFixed(1) + "dB"} (SOLL > −45dB = hörbar; Stille = Alarm/Obrist)`);
+  const tail = sil.find((s) => s.end >= dur - 0.3 && s.start < dur - 2.5);
+  gate("G_T2_TAIL nur letzte ≤2.5s still",
+    !tail,
+    tail ? `Schluss-Stille ${(dur - tail.start).toFixed(1)}s ab ${tail.start.toFixed(1)}s (Audio bricht zu früh ab; SOLL ≤2.5s)` : `ok (dur ${dur.toFixed(1)}s)`);
 }
 
 // ── G_GREETING (T2): STT Call-Start → Firmenname ───────────────────────────
@@ -130,7 +198,7 @@ if (take === "4") {
   // fälschlich übergangen wurde). SSIM fängt BEIDES: Position (Layout-Reflow → Sterne
   // verschoben) UND Timing (Fill-Offset → andere Anzahl gefüllter Sterne pro Frame).
   // Crop = Phone-Stern+Maus-Bereich, OHNE Header/Name (name-/datums-unabhängig).
-  const refSlug = argVal("--ref-slug", "stark-haustechnik");
+  const refSlug = argVal("--ref-slug", "weinberger-ag"); // Founder 03.06.: T4-Ref = Weinberger
   const REF = `docs/gtm/pipeline/07_stresstest/${refSlug}/T4_bewertung.mp4`;
   // ENGER Crop auf die 5-Sterne-Reihe (kalibriert 02.06.): der weite Crop verwässerte
   // die SSIM mit statischem Phone-Hintergrund (kaputt 0,969 ≈ gut 0,989, nicht trennbar).
@@ -153,10 +221,38 @@ if (take === "4") {
       const s = m ? parseFloat(m[1]) : 0;
       if (s < minSsim) { minSsim = s; worstT = ts; }
     }
-    gate("G_T4_STARSYNC Maus+Sterne = Stark-Referenz (SSIM)",
+    gate("G_T4_STARSYNC Maus+Sterne = Referenz (SSIM)",
       minSsim >= SSIM_MIN,
-      `min SSIM=${minSsim.toFixed(3)} @${worstT}s vs ${refSlug} (≥${SSIM_MIN} = Höhe+Geschwindigkeit+Zeitpunkt wie Stark)`);
+      `min SSIM=${minSsim.toFixed(3)} @${worstT}s vs ${refSlug} (≥${SSIM_MIN} = Höhe+Geschwindigkeit+Zeitpunkt wie Referenz)`);
   }
+
+  // ── G_T4_CASEOPEN (T4): Case-Detail erscheint @11.0s ─────────────────────
+  // SOLL (Weinberger, gemessen 03.06.): Dashboard→Case-Detail-Übergang @11.0s (Voll-Frame-
+  // SSIM vs Dashboard@5s fällt 0.98→0.77). Zu früh (stale Walter @8s) → universelle Maus/
+  // Audio desync bis ~28s. Bracket: @10.0 noch Liste (SSIM hoch) + @12.0 schon Detail (tief).
+  const dashRef = join(TMP, "t4_dash5.png");
+  ff(["-ss", "5.0", "-i", video, "-frames:v", "1", dashRef]);
+  const sAt10 = ssimFrameVsRef(video, "10.0", dashRef);
+  const sAt12 = ssimFrameVsRef(video, "12.0", dashRef);
+  gate("G_T4_CASEOPEN Case-Detail @11.0s (±1s)",
+    sAt10 > 0.90 && sAt12 < 0.86,
+    `SSIM@10s=${sAt10.toFixed(2)} (SOLL>0.90 noch Liste) / @12s=${sAt12.toFixed(2)} (SOLL<0.86 Detail offen)`);
+
+  // ── G_T4_DOUBLESTAR (T4): genau EIN Gold-Fill, kein Leak nach dem Fenster ──
+  // Canonical-Stars-Overlay füllt im Fenster [72,75]. Wenn der per-Tenant-Fill der Live-
+  // Aufnahme (Part 6, nicht geankert) nach 75s leakt (Obrist @76 = +2s Jitter) → Doppelstern.
+  // Gate zählt Gold-Dip-Regionen (UAVG<120 in der Sternreihe) über [73,80]: genau 1 = ok,
+  // ≥2 = Doppelstern → FAIL → Rebuild. Weinberger-Gold: 1 Dip 74.0–74.8, danach U zurück 128.
+  const series = uavgSeries(video, "crop=350:48:775:420", 73.0, 7.0);
+  let regions = 0, inDip = false, dipFrames = 0;
+  for (const { u } of series) {
+    if (u < 120) { if (!inDip) { inDip = true; dipFrames = 0; } dipFrames++; }
+    else if (u >= 122) { if (inDip && dipFrames >= 3) regions++; inDip = false; }
+  }
+  if (inDip && dipFrames >= 3) regions++;
+  gate("G_T4_DOUBLESTAR genau ein Stern-Fill (kein Leak nach Fenster)",
+    regions === 1,
+    `${regions} Gold-Fill-Region(en) in [73,80]s (SOLL=1; ≥2 = Doppelstern durch Part-6-Jitter)`);
 }
 
 console.log(`\n═══ Ergebnis: ${findings.length === 0 ? "✅ ALL PASS" : `❌ ${findings.length} FAIL`} (${slug} T${take}) ═══`);
