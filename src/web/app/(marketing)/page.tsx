@@ -7,7 +7,7 @@ import ScreenPreview from "@/src/components/ScreenPreview";
 export const metadata: Metadata = {
   title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
   description:
-    "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen — alles an einem Ort. Ab CHF 299/Mo.",
+    "Vom ersten Kontakt bis zur Bewertung. Telefonassistentin, Online-Meldungen, Leitstand und Bewertungen — alles an einem Ort.",
   openGraph: {
     title: "FlowSight — Das Leitsystem für Schweizer Handwerksbetriebe",
     description:
@@ -188,26 +188,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── AKT 4 — SICHERHEIT (Pricing + Trust) ──── */}
+      {/* ── AKT 4 — SICHERHEIT (Trust) ──── */}
       <section className="bg-navy-50 py-20 sm:py-28">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <div className="mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-8 text-center shadow-sm">
-            <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              Ab CHF 299 / Monat
-            </h2>
-            <p className="mt-3 text-sm text-navy-400">
-              Monatlich kündbar. Absolut transparent.{" "}
-              <span className="inline-block">Keine versteckten Kosten.</span>
-            </p>
-            <Link
-              href="/pricing"
-              className="mt-5 inline-block rounded-lg bg-navy-900 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-800"
-            >
-              Alle Preise im Detail
-            </Link>
-          </div>
-
-          <div className="mx-auto mt-14 grid max-w-3xl gap-6 sm:grid-cols-2">
+          <div className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
             {([
               { title: "Keine Gesprächsaufnahmen", text: "Keine Aufzeichnungen. Keine versteckten Mitschnitte. Punkt." },
               { title: "Persönliche Einrichtung", text: "Wir richten das System gemeinsam ein. Kein Self-Service, kein IT-Projekt." },

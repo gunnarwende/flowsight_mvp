@@ -75,13 +75,6 @@ export function MobileNav() {
                 Funktionen
               </a>
               <Link
-                href="/pricing"
-                onClick={() => setOpen(false)}
-                className="text-2xl font-semibold text-white transition-colors hover:text-gold-400"
-              >
-                Preise
-              </Link>
-              <Link
                 href="/live-erleben"
                 onClick={() => setOpen(false)}
                 className="text-2xl font-semibold text-white transition-colors hover:text-gold-400"
