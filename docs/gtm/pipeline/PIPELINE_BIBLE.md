@@ -4724,3 +4724,31 @@ fingen **4 echte, generalisierbare Bugs** (NICHT stale) — Beleg, dass die Gate
 **Build-Zeiten gemessen (03.06., pro Betrieb):** T1 ~11s, T2 ~330s, T3 377s (nach Fix), T4 ~510s
 (--with-mouse, einmalig). **WICHTIG: T4 NIE zweimal bauen** — direkt `--with-mouse` (sonst no-mouse-
 Build verschwendet + G_T4_STARSYNC failt, siehe §67).
+
+## §69 Founder-Review-Tag — 4 Root-Fixes + T4-Recording-Jitter als 5%-Kern (03.06.2026)
+
+Founder reviewt die platzierten Betriebe einzeln; abgenommene wandern nach
+`07_stresstest/abgenommen/<slug>/`. 4 weitere Wurzel-Fixes (PRs #540/#541):
+
+1. **T2 SMS-Thread fehlt** (Marti): `build_take2_final` STEP 2c-4 extrahierte den Thread-Frame
+   bei fixem Offset (SAMSUNG_TRIM+29.7) → bei Recording-Jitter auf die SMS-Notification statt
+   den weißen Thread. **Fix:** deterministische Detektion = letzte anhaltende Weiß-Region
+   (Y>200, ≥0.8s) der samsung.webm. **Gate G_T2_SMS_OPEN** (Phone-Interior YAVG>185).
+2. **Leitsystem-Farbe stale** (Schaub rot trotz Config blau): `resolveTenantIdentity` liest
+   `modules.primary_color` aus der DB; `seed_screenflow_from_config` synct es jetzt aus
+   `config.tenant.brand_color` (war vorher nicht → alte Onboard-Farbe blieb). config = SSOT.
+3. **KPI „Neu"=3** (Walter/Wälti): `insert_take3_wizard_case` löschte nur den exakten
+   Demo-Key → stale wizard-new (alter Reporter „Andreas") überlebte. **Fix:** löscht alle
+   `source=wizard, status=new` (Demo-Wizard ist der einzige; Seed-Andreas ist in_arbeit).
+4. **G_T4_STARSYNC Ref-Pfad** robust für `abgenommen/`-Betriebe (abgenommen→direkt→master_takes).
+
+**⚠️ 5%-DETERMINISMUS-KERN (offen, nächste Wochen):** Das T4-Recording-Timing JITTERT trotz
+`holdUntilMaster`-Anker — Marti-Rebuild #1 caseopen-FAIL (@<10), #2 PASS (@11) = Rebuild-Lotterie.
+Wurzeln: (a) caseopen-Anker basiert auf `nowRt()`-Zeitmessung (dashboardVisibleRt) statt State —
+jittert. (b) **Part 5 (Erledigt/Bewertung, sec 39-50) ist GAR NICHT geankert** (blinde
+waitForTimeout) → Maus/Audio-Desync (Marti-„Maus-hängt-hinterher"-Jank). **Echter Fix:** Part-5-
+holdUntilMaster-Anker (wie Part 1) + caseopen-Anker state-basiert. G_T4_CASEOPEN fängt den
+caseopen-Jitter bereits; ein G_T4_ERLEDIGT-Sync-Gate wäre der nächste Wächter.
+
+**Build-Disziplin bestätigt:** T4 IMMER direkt `--with-mouse` (nie no-mouse-Vorlauf); abgebrochene
+Builds hinterlassen `_tmp_take{3,4}/` → vor Re-Run löschen (sonst rmdir ENOTEMPTY).
