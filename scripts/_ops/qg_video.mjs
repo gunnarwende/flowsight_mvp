@@ -141,6 +141,19 @@ if (take === "2") {
     tail ? `Schluss-Stille ${(dur - tail.start).toFixed(1)}s ab ${tail.start.toFixed(1)}s (Audio bricht zu früh ab; SOLL ≤2.5s)` : `ok (dur ${dur.toFixed(1)}s)`);
 }
 
+// ── G_T2_SMS_OPEN (T2): SMS-Thread offen @3:33–3:44 (nicht Homescreen) ──────
+// SOLL (Weinberger): in der phone_sms_thread-Phase (3:33.8–3:44.8) ist der WEISSE SMS-Thread
+// sichtbar (Phone-Interior YAVG≈227). Marti-Bug (03.06.): die Thread-Frame-Extraktion (fixer
+// Offset) fiel bei Recording-Jitter auf die SMS-Notification (Homescreen+Banner, YAVG≈133) →
+// Thread fehlte komplett. Wurzel-Fix = Weiß-Region-Detektion in build_take2_final STEP 2c-4.
+if (take === "2") {
+  const smsYs = [215, 218, 221].map((t) => probeCropBrightness(video, "crop=250:400:450:150", String(t)) || 0);
+  const smsMax = Math.max(...smsYs);
+  gate("G_T2_SMS_OPEN SMS-Thread offen @3:33–3:44",
+    smsMax > 185,
+    `Phone-Interior max YAVG=${smsMax.toFixed(0)} in [215,221]s (SOLL >185 = weißer Thread; ~133 = Homescreen/Notif → Thread fehlt)`);
+}
+
 // ── G_GREETING (T2): STT Call-Start → Firmenname ───────────────────────────
 if (take === "2") {
   const key = (process.env.OPENAI_API_KEY || "").replace(/^"|"$/g, "");
@@ -210,7 +223,14 @@ if (take === "4") {
   // verschoben) UND Timing (Fill-Offset → andere Anzahl gefüllter Sterne pro Frame).
   // Crop = Phone-Stern+Maus-Bereich, OHNE Header/Name (name-/datums-unabhängig).
   const refSlug = argVal("--ref-slug", "weinberger-ag"); // Founder 03.06.: T4-Ref = Weinberger
-  const REF = `docs/gtm/pipeline/07_stresstest/${refSlug}/T4_bewertung.mp4`;
+  // Ref-Pfad robust (03.06.): abgenommene Betriebe wandern nach 07_stresstest/abgenommen/<slug>/
+  // → Referenz dort ZUERST suchen, dann direkt, dann master_takes-Fallback.
+  const ST = "docs/gtm/pipeline/07_stresstest";
+  const REF = [
+    `${ST}/abgenommen/${refSlug}/T4_bewertung.mp4`,
+    `${ST}/${refSlug}/T4_bewertung.mp4`,
+    `docs/gtm/pipeline/06_video_production/master_takes/take4/${refSlug}_with_mouse.mp4`,
+  ].find(existsSync) || `${ST}/${refSlug}/T4_bewertung.mp4`;
   // ENGER Crop auf die 5-Sterne-Reihe (kalibriert 02.06.): der weite Crop verwässerte
   // die SSIM mit statischem Phone-Hintergrund (kaputt 0,969 ≈ gut 0,989, nicht trennbar).
   // Eng auf die Sternreihe @Mid-Fill (74,0–74,4s) trennt: gut min≈0,97 / desync min≈0,91.

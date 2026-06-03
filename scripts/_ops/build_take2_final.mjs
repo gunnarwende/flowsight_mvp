@@ -293,10 +293,33 @@ console.log(`  → legacy path overridden: ${legacyHomescreen}`);
 // instead of SMS thread during 3:37-3:48 canvas window. SMS PNG overlay
 // fixes this analog to the HS overlay covering phone_homescreen_post_sms.
 const smsPng = join(PIPE, "screenflows", slug, "_sms_thread.png");
-// ANCHOR (02.06.): SMS-Extract relativ zum dynamischen Homescreen-Start. Alt-
-// Kalibrierung war t=30 bei Trim 0.3 → relativer Offset 29.7s. Neu = trim + 29.7,
-// sonst frisst der Encoder-Warm-up am Webm-Anfang den Bezug (SMS-Thread verschoben).
-const smsExtractT = (SAMSUNG_TRIM + 29.7).toFixed(2);
+// DETEKTION (03.06.): SMS-Thread deterministisch via Helligkeit finden statt fixem Offset.
+// WURZEL Marti-Bug: `SAMSUNG_TRIM + 29.7` fiel bei Recording-Jitter auf die SMS-Notification
+// (Homescreen+Banner, dunkles Wallpaper Y≈113) statt den Thread (weißer Screen Y≈232) →
+// im Finale 3:33–3:44 falscher Frame. Der Thread ist die LETZTE anhaltende Weiß-Region der
+// samsung.webm (kommt nach der Notification; Call-Ended-Screen ist auch weiß aber FRÜHER).
+function detectSmsThreadTime(webm, fallbackT) {
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-i", webm,
+    "-vf", "signalstats,metadata=print:key=lavfi.signalstats.YAVG", "-an", "-f", "null", "-"],
+    { encoding: "utf8" });
+  const samples = []; let t = null;
+  for (const m of (r.stderr || "").matchAll(/pts_time:([\d.]+)|YAVG=([\d.]+)/g)) {
+    if (m[1] !== undefined) t = parseFloat(m[1]);
+    else if (t !== null) { samples.push({ t, y: parseFloat(m[2]) }); t = null; }
+  }
+  const regions = []; let start = null, last = null;
+  for (const s of samples) {
+    if (s.y > 200) { if (start === null) start = s.t; last = s.t; }
+    else { if (start !== null && last - start >= 0.8) regions.push([start, last]); start = null; }
+  }
+  if (start !== null && last - start >= 0.8) regions.push([start, last]);
+  if (!regions.length) { console.warn(`  ⚠ keine Weiß-Region erkannt → Fallback ${fallbackT}s`); return fallbackT; }
+  const [a, b] = regions[regions.length - 1];
+  const mid = ((a + b) / 2).toFixed(2);
+  console.log(`  → SMS-Thread erkannt: ${regions.length} Weiß-Region(en), letzte [${a.toFixed(2)},${b.toFixed(2)}]s → extract @${mid}s`);
+  return mid;
+}
+const smsExtractT = detectSmsThreadTime(samsungWebm, (SAMSUNG_TRIM + 29.7).toFixed(2));
 step(`STEP 2c-4: Extract SMS thread frame from samsung.webm (t=${smsExtractT}, anchor-relative)`, "ffmpeg", [
   "-y", "-hide_banner", "-loglevel", "error",
   "-ss", smsExtractT, "-i", samsungWebm, "-frames:v", "1",
