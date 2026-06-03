@@ -4687,3 +4687,40 @@ T4 regenerieren: `ffmpeg -ss 71.5 -t 5 -i <weinberger_T4> -vf crop=350:340:775:3
 **ausschliesslich sequenziell** — die platzierten Stale-Videos stammten aus einem Parallel-Lauf,
 dessen Auth-Jitter/Stale-Reuse-Risiken (§65) sich nicht zuverlässig optisch verifizieren liessen.
 Erst wenn die Gates über mehrere sequenzielle Läufe stabil grün sind, wird Parallel re-evaluiert.
+
+## §68 Batch-2 4-Betrieb-Rebuild + Effizienz-Findings (03.06.2026)
+
+Sequenzieller Rebuild waelti/schaub/marti/obrist (nach Obrist-Beweis). Die §66/§67-Gates
+fingen **4 echte, generalisierbare Bugs** (NICHT stale) — Beleg, dass die Gate-Strategie trägt:
+
+1. **preis-Greeting-Slot schnitt die Verbindungs-Pause an** (`swap_tenant_greeting`): Slot war
+   [40.0, 6.5], startete 1.6s INNERHALB der 8.55s-Pause (33.04→41.60) → Pause auf 6.99s
+   verkürzt (Wälti-T2-Fail, G_T2_PAUSE). Gold (Weinberger) zeigt preis-Greeting @44.0 wie
+   notruf. **Slot vereinheitlicht auf [44.0, 7.0] für BEIDE Varianten** (Pre-Call-Struktur identisch).
+2. **Stale per-Tenant-Audio durchgereicht** (`build_take2_final` STEP 0.6): war generate-if-
+   missing → altes kaputtes take2_*.wav wiederverwendet. **Jetzt always-regenerate** (Swap ist
+   schnell + deterministisch). Gleiche Klasse: stale Greeting-TTS (Apr-29, prä-Rechtsform-Strip,
+   7.11s > preis-Slot) → vor Build `agent_01.wav` löschen + neu generieren (Name ohne Rechtsform).
+3. **G_GREETING STT-Robustheit** (`qg_video`): Whisper verschluckt/fügt Zeichen bei Schweizer
+   Namen (Marti→Mati) → false-FAIL. Fuzzy-Fenster **±1 Länge** ergänzt; kein false-PASS verifiziert.
+4. **T4-Doppelstern** (`apply_canonical_stars` WIN_END 75.0→76.3): per-Tenant Part-6-Stern-Fill
+   jittert; Schaub leakte @75.3–76.1 nach altem Fenster-Ende → 2 Fills (G_T4_DOUBLESTAR). Region
+   nach dem Fill = GENERISCHER Post-Rating-Zustand (5 Sterne + „Vielen Dank" + generische Chips +
+   blauer Button; Branding einheitlich Sanitär-blau) → Fenster bis 76.3 spiegelt Weinberger
+   deterministisch, deckt jeden Jitter. (Frühere Annahme „Region nach 75 = per-Tenant" widerlegt
+   durch Frame-Inspektion: nichts tenant-Spezifisches.)
+
+**Effizienz-Findings (Founder-Mandat „2-3 Zeitfresser ohne Qualitätsverlust"):**
+- **#1 GEFIXT — T3 Doppel-Recording:** `build_take3_final` STEP 1/2 (record_wizard/leit) waren
+  redundant — `pipeline_screenflow` (STEP 3) ruft dieselben Recorder selbst auf + überschreibt
+  Recordings/Event-Logs. STEP 1/2 entfernt → **−109s/T3-Build (486→377s, −22%)**, 0 Qualitätsverlust.
+- **#2 OFFEN — T4 = 4 sequenzielle Voll-Re-Encodes** (Maus→Toast→Badge→Stars, je ~177s @1440×900,
+  ~300s gesamt). `--skip-record` spart nur ~22s (Aufnahme ist NICHT der Flaschenhals). **Vorschlag:**
+  Toast+Badge+Stars in EINEN ffmpeg-Filtergraph ketten (drawbox+overlay+enable) → ~150–200s sparbar.
+- **#3 OFFEN — T2 = 168s Echtzeit-Call-Recording** (record_phone_call_visual, audio-gekoppelt).
+  **Vorschlag:** prüfen, ob der Call-Visual schneller-als-Echtzeit (file://-Render ohne Audio-Sync)
+  produzierbar ist + Audio separat gemuxt.
+
+**Build-Zeiten gemessen (03.06., pro Betrieb):** T1 ~11s, T2 ~330s, T3 377s (nach Fix), T4 ~510s
+(--with-mouse, einmalig). **WICHTIG: T4 NIE zweimal bauen** — direkt `--with-mouse` (sonst no-mouse-
+Build verschwendet + G_T4_STARSYNC failt, siehe §67).
