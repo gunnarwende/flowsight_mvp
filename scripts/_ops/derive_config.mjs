@@ -558,6 +558,7 @@ function deriveCallProofVariante(notdienstValue) {
   // Strong evidence patterns — explicit 24/7 service
   const strongEvidence = [
     /24\s*(?:h|stunden)/,
+    /24\s*[\/\\\-]\s*7/,          // FIX 03.06.: "24/7" (Obrist-Bug — rutschte vorher durch → falsch B)
     /rund\s+um\s+die\s+uhr/,
     /7\s*tage/,
     /pikett/,
@@ -573,6 +574,38 @@ function deriveCallProofVariante(notdienstValue) {
 
   // Only weak evidence (just "Notfall" or "Notdienst" without 24/7 context)
   return "B";
+}
+
+/**
+ * Sanitize brand color (Founder 03.06.): rote/gelbe/schwarze/grüne Marken-Farbe wirkt im Video
+ * falsch — Rot = Fehler/Alarm (Schaub-Bug #e73744 wirkte wie Error), Gelb = Warnung, Schwarz/Grün
+ * unnatürlich für Sanitär. Der Crawler verwechselt zudem oft Accent/CTA mit der echten Marken-Farbe.
+ * Regel: nur Blau/Türkis-Korridor (hue 175–260, genug Sättigung+Helligkeit) erlauben; alles andere
+ * (rot/orange/gelb/grün/violett, zu dunkel/hell/blass) → Fallback natürliches Sanitär-Blau.
+ * Liefert { color, accepted } — accepted=false wenn ersetzt (für founderActions-Hinweis).
+ */
+const SANITAER_BLUE = "#2b6cb0";
+function sanitizeBrandColor(hex) {
+  if (!hex || typeof hex !== "string") return { color: SANITAER_BLUE, accepted: false };
+  const m = hex.trim().replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(m)) return { color: SANITAER_BLUE, accepted: false };
+  const r = parseInt(m.slice(0, 2), 16) / 255, g = parseInt(m.slice(2, 4), 16) / 255, b = parseInt(m.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const l = (max + min) / 2;
+  let h = 0;
+  if (d > 0) {
+    if (max === r) h = (((g - b) / d) % 6 + 6) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+  }
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  // zu dunkel (schwarz) / zu hell (weiss) / zu blass (grau) → Fallback
+  if (l < 0.12 || l > 0.92 || s < 0.12) return { color: SANITAER_BLUE, accepted: false };
+  // erlaubter Blau/Türkis-Korridor
+  if (h >= 175 && h <= 260) return { color: `#${m.toLowerCase()}`, accepted: true };
+  // alles andere (rot/orange/gelb/grün/violett/pink) → Fallback
+  return { color: SANITAER_BLUE, accepted: false };
 }
 
 function extractCityFromAddress(adresse) {
@@ -793,7 +826,9 @@ async function main() {
   const notdienst = crawl.notdienst?.value || null;
   const oeffnungszeiten = crawl.oeffnungszeiten?.value || null;
   const werte = crawl.werte?.value || null;
-  const brandColor = crawl.brand_color?.value || prospect?.company?.brand_color || null;
+  const brandColorRaw = crawl.brand_color?.value || prospect?.company?.brand_color || null;
+  const brandSan = sanitizeBrandColor(brandColorRaw);
+  const brandColor = brandSan.color; // immer gültiges Sanitär-taugliches Blau (Founder 03.06.)
   const googleRating = crawl.google?.rating || prospect?.reviews?.google_rating || null;
   const googleReviewCount = crawl.google?.review_count || prospect?.reviews?.google_reviews || null;
   const besonderheiten = crawl.besonderheiten?.value || null;
@@ -879,7 +914,8 @@ async function main() {
   // ── Founder actions ──
   const founderActions = [];
   if (!email) founderActions.push({ field: "prospect_email", reason: "Keine E-Mail auf Website gefunden. Founder muss E-Mail beschaffen.", default: null });
-  if (!brandColor) founderActions.push({ field: "brand_color", reason: "Brand Color nicht extrahierbar. Default: #64748b (slate).", default: "#64748b" });
+  if (!brandColorRaw) founderActions.push({ field: "brand_color", reason: `Brand Color nicht extrahierbar → Fallback Sanitär-Blau ${SANITAER_BLUE}.`, default: SANITAER_BLUE });
+  else if (!brandSan.accepted) founderActions.push({ field: "brand_color", reason: `Gecrawlte Farbe "${brandColorRaw}" unnatürlich für Sanitär (rot/gelb/schwarz/grün/blass) → Fallback Sanitär-Blau ${SANITAER_BLUE}. Falls echte Marken-Farbe blau: manuell setzen.`, default: SANITAER_BLUE });
   if (!oeffnungszeiten) founderActions.push({ field: "oeffnungszeiten", reason: "Öffnungszeiten nicht auf Website. Founder muss beschaffen.", default: "Bitte kontaktieren Sie uns telefonisch" });
   if (!inhaber) founderActions.push({ field: "inhaber", reason: "Inhaber/GL nicht auf Website identifiziert.", default: null });
   // video_hook: Optional für E-Mail/Video. Auto-Vorschlag wird verwendet wenn nicht angepasst.
@@ -898,7 +934,7 @@ async function main() {
       slug,
       name: firma,
       case_id_prefix: finalPrefix,
-      brand_color: brandColor || "#64748b",
+      brand_color: brandColor,
       sms_sender_name: smsSenderName,
     },
 

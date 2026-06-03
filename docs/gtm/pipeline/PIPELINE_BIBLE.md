@@ -4644,3 +4644,46 @@ Founder-Tätigkeiten" — nicht mehr jedes Video manuell prüfen):
 **Prinzip:** Jede Fehlerklasse, die der Founder im Review findet, wird zum automatischen
 Gate → fängt es beim nächsten Build selbst ab. Verify-visuell-am-echten-Frame (accurate-
 seek `-ss` NACH `-i`), nie nur metrisch.
+
+## §67 Batch-2 Gates + SOLL-Anker + Stale-Erkenntnis (03.06.2026, Founder-Review #2)
+
+**Kern-Erkenntnis:** Die meisten Founder-Findings (T2-Audio-Shift, Greeting-Leak, „kein
+Piepen", Wälti April-Daten + KPI Neu=3, Marti-Greeting) waren **stale platzierte Videos** —
+die aktuelle Pipeline produziert bereits korrekt (locked-Master 8.55s-Pause intakt; Caseopen
+deterministisch @11.0 via §65-Anker; Wizard+Phone = exakt 2 `new`-Fälle). Lehre: **vor
+Detail-Analyse immer prüfen, ob das platzierte Artefakt aus der AKTUELLEN Pipeline stammt.**
+Echte Code-Fixes waren nur Config (Obrist-Variante, Schaub-Farbe) + die Gates als Wächter.
+
+**Gemessene SOLL-Anker (Gold = Walter notruf + Weinberger preis + locked-Master):**
+| Dimension | SOLL | Gate |
+|---|---|---|
+| T2 Verbindungs-Pause | 8.55s ab @33.04s | G_T2_PAUSE (±0.35/0.3) |
+| T2 Verbindungs-Ton (Beep) | hörbar @41.7–42.6s | G_T2_BEEP (>−45dB) |
+| T2 Tail-Stille | nur letzte ≤2.5s | G_T2_TAIL |
+| T4 Caseopen | @11.0s (SSIM 0.98→0.77) | G_T4_CASEOPEN |
+| T4 Stern-Fill | genau 1 Gold-Region [73,80] | G_T4_DOUBLESTAR |
+| T3 KPI „Neu" | 2 (Phone+Wizard) | G_T3_KPI_NEU (Daten-Gate) |
+
+**Founder-Entscheide 03.06.:**
+- **T4-Referenz = ausschliesslich Jul. Weinberger** (Stern-Fill-Onset @74.13s). `apply_canonical_stars`
+  + `qg_video --ref-slug` Default auf `weinberger-ag` umgestellt. Alt-Stark-Ref → `canonical_stars_ref_STARK_old.mp4`.
+- **T2-Schablonen:** notruf = Walter, preis = Weinberger (Stark T2 ist KAPUTT → nie als Schablone).
+- **Doppelstern (Obrist):** Part-6-Stern-Fill ist NICHT geankert → leakt bei Jitter nach dem
+  Overlay-Fenster [72,75] (Obrist @76 = +2s). Masken-Fenster erweitern ist **messbar falsch**
+  (ReviewSurface transitioniert nach 75s → würde legitimen Post-Rating-Zustand überdecken).
+  Korrekter Wächter = G_T4_DOUBLESTAR (zählt Gold-Regionen; ≥2 → FAIL → Rebuild).
+- **Brand-Farbe:** `sanitizeBrandColor` in derive_config — nur Blau/Türkis (hue 175–260)
+  erlaubt; rot/gelb/schwarz/grün/blass → Fallback Sanitär-Blau `#2b6cb0` (Schaub #e73744 = Error-Optik).
+- **Notdienst-Erkennung:** „24/7"-Slash-Variante ergänzt (Obrist rutschte vorher durch → falsch preis).
+
+**Validierung (ohne Rebuild, fail-broken/pass-good):** alle Gates an Gold (Walter/Weinberger
+= PASS) + kaputt (Stark/Marti/Obrist Pause-FAIL; Obrist Doppelstern = 3 Regionen-FAIL;
+Walter/Obrist Caseopen-FAIL) geprüft = 100% trennscharf.
+
+**Build-Prerequisite (gitignored):** `_locked/take4/canonical_stars_ref.mp4` aus Weinberger
+T4 regenerieren: `ffmpeg -ss 71.5 -t 5 -i <weinberger_T4> -vf crop=350:340:775:362 -an … ref.mp4`.
+
+**Nur sequenzielle Läufe (Stand 03.06.):** Trotz §65-Parallel-Safety bauen wir bis auf Weiteres
+**ausschliesslich sequenziell** — die platzierten Stale-Videos stammten aus einem Parallel-Lauf,
+dessen Auth-Jitter/Stale-Reuse-Risiken (§65) sich nicht zuverlässig optisch verifizieren liessen.
+Erst wenn die Gates über mehrere sequenzielle Läufe stabil grün sind, wird Parallel re-evaluiert.
