@@ -168,7 +168,18 @@ if (take === "2") {
     const words = toWords(companyName.replace(strip, " "));
     const cand = (words.length ? words : toWords(companyName));
     const lev = (a, b) => { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; };
-    const fuzzyIn = (w) => { if (normT.includes(w)) return true; const tol = Math.max(1, Math.floor(w.length / 4)); for (let i = 0; i + w.length <= normT.length; i++) if (lev(w, normT.slice(i, i + w.length)) <= tol) return true; return false; };
+    // FIX 03.06.: Fenster-Länge ±1 zusätzlich zur Wortlänge — Whisper schluckt/fügt bei
+    // Schweizer Namen oft Zeichen (Marti→Mati, Sohn→Onzon) → bei spaceless normT verschiebt
+    // die Wortgrenze das Fenster. ±1 fängt gedroppte/eingefügte Zeichen (lev "marti"/"mati"=1).
+    const fuzzyIn = (w) => {
+      if (normT.includes(w)) return true;
+      const tol = Math.max(1, Math.floor(w.length / 4));
+      for (const L of [w.length - 1, w.length, w.length + 1]) {
+        if (L < 3) continue;
+        for (let i = 0; i + L <= normT.length; i++) if (lev(w, normT.slice(i, i + L)) <= tol) return true;
+      }
+      return false;
+    };
     const hit = cand.find(fuzzyIn);
     gate("G_GREETING Firmenname in Lisa-Greeting", !!hit,
       `erwartet eines von [${cand.join(", ")}] | STT: "${text.slice(0, 90)}…"`);
