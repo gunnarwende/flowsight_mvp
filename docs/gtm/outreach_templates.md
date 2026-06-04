@@ -16,7 +16,52 @@ Die März-Templates basieren auf einem überholten Modell (Test-Telefonnummer + 
 - **Ansprechpartner:** Inhaber **mit Namen** (Anreicherung Impressum/Zefix/LinkedIn), nicht `info@`.
 - **Kadenz (tracking-gesteuert):** Tag 0 Mail → Tag 3 Reminder (geschaut-aber-still vs. nicht-geöffnet unterschiedlich) → Tag 6-7 Anruf (priorisiert nach Watch-Signal, mit den 3 Discovery-Fragen aus `discovery_questions.md`) → Pause (max 3 Touches) → Video löschen nach 14 Tagen ohne Engagement.
 
-→ **TODO 04.06.:** Konkretes neues Template (Betreff + Body, Variante-A-CTA, Menschlich-Prinzip) hier ausformulieren, sobald Beweis-Seite + Bunny stehen.
+### Template NEU (Tag 0) — Ein-Link-Modell (gilt ab 04.06., ersetzt Template 1/2 für die Video-Pipeline-Betriebe)
+
+**Voraussetzung:** Beweis-Seite `/p/<token>` steht (via `build_proof_page.mjs --slug <slug>`), Takes auf Bunny encodiert (status=4). Founder sendet aus eigener E-Mail an den **Inhaber mit Namen**.
+
+**Betreff:** `{salutation} — ich habe etwas für {company_name} ausprobiert`
+_(z.B. „Herr Leuthold — ich habe etwas für Walter Leuthold ausprobiert")_
+
+**Body (≤ ~600 Zeichen, ein einziger Link):**
+
+> Guten Tag {salutation},
+>
+> ich bin Gunnar Wende aus Oberrieden. Ich baue ein Leitsystem für Sanitärbetriebe in der Region — damit kein Anruf und keine Anfrage mehr verloren geht.
+>
+> Ich habe {company_name} einmal komplett durchgespielt — vom Anruf bis zur Bewertung — und auf eine kurze, private Seite gelegt:
+>
+> 👉 **Ihr persönlicher Einblick:** {proof_url}
+>
+> Das ist kein Werbe-Mockup, sondern Ihr echtes System, live.
+>
+> Ich bin am **{follow_up_day} zwischen 10 und 12 Uhr** für 15 Minuten am Telefon — wenn Sie eine Frage haben, melden Sie sich kurz. Sonst schreibe ich Ihnen am {next_touch_day} nochmal.
+>
+> Und wenn Sie finden, das ist nichts für Sie — sagen Sie mir das bitte ehrlich. Das hilft mir genauso.
+>
+> Herzliche Grüsse
+> Gunnar Wende
+> {founder_phone}
+
+**Warum so (Leitprinzip „echter Mensch schlägt glatte Maschine"):**
+- **Ein Link** = die Beweis-Seite. Keine Test-Nummer (Twilio erst nach Ja), kein kalter Website-Link, kein eingebettetes Video.
+- **CTA = Variante A** (`loom_cta_v2.md`): konkretes Telefon-Window + Founder-getriebenes Follow-up → Daten kommen unabhängig von Empfänger-Initiative.
+- **Ehrlicher Schluss statt Entschuldigung:** „sagen Sie's mir, wenn's nichts ist" — NICHT „ich hab einen Fehler gemacht" (würde Kompetenz untergraben + auf Fehlersuche im stärksten Asset primen).
+- **Querformat-Hinweis steht auf der SEITE, nicht in der Mail** (klaut sonst den Haken).
+- **Desktop-Format = Echtheits-Beweis** („Ihr echtes System, live"), nicht als Mangel framen.
+
+**Variablen:** `{salutation}` (proof_pages.contact_salutation, „Herr Nachname") · `{company_name}` · `{proof_url}` (`https://flowsight.ch/p/<token>`) · `{follow_up_day}`/`{next_touch_day}` (Versandtag-abhängig, z.B. Mo→„Donnerstag"/„Freitag") · `{founder_phone}`.
+
+### Tag 3 — Reminder (tracking-gesteuert)
+
+- **Geschaut, aber still** (`view_count ≥ 1`): „Guten Tag {salutation}, ich sehe, Sie hatten kurz reingeschaut — was war Ihr erster Eindruck? Eine Zeile genügt." (warm, kein Druck)
+- **Nicht geöffnet** (`view_count = 0`): kurzer Bump, gleicher Link: „Falls die Mail untergegangen ist — hier nochmal Ihr Einblick: {proof_url}. 2 Minuten genügen."
+
+### Tag 6-7 — Anruf (priorisiert nach Watch-Signal)
+
+Wer geschaut hat zuerst. Script + die 3 Discovery-Fragen: `docs/sales/discovery_questions.md`. Max 3 Touches, dann Pause. Video-Löschung nach 14 Tagen ohne Engagement (Bunny-Lifecycle, `proof_pages.expires_at`).
+
+> **Referenz-Beweis-Seite (gebaut 04.06.):** Walter Leuthold — `build_proof_page.mjs --slug walter-leuthold`, Variante notruf. Erste Seite durch die Phase-3-Maschine; Founder-Handy-Test ausstehend.
 
 ---
 
