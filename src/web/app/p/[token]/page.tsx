@@ -21,7 +21,7 @@ interface ProofRow {
   contact_name: string | null;
   contact_salutation: string | null;
   variant: "notruf" | "preis";
-  videos: { t1?: string; t2?: string; t3?: string; t4?: string };
+  videos: { t1?: string; t2?: string; t2_portrait?: string; t3?: string; t4?: string };
   bunny_library_id: string | null;
   status: string;
   expires_at: string | null;

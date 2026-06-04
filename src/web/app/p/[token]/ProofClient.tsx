@@ -10,7 +10,7 @@ interface Props {
   salutation: string | null;
   variant: "notruf" | "preis";
   libraryId: string;
-  videos: { t1?: string; t2?: string; t3?: string; t4?: string };
+  videos: { t1?: string; t2?: string; t2_portrait?: string; t3?: string; t4?: string };
 }
 
 /**
@@ -25,12 +25,14 @@ function Player({
   title,
   lead = false,
   posterUrl,
+  aspect = "1440 / 900",
 }: {
   libraryId: string;
   guid?: string;
   title: string;
   lead?: boolean;
   posterUrl?: string;
+  aspect?: string;
 }) {
   const [started, setStarted] = useState(false);
   const [posterOk, setPosterOk] = useState(!!posterUrl);
@@ -41,7 +43,7 @@ function Player({
       className={`relative w-full overflow-hidden rounded-xl bg-black shadow-lg ${
         lead ? "ring-1 ring-amber-300/40" : "ring-1 ring-white/10"
       }`}
-      style={{ aspectRatio: "1440 / 900" }}
+      style={{ aspectRatio: aspect }}
     >
       {showPoster ? (
         <button
@@ -160,7 +162,21 @@ export default function ProofClient({
 
       {/* Lebenszyklus */}
       <Step label="Der Anruf" blurb={callBlurb}>
-        <Player libraryId={libraryId} guid={videos.t2} title={`${companyName} — Der Anruf`} />
+        {/* Geräteweiche: Desktop = Querformat (approved), Handy = Hochformat (mobil-optimiert).
+            CSS-Toggle statt JS → kein Hydration-Flash, keine Bunny-Magie nötig. */}
+        <div className={videos.t2_portrait ? "hidden sm:block" : ""}>
+          <Player libraryId={libraryId} guid={videos.t2} title={`${companyName} — Der Anruf`} />
+        </div>
+        {videos.t2_portrait && (
+          <div className="mx-auto max-w-[460px] sm:hidden">
+            <Player
+              libraryId={libraryId}
+              guid={videos.t2_portrait}
+              title={`${companyName} — Der Anruf`}
+              aspect="520 / 900"
+            />
+          </div>
+        )}
       </Step>
 
       <Step
