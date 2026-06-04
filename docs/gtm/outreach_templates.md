@@ -61,7 +61,37 @@ _(z.B. „Herr Leuthold — ich habe etwas für Walter Leuthold ausprobiert")_
 
 Wer geschaut hat zuerst. Script + die 3 Discovery-Fragen: `docs/sales/discovery_questions.md`. Max 3 Touches, dann Pause. Video-Löschung nach 14 Tagen ohne Engagement (Bunny-Lifecycle, `proof_pages.expires_at`).
 
-> **Referenz-Beweis-Seite (gebaut 04.06.):** Walter Leuthold — `build_proof_page.mjs --slug walter-leuthold`, Variante notruf. Erste Seite durch die Phase-3-Maschine; Founder-Handy-Test ausstehend.
+### 🎯 ERSTER ECHTER VERSAND — Dörfler AG (paste-fertig, 04.06.)
+
+**Empfänger:** beide Brüder Dörfler (Ramon + Luzian), Oberrieden · **Variante A** (echter Bezug: Founder war Kunde — Dichtung am Wasserhahn; dabei Anruf-Pain + Bewertungs-Hürde selbst erlebt). **Versand aus eigenem Postfach** (paste). `[FOTO]` = Gesicht-Standbild einfügen.
+
+**Betreff (Empfehlung):** `Grüezi mitenand – erinnern Sie sich an die Dichtung bei uns?`
+_(Alt: „Herr Dörfler – bei Ihrem Einsatz bei uns sind mir zwei Dinge aufgefallen" · „Grüezi mitenand – etwas aus Oberrieden, zum 100-Jahr-Jahr")_
+
+**Body:**
+
+> Grüezi mitenand
+>
+> erinnern Sie sich – vor einiger Zeit war einer von Ihnen bei uns in Oberrieden und hat die Dichtung am Wasserhahn gewechselt. Solide, zielgerichtet, schnell erledigt. Genau so, wie man sich das wünscht.
+>
+> Zwei Dinge sind mir an dem Tag hängengeblieben. **Erstens:** Mitten in der Arbeit kam ein Anruf rein, an den Sie in dem Moment einfach nicht rangehen konnten. **Zweitens:** Ich hätte Ihnen danach sofort fünf Sterne gegeben – aber ehrlich, mich extra bei Google anzumelden war mir zu umständlich, also ist es nie passiert. Gute Arbeit, die niemand sieht.
+>
+> Beides hat mich nicht mehr losgelassen. Daraus ist etwas entstanden – und ich habe es für die Dörfler AG einmal komplett durchgespielt, mit Ihrem Namen, Ihren Fällen. Gerade im 100-Jahr-Jahr fand ich, das passt zu Ihnen:
+>
+> [FOTO – klickbar]
+> 👉 Ihr persönlicher Einblick: https://flowsight.ch/p/8f1b4a4859e667341ddda95b
+>
+> Wichtig: Das läuft noch nicht – kein Kunde von Ihnen merkt davon etwas. Es ist eine Vorschau, die ich für Sie gemacht habe. Die erste Minute genügt für einen Eindruck.
+>
+> Ich will Ihnen nichts verkaufen. Schauen Sie's an, wann es Ihnen passt – ich melde mich in ein paar Tagen kurz. Und wenn Sie sagen, das ist nichts für uns, sagen Sie mir das gern ehrlich.
+>
+> Freundliche Grüsse
+> Gunnar Wende, Oberrieden
+> +41 44 552 09 19
+
+**Status:** Link live (Videos encodieren). Versand erst nach (a) Founder-Abnahme der 4 frischen Takes, (b) Polish-Runde (T1-Gesicht, Bunny-Poster, Seiten-Copy).
+
+> **Stellvertreter-Referenz (Bau-Test):** Walter Leuthold `/p/dff8fd60c97fa22b94a0db24` — diente nur zum Maschinen-Aufbau; echter Erst-Versand = Dörfler.
 
 ---
 

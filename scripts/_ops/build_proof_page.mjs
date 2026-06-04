@@ -51,8 +51,17 @@ if (!slug) {
 }
 
 const ROOT = join(process.cwd());
-const ABGENOMMEN = join(ROOT, "docs/gtm/pipeline/07_stresstest/abgenommen", slug);
+// Takes-Quelle: abgenommen/<slug>/ bevorzugt; sonst der Review-Stand 07_stresstest/<slug>/.
+const ST_ROOT = join(ROOT, "docs/gtm/pipeline/07_stresstest");
 const CONFIG_PATH = join(ROOT, "docs/customers", slug, "tenant_config.json");
+function resolveTakesDir() {
+  const abgenommen = join(ST_ROOT, "abgenommen", slug);
+  const stresstest = join(ST_ROOT, slug);
+  if (existsSync(join(abgenommen, "T1_intro.mp4"))) return abgenommen;
+  if (existsSync(join(stresstest, "T1_intro.mp4"))) return stresstest;
+  return abgenommen; // für Fehlermeldung
+}
+const ABGENOMMEN = resolveTakesDir();
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 /** Derive a polite salutation from an owner full name → "Herr Nachname". */
