@@ -78,26 +78,19 @@ function Player({
 }
 
 function Step({
-  n,
   label,
   blurb,
   children,
 }: {
-  n: number;
   label: string;
   blurb: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="space-y-3">
-      <div className="flex items-baseline gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-300 text-sm font-bold text-[#0b1f33]">
-          {n}
-        </span>
-        <div>
-          <h2 className="text-base font-semibold text-white">{label}</h2>
-          <p className="text-sm text-slate-400">{blurb}</p>
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold text-white">{label}</h2>
+        <p className="text-sm text-slate-400">{blurb}</p>
       </div>
       {children}
     </section>
@@ -127,8 +120,8 @@ export default function ProofClient({
   const greeting = salutation ? `Grüezi ${salutation}` : "Grüezi";
   const callBlurb =
     variant === "notruf"
-      ? "Ein Notfall ruft an — Lisa nimmt rund um die Uhr ab und macht sofort eine saubere Meldung daraus."
-      : "Jemand ruft an — Lisa nimmt ab, beantwortet die Frage und macht eine saubere Meldung daraus.";
+      ? "Ein Kunde ruft an, dringend — Lisa nimmt rund um die Uhr ab und macht sofort eine saubere Meldung daraus."
+      : "Ein Kunde ruft an — Lisa nimmt ab, beantwortet die Frage und macht eine saubere Meldung daraus.";
 
   return (
     <div className="space-y-10">
@@ -142,10 +135,6 @@ export default function ProofClient({
         </h1>
         <p className="text-[15px] leading-relaxed text-slate-300">
           Das ist {companyName}, einmal komplett durchgespielt — vom ersten Anruf bis zur Bewertung.
-          Kein Werbe-Mockup, sondern wie es bei Ihnen aussähe.
-        </p>
-        <p className="text-sm text-slate-400">
-          Es läuft noch nicht — eine Vorschau, nur für Sie. Kein Kunde von Ihnen merkt davon etwas.
         </p>
       </header>
 
@@ -170,22 +159,20 @@ export default function ProofClient({
       </section>
 
       {/* Lebenszyklus */}
-      <Step n={1} label="Der Anruf" blurb={callBlurb}>
+      <Step label="Der Anruf" blurb={callBlurb}>
         <Player libraryId={libraryId} guid={videos.t2} title={`${companyName} — Der Anruf`} />
       </Step>
 
       <Step
-        n={2}
         label="Die Online-Meldung"
-        blurb="Eine Anfrage über das Formular landet direkt strukturiert im Leitstand — nichts geht verloren."
+        blurb="Eine Anfrage über das Formular landet direkt strukturiert im Leitsystem — nichts geht verloren."
       >
         <Player libraryId={libraryId} guid={videos.t3} title={`${companyName} — Online-Meldung`} />
       </Step>
 
       <Step
-        n={3}
         label="Vom Auftrag zur Bewertung"
-        blurb="Der Fall wird abgewickelt — und am Schluss steht automatisch eine Einladung zur Google-Bewertung."
+        blurb="Der Fall wird abgewickelt — und im richtigen Moment laden Sie den Kunden zur Google-Bewertung ein: nicht automatisch nach jedem Fall, sondern wenn es passt."
       >
         <Player libraryId={libraryId} guid={videos.t4} title={`${companyName} — Bewertung`} />
       </Step>
