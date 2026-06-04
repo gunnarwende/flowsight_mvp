@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { bunnyEmbedUrl } from "@/src/lib/proof/bunny";
 
 interface Props {
   token: string;
+  slug: string;
   companyName: string;
   salutation: string | null;
   variant: "notruf" | "preis";
@@ -12,19 +13,29 @@ interface Props {
   videos: { t1?: string; t2?: string; t3?: string; t4?: string };
 }
 
-/** 16:10 responsive Bunny player (takes are 1440×900 desktop-format). */
+/**
+ * 16:10 responsive Bunny player (takes are 1440×900 desktop-format).
+ * Optional posterUrl: ein selbst gewähltes Standbild liegt über dem Bunny-Player,
+ * bis getippt wird — so kontrollieren wir den ersten Eindruck (statt Bunnys
+ * Default-Poster, das eine unvorteilhafte Mimik treffen kann; FB30).
+ */
 function Player({
   libraryId,
   guid,
   title,
   lead = false,
+  posterUrl,
 }: {
   libraryId: string;
   guid?: string;
   title: string;
   lead?: boolean;
+  posterUrl?: string;
 }) {
+  const [started, setStarted] = useState(false);
+  const [posterOk, setPosterOk] = useState(!!posterUrl);
   if (!guid) return null;
+  const showPoster = !!posterUrl && posterOk && !started;
   return (
     <div
       className={`relative w-full overflow-hidden rounded-xl bg-black shadow-lg ${
@@ -32,14 +43,36 @@ function Player({
       }`}
       style={{ aspectRatio: "1440 / 900" }}
     >
-      <iframe
-        src={bunnyEmbedUrl(libraryId, guid, { preload: lead })}
-        title={title}
-        loading={lead ? "eager" : "lazy"}
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-        allowFullScreen
-        className="absolute inset-0 h-full w-full border-0"
-      />
+      {showPoster ? (
+        <button
+          type="button"
+          onClick={() => setStarted(true)}
+          className="group absolute inset-0 h-full w-full"
+          aria-label={`${title} abspielen`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={posterUrl}
+            alt={title}
+            onError={() => setPosterOk(false)}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-black/55 ring-2 ring-white/80 transition group-hover:scale-105">
+              <span className="ml-1 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+            </span>
+          </span>
+        </button>
+      ) : (
+        <iframe
+          src={bunnyEmbedUrl(libraryId, guid, { preload: lead, autoplay: started })}
+          title={title}
+          loading={lead ? "eager" : "lazy"}
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full border-0"
+        />
+      )}
     </div>
   );
 }
@@ -73,6 +106,7 @@ function Step({
 
 export default function ProofClient({
   token,
+  slug,
   companyName,
   salutation,
   variant,
@@ -87,7 +121,10 @@ export default function ProofClient({
     fetch(`/api/p/${token}/track`, { method: "POST", keepalive: true }).catch(() => {});
   }, [token]);
 
-  const greeting = salutation ? `Guten Tag ${salutation}` : "Guten Tag";
+  // Selbst gewähltes Lead-Poster (public/proof-posters/<slug>-t1.jpg), falls vorhanden.
+  // Fehlt es, fällt der Player still auf Bunnys Default zurück (img onError).
+  const leadPoster = `/proof-posters/${slug}-t1.jpg`;
+  const greeting = salutation ? `Grüezi ${salutation}` : "Grüezi";
   const callBlurb =
     variant === "notruf"
       ? "Ein Notfall ruft an — Lisa nimmt rund um die Uhr ab und macht sofort eine saubere Meldung daraus."
@@ -101,11 +138,14 @@ export default function ProofClient({
           Persönlich für {companyName}
         </p>
         <h1 className="text-2xl font-bold leading-snug text-white sm:text-3xl">
-          {greeting} — ich habe Ihr System einmal echt durchgespielt.
+          {greeting} — schön, dass Sie reinschauen.
         </h1>
         <p className="text-[15px] leading-relaxed text-slate-300">
-          Kein Werbe-Mockup: Das ist Ihr Betrieb, live im FlowSight-Leitstand — vom ersten Anruf
-          bis zur 5-Sterne-Bewertung. Schauen Sie in Ruhe rein.
+          Das ist {companyName}, einmal komplett durchgespielt — vom ersten Anruf bis zur Bewertung.
+          Kein Werbe-Mockup, sondern wie es bei Ihnen aussähe.
+        </p>
+        <p className="text-sm text-slate-400">
+          Es läuft noch nicht — eine Vorschau, nur für Sie. Kein Kunde von Ihnen merkt davon etwas.
         </p>
       </header>
 
@@ -120,7 +160,13 @@ export default function ProofClient({
 
       {/* T1 Lead */}
       <section className="space-y-3">
-        <Player libraryId={libraryId} guid={videos.t1} title={`${companyName} — Einblick`} lead />
+        <Player
+          libraryId={libraryId}
+          guid={videos.t1}
+          title={`${companyName} — Einblick`}
+          lead
+          posterUrl={leadPoster}
+        />
       </section>
 
       {/* Lebenszyklus */}

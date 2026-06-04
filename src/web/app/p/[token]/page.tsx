@@ -89,6 +89,7 @@ export default async function ProofPage({ params }: PageProps) {
     <Shell>
       <ProofClient
         token={row.token}
+        slug={row.tenant_slug}
         companyName={row.company_name}
         salutation={row.contact_salutation}
         variant={row.variant}
