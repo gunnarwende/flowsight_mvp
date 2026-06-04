@@ -306,10 +306,14 @@ T4-Recording pro Build:
   (nächste Wochen):** Part-5-`holdUntilMaster`-Anker (wie Part 1) + caseopen-Anker state-basiert
   (`waitForSelector` statt Zeit). Optionaler Wächter: `G_T4_ERLEDIGT`-Sync-Gate.
 
-**Effizienz-Hebel (offen):**
-- T4 = 4 sequenzielle Voll-Re-Encodes (Maus→Toast→Badge→Stars, ~300 s) → in 1 ffmpeg-Filtergraph
-  ketten (~−150 s). *(Erledigt: T3-Doppel-Recording entfernt, −109 s/Build.)*
-- T2 = 168 s Echtzeit-Call-Recording → schneller-als-Echtzeit-Render prüfen.
+**Effizienz-Hebel (offen) — Messdaten + verifizierter Ausführungsplan (04.06.2026 Dörfler-Run):**
+
+Gemessen am Dörfler-Regressions-Lauf 04.06.: Seed 3s · T1 13s · **T2 5:23** · **T3 6:15** · **T4 8:00** ≈ 22 Min/Betrieb (strikt sequenziell). Die Zeit steckt fast vollständig in (a) Echtzeit-Recordings und (b) den T4-Finishing-Re-Encodes.
+
+- **T4 = FÜNF sequenzielle Voll-Re-Encodes** eines 176,8s-Videos: Loom (STEP 6) → Maus (7) → Toast (9) → Badge-Cover (10) → Canonical-Stars (11). Jeder Schritt liest das vorherige mp4 und schreibt ein neues (H.264 1440×900). **Sicherer Teilgewinn:** STEP 9+10+11 (Toast-PNG-Overlay + Badge-drawbox + Stern-Region-Overlay) sind drei reine Filter-Ops auf demselben Base → in **einen** ffmpeg-Filtergraph mergebar (`overlay enable='between(...)'` + `drawbox` + `overlay enable='between(72,76.3)'`) → ~−70–100s, **und qualitativ besser** (weniger Generationsverlust). Loom (6, iris-xfade) + Maus (7, Cursor-Render) bleiben separat (komplex).
+- **T2/T3 Echtzeit-Recording:** NICHT trivial beschleunigbar — die `holdUntilMaster`-Anker hängen an echtzeit-synchroner Wiedergabe gegen das locked Audio. Schneller-als-Echtzeit = hohes Sync-Risiko. **Kein sicherer Hebel.** (Phone-Extended wird bereits gecacht: STEP 0.5 skippt bei Vorhandensein.)
+
+> **⚠ Disziplin (Founder 04.06., „100 % keine Nebeneffekte, Qualität high-end"):** Re-Encode-Chaining ändert Pixel zwangsläufig (1× statt 5× Generationsverlust → besser, aber NICHT bit-identisch). Daher **nur hinter einem Flag** (`--fast-finish`, Default AUS → Default-Pfad bleibt unangetastet) und erst zum Default machen nach **Dual-Build-Beweis**: alten + neuen Build auf demselben Betrieb, NEU muss (1) `qg_t4_compare` + `qg_video --take 4` voll bestehen, (2) frame-SSIM ≥0,99 vs. abgenommenem Master an allen Anchors, (3) Founder-Visual-Sign-off. **Zeitpunkt: unmittelbar vor dem Skalieren auf ~10/Tag** — bei Einzel-Versand (heute) ist der Nutzen ≈0, das Risiko an gold-abgenommener Pipeline >0.
 
 ---
 
