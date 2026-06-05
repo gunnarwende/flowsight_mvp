@@ -22,12 +22,14 @@ const si = args.indexOf("--slug");
 const slug = si >= 0 ? args[si + 1] : null;
 if (!slug) { console.error("ERROR: --slug required"); process.exit(1); }
 
-// Universelle Screenflow-Layout-Koordinaten.
-// Founder 05.06. (FB31): Handy LINKS bündig, Loom rechts DANEBEN + grösser (~+30%),
-// damit man mehr von der Person/Gestik sieht. Breiterer Crop (670) schafft die
-// rechte Loom-Spalte; Phone sitzt links (x=299 = Phone-Kante).
-const PHONE = { w: 670, h: 900, x: 299, y: 0 };
-const LOOM = { crop: 176, x: 832, y: 62, scale: 150, maskR: 85, margin: 12 };
+// Universelle Screenflow-Layout-Koordinaten (vermessen am Landscape-T2, 1440×900).
+// Founder 05.06. (FB32): Handy LINKS bündig + grösstmöglich, Loom am Rahmen rechts
+// oben anliegend (leichte Überlappung ok), nichts abgeschnitten, Mimik+Gestik sichtbar.
+// WICHTIG: das volle Loom ist ~227px (nicht 176!) — zeigt Gesicht + Geste (Handy-hoch)
+// + Mikro. Crop 227@802,42 erfasst den GANZEN Loom-Kreis; auf 160 skaliert platziert.
+const PHONE = { w: 580, h: 900, x: 337, y: 0 };
+// crop GERADE halten (228, nicht 227) — ungerade Dimensionen → yuv420p rundet → Mismatch.
+const LOOM = { crop: 228, x: 801, y: 41, scale: 160, maskR: 113, margin: 10 };
 
 const PIPE = "docs/gtm/pipeline/06_video_production";
 const ST = "docs/gtm/pipeline/07_stresstest";
