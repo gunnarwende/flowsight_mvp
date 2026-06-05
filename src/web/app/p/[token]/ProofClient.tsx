@@ -101,7 +101,6 @@ function Step({
 
 export default function ProofClient({
   token,
-  slug,
   companyName,
   salutation,
   variant,
@@ -116,9 +115,9 @@ export default function ProofClient({
     fetch(`/api/p/${token}/track`, { method: "POST", keepalive: true }).catch(() => {});
   }, [token]);
 
-  // Selbst gewähltes Lead-Poster (public/proof-posters/<slug>-t1.jpg), falls vorhanden.
-  // Fehlt es, fällt der Player still auf Bunnys Default zurück (img onError).
-  const leadPoster = `/proof-posters/${slug}-t1.jpg`;
+  // T1 ist canonical (betriebsübergreifend identisch) → EIN Gesichts-Standbild für alle
+  // (public/proof-posters/_canonical-t1.jpg). Fehlt es, Bunny-Default via img onError.
+  const leadPoster = "/proof-posters/_canonical-t1.jpg";
   const greeting = salutation ? `Grüezi ${salutation}` : "Grüezi";
   const callBlurb =
     variant === "notruf"
