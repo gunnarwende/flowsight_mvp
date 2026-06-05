@@ -23,13 +23,17 @@ const slug = si >= 0 ? args[si + 1] : null;
 if (!slug) { console.error("ERROR: --slug required"); process.exit(1); }
 
 // Universelle Screenflow-Layout-Koordinaten (vermessen am Landscape-T2, 1440×900).
-// Founder 05.06. (FB32): Handy LINKS bündig + grösstmöglich, Loom am Rahmen rechts
-// oben anliegend (leichte Überlappung ok), nichts abgeschnitten, Mimik+Gestik sichtbar.
-// WICHTIG: das volle Loom ist ~227px (nicht 176!) — zeigt Gesicht + Geste (Handy-hoch)
-// + Mikro. Crop 227@802,42 erfasst den GANZEN Loom-Kreis; auf 160 skaliert platziert.
-const PHONE = { w: 580, h: 900, x: 337, y: 0 };
-// crop GERADE halten (228, nicht 227) — ungerade Dimensionen → yuv420p rundet → Mismatch.
+// Founder 05.06. (FB32/FB33): Handy LINKS bündig + gross, Loom am Rahmen rechts oben,
+// Mimik+Gestik sichtbar, nichts abgeschnitten — UND nur EIN Gesicht.
+//
+// KRITISCH (FB33-Bug): Der Phone-Crop darf das im Landscape EINGEBACKENE Loom (ab x801)
+// NICHT mit erfassen, sonst entsteht beim Drüberlegen des neuen Looms ein Doppel-Gesicht.
+// Daher: Phone-Crop endet VOR x801 (330+465=795), wird auf Navy-Canvas (580) gepaddet,
+// dann EIN frisch maskiertes Loom (voller 228er-Kreis) oben rechts überlagert.
+const PHONE = { cropW: 465, x: 330, h: 900 }; // Phone-only, schliesst Original-Loom aus
+const CANVAS = { w: 580, h: 900 };
 const LOOM = { crop: 228, x: 801, y: 41, scale: 160, maskR: 113, margin: 10 };
+const BG = "0x0b1220"; // T2-Canvas-Navy → nahtloses Padden
 
 const PIPE = "docs/gtm/pipeline/06_video_production";
 const ST = "docs/gtm/pipeline/07_stresstest";
@@ -67,15 +71,17 @@ run("ffmpeg", ["-y", "-f", "lavfi", "-i", `color=black:s=${LOOM.crop}x${LOOM.cro
 
 // Compose: Phone-Portrait + runder, verkleinerter Loom oben rechts
 const fc =
-  `[0:v]crop=${PHONE.w}:${PHONE.h}:${PHONE.x}:${PHONE.y}[ph];` +
+  // Phone-only (ohne Original-Loom) → auf Navy-Canvas padden (Handy links bündig)
+  `[0:v]crop=${PHONE.cropW}:${PHONE.h}:${PHONE.x}:0,pad=${CANVAS.w}:${CANVAS.h}:0:0:color=${BG}[base];` +
+  // EIN frisches, rundes Loom aus dem vollen Loom-Kreis
   `[0:v]crop=${LOOM.crop}:${LOOM.crop}:${LOOM.x}:${LOOM.y}[lmsq];` +
   `[lmsq][1:v]alphamerge[lmc];` +
   `[lmc]scale=${LOOM.scale}:${LOOM.scale}[lm];` +
-  `[ph][lm]overlay=${PHONE.w}-${LOOM.scale}-${LOOM.margin}:${LOOM.margin},format=yuv420p[v]`;
+  `[base][lm]overlay=${CANVAS.w}-${LOOM.scale}-${LOOM.margin}:${LOOM.margin},format=yuv420p[v]`;
 
 run("ffmpeg", ["-y", "-i", src, "-loop", "1", "-t", String(dur), "-i", mask,
   "-filter_complex", fc, "-map", "[v]", "-map", "0:a",
   "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "medium", "-crf", "20",
   "-c:a", "copy", "-movflags", "+faststart", out]);
 
-console.log(`\n✓ ${out} (${PHONE.w}×${PHONE.h}, ${dur.toFixed(1)}s) — Handy-Hochformat, runder Loom`);
+console.log(`\n✓ ${out} (${CANVAS.w}×${CANVAS.h}, ${dur.toFixed(1)}s) — Handy-Hochformat, EIN runder Loom`);

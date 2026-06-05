@@ -76,7 +76,7 @@ _(Alt: „Herr Dörfler – bei Ihrem Einsatz bei uns sind mir zwei Dinge aufgef
 >
 > Zwei Dinge sind mir an dem Tag geblieben. **Erstens:** Mitten in der Arbeit kam ein Anruf rein, an den Sie nicht rangehen konnten. **Zweitens:** Ich hatte mir fest vorgenommen, Ihnen fünf Sterne zu geben – und hab's im Alltag dann schlicht vergessen. Gute Arbeit, die niemand sieht.
 >
-> Beides hat mich nicht mehr losgelassen. Daraus ist etwas entstanden – ich habe es einmal für die Dörfler AG durchgespielt, vom ersten Anruf bis zur Bewertung. Schauen Sie's an, wenn Sie ein paar Minuten haben:
+> Beides hat mich nicht mehr losgelassen. Ich habe der Dörfler AG daraufhin eine eigene App gebaut und einmal komplett durchgespielt – vom ersten Anruf bis zur Bewertung. Schauen Sie's an, wenn Sie ein paar Minuten haben:
 >
 > [FOTO – klickbar] 👉 Ihr persönlicher Einblick: https://flowsight.ch/p/8f1b4a4859e667341ddda95b
 >
