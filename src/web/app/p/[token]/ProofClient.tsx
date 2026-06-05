@@ -193,17 +193,15 @@ export default function ProofClient({
         <Player libraryId={libraryId} guid={videos.t4} title={`${companyName} — Bewertung`} />
       </Step>
 
-      {/* Menschlicher Abschluss — kein glatter Verkaufs-CTA */}
-      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+      {/* Warmer Abschluss — Founder-Signatur, KEIN Ask. Der CTA lebt in der E-Mail
+          (founder-getrieben + No-oriented, siehe CTA.md); die Seite ist die Schatztruhe,
+          nicht eine zweite, schwächere CTA-Fläche. Kein Duplikat des T4-Video-Schlusses. */}
+      <section className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-6">
         <p className="text-[15px] leading-relaxed text-slate-200">
-          Wenn Sie an einer Stelle gedacht haben „das würde bei uns wirklich etwas bringen", dann
-          sagen Sie mir das kurz. Und wenn Sie finden, das ist nichts für Sie — sagen Sie's mir bitte
-          genauso ehrlich. Beides hilft mir weiter.
+          Das war {companyName}, einmal komplett durchgespielt — von der ersten Anfrage bis zur
+          Bewertung. Mit Sorgfalt gebaut, hier aus Oberrieden.
         </p>
-        <div className="text-sm text-slate-400">
-          <p className="font-semibold text-white">Gunnar Wende</p>
-          <p>FlowSight, Oberrieden</p>
-        </div>
+        <p className="text-sm font-semibold text-white">— Gunnar Wende</p>
       </section>
     </div>
   );
