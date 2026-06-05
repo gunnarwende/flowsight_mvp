@@ -104,6 +104,29 @@ export async function deleteVideo({ apiKey, libraryId }, guid) {
   return true;
 }
 
+/**
+ * Watch-Statistik für die Library oder ein einzelnes Video (Stream-Key genügt).
+ * Liefert viewsChart, watchTimeChart (Sek/Tag), engagementScore, countryViewCounts.
+ */
+export async function getStatistics({ apiKey, libraryId }, { guid, dateFrom, dateTo } = {}) {
+  const params = new URLSearchParams();
+  if (dateFrom) params.set("dateFrom", dateFrom);
+  if (dateTo) params.set("dateTo", dateTo);
+  if (guid) params.set("videoGuid", guid);
+  const res = await fetch(`${API_BASE}/library/${libraryId}/statistics?${params}`, {
+    headers: headers(apiKey),
+  });
+  if (!res.ok) {
+    throw new Error(`Bunny getStatistics failed: HTTP ${res.status} ${await res.text()}`);
+  }
+  return res.json();
+}
+
+/** Sum all daily values of a Bunny chart object ({iso: number}). */
+export function sumChart(chart) {
+  return Object.values(chart || {}).reduce((a, b) => a + (Number(b) || 0), 0);
+}
+
 /** Public iframe embed URL for a video (adaptive, mobile-fullscreen-capable). */
 export function embedUrl(libraryId, guid, opts = {}) {
   const params = new URLSearchParams({

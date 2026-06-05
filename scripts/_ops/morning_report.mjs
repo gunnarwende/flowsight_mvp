@@ -14,6 +14,7 @@
  */
 
 import { createClient } from "../../src/web/node_modules/@supabase/supabase-js/dist/index.mjs";
+import { bunnyEnv, getVideo, getStatistics, sumChart } from "./_lib/bunny.mjs";
 
 // ---------------------------------------------------------------------------
 // Supabase client
@@ -357,6 +358,63 @@ const dateStr = now.toLocaleDateString("de-CH", {
   timeZone: "Europe/Zurich",
 });
 
+// ── Outreach / Watch-Signal: Bunny-Watch-Statistik × proof_pages ──
+// Pro aktive Beweis-Seite: geöffnet? welche Takes wie tief? Gerät? + ausgeschriebene
+// Handlung (anrufen / Reminder). Guarded: ohne BUNNY_STREAM_API_KEY einfach leer.
+async function buildWatchSignalLines() {
+  if (!process.env.BUNNY_STREAM_API_KEY) return [];
+  let pages = [];
+  try {
+    const { data } = await supabase
+      .from("proof_pages")
+      .select("company_name,videos,view_count")
+      .eq("status", "active");
+    pages = data || [];
+  } catch {
+    return [];
+  }
+  if (!pages.length) return [];
+  const env = bunnyEnv();
+  const now = new Date();
+  const from = new Date(now.getTime() - 14 * 864e5);
+  const d10 = (d) => d.toISOString().slice(0, 10);
+  const TAKES = [["t1", "T1"], ["t2", "T2"], ["t2_portrait", "T2📱"], ["t3", "T3"], ["t4", "T4"]];
+  const rows = [];
+  for (const p of pages) {
+    let signal = 0, mobile = 0, desktop = 0;
+    const parts = [];
+    for (const [k, lbl] of TAKES) {
+      const guid = p.videos?.[k];
+      if (!guid) continue;
+      try {
+        const len = (await getVideo(env, guid)).length || 0;
+        const s = await getStatistics(env, { guid, dateFrom: d10(from), dateTo: d10(now) });
+        const views = sumChart(s.viewsChart);
+        const watch = sumChart(s.watchTimeChart);
+        if (views > 0 && len > 0) parts.push(`${lbl} ${Math.min(100, Math.round((watch / views / len) * 100))}%`);
+        signal += watch;
+        if (k === "t2_portrait") mobile += watch;
+        if (k === "t2") desktop += watch;
+      } catch { /* noop */ }
+    }
+    const dev = mobile > desktop ? "📱" : desktop > 0 ? "💻" : "·";
+    const opened = p.view_count ?? 0;
+    const action = opened === 0 ? "Reminder: Link nochmal"
+      : signal < 60 ? "Reminder: erster Eindruck?"
+      : "→ ANRUFEN (warm)";
+    rows.push({ name: p.company_name, dev, parts, signal, opened, action });
+  }
+  rows.sort((a, b) => b.signal - a.signal);
+  const lines = ["━━━ OUTREACH (Watch-Signal 14d) ━"];
+  if (rows.every((r) => r.signal === 0 && r.opened === 0)) {
+    lines.push("(noch keine Aktivität)");
+    return lines;
+  }
+  for (const r of rows) lines.push(`${r.name}: ${r.dev} öffn ${r.opened}× ${r.parts.join(" ")} | ${r.action}`);
+  return lines;
+}
+const watchLines = await buildWatchSignalLines();
+
 const report = [
   `${severity} DAILY ${dateStr}`,
   `━━━━━━━━━━━━━━━━━━━`,
@@ -388,6 +446,7 @@ const report = [
   `db:             ${healthDb}`,
   `email_key:      ${healthEmail}`,
   `resend_api:     ${resendOk ? "OK" : "FAIL"}`,
+  ...watchLines,
   `━━━━━━━━━━━━━━━━━━━`,
 ].join("\n");
 
