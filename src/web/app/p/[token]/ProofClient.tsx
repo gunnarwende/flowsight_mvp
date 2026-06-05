@@ -173,7 +173,7 @@ export default function ProofClient({
               libraryId={libraryId}
               guid={videos.t2_portrait}
               title={`${companyName} — Der Anruf`}
-              aspect="580 / 900"
+              aspect="600 / 900"
             />
           </div>
         )}

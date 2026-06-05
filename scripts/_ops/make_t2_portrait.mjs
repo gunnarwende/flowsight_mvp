@@ -30,9 +30,12 @@ if (!slug) { console.error("ERROR: --slug required"); process.exit(1); }
 // NICHT mit erfassen, sonst entsteht beim Drüberlegen des neuen Looms ein Doppel-Gesicht.
 // Daher: Phone-Crop endet VOR x801 (330+465=795), wird auf Navy-Canvas (580) gepaddet,
 // dann EIN frisch maskiertes Loom (voller 228er-Kreis) oben rechts überlagert.
-const PHONE = { cropW: 465, x: 330, h: 900 }; // Phone-only, schliesst Original-Loom aus
-const CANVAS = { w: 580, h: 900 };
-const LOOM = { crop: 228, x: 801, y: 41, scale: 160, maskR: 113, margin: 10 };
+const PHONE = { cropW: 460, x: 339, h: 900 }; // Phone-only (8px Rand links), schliesst Original-Loom (x801) aus
+const CANVAS = { w: 600, h: 900 };
+// Loom BÜNDIG am Handyrahmen: links = rechte Phone-Rahmenkante (1440-Koord 767) − crop.x (339) = 428
+// → Loom liegt NEBEN dem Handy (kein Overlap auf den Screen). overlayY = obere Phone-Rahmenkante (34)
+// → Loom-Oberkante bündig mit Handy-Oberkante. Loom 428..588 < 600 → kein Anschnitt.
+const LOOM = { crop: 228, x: 801, y: 41, scale: 160, maskR: 113, overlayX: 428, overlayY: 34 };
 const BG = "0x0b1220"; // T2-Canvas-Navy → nahtloses Padden
 
 const PIPE = "docs/gtm/pipeline/06_video_production";
@@ -77,7 +80,7 @@ const fc =
   `[0:v]crop=${LOOM.crop}:${LOOM.crop}:${LOOM.x}:${LOOM.y}[lmsq];` +
   `[lmsq][1:v]alphamerge[lmc];` +
   `[lmc]scale=${LOOM.scale}:${LOOM.scale}[lm];` +
-  `[base][lm]overlay=${CANVAS.w}-${LOOM.scale}-${LOOM.margin}:${LOOM.margin},format=yuv420p[v]`;
+  `[base][lm]overlay=${LOOM.overlayX}:${LOOM.overlayY},format=yuv420p[v]`;
 
 run("ffmpeg", ["-y", "-i", src, "-loop", "1", "-t", String(dur), "-i", mask,
   "-filter_complex", fc, "-map", "[v]", "-map", "0:a",
