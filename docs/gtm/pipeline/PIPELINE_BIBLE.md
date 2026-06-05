@@ -43,8 +43,9 @@ derive_config → tenant_config     → Founder-Abnahme → abgenommen/
 ── STOP: Founder-Review ──         ── STOP: Founder-Abnahme ──        ── STOP: Founder-Freigabe ──
 ```
 
-Diese Bible deckt **Phase 2** ab. Phase 1 (Crawl/Derive) liefert die `tenant_config.json` (§3);
-Phase 3 (E-Mail) ist der nächste große Block.
+Diese Bible deckt **Phase 2** (Video) ab; Phase 1 (Crawl/Derive) liefert die `tenant_config.json` (§3).
+**Phase 3 (Verpackung & Versand) ist jetzt gebaut → §12** (Beweis-Seite `/p/[token]`, Canonical T1,
+automatisierter Outreach-Versand).
 
 ---
 
@@ -110,6 +111,12 @@ Fall-Daten/KPIs (Seed), Fall-ID-Prefix, SMS-Absender, Datum/Uhrzeit (tagesfrisch
 **Universell (EINMAL erstellt, für ALLE Betriebe):** Founder-Audio-Spuren (locked), Lisa-Dialog
 (locked), Loom-Gesicht (locked Overlay), Maus-Bewegung (Dörfler-Aufnahme als Layer), die Schablonen
 (T3/T4 Timing-Referenz), die canonical-Stern-Region (T4).
+
+> **🏆 T1 = canonical (Auslieferung):** Das face-only Founder-Intro auf der Beweis-Seite ist
+> betriebsübergreifend **bit-identisch** (md5-bewiesen: `take1.wav` + `take1_face.mp4` gleich über
+> alle Tenants) → **EINE** Bunny-GUID + **EIN** Poster für ALLE (`CANONICAL_T1_GUID`, §12). Wird
+> **nicht pro Betrieb erzeugt/hochgeladen**; der per-Betrieb-`T1_intro` (Screenflow-Intro mit Text)
+> wird für die Beweis-Seite **nicht mehr verwendet**. → **Re-Runs müssen nur T2/T3/T4 frisch erzeugen.**
 
 ---
 
@@ -368,8 +375,70 @@ scripts/_ops/
   ├── pipeline_screenflow.mjs  record_take4.mjs  record_phone_call_visual.mjs  ← Recording
   ├── swap_tenant_greeting.mjs  apply_canonical_stars.mjs  apply_toast_overlay.mjs  apply_devbadge_cover.mjs
   ├── audio/generate_lisa_tts.mjs  generate_take2_schedule.mjs  build_from_phase_schedule.mjs
-  └── qg_video.mjs  qg_t4_compare.mjs  qg_take3_vs_schablone.mjs  derive_config.mjs
+  ├── qg_video.mjs  qg_t4_compare.mjs  qg_take3_vs_schablone.mjs  derive_config.mjs
+  ├── build_proof_page.mjs  proof_add_variants.mjs  make_t2_portrait.mjs  upload_canonical_t1.mjs   ← Phase 3: Beweis-Seite
+  └── send_outreach.mjs  expire_proof_pages.mjs  proof_watch_report.mjs  _lib/bunny.mjs (CANONICAL_T1_GUID)   ← Phase 3: Versand/Analytics
+
+src/web/app/p/[token]/                          ← Beweis-Seite (noindex) + api/p/[token]/track (View-Tracking)
+src/web/public/proof-posters/_canonical-t1.jpg  ← canonical T1-Poster (alle Betriebe)
+Supabase: proof_pages                           ← token-privat, RLS service-only; videos{t1,t2,t2_portrait,t3,t4}, view_count, expires_at(+14d)
+docs/customers/<slug>/outreach/email.json gunnar_face_circle.png   ← Phase 3: Mail-Inhalt + Foto
 ```
+
+---
+
+## 12. Phase 3 — Verpackung & Versand (Beweis-Seite + Outreach)
+
+„**Mail = Deckel, Seite = Schatz.**" Die 4 abgenommenen Takes werden NICHT als Anhang verschickt,
+sondern auf eine private Seite gelegt; die Mail trägt **EINEN** Link dorthin.
+
+### Beweis-Seite `/p/[token]`
+- `build_proof_page.mjs --slug <slug>` → lädt die Takes (aus `07_stresstest/abgenommen/<slug>/`) zu
+  **Bunny Stream** (EU/Frankfurt, adaptiver Mobil-Vollbild-Player + Watch-Analytics gratis), erzeugt
+  einen privaten Token + `proof_pages`-Row, gibt `flowsight.ch/p/<token>` aus. Gültig 14 Tage.
+- Seite `app/p/[token]/` (mobil-first, **noindex**, navy/gold): T1 als Lead, T2/T3/T4 als Schritte.
+  **Geräteweiche T2:** Desktop = Querformat, Handy = Hochformat (`take2_portrait.mp4`, via
+  `make_t2_portrait.mjs` aus der abgenommenen Landscape-T2 — universelle Layout-Koordinaten).
+- `proof_add_variants.mjs --slug <slug> --token <token>` → setzt **T1 = canonical** + lädt das
+  Handy-Hochformat. Tabelle `proof_pages` (Supabase, token-privat, RLS service-only):
+  `videos{t1,t2,t2_portrait,t3,t4}`, `view_count`/`first`/`last_viewed`, `status`, `expires_at`.
+  View-Tracking via `api/p/[token]/track`.
+- `expire_proof_pages.mjs` (Cron): 14 Tage OHNE Engagement → Bunny-Videos löschen + `status='expired'`.
+  **Canonical T1 wird NIE gelöscht** (geteiltes Asset).
+
+### 🏆 Canonical T1 — EIN Founder-Intro für ALLE Betriebe
+T1 (face-only, kein Text) ist betriebsübergreifend **bit-identisch** (md5-bewiesen: `take1.wav` +
+`take1_face.mp4` gleich über alle Tenants). Darum: **eine** Bunny-GUID (`CANONICAL_T1_GUID` in
+`scripts/_ops/_lib/bunny.mjs`) + **ein** canonical Poster (`public/proof-posters/_canonical-t1.jpg`),
+von jeder Beweis-Seite referenziert. `build_proof_page` + `proof_add_variants` **erzeugen/laden T1 nie
+pro Betrieb**. **Konsequenz: Re-Runs müssen nur T2/T3/T4 frisch erzeugen.** Neu hochladen nur via
+`upload_canonical_t1.mjs` (dann GUID in `_lib/bunny.mjs` ersetzen). Spart Zeit/Token/Speicher + senkt
+Komplexität dauerhaft (DRY-Prinzip auf die Pipeline).
+
+### Versand `send_outreach.mjs --slug <slug>`
+High-End-HTML-Mail aus **„Gunnar Wende <gunnar.wende@flowsight.ch>"** (Resend, Reply-To Founder →
+Antworten in Outlook), **Foto inline (cid)**, `/p/`-Link automatisch aus `proof_pages`, **NULL
+Copy-Paste / keine Formatbrüche**. `--preview <pfad>` (Selbst-Render-Check vor dem Senden),
+`--file <json>` (Varianten). 🔒 **Default = an den Founder (Test); echter Versand nur mit `--live`**
+(Betriebs-Kontakt aus `tenant_config.prospect.email` — bewusst nur auf Founder-Wort, pro Betrieb).
+Inhalt: `docs/customers/<slug>/outreach/email.json` (`subject`, `paragraphs[]`, `linkLabel`,
+`closing[]`, `signature[]`; `**fett**` erlaubt). Mail = **Hell-Premium-Standard** (Sanitär = Hell-
+Modus; Windows-Outlook erzwingt Dark-Invertierung, nicht steuerbar → bewusst auf Hell optimiert,
+Empfänger-Realität). **Kein M365-Graph** (Resend bleibt Mail-Provider; Graph nur Kalender).
+
+### Kalt-Outreach: Struktur fix, Haken variabel (B-Vorlage, 99 % der Kunden)
+Fixe **4-Beat-Struktur** (Haken → unsichtbarer Preis → Beweis → No-oriented-Schluss); der **Haken**
+wird per Profil-Signal gewählt: Archetyp **A** Erreichbarkeit („wer nimmt ab, wenn Sie … sind?",
+klein/inhabergeführt) · **B** Notdienst („7/24-Versprechen vs. Realität") · **C** Bewertungs-Lücke
+(schwaches Rating) + Slot-Variablen **Geo** (Nachbar/Region) & **Gewerk-Bild**. Prinzipien:
+*Bedrohung senken vor Spannung* (defensive Zielgruppe), *Spezifik schlägt Hochglanz*,
+*Hypothese → messen* (A/B via Watch-Funnel). Detail/CTA-Forschung: `CTA.md`, `outreach_templates.md`.
+
+### OFFEN (Montags-Paket 08.06. — noch NICHT verankert, ohne Qualitätsverlust einzubauen)
+1. **Outreach-Copy-Schritt:** Signale aus `tenant_config` (Größe/Erreichbarkeit, Notdienst C/B,
+   Rating+Anzahl, Geo, Gewerk) → Archetyp wählen → Slots füllen → `email.json` schreiben
+   (deterministisch, founder-gated, A/B-gelernt).
+2. **Inhaber-E-Mail-Anreicherung:** Impressum/Zefix/LinkedIn statt `info@`.
 
 ---
 
