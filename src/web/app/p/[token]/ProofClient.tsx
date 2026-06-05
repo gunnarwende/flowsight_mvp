@@ -41,7 +41,7 @@ function Player({
   return (
     <div
       className={`relative w-full overflow-hidden rounded-xl bg-black shadow-lg ${
-        lead ? "ring-1 ring-amber-300/40" : "ring-1 ring-white/10"
+        lead ? "ring-1 ring-[#d4a843]/40" : "ring-1 ring-white/10"
       }`}
       style={{ aspectRatio: aspect }}
     >
@@ -60,8 +60,8 @@ function Player({
             className="absolute inset-0 h-full w-full object-cover"
           />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-black/55 ring-2 ring-white/80 transition group-hover:scale-105">
-              <span className="ml-1 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-black/55 ring-2 ring-[#d4a843] transition group-hover:scale-105">
+              <span className="ml-1 border-y-[10px] border-l-[16px] border-y-transparent border-l-[#d4a843]" />
             </span>
           </span>
         </button>
@@ -129,7 +129,7 @@ export default function ProofClient({
     <div className="space-y-10">
       {/* Kopf */}
       <header className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-amber-300/80">
+        <p className="text-xs font-medium uppercase tracking-wider text-[#d4a843]/90">
           Persönlich für {companyName}
         </p>
         <h1 className="text-2xl font-bold leading-snug text-white sm:text-3xl">
@@ -141,7 +141,7 @@ export default function ProofClient({
       </header>
 
       {/* Querformat-Hinweis (gehört auf die Seite, nicht in die Mail) */}
-      <div className="flex items-center gap-3 rounded-xl border border-amber-300/20 bg-amber-300/5 px-4 py-3 text-sm text-amber-100/90 sm:hidden">
+      <div className="flex items-center gap-3 rounded-xl border border-[#d4a843]/25 bg-[#d4a843]/[0.08] px-4 py-3 text-sm text-[#d4a843] sm:hidden">
         <span className="text-lg">📱</span>
         <span>
           Am Handy: <strong>quer halten</strong> und auf Vollbild tippen — dann sehen Sie alles in
@@ -208,7 +208,7 @@ export default function ProofClient({
           Belegt visuell die „eigene App" aus der Mail. FlowSight bleibt unsichtbar
           (Label tenant-framed). Gold nur als Akzent (Ring + Punkt + Haarlinie). */}
       <div className="flex flex-col items-center gap-2 pb-2 pt-2">
-        <span className="h-px w-16 bg-amber-300/40" />
+        <span className="h-px w-16 bg-[#d4a843]/50" />
         <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true" className="mt-1">
           <rect x="1.5" y="1.5" width="49" height="49" rx="12" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
           <circle cx="26" cy="26" r="13" fill="#d4a843" />
