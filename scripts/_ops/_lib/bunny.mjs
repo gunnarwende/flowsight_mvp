@@ -18,6 +18,16 @@ import fs from "node:fs";
 
 const API_BASE = "https://video.bunnycdn.com";
 
+/**
+ * Canonical T1 (Founder-Intro, face-only, KEIN Text) — betriebsübergreifend IDENTISCH.
+ * Bewiesen via md5 (Founder 05.06.): take1.wav + take1_face.mp4 sind über ALLE Tenants
+ * bit-gleich → T1 ist tenant-agnostisch. Darum EIN Bunny-Video für ALLE Beweis-Seiten:
+ * keine T1-Generierung, kein Upload, kein Speicher-Duplikat pro Betrieb. Vom per-page-
+ * Cleanup AUSGENOMMEN (geteiltes Asset — siehe expire_proof_pages.mjs).
+ * Neu erzeugen via scripts/_ops/upload_canonical_t1.mjs (dann GUID hier ersetzen).
+ */
+export const CANONICAL_T1_GUID = "249aa579-e0f9-4622-b34b-6e716dd0a0d2";
+
 /** Read + validate Bunny env. Throws with a clear message if missing. */
 export function bunnyEnv() {
   const apiKey = process.env.BUNNY_STREAM_API_KEY;

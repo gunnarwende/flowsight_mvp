@@ -21,7 +21,7 @@
  */
 
 import { createRequire } from "node:module";
-import { bunnyEnv, deleteVideo } from "./_lib/bunny.mjs";
+import { bunnyEnv, deleteVideo, CANONICAL_T1_GUID } from "./_lib/bunny.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -66,7 +66,8 @@ async function main() {
       continue;
     }
 
-    const guids = Object.values(row.videos || {}).filter(Boolean);
+    // Canonical T1 NIE löschen (geteiltes Asset über alle Beweis-Seiten).
+    const guids = Object.values(row.videos || {}).filter((g) => g && g !== CANONICAL_T1_GUID);
     console.log(
       `🗑  ${row.tenant_slug} (${row.token.slice(0, 8)}…): abgelaufen seit ` +
         `${String(row.expires_at).slice(0, 10)}, ${row.view_count} Views → ${guids.length} Videos löschen` +

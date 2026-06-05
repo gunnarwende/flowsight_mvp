@@ -14,7 +14,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { createRequire } from "node:module";
-import { bunnyEnv, createAndUpload } from "./_lib/bunny.mjs";
+import { bunnyEnv, createAndUpload, CANONICAL_T1_GUID } from "./_lib/bunny.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -26,7 +26,6 @@ const token = arg("token");
 if (!slug || !token) { console.error("ERROR: --slug and --token required"); process.exit(1); }
 
 const SF = join("docs/gtm/pipeline/06_video_production/screenflows", slug);
-const t1faceonly = join(SF, "take1_faceonly.mp4");
 const t2portrait = join(SF, "take2_portrait.mp4");
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -40,11 +39,9 @@ async function main() {
   const env = bunnyEnv();
   const videos = { ...(row.videos || {}) };
 
-  if (existsSync(t1faceonly)) {
-    process.stdout.write("⬆️  T1 face-only … ");
-    videos.t1 = await createAndUpload(env, `${row.company_name} — T1 face-only (${slug})`, t1faceonly);
-    console.log(`ok (${videos.t1})`);
-  } else { console.log("⚠ take1_faceonly.mp4 fehlt — T1 unverändert"); }
+  // T1 = canonical (betriebsübergreifend identisch) → keine Generierung/Upload pro Betrieb.
+  videos.t1 = CANONICAL_T1_GUID;
+  console.log(`✓ T1 = canonical (${CANONICAL_T1_GUID})`);
 
   if (existsSync(t2portrait)) {
     process.stdout.write("⬆️  T2 portrait … ");

@@ -33,7 +33,7 @@ const FOUNDER = "gunnar.wende@flowsight.ch";
 const FROM = "Gunnar Wende <gunnar.wende@flowsight.ch>";
 if (!slug) { console.error("ERROR: --slug required"); process.exit(1); }
 
-const emailPath = join("docs/customers", slug, "outreach", "email.json");
+const emailPath = arg("file") || join("docs/customers", slug, "outreach", "email.json");
 const photoPath = join("docs/customers", slug, "outreach", "gunnar_face_circle.png");
 const cfgPath = join("docs/customers", slug, "tenant_config.json");
 if (!existsSync(emailPath)) { console.error(`ERROR: fehlt ${emailPath}`); process.exit(2); }

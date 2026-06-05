@@ -29,7 +29,7 @@ import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import { createRequire } from "node:module";
-import { bunnyEnv, createAndUpload } from "./_lib/bunny.mjs";
+import { bunnyEnv, createAndUpload, CANONICAL_T1_GUID } from "./_lib/bunny.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -136,8 +136,10 @@ async function main() {
   // 3) Bunny upload
   const env = bunnyEnv();
   console.log(`\n⬆️  Upload zu Bunny Stream (Library ${env.libraryId}) …`);
-  const videos = {};
-  for (const key of ["t1", "t2", "t3", "t4"]) {
+  // T1 = canonical (betriebsübergreifend identisch) → KEIN per-Betrieb-Upload.
+  const videos = { t1: CANONICAL_T1_GUID };
+  console.log(`   T1 … canonical (${CANONICAL_T1_GUID}) — kein Upload`);
+  for (const key of ["t2", "t3", "t4"]) {
     const title = `${companyName} — ${key.toUpperCase()} (${slug})`;
     process.stdout.write(`   ${key.toUpperCase()} … `);
     const guid = await createAndUpload(env, title, paths[key]);
