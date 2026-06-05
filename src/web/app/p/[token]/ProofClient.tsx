@@ -168,12 +168,12 @@ export default function ProofClient({
           <Player libraryId={libraryId} guid={videos.t2} title={`${companyName} — Der Anruf`} />
         </div>
         {videos.t2_portrait && (
-          <div className="mx-auto max-w-[460px] sm:hidden">
+          <div className="mx-auto max-w-[560px] sm:hidden">
             <Player
               libraryId={libraryId}
               guid={videos.t2_portrait}
               title={`${companyName} — Der Anruf`}
-              aspect="520 / 900"
+              aspect="670 / 900"
             />
           </div>
         )}
