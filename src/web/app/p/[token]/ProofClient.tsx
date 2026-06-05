@@ -211,7 +211,7 @@ export default function ProofClient({
         <span className="h-px w-16 bg-[#d4a843]/50" />
         <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true" className="mt-1">
           <rect x="1.5" y="1.5" width="49" height="49" rx="12" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
-          <circle cx="26" cy="26" r="13" fill="#d4a843" />
+          <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
         </svg>
         <p className="text-sm font-semibold text-slate-200">Ihr Leitsystem</p>
         <p className="text-xs text-slate-500">als App auf Ihrem Handy</p>
