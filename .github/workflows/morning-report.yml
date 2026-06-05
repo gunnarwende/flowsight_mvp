@@ -96,7 +96,7 @@ jobs:
 
           # Send via Resend API
           PAYLOAD=$(jq -n \
-            --arg from "noreply@send.flowsight.ch" \
+            --arg from "no-reply@flowsight.ch" \
             --arg to "$FOUNDER_EMAIL" \
             --arg subject "$SUBJECT" \
             --arg html "$WRAPPED" \
