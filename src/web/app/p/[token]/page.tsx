@@ -32,7 +32,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-dvh flex-col bg-[#0b1f33] text-slate-100">
       <main className="mx-auto w-full max-w-[760px] flex-1 px-4 py-6 sm:py-10">{children}</main>
       <footer className="px-4 py-6 text-center text-xs text-slate-500">
-        FlowSight · Oberrieden
+        Oberrieden
       </footer>
     </div>
   );
