@@ -203,6 +203,19 @@ export default function ProofClient({
         </p>
         <p className="text-sm font-semibold text-white">— Gunnar Wende</p>
       </section>
+
+      {/* Marken-Connector: App-Icon (Navy + Gold) → „Ihr Leitsystem".
+          Belegt visuell die „eigene App" aus der Mail. FlowSight bleibt unsichtbar
+          (Label tenant-framed). Gold nur als Akzent (Ring + Punkt + Haarlinie). */}
+      <div className="flex flex-col items-center gap-2 pb-2 pt-2">
+        <span className="h-px w-16 bg-amber-300/40" />
+        <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true" className="mt-1">
+          <rect x="1.5" y="1.5" width="49" height="49" rx="12" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
+          <circle cx="26" cy="26" r="13" fill="#d4a843" />
+        </svg>
+        <p className="text-sm font-semibold text-slate-200">Ihr Leitsystem</p>
+        <p className="text-xs text-slate-500">als App auf Ihrem Handy</p>
+      </div>
     </div>
   );
 }
