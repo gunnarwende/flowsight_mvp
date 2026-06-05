@@ -39,19 +39,16 @@ jobs:
           OUTPUT=$(node scripts/_ops/morning_report.mjs 2>&1) || true
           echo "$OUTPUT"
 
-          # Store report for downstream steps
-          echo "report<<REPORT_EOF" >> "$GITHUB_OUTPUT"
-          echo "$OUTPUT" >> "$GITHUB_OUTPUT"
-          echo "REPORT_EOF" >> "$GITHUB_OUTPUT"
+          # Founder-Betreff aus der Marker-Zeile (mit Status-Symbol + Fazit); Fallback falls fehlt
+          SUBJECT_LINE=$(echo "$OUTPUT" | grep '^__SUBJECT__:' | head -1 | sed 's/^__SUBJECT__://')
+          [ -z "$SUBJECT_LINE" ] && SUBJECT_LINE="FlowSight · Tagesüberblick"
+          echo "subject=$SUBJECT_LINE" >> "$GITHUB_OUTPUT"
 
-          # Detect severity for email trigger
-          if echo "$OUTPUT" | grep -q '🔴'; then
-            echo "severity=RED" >> "$GITHUB_OUTPUT"
-          elif echo "$OUTPUT" | grep -q '🟡'; then
-            echo "severity=YELLOW" >> "$GITHUB_OUTPUT"
-          else
-            echo "severity=GREEN" >> "$GITHUB_OUTPUT"
-          fi
+          # Report-Body OHNE die Marker-Zeile für die nachgelagerten Schritte
+          CLEAN=$(echo "$OUTPUT" | grep -v '^__SUBJECT__:')
+          echo "report<<REPORT_EOF" >> "$GITHUB_OUTPUT"
+          echo "$CLEAN" >> "$GITHUB_OUTPUT"
+          echo "REPORT_EOF" >> "$GITHUB_OUTPUT"
 
       - name: Send Telegram
         if: always()
@@ -82,14 +79,13 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           FOUNDER_EMAIL: ${{ secrets.FOUNDER_EMAIL }}
           REPORT: ${{ steps.report.outputs.report }}
-          SEVERITY: ${{ steps.report.outputs.severity }}
+          SUBJECT: ${{ steps.report.outputs.subject }}
         run: |
           if [ -z "$RESEND_API_KEY" ] || [ -z "$FOUNDER_EMAIL" ]; then
             echo "Missing RESEND_API_KEY or FOUNDER_EMAIL — skipping email"
             exit 0
           fi
-
-          SUBJECT="FlowSight ${SEVERITY}: Morning Report"
+          [ -z "$SUBJECT" ] && SUBJECT="FlowSight · Tagesüberblick"
           # Convert plain text to simple HTML (preserve line breaks)
           HTML_BODY=$(echo "$REPORT" | sed 's/$/<br>/g' | sed 's/^/<p style="font-family:monospace;margin:0">/' | sed 's/$/<\/p>/')
           WRAPPED="<div style=\"background:#0b1120;color:#e2e8f0;padding:24px;border-radius:8px;font-family:monospace;font-size:14px;line-height:1.8\"><div style=\"height:4px;background:#d4a853;border-radius:2px;margin-bottom:16px\"></div>${HTML_BODY}</div>"
