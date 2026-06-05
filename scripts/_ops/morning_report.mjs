@@ -399,60 +399,55 @@ async function buildWatchSignalLines() {
     }
     const dev = mobile > desktop ? "📱" : desktop > 0 ? "💻" : "·";
     const opened = p.view_count ?? 0;
-    const action = opened === 0 ? "Reminder: Link nochmal"
+    const actionShort = opened === 0 ? "Reminder senden (Link)"
       : signal < 60 ? "Reminder: erster Eindruck?"
-      : "→ ANRUFEN (warm)";
-    rows.push({ name: p.company_name, dev, parts, signal, opened, action });
+      : "anrufen (warm)";
+    rows.push({ name: p.company_name, dev, parts, signal, opened, actionShort });
   }
   rows.sort((a, b) => b.signal - a.signal);
-  const lines = ["━━━ OUTREACH (Watch-Signal 14d) ━"];
   if (rows.every((r) => r.signal === 0 && r.opened === 0)) {
-    lines.push("(noch keine Aktivität)");
-    return lines;
+    return ["Noch keine Aufrufe — wird aktiv, sobald du versendest."];
   }
-  for (const r of rows) lines.push(`${r.name}: ${r.dev} öffn ${r.opened}× ${r.parts.join(" ")} | ${r.action}`);
-  return lines;
+  return rows.map((r) => `${r.name} — ${r.dev} ${r.opened}× geöffnet · ${r.parts.join(" ")}  →  ${r.actionShort}`);
 }
-const watchLines = await buildWatchSignalLines();
+const watchRows = await buildWatchSignalLines();
+
+// ── Founder-tauglicher Tagesüberblick: Status-Symbol (🟢/🟡/🔴) + Klartext,
+//    Handlung zuerst, KEINE technischen Codes. 1-Minuten-Überblick.
+const aktionen = [];
+if (notfallCount > 0) aktionen.push(`🚨 ${notfallCount} Notfall-Meldung (letzte 24h)`);
+if (agentHangupCount > 0) aktionen.push(`⚠ Telefon-Assistentin hat aufgelegt (${agentHangupCount}×) — bitte prüfen`);
+if ((stuck48h ?? 0) > 0) aktionen.push(`${stuck48h} Fall/Fälle hängen seit über 48h`);
+if (expiring24h.length > 0) aktionen.push(`${expiring24h.length} Test-Zugang läuft in unter 24h aus`);
+if (followUpDueCount > 0) aktionen.push(`${followUpDueCount}× Trial-Follow-up fällig${followUpNames ? ` (${followUpNames})` : ""}`);
+if (pubPendingStale > 0) aktionen.push(`${pubPendingStale} BigBen-Reservierung(en) offen seit über 6h`);
+
+const sysProblem = !healthOk || !resendOk || (healthDb && healthDb !== "ok");
+const aktN = aktionen.length;
+const fazit = aktN > 0 ? `${aktN} ${aktN === 1 ? "Punkt" : "Punkte"} für dich` : "alles in Ordnung";
+const subjectLine = `${severity} FlowSight · ${dateStr} · ${fazit}`;
 
 const report = [
-  `${severity} DAILY ${dateStr}`,
-  `━━━━━━━━━━━━━━━━━━━`,
-  `cases_24h:      ${cases24h} (voice:${voiceCount} wizard:${wizardCount})`,
-  `notfall_24h:    ${notfallCount}`,
-  `backlog_new:    ${backlogNew ?? "?"}`,
-  `stuck_48h:      ${stuck48h ?? "?"}`,
-  `scheduled_today:${scheduledToday ?? "?"}`,
-  `done_7d:        ${done7d ?? "?"}`,
-  `reviews_7d:     ${reviewsSent7d ?? "?"}`,
-  `oldest_open:    ${oldestAge}`,
-  `━━━ TRIALS ━━━━━━━━━`,
-  `active_trials:  ${activeTrialCount}`,
-  `follow_up_due:  ${followUpDueCount}${followUpNames ? ` (${followUpNames})` : ""}`,
-  `expiring_48h:   ${expiring48hCount}${expiringNames ? ` (${expiringNames})` : ""}`,
-  `zombie_trials:  ${zombieCount}`,
-  `tick_stale:     ${staleCount}${staleNames ? ` (${staleNames})` : ""}`,
-  `━━━ VOICE ━━━━━━━━━━`,
-  `agent_hangup:   ${agentHangupCount}${agentHangupCount > 0 ? " ⚠ AGENT HAT AUFGELEGT" : ""}`,
-  ...(pubTenantIds.length > 0
-    ? [
-        `━━━ PUB ━━━━━━━━━━━━`,
-        `pending_reserv: ${pubPendingTotal}${pubPendingStale > 0 ? ` ⚠ ${pubPendingStale} >6h` : ""}`,
-        `oldest_pending: ${pubOldestPendingAge}`,
-      ]
-    : []),
-  `━━━ HEALTH ━━━━━━━━━`,
-  `api:            ${healthOk ? "OK" : "FAIL"}`,
-  `db:             ${healthDb}`,
-  `email_key:      ${healthEmail}`,
-  `resend_api:     ${resendOk ? "OK" : "FAIL"}`,
-  ...watchLines,
-  `━━━━━━━━━━━━━━━━━━━`,
+  `${severity}  FlowSight · Tagesüberblick · ${dateStr}`,
+  ``,
+  `🔔 HEUTE FÜR DICH`,
+  ...(aktN ? aktionen.map((a) => `   • ${a}`) : [`   • Nichts Dringendes — alles ruhig.`]),
+  ``,
+  `📊 DEINE BEWEIS-SEITEN  (wer hat geschaut?)`,
+  ...watchRows.map((r) => `   ${r}`),
+  ``,
+  `📥 ÜBERBLICK`,
+  `   Neue Anfragen (24h): ${cases24h}    ·    Offen: ${backlogNew ?? 0}    ·    Erledigt (7 Tage): ${done7d ?? 0}`,
+  `   Test-Zugänge aktiv: ${activeTrialCount}    ·    Follow-up fällig: ${followUpDueCount}`,
+  ``,
+  sysProblem ? `⚠ System: bitte prüfen (E-Mail / Datenbank / API)` : `System läuft · alles ok ✓`,
 ].join("\n");
 
 const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
-const fullReport = `${report}\n→ ${baseUrl}/ops/cases`;
+const fullReport = `${report}\n\n→ Zum Leitsystem: ${baseUrl}/ops`;
 
+// Marker-Zeile: der Workflow zieht daraus den E-Mail-Betreff (und entfernt sie aus dem Body).
+console.log("__SUBJECT__:" + subjectLine);
 console.log("\n" + fullReport + "\n");
 
 // ---------------------------------------------------------------------------
