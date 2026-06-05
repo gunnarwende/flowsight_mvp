@@ -22,9 +22,12 @@ const si = args.indexOf("--slug");
 const slug = si >= 0 ? args[si + 1] : null;
 if (!slug) { console.error("ERROR: --slug required"); process.exit(1); }
 
-// Universelle Screenflow-Layout-Koordinaten (Phone zentriert, Loom oben rechts).
-const PHONE = { w: 520, h: 900, x: 287, y: 0 };
-const LOOM = { crop: 176, x: 832, y: 62, scale: 118, maskR: 85, margin: 10 };
+// Universelle Screenflow-Layout-Koordinaten.
+// Founder 05.06. (FB31): Handy LINKS bündig, Loom rechts DANEBEN + grösser (~+30%),
+// damit man mehr von der Person/Gestik sieht. Breiterer Crop (670) schafft die
+// rechte Loom-Spalte; Phone sitzt links (x=299 = Phone-Kante).
+const PHONE = { w: 670, h: 900, x: 299, y: 0 };
+const LOOM = { crop: 176, x: 832, y: 62, scale: 150, maskR: 85, margin: 12 };
 
 const PIPE = "docs/gtm/pipeline/06_video_production";
 const ST = "docs/gtm/pipeline/07_stresstest";

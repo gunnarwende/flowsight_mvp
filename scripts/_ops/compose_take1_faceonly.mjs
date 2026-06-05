@@ -59,9 +59,11 @@ run("ffmpeg", ["-y", "-f", "lavfi",
 run("ffmpeg", ["-y", "-f", "lavfi", "-i", "color=black:s=880x880",
   "-vf", "geq=lum='if(lte(hypot(X-440,Y-440),438),255,0)':cb=128:cr=128",
   "-frames:v", "1", mask]);
-// 3) Compose: rundes Gesicht (gleiche Rahmung wie approved Mockup) zentriert auf Verlauf
+// 3) Compose: rundes Gesicht zentriert auf Verlauf.
+//    Original-Framing (1080er Center-Crop der 1920×1080-Quelle) = volle Höhe →
+//    Hand-Gestik/Finger-Zählen bleibt sichtbar (Founder 05.06.: 820er-Crop war zu nah).
 const fc =
-  "[1:v]crop=820:820:550:50,scale=880:880,setsar=1[fc];" +
+  "[1:v]crop=1080:1080:420:0,scale=880:880,setsar=1[fc];" +
   "[fc][2:v]alphamerge[circ];" +
   "[0:v][circ]overlay=(W-w)/2:10:shortest=1,format=yuv420p[v]";
 const a = ["-y", "-loop", "1", "-t", String(dur), "-i", bg, "-i", face, "-i", mask];
