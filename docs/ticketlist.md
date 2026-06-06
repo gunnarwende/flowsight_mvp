@@ -53,16 +53,16 @@
 
 ## ONBOARDING-COCKPIT — Bau-Backlog (Phase 2, Code · backend-first)
 
-> Design komplett (06.06., `docs/gtm/onboarding/`). Schritte OC1-OC4 = BigBen-Muster (überschaubar); OC5 = mehrtägiger Hauptbau. Specs: `phase2_cockpit_manifest` · `_structure` · `_voice_dispositions` · `_datamodel_backend`. Erst nach Founder-Design-Abnahme bauen.
+> **Bau-Stand 06.06. (Sa-Abend):** OC1–OC5 autonom als gestapelte, **rein additive, live-sichere** PRs **#572–#576** gebaut — dormant bis Retell `call_type` emittiert; nichts live bis Merge + `supabase db push`. OC6/OC7 = Founder-involviert. **Merge-Reihenfolge:** #571 → #572 → #573 → #574 → #575 → #576. Specs: `docs/gtm/onboarding/phase2_*`.
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|
-| OC1 | `tenant_callbacks` generalisieren | aus `pub_callback_requests` tenant-agnostisch (reason = callback / order_followup). Webhook- + Leitsystem-Pfad. | OFFEN |
-| OC2 | Webhook `call_type`-Verzweigung | FALL→`cases` / NACHRICHT→`tenant_callbacks` / NICHTS→suppress. Fallback: Intake-Daten→FALL. Ersetzt „jeder Call→Fall". | OFFEN |
-| OC3 | `modules.voice_dispositions` + Notify | JSONB-Policy je Disposition; Webhook liest Notify/Suppress; Reklamation/Notfall→Push an Inhaber; Info/Privat→Case-Suppression. | OFFEN |
-| OC4 | Leitsystem „Nachrichten"-Ansicht | neuer Tab liest `tenant_callbacks` (Resolve/Dismiss), analog BigBen-Callback-Seite. | OFFEN |
-| OC5 | **Cockpit-UI (Hauptbau)** | 3 Stränge/Screens aus Manifest+Struktur; confirm-not-create; Beweis-Loops; Finale. Navy+Gold. **Mehrtägig.** | OFFEN |
-| OC6 | Cockpit↔DB/Retell + is_demo-Test | Cockpit liest `tenant_config` → schreibt DB (`modules`+`staff`) + Retell-Prompt (publish); Test-Calls `is_demo`. | OFFEN |
+| OC1 | `tenant_callbacks` generalisieren | aus `pub_callback_requests` tenant-agnostisch (reason = callback / order_followup). Webhook- + Leitsystem-Pfad. | ✅ PR #572 |
+| OC2 | Webhook `call_type`-Verzweigung | FALL→`cases` / NACHRICHT→`tenant_callbacks` / NICHTS→suppress. Fallback: Intake-Daten→FALL. Ersetzt „jeder Call→Fall". | ✅ PR #573 |
+| OC3 | `modules.voice_dispositions` + Notify | JSONB-Policy je Disposition; Webhook liest Notify/Suppress; Reklamation/Notfall→Push an Inhaber; Info/Privat→Case-Suppression. | ✅ PR #574 |
+| OC4 | Leitsystem „Nachrichten"-Ansicht | neuer Tab liest `tenant_callbacks` (Resolve/Dismiss), analog BigBen-Callback-Seite. | ✅ PR #575 |
+| OC5 | **Cockpit-UI (Hauptbau)** | 3 Stränge/Screens aus Manifest+Struktur; confirm-not-create; Beweis-Loops; Finale. Navy+Gold. **Mehrtägig.** | 🟡 PR #576 (Gerüst; Daten-Layer/Flows offen) |
+| OC6 | Cockpit↔DB/Retell + is_demo-Test | Cockpit liest `tenant_config` → schreibt DB (`modules`+`staff`) + Retell-Prompt (publish); Test-Calls `is_demo`. | OFFEN (Founder) |
 | OC7 | Onboarding-Mail-Versand | `send_onboarding.mjs` (Resend, Founder-Absender, `--preview`); Dörfler-Content steht; Ziel-Link = Cockpit. | OFFEN — am Ende |
 
 ---

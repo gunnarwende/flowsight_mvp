@@ -167,14 +167,26 @@ Produktiv-Roll-out Schweizer Datenschutz-Anwalt.*
 
 ---
 
-## §8 · Was Folge-Bau ist (nicht heute)
+## §8 · Bau-Status (06.06.) + was Folge-Bau bleibt
 
-- **Cockpit-Spec (Phase 2):** die 3-Strang-UI + das Voice-Dispositions-Routing-Fundament
-  (`tenant_callbacks`) + die `tenant_config`-Vorbefüllung + Test-Loop (`is_demo`) + Finale.
+**Autonom gebaut (06.06.) als gestapelte, rein additive, live-sichere PRs** — dormant bis ein
+Voice-Agent `call_type` emittiert; nichts geht live bis Merge + `supabase db push`:
+- **OC1 → PR #572:** `tenant_callbacks` (Migration + `tenantCallbacks.ts`-Lib).
+- **OC2 → PR #573:** Webhook `call_type`-Verzweigung (FALL/NACHRICHT/NICHTS, backward-compatible).
+- **OC3 → PR #574:** Reklamation-Push (eventType `negative_review`) + `voiceDispositions.ts`-Policy.
+- **OC4 → PR #575:** Leitsystem-„Nachrichten"-View `/ops/nachrichten` + generische API.
+- **OC5 → PR #576:** Cockpit-**Gerüst** `/aufbau/[token]` (Navy/Gold-Schale, strukturell).
+- **Merge-Reihenfolge:** #571 (Design) → #572 → #573 → #574 → #575 → #576.
+
+**Folge-Bau — braucht Founder (NICHT autonom gemacht):**
+- **Cockpit-Daten-Layer + interaktive Flows (OC6):** Token-Lookup/`cockpit_sessions`,
+  `tenant_config`-Vorbefüllung (confirm-not-create), Frage-für-Frage-Flows + Beweis-Loops,
+  Schreiben in DB (`modules` inkl. `voice_dispositions`, `staff`) + Retell-Prompt, „An Gunnar
+  senden"→Review-Gate. (= ersetzt die alte `prospect_to_onboarding`-Idee.)
+- **Retell-Prompt:** Lisa `call_type` emittieren lassen + publish → erst dann werden OC2/OC3 aktiv;
+  dann E2E-Test je Disposition. · **Nav-Eintrag** `/ops/nachrichten`.
 - **Phase 3 Go-live-Ops:** v0-Operatives migrieren (Weiterleitung, PWA, Painpoint-Antworten, Cheat).
-- **`prospect_to_onboarding`-Verdrahtung:** der One-Tap, der nach dem „Ja" die Onboarding-Mail
-  triggert + `tenant_config` ins Cockpit reicht.
-- **Pricing/AVV-Mechanik** (Zahlung am Go-live-Gate, Vertragstext).
+- **Onboarding-Mail-Versand (OC7):** `send_onboarding.mjs`. · **Pricing/AVV-Mechanik** (Go-live-Gate).
 
 ---
 
