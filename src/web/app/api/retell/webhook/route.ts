@@ -8,6 +8,7 @@ import { sendCaseNotification } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
+import { insertTenantCallback } from "@/src/lib/callbacks/tenantCallbacks";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
@@ -463,6 +464,57 @@ export async function POST(req: Request) {
     logDecision({ decision: "module_disabled", module: "voice", event, call_id: retellCallId, tenant_id: tenantId });
     return new NextResponse(null, { status: 204 });
   }
+
+  // ── OC2: Disposition-Routing (backward-compatible) ─────────────────
+  // Lisa sortiert jeden Anruf via optionalem `call_type` in 3 Körbe:
+  // FALL (cases) / NACHRICHT (tenant_callbacks) / NICHTS.
+  // Ist `call_type` ABWESEND (heutige Agents emittieren es noch nicht), bleibt
+  // das Verhalten UNVERÄNDERT → Fall (Fall-through unten, bestehender Pfad).
+  // Erst wenn ein Agent call_type emittiert (founder-getesteter Folge-Schritt),
+  // greifen die neuen Zweige. Spec: docs/gtm/onboarding/phase2_voice_dispositions.md
+  const callType = nonEmptyStr(
+    extractedData.call_type ?? extractedData.calltype ?? extractedData.intent,
+  )?.toLowerCase();
+
+  if (callType === "callback" || callType === "order_followup") {
+    // → NACHRICHT: Rückruf/Lieferant/„Chef" (D3) oder Nachfrage zu Auftrag (D4).
+    // Kein Fall, kein SMS — landet in der Nachrichten-Liste (tenant_callbacks).
+    try {
+      const { created } = await insertTenantCallback({
+        tenantId,
+        reason: callType,
+        callerName: reporterName ?? null,
+        callerPhone,
+        topic: finalDescription ?? null,
+        callId: retellCallId,
+        transcriptExcerpt: call?.transcript?.slice(0, 500) ?? null,
+      });
+      Sentry.setTag("decision", "disposition_nachricht");
+      logDecision({
+        decision: "disposition_nachricht",
+        call_type: callType,
+        created,
+        event,
+        call_id: retellCallId,
+        tenant_id: tenantId,
+      });
+    } catch (e) {
+      Sentry.captureException(e, {
+        tags: { area: "voice", provider: "retell", tenant_id: tenantId, decision: "callback_insert_error" },
+      });
+      logDecision({ decision: "callback_insert_error", call_type: callType, call_id: retellCallId, tenant_id: tenantId });
+    }
+    return new NextResponse(null, { status: 204 });
+  }
+
+  if (callType === "info" || callType === "private" || callType === "spam") {
+    // → NICHTS: Info beantwortet / privat / Spam. Keine Spur, kein Fall.
+    Sentry.setTag("decision", "disposition_nichts");
+    logDecision({ decision: "disposition_nichts", call_type: callType, event, call_id: retellCallId, tenant_id: tenantId });
+    return new NextResponse(null, { status: 204 });
+  }
+
+  // call_type abwesend ODER auftrag/reklamation → FALL (bestehender Pfad, unverändert):
 
   // ── Create case (direct DB insert via service role) ────────────────
   try {
