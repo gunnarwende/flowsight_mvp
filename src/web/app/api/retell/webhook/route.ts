@@ -9,6 +9,7 @@ import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { insertTenantCallback } from "@/src/lib/callbacks/tenantCallbacks";
+import { resolveVoiceDispositions } from "@/src/lib/callbacks/voiceDispositions";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
@@ -454,6 +455,8 @@ export async function POST(req: Request) {
   const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
   const tenantModules = tenantRow?.modules as Record<string, unknown> | null;
   const tenantNotificationEmail = typeof tenantModules?.notification_email === "string" ? tenantModules.notification_email : undefined;
+  // OC3: per-Betrieb Dispositions-Policy (Default = Alarmierungs-Schwelle, backward-compatible)
+  const dispositions = resolveVoiceDispositions(tenantModules);
 
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
@@ -498,6 +501,19 @@ export async function POST(req: Request) {
         call_id: retellCallId,
         tenant_id: tenantId,
       });
+      // OC3: optionaler Push bei Rückruf (per-Betrieb; Default: nur Liste, kein Push)
+      if (created && dispositions.callbackPush) {
+        import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+          sendOpsPush({
+            tenantId,
+            eventType: "case",
+            title: callType === "order_followup" ? "Rückfrage zu Auftrag" : "Neue Rückruf-Nachricht",
+            body: `${reporterName ?? "Anrufer"}${callerPhone ? ` · ${callerPhone}` : ""}`,
+            url: "/ops/nachrichten",
+            tag: `callback-${retellCallId}`,
+          }),
+        ).catch(() => {});
+      }
     } catch (e) {
       Sentry.captureException(e, {
         tags: { area: "voice", provider: "retell", tenant_id: tenantId, decision: "callback_insert_error" },
@@ -644,6 +660,22 @@ export async function POST(req: Request) {
           body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
           url: `/ops/cases/${caseId}`,
           tag: `notfall-${caseId}`,
+        })
+      ).catch(() => {});
+    }
+
+    // OC3: Reklamation → sofortiger Alarm an Inhaber (business-kritisch wie Negativ-
+    // Review → eventType "negative_review" pusht immer). Greift nur bei call_type=
+    // "reklamation" (heute kein Agent → dormant) + per-Betrieb-Policy (Default an).
+    if (callType === "reklamation" && dispositions.reklamationPush) {
+      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        sendOpsPush({
+          tenantId,
+          eventType: "negative_review",
+          title: "Reklamation eingegangen",
+          body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
+          url: `/ops/cases/${caseId}`,
+          tag: `reklamation-${caseId}`,
         })
       ).catch(() => {});
     }
