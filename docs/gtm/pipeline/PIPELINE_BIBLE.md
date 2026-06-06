@@ -45,7 +45,10 @@ derive_config → tenant_config     → Founder-Abnahme → abgenommen/
 
 Diese Bible deckt **Phase 2** (Video) ab; Phase 1 (Crawl/Derive) liefert die `tenant_config.json` (§3).
 **Phase 3 (Verpackung & Versand) ist jetzt gebaut → §12** (Beweis-Seite `/p/[token]`, Canonical T1,
-automatisierter Outreach-Versand).
+automatisierter Outreach-Versand). **Was NACH dem Versand kommt** — Engagement → das Gespräch →
+das Onboarding-Cockpit — liegt in der **Onboarding-Bible** (`docs/gtm/onboarding/ONBOARDING_BIBLE.md`);
+die Naht zwischen den Maschinen ist der Moment, in dem ein Mensch antwortet/anruft (Pipeline =
+automatisiert/ohne Founder; Onboarding = hochtouch/Founder im Loop).
 
 ---
 
