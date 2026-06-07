@@ -89,10 +89,17 @@ async function main() {
   const adminEmail = str(drGolive.adminEmail).trim();
 
   // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
+  // WICHTIG: Hat der Kunde die Toggles nie angefasst (kein dispositions im Draft), gelten die
+  // Sicherheits-Defaults (VOICE_DISPOSITIONS_DEFAULTS): Reklamation-Push AN, Callback-Push AUS.
+  // NICHT auf false fallen — das würde die Reklamations-Alarmierung still abschalten.
   const disp = drVoice.dispositions ?? {};
+  const hasNotify = (k) => disp[k] && typeof disp[k].notify === "string";
   const voiceDispositions = {
-    reklamationPush: disp.d5_reklamation?.notify === "push",
-    callbackPush: disp.d3_rueckruf?.notify === "push" || disp.d4_nachfrage?.notify === "push",
+    reklamationPush: hasNotify("d5_reklamation") ? disp.d5_reklamation.notify === "push" : true,
+    callbackPush:
+      hasNotify("d3_rueckruf") || hasNotify("d4_nachfrage")
+        ? disp.d3_rueckruf?.notify === "push" || disp.d4_nachfrage?.notify === "push"
+        : false,
     // volle Policy fürs Audit / spätere Nutzung mitschreiben
     full: disp,
   };
