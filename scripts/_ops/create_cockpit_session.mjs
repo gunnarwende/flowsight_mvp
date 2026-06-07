@@ -53,17 +53,9 @@ const cfg = JSON.parse(readFileSync(CONFIG_PATH, "utf8"));
 // ── Helpers ────────────────────────────────────────────────────────────────
 const str = (v) => (typeof v === "string" ? v : "");
 
-/** Rechtsform für die gesprochene Anrede strippen ("Dörfler AG" → "Dörfler"). */
-function shortName(name) {
-  return str(name)
-    .replace(/\s+(AG|GmbH|GbR|KG|OHG|AG\/SA|Sàrl|Sagl)\.?$/i, "")
-    .trim() || str(name);
-}
-
-/** Vorschlag für Begrüssung inkl. revDSG-KI-Mindesthinweis (Betrieb feilt im Cockpit). */
+/** Default-Begrüssung = der ECHTE T2-Wortlaut (Founder 07.06.), Betrieb feilt im Cockpit. */
 function deriveGreeting(companyName) {
-  const sn = shortName(companyName);
-  return `Grüezi, Sie sind verbunden mit ${sn}. Mein Name ist Lisa, die digitale Assistentin — ich nehme Ihr Anliegen gerne auf.`;
+  return `Hallo, hier ist Lisa — die digitale Assistentin der ${str(companyName)}. Wie kann ich Ihnen helfen?`;
 }
 
 const KI_DISCLOSURE_MIN =
