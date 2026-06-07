@@ -43,9 +43,9 @@ const IDS_PATH = join("retell", "cockpit_test_agent.json");
 if (!existsSync(PROMPT_PATH)) { console.error(`ERROR: Prompt-Template fehlt: ${PROMPT_PATH}`); process.exit(1); }
 const generalPrompt = readFileSync(PROMPT_PATH, "utf8");
 
-// Begrüssung mit {{company_name}} → wird pro Web-Call dynamisch gefüllt (= der Aha).
+// Begrüssung = der ECHTE T2-Wortlaut (Founder 07.06.). {{company_name}} dynamisch gefüllt.
 const beginMessage =
-  "Grüezi, Sie sind verbunden mit {{company_name}}. Mein Name ist Lisa, die digitale Assistentin — wie kann ich Ihnen helfen?";
+  "Hallo, hier ist Lisa — die digitale Assistentin der {{company_name}}. Wie kann ich Ihnen helfen?";
 
 const existing = existsSync(IDS_PATH) ? JSON.parse(readFileSync(IDS_PATH, "utf8")) : {};
 
@@ -63,7 +63,7 @@ const client = new Retell({ apiKey });
 async function main() {
   // 1) LLM anlegen/updaten (Prompt mit {{Platzhaltern}} intakt)
   let llmId = existing.llm_id;
-  const llmPayload = { model: "gpt-4.1-mini", general_prompt: generalPrompt, begin_message: beginMessage };
+  const llmPayload = { model: "gpt-4.1", general_prompt: generalPrompt, begin_message: beginMessage };
   if (llmId) {
     await client.llm.update(llmId, llmPayload);
     console.log("✓ LLM aktualisiert:", llmId);

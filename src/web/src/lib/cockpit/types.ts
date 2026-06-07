@@ -141,25 +141,36 @@ export interface CockpitDraft {
     /** Korrekturen am vorbefüllten Wissen (nur geänderte Felder). */
     wissen?: Partial<VoiceWissen>;
     dispositions?: DispositionsConfig;
-    /** Pickup = Telco-Weiterleitungs-Wahl (Next-Step, keine Lisa-Config). */
-    pickup?: "sofort" | "nach_15s" | "nach_30s";
-    notfallAlarm?: "push" | "anruf";
+    /** Pickup = Telco-Weiterleitungs-Wahl (Next-Step, keine Lisa-Config). 5 Stufen. */
+    pickup?: "sofort" | "nach_10s" | "nach_15s" | "nach_20s" | "nach_30s";
   };
   wizard?: {
     categories?: WizardCategory[];
-    distribution?: "gbp_button" | "link" | "embed" | "subdomain" | "agentur_mail";
-    replaceOldForm?: boolean;
+    /** „link" entfernt; QR für website-lose Betriebe. */
+    distribution?: "gbp_button" | "embed" | "agentur_mail" | "qr";
+    /** Bei Embed: wer baut ein? */
+    embedBy?: "intern" | "agentur";
+    hasWebsite?: boolean;
   };
   review?: {
     notificationEmail?: string; // 🆕 echte Ops-Mail
     googleReviewUrl?: string; // 🆕
     smsSenderName?: string;
+    /** Editierbarer SMS-Inhalt (≤160 Zeichen). Leer = Default-Template. */
+    smsContent?: string;
+    /** Nachrichten/Rückrufe zusätzlich per E-Mail melden (Default aus). */
+    notifyMessagesByEmail?: boolean;
     chips?: string[];
   };
   golive?: {
     adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)
     avvAccepted?: boolean;
+    /** Welche AVV-Version akzeptiert wurde + wann (revDSG-Nachweis). */
+    avvVersion?: string;
+    avvAcceptedAt?: string;
   };
+  /** Freitext-Hinweise des Inhabers je Strang (fängt die „20 %, die nur er kennt"). */
+  notes?: { vorort?: string; voice?: string; website?: string; system?: string };
   /** Pro Strang/Schritt: erledigt? (treibt das Fortschritts-Band). */
   stepDone?: Record<string, boolean>;
 }
