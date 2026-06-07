@@ -80,7 +80,7 @@ function RadioGroup<T extends string>({ value, onChange, options }: {
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" style={{ filter: "drop-shadow(0 6px 22px rgba(212,168,67,0.35))" }}>
+    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" style={{ filter: "drop-shadow(0 0 16px rgba(212,168,67,0.75)) drop-shadow(0 0 36px rgba(212,168,67,0.45))" }}>
       <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
       <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
     </svg>
@@ -252,14 +252,18 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
 
       {/* Pfeile: je ein Strang fliesst in den Hub (Desktop 3-spaltig, Handy einer) */}
       <div className="my-5 hidden sm:grid sm:grid-cols-3 sm:gap-6">
-        {[0, 1, 2].map((i) => (<div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>↓</div>))}
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>
+            <span className="inline-block" style={{ transform: i === 0 ? "rotate(32deg)" : i === 2 ? "rotate(-32deg)" : "none" }}>↓</span>
+          </div>
+        ))}
       </div>
       <div className="my-5 text-center text-2xl sm:hidden" style={{ color: `${GOLD}99` }}>↓</div>
 
       {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
       <button type="button" onClick={() => onOpen("system")}
-        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:brightness-110"
-        style={{ borderColor: `${GOLD}99`, backgroundColor: "rgba(200,162,74,0.07)", boxShadow: "0 0 80px rgba(200,162,74,0.18)" }}>
+        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:bg-white/[0.06]"
+        style={{ borderColor: "rgba(255,255,255,0.10)", backgroundColor: "rgba(255,255,255,0.03)" }}>
         <BrandIcon size={116} />
         <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
         <p className="mt-0.5 text-base font-semibold" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
@@ -269,7 +273,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
         </p>
       </button>
 
-      <div className="my-6 text-center text-2xl text-slate-600">↓</div>
+      <div className="my-6 text-center text-2xl" style={{ color: `${GOLD}99` }}>↓</div>
 
       {/* Output */}
       <div className="mx-auto max-w-[480px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center text-sm text-slate-300">
