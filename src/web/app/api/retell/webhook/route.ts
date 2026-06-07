@@ -536,12 +536,18 @@ export async function POST(req: Request) {
   try {
     const supabase = getServiceClient();
 
+    // OC6: Cockpit-Testanruf? metadata.is_demo=true → Fall als Demo markieren
+    // (fällt aus KPIs, erscheint im „Testfälle"-Tab; G6: erster ECHTER Fall
+    // bleibt der erste). Quelle = /api/aufbau/[token]/testcall (Web-Call-Metadata).
+    const isDemoCall = (call?.metadata as Record<string, unknown> | undefined)?.is_demo === true;
+
     // Build insert payload — street/house_number are optional columns
     // that may not exist if the address migration hasn't been applied yet.
     // Include them only when we have values to avoid DB errors on missing columns.
     const insertPayload: Record<string, unknown> = {
       tenant_id: tenantId,
       source: "voice" as const,
+      is_demo: isDemoCall,
       reporter_name: reporterName ?? null,
       contact_phone: callerPhone,
       contact_email: null,
