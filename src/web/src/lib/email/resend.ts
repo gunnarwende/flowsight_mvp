@@ -2,6 +2,7 @@ import "server-only";
 
 import { Resend } from "resend";
 import * as Sentry from "@sentry/nextjs";
+import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
 let _resend: Resend | null = null;
 
@@ -742,6 +743,87 @@ export async function sendSalesLeadNotification(
       error_code: err instanceof Error ? err.name : "unknown",
       error_message: err instanceof Error ? err.message : "unknown",
     }));
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Cockpit-submitted alert (founder review gate — Onboarding-Cockpit Phase 2, OC6)
+// ---------------------------------------------------------------------------
+
+interface CockpitSubmittedPayload {
+  companyName: string;
+  slug: string;
+  token: string;
+}
+
+/**
+ * Notify the founder that a business finished building its system in the
+ * Cockpit and submitted it for review (Phase 3 Go-live-Gate). NICHTS geht live,
+ * bis der Founder reviewt (die 🆕-Zeilen) und den Promote-Schritt ausführt.
+ * → MAIL_REPLY_TO. Errors captured, never thrown.
+ */
+export async function sendCockpitSubmittedAlert(
+  payload: CockpitSubmittedPayload,
+): Promise<boolean> {
+  const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const from = `FlowSight <${fromAddr}>`;
+  const to = process.env.MAIL_REPLY_TO;
+  const baseUrl = APP_BASE_URL;
+
+  const base: Record<string, unknown> = {
+    _tag: "resend",
+    email_type: "cockpit_submitted",
+    area: "onboarding",
+    slug: payload.slug,
+    recipient_env: "MAIL_REPLY_TO",
+    recipient_present: !!to,
+  };
+
+  if (!process.env.RESEND_API_KEY) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_RESEND_API_KEY" }));
+    return false;
+  }
+  if (!to) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: "no_MAIL_REPLY_TO" }));
+    return false;
+  }
+
+  try {
+    const { data, error } = await getResend().emails.send({
+      from,
+      to,
+      subject: `🧭 Cockpit fertig — ${payload.companyName} wartet auf Review`,
+      text: [
+        `${payload.companyName} hat sein Leitsystem im Cockpit aufgebaut und zur Freischaltung gesendet.`,
+        ``,
+        `REVIEW (prüfe gezielt die 🆕-Zeilen: echte Staff, notification_email,`,
+        `google_review_url, Admin-Mail, Dispositionen):`,
+        `  Cockpit ansehen:  ${baseUrl}/aufbau/${payload.token}`,
+        ``,
+        `GO-LIVE (erst nach grünem Review, lokal/Founder):`,
+        `  node --env-file=src/web/.env.local scripts/_ops/promote_cockpit_session.mjs --token ${payload.token}`,
+        ``,
+        `Nichts ist live, bis du den Promote ausführst. (Phase 3 Go-live-Gate, G1/G11.)`,
+        ``,
+        `---`,
+        `Slug: ${payload.slug} · Token: ${payload.token}`,
+      ].join("\n"),
+    });
+    if (error) {
+      Sentry.captureException(error, {
+        tags: { _tag: "resend", area: "onboarding", provider: "resend", email_type: "cockpit_submitted", decision: "failed", error_code: "RESEND_API_ERROR" },
+      });
+      console.log(JSON.stringify({ ...base, decision: "failed", reason: "resend_api_error" }));
+      return false;
+    }
+    console.log(JSON.stringify({ ...base, decision: "sent", provider_message_id: data?.id ?? null }));
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, {
+      tags: { _tag: "resend", area: "onboarding", provider: "resend", email_type: "cockpit_submitted", decision: "failed", error_code: "RESEND_EXCEPTION" },
+    });
+    console.log(JSON.stringify({ ...base, decision: "failed", reason: "exception" }));
     return false;
   }
 }
