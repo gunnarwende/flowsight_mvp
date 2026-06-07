@@ -1,5 +1,7 @@
 # Ticketlist — FlowSight (SSOT)
 
+**Updated:** 2026-06-06 — **🧭 ONBOARDING-COCKPIT — DESIGN-PHASE KOMPLETT (Wochenend-Sprint).** Onboarding komplett neu als **Self-Service-Cockpit** (Co-Pilot, IKEA/Self-Checkout) spezifiziert — alte Bible → `docs/archive/onboarding/Onboarding_bible_v0.md`, frisch unter `docs/gtm/onboarding/` (Master + Phase-1-Playbook + 4 Phase-2-Specs). **4 Phasen:** 1 Das Gespräch (Live-Playbook) · 2 Cockpit (Bau) · 3 Review & Go-live (Pay) · 4 Validierung. **Pricing-Modell (Founder-bestätigt):** Premium — Aktivierung + Monat, monatlich kündbar, **kein Trial**, zahlend am Go-live (Richtwerte; 0 Kunden → erste 3-5 = Preis-Findung). Seam: `tenant_config.json` = Through-Line. Voice = 7 Dispositionen → 3 Körbe (Fall/Nachricht/nichts). **Bau-Backlog OC1-OC7 unten.** Vorlauf:
+
 **Updated:** 2026-05-25 Re-Entry Pfingstmontag — **🌋 POST-REISE Operative Hygiene + Strategie-Pivot.** PR #525 (Morning-Report tenant-scope + Pub-Mode + Resend) merged. Damien-Cusack-Fall (23.05. 2× pending) = Founder-Action heute. Dörfler T3 with-mouse-MP4 gerendert (5.8 MB, 1113 Mouse-Events). Strategische Entscheidungen: Premium-Pricing 1.5-2.5k CHF/Mo, Max-10/Monat-Cap, Website-Modul tot, ICP 300-400 statt 5'400, Self-Service-Onboarding geparkt bis Kunde 5+. Neue Docs: `docs/sales/discovery_questions.md`, `docs/gtm/icp_filter.md`, `docs/gtm/loom_cta_v2.md`. **Offene Punkte heute:** Damien-Call (Founder), T4 Mouse-Recording (Founder), 14.05.-agent_hangup-Investigation. Day-30-Pre-Reise-Kontext:
 
 **Updated:** 2026-04-30 Day-30 Pre-Reise EOD — **🎬 T3 LOOM-AFTER-BUILD ARCHITEKTUR LIVE für alle 4 Tenants. PIPELINE_BIBLE §62 etabliert.** FB14/FB15/FB16: Overlay-on-Overlay-Approach veto'd ("wird nie skalierend funktionieren"). Architektur-Pivot: Loom kommt NACH Phase-Build via `apply_loom_to_t3_master.mjs`. 4 Tenants × T3 mit NEW Loom (mini_takes/Take3/Take3_cut.mp4) + W=105.0 (0.5s später als initial — Founder-Wahl) gebaut. Loom-Continuity verifiziert (no freeze). Master-Backup gesichert. **Carry-Forward (post-Reise):** T3+T4 Mouse-Layer (per `scripts/_ops/mouse_layer/`), Founder-Sichtung Leins/Stark/Wälti T3, Onboarding-Maschine + 6-Wochen-Roadmap. Day-30-Mittag-Kontext:
@@ -30,7 +32,7 @@
 - **Pipeline V2:** Phase 1 DONE (Crawl+Extract+Derive+Provision). `pipeline_run.mjs` = Ein-Befehl-Orchestrator. `tenant_config.json` = SSOT für alles downstream.
 - **Take 2+3+4 Screenflow-Pipeline FINAL (Day 23):** Pipeline komplett für Dörfler AG (Masterbetrieb 10/10). Demo-Time-Architektur (`demo_time.mjs` + Werktag-Gate CH-Feiertage + compressed Timeline 08:04→morgen 08:00-10:00). DEMO_NO_DISPATCH env-Flag unterdrückt echte SMS/Mails in Pipeline-Runs. Take 4 Feature-Set: Akt1 Termin versenden → Phone1 Reminder → Akt2 D15 → Phone2 SMS → Review Mobile redesigned → Closing Gold → Windows-Toast tenant-branded (Navy+Gold). Samsung-Chrome (Status-Bar + Bottom-Nav) + Phone-Platter-Backstop + Sidebar-Profile-Overlay. 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet.
 - **Quality-Gates-Framework (Day 23):** Pre-Flight, Take 2, Take 3, Take 4, Composite, Cross-Tenant Checks in PIPELINE_BIBLE §-Quality-Gates. Automation-Script `dry_run_qg.mjs` in Bau für 24.04.
-- **Pricing:** FINAL — Standard CHF 299 (100 Fälle), Professional CHF 499 (200 Fälle), Enterprise Custom.
+- **Pricing:** **PIVOT zu Premium (06.06., Founder-bestätigt für Neukunden-Akquise):** einmalige Aktivierung (~CHF 1'500–2'500) + Premium-Monat (~CHF 1'900–2'400), monatlich kündbar, **kein Gratis-Trial**, zahlend am Go-live. Anker = Empfangskraft/verpasster Auftrag, nicht Software. 0 Kunden → Richtwerte, erste 3-5 = Preis-Findung, nie rabattieren (Scarcity 10/Mo). Altes 299/499/799-Tier-Modell für Akquise abgelöst. Detail: D101 zielarchitektur + Onboarding-Bible §4.
 - **BLOCKER:** 0
 - **BigBen Pub:** ERSTER KUNDE (Paul). Barter-Deal. Voice EN+DE LIVE (+41445054818), PCA structured extraction. Dashboard 6 Cards. Go-Live prep 90% complete, waiting for Paul's photos/videos. 35 PRs (#457-#467 + #479-#499).
 - **Phase:** Sales Day 23 Late-Night. **Take 4 Review-Flow Gold-Standard für 3 Betriebe (Leins + Stark + Wälti).** FB32-FB41 gefixt: Samsung-Pop-from-Link Animation, Review-Layout-Konstanten, Dual-min-h-dvh-Selector-Falle, Reveal-Overlay Smart-Gate, deterministische Seed-Zeiten, Wallpaper-Crop, Samsung One UI 6 Nav-Icons (3-bar+square+chevron). Pipeline-Bible §31 ergänzt. Alle 3 Betriebe verifiziert Phone2-Ende + Review-Start auf identischer Y-Position.
@@ -46,6 +48,22 @@
 4. Telegram: Shipped → Vercel deployt Prod (~90s)
 5. Done. Kein Terminal noetig.
 ```
+
+---
+
+## ONBOARDING-COCKPIT — Bau-Backlog (Phase 2, Code · backend-first)
+
+> **Bau-Stand 06.06. (Sa-Abend):** OC1–OC5 autonom als gestapelte, **rein additive, live-sichere** PRs **#572–#576** gebaut — dormant bis Retell `call_type` emittiert; nichts live bis Merge + `supabase db push`. OC6/OC7 = Founder-involviert. **Merge-Reihenfolge:** #571 → #572 → #573 → #574 → #575 → #576. Specs: `docs/gtm/onboarding/phase2_*`.
+
+| # | Titel | Beschreibung | Status |
+|---|-------|-------------|--------|
+| OC1 | `tenant_callbacks` generalisieren | aus `pub_callback_requests` tenant-agnostisch (reason = callback / order_followup). Webhook- + Leitsystem-Pfad. | ✅ PR #572 |
+| OC2 | Webhook `call_type`-Verzweigung | FALL→`cases` / NACHRICHT→`tenant_callbacks` / NICHTS→suppress. Fallback: Intake-Daten→FALL. Ersetzt „jeder Call→Fall". | ✅ PR #573 |
+| OC3 | `modules.voice_dispositions` + Notify | JSONB-Policy je Disposition; Webhook liest Notify/Suppress; Reklamation/Notfall→Push an Inhaber; Info/Privat→Case-Suppression. | ✅ PR #574 |
+| OC4 | Leitsystem „Nachrichten"-Ansicht | neuer Tab liest `tenant_callbacks` (Resolve/Dismiss), analog BigBen-Callback-Seite. | ✅ PR #575 |
+| OC5 | **Cockpit-UI (Hauptbau)** | 3 Stränge/Screens aus Manifest+Struktur; confirm-not-create; Beweis-Loops; Finale. Navy+Gold. **Mehrtägig.** | 🟡 PR #576 (Gerüst; Daten-Layer/Flows offen) |
+| OC6 | Cockpit↔DB/Retell + is_demo-Test | Cockpit liest `tenant_config` → schreibt DB (`modules`+`staff`) + Retell-Prompt (publish); Test-Calls `is_demo`. | OFFEN (Founder) |
+| OC7 | Onboarding-Mail-Versand | `send_onboarding.mjs` (Resend, Founder-Absender, `--preview`); Dörfler-Content steht; Ziel-Link = Cockpit. | OFFEN — am Ende |
 
 ---
 
