@@ -21,7 +21,6 @@ import { startLisaTestCall, type TestCallPhase } from "./lisaTestCall";
  */
 
 const GOLD = "#c8a24a";
-const BG = "#0b1f33";
 
 type View = "overview" | "vorort" | "lisa" | "website" | "system" | "freigabe";
 const CAPABILITIES = ["vorort", "lisa", "website", "system"] as const;
@@ -78,12 +77,11 @@ function RadioGroup<T extends string>({ value, onChange, options }: {
   );
 }
 
-/** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite. */
+/** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" className="drop-shadow-lg">
+    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" style={{ filter: "drop-shadow(0 6px 22px rgba(212,168,67,0.35))" }}>
       <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
-      <circle cx="26" cy="26" r="11" fill="none" stroke="#d4a843" strokeWidth="1.2" opacity="0.5" />
       <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
     </svg>
   );
@@ -175,7 +173,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
   const doneCount = CAPABILITIES.filter((c) => progress[c]).length;
 
   return (
-    <div className="flex min-h-dvh flex-col" style={{ backgroundColor: BG, color: "#e8eef5" }}>
+    <div className="flex min-h-dvh flex-col" style={{ background: "radial-gradient(1000px circle at 50% 54%, #18374f 0%, #0b1f33 56%)", color: "#e8eef5" }}>
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
           <Overview brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
@@ -186,7 +184,10 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
         {view === "system" && <SystemNode pf={pf} draft={draft} brandColor={brandColor} update={update} onDone={() => markDone("system")} onBack={() => setView("overview")} />}
         {view === "freigabe" && <Freigabe token={token} draft={draft} update={update} onBack={() => setView("overview")} companyName={session.company_name} />}
       </main>
-      <footer className="px-4 py-6 text-center text-xs text-slate-500">FlowSight · Oberrieden · Kommen Sie nicht weiter? Schreiben Sie Gunnar direkt.</footer>
+      <footer className="px-4 py-6 text-center text-xs text-slate-500">
+        FlowSight · Oberrieden · Kommen Sie nicht weiter? Schreiben Sie Gunnar direkt:{" "}
+        <a href="mailto:gunnar.wende@flowsight.ch" className="underline" style={{ color: GOLD }}>gunnar.wende@flowsight.ch</a>
+      </footer>
     </div>
   );
 }
@@ -249,12 +250,16 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
         })}
       </div>
 
-      <div className="my-6 text-center text-2xl text-slate-600">↓</div>
+      {/* Pfeile: je ein Strang fliesst in den Hub (Desktop 3-spaltig, Handy einer) */}
+      <div className="my-5 hidden sm:grid sm:grid-cols-3 sm:gap-6">
+        {[0, 1, 2].map((i) => (<div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>↓</div>))}
+      </div>
+      <div className="my-5 text-center text-2xl sm:hidden" style={{ color: `${GOLD}99` }}>↓</div>
 
       {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
       <button type="button" onClick={() => onOpen("system")}
-        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:bg-white/[0.06]"
-        style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
+        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:brightness-110"
+        style={{ borderColor: `${GOLD}99`, backgroundColor: "rgba(200,162,74,0.07)", boxShadow: "0 0 80px rgba(200,162,74,0.18)" }}>
         <BrandIcon size={116} />
         <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
         <p className="mt-0.5 text-base font-semibold" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
