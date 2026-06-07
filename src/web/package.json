@@ -20,6 +20,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.2",
+    "retell-client-js-sdk": "^2.0.8",
     "retell-sdk": "^5.2.0",
     "server-only": "^0.0.1",
     "web-push": "^3.6.7",

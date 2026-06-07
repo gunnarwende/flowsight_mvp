@@ -8,6 +8,8 @@ import { sendCaseNotification } from "@/src/lib/email/resend";
 import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
+import { insertTenantCallback } from "@/src/lib/callbacks/tenantCallbacks";
+import { resolveVoiceDispositions } from "@/src/lib/callbacks/voiceDispositions";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
@@ -453,6 +455,8 @@ export async function POST(req: Request) {
   const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
   const tenantModules = tenantRow?.modules as Record<string, unknown> | null;
   const tenantNotificationEmail = typeof tenantModules?.notification_email === "string" ? tenantModules.notification_email : undefined;
+  // OC3: per-Betrieb Dispositions-Policy (Default = Alarmierungs-Schwelle, backward-compatible)
+  const dispositions = resolveVoiceDispositions(tenantModules);
 
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
@@ -464,9 +468,78 @@ export async function POST(req: Request) {
     return new NextResponse(null, { status: 204 });
   }
 
+  // ── OC2: Disposition-Routing (backward-compatible) ─────────────────
+  // Lisa sortiert jeden Anruf via optionalem `call_type` in 3 Körbe:
+  // FALL (cases) / NACHRICHT (tenant_callbacks) / NICHTS.
+  // Ist `call_type` ABWESEND (heutige Agents emittieren es noch nicht), bleibt
+  // das Verhalten UNVERÄNDERT → Fall (Fall-through unten, bestehender Pfad).
+  // Erst wenn ein Agent call_type emittiert (founder-getesteter Folge-Schritt),
+  // greifen die neuen Zweige. Spec: docs/gtm/onboarding/phase2_voice_dispositions.md
+  const callType = nonEmptyStr(
+    extractedData.call_type ?? extractedData.calltype ?? extractedData.intent,
+  )?.toLowerCase();
+
+  if (callType === "callback" || callType === "order_followup") {
+    // → NACHRICHT: Rückruf/Lieferant/„Chef" (D3) oder Nachfrage zu Auftrag (D4).
+    // Kein Fall, kein SMS — landet in der Nachrichten-Liste (tenant_callbacks).
+    try {
+      const { created } = await insertTenantCallback({
+        tenantId,
+        reason: callType,
+        callerName: reporterName ?? null,
+        callerPhone,
+        topic: finalDescription ?? null,
+        callId: retellCallId,
+        transcriptExcerpt: call?.transcript?.slice(0, 500) ?? null,
+      });
+      Sentry.setTag("decision", "disposition_nachricht");
+      logDecision({
+        decision: "disposition_nachricht",
+        call_type: callType,
+        created,
+        event,
+        call_id: retellCallId,
+        tenant_id: tenantId,
+      });
+      // OC3: optionaler Push bei Rückruf (per-Betrieb; Default: nur Liste, kein Push)
+      if (created && dispositions.callbackPush) {
+        import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+          sendOpsPush({
+            tenantId,
+            eventType: "case",
+            title: callType === "order_followup" ? "Rückfrage zu Auftrag" : "Neue Rückruf-Nachricht",
+            body: `${reporterName ?? "Anrufer"}${callerPhone ? ` · ${callerPhone}` : ""}`,
+            url: "/ops/nachrichten",
+            tag: `callback-${retellCallId}`,
+          }),
+        ).catch(() => {});
+      }
+    } catch (e) {
+      Sentry.captureException(e, {
+        tags: { area: "voice", provider: "retell", tenant_id: tenantId, decision: "callback_insert_error" },
+      });
+      logDecision({ decision: "callback_insert_error", call_type: callType, call_id: retellCallId, tenant_id: tenantId });
+    }
+    return new NextResponse(null, { status: 204 });
+  }
+
+  if (callType === "info" || callType === "private" || callType === "spam") {
+    // → NICHTS: Info beantwortet / privat / Spam. Keine Spur, kein Fall.
+    Sentry.setTag("decision", "disposition_nichts");
+    logDecision({ decision: "disposition_nichts", call_type: callType, event, call_id: retellCallId, tenant_id: tenantId });
+    return new NextResponse(null, { status: 204 });
+  }
+
+  // call_type abwesend ODER auftrag/reklamation → FALL (bestehender Pfad, unverändert):
+
   // ── Create case (direct DB insert via service role) ────────────────
   try {
     const supabase = getServiceClient();
+
+    // OC6: Cockpit-Testanruf? metadata.is_demo=true → Fall als Demo markieren
+    // (fällt aus KPIs, erscheint im „Testfälle"-Tab; G6: erster ECHTER Fall
+    // bleibt der erste). Quelle = /api/aufbau/[token]/testcall (Web-Call-Metadata).
+    const isDemoCall = (call?.metadata as Record<string, unknown> | undefined)?.is_demo === true;
 
     // Build insert payload — street/house_number are optional columns
     // that may not exist if the address migration hasn't been applied yet.
@@ -474,6 +547,7 @@ export async function POST(req: Request) {
     const insertPayload: Record<string, unknown> = {
       tenant_id: tenantId,
       source: "voice" as const,
+      is_demo: isDemoCall,
       reporter_name: reporterName ?? null,
       contact_phone: callerPhone,
       contact_email: null,
@@ -592,6 +666,22 @@ export async function POST(req: Request) {
           body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
           url: `/ops/cases/${caseId}`,
           tag: `notfall-${caseId}`,
+        })
+      ).catch(() => {});
+    }
+
+    // OC3: Reklamation → sofortiger Alarm an Inhaber (business-kritisch wie Negativ-
+    // Review → eventType "negative_review" pusht immer). Greift nur bei call_type=
+    // "reklamation" (heute kein Agent → dormant) + per-Betrieb-Policy (Default an).
+    if (callType === "reklamation" && dispositions.reklamationPush) {
+      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        sendOpsPush({
+          tenantId,
+          eventType: "negative_review",
+          title: "Reklamation eingegangen",
+          body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
+          url: `/ops/cases/${caseId}`,
+          tag: `reklamation-${caseId}`,
         })
       ).catch(() => {});
     }
