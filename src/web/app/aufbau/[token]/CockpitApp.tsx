@@ -77,16 +77,13 @@ function RadioGroup<T extends string>({ value, onChange, options }: {
   );
 }
 
-/** Das geschlossene-System-Glyph (Hub mit 3 Eingängen), live in der Markenfarbe. */
-function BrandIcon({ color, size = 92 }: { color: string; size?: number }) {
+/** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite. */
+function BrandIcon({ size = 108 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
-      <circle cx="50" cy="50" r="30" fill={color} opacity="0.18" />
-      <circle cx="50" cy="50" r="20" fill="none" stroke={color} strokeWidth="3" />
-      <circle cx="50" cy="50" r="7" fill={color} />
-      {[20, 50, 80].map((x) => (
-        <line key={x} x1={x} y1="6" x2="50" y2="30" stroke={color} strokeWidth="2.5" opacity="0.7" />
-      ))}
+    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" className="drop-shadow-lg">
+      <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
+      <circle cx="26" cy="26" r="11" fill="none" stroke="#d4a843" strokeWidth="1.2" opacity="0.5" />
+      <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
     </svg>
   );
 }
@@ -178,7 +175,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
 
   return (
     <div className="flex min-h-dvh flex-col" style={{ backgroundColor: BG, color: "#e8eef5" }}>
-      <main className="mx-auto w-full max-w-[1040px] flex-1 px-4 py-7 sm:py-10">
+      <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
           <Overview pf={pf} brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
@@ -229,13 +226,13 @@ function Overview({ pf, brandColor, companyName, progress, doneCount, saveState,
       </div>
 
       {/* 3 Eingangs-Stränge */}
-      <p className="mt-9 text-center text-xs uppercase tracking-wider text-slate-500">Diese drei Eingänge speisen Ihr Leitsystem</p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+      <p className="mt-14 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500">Diese drei Eingänge speisen Ihr Leitsystem</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3 sm:gap-6">
         {STRANDS.map((s) => {
           const done = !!progress[s.key];
           return (
             <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-              className="rounded-2xl border bg-white/5 p-5 text-left transition hover:bg-white/10"
+              className="rounded-2xl border bg-white/5 p-6 text-left transition hover:bg-white/10"
               style={{ borderColor: done ? `${GOLD}66` : "rgba(255,255,255,0.10)" }}>
               <div className="flex items-center justify-between">
                 <span className="text-2xl">{s.icon}</span>
@@ -251,30 +248,31 @@ function Overview({ pf, brandColor, companyName, progress, doneCount, saveState,
         })}
       </div>
 
-      <div className="my-2 text-center text-2xl text-slate-600">↓</div>
+      <div className="my-6 text-center text-2xl text-slate-600">↓</div>
 
-      {/* Leitsystem-Knoten (klickbar) */}
+      {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
       <button type="button" onClick={() => onOpen("system")}
-        className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-2xl border p-5 text-center transition hover:bg-white/5"
+        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:bg-white/[0.06]"
         style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
-        <BrandIcon color={brandColor} />
-        <p className="mt-1 text-lg font-bold text-white">Ihr Leitsystem</p>
-        <p className="text-sm" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
-        <p className="mt-2 text-xs text-slate-400">
-          Marke · Team & Rollen · Benachrichtigung · Bewertung {progress.system ? "· ✓ bestätigt" : "· antippen zum Einstellen"}
+        <BrandIcon size={116} />
+        <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
+        <p className="mt-0.5 text-base font-semibold" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
+        <p className="mt-4 text-xs leading-relaxed text-slate-400">
+          Marke · Team & Rollen · Benachrichtigung · Bewertung<br />
+          {progress.system ? "✓ bestätigt" : "antippen zum Einstellen"}
         </p>
       </button>
 
-      <div className="my-2 text-center text-2xl text-slate-600">↓</div>
+      <div className="my-6 text-center text-2xl text-slate-600">↓</div>
 
       {/* Output */}
-      <div className="mx-auto max-w-[560px] rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-slate-300">
+      <div className="mx-auto max-w-[480px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center text-sm text-slate-300">
         <p className="font-semibold text-white">📋 Ihre Fälle — sauber an einem Ort</p>
-        <p className="mt-1 text-xs text-slate-400">Daraus entstehen Ihre nächsten Schritte (Weiterleitung · Formular platzieren · Freigabe).</p>
+        <p className="mt-1.5 text-xs leading-relaxed text-slate-400">Daraus entstehen Ihre nächsten Schritte (Weiterleitung · Formular platzieren · Freigabe).</p>
       </div>
 
       {/* Freigabe */}
-      <div className="mt-8 text-center">
+      <div className="mt-12 text-center">
         <button type="button" onClick={() => onOpen("freigabe")} disabled={false}
           className="rounded-xl px-6 py-3 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
           An Gunnar zum Freischalten senden
