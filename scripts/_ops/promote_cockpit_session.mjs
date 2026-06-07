@@ -87,6 +87,14 @@ async function main() {
   const notificationEmail = str(drReview.notificationEmail).trim();
   const googleReviewUrl = str(drReview.googleReviewUrl).trim();
   const adminEmail = str(drGolive.adminEmail).trim();
+  const smsContent = str(drReview.smsContent).trim();
+  const notifyMessagesByEmail = drReview.notifyMessagesByEmail === true;
+  const avvVersion = str(drGolive.avvVersion).trim();
+  const avvAcceptedAt = str(drGolive.avvAcceptedAt).trim();
+  const drWizard = dr.wizard ?? {};
+  const pickup = str(drVoice.pickup);
+  const distribution = str(drWizard.distribution);
+  const notes = dr.notes ?? {};
 
   // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
   // WICHTIG: Hat der Kunde die Toggles nie angefasst (kein dispositions im Draft), gelten die
@@ -155,6 +163,9 @@ async function main() {
   modules.greeting_text = greetingText;
   modules.ki_disclosure = str(drVoice.kiDisclosure);
   modules.voice_dispositions = voiceDispositions;
+  if (smsContent) modules.sms_content = smsContent;
+  modules.notify_messages_email = notifyMessagesByEmail;
+  if (avvVersion) { modules.avv_accepted_version = avvVersion; modules.avv_accepted_at = avvAcceptedAt || new Date().toISOString(); }
 
   const { error: upErr } = await sb.from("tenants").update({ modules, case_id_prefix: caseIdPrefix }).eq("id", session.tenant_id);
   if (upErr) { console.error(`ERROR: tenants update: ${upErr.message}`); process.exit(1); }
@@ -198,8 +209,16 @@ async function main() {
   console.log(`     (zuvor generate_voice_agent, falls JSON neu gebaut werden muss — siehe Voice-Workflow.)`);
   console.log(`  2. Schweizer Nummer kaufen + auf den Agenten routen (Twilio/Peoplefone).`);
   console.log(`  3. Admin-Login vor-provisionieren: ${adminEmail || "(Admin-Mail fehlt!)"} (OTP/B1).`);
-  console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Stufe B) → echte Anrufe fliessen.`);
-  console.log(`  Danach Session auf "live" setzen.\n`);
+  const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
+  console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
+  console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
+  console.log(`  Danach Session auf "live" setzen.`);
+  const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
+  if (noteLines.length) {
+    console.log(`\n── HINWEISE DES INHABERS (aus dem Cockpit) ──`);
+    for (const [k, v] of noteLines) console.log(`  • [${k}] ${str(v).trim()}`);
+  }
+  console.log("");
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

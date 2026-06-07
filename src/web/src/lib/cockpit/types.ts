@@ -165,6 +165,9 @@ export interface CockpitDraft {
   golive?: {
     adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)
     avvAccepted?: boolean;
+    /** Welche AVV-Version akzeptiert wurde + wann (revDSG-Nachweis). */
+    avvVersion?: string;
+    avvAcceptedAt?: string;
   };
   /** Freitext-Hinweise des Inhabers je Strang (fängt die „20 %, die nur er kennt"). */
   notes?: { vorort?: string; voice?: string; website?: string; system?: string };

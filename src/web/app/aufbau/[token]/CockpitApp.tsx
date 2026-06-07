@@ -9,6 +9,7 @@ import type {
   WizardCategory,
 } from "@/src/lib/cockpit/types";
 import { DISPOSITION_DEFAULTS } from "@/src/lib/cockpit/types";
+import { AVV_TEXT, AVV_VERSION, AVV_SUBPROCESSORS } from "@/src/lib/cockpit/avv";
 import { startLisaTestCall, type TestCallPhase } from "./lisaTestCall";
 
 /**
@@ -177,7 +178,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
     <div className="flex min-h-dvh flex-col" style={{ backgroundColor: BG, color: "#e8eef5" }}>
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
-          <Overview pf={pf} brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
+          <Overview brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa token={token} pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
@@ -197,8 +198,8 @@ function SaveDot({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
 }
 
 // ── Overview = die System-Karte ──────────────────────────────────────────────
-function Overview({ pf, brandColor, companyName, progress, doneCount, saveState, onOpen }: {
-  pf: CockpitSession["prefill"]; brandColor: string; companyName: string;
+function Overview({ brandColor, companyName, progress, doneCount, saveState, onOpen }: {
+  brandColor: string; companyName: string;
   progress: Record<string, boolean>; doneCount: number; saveState: "idle" | "saving" | "saved" | "error";
   onOpen: (v: View) => void;
 }) {
@@ -536,6 +537,11 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
 }) {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [missing, setMissing] = useState<string[]>([]);
+  const [showAvv, setShowAvv] = useState(false);
+  const toggleAvv = () => update((d) => {
+    const on = !d.golive?.avvAccepted;
+    return { ...d, golive: { ...d.golive, avvAccepted: on, avvVersion: on ? AVV_VERSION : undefined, avvAcceptedAt: on ? new Date().toISOString() : undefined } };
+  });
   const submit = async () => {
     setState("sending"); setMissing([]);
     try {
@@ -558,10 +564,26 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
       <Field label="Ihre E-Mail für den Login" hint="Damit melden Sie sich im Leitsystem an (Code per E-Mail).">
         <TextInput type="email" placeholder="ihre@firma.ch" value={draft.golive?.adminEmail ?? ""} onChange={(e) => update((d) => ({ ...d, golive: { ...d.golive, adminEmail: e.target.value } }))} />
       </Field>
-      <button type="button" onClick={() => update((d) => ({ ...d, golive: { ...d.golive, avvAccepted: !d.golive?.avvAccepted } }))}
+      {/* AVV: Dokument anzeigen + versionierte Zustimmung */}
+      <div className="rounded-xl border border-white/10 bg-white/5">
+        <button type="button" onClick={() => setShowAvv((s) => !s)} className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm text-slate-200">
+          <span>Auftragsdaten­verarbeitungs-Vereinbarung (AVV) ansehen</span>
+          <span className="text-lg leading-none" style={{ color: GOLD }}>{showAvv ? "−" : "+"}</span>
+        </button>
+        {showAvv ? (
+          <div className="border-t border-white/10 px-3 py-3">
+            <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-300">{AVV_TEXT}</pre>
+            <p className="mt-3 text-xs font-medium text-slate-200">Eingesetzte Dienstleister (Subprozessoren):</p>
+            <ul className="mt-1 space-y-0.5 text-xs text-slate-400">
+              {AVV_SUBPROCESSORS.map((s) => (<li key={s.name}>• <span className="text-slate-300">{s.name}</span> — {s.zweck} ({s.ort})</li>))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+      <button type="button" onClick={toggleAvv}
         className="flex w-full items-start gap-3 rounded-lg border bg-white/5 px-3 py-3 text-left" style={{ borderColor: draft.golive?.avvAccepted ? GOLD : "rgba(255,255,255,0.12)" }}>
         <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs" style={{ borderColor: draft.golive?.avvAccepted ? GOLD : "rgba(255,255,255,0.3)", backgroundColor: draft.golive?.avvAccepted ? GOLD : "transparent", color: "#1a1a1a" }}>{draft.golive?.avvAccepted ? "✓" : ""}</span>
-        <span className="text-sm text-slate-200">Ich akzeptiere die <span className="underline">Auftragsdaten­verarbeitungs-Vereinbarung (AVV)</span>. Schweizer Datenschutz (revDSG), Server in Frankfurt, keine Gesprächsaufnahmen.</span>
+        <span className="text-sm text-slate-200">Ich akzeptiere die AVV. Schweizer Datenschutz (revDSG), Server in Frankfurt, keine Gesprächsaufnahmen.{draft.golive?.avvAccepted && draft.golive?.avvAcceptedAt ? <span className="mt-0.5 block text-[11px] text-slate-500">Akzeptiert · Version {draft.golive.avvVersion}</span> : null}</span>
       </button>
 
       {missing.length > 0 ? (
