@@ -90,6 +90,13 @@ async function main() {
     address_spoken: va.address_spoken || "",
     categories: categoriesPipe,
     categories_quoted: categoriesQuoted,
+    // T4 — Erreichbarkeit/Feiertage/Ferien (aus dem Cockpit; emergency_service steuert die Notfall-Reaktion ausserhalb der Zeiten)
+    emergency_after_hours: va.emergency_service
+      ? "Bleibe ruhig und nimm den Notfall sofort auf — unser Pikett-Dienst wird umgehend informiert und meldet sich so schnell wie möglich."
+      : "Nimm den Fall auf und setze die Erwartung, dass sich das Team am nächsten Werktag meldet. Bei akuter Gefahr (Gas, Strom, Wasser) gib zuerst die Sofort-Hinweise (siehe SPEZIAL-SZENARIEN).",
+    vacation_section: va.vacation_note
+      ? `- WICHTIG: Aktuell sind Betriebsferien (${va.vacation_note}). Weise den Anrufer freundlich darauf hin, nimm das Anliegen aber trotzdem vollständig auf.`
+      : "",
     intl_agent_id: "", // filled by retell_sync.mjs during publish
   };
 

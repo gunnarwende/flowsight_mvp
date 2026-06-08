@@ -204,6 +204,9 @@ async function main() {
     const cfg = JSON.parse(readFileSync(cfgPath, "utf8"));
     cfg.tenant = { ...cfg.tenant, brand_color: brandColor, case_id_prefix: caseIdPrefix, sms_sender_name: smsSenderName };
     cfg.voice_agent = { ...cfg.voice_agent, ...wissenEff };
+    // T4: Ferien + Notdienst-Flag → steuern das Erreichbarkeits-/Feiertags-Scripting im Prompt
+    cfg.voice_agent.vacation_note = str(drVoice.vacationNote).trim();
+    cfg.voice_agent.emergency_service = drVoice.emergencyService === true;
     if (Array.isArray(dr.wizard?.categories)) cfg.wizard = { ...cfg.wizard, categories: dr.wizard.categories };
     cfg._cockpit_promoted_at = new Date().toISOString();
     writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
