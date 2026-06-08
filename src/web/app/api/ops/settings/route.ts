@@ -61,11 +61,21 @@ export async function GET() {
 
   const modules = (data.modules ?? {}) as Record<string, unknown>;
 
+  // M2: Token der Cockpit-Session → Link zum vollständigen Setup-PDF („Meine Einstellungen"-Nachschlagewerk).
+  const { data: cs } = await supabase
+    .from("cockpit_sessions")
+    .select("token")
+    .eq("tenant_id", scope.tenantId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   return NextResponse.json({
     tenant_id: data.id,
     tenant_name: data.name,
     tenant_slug: data.slug,
     case_id_prefix: data.case_id_prefix,
+    cockpit_token: cs?.token ?? null,
     settings: {
       google_review_url: (modules.google_review_url as string) ?? "",
       default_appointment_duration_min: (modules.default_appointment_duration_min as number) ?? 60,

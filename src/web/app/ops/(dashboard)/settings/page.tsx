@@ -19,6 +19,7 @@ interface Settings {
 interface SettingsData {
   tenant_id: string;
   tenant_name: string;
+  cockpit_token?: string | null;
   settings: Settings;
 }
 
@@ -249,6 +250,23 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-5">
+        {/* M2: vollständiges Setup nachschlagen / als PDF (Cockpit-Zusammenfassung) */}
+        {data?.cockpit_token ? (
+          <Section
+            title="Ihr vollständiges Setup"
+            description="Alles, was Sie beim Aufbau festgelegt haben (Lisa, Notfall, Feiertage, Benachrichtigungen …) — als Nachschlagewerk und zum Sichern als PDF."
+          >
+            <a
+              href={`/aufbau/${data.cockpit_token}/zusammenfassung`}
+              target="_blank"
+              rel="noopener"
+              className="inline-block rounded-lg bg-slate-800 px-5 py-2 text-xs font-semibold text-white transition hover:bg-slate-700"
+            >
+              📄 Vollständiges Setup ansehen / als PDF sichern
+            </a>
+          </Section>
+        ) : null}
+
         {/* Team — StaffManager handles its own save */}
         <Section
           title="Team"
