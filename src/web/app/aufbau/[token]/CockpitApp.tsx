@@ -92,6 +92,20 @@ function Disclosure({ summary, children }: { summary: string; children: React.Re
   );
 }
 
+/** Kompakter SMS/E-Mail-Schalter (L3/F: der Betrieb wählt den Kanal). */
+function ChannelPick({ value, onChange }: { value: "sms" | "email"; onChange: (v: "sms" | "email") => void }) {
+  return (
+    <div className="inline-flex rounded-lg border border-white/15 p-0.5 text-xs">
+      {(["email", "sms"] as const).map((c) => (
+        <button key={c} type="button" onClick={() => onChange(c)} className="rounded-md px-3 py-1 font-medium"
+          style={value === c ? { backgroundColor: GOLD, color: "#1a1a1a" } : { color: "#cbd5e1" }}>
+          {c === "email" ? "E-Mail" : "SMS"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /** Nummerierter Abschnitt mit „was bewirkt dieser Block"-Zeile = der rote Faden (Q2). */
 function Section({ n, icon, title, lead, children }: { n: number; icon: string; title: string; lead: string; children: React.ReactNode }) {
   return (
@@ -140,6 +154,22 @@ const WISSEN_FIELDS: { key: keyof CockpitSession["prefill"]["voice"]["wissen"]; 
   { key: "emergencyPolicy", label: "Notfall-Regelung" },
   { key: "priceDeflect", label: "Antwort auf Preisfragen" },
 ];
+
+// T1: gängige CH-Telefonanbieter (steuert die Weiterleitungs-Anleitung).
+const TELCO_OPTIONS = [
+  { value: "swisscom" as const, label: "Swisscom" },
+  { value: "sunrise" as const, label: "Sunrise" },
+  { value: "salt" as const, label: "Salt" },
+  { value: "quickline" as const, label: "Quickline" },
+  { value: "yallo" as const, label: "Yallo / Wingo / anderer" },
+  { value: "other" as const, label: "Weiss ich nicht / nicht dabei" },
+];
+// L3: die echten Default-Wortlaute der 3 automatischen Nachrichten (zum Vorausfüllen).
+const MSG_DEFAULTS = {
+  confirm: "{Absender}: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen: [Link]",
+  reminder: "Erinnerung an Ihren Termin morgen — wir freuen uns auf Sie. {Firma}",
+  review: "Vielen Dank für Ihren Auftrag! Über eine kurze Bewertung würden wir uns sehr freuen (30 Sek.): [Link]",
+};
 
 // ── Hauptkomponente ──────────────────────────────────────────────────────────
 export function CockpitApp({ session }: { session: CockpitSession }) {
@@ -374,18 +404,71 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
     update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], notify } } } }));
 
   const pickupLabel: Record<string, string> = { sofort: "Sofort", nach_10s: "Nach ~10 Sek.", nach_15s: "Nach ~15 Sek.", nach_20s: "Nach ~20 Sek.", nach_30s: "Nach ~30 Sek." };
+  const provLabel: Record<string, string> = { swisscom: "Swisscom", sunrise: "Sunrise", salt: "Salt", quickline: "Quickline", yallo: "Ihrem Anbieter", other: "Ihrem Anbieter" };
+  const setV = (patch: Partial<NonNullable<CockpitDraft["voice"]>>) => update((d) => ({ ...d, voice: { ...d.voice, ...patch } }));
 
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Ihre Mitarbeiterin, die nie ein Gespräch verpasst — und jeden Auftrag festhält." onBack={onBack} onDone={onDone}>
-      <Field label="Begrüssung" hint="So meldet sich Lisa. Muss erkennbar machen, dass sie eine digitale Assistentin ist.">
-        <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, greetingText: e.target.value } }))} />
-      </Field>
+    <Detail icon="📞" title="Ihre Lisa" claim="Ihre Mitarbeiterin, die nie ein Gespräch verpasst — und jeden Auftrag festhält. In sechs Schritten eingestellt." onBack={onBack} onDone={onDone}>
 
-      {/* Das sagt Ihre Lisa — Accordion, eine Karte offen */}
-      <div>
-        <p className="text-sm font-medium text-slate-200">Das sagt Ihre Lisa</p>
-        <p className="mt-0.5 text-xs text-slate-400">Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren.</p>
-        <div className="mt-2 space-y-2">
+      <Section n={1} icon="🗣" title="So begrüsst Lisa" lead="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
+        <Field label="Begrüssung">
+          <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
+        </Field>
+      </Section>
+
+      <Section n={2} icon="☎️" title="Telefonie & Erreichbarkeit" lead="Damit Anrufe bei Lisa landen, leiten Sie Ihre bestehende Nummer weiter — die genaue Anleitung hängt von Ihrem Anbieter ab.">
+        <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
+          <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
+        </Field>
+        {v.telco?.provider === "other" || v.telco?.provider === "yallo" ? (
+          <Field label="Wie heisst Ihr Anbieter? (optional)">
+            <TextInput placeholder="z. B. Wingo, Lebara …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
+          </Field>
+        ) : null}
+        <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
+          <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
+            options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
+        </Field>
+        <Disclosure summary="Wie richte ich die Weiterleitung ein?">
+          Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt Lisa.
+        </Disclosure>
+      </Section>
+
+      <Section n={3} icon="🚨" title="Notfall & Notdienst" lead="Bieten Sie ausserhalb der Zeiten einen Notdienst an? Dann muss glasklar sein, was Lisa im Notfall tut.">
+        <Field label="Bieten Sie einen Notdienst an?">
+          <RadioGroup value={v.emergencyService === undefined ? undefined : v.emergencyService ? "ja" : "nein"}
+            onChange={(val) => setV({ emergencyService: val === "ja" })}
+            options={[{ value: "ja", label: "Ja — wir sind im Notfall erreichbar" }, { value: "nein", label: "Nein — keinen Notdienst" }]} />
+        </Field>
+        {v.emergencyService === true ? (
+          <>
+            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
+              ⚠️ <span className="font-semibold">Lisa stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
+            </p>
+            <Field label="Wer wird im Notfall sofort alarmiert?">
+              <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
+            </Field>
+            <Field label="Unter welcher Nummer?">
+              <TextInput placeholder="+41 …" value={v.emergencyContact?.phone ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, phone: e.target.value } })} />
+            </Field>
+          </>
+        ) : v.emergencyService === false ? (
+          <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt Lisa den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
+        ) : null}
+      </Section>
+
+      <Section n={4} icon="🕐" title="Feiertage & Ferien" lead="Lisa darf an einem Feiertag nicht „kommen Sie morgen“ sagen. So reagiert sie, wenn gerade nicht gearbeitet wird.">
+        <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
+        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+          Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren. Sie setzt die Erwartung: {v.emergencyService ? "bei einem Notfall wird Ihr Pikett sofort alarmiert, sonst Rückmeldung am nächsten Werktag." : "Rückmeldung am nächsten Werktag."}
+        </p>
+        <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
+          <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
+        </Field>
+      </Section>
+
+      <Section n={5} icon="📚" title="Das sagt Ihre Lisa" lead="Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren. Tippen zum Aufklappen.">
+        <div className="space-y-2">
           {WISSEN_FIELDS.map((f) => {
             const isOpen = open === f.key;
             return (
@@ -402,30 +485,23 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
             );
           })}
         </div>
-      </div>
+      </Section>
 
-      {/* Dispositionen mit Info-Weg */}
-      <div>
-        <p className="text-sm font-medium text-slate-200">Was Lisa bei welchem Anruf tut</p>
-        <p className="mt-0.5 text-xs text-slate-400">Sinnvoll vorbelegt — Sie bestätigen oder passen an. Jede Karte zeigt, wohin es geht.</p>
-        <div className="mt-2 space-y-2">
-          {DISPOSITION_CARDS.map((c) => (
-            <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
-              <p className="text-sm font-semibold text-white">{c.titel}</p>
-              <p className="text-xs text-slate-400">{c.szenario}</p>
-              <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
-              {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
-                <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
-              ) : null}
-            </div>
-          ))}
+      <Section n={6} icon="🎧" title="Was Lisa bei welchem Anruf tut" lead="Sinnvoll vorbelegt — Sie bestätigen oder passen an. Jede Karte zeigt, wohin es geht.">
+        <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+          🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> Sie nennt nie Preise, sagt nie einen Termin verbindlich zu, stellt keine Ferndiagnose und verspricht keine Garantie. Sie stellt höchstens 7 kurze Fragen und <span className="text-slate-200">nimmt das Gespräch nicht auf</span>.
         </div>
-      </div>
-
-      <Field label="Wann soll Lisa rangehen?" hint="Daraus ergibt sich Ihre Weiterleitung (ein kurzer Schritt am Ende).">
-        <RadioGroup value={v.pickup} onChange={(val) => update((d) => ({ ...d, voice: { ...d.voice, pickup: val } }))}
-          options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
-      </Field>
+        {DISPOSITION_CARDS.map((c) => (
+          <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
+            <p className="text-sm font-semibold text-white">{c.titel}</p>
+            <p className="text-xs text-slate-400">{c.szenario}</p>
+            <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
+            {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
+              <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
+            ) : null}
+          </div>
+        ))}
+      </Section>
 
       <div className="rounded-xl border p-4 text-center" style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
         <p className="text-sm font-semibold text-white">Hören Sie Ihre Lisa</p>
@@ -446,8 +522,9 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
   const cats = draft.wizard?.categories ?? pf.wizard.categories;
   const hasWebsite = draft.wizard?.hasWebsite;
   return (
-    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={onDone}>
-      <Field label="Anliegen-Kategorien" hint="Die ersten drei sind Ihre — die letzten drei sind Standard. Tippen zum Ändern.">
+    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look, in drei Schritten." onBack={onBack} onDone={onDone}>
+
+      <Section n={1} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
         <div className="space-y-2">
           {cats.map((c: WizardCategory, i: number) => (
             <div key={i} className="flex items-center gap-2">
@@ -457,42 +534,63 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
             </div>
           ))}
         </div>
-      </Field>
+      </Section>
 
-      <Field label="Haben Sie eine eigene Website?" hint="Davon hängt ab, wie wir das Formular ausspielen.">
-        <RadioGroup value={hasWebsite === undefined ? undefined : hasWebsite ? "ja" : "nein"} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, hasWebsite: val === "ja" } }))}
-          options={[{ value: "ja", label: "Ja, wir haben eine Website" }, { value: "nein", label: "Nein / veraltet" }]} />
-      </Field>
-
-      {hasWebsite === true ? (
-        <Field label="Wo soll das Formular leben?">
-          <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-            options={[
-              { value: "gbp_button", label: "Button im Google-Profil", hint: "Schaltfläche „Termin anfragen“ direkt bei Google" },
-              { value: "embed", label: "In meine Website einbauen", hint: "als eingebettetes Formular" },
-              { value: "agentur_mail", label: "Meine Web-Agentur baut es ein", hint: "wir schicken die fertige Anleitung" },
-            ]} />
+      <Section n={2} icon="🌐" title="Wo Ihr Formular lebt" lead="Damit das Meldeformular Ihre Kunden erreicht — passend dazu, ob Sie eine Website haben.">
+        <Field label="Haben Sie eine eigene Website?">
+          <RadioGroup value={hasWebsite === undefined ? undefined : hasWebsite ? "ja" : "nein"} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, hasWebsite: val === "ja" } }))}
+            options={[{ value: "ja", label: "Ja, wir haben eine Website" }, { value: "nein", label: "Nein / veraltet" }]} />
         </Field>
-      ) : hasWebsite === false ? (
-        <Field label="Verteilung ohne Website">
-          <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-            options={[
-              { value: "gbp_button", label: "Button im Google-Profil", hint: "der wichtigste Kanal ohne Website" },
-              { value: "qr", label: "QR-Code / Kurzlink", hint: "fürs Servicefahrzeug, Rechnung, Theke" },
-            ]} />
-        </Field>
-      ) : null}
 
-      {draft.wizard?.distribution === "embed" ? (
-        <Field label="Wer baut es in die Website ein?">
-          <RadioGroup value={draft.wizard?.embedBy} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, embedBy: val } }))}
-            options={[{ value: "intern", label: "Wir intern (wir haben Zugriff)" }, { value: "agentur", label: "Unsere Web-Agentur" }]} />
-        </Field>
-      ) : null}
+        {hasWebsite === true ? (
+          <Field label="Wo soll das Formular leben?">
+            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
+              options={[
+                { value: "gbp_button", label: "Button im Google-Profil", hint: "Schaltfläche „Termin anfragen“ direkt bei Google — kein Website-Eingriff nötig" },
+                { value: "embed", label: "In meine Website einbauen", hint: "als eingebettetes Formular auf Ihrer Seite" },
+                { value: "agentur_mail", label: "Meine Web-Agentur baut es ein", hint: "wir schicken der Agentur die fertige Anleitung" },
+              ]} />
+          </Field>
+        ) : hasWebsite === false ? (
+          <Field label="Verteilung ohne Website">
+            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
+              options={[
+                { value: "gbp_button", label: "Button im Google-Profil", hint: "der wichtigste Kanal ohne Website" },
+                { value: "qr", label: "QR-Code / Kurzlink", hint: "fürs Servicefahrzeug, die Rechnung, die Theke" },
+              ]} />
+          </Field>
+        ) : null}
 
-      <a href={`/start/${pf.branding.companyName ? "" : ""}`} onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
-        👁 Ihr gebrandetes Formular ansehen (Vorschau)
-      </a>
+        {draft.wizard?.distribution === "embed" ? (
+          <Field label="Wer baut es in die Website ein?">
+            <RadioGroup value={draft.wizard?.embedBy} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, embedBy: val } }))}
+              options={[{ value: "intern", label: "Wir intern (wir haben Zugriff)" }, { value: "agentur", label: "Unsere Web-Agentur" }]} />
+          </Field>
+        ) : null}
+
+        {draft.wizard?.distribution === "agentur_mail" || (draft.wizard?.distribution === "embed" && draft.wizard?.embedBy === "agentur") ? (
+          <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
+            <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
+            <Field label="Name der Web-Agentur">
+              <TextInput placeholder="z. B. Muster Web GmbH" value={draft.wizard?.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
+            </Field>
+            <Field label="E-Mail der Agentur">
+              <TextInput type="email" placeholder="kontakt@agentur.ch" value={draft.wizard?.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
+            </Field>
+          </div>
+        ) : null}
+
+        <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
+          👁 Ihr gebrandetes Formular ansehen (Vorschau)
+        </a>
+      </Section>
+
+      <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
+        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+          Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
+        </p>
+      </Section>
+
       <NotesField value={draft.notes?.website ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, website: val } }))} />
     </Detail>
   );
@@ -505,7 +603,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
 }) {
   const staff = draft.staff ?? [];
   const setStaff = (next: StaffMember[]) => update((d) => ({ ...d, staff: next }));
-  const sms = draft.review?.smsContent ?? "";
+  const rThr = draft.review?.internalThreshold ?? 3;
   return (
     <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Das Herz Ihres Systems — in fünf Schritten: Ihre Marke, Ihr Team, Ihre Verfügbarkeit, Ihre Kommunikation und Ihre Aussenwirkung." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
       <Section n={1} icon="🎨" title="Ihre Marke" lead="Farbe und Fall-Kürzel tragen jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
@@ -579,14 +677,28 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
           <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
         </Field>
         <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
-        <Disclosure summary="Welche Nachrichten verschickt Ihr System automatisch?">
-          <ul className="space-y-1.5">
-            <li>📩 <span className="text-slate-200">Empfangsbestätigung</span> (SMS) — direkt nach jedem Fall, mit Link für Fotos/Angaben.</li>
-            <li>⏰ <span className="text-slate-200">Termin-Erinnerung</span> (E-Mail) — rund 24 h vor dem Termin.</li>
-            <li>⭐ <span className="text-slate-200">Bewertungsanfrage</span> (E-Mail) — wenn Sie einen Fall abschliessen.</li>
-          </ul>
-          <p className="mt-2 text-slate-400">Wortlaut und Kanal (SMS oder E-Mail) legen <span className="text-slate-300">Sie</span> fest — im nächsten Ausbauschritt. Sie entscheiden, was bei Ihren Kunden ankommt.</p>
-        </Disclosure>
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten verschickt Ihr System automatisch</p>
+          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
+          <div className="mt-3 space-y-3.5">
+            <div>
+              <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
+              <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
+              <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
+              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· wenn Sie einen Fall abschliessen</span></p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
+              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
+            </div>
+          </div>
+          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
+        </div>
       </Section>
 
       <Section n={5} icon="⭐" title="Bewertungen — Ihre Aussenwirkung" lead="Aus zufriedenen Kunden werden mit einem Klick öffentliche 5-Sterne-Bewertungen — das stärkste Signal für neue Aufträge.">
@@ -596,11 +708,25 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
         <Disclosure summary="Wo finde ich meinen Bewertungslink?">
           Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
         </Disclosure>
-        <Field label={`SMS-Absender (max. 11 Zeichen)`}>
-          <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
+        <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne. Kennen Sie nicht? Der Link/Firmenname oben genügt fürs Erste.">
+          <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
         </Field>
-        <Field label={`SMS-Text (optional anpassen)`} hint={`${sms.length}/160 Zeichen · leer = unser bewährter Standard`}>
-          <TextArea maxLength={160} value={sms} placeholder="Leer lassen für Standard-Text" onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsContent: e.target.value.slice(0, 160) } }))} />
+        <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
+          <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
+            options={[
+              { value: "2", label: "Nur ≤ 2 Sterne intern" },
+              { value: "3", label: "≤ 3 Sterne intern", hint: "unsere Empfehlung" },
+              { value: "4", label: "≤ 4 Sterne intern", hint: "nur 5★ gehen öffentlich" },
+              { value: "0", label: "Alle öffentlich", hint: "jede Bewertung geht direkt zu Google" },
+            ]} />
+        </Field>
+        <Disclosure summary="Was erlebt mein Kunde — und wann landet es auf Google?">
+          {rThr === 0
+            ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
+            : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
+        </Disclosure>
+        <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
+          <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
         </Field>
       </Section>
       <NotesField value={draft.notes?.system ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, system: val } }))} />

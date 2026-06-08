@@ -167,6 +167,18 @@ async function main() {
   if (smsContent) modules.sms_content = smsContent;
   modules.notify_messages_email = notifyMessagesByEmail;
   modules.calendar_intent = calProvider; // tatsächliche Verbindung = OAuth nach Go-live (setzt calendar_ms_tenant_id)
+  // Welle 1: Telefonie, Notfall/Notdienst, Feiertage, Agentur, Bewertungen, Nachrichten-Kanäle
+  if (drVoice.telco?.provider) modules.telco_provider = drVoice.telco.provider === "other" || drVoice.telco.provider === "yallo" ? (str(drVoice.telco.otherName) || drVoice.telco.provider) : drVoice.telco.provider;
+  modules.emergency_service = drVoice.emergencyService === true;
+  if (drVoice.emergencyContact?.name || drVoice.emergencyContact?.phone) modules.emergency_contact = { name: str(drVoice.emergencyContact?.name), phone: str(drVoice.emergencyContact?.phone) };
+  modules.holidays_closed = drVoice.holidaysClosed !== false; // Default geschlossen
+  if (str(drVoice.vacationNote).trim()) modules.vacation_note = str(drVoice.vacationNote).trim();
+  if (drWizard.agencyName || drWizard.agencyEmail) modules.web_agency = { name: str(drWizard.agencyName), email: str(drWizard.agencyEmail) };
+  if (str(dr.review?.googlePlaceId).trim()) modules.google_place_id = str(dr.review.googlePlaceId).trim();
+  modules.review_internal_threshold = typeof dr.review?.internalThreshold === "number" ? dr.review.internalThreshold : 3;
+  if (str(dr.messages?.confirmSms).trim()) modules.sms_content = str(dr.messages.confirmSms).trim();
+  modules.reminder_channel = dr.messages?.reminderChannel === "sms" ? "sms" : "email";
+  modules.review_channel = dr.messages?.reviewChannel === "sms" ? "sms" : "email";
   if (avvVersion) { modules.avv_accepted_version = avvVersion; modules.avv_accepted_at = avvAcceptedAt || new Date().toISOString(); }
 
   const { error: upErr } = await sb.from("tenants").update({ modules, case_id_prefix: caseIdPrefix }).eq("id", session.tenant_id);
@@ -212,8 +224,10 @@ async function main() {
   console.log(`  2. Schweizer Nummer kaufen + auf den Agenten routen (Twilio/Peoplefone).`);
   console.log(`  3. Admin-Login vor-provisionieren: ${adminEmail || "(Admin-Mail fehlt!)"} (OTP/B1).`);
   const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
-  console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
+  console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Anbieter: ${modules.telco_provider || "(nicht gewählt)"}, Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
+  if (modules.emergency_service && modules.emergency_contact) console.log(`     ⚠️ Notdienst aktiv → Notfall-Alarm an: ${[modules.emergency_contact.name, modules.emergency_contact.phone].filter(Boolean).join(", ")} (Push+E-Mail, kein Live-Transfer).`);
   console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
+  if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
   const calAdmin = [dr.calendar?.adminName, dr.calendar?.adminEmail].filter((x) => str(x).trim()).join(", ");
   console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
   console.log(`  Danach Session auf "live" setzen.`);

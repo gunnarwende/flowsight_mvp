@@ -143,6 +143,16 @@ export interface CockpitDraft {
     dispositions?: DispositionsConfig;
     /** Pickup = Telco-Weiterleitungs-Wahl (Next-Step, keine Lisa-Config). 5 Stufen. */
     pickup?: "sofort" | "nach_10s" | "nach_15s" | "nach_20s" | "nach_30s";
+    /** T1: Telefonanbieter — bestimmt die anbieter-spezifische Weiterleitungs-Anleitung. */
+    telco?: { provider?: "swisscom" | "sunrise" | "salt" | "quickline" | "yallo" | "other"; otherName?: string };
+    /** T3: Bietet der Betrieb Notdienst an? Weiche für T2 + Feiertags-Reaktion. */
+    emergencyService?: boolean;
+    /** T2: Wer wird bei einem Notfall sofort alarmiert. Lisa stellt NICHT durch — sie nimmt auf + alarmiert. */
+    emergencyContact?: { name?: string; phone?: string };
+    /** T4: An Feiertagen/ausserhalb Öffnungszeiten geschlossen — Fall wird TROTZDEM aufgenommen. */
+    holidaysClosed?: boolean;
+    /** Betriebsferien o. Ä. (optionaler Freitext für Lisa). */
+    vacationNote?: string;
   };
   wizard?: {
     categories?: WizardCategory[];
@@ -151,6 +161,9 @@ export interface CockpitDraft {
     /** Bei Embed: wer baut ein? */
     embedBy?: "intern" | "agentur";
     hasWebsite?: boolean;
+    /** W1: Web-Agentur-Kontakt, wenn der Einbau dort liegt (sonst Sackgasse). */
+    agencyName?: string;
+    agencyEmail?: string;
   };
   review?: {
     notificationEmail?: string; // 🆕 echte Ops-Mail
@@ -161,6 +174,16 @@ export interface CockpitDraft {
     /** Nachrichten/Rückrufe zusätzlich per E-Mail melden (Default aus). */
     notifyMessagesByEmail?: boolean;
     chips?: string[];
+    /** R2: Google Place-ID / Profilname für den wöchentlichen Rating-Crawl. */
+    googlePlaceId?: string;
+    /** R3: Bewertungen mit ≤ Schwelle bleiben intern; 0 = alle öffentlich. Default 3. */
+    internalThreshold?: 0 | 2 | 3 | 4;
+  };
+  /** L3: die 3 automatischen Kunden-Nachrichten — Wortlaut (SMS ≤160) + Kanal-Wahl (Founder F: der Betrieb entscheidet). */
+  messages?: {
+    confirmSms?: string;
+    reminderChannel?: "sms" | "email";
+    reviewChannel?: "sms" | "email";
   };
   /** Kalender-Anbindung für Free/Busy (keine Doppelbuchung). Die technische MS-Tenant-ID
    *  wird beim 1-Klick-OAuth NACH Go-live automatisch erfasst — hier NICHT gefragt (zu technisch).
