@@ -5,6 +5,7 @@ import type {
   CockpitDraft,
   CockpitSession,
   DispositionsConfig,
+  DispositionKorb,
   StaffMember,
   WizardCategory,
 } from "@/src/lib/cockpit/types";
@@ -101,6 +102,21 @@ function ChannelPick({ value, onChange }: { value: "sms" | "email"; onChange: (v
           style={value === c ? { backgroundColor: GOLD, color: "#1a1a1a" } : { color: "#cbd5e1" }}>
           {c === "email" ? "E-Mail" : "SMS"}
         </button>
+      ))}
+    </div>
+  );
+}
+
+/** Trainings-Regler: was Lisa bei einer Anruf-Art tut (Fall/Nachricht/nichts). */
+function KorbPick({ value, onChange }: { value: DispositionKorb; onChange: (v: DispositionKorb) => void }) {
+  const opts: { v: DispositionKorb; label: string }[] = [
+    { v: "fall", label: "Fall anlegen" }, { v: "nachricht", label: "Nur Nachricht" }, { v: "nichts", label: "Nichts" },
+  ];
+  return (
+    <div className="inline-flex flex-wrap gap-1 rounded-lg border border-white/15 p-0.5 text-xs">
+      {opts.map((o) => (
+        <button key={o.v} type="button" onClick={() => onChange(o.v)} className="rounded-md px-2.5 py-1 font-medium"
+          style={value === o.v ? { backgroundColor: GOLD, color: "#1a1a1a" } : { color: "#cbd5e1" }}>{o.label}</button>
       ))}
     </div>
   );
@@ -457,7 +473,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
       <div className="my-5 hidden sm:grid sm:grid-cols-3 sm:gap-6">
         {[0, 1, 2].map((i) => (
           <div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>
-            <span className="inline-block" style={{ transform: i === 0 ? "rotate(32deg)" : i === 2 ? "rotate(-32deg)" : "none" }}>↓</span>
+            <span className="inline-block" style={{ transform: i === 0 ? "rotate(-32deg)" : i === 2 ? "rotate(32deg)" : "none" }}>↓</span>
           </div>
         ))}
       </div>
@@ -548,8 +564,8 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const [phase, setPhase] = useState<TestCallPhase>("idle");
   const v = draft.voice ?? {};
   const disp = v.dispositions ?? DISPOSITION_DEFAULTS;
-  const setDisp = (k: keyof DispositionsConfig, notify: "push" | "board") =>
-    update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], notify } } } }));
+  const setDisp = (k: keyof DispositionsConfig, patch: Partial<DispositionsConfig[keyof DispositionsConfig]>) =>
+    update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], ...patch } } } }));
 
   const pickupLabel: Record<string, string> = { sofort: "Sofort", nach_10s: "Nach ~10 Sek.", nach_15s: "Nach ~15 Sek.", nach_20s: "Nach ~20 Sek.", nach_30s: "Nach ~30 Sek." };
   const provLabel: Record<string, string> = { swisscom: "Swisscom", sunrise: "Sunrise", salt: "Salt", quickline: "Quickline", yallo: "Ihrem Anbieter", other: "Ihrem Anbieter" };
@@ -644,7 +660,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
                   </button>
                   {isOpen ? (
                     <div className="px-3 pb-3">
-                      <TextArea value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
+                      <TextArea rows={f.key === "servicesList" ? 8 : 3} value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
                     </div>
                   ) : null}
                 </div>
@@ -659,17 +675,20 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       touched: false,
       render: () => (
         <>
+          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was Lisa bei welcher Anruf-Art tut. Sinnvoll vorbelegt — stellen Sie es so ein, wie es zu Ihrem Betrieb passt (jederzeit änderbar).</p>
           <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-            🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> Sie nennt nie Preise, sagt nie einen Termin verbindlich zu, stellt keine Ferndiagnose und verspricht keine Garantie. Sie stellt höchstens 7 kurze Fragen und <span className="text-slate-200">nimmt das Gespräch nicht auf</span>.
+            🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie. Höchstens 7 Fragen, <span className="text-slate-200">keine Gesprächsaufnahme</span>.
           </div>
           {DISPOSITION_CARDS.map((c) => (
             <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
               <p className="text-sm font-semibold text-white">{c.titel}</p>
               <p className="text-xs text-slate-400">{c.szenario}</p>
-              <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
-              {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
-                <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
-              ) : null}
+              <div className="mt-2.5 flex flex-col gap-2.5">
+                <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">Lisa:</span><KorbPick value={disp[c.key].korb} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
+                {disp[c.key].korb !== "nichts" ? (
+                  <Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Mich dabei sofort benachrichtigen" />
+                ) : null}
+              </div>
             </div>
           ))}
         </>
@@ -683,11 +702,16 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
     if (cat) {
       return (
         <div className="mx-auto max-w-[680px]">
-          <button type="button" onClick={() => setStar(null)} className="text-sm text-slate-400 hover:text-white">← zurück zu Lisa</button>
-          <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
+          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
-          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-6 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück zu Lisa" : "✓ Dieser Punkt passt — Stern setzen"}
+          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
+            <Field label="Was läuft bei Ihnen anders — das Lisa hier unbedingt wissen sollte?" hint="Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
+              <TextArea placeholder={`z. B. „Bei Heizungsausfall zuerst nach Eigentümer/Mieter fragen", „Familie Meier ist Sonderfall …"`} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
+            </Field>
+          </div>
+          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
       );
@@ -697,7 +721,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Bauen Sie Stern für Stern Ihre beste Mitarbeiterin." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
+    <Detail icon="📞" title="Ihre Lisa" claim="Bauen Sie Stern für Stern Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
         { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
@@ -830,14 +854,14 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
       key: "marke", star: "Marke", icon: "🎨", title: "Ihre Marke",
       touched: !!(draft.branding?.brandColor || draft.branding?.caseIdPrefix),
       render: () => (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Ihre Farbe">
+        <div className="space-y-4">
+          <Field label="Ihre Farbe" hint="Trägt jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
             <div className="flex items-center gap-2">
-              <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-9 w-12 cursor-pointer rounded border border-white/15 bg-transparent" />
+              <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-10 w-14 cursor-pointer rounded border border-white/15 bg-transparent" />
               <TextInput value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} />
             </div>
           </Field>
-          <Field label="Fall-Kürzel" hint="z. B. DA-0042">
+          <Field label="Fall-Kürzel" hint="Vor jeder Fallnummer — z. B. DA-0042.">
             <TextInput maxLength={4} value={draft.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, caseIdPrefix: e.target.value.toUpperCase() } }))} />
           </Field>
         </div>
@@ -987,10 +1011,15 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
     if (cat) {
       return (
         <div className="mx-auto max-w-[680px]">
-          <button type="button" onClick={() => setStar(null)} className="text-sm text-slate-400 hover:text-white">← zurück zum Leitsystem</button>
-          <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
+          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
-          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-6 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
+            <Field label="Was läuft bei Ihnen anders — das wir hier unbedingt wissen sollten?" hint="Ihre Besonderheiten, Ausnahmen, Wünsche. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
+              <TextArea placeholder={`z. B. „Rechnungen immer an die Buchhaltung CC", „Wir arbeiten nie mit Anbieter X …"`} value={draft.starNotes?.[`system_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`system_${cat.key}`]: e.target.value } }))} />
+            </Field>
+          </div>
+          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
             {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
