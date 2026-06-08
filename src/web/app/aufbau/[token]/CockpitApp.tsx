@@ -841,6 +841,8 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
         <ul className="space-y-1.5">
           <li>🧪 Die <span className="text-slate-200">Demo-Fälle aus dem Video verschwinden</span> — Ihr erster echter Anruf wird Ihr erster Fall.</li>
           <li>📍 Jeder Fall durchläuft: <span className="text-slate-200">Neu → Geplant → In Arbeit → Erledigt</span> — Sie sehen jederzeit, wo er steht.</li>
+          <li>📱 Installieren Sie das Leitsystem als <span className="text-slate-200">App aufs Handy</span> — jeder Fall ist auch unterwegs auf der Baustelle dabei.</li>
+          <li>📊 Jeden Montag bekommen Sie automatisch einen kurzen <span className="text-slate-200">Wochen-Rapport</span> (Fälle, Bewertungen) an Ihre Login-E-Mail.</li>
           <li>🔒 Bis zum gemeinsamen Go-live ist nichts scharf — Gunnar schaut drüber, dann gehen Sie live.</li>
         </ul>
       </Disclosure>
