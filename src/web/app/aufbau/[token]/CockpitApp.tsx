@@ -688,7 +688,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <Field label="Welcher Kalender-Anbieter?">
               <RadioGroup value={(draft.calendar?.provider === "outlook" || draft.calendar?.provider === "google") ? draft.calendar.provider : undefined}
                 onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, provider: v } }))}
-                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung (Welle 2)" }]} />
+                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "richten wir für Sie ein" }]} />
             </Field>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "outlook" ? (
@@ -705,9 +705,14 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             </>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "google" ? (
-            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs leading-relaxed text-amber-100/90">
-              Google-Kalender ist gerade im Aufbau — wir melden uns, sobald Sie verbinden können. Bis dahin setzen Sie Termine ohne Belegungs-Anzeige.
-            </p>
+            <>
+              <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+                ✓ <span className="text-slate-200">Perfekt.</span> Ihre Google-Kalender-Anbindung richten <span className="text-slate-200">wir</span> nach dem Freischalten für Sie ein — Sie müssen nichts weiter tun. Falls wir etwas brauchen, melden wir uns kurz.
+              </p>
+              <Field label="Welches Google-Konto sollen wir anbinden? (optional)" hint="Die geschäftliche Google-/Gmail-Adresse, deren Kalender wir auf Belegung prüfen sollen.">
+                <TextInput type="email" placeholder="kalender@ihre-firma.ch" value={draft.calendar?.googleAccountEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, googleAccountEmail: e.target.value } }))} />
+              </Field>
+            </>
           ) : null}
         </div>
       </Section>

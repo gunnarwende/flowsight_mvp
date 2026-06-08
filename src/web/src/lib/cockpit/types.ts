@@ -193,6 +193,8 @@ export interface CockpitDraft {
     provider?: "outlook" | "google" | "none";
     adminName?: string;
     adminEmail?: string;
+    /** Bei Google: das geschäftliche Konto, dessen Kalender wir anbinden (wir richten ein, K4). */
+    googleAccountEmail?: string;
   };
   golive?: {
     adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)
