@@ -97,21 +97,11 @@ async function main() {
   const calProvider = (dr.calendar?.connect && dr.calendar?.provider && dr.calendar.provider !== "none") ? dr.calendar.provider : "none";
   const notes = dr.notes ?? {};
 
-  // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
-  // WICHTIG: Hat der Kunde die Toggles nie angefasst (kein dispositions im Draft), gelten die
-  // Sicherheits-Defaults (VOICE_DISPOSITIONS_DEFAULTS): Reklamation-Push AN, Callback-Push AUS.
-  // NICHT auf false fallen — das würde die Reklamations-Alarmierung still abschalten.
+  // R6 #1: VOLLE per-Disposition-Policy (d1-d6 korb+notify) → der Webhook liest sie direkt
+  // (resolveDispositionsConfig) und routet danach (Fall/Nachricht/nichts) + Push (notify).
+  // Fehlt eine Disposition im Draft, greifen serverseitig die Sanitär-Defaults.
   const disp = drVoice.dispositions ?? {};
-  const hasNotify = (k) => disp[k] && typeof disp[k].notify === "string";
-  const voiceDispositions = {
-    reklamationPush: hasNotify("d5_reklamation") ? disp.d5_reklamation.notify === "push" : true,
-    callbackPush:
-      hasNotify("d3_rueckruf") || hasNotify("d4_nachfrage")
-        ? disp.d3_rueckruf?.notify === "push" || disp.d4_nachfrage?.notify === "push"
-        : false,
-    // volle Policy fürs Audit / spätere Nutzung mitschreiben
-    full: disp,
-  };
+  const voiceDispositions = { ...disp };
 
   // echte Staff (Cockpit) → staff-Rows (display_name!). Dummys werden deaktiviert.
   const staff = Array.isArray(dr.staff) ? dr.staff.filter((s) => s && str(s.name).trim() && str(s.email).trim()) : [];
@@ -142,7 +132,7 @@ async function main() {
   console.log(`    google_review_url  = ${googleReviewUrl || "(LEER!)"}`);
   console.log(`    sms_sender_name    = ${smsSenderName}`);
   console.log(`    greeting_text      = ${greetingText.slice(0, 70)}…`);
-  console.log(`    voice_dispositions = reklamationPush=${voiceDispositions.reklamationPush}, callbackPush=${voiceDispositions.callbackPush}`);
+  console.log(`    voice_dispositions = ${Object.entries(voiceDispositions).map(([k, v]) => `${k}:${v?.korb ?? "?"}${v?.notify === "push" ? "+push" : ""}`).join(", ") || "(Defaults)"}`);
   console.log(`  tenants.case_id_prefix = ${caseIdPrefix}`);
   console.log(`  staff (echte, ${staff.length}): ${staff.map((s) => `${s.name} [${s.role}] ${s.email}`).join(" | ") || "(KEINE!)"}`);
   console.log(`  admin-login email  = ${adminEmail || "(LEER!)"}`);

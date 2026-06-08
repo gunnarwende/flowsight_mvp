@@ -9,7 +9,7 @@ import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { insertTenantCallback } from "@/src/lib/callbacks/tenantCallbacks";
-import { resolveVoiceDispositions } from "@/src/lib/callbacks/voiceDispositions";
+import { resolveDispositionsConfig, dispositionForCallType } from "@/src/lib/callbacks/voiceDispositions";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 
@@ -455,8 +455,8 @@ export async function POST(req: Request) {
   const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
   const tenantModules = tenantRow?.modules as Record<string, unknown> | null;
   const tenantNotificationEmail = typeof tenantModules?.notification_email === "string" ? tenantModules.notification_email : undefined;
-  // OC3: per-Betrieb Dispositions-Policy (Default = Alarmierungs-Schwelle, backward-compatible)
-  const dispositions = resolveVoiceDispositions(tenantModules);
+  // OC3/R6: per-Betrieb Dispositions-Policy — volle Korb+Notify-Config (Default = backward-compatible)
+  const dispoCfg = resolveDispositionsConfig(tenantModules);
 
   // ── Module check: voice ─────────────────────────────────────────────
   if (!(await hasModule(tenantId, "voice"))) {
@@ -479,13 +479,18 @@ export async function POST(req: Request) {
     extractedData.call_type ?? extractedData.calltype ?? extractedData.intent,
   )?.toLowerCase();
 
-  if (callType === "callback" || callType === "order_followup") {
-    // → NACHRICHT: Rückruf/Lieferant/„Chef" (D3) oder Nachfrage zu Auftrag (D4).
-    // Kein Fall, kein SMS — landet in der Nachrichten-Liste (tenant_callbacks).
+  // Runde 6 #1: Korb (Fall/Nachricht/nichts) aus der per-Betrieb-Config bestimmen.
+  // Default-Config = exakt heutiges Verhalten. call_type abwesend/unbekannt → Fall-Fallback.
+  const dispKey = dispositionForCallType(callType);
+  const korb = dispKey ? dispoCfg[dispKey].korb : null;
+
+  if (korb === "nachricht") {
+    // → NACHRICHT: Rückruf/Lieferant/Nachfrage. Kein Fall, kein SMS — Nachrichten-Liste.
+    const reason = callType === "order_followup" ? "order_followup" : "callback";
     try {
       const { created } = await insertTenantCallback({
         tenantId,
-        reason: callType,
+        reason,
         callerName: reporterName ?? null,
         callerPhone,
         topic: finalDescription ?? null,
@@ -493,21 +498,27 @@ export async function POST(req: Request) {
         transcriptExcerpt: call?.transcript?.slice(0, 500) ?? null,
       });
       Sentry.setTag("decision", "disposition_nachricht");
-      logDecision({
-        decision: "disposition_nachricht",
-        call_type: callType,
-        created,
-        event,
-        call_id: retellCallId,
-        tenant_id: tenantId,
-      });
-      // OC3: optionaler Push bei Rückruf (per-Betrieb; Default: nur Liste, kein Push)
-      if (created && dispositions.callbackPush) {
+      logDecision({ decision: "disposition_nachricht", call_type: callType, created, event, call_id: retellCallId, tenant_id: tenantId });
+      // Runde 6 #2: kurze Zusammenfassungs-E-Mail an die Geschäftsmail (Founder-Lieblingsvariante).
+      if (created && tenantNotificationEmail) {
+        import("@/src/lib/email/resend").then(({ sendCallbackNotification }) =>
+          sendCallbackNotification({
+            notificationEmail: tenantNotificationEmail,
+            tenantName: tenantDisplayName,
+            reason,
+            callerName: reporterName ?? null,
+            callerPhone,
+            topic: finalDescription ?? null,
+          }),
+        ).catch(() => {});
+      }
+      // Push nur, wenn die Disposition es vorsieht (notify === "push").
+      if (created && dispKey && dispoCfg[dispKey].notify === "push") {
         import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
           sendOpsPush({
             tenantId,
             eventType: "case",
-            title: callType === "order_followup" ? "Rückfrage zu Auftrag" : "Neue Rückruf-Nachricht",
+            title: reason === "order_followup" ? "Rückfrage zu Auftrag" : "Neue Rückruf-Nachricht",
             body: `${reporterName ?? "Anrufer"}${callerPhone ? ` · ${callerPhone}` : ""}`,
             url: "/ops/nachrichten",
             tag: `callback-${retellCallId}`,
@@ -523,7 +534,7 @@ export async function POST(req: Request) {
     return new NextResponse(null, { status: 204 });
   }
 
-  if (callType === "info" || callType === "private" || callType === "spam") {
+  if (korb === "nichts") {
     // → NICHTS: Info beantwortet / privat / Spam. Keine Spur, kein Fall.
     Sentry.setTag("decision", "disposition_nichts");
     logDecision({ decision: "disposition_nichts", call_type: callType, event, call_id: retellCallId, tenant_id: tenantId });
@@ -673,7 +684,7 @@ export async function POST(req: Request) {
     // OC3: Reklamation → sofortiger Alarm an Inhaber (business-kritisch wie Negativ-
     // Review → eventType "negative_review" pusht immer). Greift nur bei call_type=
     // "reklamation" (heute kein Agent → dormant) + per-Betrieb-Policy (Default an).
-    if (callType === "reklamation" && dispositions.reklamationPush) {
+    if (callType === "reklamation" && dispoCfg.d5_reklamation.notify === "push") {
       import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
         sendOpsPush({
           tenantId,

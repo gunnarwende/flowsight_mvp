@@ -49,3 +49,41 @@ export function resolveVoiceDispositions(
         : VOICE_DISPOSITIONS_DEFAULTS.callbackPush,
   };
 }
+
+// ── OC3-Vollausbau: per-Anruf-Art-Korb (Fall/Nachricht/nichts) live (Runde 6 #1) ──
+import { DISPOSITION_DEFAULTS } from "@/src/lib/cockpit/types";
+import type { DispositionsConfig, DispositionKey } from "@/src/lib/cockpit/types";
+
+const CALLTYPE_TO_DISPOSITION: Record<string, DispositionKey> = {
+  auftrag: "d1_auftrag", order: "d1_auftrag", schaden: "d1_auftrag",
+  info: "d2_info",
+  callback: "d3_rueckruf", rueckruf: "d3_rueckruf", lieferant: "d3_rueckruf",
+  order_followup: "d4_nachfrage", nachfrage: "d4_nachfrage",
+  reklamation: "d5_reklamation",
+  private: "d6_privat", privat: "d6_privat", spam: "d6_privat",
+};
+
+/** call_type (vom Agenten) → Disposition. null = unbekannt/abwesend → Fall-Fallback. */
+export function dispositionForCallType(callType: string | null | undefined): DispositionKey | null {
+  if (!callType) return null;
+  return CALLTYPE_TO_DISPOSITION[callType.toLowerCase()] ?? null;
+}
+
+/** Volle per-Disposition-Policy (korb+notify, d1-d6) aus modules.voice_dispositions,
+ *  feldweise mit Sanitär-Defaults. Backward-compatible: fehlt die Config → Defaults
+ *  = exakt heutiges Verhalten. */
+export function resolveDispositionsConfig(
+  modules: Record<string, unknown> | null | undefined,
+): DispositionsConfig {
+  const raw = (modules?.voice_dispositions ?? undefined) as Partial<DispositionsConfig> | undefined;
+  const out = {} as DispositionsConfig;
+  (Object.keys(DISPOSITION_DEFAULTS) as DispositionKey[]).forEach((k) => {
+    const d = raw && typeof raw === "object" ? raw[k] : undefined;
+    const def = DISPOSITION_DEFAULTS[k];
+    out[k] = {
+      korb: d && (d.korb === "fall" || d.korb === "nachricht" || d.korb === "nichts") ? d.korb : def.korb,
+      notify: d && (d.notify === "none" || d.notify === "board" || d.notify === "push") ? d.notify : def.notify,
+    };
+  });
+  return out;
+}
