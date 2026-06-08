@@ -160,31 +160,47 @@ function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
  *  Onboarding-Moment: man baut Lisa Schritt für Schritt zur Kollegin. Kein Headset vorn. */
 function LisaAvatar({ size = 118, stars = 0 }: { size?: number; stars?: number }) {
   const awake = stars >= 5;
-  const ink = "#2a3a57";
+  const skin = "#f2d3bd", hair = "#5a3b27", lip = "#c87f6e", ink = "#3a2c25";
   return (
-    <span className="inline-block leading-none transition-all duration-300" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.85))" : "drop-shadow(0 0 13px rgba(212,168,67,0.4))" }}>
+    <span className="inline-block leading-none transition-all duration-300" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.85))" : "drop-shadow(0 0 13px rgba(212,168,67,0.42))" }}>
       <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="56" fill="#0e2336" stroke="#d4a843" strokeWidth="2.5" />
-        {/* zwei Lisas dahinter (Team) — bei 5★ mit Headset */}
-        <g opacity="0.42">
-          <circle cx="36" cy="61" r="11.5" fill="#5a6b88" />
-          <path d="M20 96c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
-          <circle cx="84" cy="61" r="11.5" fill="#5a6b88" />
-          <path d="M68 96c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+        {/* Team dahinter — bei 5★ mit Headset */}
+        <g opacity="0.4">
+          <circle cx="34" cy="62" r="10.5" fill="#5a6b88" /><path d="M19 96c0-12 7-18 15-18s15 6 15 18z" fill="#3c4d6c" />
+          <circle cx="86" cy="62" r="10.5" fill="#5a6b88" /><path d="M71 96c0-12 7-18 15-18s15 6 15 18z" fill="#3c4d6c" />
           {stars >= 5 ? (
             <g stroke="#d4a843" strokeWidth="1.5" fill="none" strokeLinecap="round">
-              <path d="M27 61a9 9 0 0 1 18 0" /><path d="M44 61v4.5" />
-              <path d="M75 61a9 9 0 0 1 18 0" /><path d="M76 61v4.5" />
+              <path d="M25 62a9 9 0 0 1 18 0" /><path d="M42 62v4.5" />
+              <path d="M77 62a9 9 0 0 1 18 0" /><path d="M78 62v4.5" />
             </g>
           ) : null}
         </g>
-        {/* Lisa vorn */}
-        <path d="M33 99c0-17 12-27 27-27s27 10 27 27z" fill="#28395a" stroke="#d4a843" strokeWidth="1.6" />
-        <circle cx="60" cy="50" r="17" fill="#eef3f9" />
-        {stars >= 1 ? <path d="M43 50c0-13 7-20 17-20s17 7 17 20c-3-7-9-10.5-17-10.5S46 43 43 50z" fill="#243044" /> : null}
-        {stars >= 2 ? <g fill={ink}><circle cx="54" cy="49" r="1.8" /><circle cx="66" cy="49" r="1.8" /></g> : null}
-        {stars >= 3 ? <path d="M60 51.5v4.5" stroke={ink} strokeWidth="1.3" strokeLinecap="round" fill="none" /> : null}
-        {stars >= 4 ? <path d="M55 59q5 4 10 0" stroke={ink} strokeWidth="1.6" strokeLinecap="round" fill="none" /> : null}
+        {/* Schultern */}
+        <path d="M36 99c0-15 11-24 24-24s24 9 24 24z" fill="#28395a" stroke="#d4a843" strokeWidth="1.4" />
+        {/* Haare hinten (1★) — rahmt das Gesicht */}
+        {stars >= 1 ? <path d="M40 54c0-15 9-25 20-25s20 10 20 25c0 8-1 15-3 21l-4-1c1-7 1-15 0-21-2 5-2 13-3 19H50c-1-6-1-14-3-19-1 6-1 14 0 21l-4 1c-2-6-3-13-3-21z" fill={hair} /> : null}
+        {/* Gesicht */}
+        <ellipse cx="60" cy="51" rx="14" ry="16" fill={skin} />
+        {/* Pony (1★) */}
+        {stars >= 1 ? <path d="M46 50c1-10 6.5-16 14-16s13 6 14 16c-3-6-8-8.5-14-8.5S49 44 46 50z" fill={hair} /> : null}
+        {/* Brauen + Augen (2★) */}
+        {stars >= 2 ? (
+          <g>
+            <path d="M51 46.3q3-1.6 6 0M63 46.3q3-1.6 6 0" stroke={hair} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+            <ellipse cx="54" cy="50" rx="2.5" ry="1.8" fill="#fff" /><ellipse cx="66" cy="50" rx="2.5" ry="1.8" fill="#fff" />
+            <circle cx="54" cy="50" r="1.45" fill={ink} /><circle cx="66" cy="50" r="1.45" fill={ink} />
+          </g>
+        ) : null}
+        {/* Nase (3★) */}
+        {stars >= 3 ? <path d="M60 52q-1.6 3 -2 4.4q1 1 2 1t2-1q-0.4-1.4-2-4.4z" fill="#e6b89f" /> : null}
+        {/* Mund + Wangen (4★) */}
+        {stars >= 4 ? (
+          <g>
+            <path d="M55 59q5 4.5 10 0q-5 2.2 -10 0z" fill={lip} />
+            <circle cx="49.5" cy="55" r="2.4" fill="#e89b87" opacity="0.45" /><circle cx="70.5" cy="55" r="2.4" fill="#e89b87" opacity="0.45" />
+          </g>
+        ) : null}
       </svg>
     </span>
   );
