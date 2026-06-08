@@ -137,6 +137,88 @@ function Section({ n, icon, title, lead, children }: { n: number; icon: string; 
   );
 }
 
+// ── Konstellation (Welle 3): Knoten als 5-Sterne-Sternbild (Entität in der Mitte) ──
+type StarState = "empty" | "partial" | "done";
+const PENTA = [{ x: 50, y: 11 }, { x: 87, y: 38 }, { x: 72, y: 82 }, { x: 28, y: 82 }, { x: 13, y: 38 }];
+
+function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
+  const fill = state === "done" ? GOLD : state === "partial" ? "rgba(200,162,74,0.35)" : "transparent";
+  const stroke = state === "empty" ? "rgba(255,255,255,0.4)" : GOLD;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={state === "done" ? { filter: "drop-shadow(0 0 6px rgba(212,168,67,0.85))" } : undefined}>
+      <path d="M12 2.2l2.85 6.2 6.75.7-5 4.55 1.4 6.65L12 17.6 5.6 20.3 7 13.65l-5-4.55 6.75-.7z" fill={fill} stroke={stroke} strokeWidth="1.3" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Warme „Mitarbeiterin" Lisa (Navy-Badge + Gold-Ring + Headset) — kein Telefon. */
+function LisaAvatar({ size = 104, awake = false }: { size?: number; awake?: boolean }) {
+  return (
+    <span className="inline-block leading-none" style={{ filter: awake ? "drop-shadow(0 0 18px rgba(212,168,67,0.7))" : "drop-shadow(0 0 10px rgba(212,168,67,0.35))" }}>
+      <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="#1a2744" stroke="#d4a843" strokeWidth="2.5" />
+        <path d="M26 86c0-15 11-23 24-23s24 8 24 23z" fill="#2a3a57" />
+        <circle cx="50" cy="45" r="14.5" fill="#e8eef5" />
+        <path d="M33.5 45a16.5 16.5 0 0 1 33 0" fill="none" stroke="#d4a843" strokeWidth="2.4" />
+        <rect x="30" y="45" width="5" height="9" rx="2.5" fill="#d4a843" />
+        <rect x="65" y="45" width="5" height="9" rx="2.5" fill="#d4a843" />
+        <path d="M67.5 50v5.5a8 8 0 0 1-8 8H53" fill="none" stroke="#d4a843" strokeWidth="2" />
+      </svg>
+    </span>
+  );
+}
+
+function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
+  center: React.ReactNode; centerLabel: string; awakeLabel: string;
+  stars: { key: string; label: string; state: StarState }[];
+  onOpen: (key: string) => void;
+}) {
+  const doneCount = stars.filter((s) => s.state === "done").length;
+  const allDone = doneCount === stars.length;
+  const counter = allDone
+    ? <p className="text-[11px] font-semibold" style={{ color: GOLD }}>★ {awakeLabel}</p>
+    : <p className="text-[11px] text-slate-400">{doneCount}/{stars.length} Sterne</p>;
+  return (
+    <div>
+      {/* Desktop: radiale Konstellation */}
+      <div className="relative mx-auto hidden aspect-square w-full max-w-[420px] sm:block">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+          {stars.map((s, i) => (
+            <line key={s.key} x1={PENTA[i].x} y1={PENTA[i].y} x2="50" y2="50" stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.6 : 0.16} />
+          ))}
+        </svg>
+        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+          {center}
+          <p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>
+          {counter}
+        </div>
+        {stars.map((s, i) => (
+          <button key={s.key} type="button" onClick={() => onOpen(s.key)}
+            className="absolute flex w-[124px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 rounded-xl px-1 py-1.5 text-center transition-transform duration-200 hover:scale-105"
+            style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
+            <StarGlyph state={s.state} />
+            <span className="text-[11px] font-medium leading-tight text-slate-200">{s.label}</span>
+          </button>
+        ))}
+      </div>
+      {/* Handy: Sternen-Leiter */}
+      <div className="sm:hidden">
+        <div className="mb-4 flex flex-col items-center">{center}<p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>{counter}</div>
+        <div className="space-y-2">
+          {stars.map((s) => (
+            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
+              className="flex w-full items-center gap-3 rounded-xl border bg-white/5 px-3 py-2.5 text-left" style={{ borderColor: s.state === "done" ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
+              <StarGlyph state={s.state} size={24} />
+              <span className="flex-1 text-sm text-white">{s.label}</span>
+              <span className="text-slate-500">›</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
@@ -420,6 +502,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   token: string; pf: CockpitSession["prefill"]; draft: CockpitDraft;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
+  const [star, setStar] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [phase, setPhase] = useState<TestCallPhase>("idle");
   const v = draft.voice ?? {};
@@ -430,107 +513,162 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const pickupLabel: Record<string, string> = { sofort: "Sofort", nach_10s: "Nach ~10 Sek.", nach_15s: "Nach ~15 Sek.", nach_20s: "Nach ~20 Sek.", nach_30s: "Nach ~30 Sek." };
   const provLabel: Record<string, string> = { swisscom: "Swisscom", sunrise: "Sunrise", salt: "Salt", quickline: "Quickline", yallo: "Ihrem Anbieter", other: "Ihrem Anbieter" };
   const setV = (patch: Partial<NonNullable<CockpitDraft["voice"]>>) => update((d) => ({ ...d, voice: { ...d.voice, ...patch } }));
+  const isDone = (k: string) => !!draft.stepDone?.[`lisa_${k}`];
+  const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`lisa_${k}`]: true } }));
+  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
+    {
+      key: "begruessung", star: "Begrüssung", icon: "🗣", title: "So begrüsst Lisa",
+      touched: !!(v.greetingText && v.greetingText !== pf.voice.greetingSuggestion),
+      render: () => (
+        <Field label="Begrüssung" hint="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
+          <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
+        </Field>
+      ),
+    },
+    {
+      key: "telefonie", star: "Telefonie", icon: "☎️", title: "Telefonie & Erreichbarkeit",
+      touched: !!v.telco?.provider,
+      render: () => (
+        <>
+          <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
+            <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
+          </Field>
+          {v.telco?.provider === "other" || v.telco?.provider === "yallo" ? (
+            <Field label="Wie heisst Ihr Anbieter? (optional)">
+              <TextInput placeholder="z. B. Wingo, Lebara …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
+            </Field>
+          ) : null}
+          <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
+            <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
+              options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
+          </Field>
+          <Disclosure summary="Wie richte ich die Weiterleitung ein?">
+            Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt Lisa.
+          </Disclosure>
+        </>
+      ),
+    },
+    {
+      key: "notfall", star: "Notfall & Zeiten", icon: "🚨", title: "Notfall, Notdienst & Feiertage",
+      touched: v.emergencyService !== undefined || !!(v.vacationNote ?? "").trim(),
+      render: () => (
+        <>
+          <Field label="Bieten Sie einen Notdienst an?">
+            <RadioGroup value={v.emergencyService === undefined ? undefined : v.emergencyService ? "ja" : "nein"}
+              onChange={(val) => setV({ emergencyService: val === "ja" })}
+              options={[{ value: "ja", label: "Ja — wir sind im Notfall erreichbar" }, { value: "nein", label: "Nein — keinen Notdienst" }]} />
+          </Field>
+          {v.emergencyService === true ? (
+            <>
+              <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
+                ⚠️ <span className="font-semibold">Lisa stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
+              </p>
+              <Field label="Wer wird im Notfall sofort alarmiert?">
+                <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
+              </Field>
+              <Field label="Unter welcher Nummer?">
+                <TextInput placeholder="+41 …" value={v.emergencyContact?.phone ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, phone: e.target.value } })} />
+              </Field>
+            </>
+          ) : v.emergencyService === false ? (
+            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt Lisa den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
+          ) : null}
+          <div className="border-t border-white/10 pt-3">
+            <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
+            <p className="mt-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+              Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren. Erwartung: {v.emergencyService ? "bei einem Notfall wird Ihr Pikett sofort alarmiert, sonst Rückmeldung am nächsten Werktag." : "Rückmeldung am nächsten Werktag."}
+            </p>
+          </div>
+          <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
+            <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
+          </Field>
+        </>
+      ),
+    },
+    {
+      key: "wissen", star: "Das sagt Lisa", icon: "📚", title: "Das sagt Ihre Lisa",
+      touched: !!(v.wissen && Object.keys(v.wissen).length),
+      render: () => (
+        <>
+          <p className="text-xs text-slate-400">Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren. Tippen zum Aufklappen.</p>
+          <div className="space-y-2">
+            {WISSEN_FIELDS.map((f) => {
+              const isOpen = open === f.key;
+              return (
+                <div key={f.key} className="rounded-lg border border-white/10 bg-white/5">
+                  <button type="button" onClick={() => setOpen(isOpen ? null : f.key)} className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm text-white">
+                    <span>{f.label}</span><span className="text-lg leading-none" style={{ color: GOLD }}>{isOpen ? "−" : "+"}</span>
+                  </button>
+                  {isOpen ? (
+                    <div className="px-3 pb-3">
+                      <TextArea value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "anruflogik", star: "Anruf-Logik", icon: "🎧", title: "Was Lisa bei welchem Anruf tut",
+      touched: false,
+      render: () => (
+        <>
+          <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> Sie nennt nie Preise, sagt nie einen Termin verbindlich zu, stellt keine Ferndiagnose und verspricht keine Garantie. Sie stellt höchstens 7 kurze Fragen und <span className="text-slate-200">nimmt das Gespräch nicht auf</span>.
+          </div>
+          {DISPOSITION_CARDS.map((c) => (
+            <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-sm font-semibold text-white">{c.titel}</p>
+              <p className="text-xs text-slate-400">{c.szenario}</p>
+              <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
+              {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
+                <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
+              ) : null}
+            </div>
+          ))}
+        </>
+      ),
+    },
+  ];
+
+  // Drill-in: eine Stern-Kategorie im Fokus (Option A „Eintauchen & zurück")
+  if (star) {
+    const cat = CATS.find((c) => c.key === star);
+    if (cat) {
+      return (
+        <div className="mx-auto max-w-[680px]">
+          <button type="button" onClick={() => setStar(null)} className="text-sm text-slate-400 hover:text-white">← zurück zu Lisa</button>
+          <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <div className="mt-5 space-y-4">{cat.render()}</div>
+          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-6 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück zu Lisa" : "✓ Dieser Punkt passt — Stern setzen"}
+          </button>
+        </div>
+      );
+    }
+  }
+
+  const allDone = CATS.every((c) => isDone(c.key));
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Ihre Mitarbeiterin, die nie ein Gespräch verpasst — und jeden Auftrag festhält. In sechs Schritten eingestellt." onBack={onBack} onDone={onDone}>
-
+    <Detail icon="📞" title="Ihre Lisa" claim="Ihre digitale Mitarbeiterin, die nie ein Gespräch verpasst. Bauen Sie sie Stern für Stern zur 5-Sterne-Kollegin." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
         { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
       ]} />
 
-      <Section n={1} icon="🗣" title="So begrüsst Lisa" lead="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
-        <Field label="Begrüssung">
-          <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
-        </Field>
-      </Section>
-
-      <Section n={2} icon="☎️" title="Telefonie & Erreichbarkeit" lead="Damit Anrufe bei Lisa landen, leiten Sie Ihre bestehende Nummer weiter — die genaue Anleitung hängt von Ihrem Anbieter ab.">
-        <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
-          <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
-        </Field>
-        {v.telco?.provider === "other" || v.telco?.provider === "yallo" ? (
-          <Field label="Wie heisst Ihr Anbieter? (optional)">
-            <TextInput placeholder="z. B. Wingo, Lebara …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
-          </Field>
-        ) : null}
-        <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
-          <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
-            options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
-        </Field>
-        <Disclosure summary="Wie richte ich die Weiterleitung ein?">
-          Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt Lisa.
-        </Disclosure>
-      </Section>
-
-      <Section n={3} icon="🚨" title="Notfall & Notdienst" lead="Bieten Sie ausserhalb der Zeiten einen Notdienst an? Dann muss glasklar sein, was Lisa im Notfall tut.">
-        <Field label="Bieten Sie einen Notdienst an?">
-          <RadioGroup value={v.emergencyService === undefined ? undefined : v.emergencyService ? "ja" : "nein"}
-            onChange={(val) => setV({ emergencyService: val === "ja" })}
-            options={[{ value: "ja", label: "Ja — wir sind im Notfall erreichbar" }, { value: "nein", label: "Nein — keinen Notdienst" }]} />
-        </Field>
-        {v.emergencyService === true ? (
-          <>
-            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
-              ⚠️ <span className="font-semibold">Lisa stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
-            </p>
-            <Field label="Wer wird im Notfall sofort alarmiert?">
-              <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
-            </Field>
-            <Field label="Unter welcher Nummer?">
-              <TextInput placeholder="+41 …" value={v.emergencyContact?.phone ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, phone: e.target.value } })} />
-            </Field>
-          </>
-        ) : v.emergencyService === false ? (
-          <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt Lisa den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
-        ) : null}
-      </Section>
-
-      <Section n={4} icon="🕐" title="Feiertage & Ferien" lead="Lisa darf an einem Feiertag nicht „kommen Sie morgen“ sagen. So reagiert sie, wenn gerade nicht gearbeitet wird.">
-        <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
-        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren. Sie setzt die Erwartung: {v.emergencyService ? "bei einem Notfall wird Ihr Pikett sofort alarmiert, sonst Rückmeldung am nächsten Werktag." : "Rückmeldung am nächsten Werktag."}
-        </p>
-        <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
-          <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
-        </Field>
-      </Section>
-
-      <Section n={5} icon="📚" title="Das sagt Ihre Lisa" lead="Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren. Tippen zum Aufklappen.">
-        <div className="space-y-2">
-          {WISSEN_FIELDS.map((f) => {
-            const isOpen = open === f.key;
-            return (
-              <div key={f.key} className="rounded-lg border border-white/10 bg-white/5">
-                <button type="button" onClick={() => setOpen(isOpen ? null : f.key)} className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm text-white">
-                  <span>{f.label}</span><span className="text-lg leading-none" style={{ color: GOLD }}>{isOpen ? "−" : "+"}</span>
-                </button>
-                {isOpen ? (
-                  <div className="px-3 pb-3">
-                    <TextArea value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      </Section>
-
-      <Section n={6} icon="🎧" title="Was Lisa bei welchem Anruf tut" lead="Sinnvoll vorbelegt — Sie bestätigen oder passen an. Jede Karte zeigt, wohin es geht.">
-        <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> Sie nennt nie Preise, sagt nie einen Termin verbindlich zu, stellt keine Ferndiagnose und verspricht keine Garantie. Sie stellt höchstens 7 kurze Fragen und <span className="text-slate-200">nimmt das Gespräch nicht auf</span>.
-        </div>
-        {DISPOSITION_CARDS.map((c) => (
-          <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
-            <p className="text-sm font-semibold text-white">{c.titel}</p>
-            <p className="text-xs text-slate-400">{c.szenario}</p>
-            <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
-            {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
-              <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
-            ) : null}
-          </div>
-        ))}
-      </Section>
+      <Constellation
+        center={<LisaAvatar awake={allDone} />}
+        centerLabel="Lisa"
+        awakeLabel="startklar"
+        stars={CATS.map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
+        onOpen={setStar}
+      />
+      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
 
       <div className="rounded-xl border p-4 text-center" style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
         <p className="text-sm font-semibold text-white">Hören Sie Ihre Lisa</p>
