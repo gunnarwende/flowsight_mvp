@@ -142,6 +142,8 @@ type StarState = "empty" | "partial" | "done";
 const PENTA = [{ x: 50, y: 15 }, { x: 87, y: 40 }, { x: 72, y: 83 }, { x: 28, y: 83 }, { x: 13, y: 40 }];
 // Innere Endpunkte am Avatar-Rand (gleicher Radius je Strahl → überall gleich, berührt sauber).
 const INNER = [{ x: 50, y: 37 }, { x: 62.6, y: 46.6 }, { x: 57.2, y: 60.8 }, { x: 42.8, y: 60.8 }, { x: 37.4, y: 46.6 }];
+// Äussere Endpunkte: kurz VOR der Stern-Mitte → Strahl endet am Stern-Rand (nicht in der Mitte).
+const OUTER = [{ x: 50, y: 19 }, { x: 83.1, y: 41 }, { x: 69.8, y: 79.7 }, { x: 30.2, y: 79.7 }, { x: 16.9, y: 41 }];
 
 function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
   const fill = state === "done" ? GOLD : state === "partial" ? "rgba(200,162,74,0.35)" : "transparent";
@@ -153,24 +155,36 @@ function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
   );
 }
 
-/** Lisa als Team (Trio: eine grosse vorn + zwei dezent dahinter) — high-end, kein Headset.
- *  Botschaft: nie besetzt, mehrere Anrufe parallel. */
-function LisaAvatar({ size = 118, awake = false }: { size?: number; awake?: boolean }) {
+/** Lisa als Team — progressives Gesicht: pro gesetztem Stern erscheint ein Zug
+ *  (1★ Haare · 2★ Augen · 3★ Nase · 4★ Mund · 5★ Team mit Headset). Spielerischer
+ *  Onboarding-Moment: man baut Lisa Schritt für Schritt zur Kollegin. Kein Headset vorn. */
+function LisaAvatar({ size = 118, stars = 0 }: { size?: number; stars?: number }) {
+  const awake = stars >= 5;
+  const ink = "#2a3a57";
   return (
-    <span className="inline-block leading-none" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.8))" : "drop-shadow(0 0 13px rgba(212,168,67,0.4))" }}>
+    <span className="inline-block leading-none transition-all duration-300" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.85))" : "drop-shadow(0 0 13px rgba(212,168,67,0.4))" }}>
       <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="56" fill="#0e2336" stroke="#d4a843" strokeWidth="2.5" />
-        {/* zwei dezente Lisas dahinter (Parallel-Team) */}
+        {/* zwei Lisas dahinter (Team) — bei 5★ mit Headset */}
         <g opacity="0.42">
-          <circle cx="38" cy="60" r="11.5" fill="#5a6b88" />
-          <path d="M22 95c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
-          <circle cx="82" cy="60" r="11.5" fill="#5a6b88" />
-          <path d="M66 95c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+          <circle cx="36" cy="61" r="11.5" fill="#5a6b88" />
+          <path d="M20 96c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+          <circle cx="84" cy="61" r="11.5" fill="#5a6b88" />
+          <path d="M68 96c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+          {stars >= 5 ? (
+            <g stroke="#d4a843" strokeWidth="1.5" fill="none" strokeLinecap="round">
+              <path d="M27 61a9 9 0 0 1 18 0" /><path d="M44 61v4.5" />
+              <path d="M75 61a9 9 0 0 1 18 0" /><path d="M76 61v4.5" />
+            </g>
+          ) : null}
         </g>
-        {/* grosse Lisa vorn */}
-        <circle cx="60" cy="51" r="16.5" fill="#eef3f9" />
+        {/* Lisa vorn */}
         <path d="M33 99c0-17 12-27 27-27s27 10 27 27z" fill="#28395a" stroke="#d4a843" strokeWidth="1.6" />
-        <path d="M49 73c4 4.5 18 4.5 22 0" fill="none" stroke="#d4a843" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="60" cy="50" r="17" fill="#eef3f9" />
+        {stars >= 1 ? <path d="M43 50c0-13 7-20 17-20s17 7 17 20c-3-7-9-10.5-17-10.5S46 43 43 50z" fill="#243044" /> : null}
+        {stars >= 2 ? <g fill={ink}><circle cx="54" cy="49" r="1.8" /><circle cx="66" cy="49" r="1.8" /></g> : null}
+        {stars >= 3 ? <path d="M60 51.5v4.5" stroke={ink} strokeWidth="1.3" strokeLinecap="round" fill="none" /> : null}
+        {stars >= 4 ? <path d="M55 59q5 4 10 0" stroke={ink} strokeWidth="1.6" strokeLinecap="round" fill="none" /> : null}
       </svg>
     </span>
   );
@@ -192,7 +206,7 @@ function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
       <div className="relative mx-auto hidden aspect-square w-full max-w-[420px] sm:block">
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
           {stars.map((s, i) => (
-            <line key={s.key} x1={INNER[i].x} y1={INNER[i].y} x2={PENTA[i].x} y2={PENTA[i].y} stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.65 : 0.18} />
+            <line key={s.key} x1={INNER[i].x} y1={INNER[i].y} x2={OUTER[i].x} y2={OUTER[i].y} stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.65 : 0.18} />
           ))}
         </svg>
         <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
@@ -200,14 +214,17 @@ function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
           <p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>
           {counter}
         </div>
-        {stars.map((s, i) => (
-          <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-            className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-transform duration-200 hover:scale-110"
-            style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
-            <span className="pointer-events-none absolute bottom-[calc(100%+3px)] w-[132px] text-center text-[11px] font-medium leading-tight text-slate-200">{s.label}</span>
-            <StarGlyph state={s.state} />
-          </button>
-        ))}
+        {stars.map((s, i) => {
+          const below = PENTA[i].y > 70; // untere zwei Sterne: Label unterhalb
+          return (
+            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
+              className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-transform duration-200 hover:scale-110"
+              style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
+              <span className={`absolute ${below ? "top-[calc(100%+3px)]" : "bottom-[calc(100%+3px)]"} w-[132px] text-center text-[11px] font-medium leading-tight text-slate-200`}>{s.label}</span>
+              <StarGlyph state={s.state} />
+            </button>
+          );
+        })}
       </div>
       {/* Handy: Sternen-Leiter */}
       <div className="sm:hidden">
@@ -661,16 +678,17 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
     }
   }
 
-  const allDone = CATS.every((c) => isDone(c.key));
+  const doneN = CATS.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === CATS.length;
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Ihre digitale Mitarbeiterin, die nie ein Gespräch verpasst. Bauen Sie sie Stern für Stern zur 5-Sterne-Kollegin." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
+    <Detail icon="📞" title="Ihre Lisa" claim="Bauen Sie Stern für Stern Ihre beste Mitarbeiterin." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
         { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
       ]} />
 
       <Constellation
-        center={<LisaAvatar awake={allDone} />}
+        center={<LisaAvatar stars={doneN} />}
         centerLabel="Lisa"
         awakeLabel="startklar"
         stars={(["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const)
