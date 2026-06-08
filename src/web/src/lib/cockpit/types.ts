@@ -205,6 +205,9 @@ export interface CockpitDraft {
   };
   /** Freitext-Hinweise des Inhabers je Strang (fängt die „20 %, die nur er kennt"). */
   notes?: { vorort?: string; voice?: string; website?: string; system?: string };
+  /** Per-Stern „aus dem Inhaber rauskitzeln": was läuft in SEINEM Betrieb anders/wichtig?
+   *  Key = `${strang}_${katKey}` (z. B. lisa_wissen, system_marke). Schlüssel für 100%-Abdeckung. */
+  starNotes?: Record<string, string>;
   /** Pro Strang/Schritt: erledigt? (treibt das Fortschritts-Band). */
   stepDone?: Record<string, boolean>;
 }
