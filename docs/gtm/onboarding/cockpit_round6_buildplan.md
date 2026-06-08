@@ -12,13 +12,15 @@
 4. **Frischer Branch pro Runde** off aktuellem `main` (kein Recommit auf gemergten Branch → kein Squash-Konflikt). R7-Branch: `feat/cockpit-r7-feedbackbox`.
 
 ## 📋 R7-QUEUE (selbstständig, in dieser Reihenfolge)
-- [ ] **A — Website-Umbau** (grösster Brocken): Q2 „Haben Sie Website?" RAUS · neuer harter Punkt 1 „Spielt Online-Meldeformular eine Rolle? Ja/Nein" (Nein→bestätigen→Strang fertig) · Integrations-Karte (intern/Agentur + welche · ersetzen/ergänzen · wer kümmert sich) · 1-2-3-Ordnung. *Fertig wenn: tsc+build grün, alle Felder im draft.wizard, promote schreibt sie, prod-Sicht.*
+- [x] **A — Website-Umbau** ✅ (commit 98fff4d, tsc grün) (grösster Brocken): Q2 „Haben Sie Website?" RAUS · neuer harter Punkt 1 „Spielt Online-Meldeformular eine Rolle? Ja/Nein" (Nein→bestätigen→Strang fertig) · Integrations-Karte (intern/Agentur + welche · ersetzen/ergänzen · wer kümmert sich) · 1-2-3-Ordnung. *Fertig wenn: tsc+build grün, alle Felder im draft.wizard, promote schreibt sie, prod-Sicht.*
 - [ ] **B — Badge-Fix:** SW echte Zahl (offene Fälle + pending Nachrichten) · stiller Push f. Nachrichten · `setAppBadge` mit Server-`badgeCount` · beim Öffnen echte Zahl · In-App Nav-Zähler (Leitzentrale·Nachrichten) + „neu"-Marker. *Fertig wenn: Push trägt badgeCount, Handy zeigt Zahl.*
 - [ ] **C — Detail-Politur:** Vor-Ort-Icon Haustür (Emoji-vs-SVG-Konsistenz alle 3 Strang-Icons) · per-Stern strang-spezifische Beispiel-Placeholder (2 Sani je Strang; Ausnahme „So meldet sich" minimal) · 1-2-3-Ordnung übrige Stränge · Reagieren-Symbol 🎧. *Fertig wenn: prod-Sicht je Strang.*
 - Voice VA1-3 separat (Pre-Go-live, ticketlist) — NICHT in R7.
 
 ## 📝 R7-PROTOKOLL
 - 08.06. | R6 LIVE (#590, main@167790a). Auflege-Button ENTSCHIEDEN: bleibt gebündelt mit Test-Call-Comeback nach VA1-3 (kein Standalone, da keine Anruf-Oberfläche existiert). Branch `feat/cockpit-r7-feedbackbox` off main. Start: A Website.
+- 08.06. | **A FERTIG** (98fff4d): Website-Strang neu — Punkt-1-Gate, alte „Haben Sie Website?" raus, Integrations-Karte (Betreuung/ersetzen-ergänzen/wer-kümmert/Agentur-Kontakt), 1-2-3-4. types+promote+zusammenfassung mit. tsc grün. → weiter B Badge.
+- **Branch-Hygiene-Regel R7:** EIN Branch, EIN PR am Ende (kein Merge-dann-Recommit → kein Squash-Konflikt). Commits granular pro Item.
 
 ## ✅ ERLEDIGT (Stand 08.06.)
 - **Nachrichten-Nav-Fix** (war nicht verlinkt) — LIVE (#588).

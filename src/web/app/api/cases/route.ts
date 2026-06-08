@@ -272,16 +272,18 @@ export async function POST(request: NextRequest) {
 
     // Push notification for Notfall cases (best-effort)
     if (data.urgency === "notfall") {
-      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
-        sendOpsPush({
+      import("@/src/lib/push/sendOpsPush").then(async ({ sendOpsPush }) => {
+        const { computeOpsBadgeCount } = await import("@/src/lib/push/opsBadge");
+        return sendOpsPush({
           tenantId,
           eventType: "notfall",
           title: "Notfall eingegangen",
           body: `${data.category}: ${data.city} — ${data.reporter_name ?? "Unbekannt"}`,
           url: `/ops/cases/${row.id}`,
           tag: `notfall-${row.id}`,
-        })
-      ).catch(() => {});
+          badgeCount: await computeOpsBadgeCount(supabase, tenantId),
+        });
+      }).catch(() => {});
     }
 
     // Reporter confirmation — respects tenant toggles (B11)

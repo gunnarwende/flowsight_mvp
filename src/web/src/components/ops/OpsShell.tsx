@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InstallPrompt } from "./InstallPrompt";
@@ -155,8 +155,50 @@ export function OpsShell({
   const [mobilePreview, setMobilePreview] = useState(false);
   const pathname = usePathname();
 
-  // Build nav items dynamically based on modules
+  // In-App-Nav-Zähler: offene Fälle + pending Nachrichten (SSOT, gleiche Quelle
+  // wie der App-Icon-Badge). Beim Laden + alle 30s, damit die Zahlen mit der
+  // Leitzentrale/Nachrichten-Liste mitlaufen. Pub-Tenants haben kein Nachrichten-Nav.
   const isPubTenant = !!(hasEvents || hasReservations);
+  const [navCounts, setNavCounts] = useState<{ cases: number; messages: number } | null>(null);
+  useEffect(() => {
+    if (isPubTenant) return;
+    let cancelled = false;
+    const load = () =>
+      fetch("/api/ops/badge-count", { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d: { cases?: number; messages?: number; total?: number } | null) => {
+          if (cancelled || !d) return;
+          setNavCounts({ cases: d.cases ?? 0, messages: d.messages ?? 0 });
+          // App-Icon-Badge app-weit auf den echten Stand setzen (nicht nur auf der
+          // Leitzentrale). So ist der Badge auch korrekt, wenn der Inhaber nach
+          // einem Push auf /ops/nachrichten o.ä. landet. 0 => Badge weg.
+          const nav = navigator as Navigator & {
+            setAppBadge?: (n?: number) => void;
+            clearAppBadge?: () => void;
+          };
+          if ("setAppBadge" in navigator) {
+            const total = typeof d.total === "number" ? d.total : (d.cases ?? 0) + (d.messages ?? 0);
+            if (total > 0) nav.setAppBadge?.(total);
+            else nav.clearAppBadge?.();
+          }
+        })
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [isPubTenant, pathname]);
+
+  function navCountFor(href: string): number {
+    if (!navCounts) return 0;
+    if (href === "/ops/cases") return navCounts.cases;
+    if (href === "/ops/nachrichten") return navCounts.messages;
+    return 0;
+  }
+
+  // Build nav items dynamically based on modules
   const allNavItems: NavItem[] = isPubTenant
     ? [
         // Pub nav: only Dashboard + Help (Events/Reservations are sub-pages of Dashboard)
@@ -242,6 +284,7 @@ export function OpsShell({
             );
           }
           const active = isNavActive(item.href);
+          const count = navCountFor(item.href);
           return (
             <Link
               key={item.label}
@@ -260,6 +303,15 @@ export function OpsShell({
             >
               {item.icon}
               <span>{item.label}</span>
+              {count > 0 ? (
+                <span
+                  className="ml-auto min-w-[20px] px-1.5 py-0.5 rounded-full text-[11px] font-semibold text-white text-center leading-none"
+                  style={{ backgroundColor: color }}
+                  aria-label={`${count} offen`}
+                >
+                  {count > 99 ? "99+" : count}
+                </span>
+              ) : null}
             </Link>
           );
         })}
