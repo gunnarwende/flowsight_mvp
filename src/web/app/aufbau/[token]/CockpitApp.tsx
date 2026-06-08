@@ -509,6 +509,36 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
         </div>
       </div>
 
+      {/* Kalender & Verfügbarkeit — dynamischer Lern-Cascade (Referenz-Pattern) */}
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <p className="text-sm font-semibold text-white">📅 Kalender & Verfügbarkeit</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-400">Binden Sie Ihren Kalender an, sehen Sie beim Terminsetzen sofort, ob Sie oder ein Mitarbeiter schon belegt sind — <span className="text-slate-200">keine Doppelbuchung mehr.</span></p>
+        <div className="mt-3 space-y-3">
+          <Field label="Kalender anbinden?">
+            <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
+              onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
+              options={[{ value: "ja", label: "Ja — Belegung sehen, niemanden überplanen" }, { value: "nein", label: "(Noch) nicht — Termine ohne Belegungs-Anzeige" }]} />
+          </Field>
+          {draft.calendar?.connect ? (
+            <Field label="Welcher Kalender-Anbieter?">
+              <RadioGroup value={(draft.calendar?.provider === "outlook" || draft.calendar?.provider === "google") ? draft.calendar.provider : undefined}
+                onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, provider: v } }))}
+                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung" }]} />
+            </Field>
+          ) : null}
+          {draft.calendar?.connect && draft.calendar?.provider === "outlook" ? (
+            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs leading-relaxed text-slate-300">
+              ✓ <span className="text-slate-200">So einfach:</span> Nach dem Freischalten verbinden Sie in Ihrem Leitsystem mit <span className="text-slate-200">einem Klick</span> (einmal bei Microsoft anmelden, Ihr Admin bestätigt). Wir prüfen dann die Kalender Ihrer Mitarbeiter (oben) auf Belegung. <span className="text-slate-400">Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter — eine „Tenant-ID" müssen Sie NICHT heraussuchen.</span>
+            </p>
+          ) : null}
+          {draft.calendar?.connect && draft.calendar?.provider === "google" ? (
+            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs leading-relaxed text-amber-100/90">
+              Google-Kalender ist gerade im Aufbau — wir melden uns, sobald Sie verbinden können. Bis dahin setzen Sie Termine ohne Belegungs-Anzeige.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
       <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
         <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
       </Field>

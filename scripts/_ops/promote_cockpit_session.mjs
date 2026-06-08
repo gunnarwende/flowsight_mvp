@@ -94,6 +94,7 @@ async function main() {
   const drWizard = dr.wizard ?? {};
   const pickup = str(drVoice.pickup);
   const distribution = str(drWizard.distribution);
+  const calProvider = (dr.calendar?.connect && dr.calendar?.provider && dr.calendar.provider !== "none") ? dr.calendar.provider : "none";
   const notes = dr.notes ?? {};
 
   // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
@@ -165,6 +166,7 @@ async function main() {
   modules.voice_dispositions = voiceDispositions;
   if (smsContent) modules.sms_content = smsContent;
   modules.notify_messages_email = notifyMessagesByEmail;
+  modules.calendar_intent = calProvider; // tatsächliche Verbindung = OAuth nach Go-live (setzt calendar_ms_tenant_id)
   if (avvVersion) { modules.avv_accepted_version = avvVersion; modules.avv_accepted_at = avvAcceptedAt || new Date().toISOString(); }
 
   const { error: upErr } = await sb.from("tenants").update({ modules, case_id_prefix: caseIdPrefix }).eq("id", session.tenant_id);
@@ -212,6 +214,7 @@ async function main() {
   const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
   console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
   console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
+  console.log(`  6. Kalender: ${calProvider === "outlook" ? "Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login)" : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
   console.log(`  Danach Session auf "live" setzen.`);
   const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
   if (noteLines.length) {
