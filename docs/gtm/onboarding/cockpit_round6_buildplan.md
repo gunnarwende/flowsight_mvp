@@ -4,6 +4,14 @@
 > + Founder-Freigaben in diesem Chat. **Reihenfolge: Backend → Name → UI Strang-für-Strang → Website.**
 > Founder-Freigaben: **1 ja · 2 ja · 3 ja · Headline #1.**
 
+## ✅ ERLEDIGT (Stand 08.06.)
+- **Nachrichten-Nav-Fix** (war nicht verlinkt) — LIVE (#588).
+- **Batch 1 (UI):** Headline #1 · Test-Call entfernt · Telefonanbieter „Anderer" separat + Pflicht-Name, „/ nicht dabei" raus · Feiertags-Erwartung gestrichen — LIVE (#589).
+- **Backend #1 (Korb-Wiring)** + **#2 (Nachrichten-E-Mail)** — gebaut + committet (Branch, dormant bis call_type live, gebündelt).
+
+## ⏭ OFFEN (Reihenfolge: Name → Badge → restliche UI → Website)
+- **#3 Name-Personalisierung** · **Badge-Fix** · Kennen-Sie-das #2 · Preisfragen verschieben · Einzugsgebiet entschärfen · „So soll Lisa reagieren" (Symbol, 7-Fragen-Text raus, Kanal-Klarheit, nummerierte Optik) · per-Stern strang-spezifische Beispiele + Komma-Labels · 1-2-3-Ordnung überall · Vor-Ort-Icon · Subline-Kürzung · **Website-Umbau** (Q2 raus, neue Ja/Nein-1, Integrations-Karte). Voice VA1-3 separat (Pre-Go-live).
+
 ## IST-Wahrheit (am Code verifiziert — Basis für alles)
 - **3-Korb-Logik:** Lisa klassifiziert jeden Anruf → **Fall** (Auftrag/Reklamation) · **Nachricht** (Rückruf/Lieferant/Nachfrage/„Chef") · **Nichts** (Info/Spam).
 - **Fall** → Eintrag „Fälle" + **E-Mail** an `notification_email` (immer) + Push (Notfall/Reklamation). `sendCaseNotification`.
