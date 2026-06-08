@@ -139,7 +139,9 @@ function Section({ n, icon, title, lead, children }: { n: number; icon: string; 
 
 // ── Konstellation (Welle 3): Knoten als 5-Sterne-Sternbild (Entität in der Mitte) ──
 type StarState = "empty" | "partial" | "done";
-const PENTA = [{ x: 50, y: 11 }, { x: 87, y: 38 }, { x: 72, y: 82 }, { x: 28, y: 82 }, { x: 13, y: 38 }];
+const PENTA = [{ x: 50, y: 15 }, { x: 87, y: 40 }, { x: 72, y: 83 }, { x: 28, y: 83 }, { x: 13, y: 40 }];
+// Innere Endpunkte am Avatar-Rand (gleicher Radius je Strahl → überall gleich, berührt sauber).
+const INNER = [{ x: 50, y: 37 }, { x: 62.6, y: 46.6 }, { x: 57.2, y: 60.8 }, { x: 42.8, y: 60.8 }, { x: 37.4, y: 46.6 }];
 
 function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
   const fill = state === "done" ? GOLD : state === "partial" ? "rgba(200,162,74,0.35)" : "transparent";
@@ -151,18 +153,24 @@ function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
   );
 }
 
-/** Warme „Mitarbeiterin" Lisa (Navy-Badge + Gold-Ring + Headset) — kein Telefon. */
-function LisaAvatar({ size = 104, awake = false }: { size?: number; awake?: boolean }) {
+/** Lisa als Team (Trio: eine grosse vorn + zwei dezent dahinter) — high-end, kein Headset.
+ *  Botschaft: nie besetzt, mehrere Anrufe parallel. */
+function LisaAvatar({ size = 118, awake = false }: { size?: number; awake?: boolean }) {
   return (
-    <span className="inline-block leading-none" style={{ filter: awake ? "drop-shadow(0 0 18px rgba(212,168,67,0.7))" : "drop-shadow(0 0 10px rgba(212,168,67,0.35))" }}>
-      <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="46" fill="#1a2744" stroke="#d4a843" strokeWidth="2.5" />
-        <path d="M26 86c0-15 11-23 24-23s24 8 24 23z" fill="#2a3a57" />
-        <circle cx="50" cy="45" r="14.5" fill="#e8eef5" />
-        <path d="M33.5 45a16.5 16.5 0 0 1 33 0" fill="none" stroke="#d4a843" strokeWidth="2.4" />
-        <rect x="30" y="45" width="5" height="9" rx="2.5" fill="#d4a843" />
-        <rect x="65" y="45" width="5" height="9" rx="2.5" fill="#d4a843" />
-        <path d="M67.5 50v5.5a8 8 0 0 1-8 8H53" fill="none" stroke="#d4a843" strokeWidth="2" />
+    <span className="inline-block leading-none" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.8))" : "drop-shadow(0 0 13px rgba(212,168,67,0.4))" }}>
+      <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="#0e2336" stroke="#d4a843" strokeWidth="2.5" />
+        {/* zwei dezente Lisas dahinter (Parallel-Team) */}
+        <g opacity="0.42">
+          <circle cx="38" cy="60" r="11.5" fill="#5a6b88" />
+          <path d="M22 95c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+          <circle cx="82" cy="60" r="11.5" fill="#5a6b88" />
+          <path d="M66 95c0-13 8-20 16-20s16 7 16 20z" fill="#3c4d6c" />
+        </g>
+        {/* grosse Lisa vorn */}
+        <circle cx="60" cy="51" r="16.5" fill="#eef3f9" />
+        <path d="M33 99c0-17 12-27 27-27s27 10 27 27z" fill="#28395a" stroke="#d4a843" strokeWidth="1.6" />
+        <path d="M49 73c4 4.5 18 4.5 22 0" fill="none" stroke="#d4a843" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </span>
   );
@@ -184,7 +192,7 @@ function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
       <div className="relative mx-auto hidden aspect-square w-full max-w-[420px] sm:block">
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
           {stars.map((s, i) => (
-            <line key={s.key} x1={PENTA[i].x} y1={PENTA[i].y} x2="50" y2="50" stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.6 : 0.16} />
+            <line key={s.key} x1={INNER[i].x} y1={INNER[i].y} x2={PENTA[i].x} y2={PENTA[i].y} stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.65 : 0.18} />
           ))}
         </svg>
         <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
@@ -194,10 +202,10 @@ function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
         </div>
         {stars.map((s, i) => (
           <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-            className="absolute flex w-[124px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 rounded-xl px-1 py-1.5 text-center transition-transform duration-200 hover:scale-105"
+            className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-transform duration-200 hover:scale-110"
             style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
+            <span className="pointer-events-none absolute bottom-[calc(100%+3px)] w-[132px] text-center text-[11px] font-medium leading-tight text-slate-200">{s.label}</span>
             <StarGlyph state={s.state} />
-            <span className="text-[11px] font-medium leading-tight text-slate-200">{s.label}</span>
           </button>
         ))}
       </div>
@@ -519,7 +527,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 
   const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
     {
-      key: "begruessung", star: "Begrüssung", icon: "🗣", title: "So begrüsst Lisa",
+      key: "begruessung", star: "So meldet sich Lisa", icon: "🗣", title: "So meldet sich Lisa",
       touched: !!(v.greetingText && v.greetingText !== pf.voice.greetingSuggestion),
       render: () => (
         <Field label="Begrüssung" hint="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
@@ -528,7 +536,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       ),
     },
     {
-      key: "telefonie", star: "Telefonie", icon: "☎️", title: "Telefonie & Erreichbarkeit",
+      key: "telefonie", star: "So kommt der Anruf zu Lisa", icon: "☎️", title: "So kommt der Anruf zu Lisa",
       touched: !!v.telco?.provider,
       render: () => (
         <>
@@ -551,7 +559,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       ),
     },
     {
-      key: "notfall", star: "Notfall & Zeiten", icon: "🚨", title: "Notfall, Notdienst & Feiertage",
+      key: "notfall", star: "Wann Lisa erreichbar ist", icon: "🚨", title: "Wann Lisa erreichbar ist",
       touched: v.emergencyService !== undefined || !!(v.vacationNote ?? "").trim(),
       render: () => (
         <>
@@ -588,7 +596,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       ),
     },
     {
-      key: "wissen", star: "Das sagt Lisa", icon: "📚", title: "Das sagt Ihre Lisa",
+      key: "wissen", star: "Das soll Lisa wissen", icon: "📚", title: "Das soll Lisa wissen",
       touched: !!(v.wissen && Object.keys(v.wissen).length),
       render: () => (
         <>
@@ -614,7 +622,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       ),
     },
     {
-      key: "anruflogik", star: "Anruf-Logik", icon: "🎧", title: "Was Lisa bei welchem Anruf tut",
+      key: "anruflogik", star: "So soll Lisa reagieren", icon: "🎧", title: "So soll Lisa reagieren",
       touched: false,
       render: () => (
         <>
@@ -665,7 +673,9 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
         center={<LisaAvatar awake={allDone} />}
         centerLabel="Lisa"
         awakeLabel="startklar"
-        stars={CATS.map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
+        stars={(["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const)
+          .map((k) => CATS.find((c) => c.key === k)!)
+          .map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
         onOpen={setStar}
       />
       <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
