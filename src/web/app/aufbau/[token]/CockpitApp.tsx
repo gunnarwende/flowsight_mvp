@@ -817,17 +817,19 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   pf: CockpitSession["prefill"]; draft: CockpitDraft; brandColor: string;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
+  const [star, setStar] = useState<string | null>(null);
   const staff = draft.staff ?? [];
   const setStaff = (next: StaffMember[]) => update((d) => ({ ...d, staff: next }));
   const rThr = draft.review?.internalThreshold ?? 3;
-  return (
-    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Das Herz Ihres Systems — in fünf Schritten: Ihre Marke, Ihr Team, Ihre Verfügbarkeit, Ihre Kommunikation und Ihre Aussenwirkung." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
-      <PainHint items={[
-        { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
-        { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
-      ]} />
+  const isDone = (k: string) => !!draft.stepDone?.[`system_${k}`];
+  const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`system_${k}`]: true } }));
+  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-      <Section n={1} icon="🎨" title="Ihre Marke" lead="Farbe und Fall-Kürzel tragen jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
+    {
+      key: "marke", star: "Marke", icon: "🎨", title: "Ihre Marke",
+      touched: !!(draft.branding?.brandColor || draft.branding?.caseIdPrefix),
+      render: () => (
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Ihre Farbe">
             <div className="flex items-center gap-2">
@@ -839,28 +841,38 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <TextInput maxLength={4} value={draft.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, caseIdPrefix: e.target.value.toUpperCase() } }))} />
           </Field>
         </div>
-      </Section>
-
-      <Section n={2} icon="👥" title="Ihr Team & Rollen" lead="Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.">
-        {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
-        {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
-        <div className="space-y-2">
-          {staff.map((s, i) => (
-            <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-              <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
-              <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`}>
-                <option value="admin">Leitung</option><option value="techniker">Techniker</option>
-              </select>
-              <button type="button" onClick={() => setStaff(staff.filter((_, j) => j !== i))} className="px-2 text-slate-400 hover:text-white">✕</button>
-              <div className="col-span-3"><TextInput type="email" placeholder="E-Mail" value={s.email} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, email: e.target.value } : x))} /></div>
-            </div>
-          ))}
-          <button type="button" onClick={() => setStaff([...staff, { name: "", role: staff.length === 0 ? "admin" : "techniker", email: "" }])} className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-slate-300 hover:border-white/40">+ Mitarbeiter hinzufügen</button>
-        </div>
-      </Section>
-
-      <Section n={3} icon="📅" title="Kalender & Verfügbarkeit" lead="Kalender anbinden → beim Terminsetzen sofort sehen, ob Sie oder ein Mitarbeiter schon belegt sind. So überplanen Sie niemanden — keine Doppelbuchung mehr.">
+      ),
+    },
+    {
+      key: "team", star: "Team", icon: "👥", title: "Ihr Team & Rollen",
+      touched: staff.length > 0,
+      render: () => (
+        <>
+          <p className="text-xs text-slate-400">Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.</p>
+          {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
+          {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
+          <div className="space-y-2">
+            {staff.map((s, i) => (
+              <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
+                <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`}>
+                  <option value="admin">Leitung</option><option value="techniker">Techniker</option>
+                </select>
+                <button type="button" onClick={() => setStaff(staff.filter((_, j) => j !== i))} className="px-2 text-slate-400 hover:text-white">✕</button>
+                <div className="col-span-3"><TextInput type="email" placeholder="E-Mail" value={s.email} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, email: e.target.value } : x))} /></div>
+              </div>
+            ))}
+            <button type="button" onClick={() => setStaff([...staff, { name: "", role: staff.length === 0 ? "admin" : "techniker", email: "" }])} className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-slate-300 hover:border-white/40">+ Mitarbeiter hinzufügen</button>
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "kalender", star: "Kalender", icon: "📅", title: "Kalender & Verfügbarkeit",
+      touched: draft.calendar?.connect !== undefined,
+      render: () => (
         <div className="space-y-3">
+          <p className="text-xs text-slate-400">Kalender anbinden → beim Terminsetzen sofort sehen, ob jemand schon belegt ist. So überplanen Sie niemanden.</p>
           <Field label="Kalender anbinden?">
             <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
               onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
@@ -882,7 +894,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
                 <TextInput type="email" placeholder="admin@ihre-firma.ch" value={draft.calendar?.adminEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, adminEmail: e.target.value } }))} />
               </Field>
               <Disclosure summary="Wie läuft die Verbindung ab? (1 Klick — nichts heraussuchen)">
-                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Schritt 2) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
+                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Team-Stern) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
               </Disclosure>
             </>
           ) : null}
@@ -897,66 +909,111 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             </>
           ) : null}
         </div>
-      </Section>
-
-      <Section n={4} icon="📨" title="Benachrichtigungen & E-Mail" lead="Wohin Ihr System neue Fälle meldet — und welche Nachrichten automatisch an Sie und Ihre Kunden gehen.">
-        <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
-          <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
-        </Field>
-        <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
-          <div className="mt-3 space-y-3.5">
-            <div>
-              <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
-              <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
-              <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+      ),
+    },
+    {
+      key: "nachrichten", star: "Benachrichtigungen", icon: "📨", title: "Benachrichtigungen & E-Mail",
+      touched: !!draft.review?.notificationEmail,
+      render: () => (
+        <>
+          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
+            <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
+          </Field>
+          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
+          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+            <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
+            <div className="mt-3 space-y-3.5">
+              <div>
+                <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
+                <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
+                <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
+                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
+                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
-              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
-              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
-            </div>
+            <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
-        </div>
-      </Section>
+        </>
+      ),
+    },
+    {
+      key: "bewertungen", star: "Bewertungen", icon: "⭐", title: "Bewertungen — Ihre Aussenwirkung",
+      touched: !!draft.review?.googleReviewUrl,
+      render: () => (
+        <>
+          <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
+            <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
+          </Field>
+          <Disclosure summary="Wo finde ich meinen Bewertungslink?">
+            Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
+          </Disclosure>
+          <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne. Kennen Sie nicht? Der Link/Firmenname oben genügt fürs Erste.">
+            <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
+          </Field>
+          <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
+            <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
+              options={[
+                { value: "2", label: "Nur ≤ 2 Sterne intern" },
+                { value: "3", label: "≤ 3 Sterne intern", hint: "unsere Empfehlung" },
+                { value: "4", label: "≤ 4 Sterne intern", hint: "nur 5★ gehen öffentlich" },
+                { value: "0", label: "Alle öffentlich", hint: "jede Bewertung geht direkt zu Google" },
+              ]} />
+          </Field>
+          <Disclosure summary="Was erlebt mein Kunde — und wann landet es auf Google?">
+            {rThr === 0
+              ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
+              : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
+          </Disclosure>
+          <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
+            <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
+          </Field>
+        </>
+      ),
+    },
+  ];
 
-      <Section n={5} icon="⭐" title="Bewertungen — Ihre Aussenwirkung" lead="Aus zufriedenen Kunden werden mit einem Klick öffentliche 5-Sterne-Bewertungen — das stärkste Signal für neue Aufträge.">
-        <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
-          <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
-        </Field>
-        <Disclosure summary="Wo finde ich meinen Bewertungslink?">
-          Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
-        </Disclosure>
-        <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne. Kennen Sie nicht? Der Link/Firmenname oben genügt fürs Erste.">
-          <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
-        </Field>
-        <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
-          <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
-            options={[
-              { value: "2", label: "Nur ≤ 2 Sterne intern" },
-              { value: "3", label: "≤ 3 Sterne intern", hint: "unsere Empfehlung" },
-              { value: "4", label: "≤ 4 Sterne intern", hint: "nur 5★ gehen öffentlich" },
-              { value: "0", label: "Alle öffentlich", hint: "jede Bewertung geht direkt zu Google" },
-            ]} />
-        </Field>
-        <Disclosure summary="Was erlebt mein Kunde — und wann landet es auf Google?">
-          {rThr === 0
-            ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
-            : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
-        </Disclosure>
-        <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
-          <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
-        </Field>
-      </Section>
+  if (star) {
+    const cat = CATS.find((c) => c.key === star);
+    if (cat) {
+      return (
+        <div className="mx-auto max-w-[680px]">
+          <button type="button" onClick={() => setStar(null)} className="text-sm text-slate-400 hover:text-white">← zurück zum Leitsystem</button>
+          <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <div className="mt-5 space-y-4">{cat.render()}</div>
+          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-6 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
+          </button>
+        </div>
+      );
+    }
+  }
+
+  const doneN = CATS.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === CATS.length;
+  return (
+    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Bauen Sie Stern für Stern Ihr Leitsystem — das Herz Ihres Betriebs." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
+      <PainHint items={[
+        { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
+        { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
+      ]} />
+      <Constellation
+        center={<span style={{ filter: allDone ? "drop-shadow(0 0 18px rgba(212,168,67,0.7))" : undefined }}><BrandIcon size={96} /></span>}
+        centerLabel="Ihr Leitsystem"
+        awakeLabel="startklar"
+        stars={CATS.map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
+        onOpen={setStar}
+      />
+      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
       <NotesField value={draft.notes?.system ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, system: val } }))} />
     </Detail>
   );
