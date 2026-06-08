@@ -167,6 +167,7 @@ async function main() {
   if (smsContent) modules.sms_content = smsContent;
   modules.notify_messages_email = notifyMessagesByEmail;
   modules.calendar_intent = calProvider; // tatsächliche Verbindung = OAuth nach Go-live (setzt calendar_ms_tenant_id)
+  if (str(dr.calendar?.googleAccountEmail).trim()) modules.calendar_google_account = str(dr.calendar.googleAccountEmail).trim(); // K4: Konto, das wir bei Bedarf anbinden
   // Welle 1: Telefonie, Notfall/Notdienst, Feiertage, Agentur, Bewertungen, Nachrichten-Kanäle
   if (drVoice.telco?.provider) modules.telco_provider = drVoice.telco.provider === "other" || drVoice.telco.provider === "yallo" ? (str(drVoice.telco.otherName) || drVoice.telco.provider) : drVoice.telco.provider;
   modules.emergency_service = drVoice.emergencyService === true;
@@ -232,7 +233,8 @@ async function main() {
   console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
   if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
   const calAdmin = [dr.calendar?.adminName, dr.calendar?.adminEmail].filter((x) => str(x).trim()).join(", ");
-  console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
+  const googleAcct = str(dr.calendar?.googleAccountEmail).trim();
+  console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? `Google — WIR richten die Anbindung ein (K4-Bau bei echtem Bedarf${googleAcct ? `; Konto: ${googleAcct}` : ""})` : "nicht angebunden"}.`);
   console.log(`  Danach Session auf "live" setzen.`);
   const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
   if (noteLines.length) {
