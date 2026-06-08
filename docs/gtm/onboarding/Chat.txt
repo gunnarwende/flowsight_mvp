@@ -1,0 +1,641 @@
+Perfekt — dann ziehen wir's so durch: A = warten auf Deploy + dein Klick (gleich Link), Energie auf B (Dienstag-Versand ist terminiert). Erst kurz prüfen, ob das redesignte Cockpit live ist (für deinen A-Klick), dann B.
+
+  Ran 1 shell command
+
+A ist live: das redesignte Cockpit läuft auf flowsight.ch → dein Klick: https://flowsight.ch/aufbau/69fd342e132c0e16abad00ec (neue System-Karte, wann immer du Zeit hast).
+
+Jetzt B. Bevor ich lospresche, erde ich mich kurz am echten Stand der Outreach-/Montags-Pakets (war heute nicht mein Fokus) — die Resume-Anker + Dörfler-Outreach-Zustand.
+
+  Ran 1 shell command
+
+A erledigt (live). Für B habe ich den Stand: das Tuesday-kritische Stück ist der Montags-Re-Run (Dörfler+Walter, frische Daten) — der ist founder-gated (Takes-Abnahme + Dev-Umgebung) und für Montag geplant. Das treiben wir Montag gemeinsam.
+
+Was ich jetzt autonom + wertvoll für den Dienstag-Versand tun kann: die Inhaber-E-Mail-Anreicherung — die Mail soll an den Inhaber gehen, nicht an info@doerflerag.ch. Ich recherchiere den echten Kontakt (Impressum/Web).
+
+● Fetch(https://www.doerflerag.ch/kontakt)
+Received 0 bytes (404 Not Found)
+
+● Fetch(https://www.doerflerag.ch)
+Received 39.7KB (200 OK)
+
+Ehrliches Rechercheergebnis: Dörflers Website zeigt nur info@doerflerag.ch — keine persönliche Inhaber-Mail öffentlich (Inhaber = Ramon + Luzian Dörfler, aus dem Zefix/Config bekannt). Für kalte Prospects greift später systematisch Impressum/Zefix/LinkedIn; bei Dörfler (warm, du warst Kunde) bist du die beste Quelle.
+
+Ehrlicher B-Status — und der schlanke Plan
+
+Das Tuesday-kritische Stück = der Re-Run (Dörfler+Walter, frische Daten). Der ist founder-gated (du nimmst die Takes ab) + braucht die Dev-Umgebung (die heute Turbopack-zickig war) — und du hattest ihn bewusst für Montag geplant. Den autonom Sonntagabend durchzuziehen wäre nicht seriös (Takes brauchen dein Auge, Env instabil). Das machen wir Montag zusammen — ich bereite es so vor, dass es ~20 Min statt ein Nachmittag wird.
+
+Was autonom sinnvoll war (owner-mail), habe ich geprüft — Ergebnis oben. Mehr autonom Wertvolles gibt es bei B gerade nicht, ohne ins Spekulative (Outreach-Copy-Step ohne deine Archetyp-Logik) oder ins Founder-Gated (Re-Run) zu gehen. Ich manufakturiere keine Beschäftigung.
+
+Zwei kurze Entscheidungen von dir
+
+1. Dörfler-Versand-Adresse Di: Hast du eine direkte Mail für Ramon/Luzian — oder an info@, persönlich an „Herr Dörfler" adressiert (die Mail ist eh persönlich: „erinnern Sie sich an die Dichtung")?
+2. Montag-Re-Run: Passt Montag für den gemeinsamen Re-Run (Dörfler+Walter → Takes-Abnahme → Beweis-Seiten frisch → Di Versand)?
+
+A bleibt parallel: dein Cockpit-Live-Klick wartet (https://flowsight.ch/aufbau/69fd342e132c0e16abad00ec) — sag mir, was dir auffällt, dann iteriere ich.
+
+Sag mir 1 + 2 — und ob ich für heute etwas Konkretes (z. B. Re-Run-Vorbereitung/Check) noch anstossen soll, sonst ist das ein sehr guter Tagesabschluss.
+
+✻ Brewed for 4m 31s
+
+※ recap: Ziel war das Onboarding-Cockpit: gebaut, redesignt (System-Karte, dein Icon, catchy), live auf flowsight.ch und alles auf main konsolidiert. Nächster Schritt: deine zwei Antworten – Dörfler-Versandadresse (direkt oder info@) und ob Montag der gemeinsame Re-Run passt. (disable recaps in /config)
+
+❯ deine McKinsey Meinung war, dass wir zunächst nur eine Mail versenden und zwar nur Dörfler. nicht gleich 2 oder 3 oder 4 Betriebe gleichzeitig anschreiben. Daher Montag nur Dörfler AG durch die pipeline jagen. Und DI dann der Versand. Daher nochmal konzentration auf Co Pilot bzw unser onboarding cockpit. Hier würde ich dich nochmal bitten: A) übergeordnet gesehen: sieht das alles high end stark aus? B) haben wir inhaltlich wirklich alle relevanten sanitär Themen drin, die für ihn (egal ob 1 Mann unternehmen, 5 Mann Unternehmen oder 30 Mann Unternehmen) eine Rolle spielen?
+
+Gute Entscheidung — eine Mail, nur Dörfler, Mo durch die Pipeline, Di Versand. Walter wartet. Jetzt voll auf den Co-Piloten — und du kriegst meine ehrliche Profi-Meinung, keine Schönfärberei.
+
+A) Sieht es übergeordnet high-end-stark aus?
+
+Ja, solide-premium — aber ~80 % zu „world-class", nicht 100 %. Was trägt: die System-Metapher (3 → Hub → Output), das gold-leuchtende Icon als Held, der Trichter, der Spotlight, Markenkontinuität zur Beweis-Seite. Was es zu wirklich high-end hebt (4 Hebel, ehrlich):
+1. Die 3 Strang-Karten sind noch brav/uniform — gleiche graue Box × 3. High-end würde jeder Karte einen Hauch Eigenständigkeit geben (feineres Icon, dezente Tiefe/Verlauf, je eine Nutzen-Zeile statt nur Label).
+2. Typografie/Hierarchie — Headline + Section-Labels dürfen markanter sein (klarere Größenstaffelung, etwas mehr Charakter).
+3. Mikro-Motion (Hover, Übergänge, das Icon-Leuchten als sanfter Puls) — sehe ich im Standbild nicht; das ist dein Live-Klick-Urteil.
+4. Detail-Views (v. a. Lisa) sind textdicht — die Dispositions-Karten könnten scanbarer/visueller sein.
+→ Verdikt: stark genug, dass es nicht billig wirkt. Die letzten 20 % sind Karten-Handwerk + Motion + Typo — am besten nach deinem Live-Klick gezielt.
+
+B) Haben wir inhaltlich ALLE relevanten Sanitär-Themen — für 1/5/30 MA?
+
+Ehrliche Lücken-Analyse. Drin + gut: Lisa-Begrüssung/KI-Hinweis · „Das sagt Ihre Lisa" (Öffnungszeiten, Region, Leistungen, Notfall-Regel, Preis-Deflekt) · 6 Dispositionen mit Info-Weg · Pickup · Team/Rollen · Benachrichtigung · Bewertung · AVV.
+
+Echte Lücken (priorisiert, mit Größen-Bezug):
+
+┌─────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┬───────────────┐
+│  #  │                                                            Thema                                                            │                             Warum kritisch                             │     Größe     │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 1   │ Notfall-Empfänger + Pikett — „Wer wird bei einem Notfall sofort erreicht?" (Name/Nummer; bei Teams: Pikett-Rotation)        │ DAS Sanitär-Thema (Notdienst). Aktuell nur generisch „Inhaber".        │ alle, v.a.    │
+│     │                                                                                                                             │                                                                        │ 5–30          │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 2   │ Betriebsferien / Feiertage / Sonderzeiten                                                                                   │ Lisa darf nicht „kommen Sie morgen" sagen, wenn 2 Wochen Ferien. Fehlt │ alle          │
+│     │                                                                                                                             │  komplett.                                                             │               │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 3   │ Größen-Adaptivität — bei 1-MA Team/Rollen/Dispatch ausblenden (er ist allein → „Techniker" = Lärm); bei 30-MA mehr (Pikett, │ Cockpit fühlt sich „richtig dimensioniert" an statt one-size           │ 1 vs 30       │
+│     │  Dispatch, Kalender)                                                                                                        │                                                                        │               │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 4   │ Sprachen — welche Sprachen Lisa annimmt (DE + EN/FR/IT)                                                                     │ im Datenmodell, aber nicht im UI bestätigbar. Region/Internationale    │ alle          │
+│     │                                                                                                                             │ Kunden.                                                                │               │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 5   │ Notfall-Definition schärfen (Rohrbruch = ja, tropfender Hahn = nein)                                                        │ korrekte Triage durch Lisa                                             │ alle          │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 6   │ Terminvergabe-Erwartung klarstellen („Lisa nimmt auf, bucht keine Termine")                                                 │ sonst Falscherwartung                                                  │ alle          │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 7   │ Kalender/Outlook (Free-Busy) erwähnen                                                                                       │ für Team-Betriebe relevant                                             │ 5–30          │
+├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 8   │ Foto-Upload im Wizard als Wert sichtbar machen                                                                              │ Verkaufsargument + Erwartung                                           │ alle          │
+└─────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┴───────────────┘
+
+Meine Empfehlung (nicht aufblähen!): die Top 4 schliessen — Notfall-Empfänger/Pikett · Betriebsferien · Größen-Adaptivität · Sprachen. Die sind sanitär-essenziell und entscheiden, ob Lisa für einen ECHTEN Betrieb über alle Größen richtig funktioniert. #5–#8 sind Erwartungs-/Polish-Themen (später oder als kleine Hinweistexte).
+
+Frage an dich: Soll ich die Top 4 ins Cockpit bauen (das ist der inhaltliche Sprung zu „komplett für Sanitär")? Und beim Look: warte ich auf deinen Live-Klick für die Motion/Karten-Politur, oder soll ich die Karten-Politur (Hebel 1+2) schon blind angehen?
+
+✻ Crunched for 2m 17s
+
+❯ unbedingt die 4 Optikthemen umsetzen. Sie sind wichtig, denn sie treffen auch aktuell mein Empfinden.
+
+  Zu den inhaltlichen Lücken:
+  1. Notfallempfänger: das macht aber nur dort Sinn, die auch Notfall anbieten. Hier müssen wir wirklich die Brille eines Sanitärs aufziehen (sollten wir einen Hinweis machen) Denn wenn Dörfler AG z.B. Sagt: "Ramon Dörfler und Tel. Nr. ist die 012345678" was bedeutet das? Dass Automatisch durchgestellt wird? Dass Lisa diese Nummer narufen wird? weisst du was ich meine? Und diese Frage sollten wir uns aus Sicht Sani Betrieb immer auch bei den bestehenden Punkten  stellen: Ist es klar, einfach und deutlich genug formuliert?
+  2. wichtiger kritischer Punkt. An Schweizer Feiertagen muss ja als Standard immer kommen: aktuell haben wir zu. Nur bei Notfallbetrieben die Notfölle anbieten, da kann Lisa dann anders reagieren. Aber Fall aufnehmen macht ja immer Sinn oder? bitte diesen Punkt genau durchleuchten auch hinsichtlich des Scriptings von Voice Agent
+  3. absolt
+  4. sehe ich aktuell als unkritisch. kann aussen vor gelassen werden, weil wir damit erstmal fahren und Erfahrungen sammeln möchten.
+  5. ja das ist noch ein guter Punkt. genau solche Themen kann der Betrieb doch ganz genau uns sagen. Beim ganzen Onboarding gehts ja darum, dass er merkt, wir wollen sein Business verstehen und ihn super entlasten. Für das müssen wir sein Alltag verstehen und das muss er uns hier beim Onboarding mitteilen. Nicht nur Notfall Definiition - es gibt sicher auch noch andere super relevante Alltagsthemen, die im Betrieb vorliegen und wo wir entlasten können. Wir müssen es aber ihm zeigen, dass wir es machen könnten. Ohne einen Hinweis bzw. ohne dass wir ihm die Themen nicht vorlegen, wird er nicht drauf kommen
+  6. ja, als hinweis einspielen.
+  7. auch gut.
+  -> was mir hier noch einfällt wenn du dir das Thema Kalender anschaust: haben wir hier alles was wir brauchen für ein super onboarding? Ich brauche ja die technischen Verbindungen wie Outlook/Google. Brauche ich da nicht irgendeinen Key oder sowas? Das ist super wichtig pro Betrieb, dass wir das Thema E-Mail und Kalender super verstanden haben und wir vom Betrieb alle Infos bekommen. Gleiches gilt natürlich auch für das Thema Bewertungen! aktuell ist das alles einfach gefühlt zu wenig, was beim Onboaring drin ist. aber wenn du sagst, damit decken wir wirklich 100% alles ab, ok.
+  8. ja absolut.
+
+  dann zusätzliche Themen: Voice Agent: ich sehe noch keinen Eintragspunkt, wo er seinen Telefonabieter eintragen muss? Das ist doch mehr als relevant, wenn wir Voice anschliessen. Gleiches gilt website und Wizzard: wenn er bspw. ankreuzt: Website liegt bei agentur und ich soll mich mit der agentur auseinandersetzen: dann muss ich doch wissen welche agentur! also irgendiwe ist das strang für strang gefühlt inhaltlich und auch optisch noch nicht super sauber zu ende gedacht.
+
+  wenn du jetzt nochmal in die Analyse gehst: dieses mal noch breiter und noch tiefer (optisch und inhaltlich): gibts weitere Punkte?
+  und übergeordnet: Onboarding: Lerneffekt und training: ist das aktuell spielerisch und verständlich? Mir gehts darum, dass der Betrieb dann auch etwas lernt! und er soll natürlich später immer wissen müssen, was er wo wie eingestellt hat. PDF Export Button sinnvoll? oder kommt das von mir?
+
+  Sorry für mein intensives Feedback. Aber das Thema ist mir einfach super wichtig. Ich verlage von dir den gleichen Einsatz
+
+Kein Sorry nötig — das ist genau die Tiefe, die dieses Thema verdient, und ich gehe mit gleichem Einsatz rein. Optik-Top-4: gebaut wird's. Und ehrlich vorab zu deiner 100%-Frage: Nein, wir decken aktuell nicht 100 % ab. Dein Feedback legt den eigentlichen Kern frei — und der ändert das Zielbild des Cockpits.
+
+Das Leitprinzip, das dein Feedback kristallisiert
+
+Das Cockpit ist heute ein Konfigurations-Formular. Es muss werden: „Wir verstehen Ihren Alltag und nehmen ihn Ihnen ab." Daraus folgen 4 Test-Fragen, die ich ab jetzt an JEDES Feld stelle:
+1. Klar? Versteht der Sani in einem Satz, was dieser Eintrag bewirkt (nicht was er ist)?
+2. Entlasten wir sichtbar? Zeigen wir ihm proaktiv, welchen Alltagsschmerz wir abnehmen (er kommt nicht selbst drauf)?
+3. Haben wir alles? Sammeln wir jede technische Info, die wir pro Betrieb brauchen (Anbieter, Keys, Kontakte)?
+4. Lernt er? Geht er raus und weiss, was wo eingestellt ist?
+
+Aktuell: #1 teils, #2 schwach, #3 lückenhaft, #4 kaum. Das ist die Lücke.
+
+1 · Strang-für-Strang — Klarheit + fehlende Einträge
+
+📞 Lisa/Voice:
+- Notfall-Empfänger — du triffst den Punkt: „Ramon, 0123" ist mehrdeutig. Wir müssen es glasklar sagen: „Lisa stellt NICHT durch (kein Live-Transfer). Sie nimmt den Notfall auf und alarmiert sofort [Empfänger] per [SMS/Push], damit er zurückruft." + nur zeigen, wenn Betrieb Notdienst anbietet (Conditional). Empfänger als Feld (Name + Nummer/Kanal), bei Team optional Pikett.
+- FEHLT komplett — Telefonanbieter: ohne den geht Voice nicht (Weiterleitung ist anbieter-spezifisch: Swisscom/Sunrise/Salt/Quickline haben andere Codes). Pflichtfeld: Anbieter + bestehende Nummer (behalten). Daraus generieren wir die exakte Weiterleitungs-Anleitung.
+- Terminvergabe-Erwartung (Hinweis): „Lisa nimmt auf, bucht keine Termine."
+
+🌐 Website/Wizard:
+- FEHLT — Agentur-Kontakt: wenn „liegt bei Agentur" → welche Agentur (Name + E-Mail)? Sonst können wir die fertige Einbau-Mail nicht schicken. Aktuell Sackgasse.
+- Foto-Upload sichtbar machen (Kundenwert).
+- Jede Verteil-Option in einem Satz erklären (was passiert konkret).
+
+◆ Leitsystem-Knoten: Team/Rollen größen-adaptiv (1-MA: kein Team-Geklicke; 30-MA: Pikett/Dispatch). Benachrichtigung: klar sagen wer was wann bekommt.
+
+2 · Feiertage & Geschlossen — kritisch, inkl. Voice-Scripting
+
+Du hast völlig recht, und es ist tiefer als ein Cockpit-Feld — es ist Voice-Agent-Logik:
+- Standard an CH-Feiertagen/ausserhalb Öffnungszeiten: Lisa sagt „wir haben heute geschlossen" — aber nimmt den Fall TROTZDEM auf (nichts geht verloren!) und setzt die Erwartung: „wir melden uns am nächsten Werktag."
+- Notdienst-Betriebe: andere Reaktion („unser Pikett ist erreichbar, ich nehme auf + alarmiere sofort").
+- Ehrliche Lücke: der Live-Voice-Agent kennt heute weder das aktuelle Datum noch die CH-Feiertage (der Werktag-Gate existiert nur in der Demo-Pipeline demo_time, nicht im Live-Prompt). Das müssen wir ins Voice-Scripting bringen (Datum/Feiertag → Wording-Verzweigung), sonst sagt Lisa am 1. August „kommen Sie morgen". Das ist ein echter Bau am Voice-Agent, nicht nur Cockpit. Cockpit erfasst die Policy (Ferien-Zeitraum, Notdienst ja/nein), der Agent setzt sie um.
+
+3 · „Zeigen, dass wir entlasten" — Alltagsthemen vorlegen (dein stärkster Punkt)
+
+Er kommt nicht selbst drauf — wir müssen die Schmerzen vorlegen und je sagen „das nimmt Ihnen Lisa/FlowSight ab". Kandidaten (Sani-Alltag):
+- „Ich bin auf der Baustelle, kann nicht ans Telefon" → Lisa fängt jeden Anruf.
+- Zettelwirtschaft/Vergessen → jeder Fall sauber erfasst.
+- Lieferant/Werbung klaut Zeit → Lisa filtert (Nachrichten-Korb).
+- Verpasster Notruf = verlorener Auftrag → Notfall-Sofortalarm.
+- 5★-Bewertungen „kommen wir nie dazu" → automatischer Bewertungs-Flow.
+- Wiederkehrende Wartung (Heizungsservice jährlich) → Erinnerung (neu, prüfenswert).
+- Terminerinnerung an Kunden (24h) → weniger No-Shows.
+→ Als kleine, optionale „Kennen Sie das?"-Karten je Strang, die Aha + Vertrauen schaffen. Das ist der emotionale Hebel des ganzen Onboardings.
+
+4 · Integrationen & Keys — die ehrliche technische Wahrheit
+
+Du fragst zurecht. Ehrlich pro Thema:
+- Kalender (Outlook/Google): NICHT self-service-tauglich. Outlook = Azure-App + Admin-Consent des Betriebs + Exchange-Postfach pro Mitarbeiter (client_credentials, Runbook existiert). Das kann ein Sani nicht im Cockpit selbst klicken. Empfehlung: Cockpit fragt nur „Kalender anbinden? (Outlook/Google)" + sammelt welcher Anbieter / welche Postfächer → der eigentliche Consent läuft als geführter Folge-Schritt (du/wir), nicht self-serve. Für Dörfler (3 Personen): vermutlich erstmal weglassen, später aktivieren.
+- Bewertungen (Google): wir sammeln den Link (+ „wo finde ich den?"-Helfer). Für den wöchentlichen Crawl brauchen wir die Place-ID / den Google-Profilnamen — den sollten wir zusätzlich erfassen (sonst kein Auto-Rating). Kleiner Zusatz, dann ist's rund.
+- E-Mail: Versand ist unser (Resend). Wir brauchen nur die echte Ops-E-Mail (erfassen wir). Hier sind wir ok.
+- Telefonanbieter: siehe §1 — der fehlt und ist Pflicht.
+
+→ Ehrlich: die Integrations-Dimension ist die größte inhaltliche Lücke. „Gefühlt zu wenig drin" stimmt — hier ist der Grund.
+
+5 · Größen-Adaptivität (1 / 5 / 30)
+
+- 1-MA: Team/Rollen/Dispatch/Pikett ausblenden — er ist alles. Notfall → ihn. Minimal.
+- 5-MA: Rollen (Leitung/Techniker), Notfall-Empfänger, einfacher Dispatch.
+- 30-MA: Pikett-Rotation, Dispatch nach Sparte/Region, mehrere Admins, Kalender.
+→ Das Cockpit soll sich richtig dimensioniert anfühlen, nicht one-size.
+
+6 · Weitere Punkte, die mir auffallen (breiter/tiefer)
+
+- PWA-/Handy-Nutzung danach: „So nutzen Sie Ihr Leitsystem unterwegs" — App aufs Handy (Techniker auf Baustelle). Fehlt als Go-live-Schritt.
+- Demo-Fälle verschwinden / erster echter Fall (G6): dem Betrieb sagen, dass die Testfälle raussind und der erste echte Anruf der erste Fall ist.
+- Erwartung/SLA: „Lisa geht nach X Sek ran, Sie sehen den Fall sofort" — Erwartung setzen.
+- Abwesenheit/Ferien des Inhabers (1-MA): wer übernimmt? (oder: Lisa nimmt auf, niemand stört).
+- Mehrere Nummern/Linien (manche Betriebe).
+
+7 · Meta: Lernen, Spielerisch, „weiß ich später was eingestellt ist?"
+
+- Spielerisch/Lernen — ehrlich: aktuell geführt + klar, aber nicht wirklich spielerisch/lehrend. Hebel: das Fähigkeits-Freischalten stärker zelebrieren (✓-Momente), die Beweis-Loops (Lisa anrufen, Formular ansehen) = Lernen durch Erleben, je Strang ein 1-Satz-„So funktioniert's", und die „Kennen Sie das?"-Karten (§3) = er lernt, was möglich ist.
+- Später wissen, was eingestellt ist: das Cockpit/die Leitsystem-Settings müssen dauerhaft wieder aufrufbar sein (nicht nur Onboarding-Einmal). Heute: nur der Token-Link. → Im Leitsystem ein „Meine Einstellungen"-Bereich (= dieselben Stränge, jederzeit änderbar).
+- PDF-Export — sehr gute Idee, nicht nur von dir: „Ihr FlowSight-Setup" als PDF am Ende = Beleg + Eigentum + Professionalität + er weiss schwarz auf weiss, was Lisa sagt/tut. Empfehle ich klar.
+
+8 · Ehrliches Verdikt + Vorschlag
+
+Wir sind bei ~60 % eines „wir-verstehen-Ihr-Business"-Onboardings. Das Gerüst + die Optik stehen; es fehlen Telefonanbieter, Agentur-Kontakt, Feiertags-Logik (inkl. Voice!), Notfall-Klarheit, Größen-Adaptivität, Integrations-Erfassung (Kalender/Place-ID), Alltags-Entlastungs-Karten, „Settings später" + PDF.
+
+Mein Vorschlag — in 2 Wellen, damit Dörfler nicht blockiert:
+- Welle 1 (vor Dörfler-Live, must-have): Optik-Top-4 · Telefonanbieter · Agentur-Kontakt · Notfall-Klarheit + Conditional · Feiertags-/Geschlossen-Handling im Cockpit + Voice-Prompt · Größen-Adaptivität · Place-ID + Foto-Hinweis · Terminvergabe-Hinweis.
+- Welle 2 (kurz danach): Alltags-Entlastungs-Karten · „Meine Einstellungen"-Bereich + PDF-Export · Kalender-Anbindung (geführt) · PWA-/Daily-Use-Schritt · Wartungs-Erinnerungen.
+
+Frage an dich: Passt die 2-Wellen-Aufteilung — und ist Welle 1 der Scope, den ich jetzt baue? Oder willst du Punkte zwischen den Wellen verschieben? (Ich will den Scope einmal sauber mit dir fixieren, bevor ich loslege — sonst baue ich breit am Ziel vorbei.)
+
+✻ Brewed for 3m 26s
+
+❯ Danke für dein Feedback. Langsam geht es in die richtige Richtung. Noch kurze Hinweise von mir zu deinem Feedback.Beim Thema Benachrichtigungen hätte ich gerne vorausgefüllt, wie es aktuell pro Betrieb aussieht. Wir schreiben 24-Stunden-Reminder. Wir schreiben die Empfangsbenachrichtigung, nachdem ein Fall aufgenommen worden ist, mit dem Link, dass der Kunde noch ein Foto vom Schaden hochladen kann. Und die dritte SMS ist dann die Bewertungsanfrage und die fehlen mir auch komplett. Da steht nichts vorausgefüllt da. Das heißt, denk doch mal nach. Ich sehe das jetzt gerade richtig kritisch von dir. Beim Onboarding, stell dir doch mal vor, er sitzt vor seinem Monitor und muss das dann anklicken. Er sieht doch gar nicht, dann muss er sich nochmal das eine Video angucken von mir, da hinspulen, um zu sehen, welche Nachricht denn aktuell da ist. Ich brauche das vorausgefüllt. Und wenn er dann eine Anpassung vornehmen möchte, dann bitte unter 160 Zeichen, einfach darunterlegen, mit Hinweis oder wie auch immer.Das ist ein Thema Kalender. Ich habe geahnt, dass es ein sehr sensibles und kritisches Thema ist. Und das müssen wir jetzt heute klären, was machbar ist und was nicht. Aus Sicht Sanitärbetrieb, wenn ich jetzt die App habe, hätte ich natürlich immer gerne ein FSOT und das wäre künftig die App. Dort werden gehen die Anliegen rein, werden Aufträge erfasst und von hier aus kann ich steuern. Und natürlich wäre es auch cool, hätte ich hier von hier aus dann direkt Anschluss zum Kalender. Es würde, und dann gehe ich noch mit, reichen, wenn, und das wird jeder Sanitärbetrieb ja sagen, bitte meinen Kalender anschliessen, damit man wenigstens sieht, hey, wenn ich da jetzt einen Termin buche, bin ich da busy oder ist der Kollege da busy oder ist der Techniker da busy oder nicht? Weisst du, wie ich meine? Das, die Verknüpfung muss auf jeden Fall da sein. Sonst kann ich, sonst stelle ich Termine ein und überplane meinen Techniker. Das ist ein No-Go. Das muss richtig gut, sauber, klar und deutlich beim Thema Onboarding mit drauf sein, was wir brauchen, wie wir es brauchen, wer was wo wie einstellt. Sehr, sehr, sehr sensibles und wichtiges Thema. Erstmal weglassen ist hier keine Option.hier auch beim Thema Kalender Hinweise geben, so wie du es gerade bei Bewertung angesprochen hast, mit dem Thema Plus, wo finde ich den oder wo finde ich was Helfer, abhängig davon, ob man zum Beispiel Google nutzt oder Outlook oder ein anderes Tool. Da wirklich viel Zeit und Energie rein investieren, dass wir den ganzen Strang super sauber High-End aufsetzen können.Und nochmal zu den Bewertungen zurück. Aktuell ist es doch so eingestellt, dass wir die Bewertungen von drei Sterne oder weniger nicht auf Google landen, sondern intern, oder? Das ist doch auch wieder so eine Einstellung in dem Strang. Das können wir dann individuell ihm doch mitgeben. Wir können doch sagen, Hey, willst du drei Sterne belassen oder zwei Sterne oder vier Sterne? Das ist intern oder alle Sterne. Und ist es auch wirklich so? Bitte prüft das ganz, ganz genau, dass wir hier die Bewertungen wirklich dann intern landen und nicht auf Google. Wann landen die denn auf Google? Was muss der End-User eingeben, damit es auf Google landet? Er klickt ja auf den Bewertungslink, klickt dann sich durch die Buttons durch und dann. Das ist auch ein Learning-Effekt für den jeweiligen Betrieb. Das sind all die Prozessschritte, wo wir ihn onboarden und wo er ein richtiges Aha-Moment erlebt. So funktioniert es. So kann ich das einstellen. So kann ich die Stellschrauben verdrehen.Die weiteren Punkte, die dir aufgefallen sind, sind klasse. Muss ich dir mal ein Lob aussprechen. Gerne mehr. Wir müssen das Thema wirklich sauber durchleuchten, aufziehen. So langsam geht es in die richtige Richtung. Es sind sehr, sehr, sehr, sehr viele Themen. Ich hoffe, dass keines dieser Themen jetzt untergeht.
+
+Danke — und dein wichtigster Satz ist: „ich hoffe, dass keines dieser Themen untergeht." Genau das löse ich jetzt zuerst: ich verifiziere die Fakten (die 3 SMS-Texte, die Bewertungs-≤3★-Logik, den echten Kalender-Stand) und schreibe danach ALLES in ein strukturiertes Spec-/Backlog-Doc — damit nichts in unserem langen Chat verloren geht. Erst die Verifikation am Code.
+
+  Ran 1 shell command
+
+Verifiziert: Post-Call-SMS = „[Absender]: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen: [Link]". Bewertungs-Schwelle: rating <= 3 = intern/negativ, ≥4★ = Google (hartcodiert). Die anderen 2 SMS (24h-Reminder, Bewertungsanfrage) + die Kalender-Realität prüfe ich jetzt.
+
+  Ran 1 shell command
+
+Verifiziert — und es gibt zwei ehrliche Überraschungen, die du wissen musst:
+
+1. Deine „3 SMS" sind real 1 SMS + 2 E-Mails. Im Code: nur die Empfangsbestätigung ist SMS („[Absender]: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen: [Link]"). Der 24h-Reminder + die Bewertungsanfrage laufen als E-Mail (bewusst, SMS-Budget-Schutz, Kommunikationsmatrix D84). Das ist genau so ein Aha, das ins Onboarding gehört — und du solltest entscheiden, ob das so bleibt.
+2. Bewertungen: bestätigt — rating ≤ 3 landet intern, ≥4★ → Google. Schwelle ist hartcodiert (nicht pro Betrieb einstellbar) → dein Wunsch (Schwelle wählbar 2/3/4/alle) ist ein Bau. End-User-Flow: Kunde klickt Link → wählt Sterne → ≥4 sieht „Auf Google bewerten" (Redirect auf deinen Google-Link), ≤3 sieht „Was können wir besser machen?" (intern, kein Google). Das als Lern-/Aha-Schritt zu zeigen ist goldrichtig.
+
+Kalender — die kritische Wahrheit (heute geklärt):
+- Nur Outlook ist implementiert. Google-Kalender: OAuth-App existiert (KAL2), aber kein Code → aktuell nicht nutzbar.
+- Outlook = Application Permissions (kein User-Login): der IT-/Global-Admin des Betriebs gibt einmalig Azure-Consent, braucht Exchange Online + Postfach pro Mitarbeiter + die MS-Tenant-ID. Dann: Free/Busy + Kollisionsprüfung im Terminpicker = genau dein „nicht den Techniker überplanen".
+- Heisst: die Fähigkeit existiert (Outlook). Aber: (a) ein Betrieb ohne M365 kann sie nicht nutzen, (b) Google fehlt im Code, (c) der Consent ist ein geführter IT-Schritt, kein reines Self-Service-Klicken. → Für Dörfler die Schlüsselfrage: Was nutzen die — M365/Outlook, Google Workspace, oder gar keinen Business-Kalender? Davon hängt ab, ob Free/Busy zum Live-Gang überhaupt geht.
+
+Damit NICHTS untergeht: ich schreibe jetzt das Master-Backlog
+
+Ich lege ein strukturiertes Anforderungs-Doc an (docs/gtm/onboarding/cockpit_requirements_backlog.md) — jede Idee aus all unseren Runden, pro Strang, mit verifizierten Fakten, offenen Entscheidungen, Welle 1/2. Das wird unser SSOT, durch das wir uns abarbeiten. Moment:
+
+● Write(docs\gtm\onboarding\cockpit_requirements_backlog.md)
+Wrote 97 lines to docs\gtm\onboarding\cockpit_requirements_backlog.md
+# Onboarding-Cockpit — Master-Anforderungs-Backlog (SSOT)
+
+> **Zweck:** Damit aus dem intensiven Founder-Feedback (07.–08.06.) NICHTS untergeht.
+> Jede Anforderung, pro Strang, mit verifiziertem Code-Stand, offenen Entscheidungen
+> und Wellen-Zuordnung. Lebendes Doc — wir arbeiten es ab. Ergänzt
+> `phase2_cockpit_redesign.md` (das „Wie") + `phase2_cockpit_manifest.md` (das „Was").
+
+## Leitprinzip (4 Test-Fragen an JEDES Feld)
+1. **Klar?** Versteht der Sani in 1 Satz, *was der Eintrag bewirkt* (nicht was er ist)?
+2. **Entlasten sichtbar?** Zeigen wir proaktiv, *welchen Alltagsschmerz wir abnehmen*?
+… +89 lines
+
+✅ Master-Backlog liegt: docs/gtm/onboarding/cockpit_requirements_backlog.md — jede Idee aus all unseren Runden, pro Strang, mit verifiziertem Code-Stand, Wellen-Zuordnung (1/2/parkiert) und offenen Entscheidungen. Nichts geht mehr unter — das ist ab jetzt unser SSOT, durch das wir uns abarbeiten. (Liegt lokal in deinem Hauptordner; committe ich sauber mit dem nächsten Bau-PR.)
+
+Drin verankert u.a.: Telefonanbieter (T1), Agentur-Kontakt (W1), Notfall-Klarheit + Conditional (T2/T3), Feiertags-Logik inkl. Voice-Scripting (K), vorausgefüllte Nachrichten (L3), Bewertungs-Schwelle wählbar + End-User-Flow als Aha (R3/R4), Place-ID (R2), Kalender-Strang sauber (K1–K5), Größen-Adaptivität (L2), „Entlasten zeigen"-Karten, PDF-Export (M3), „Meine Einstellungen" dauerhaft (M2), PWA-Nutzung (G4) — alles erfasst.
+
+Bevor ich Welle 1 baue — 4 Entscheidungen von dir (die den Bau steuern)
+
+1. 🔑 Kalender (kritischster Punkt): Was nutzt Dörfler — M365/Outlook, Google Workspace, oder kein Business-Kalender? Und übergeordnet: bauen wir Google-Kalender im Code (sonst funktioniert Free/Busy nur für Outlook-Betriebe)? (Outlook ist da; Google = nur App, kein Code.)
+2. 📨 Kanäle (F): 24h-Reminder + Bewertungsanfrage als E-Mail belassen (Budget-Schutz) — oder willst du sie als SMS? (Du dachtest „3 SMS"; real sind's 1 SMS + 2 Mails.)
+3. ⭐ Bewertungs-Schwelle: Default „≤3★ intern" bestätigen — und soll der Betrieb die Schwelle selbst wählen dürfen (2/3/4/alle)?
+4. 📦 Welle-1-Scope: Passt die Welle-1-Liste im Doc (Spalte „1") als das, was ich jetzt baue — oder etwas verschieben?
+
+Mein Vorschlag: Sag mir v.a. #1 (Dörflers Kalender) — das ist der einzige echte Blocker für ein vollständiges Free/Busy zum Live-Gang. Bei #2 würde ich E-Mail lassen (Budget), bei #3 Schwelle ≤3 + wählbar machen, bei #4 die Doc-Liste nehmen. Dann baue ich Welle 1 sauber durch.
+
+✻ Baked for 4m 16s
+
+※ recap: Ziel: das Onboarding-Cockpit auf High-End + sanitär-vollständig bringen, Welle 1 als nächsten Bau. Alle Feedback-Themen sind im Backlog-Doc gesichert. Nächster Schritt: du beantwortest die 4 Entscheidungsfragen, vor allem welchen Kalender Dörfler nutzt, dann baue ich Welle 1.
+
+❯ Zu den Entscheidungen, erstens Kalender, ja, das weiss ich noch nicht, die E-Mail ist auch noch gar nicht raus. Ich habe noch gar kein Feedback. Aber durchleuchte doch mal den Schweizer Markt, den handwerklichen Betrieb. Ich würde mal davon ausgehen, dass 80, 90% Microsoft 365 Outlook haben, die anderen 20% vielleicht Google und vielleicht 5% gar keinen Kalender oder 2%. Das kann ich mir aber heute jetzt hier in Stand Schweiz nicht vorstellen. Und daher würde ich mich erstmal nur auf die drei belassen, genau, auf Google, also M365 und keinen Business-Kalender. Und dann ist es natürlich auch so dynamisch, bitte zu gestalten, dass wenn er sagt, hey, erstens, wir wollen Kalender anbinden, und dann kriegt er natürlich einen Hinweis, was hätte das für Folgen, wenn er Kalender anbindet. Weisst du, da ist genau dieses Learning-Effekt. Und klickt er das an, dann kommt die zweite Frage, welche Kalender beziehungsweise von welchem Anbieter, dann klickt er beispielsweise Outlook an und dann kommt dann die darunterliegende Frage. Alles systematisch logisch aufgebaut. Lerneffekte. Und wenn ich was von ihm brauche, dann steht das dann im Onboarding bitte genau drinne, was er sich wo, wie an Informationen entziehen kann und mir dann mitgeben kann. Verstehst du diesen dynamischen Aufbau und diesen dynamischen Lerneffekt?
+
+  24 Stunden Reminder und Bewertungsanfrage. Auch das darf der Betrieb selber entscheiden. Finde ich gut, dass wir jetzt wirklich knallhart alle Stränge mal durchgehen. Das ist super wichtig. Denn stell dir vor, wir gehen live und dann meldet sich der Kunde und sagt, hey, Ich habe gar keinen Reminder bekommen oder noch schlimmer, Döfler AG steht vor einer verschlossenen Tür, geht davon aus, dass der Kunde einen Reminder bekommen hat, bekommt nach Rückfrage stellt sich heraus, dass der Kunde keine SMS bekommen hat, sondern nur eine E-Mail und da guckt er nie drauf. Und das ist das Thema auch Verantwortungsbewusstsein. Verantwortungsbewusstsein, dass wir nicht die Verantwortung dafür tragen, was gerade live ist und wo was vielleicht einzustellen ist, weil wir drücken die Verantwortung auf den jeweiligen Betrieb. Dadurch lernt er und wir geben die Verantwortung ab und können uns dann immer darauf verlassen, dass das richtig ist und nicht das, was vorab eingestellt ist. Ist das dynamisch verständlich und anwendbar.Zum dritten Punkt Bewertungsschwelle. Ja, ich würde es erstmal default so lassen, aber eben dem Betrieb mitteilen, welche Auswirkung das hat, wann wo welche Anfrage genau auf Google landet. Das ist wie ein Lehrbuch, das Onboarding. Das ist wie ein nochmal Nachschlagewerk, wenn ich das nach ein paar Wochen und Monaten vergessen habe. Viertens, Welle eins Scope. Geh du doch bitte nochmal ganz intensiv drüber. Ich denke mal, vielleicht findest du da noch was. Und dann brauchen wir nochmal einen ganzheitlichen, intensiven Überblick, sowohl in die einzelnen Stränge so tief wie möglich rein, dass wir die Verantwortung auf den Betrieb setzen, nicht bei uns, um uns zu entlasten. Dass es für den Betrieb wie ein Lehrbuch ist, für AHA und Lerneffekte sorgt, für ihn Spass macht, spielerisch, Optik, gibt es hier viele, viele Anpassungs- oder Optimierungspotenziale.
+
+Jetzt rastet etwas Großes ein — und ja, ich verstehe den dynamischen Lern-Cascade und das Verantwortungs-Prinzip. Das sind die zwei tragenden Säulen, die ich erst kristallisiere, dann gehe ich nochmal tiefer durch und finde mehr. Ich aktualisiere zuerst das Backlog (Prinzipien + deine Entscheidungen + neue Funde).
+
+● Update(docs\gtm\onboarding\cockpit_requirements_backlog.md)
+Added 44 lines, removed 5 lines
+- **M2 · „Meine Einstellungen" dauerhaft** (Cockpit nach Go-live wieder aufrufbar im Leitsystem). Welle 2.
+- **M3 · PDF-Export „Ihr FlowSight-Setup"** (Beleg + Eigentum + Nachweis). **Founder-bestätigt sinnvoll.** Welle 2.
+
+## Offene Entscheidungen (Founder)
+- **E (Kalender):** Google-Kalender im Code bauen (sonst nur Outlook-Betriebe), oder Outlook-only starten? + **Was nutzt Dörfler?**
+- **F (Kanäle):** 24h-Reminder + Bewertungsanfrage als E-Mail belassen (Budget) oder auf SMS?
+- **R3-Default:** Schwelle-Default ≤3 intern bestätigen.
+- **Scope:** Welle-1-Umfang final fixieren (s. Tabellen, Spalte „1").
+## ═══ VERTIEFUNG 08.06. — die zwei tragenden Säulen ═══
+
+> Diese zwei Prinzipien sind ab jetzt das Rückgrat über ALLEM. Jeder Strang wird daran gebaut.
+
+### Säule 1 · VERANTWORTUNGS-TRANSFER (entlastet UNS, schützt UNS)
+Der Betrieb **konfiguriert + bestätigt aktiv jedes Live-Verhalten** → er *besitzt* es und *weiss*, was scharf ist.
+Folge: Wenn ein Kunde vor verschlossener Tür steht oder „keinen Reminder bekommen" hat, liegt die
+Verantwortung beim Betrieb (er hat's eingestellt + gelernt), **nicht bei uns**. Konsequenz für den Bau:
+**Jedes automatische Verhalten muss im Onboarding sichtbar + aktiv eigen-bestätigt werden — nichts läuft
+still im Hintergrund, das der Betrieb nicht gesehen + verantwortet hat.**
+
+### Säule 2 · DYNAMISCHER LERN-CASCADE (Lehrbuch + Nachschlagewerk)
+Jede nicht-triviale Wahl kaskadiert: **Frage → Konsequenz erklären (Aha) → Verzweigung → exakt sagen,
+WAS wir brauchen + WO er es findet.** Beispiel Kalender: „Anbinden? (was bringt's/was folgt)" → „Welcher
+Anbieter?" → Outlook → „Das brauchen wir von Ihnen, hier finden Sie es: …". Das Onboarding ist ein
+**Lehrbuch** (Aha beim ersten Mal) UND ein **Nachschlagewerk** (Wochen später: „wie war das nochmal?").
+Plus: **spielerisch + Spass + High-End-Optik.**
+
+## Entscheidungen (08.06. gefällt)
+- **E (Kalender):** **Drei Pfade dynamisch** — M365/Outlook · Google · kein Business-Kalender. Markt-Read:
+  ~80–90 % M365, ~20 % Google, ~2–5 % keiner. → **Google im Code bauen** (nicht nur Outlook). Aufbau
+  streng als Lern-Cascade (s. Säule 2). **Dörflers Tool noch offen** (Mail noch nicht raus) → Bau provider-agnostisch.
+- **F (Kanäle):** **Der Betrieb entscheidet selbst** je Nachricht (24h-Reminder + Bewertungsanfrage: SMS oder
+  E-Mail) — bewusst NICHT von uns vorgesetzt (Säule 1: er trägt die Verantwortung, dass es ankommt).
+- **R3 (Bewertungs-Schwelle):** Default ≤3 intern **bleibt**, aber **Wirkung klar erklären** (wann/wo was auf
+  Google landet) + optional einstellbar. Lehrbuch-Moment.
+- **Scope:** Welle 1 = Spalte „1" + die neuen Funde unten.
+
+## NEUE FUNDE (Verantwortungs-Lens: stille Live-Verhalten, die der Betrieb OWNEN muss)
+| # | Stilles Verhalten heute | Im Onboarding sichtbar machen + bestätigen | Welle |
+|---|---|---|---|
+| N1 | Lisa-**No-Gos** (nie Preis/Termin/Diagnose/Garantie zusagen) | „Lisa verspricht nie X" — Vertrauen + er besitzt die Grenze | 1 |
+| N2 | Lisa: **max 7 Fragen, KEINE Aufnahme** | als Trust-/Erwartungs-Punkt zeigen | 1 |
+| N3 | Bewertungsanfrage = **manuell** ausgelöst (Betrieb klickt) + **max 2 / 7-Tage-Cooldown** | erklären, dass + wann sie feuert (er löst aus) | 1 |
+| N4 | **Google-Rating-Auto-Crawl** (wöchentlich Mo) | „Ihr Rating aktualisiert sich automatisch" + braucht Place-ID (R2) | 1 |
+| N5 | **Wochen-Rapport-E-Mail** an Inhaber (Mo) | Empfänger bestätigen + Wert zeigen | 2 |
+| N6 | **Push-Benachrichtigungen** je Ereignis (Notfall/Zuweisung/Bewertung) | wer bekommt was — bestätigen | 1 |
+| N7 | **Fall-Status-Lebenszyklus** (Neu→Geplant→In Arbeit→Erledigt) | zeigen, damit er den Ablauf kennt | 2 |
+| N8 | **Datenhaltung** (keine Aufnahme, Datenminimierung, revDSG) | Trust-Block (auch fürs Recht) | 1/2 |
+| N9 | **SMS-/E-Mail-Versand passiert automatisch** bei jedem Fall | Wortlaut + Kanal eigen-bestätigen (= L3 + F) | 1 |
+
+## Verbleibend offen (klein)
+- Dörflers Kalender-Anbieter (sobald Mail-Feedback da) — Bau läuft provider-agnostisch weiter.
+- Finaler Welle-1-Cut nach diesem Deepening (s. Synthese im Chat).
+
+❯ Setze deine Onboarding MCkinsey Brille auf. ich brauche jetzt einen Senior Professional an meiner Seite
+
+❯ sehr komplexes Thema aber absolut wichtig und Kriegsentscheidend!
+
+❯ Verstze dich in Unsere Lage, und vor allem in die Lage der Sani Betrtiebe
+
+Brille auf. Kein Feature-Dump mehr — ein Senior-Memo: was hier strategisch auf dem Spiel steht, durch die Augen des Sani-Betriebs und durch unsere, und was daraus für den Bau zwingend folgt.
+
+---
+Onboarding-Cockpit — die strategische Wahrheit
+
+Warum das kriegsentscheidend ist
+
+Ein Sanitärbetrieb gibt uns seine Telefonleitung, seine Kundenkontakte und seinen Ruf in die Hand. Das ist der grösste Vertrauenssprung, den ein inhabergeführter Handwerker macht. Das Onboarding ist nicht Konfiguration — es ist der Moment, in dem dieses Vertrauen gewonnen oder verloren wird. Bei 0 zahlenden Kunden + Premium-Preis entscheidet genau dieser eine Durchlauf, ob er denkt „die verstehen mein Geschäft, das gehört jetzt mir" — oder „noch so ein Tech-Tool, das ich nicht kontrolliere". Das Cockpit ist unsere Vertrauens-Maschine. Nichts weniger.
+
+In seinen Schuhen (der Sani — 1, 5 oder 30 MA)
+
+Er ist Handwerker, kein Software-Mensch. Er denkt in Aufträgen, Kunden, seiner Crew, seinem Tag. Er sitzt abends müde vor dem Monitor. Seine tiefen Ängste, in dieser Reihenfolge:
+1. Crew überplanen / Doppelbuchung — wenn er einen Termin setzt und der Techniker ist schon weg = operatives Chaos. (→ darum ist Kalender/Free-Busy für ihn nicht „nice", sondern existenziell.)
+2. Unzuverlässig wirken — Kunde vor verschlossener Tür, verpasster Notruf. (→ Reminder-Kanal, Notfall-Routing.)
+3. Unprofessionell / unpersönlich wirken — ein „Roboter", der seine Kunden vergrault, falsch antwortet, im Ferien-August „kommen Sie morgen" sagt. (→ Lisa-Wording, No-Gos, Feiertage.)
+4. Kontrollverlust / Schuld — Tech, die er nicht versteht, etwas läuft scharf, das er nie wollte, und er wird dafür verantwortlich gemacht.
+
+Was er fühlen muss, sonst kauft/bleibt er nicht: „Die verstehen meinen Alltag. Ich entscheide alles, nichts passiert hinter meinem Rücken. Das nimmt mir echt Arbeit ab. Und ich hab's selbst gebaut — ich verstehe es."
+
+In unseren Schuhen
+
+- Erster Eindruck = existenziell (0 Kunden, Premium-Preis muss sich beweisen).
+- Verantwortungs-Transfer ist unser Schutzschild — operativ UND rechtlich. Wenn ER es einstellt + versteht, tragen WIR nicht die Schuld für eine verpasste SMS. Das ist kein Bürokraten-Trick: Kontrolle beim Betrieb = Vertrauen + Haftungs-Klarheit + er lernt. Drei Fliegen, eine Klappe.
+- Self-Service = Skalierung — aber die ersten 3–5 founder-assistiert (lernen + schärfen).
+- Die Onboarding-Daten = unser Replikations-Schatz.
+- Die Kern-Spannung: Tiefe (sein ganzes Business abdecken) vs. Einfachheit (er bricht ein 2-Stunden-Formular ab). Die Kunst = rücksichtslose Defaults + progressive Tiefe + Verantwortungs-Bestätigungen, die GLEICHZEITIG das Lehrbuch sind.
+
+Der strategische Kern (was das Cockpit WIRKLICH ist)
+
+Nicht „Formular", sondern eine Vertrauens-Maschine, die über drei Hebel läuft:
+1. KONTROLLE → „nichts ist live, bis Sie es freigeben; Sie entscheiden jeden Kanal, jedes Wort." (= Säule 1, Verantwortungs-Transfer)
+2. VERSTÄNDNIS → jede Wahl kaskadiert: Frage → was bewirkt das (Aha) → Verzweigung → was brauche ich von Ihnen + wo finden Sie's. (= Säule 2, Lern-Cascade; Lehrbuch + Nachschlagewerk)
+3. ENTLASTUNG sichtbar → wir legen ihm seine Alltagsschmerzen vor und sagen je „das nimmt Lisa Ihnen ab" — er kommt nicht selbst drauf, wir müssen es zeigen.
+
+Die 4 Risiken, die den Krieg verlieren (priorisiert)
+
+┌─────┬──────────────────────────────────────────────────────────────────────┬────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────┐
+│  #  │                                Risiko                                │            Schmerz für IHN             │                                      Unser Schutz                                      │
+├─────┼──────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+│ 1   │ Kalender/Free-Busy fehlt oder unklar                                 │ überplant seine Crew → Chaos, Image    │ Kalender-Strang sauber (Outlook+Google), Free-Busy zwingend, glasklar wer was anbindet │
+├─────┼──────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+│ 2   │ Reminder/Nachricht im falschen Kanal                                 │ Kunde vor verschlossener Tür           │ ER wählt Kanal + sieht den Wortlaut → besitzt es                                       │
+├─────┼──────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+│ 3   │ Lisa sagt etwas Falsches (Preis-Zusage, Ferien, „bewerben Sie sich") │ blamiert vor Kunde, Reputationsschaden │ No-Gos + Feiertags-Logik im Voice-Prompt sichtbar + bestätigt                          │
+├─────┼──────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────┤
+│ 4   │ Zu komplex → er bricht ab                                            │ kein Onboarding, kein Kunde            │ progressive Disclosure, Defaults, spielerisch, „in einer Stunde"                       │
+└─────┴──────────────────────────────────────────────────────────────────────┴────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────┘
+
+Mein Senior-POV (Konvergenz — wir hören auf zu analysieren, wir bauen)
+
+Wir haben das Bild jetzt vollständig (im Backlog-Doc, nichts geht unter). Ein Senior boilt jetzt nicht den Ozean — er baut Welle 1 = „ein echter Sani über alle Größen kann sein System verstehen, kontrollieren, besitzen", und zwar in dieser Schlagkraft-Reihenfolge (höchstes Risiko zuerst):
+
+1. Kalender-Strang (Risiko 1) — der dynamische Lern-Cascade als Referenz-Implementierung (Outlook + Google + keiner; „was bringt's → Anbieter → was brauche ich von Ihnen + wo"). Wenn das sitzt, sitzt das Muster für alles.
+2. Nachrichten vorausgefüllt + Kanal-Wahl (Risiko 2) — die 1 SMS + 2 Mails im echten Wortlaut, er wählt Kanal, ≤160-Hinweis.
+3. Lisa: No-Gos + Feiertags-/Geschlossen-Logik sichtbar (Risiko 3) — inkl. der ehrliche Voice-Prompt-Bau.
+4. Notfall-Klarheit + Telefonanbieter + Agentur-Kontakt + Größen-Adaptivität (die Sackgassen + „one-size"-Fehler schliessen).
+5. Bewertungs-Wirkung + End-User-Flow als Aha (Lehrbuch).
+6. Optik-Top-4 parallel (das Vertrauens-Gefühl trägt mit).
+
+Welle 2 (Entlastungs-Karten, „Meine Einstellungen" dauerhaft, PDF-Export, PWA) macht aus „verstanden + kontrolliert" → „begeistert + gebunden" — direkt danach.
+
+Eine Sache blockiert nichts: Dörflers Kalender-Anbieter (Mail noch nicht raus) — ich baue provider-agnostisch (alle 3 Pfade), dann passt jeder Betrieb.
+
+Meine Empfehlung als dein Senior-Partner: Genug durchdrungen — lass mich Welle 1 in dieser Reihenfolge bauen, Strang 1 (Kalender) als Referenz-Cascade zuerst. Ich zeige dir nach Strang 1 das Muster (Screenshots + Klick-Logik), du kalibrierst einmal, dann ziehe ich den Rest im selben Muster durch. Gibst du mir das Go für Welle 1 — oder willst du an einem der 4 Risiken/Reihenfolge noch drehen?
+
+✻ Brewed for 3m 43s
+
+❯ Go. Ab jetzt bei jeder Umsetzung: schau wirklich intensiv auch nach links und rechts, was wo wie kommt und versetze dich in unsere und seine Lage.
+
+Go — ich baue Welle 1, Strang 1 (Kalender) als Referenz-Cascade zuerst. Und verinnerlicht: bei jedem Schritt links/rechts schauen (wie die Daten real fließen) + in beide Lagen versetzen.
+
+Erst die Bau-Umgebung: frische Worktree auf main + Deps. Parallel schaue ich, wie der Kalender real verdrahtet ist (damit das Cockpit exakt das Richtige einsammelt).
+
+  Ran 1 shell command
+
+Worktree steht. npm install (Hintergrund) + parallel schaue ich die echte Kalender-Verdrahtung an (outlookClient, modules-Felder, Terminpicker), damit das Cockpit exakt das Richtige einsammelt.
+
+  Ran 2 shell commands
+
+Wichtiger „links/rechts"-Fund: der Kalender ist mehr verdrahtet als gedacht — es gibt einen OAuth-connect/callback-Flow (speichert calendar_provider + Tokens) UND den Application-Permissions-Outlook-Pfad (calendar_ms_tenant_id). Bevor ich die Cascade designe, prüfe ich: braucht connect einen Ops-Login (→ dann ist die echte Verbindung ein Post-Go-live-Schritt) + welche Provider?
+
+  Ran 1 shell command
+
+● Background command "Install deps in Welle-1 worktree (background)" completed (exit code 0)
+
+npm install fertig. Kritischer „links/rechts"-Fund, ehrlich: der connect-Flow ist Microsoft-only (login.microsoftonline.com) + Ops-Admin-authed, freebusy nutzt nur outlookClient. Google ist NICHT im Code (trotz OAuth-App) — und die Verbindung passiert nach Go-live im Leitsystem (Admin klickt 1×, kein Cockpit-Self-Service vor Login). Das schärft das Design + ist eine Senior-Entscheidung für dich (gleich unten). Erst lege ich die Welle-1-Tasks an + baue die Kalender-Cascade.
+
+❯ Guter befund. vielleicht ist es auch zu verdrahtet? Wir haben ja aktuell mein Kalender hinterlegt von FlowSight als test
+
+Guter Riecher — das prüfe ich sofort „links/rechts", bevor ich die Cascade baue: Ist die Kalender-Integration sauber per-Tenant oder hart auf deinen FlowSight-Test-Kalender verdrahtet (was sich auf alle Betriebe vererben würde = Datenleck-Risiko)?
+
+  Ran 1 shell command
+
+Entwarnung + dein Riecher zahlt sich doppelt aus:
+
+1. Nicht über-verdrahtet — sauber per-Tenant. getAccessToken(tenantId) zieht calendar_ms_tenant_id + Token aus der Tenant-Zeile, freebusy liest dessen Staff. Kein Hardcode auf deine Mail. Dein Kalender taucht nur als Test-Daten auf einem Demo-Tenant auf — kein Leck-Risiko, jeder Betrieb bekommt seinen eigenen.
+2. Dein Instinkt macht das Cockpit sogar LEANER: die tenant_id wird beim 1-Klick-OAuth automatisch erfasst (Microsoft-Login). → Wir müssen den Sani NICHT nach einer „Tenant-ID" fragen (die kennt kein Klempner). Cockpit bleibt schlank: anbinden? → Anbieter? → „nach Go-live 1× anmelden, fertig".
+
+Senior-Empfehlung Google: connect ist Microsoft-only — Google = echter Bau (eigener OAuth + freebusy-Client). Deine 80–90 % sind M365. → Welle 1: M365 voll, Google im Cockpit als „im Bau" erfassen, Google-Code in Welle 2. Blockiert die ersten Onboardings nicht.
+
+Ich baue jetzt die schlanke Kalender-Cascade. Erst Datenmodell.
+
+● Update(C:\flowsight_w1\src\web\src\lib\cockpit\types.ts)
+File must be read first
+
+  Read 1 file
+
+● Update(C:\flowsight_w1\src\web\src\lib\cockpit\types.ts)
+Added 6 lines
+    notifyMessagesByEmail?: boolean;
+    chips?: string[];
+  };
+  /** Kalender-Anbindung für Free/Busy (keine Doppelbuchung). Die technische MS-Tenant-ID
+   *  wird beim 1-Klick-OAuth NACH Go-live automatisch erfasst — hier NICHT gefragt (zu technisch). */
+  calendar?: {
+    connect?: boolean;
+    provider?: "outlook" | "google" | "none";
+  };
+  golive?: {
+    adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)
+    avvAccepted?: boolean;
+
+Datenmodell erweitert. Jetzt die Cascade-UI im Leitsystem-Knoten. Ich lese den SystemNode-Block (Einfügepunkt nach Team).
+
+  Read 1 file, ran 1 shell command
+
+Einfügepunkt klar (nach Team, vor Benachrichtigung — Kalender hängt an den Team-Postfächern). Ich baue die 2-stufige Lern-Cascade (anbinden? → Anbieter → was/wann), schlank ohne Tenant-ID-Frage.
+
+● Update(C:\flowsight_w1\src\web\app\aufbau\[token]\CockpitApp.tsx)
+Added 30 lines
+        </div>
+      </div>
+
+      {/* Kalender & Verfügbarkeit — dynamischer Lern-Cascade (Referenz-Pattern) */}
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <p className="text-sm font-semibold text-white">📅 Kalender & Verfügbarkeit</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-400">Binden Sie Ihren Kalender an, sehen Sie beim Terminsetzen sofort, ob Sie oder ein Mitarbeiter schon belegt sind — <span className="text-slate-
+200">keine Doppelbuchung mehr.</span></p>
+        <div className="mt-3 space-y-3">
+          <Field label="Kalender anbinden?">
+            <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
+              onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
+              options={[{ value: "ja", label: "Ja — Belegung sehen, niemanden überplanen" }, { value: "nein", label: "(Noch) nicht — Termine ohne Belegungs-Anzeige" }]} />
+          </Field>
+          {draft.calendar?.connect ? (
+            <Field label="Welcher Kalender-Anbieter?">
+              <RadioGroup value={(draft.calendar?.provider === "outlook" || draft.calendar?.provider === "google") ? draft.calendar.provider : undefined}
+                onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, provider: v } }))}
+                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung" }]} />
+            </Field>
+          ) : null}
+          {draft.calendar?.connect && draft.calendar?.provider === "outlook" ? (
+            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs leading-relaxed text-slate-300">
+              ✓ <span className="text-slate-200">So einfach:</span> Nach dem Freischalten verbinden Sie in Ihrem Leitsystem mit <span className="text-slate-200">einem Klick</span> (einmal bei Microsoft anmelde
+n, Ihr Admin bestätigt). Wir prüfen dann die Kalender Ihrer Mitarbeiter (oben) auf Belegung. <span className="text-slate-400">Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter — eine „Tenant-ID" müssen
+Sie NICHT heraussuchen.</span>
+            </p>
+          ) : null}
+          {draft.calendar?.connect && draft.calendar?.provider === "google" ? (
+            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs leading-relaxed text-amber-100/90">
+              Google-Kalender ist gerade im Aufbau — wir melden uns, sobald Sie verbinden können. Bis dahin setzen Sie Termine ohne Belegungs-Anzeige.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
+        <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationE
+mail: e.target.value } }))} />
+      </Field>
+
+Cascade-UI steht. Jetzt promote-Mapping (Kalender-Intent → modules + Go-live-Next-Step). Kurz die promote-Anker.
+
+  Ran 1 shell command
+
+● Update(C:\flowsight_w1\scripts\_ops\promote_cockpit_session.mjs)
+File must be read first
+
+  Read 1 file
+
+● Update(C:\flowsight_w1\scripts\_ops\promote_cockpit_session.mjs)
+Added 1 line
+  const drWizard = dr.wizard ?? {};
+  const pickup = str(drVoice.pickup);
+  const distribution = str(drWizard.distribution);
+  const calProvider = (dr.calendar?.connect && dr.calendar?.provider && dr.calendar.provider !== "none") ? dr.calendar.provider : "none";
+  const notes = dr.notes ?? {};
+
+  // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
+
+● Update(C:\flowsight_w1\scripts\_ops\promote_cockpit_session.mjs)
+Added 1 line
+  modules.voice_dispositions = voiceDispositions;
+  if (smsContent) modules.sms_content = smsContent;
+  modules.notify_messages_email = notifyMessagesByEmail;
+  modules.calendar_intent = calProvider; // tatsächliche Verbindung = OAuth nach Go-live (setzt calendar_ms_tenant_id)
+  if (avvVersion) { modules.avv_accepted_version = avvVersion; modules.avv_accepted_at = avvAcceptedAt || new Date().toISOString(); }
+
+  const { error: upErr } = await sb.from("tenants").update({ modules, case_id_prefix: caseIdPrefix }).eq("id", session.tenant_id);
+
+● Update(C:\flowsight_w1\scripts\_ops\promote_cockpit_session.mjs)
+Added 1 line
+  const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
+  console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
+  console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
+  console.log(`  6. Kalender: ${calProvider === "outlook" ? "Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login)" : calProvider === "google" ? "Google — noch im Aufbau, später verbin
+den" : "nicht angebunden"}.`);
+  console.log(`  Danach Session auf "live" setzen.`);
+  const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
+  if (noteLines.length) {
+
+Kalender-Cascade gebaut (types + UI + promote). tsc-Check im Worktree.
+
+  Ran 1 shell command
+
+tsc + promote grün. Jetzt der Screenshot, um dir das Referenz-Pattern zu zeigen (Cascade: anbinden → Anbieter → was/wann). Stack hoch im Worktree (Port 3200, gegen die Zombies).
+
+  Ran 1 shell command
+
+Stack oben, Session da. Screenshot-Skript (öffnet Leitsystem-Knoten → klickt Kalender-Cascade auf) + Dev-Server (3200).
+
+● Write(C:\flowsight_w1\_qa_cal.mjs)
+Wrote 16 lines to ..\flowsight_w1\_qa_cal.mjs
+import { createRequire } from "node:module";
+import { mkdirSync } from "node:fs";
+const require = createRequire(import.meta.url);
+const { chromium } = require(require.resolve("playwright", { paths: ["C:/flowsight_w1/src/web"] }));
+const token = process.argv[2]; const BASE = "http://localhost:3200";
+mkdirSync("C:/flowsight_w1/_shots", { recursive: true });
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+await p.goto(`${BASE}/aufbau/${token}`, { waitUntil: "networkidle", timeout: 60000 });
+… +6 lines
+
+  Ran 2 shell commands
+
+Läuft — der Screenshot der Kalender-Cascade (aufgeklappt: anbinden → Microsoft 365 → der „so einfach, 1-Klick nach Go-live"-Hinweis) wird erstellt. Sobald da, schaue ich ihn an (links/rechts, Sani-Brille) und zeige dir das Referenz-Pattern zur Kalibrierung.
+
+✻ Crunched for 10m 21s
+
+● Background command "Wait for dev (3200) then screenshot calendar cascade" completed (exit code 0)
+
+  Read 1 file
+
+Cascade-Klicks haben gegriffen. Ich schaue mir das Referenz-Pattern an.
+
+  Read 1 file
+
+Das Referenz-Pattern sitzt — schau es dir an: C:\flowsight_w1\_shots\cal_cascade.png. Die Kalender-Cascade im Leitsystem-Knoten, exakt der dynamische Lern-Aufbau:
+
+- „📅 Kalender & Verfügbarkeit" + Aha-Satz: „…sehen Sie sofort, ob Sie/ein Mitarbeiter belegt sind — keine Doppelbuchung mehr."
+- Schritt 1 „Kalender anbinden?" → Ja / (Noch) nicht.
+- Schritt 2 (erscheint dynamisch) „Welcher Anbieter?" → Microsoft 365 (voll unterstützt) / Google (in Vorbereitung).
+- Schritt 3 (erscheint dynamisch) — provider-spezifisch: „✓ So einfach: nach dem Freischalten 1 Klick im Leitsystem (einmal Microsoft-Login, Admin bestätigt). Wir prüfen die Kalender Ihrer Mitarbeiter oben — eine ‚Tenant-ID' müssen Sie NICHT heraussuchen."
+
+Aus der Sani-Brille: kein technischer Schreck (keine Tenant-ID-Frage), der Nutzen (Doppelbuchung vermeiden) sofort klar, der Aufwand ehrlich (1 Klick nach Go-live), Google ehrlich „in Vorbereitung". Aus unserer Brille: Verantwortung beim Betrieb (er wählt + weiss), Intent erfasst → promote schreibt calendar_intent + Go-live-Next-Step, die echte OAuth-Verbindung bleibt der saubere Post-Login-1-Klick.
+
+Ich committe das + räume den Stack ab:
+
+  Ran 1 shell command
+
+Committed (f73bbbe), Stack gestoppt. Dev-Job noch offen — stoppe ich.
+
+● Stop Task
+cd C:/flowsight_w1/src/web && npm run dev -- -p 3200 2>&1 · stopped
+
+Strang 1 ✅ committet. Worktree-Branch feat/onboarding-cockpit-welle1.
+
+🎯 Kalibrierungs-Moment (wie vereinbart)
+
+Das ist mein Referenz-Pattern für ALLE Stränge:
+
+▎ Frage → Aha (was bewirkt's) → dynamische Verzweigung → kontext-spezifisch glasklar: was brauchen wir, wann/wie, was musst du NICHT tun. Durchgehend Sani-Brille (kein Tech-Schreck) + Verantwortung beim Betrieb.
+
+Wenn du das so freigibst, ziehe ich den Rest von Welle 1 im exakt gleichen Muster durch:
+- Telefonanbieter (Swisscom/Sunrise/Salt/… → daraus die genaue Weiterleitungs-Anleitung) + Notfall-Klarheit („Lisa stellt nicht durch — nimmt auf + alarmiert [X]") als Conditional auf Notdienst.
+- Feiertage/Geschlossen (inkl. Voice-Prompt: immer Fall aufnehmen, Wording je offen/zu/Notdienst).
+- Nachrichten vorausgefüllt (echter Wortlaut der 1 SMS + 2 Mails) + Kanal-Wahl (er entscheidet, er verantwortet's).
+- Lisa-No-Gos sichtbar (nie Preis/Termin/Garantie) + Agentur-Kontakt-Feld + Foto-Upload-Hinweis.
+- Bewertungs-Wirkung als Aha (≤3 intern / ≥4 Google, End-User-Flow gezeigt) + Schwelle wählbar.
+- Größen-Adaptivität (1-MA: Team/Pikett ausblenden; 30-MA: mehr).
+- Optik-Top-4 parallel.
+
+Kalibrier mir das Pattern: Passt der Cascade-Aufbau + die Tonalität (Aha-Satz, „so einfach"-Hinweis, Ehrlichkeit bei Google) so — oder willst du an der Struktur/Sprache etwas drehen, bevor ich es 1:1 auf die anderen Stränge ausrolle? Sag's, dann baue ich Welle 1 im Akkord durch.
+
+✻ Brewed for 1m 45s
+
+※ recap: Ziel ist das Onboarding-Cockpit für Sanitärbetriebe high-end + inhaltlich vollständig zu machen. Strang 1 (Kalender-Cascade) ist gebaut, committet und per Screenshot bereit zur Abnahme als Referenz-Pattern. Nächster Schritt: dein OK zum Pattern, dann baue ich den Rest von Welle 1 im gleichen Muster.
+
+❯ Für mich ist es ganz okay, aber ich muss wirklich sagen, wo ist hier generell das Thema E-Mail? Ich finde, der Strang, der muss auch generell logisch aufgebaut sein. Nicht einfach wild irgendwelche Cards hinlegen und rein optisch ist es eh noch eine Katastrophe, aber da haben wir ja unsere Punkte schon abgelegt. bezüglich Google in Vorbereitung, Google Kalender. Ja, das passt, aber das machen wir mit der Welle zwei, dann beheben wir das, oder? Und bezüglich des Hinweises mit so einfach, das ist ein Sanitärbetrieb, McKinsey, das ist ein Sanitärbetrieb. Verbinden Sie Ihrem Leitungssystem mit einem Klick. Einmal bei Microsoft anmelden, Ihr Admin bestätigt. Wer ist Ihr Admin? Das muss man doch hier auch erstmal pflegen. Das doch ruht doch alles aufeinander auf. Welche E-Mail? Wie melde ich mich bei Microsoft an? Der Hinweis ist auch generell wichtig, jedoch würde ich ihn hier mit ein- und ausblenden, Hinweise immer ein- und ausblenden markieren, weil sonst haben wir hier viel zu viel Text. Schon mal eine optische Bemerkung, die wir noch ergänzen können zu den anderen, die wir vorher besprochen hatten. Aber ansonsten, ja, würde ich damit erstmal oder korrigiere es nochmal, schau nochmal selber drauf. Ich komme halt mit dem Aufbau, mit der Visualisierung und Inhaltliches, es ist für mich kein roter Faden erkennbar, eindeutig.
+
+
+
+  Bevor du daran weiterarbeitest, kurze Rückfrage. Wir hatten ja jetzt intensives Feedback gegeben. Hast du wirklich alles Feedback, was wir in unserem Chat jetzt eruiert haben, hast du es in einem Dokumentfile sehr detailliert, sehr explizit, fast copy-paste genauso eingefügt? Denn ich habe immer Angst, dass du hier diesen Chatverlauf komprimierst und dann geht ordentlich Wissen und Qualität verloren. Daher bitte dafür sorgen, dass wir jetzt an unser Cockpit arbeiten mit dem, was wir alles sorgfältig intensiv erarbeitet haben, ohne Qualitäts- und Wissensverlust dann für die Umsetzung.
+
+Stopp verstanden — und deine Sorge ist absolut berechtigt: dieser Chat wird irgendwann komprimiert, und dann darf nichts verloren gehen. Das ist jetzt Priorität #1, vor jedem Weiterbauen.
+
+Ehrlich: der bisherige cockpit_requirements_backlog.md ist strukturiert, aber zusammengefasst — nicht „fast copy-paste". Das upgrade ich jetzt: ich schreibe ein detailliertes, wortgetreues Feedback-Protokoll und sichere beide Docs in Git (nicht nur auf der Platte) — dann überlebt es jede Kompression. Inkl. deiner neuen Punkte (E-Mail-Strang fehlt, Admin-Erfassung beim Kalender, Hinweise ein-/ausklappbar, roter Faden).
+
+Erst das wortgetreue Protokoll:
+
+● Write(C:\flowsight_w1\docs\gtm\onboarding\cockpit_founder_feedback_protokoll.md)
+Wrote 137 lines to ..\flowsight_w1\docs\gtm\onboarding\cockpit_founder_feedback_protokoll.md
+# Cockpit — Founder-Feedback-Protokoll (wortgetreu, gegen Wissensverlust)
+
+> **Zweck (Founder, 08.06.):** „Ich habe Angst, dass der Chat komprimiert wird und Wissen/Qualität
+> verloren geht." → Dieses Doc hält das Feedback **detailliert, explizit, nah am Wortlaut** fest,
+> chronologisch nach Runden. Begleitend: `cockpit_requirements_backlog.md` (actionable, Wellen).
+> **Regel: bei JEDER Umsetzung beide Docs heranziehen — nicht aus dem (evtl. komprimierten) Chat.**
+
+---
+
+## Runde 1 — Durchklick der Beweis-/Cockpit-Seite (P1–P9)
+… +127 lines
+Context limit reached · /compact or /clear to continue
+                                                                                                                                                                                                   copied 66084 chars to clipboard
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ← for agents · shift+click to native se
