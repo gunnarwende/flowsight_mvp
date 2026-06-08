@@ -1,5 +1,10 @@
 # Ticketlist — FlowSight (SSOT)
 
+## 🔴 PRE-GO-LIVE VOICE-AGENT-BLOCKER (08.06., aus Founder-Testcall `call_2436a261fd9c968b1bd7a805ede` — MUSS vor dem 1. Go-live gelöst sein)
+- **[VA1] Lisa beendet den Call nicht auf Wunsch.** Founder sagte mehrfach „auflegen", Lisa legte nicht auf (Call lief 8,4 Min bis user_hangup). → Prompt/Tool: bei „auflegen/tschüss/Gespräch beenden" zuverlässig `end_call`. (Cockpit-Web-Test wird entfernt; betrifft aber den echten Telefon-Agenten.)
+- **[VA2] Sprachwechsel feuert nicht.** Auf „Englisch/sprich Englisch" sagt Lisa „Natürlich, einen Moment bitte" — aber `swap_to_intl_agent` greift NICHT, sie bleibt deutsch. Wir versprechen DE↔EN/FR/IT → kritisch. Transfer/Tool prüfen + publish.
+- **[VA3] Web-Audio holprig/verzerrt** („stottert", ~10 s Latenz beim Start). Prüfen: Telefon vs. Web-SDK; ist der echte Telefon-Pfad flüssig? Falls nur Web → Cockpit-Test eh raus, aber Telefon-Qualität verifizieren.
+
 **Updated:** 2026-06-08 — **🛠️ ONBOARDING-COCKPIT WELLE 1 + 2 GEBAUT & LIVE.** Co-Pilot `/aufbau/[token]` durchklickbar auf `flowsight.ch`. Welle 1: roter Faden + einklappbare Hinweise + Verantwortungs-Transfer; Lisa (T1 Telefonanbieter, T2/T3 Notfall&Notdienst, T4 Feiertags-Voice-Scripting durch alle 3 Ebenen, Grenzen), Website (W1 Agentur, W4 Foto), Leitsystem (L3 Nachrichten vorausgefüllt+Kanalwahl, R2 Place-ID, R3 Schwelle, R4 End-User-Aha), N3-Korrektur, Go-live-Validierung, Optik-Top-4. Welle 2: #1 Entlastungs-Karten+N7+G5, #2 N5+G4, #3 M3 PDF-Export, #4 M2 „Meine Einstellungen" (über `/ops/settings`+Setup-PDF). Google im Cockpit = reibungslos angenommen (kein „in Vorbereitung"), Intent+Konto erfasst → wir richten ein. Founder-Feedback wortgetreu in Git (`Chat.txt`+Protokoll+Backlog). PRs #579–#584.
 
 ## 🔭 OFFENE / VERTAGTE TICKETS (bewusst, bei echtem Bedarf — 0 Kunden = nicht vorbauen)
