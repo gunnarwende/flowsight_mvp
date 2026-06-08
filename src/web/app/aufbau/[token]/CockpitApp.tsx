@@ -131,10 +131,10 @@ function BrandIcon({ size = 108 }: { size?: number }) {
 }
 
 // ── Strang-Definitionen (für die Karte) ──────────────────────────────────────
-const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string }[] = [
-  { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen" },
-  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin" },
-  { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden" },
+const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
+  { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen", nutzen: "Kein Zettel geht verloren" },
+  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Kein Anruf bleibt liegen" },
+  { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
 ];
 
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
@@ -293,17 +293,18 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
           const done = !!progress[s.key];
           return (
             <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-              className="rounded-2xl border bg-white/5 p-6 text-left transition hover:bg-white/10"
+              className="group rounded-2xl border bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-white/[0.12] hover:shadow-lg hover:shadow-black/20"
               style={{ borderColor: done ? `${GOLD}66` : "rgba(255,255,255,0.10)" }}>
               <div className="flex items-center justify-between">
-                <span className="text-2xl">{s.icon}</span>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-xl" style={{ backgroundColor: done ? `${GOLD}1f` : "rgba(255,255,255,0.06)" }}>{s.icon}</span>
                 <span className="rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ backgroundColor: done ? `${GOLD}22` : "rgba(255,255,255,0.08)", color: done ? GOLD : "#cbd5e1" }}>
                   {done ? "✓ startklar" : "○ offen"}
                 </span>
               </div>
-              <p className="mt-2 text-base font-bold text-white">{s.titel}</p>
+              <p className="mt-3 text-base font-bold text-white">{s.titel}</p>
               <p className="text-xs text-slate-400">{s.unter}</p>
-              <p className="mt-3 text-sm font-semibold" style={{ color: GOLD }}>{s.cta} →</p>
+              <p className="mt-2 text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>✓ {s.nutzen}</p>
+              <p className="mt-3 text-sm font-semibold transition-transform duration-200 group-hover:translate-x-0.5" style={{ color: GOLD }}>{s.cta} →</p>
             </button>
           );
         })}
@@ -321,7 +322,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
 
       {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
       <button type="button" onClick={() => onOpen("system")}
-        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition hover:bg-white/[0.06]"
+        className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30"
         style={{ borderColor: "rgba(255,255,255,0.10)", backgroundColor: "rgba(255,255,255,0.03)" }}>
         <BrandIcon size={116} />
         <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
@@ -622,6 +623,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
 
       <Section n={2} icon="👥" title="Ihr Team & Rollen" lead="Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.">
         {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
+        {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
         <div className="space-y-2">
           {staff.map((s, i) => (
             <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
