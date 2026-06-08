@@ -272,28 +272,9 @@ export function LeitzentraleView({
     return () => clearInterval(interval);
   }, [router]);
 
-  // App Badge: show unread count on homescreen icon (Android Chrome/Edge)
-  useEffect(() => {
-    // Clear badge when app is opened/focused
-    if ("setAppBadge" in navigator) {
-      (navigator as Navigator & { clearAppBadge: () => void }).clearAppBadge?.();
-    }
-    // Store last-seen timestamp
-    localStorage.setItem("ops-last-seen", String(Date.now()));
-  }, []);
-
-  // Update badge when cases change
-  useEffect(() => {
-    if (!("setAppBadge" in navigator)) return;
-    const lastSeen = parseInt(localStorage.getItem("ops-last-seen") ?? "0", 10);
-    if (!lastSeen) return;
-    const newSince = cases.filter(
-      (c) => new Date(c.created_at).getTime() > lastSeen,
-    ).length;
-    if (newSince > 0) {
-      (navigator as Navigator & { setAppBadge: (n: number) => void }).setAppBadge(newSince);
-    }
-  }, [cases]);
+  // App-Icon-Badge wird app-weit in OpsShell gesetzt (SSOT via /api/ops/badge-count
+  // = offene Fälle + pending Nachrichten). Hier bewusst nichts mehr — sonst zwei
+  // Owner. Siehe OpsShell.navCounts-Effect.
 
   // ── ALL hooks MUST be above early returns (React rules of hooks) ────
   const categories = useMemo(() => {

@@ -295,6 +295,16 @@ const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string
   { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
 ];
 
+// Per-Stern „Was läuft bei Ihnen noch?"-Beispiele — STRANG-SPEZIFISCH + konkret
+// (2 knackige Sani-Fälle je Stern, keine vagen). „begruessung" ist die Ausnahme:
+// minimal (nur „Hinweis (optional)", kein Beispiel) — siehe Drill-in-Render.
+const LISA_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
+  telefonie: `z. B. „Notfall-Handy (zweite Nummer) NICHT umleiten", „Festnetz läuft über die Zentrale im Laden"`,
+  notfall: `z. B. „Am Wochenende nur Heizungsausfälle als Notfall", „Samstag bis 12 Uhr besetzt, danach Notdienst"`,
+  wissen: `z. B. „Wir machen keine Ölheizungen mehr", „Service-Abo-Kunden haben bei Terminen Vorrang"`,
+  anruflogik: `z. B. „Heizungsausfall im Winter immer als Notfall behandeln", „Stammkunde Meier immer direkt an den Chef"`,
+};
+
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
 const DISPOSITION_CARDS: { key: keyof DispositionsConfig; titel: string; szenario: string; weg: string }[] = [
   { key: "d1_auftrag", titel: "Neuer Auftrag", szenario: "Schaden / Termin.", weg: "→ Fall im Leitsystem. Bei Notfall: sofort Push + E-Mail an Sie (Lisa stellt NICHT durch — sie hält den Fall fest)." },
@@ -729,8 +739,11 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
           <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field label={`Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte?`} hint="Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
-              <TextArea placeholder={`z. B. „Bei Heizungsausfall zuerst nach Eigentümer/Mieter fragen", „Familie Meier ist Sonderfall …"`} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
+            <Field
+              label={cat.key === "begruessung" ? "Hinweis (optional)" : `Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte,`}
+              hint={cat.key === "begruessung" ? undefined : "Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
+            >
+              <TextArea placeholder={cat.key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
             </Field>
           </div>
           <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
@@ -770,81 +783,100 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 // ── Strang: Website ──────────────────────────────────────────────────────────
 function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["prefill"]; draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void }) {
   const cats = draft.wizard?.categories ?? pf.wizard.categories;
-  const hasWebsite = draft.wizard?.hasWebsite;
+  const w = draft.wizard ?? {};
+  // R7-Punkt-1 (hart): Default = Ja. Nur explizites „Nein" blendet den Rest aus.
+  const formRelevant = w.formRelevant !== false;
+  const atAgency = w.integrationLocation === "agentur" || w.caretaker === "agentur";
   return (
-    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look, in drei Schritten." onBack={onBack} onDone={onDone}>
+    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={onDone}>
 
       <PainHint items={[
         { pain: "Anfragen kommen nachts oder am Wochenende", relief: "Das Formular nimmt sie rund um die Uhr auf — Sie sehen sie am Morgen." },
         { pain: "Kunden wissen nicht, was sie überhaupt angeben sollen", relief: "Geführte Fragen + Foto vom Schaden — Sie haben alles, bevor Sie hinfahren." },
       ]} />
 
-      <Section n={1} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
-        <div className="space-y-2">
-          {cats.map((c: WizardCategory, i: number) => (
-            <div key={i} className="flex items-center gap-2">
-              <TextInput value={c.label} disabled={c.fixed}
-                onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
-              {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+      {/* Punkt 1 — harter Gate: spielt das Formular überhaupt eine Rolle? */}
+      <Section n={1} icon="🧭" title="Spielt das Online-Meldeformular für Sie eine Rolle?" lead="Manche Betriebe wollen nur Lisa am Telefon und ihr Leitsystem — ganz ohne Online-Formular. Völlig in Ordnung.">
+        <RadioGroup value={w.formRelevant === false ? "nein" : "ja"}
+          onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formRelevant: val === "ja" } }))}
+          options={[
+            { value: "ja", label: "Ja — Anfragen sollen auch online reinkommen", hint: "Kunden melden sich rund um die Uhr per Formular, alles landet im Leitsystem." },
+            { value: "nein", label: "Nein — Telefon (Lisa) + Leitsystem genügen mir", hint: "Wir lassen das Online-Formular weg. Sie können es hier jederzeit wieder einschalten." },
+          ]} />
+        {!formRelevant ? (
+          <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            Alles klar — wir richten <span className="text-slate-200">kein Online-Formular</span> ein. Ihre Anfragen laufen über <span className="text-slate-200">Lisa am Telefon</span> und Ihr <span className="text-slate-200">Leitsystem</span>. Dieser Strang ist damit fertig — tippen Sie unten auf „✓ passt".
+          </p>
+        ) : null}
+      </Section>
+
+      {formRelevant ? (
+        <>
+          {/* Punkt 2 — Anliegen-Kategorien */}
+          <Section n={2} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
+            <div className="space-y-2">
+              {cats.map((c: WizardCategory, i: number) => (
+                <div key={i} className="flex items-center gap-2">
+                  <TextInput value={c.label} disabled={c.fixed}
+                    onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
+                  {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
 
-      <Section n={2} icon="🌐" title="Wo Ihr Formular lebt" lead="Damit das Meldeformular Ihre Kunden erreicht — passend dazu, ob Sie eine Website haben.">
-        <Field label="Haben Sie eine eigene Website?">
-          <RadioGroup value={hasWebsite === undefined ? undefined : hasWebsite ? "ja" : "nein"} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, hasWebsite: val === "ja" } }))}
-            options={[{ value: "ja", label: "Ja, wir haben eine Website" }, { value: "nein", label: "Nein / veraltet" }]} />
-        </Field>
+          {/* Punkt 3 — Fotos vom Schaden */}
+          <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
+            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+              Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
+            </p>
+          </Section>
 
-        {hasWebsite === true ? (
-          <Field label="Wo soll das Formular leben?">
-            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-              options={[
-                { value: "gbp_button", label: "Button im Google-Profil", hint: "Schaltfläche „Termin anfragen“ direkt bei Google — kein Website-Eingriff nötig" },
-                { value: "embed", label: "In meine Website einbauen", hint: "als eingebettetes Formular auf Ihrer Seite" },
-                { value: "agentur_mail", label: "Meine Web-Agentur baut es ein", hint: "wir schicken der Agentur die fertige Anleitung" },
-              ]} />
-          </Field>
-        ) : hasWebsite === false ? (
-          <Field label="Verteilung ohne Website">
-            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-              options={[
-                { value: "gbp_button", label: "Button im Google-Profil", hint: "der wichtigste Kanal ohne Website" },
-                { value: "qr", label: "QR-Code / Kurzlink", hint: "fürs Servicefahrzeug, die Rechnung, die Theke" },
-              ]} />
-          </Field>
-        ) : null}
-
-        {draft.wizard?.distribution === "embed" ? (
-          <Field label="Wer baut es in die Website ein?">
-            <RadioGroup value={draft.wizard?.embedBy} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, embedBy: val } }))}
-              options={[{ value: "intern", label: "Wir intern (wir haben Zugriff)" }, { value: "agentur", label: "Unsere Web-Agentur" }]} />
-          </Field>
-        ) : null}
-
-        {draft.wizard?.distribution === "agentur_mail" || (draft.wizard?.distribution === "embed" && draft.wizard?.embedBy === "agentur") ? (
-          <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
-            <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
-            <Field label="Name der Web-Agentur">
-              <TextInput placeholder="z. B. Muster Web GmbH" value={draft.wizard?.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
+          {/* Punkt 4 — Integration (der wichtigste): wie kommt das Formular auf die Website? */}
+          <Section n={4} icon="🔌" title="So binden wir das Formular ein" lead="Der wichtigste Punkt: Damit wir das Formular sauber auf Ihrer Website verankern, brauchen wir kurz, wie das bei Ihnen läuft.">
+            <Field label="Wer betreut Ihre Website?">
+              <RadioGroup value={w.integrationLocation} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, integrationLocation: val } }))}
+                options={[
+                  { value: "intern", label: "Wir selbst", hint: "Wir haben Zugriff auf unsere Website und können das Formular selbst verankern." },
+                  { value: "agentur", label: "Eine Web-Agentur", hint: "Eine Agentur betreut unsere Website — sie verankert das Formular für uns." },
+                ]} />
             </Field>
-            <Field label="E-Mail der Agentur">
-              <TextInput type="email" placeholder="kontakt@agentur.ch" value={draft.wizard?.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
+
+            {atAgency ? (
+              <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
+                <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
+                <Field label="Name der Web-Agentur">
+                  <TextInput placeholder="z. B. Muster Web GmbH" value={w.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
+                </Field>
+                <Field label="E-Mail der Agentur">
+                  <TextInput type="email" placeholder="kontakt@agentur.ch" value={w.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
+                </Field>
+              </div>
+            ) : null}
+
+            <Field label="Haben Sie schon ein Kontakt- oder Meldeformular auf der Website?">
+              <RadioGroup value={w.formMode} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formMode: val } }))}
+                options={[
+                  { value: "ersetzen", label: "Ja — das neue ersetzt das alte", hint: "Wir lösen Ihr bisheriges Formular ab, damit alles an einem Ort landet." },
+                  { value: "ergaenzen", label: "Es kommt ergänzend dazu", hint: "Ihr bestehendes Formular bleibt, das neue kommt zusätzlich dazu." },
+                ]} />
             </Field>
-          </div>
-        ) : null}
 
-        <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
-          👁 Ihr gebrandetes Formular ansehen (Vorschau)
-        </a>
-      </Section>
+            <Field label="Wer kümmert sich um den Einbau?">
+              <RadioGroup value={w.caretaker} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, caretaker: val } }))}
+                options={[
+                  { value: "wir", label: "FlowSight — machen wir für Sie", hint: "Wir verankern das Formular, Sie müssen nichts tun." },
+                  { value: "betrieb", label: "Wir selbst im Betrieb", hint: "Sie bekommen den fertigen Einbau-Schnipsel + Anleitung." },
+                  { value: "agentur", label: "Unsere Web-Agentur", hint: "Wir schicken der Agentur die fertige Anleitung." },
+                ]} />
+            </Field>
 
-      <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
-        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
-        </p>
-      </Section>
+            <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
+              👁 Ihr gebrandetes Formular ansehen (Vorschau)
+            </a>
+          </Section>
+        </>
+      ) : null}
 
       <NotesField value={draft.notes?.website ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, website: val } }))} />
     </Detail>

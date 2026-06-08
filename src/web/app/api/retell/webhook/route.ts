@@ -9,6 +9,7 @@ import { notify } from "@/src/lib/notify/router";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { insertTenantCallback } from "@/src/lib/callbacks/tenantCallbacks";
+import { computeOpsBadgeCount } from "@/src/lib/push/opsBadge";
 import { resolveDispositionsConfig, dispositionForCallType } from "@/src/lib/callbacks/voiceDispositions";
 import { PLZ_CITY_MAP } from "@/src/lib/plz/plzCityMap";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
@@ -514,7 +515,7 @@ export async function POST(req: Request) {
       }
       // Push nur, wenn die Disposition es vorsieht (notify === "push").
       if (created && dispKey && dispoCfg[dispKey].notify === "push") {
-        import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+        import("@/src/lib/push/sendOpsPush").then(async ({ sendOpsPush }) =>
           sendOpsPush({
             tenantId,
             eventType: "case",
@@ -522,6 +523,7 @@ export async function POST(req: Request) {
             body: `${reporterName ?? "Anrufer"}${callerPhone ? ` · ${callerPhone}` : ""}`,
             url: "/ops/nachrichten",
             tag: `callback-${retellCallId}`,
+            badgeCount: await computeOpsBadgeCount(supabaseEarly, tenantId),
           }),
         ).catch(() => {});
       }
@@ -669,7 +671,7 @@ export async function POST(req: Request) {
 
     // Push notification for Notfall cases (best-effort, never blocks)
     if (urgencyNormalized === "notfall") {
-      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+      import("@/src/lib/push/sendOpsPush").then(async ({ sendOpsPush }) =>
         sendOpsPush({
           tenantId,
           eventType: "notfall",
@@ -677,6 +679,7 @@ export async function POST(req: Request) {
           body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
           url: `/ops/cases/${caseId}`,
           tag: `notfall-${caseId}`,
+          badgeCount: await computeOpsBadgeCount(supabase, tenantId),
         })
       ).catch(() => {});
     }
@@ -685,7 +688,7 @@ export async function POST(req: Request) {
     // Review → eventType "negative_review" pusht immer). Greift nur bei call_type=
     // "reklamation" (heute kein Agent → dormant) + per-Betrieb-Policy (Default an).
     if (callType === "reklamation" && dispoCfg.d5_reklamation.notify === "push") {
-      import("@/src/lib/push/sendOpsPush").then(({ sendOpsPush }) =>
+      import("@/src/lib/push/sendOpsPush").then(async ({ sendOpsPush }) =>
         sendOpsPush({
           tenantId,
           eventType: "negative_review",
@@ -693,6 +696,7 @@ export async function POST(req: Request) {
           body: `${finalCategory}: ${finalCity} — ${reporterName ?? "Unbekannt"}`,
           url: `/ops/cases/${caseId}`,
           tag: `reklamation-${caseId}`,
+          badgeCount: await computeOpsBadgeCount(supabase, tenantId),
         })
       ).catch(() => {});
     }
