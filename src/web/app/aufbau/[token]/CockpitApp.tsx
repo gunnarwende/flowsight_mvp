@@ -11,7 +11,6 @@ import type {
 } from "@/src/lib/cockpit/types";
 import { DISPOSITION_DEFAULTS } from "@/src/lib/cockpit/types";
 import { AVV_TEXT, AVV_VERSION, AVV_SUBPROCESSORS } from "@/src/lib/cockpit/avv";
-import { startLisaTestCall, type TestCallPhase } from "./lisaTestCall";
 
 /**
  * Onboarding-Cockpit Co-Pilot — Redesign v2 (Phase 2, OC6).
@@ -320,8 +319,8 @@ const TELCO_OPTIONS = [
   { value: "sunrise" as const, label: "Sunrise" },
   { value: "salt" as const, label: "Salt" },
   { value: "quickline" as const, label: "Quickline" },
-  { value: "yallo" as const, label: "Yallo / Wingo / anderer" },
-  { value: "other" as const, label: "Weiss ich nicht / nicht dabei" },
+  { value: "yallo" as const, label: "Yallo" },
+  { value: "other" as const, label: "Anderer Anbieter" },
 ];
 // L3: die echten Default-Wortlaute der 3 automatischen Nachrichten (zum Vorausfüllen).
 const MSG_DEFAULTS = {
@@ -561,7 +560,6 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 }) {
   const [star, setStar] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
-  const [phase, setPhase] = useState<TestCallPhase>("idle");
   const v = draft.voice ?? {};
   const disp = v.dispositions ?? DISPOSITION_DEFAULTS;
   const setDisp = (k: keyof DispositionsConfig, patch: Partial<DispositionsConfig[keyof DispositionsConfig]>) =>
@@ -592,9 +590,9 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
             <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
           </Field>
-          {v.telco?.provider === "other" || v.telco?.provider === "yallo" ? (
-            <Field label="Wie heisst Ihr Anbieter? (optional)">
-              <TextInput placeholder="z. B. Wingo, Lebara …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
+          {v.telco?.provider === "other" ? (
+            <Field label="Wie heisst Ihr Anbieter?">
+              <TextInput placeholder="z. B. Wingo, Lebara, iWay …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
             </Field>
           ) : null}
           <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
@@ -635,7 +633,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           <div className="border-t border-white/10 pt-3">
             <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
             <p className="mt-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-              Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren. Erwartung: {v.emergencyService ? "bei einem Notfall wird Ihr Pikett sofort alarmiert, sonst Rückmeldung am nächsten Werktag." : "Rückmeldung am nächsten Werktag."}
+              Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren.{v.emergencyService ? " Bei einem Notfall wird Ihr Pikett-Dienst sofort informiert." : ""}
             </p>
           </div>
           <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
@@ -721,7 +719,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Bauen Sie Stern für Stern Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
+    <Detail icon="📞" title="Ihre Lisa" claim="Bauen wir gemeinsam Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
         { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
@@ -737,15 +735,6 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
         onOpen={setStar}
       />
       <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
-
-      <div className="rounded-xl border p-4 text-center" style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
-        <p className="text-sm font-semibold text-white">Hören Sie Ihre Lisa</p>
-        <p className="mx-auto mt-1 max-w-[440px] text-xs text-slate-300">Rufen Sie jetzt an — ein Testfall, er landet nicht in Ihrer echten Liste.</p>
-        <button type="button" onClick={() => startLisaTestCall(token, setPhase)} disabled={phase === "connecting" || phase === "active"}
-          className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:opacity-70" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-          {({ idle: "📞 Lisa jetzt anrufen", connecting: "Verbinde …", active: "🔴 Im Gespräch", ended: "Nochmal anrufen", error: "Fehlgeschlagen — nochmal" } as Record<TestCallPhase, string>)[phase]}
-        </button>
-      </div>
 
       <NotesField value={draft.notes?.voice ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, voice: val } }))} />
     </Detail>
