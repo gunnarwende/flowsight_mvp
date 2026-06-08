@@ -4,11 +4,14 @@
 > Prospects, bis er als **zahlender Kunde** autonom mit seinem System läuft.
 > Direkter Anschluss an `docs/gtm/pipeline/PIPELINE_BIBLE.md` (die endet beim Versand).
 >
-> **Version 2.0 — 2026-06-06, komplett neu aufgesetzt.** Das alte (founder-geführte, Vor-Ort-
+> **Version 2.1 — 2026-06-08.** v2.0 (06.06.) neu aufgesetzt; das alte (founder-geführte, Vor-Ort-
 > Termin-)Paradigma liegt als Historie in `docs/archive/onboarding/Onboarding_bible_v0.md`.
 >
-> **Status:** Gerüst. Phase 1 ist voll ausgearbeitet (Live-Playbook). Phase 2–4 sind als
-> Architektur gesetzt; der Cockpit-Bau (Phase 2) ist Folge-Arbeit (mehrere Tage).
+> **Status (08.06.):** **Phase 2 — Cockpit ist GEBAUT & LIVE** auf `flowsight.ch/aufbau/[token]`,
+> durchklickbar, in **drei Feedback-Runden gehärtet** (R6 Name/Korb-Wiring · R7 Website-Umbau +
+> Badge-SSOT · R8 Leitzentrale + Validierung-an-der-Wurzel). Phase 1 voll ausgearbeitet (Live-
+> Playbook). Phase 3/4 als Architektur gesetzt, Go-live-Ops + Voice-`call_type` = Folge-Bau.
+> Detail-Stand + 3 Feedback-Runden: §8. **Vor erstem Go-live offen:** Voice VA1-3 (`ticketlist.md`).
 
 ---
 
@@ -87,8 +90,12 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
   Auftrag · Reklamation · privat/Spam · [Live-Transfer = später]). Heute: keine serverseitige
   Klassifikation → Routing-Fundament (`pub_callback_requests` → generisch `tenant_callbacks`) ist
   einmaliger Bau. Pickup-Sekunden = Telco-Weiterleitung (Kunden-Aktion, nicht Lisa-Config).
-- **Pro-Strang-Beweis-Loop:** konfigurieren → sofort testen (Retell-Web-Call, Testfälle `is_demo`) →
-  Aha. **Finale:** „Schauen Sie, was Sie gebaut haben" (der Knall).
+- **Pro-Strang-Beweis-Loop:** konfigurieren → bestätigen → Stern leuchtet gold (Eigentums-Moment).
+  **Validierung an der Wurzel (R8):** ein Stern/Strang wird *nur* gold, wenn seine Pflichtfelder sitzen —
+  sonst bleibt er offen mit Inline-Hinweis. Keine Mängelliste-Überraschung erst beim Senden.
+  **Finale:** „Schauen Sie, was Sie gebaut haben" (der Knall).
+- **Test-Call-Status:** der In-Cockpit-Retell-Web-Call ist aktuell **entfernt** (zu hohe Erwartung, bis
+  Voice VA1-3 sitzen). Testfälle laufen weiter über `is_demo` (G6: fallen beim Go-live raus).
 
 ### Phase 3 — Review & Go-live (Pay) *(Folge-Bau, migriert v0-Operatives)*
 - **Founder-Review** des Cockpit-Ergebnisses (G11 — keine halb-konfigurierte Lisa geht live).
@@ -167,26 +174,50 @@ Produktiv-Roll-out Schweizer Datenschutz-Anwalt.*
 
 ---
 
-## §8 · Bau-Status (06.06.) + was Folge-Bau bleibt
+## §8 · Bau-Status (08.06.) — Cockpit LIVE, in 3 Runden gehärtet
 
-**Autonom gebaut (06.06.) als gestapelte, rein additive, live-sichere PRs** — dormant bis ein
-Voice-Agent `call_type` emittiert; nichts geht live bis Merge + `supabase db push`:
-- **OC1 → PR #572:** `tenant_callbacks` (Migration + `tenantCallbacks.ts`-Lib).
-- **OC2 → PR #573:** Webhook `call_type`-Verzweigung (FALL/NACHRICHT/NICHTS, backward-compatible).
-- **OC3 → PR #574:** Reklamation-Push (eventType `negative_review`) + `voiceDispositions.ts`-Policy.
-- **OC4 → PR #575:** Leitsystem-„Nachrichten"-View `/ops/nachrichten` + generische API.
-- **OC5 → PR #576:** Cockpit-**Gerüst** `/aufbau/[token]` (Navy/Gold-Schale, strukturell).
-- **Merge-Reihenfolge:** #571 (Design) → #572 → #573 → #574 → #575 → #576.
+**Fundament (06.06., OC1-OC5, gemergt + `supabase db push`):** `tenant_callbacks` (#572) ·
+Webhook `call_type`-Verzweigung FALL/NACHRICHT/NICHTS (#573) · Reklamation-Push + Dispositions-
+Policy (#574) · `/ops/nachrichten`-View (#575) · Cockpit-Gerüst (#576).
 
-**Folge-Bau — braucht Founder (NICHT autonom gemacht):**
-- **Cockpit-Daten-Layer + interaktive Flows (OC6):** Token-Lookup/`cockpit_sessions`,
-  `tenant_config`-Vorbefüllung (confirm-not-create), Frage-für-Frage-Flows + Beweis-Loops,
-  Schreiben in DB (`modules` inkl. `voice_dispositions`, `staff`) + Retell-Prompt, „An Gunnar
-  senden"→Review-Gate. (= ersetzt die alte `prospect_to_onboarding`-Idee.)
-- **Retell-Prompt:** Lisa `call_type` emittieren lassen + publish → erst dann werden OC2/OC3 aktiv;
-  dann E2E-Test je Disposition. · **Nav-Eintrag** `/ops/nachrichten`.
+**OC6 = Cockpit-Daten-Layer + interaktive Flows — GEBAUT & LIVE.** `cockpit_sessions` (token-privat,
+RLS service-only, prefill+draft+status), `tenant_config`-Vorbefüllung (*confirm-not-create*, ≈70 %),
+Autosave, alle 3 Stränge interaktiv, „An Gunnar senden" → Review-Gate (`/api/aufbau/[token]/submit`),
+`promote_cockpit_session.mjs` schreibt bestätigte Werte in DB (`modules` inkl. `voice_dispositions`,
+`staff`) + `tenant_config` für Retell-Regeneration. Plus M2 „Meine Einstellungen" (über `/ops/settings`)
++ M3 PDF-Auszug (`/aufbau/[token]/zusammenfassung` + Hauptseite).
+
+**Form (Founder-Design):** 3 Eingangs-Stränge → Leitsystem-Hub → Freigabe. **Lisa** + **Leitsystem**
+= 5-Sterne-**Konstellationen** (Stern antippen → ausfüllen → „✓ passt" → leuchtet gold; Lisa-Avatar
+mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit hartem Punkt-1-Gate. Headline
+„Bauen wir gemeinsam Ihre rechte Hand am Telefon".
+
+**Drei Feedback-Runden (Founder-Sprachnachrichten, je verbatim gesichert):**
+- **R6** (#590): Name-Personalisierung (`assistantName` durch Cockpit + Agent-Prompt `{{assistant_name}}`);
+  **Korb-Wiring** (Webhook liest `modules.voice_dispositions` voll → Fall/Nachricht/nichts); Nachrichten-
+  E-Mail (`sendCallbackNotification`); „So soll Lisa reagieren" aufgeräumt (Kanal-Klarheit, nie SMS).
+- **R7** (#591): **Website-Strang neu** — Punkt-1-Gate „Spielt das Online-Formular eine Rolle?", alte
+  „Haben Sie Website?"-Frage raus, Integrations-Karte (Betreuung/ersetzen-ergänzen/wer-kümmert/Agentur);
+  **Badge-SSOT** (App-Icon + Nav-Zähler = offene Fälle + pending Nachrichten via `opsBadge.ts` +
+  `/api/ops/badge-count`); per-Stern konkrete Beispiel-Placeholder.
+- **R8** (#593): **Validierung an der Wurzel** — Sterne/Strang werden nur gold, wenn Pflichtfelder
+  sitzen, sonst Inline-Hinweis (statt Mängelliste erst beim Senden). 2 Wurzel-Bugs gefixt (Submit prüfte
+  R7-entferntes `wizard.distribution` → Versand war blockiert; E-Mail-Toggle war Schein-Schalter →
+  echt verdrahtet auf `modules.notify_messages_email`). Politur: 🤍-Icon, Pill-Back-Buttons, goldener
+  Leitsystem-Umriss, statische „Fälle"-Card raus, PDF auf Hauptseite, Rollen-Dropdown lesbar, Place-ID-
+  Hilfe, Demo-Texte raus, Dienstleister dezent. AVV verifiziert (Entwurf; Anwalt offen).
+- Tracker (kompressionssicher): `cockpit_round6_buildplan.md` (R6/R7) + `cockpit_leitzentrale_buildplan.md`
+  (R8) + `cockpit_founder_feedback_protokoll.md`.
+
+**Folge-Bau — bleibt offen (braucht Founder / echtes Gerät):**
+- **🔴 Voice VA1-3 (vor erstem Go-live, `ticketlist.md`):** Lisa legt nicht auf · Sprachwechsel feuert
+  nicht · Web-Audio holprig. Der Cockpit-Test-Call wurde bewusst entfernt (zu hohe Erwartung); kommt
+  ggf. nach VA1-3 zurück, dann MIT sichtbarem Auflegen-Button.
+- **Retell-Prompt:** Lisa `call_type` zuverlässig emittieren lassen + publish → erst dann werden
+  Korb-Routing (R6) + Reklamation-Push *real* aktiv (heute dormant); dann E2E-Test je Disposition.
+- **Badge-Reste:** stiller Push (iOS-Limit), per-Eintrag-„neu"-Marker, **Handy-Test** am echten Gerät.
 - **Phase 3 Go-live-Ops:** v0-Operatives migrieren (Weiterleitung, PWA, Painpoint-Antworten, Cheat).
-- **Onboarding-Mail-Versand (OC7):** `send_onboarding.mjs`. · **Pricing/AVV-Mechanik** (Go-live-Gate).
+- **Onboarding-Mail-Versand (OC7):** `send_onboarding.mjs` (Ziel-Link = Cockpit). · Pricing/AVV-Anwalt.
 
 ---
 
