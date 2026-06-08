@@ -93,7 +93,8 @@ async function main() {
   const avvAcceptedAt = str(drGolive.avvAcceptedAt).trim();
   const drWizard = dr.wizard ?? {};
   const pickup = str(drVoice.pickup);
-  const distribution = str(drWizard.distribution);
+  // R7: Formular-Strang neu modelliert. formRelevant !== false = Formular gewollt (Default Ja).
+  const formRelevant = drWizard.formRelevant !== false;
   const calProvider = (dr.calendar?.connect && dr.calendar?.provider && dr.calendar.provider !== "none") ? dr.calendar.provider : "none";
   const notes = dr.notes ?? {};
 
@@ -165,7 +166,14 @@ async function main() {
   if (drVoice.emergencyContact?.name || drVoice.emergencyContact?.phone) modules.emergency_contact = { name: str(drVoice.emergencyContact?.name), phone: str(drVoice.emergencyContact?.phone) };
   modules.holidays_closed = drVoice.holidaysClosed !== false; // Default geschlossen
   if (str(drVoice.vacationNote).trim()) modules.vacation_note = str(drVoice.vacationNote).trim();
-  if (drWizard.agencyName || drWizard.agencyEmail) modules.web_agency = { name: str(drWizard.agencyName), email: str(drWizard.agencyEmail) };
+  // R7: Online-Formular-Integration (Punkt 1 + Punkt 4)
+  modules.wizard_form_relevant = formRelevant;
+  if (formRelevant) {
+    if (drWizard.integrationLocation) modules.wizard_integration = drWizard.integrationLocation; // intern | agentur
+    if (drWizard.formMode) modules.wizard_form_mode = drWizard.formMode; // ersetzen | ergaenzen
+    if (drWizard.caretaker) modules.wizard_caretaker = drWizard.caretaker; // wir | betrieb | agentur
+    if (drWizard.agencyName || drWizard.agencyEmail) modules.web_agency = { name: str(drWizard.agencyName), email: str(drWizard.agencyEmail) };
+  }
   if (str(dr.review?.googlePlaceId).trim()) modules.google_place_id = str(dr.review.googlePlaceId).trim();
   modules.review_internal_threshold = typeof dr.review?.internalThreshold === "number" ? dr.review.internalThreshold : 3;
   if (str(dr.messages?.confirmSms).trim()) modules.sms_content = str(dr.messages.confirmSms).trim();
@@ -222,8 +230,14 @@ async function main() {
   const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
   console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Anbieter: ${modules.telco_provider || "(nicht gewählt)"}, Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
   if (modules.emergency_service && modules.emergency_contact) console.log(`     ⚠️ Notdienst aktiv → Notfall-Alarm an: ${[modules.emergency_contact.name, modules.emergency_contact.phone].filter(Boolean).join(", ")} (Push+E-Mail, kein Live-Transfer).`);
-  console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
-  if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
+  if (!formRelevant) {
+    console.log(`  5. Online-Meldeformular: NICHT gewollt — Betrieb nutzt nur Voice (Lisa) + Leitsystem. Kein Wizard-Einbau.`);
+  } else {
+    const careLabel = { wir: "FlowSight baut ein", betrieb: "Betrieb selbst (Schnipsel+Anleitung)", agentur: "Web-Agentur" }[str(drWizard.caretaker)] || "(wer kümmert sich: nicht gewählt)";
+    const modeLabel = { ersetzen: "ersetzt bestehendes Formular", ergaenzen: "ergänzend dazu" }[str(drWizard.formMode)] || "(ersetzen/ergänzen: nicht gewählt)";
+    console.log(`  5. Online-Formular einbauen: Website-Betreuung ${str(drWizard.integrationLocation) || "(nicht gewählt)"}, ${modeLabel}, Einbau durch ${careLabel}.`);
+    if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
+  }
   const calAdmin = [dr.calendar?.adminName, dr.calendar?.adminEmail].filter((x) => str(x).trim()).join(", ");
   const googleAcct = str(dr.calendar?.googleAccountEmail).trim();
   console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? `Google — WIR richten die Anbindung ein (K4-Bau bei echtem Bedarf${googleAcct ? `; Konto: ${googleAcct}` : ""})` : "nicht angebunden"}.`);
