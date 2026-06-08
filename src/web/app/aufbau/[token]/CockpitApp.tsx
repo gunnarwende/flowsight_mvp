@@ -335,18 +335,23 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
   const init = session.draft ?? {};
   const [view, setView] = useState<View>("overview");
   const [draft, setDraft] = useState<CockpitDraft>(() => ({
+    // WICHTIG: gespeicherte Felder ZUERST spreaden, damit ALLE (auch neue wie assistantName,
+    // telco, emergency*, holidays*, agency*, googlePlaceId, internalThreshold, calendar,
+    // messages, starNotes) einen Reload überleben — danach nur die paar Default-Felder überschreiben.
+    ...init,
     branding: { brandColor: init.branding?.brandColor ?? pf.branding.brandColor, caseIdPrefix: init.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix },
     staff: init.staff ?? [],
     voice: {
+      ...init.voice,
       greetingText: init.voice?.greetingText ?? pf.voice.greetingSuggestion,
       languages: init.voice?.languages ?? pf.voice.languagesDefault,
       wissen: init.voice?.wissen ?? {},
       dispositions: init.voice?.dispositions ?? DISPOSITION_DEFAULTS,
       pickup: init.voice?.pickup,
     },
-    wizard: { categories: init.wizard?.categories ?? pf.wizard.categories, distribution: init.wizard?.distribution, embedBy: init.wizard?.embedBy, hasWebsite: init.wizard?.hasWebsite },
-    review: { notificationEmail: init.review?.notificationEmail ?? "", googleReviewUrl: init.review?.googleReviewUrl ?? "", smsSenderName: init.review?.smsSenderName ?? pf.review.smsSenderName, smsContent: init.review?.smsContent ?? "", notifyMessagesByEmail: init.review?.notifyMessagesByEmail ?? false },
-    golive: { adminEmail: init.golive?.adminEmail ?? "", avvAccepted: init.golive?.avvAccepted ?? false },
+    wizard: { ...init.wizard, categories: init.wizard?.categories ?? pf.wizard.categories, distribution: init.wizard?.distribution, embedBy: init.wizard?.embedBy, hasWebsite: init.wizard?.hasWebsite },
+    review: { ...init.review, notificationEmail: init.review?.notificationEmail ?? "", googleReviewUrl: init.review?.googleReviewUrl ?? "", smsSenderName: init.review?.smsSenderName ?? pf.review.smsSenderName, smsContent: init.review?.smsContent ?? "", notifyMessagesByEmail: init.review?.notifyMessagesByEmail ?? false },
+    golive: { ...init.golive, adminEmail: init.golive?.adminEmail ?? "", avvAccepted: init.golive?.avvAccepted ?? false },
     notes: init.notes ?? {},
     stepDone: init.stepDone ?? {},
   }));
