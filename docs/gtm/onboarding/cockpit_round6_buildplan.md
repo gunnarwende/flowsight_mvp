@@ -4,6 +4,19 @@
 > + Founder-Freigaben in diesem Chat. **Reihenfolge: Backend → Name → UI Strang-für-Strang → Website.**
 > Founder-Freigaben: **1 ja · 2 ja · 3 ja · Headline #1.**
 
+## ✅ ERLEDIGT (Stand 08.06.)
+- **Nachrichten-Nav-Fix** (war nicht verlinkt) — LIVE (#588).
+- **Batch 1 (UI):** Headline #1 · Test-Call entfernt · Telefonanbieter „Anderer" separat + Pflicht-Name, „/ nicht dabei" raus · Feiertags-Erwartung gestrichen — LIVE (#589).
+- **Backend #1 (Korb-Wiring)** + **#2 (Nachrichten-E-Mail)** — gebaut + committet (Branch, dormant bis call_type live, gebündelt).
+- **#3 Name-Personalisierung** (Cockpit komplett durchpropagiert via `lisaName` + Agent: Prompt `{{assistant_name}}` + generate + promote) + **Kennen-Sie-das-#2-Fix** (Werbung≠Lieferant, + Lieferant/Rückfrage-Karte) — gebaut + committet (Branch).
+- **Init-Persistenz-Fix** (alle Draft-Felder überleben Reload).
+- **„So soll Lisa reagieren" aufgeräumt** (7-Fragen-Text raus, Karten nummeriert 1–6, Kanal-Folge pro Karte „→ Fall+E-Mail+Push / Nachricht+E-Mail / kein Eintrag", „nie SMS"-Hinweis) + **Preisfragen → reagieren verschoben** + **Übersichts-Subline 1 Zeile** (Datenschutz/Aufnahmen raus).
+
+## ⏭ OFFEN (Reihenfolge: Name → Badge → restliche UI → Website)
+- ✅ Einzugsgebiet entschärft (kein Filter) + Notiz-Labels Komma (Lisa + Leitsystem).
+- **OFFEN (grosse Brocken, frische Runde):** **Website-Umbau** (Q2 raus, neue Ja/Nein-1, Integrations-Karte) · **Badge-Fix** (SW + Push + Zählquelle, Handy-Test).
+- **OFFEN (Design/Detail, frische Runde):** per-Stern strang-spezifische Beispiel-Placeholder + „So meldet sich"-Notiz minimal · 1-2-3-Ordnung in den übrigen Strängen · Reagieren-Symbol 🎧 · Vor-Ort-Icon (Haustür — braucht Emoji-vs-SVG-Konsistenzentscheid für alle 3 Strang-Icons). Voice VA1-3 separat (Pre-Go-live).
+
 ## IST-Wahrheit (am Code verifiziert — Basis für alles)
 - **3-Korb-Logik:** Lisa klassifiziert jeden Anruf → **Fall** (Auftrag/Reklamation) · **Nachricht** (Rückruf/Lieferant/Nachfrage/„Chef") · **Nichts** (Info/Spam).
 - **Fall** → Eintrag „Fälle" + **E-Mail** an `notification_email` (immer) + Push (Notfall/Reklamation). `sendCaseNotification`.
@@ -61,7 +74,8 @@
 - Weiterleitungs-Disclosure + Animation = Founder-Lob, **so lassen**.
 
 ### Lisa › Hören Sie Ihre Lisa (Test-Call)
-- **KOMPLETT ENTFERNEN** (zu hohe Erwartung; Web holprig, Auflegen fehlt, Sprachwechsel tot, Name propagiert nicht). Voice-Themen separat = VA1-VA3 (ticketlist, Pre-Go-live).
+- **KOMPLETT ENTFERNEN** (zu hohe Erwartung; Web holprig, Auflegen fehlt, Sprachwechsel tot, Name propagiert nicht). Voice-Themen separat = VA1-VA3 (ticketlist, Pre-Go-live). **ERLEDIGT (Batch 1).**
+- **Founder-Anforderung 08.06. (festgehalten):** Falls der Test-Call später zurückkommt (nach VA1-3-Fix), MUSS er einen **sichtbaren Auflegen-Button** haben (Web-SDK `stopCall()`) — der Anwender muss jederzeit auflegen können.
 
 ### Website (→ „Ihr Online-Meldeformular")
 - **Numbered 1-2-3 überall** (Vorbild).
