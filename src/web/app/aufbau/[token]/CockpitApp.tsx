@@ -295,6 +295,16 @@ const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string
   { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
 ];
 
+// Per-Stern „Was läuft bei Ihnen noch?"-Beispiele — STRANG-SPEZIFISCH + konkret
+// (2 knackige Sani-Fälle je Stern, keine vagen). „begruessung" ist die Ausnahme:
+// minimal (nur „Hinweis (optional)", kein Beispiel) — siehe Drill-in-Render.
+const LISA_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
+  telefonie: `z. B. „Notfall-Handy (zweite Nummer) NICHT umleiten", „Festnetz läuft über die Zentrale im Laden"`,
+  notfall: `z. B. „Am Wochenende nur Heizungsausfälle als Notfall", „Samstag bis 12 Uhr besetzt, danach Notdienst"`,
+  wissen: `z. B. „Wir machen keine Ölheizungen mehr", „Service-Abo-Kunden haben bei Terminen Vorrang"`,
+  anruflogik: `z. B. „Heizungsausfall im Winter immer als Notfall behandeln", „Stammkunde Meier immer direkt an den Chef"`,
+};
+
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
 const DISPOSITION_CARDS: { key: keyof DispositionsConfig; titel: string; szenario: string; weg: string }[] = [
   { key: "d1_auftrag", titel: "Neuer Auftrag", szenario: "Schaden / Termin.", weg: "→ Fall im Leitsystem. Bei Notfall: sofort Push + E-Mail an Sie (Lisa stellt NICHT durch — sie hält den Fall fest)." },
@@ -729,8 +739,11 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
           <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field label={`Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte?`} hint="Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
-              <TextArea placeholder={`z. B. „Bei Heizungsausfall zuerst nach Eigentümer/Mieter fragen", „Familie Meier ist Sonderfall …"`} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
+            <Field
+              label={cat.key === "begruessung" ? "Hinweis (optional)" : `Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte,`}
+              hint={cat.key === "begruessung" ? undefined : "Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
+            >
+              <TextArea placeholder={cat.key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
             </Field>
           </div>
           <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
