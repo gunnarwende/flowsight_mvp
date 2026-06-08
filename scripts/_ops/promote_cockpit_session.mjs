@@ -214,7 +214,8 @@ async function main() {
   const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
   console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
   console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
-  console.log(`  6. Kalender: ${calProvider === "outlook" ? "Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login)" : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
+  const calAdmin = [dr.calendar?.adminName, dr.calendar?.adminEmail].filter((x) => str(x).trim()).join(", ");
+  console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
   console.log(`  Danach Session auf "live" setzen.`);
   const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
   if (noteLines.length) {

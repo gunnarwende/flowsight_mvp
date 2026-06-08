@@ -163,10 +163,13 @@ export interface CockpitDraft {
     chips?: string[];
   };
   /** Kalender-Anbindung für Free/Busy (keine Doppelbuchung). Die technische MS-Tenant-ID
-   *  wird beim 1-Klick-OAuth NACH Go-live automatisch erfasst — hier NICHT gefragt (zu technisch). */
+   *  wird beim 1-Klick-OAuth NACH Go-live automatisch erfasst — hier NICHT gefragt (zu technisch).
+   *  adminName/adminEmail = wer den Microsoft-365-Consent gibt (Q3/K6: „Wer ist Ihr Admin?"). */
   calendar?: {
     connect?: boolean;
     provider?: "outlook" | "google" | "none";
+    adminName?: string;
+    adminEmail?: string;
   };
   golive?: {
     adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)

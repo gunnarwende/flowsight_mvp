@@ -77,6 +77,35 @@ function RadioGroup<T extends string>({ value, onChange, options }: {
   );
 }
 
+/** Ein-/ausklappbarer Hinweis (Q4-Regel: Erklär-Text default eingeklappt, Textdichte runter). */
+function Disclosure({ summary, children }: { summary: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/5">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs font-medium text-slate-300 hover:text-white">
+        <span>{summary}</span>
+        <span className="text-sm leading-none transition-transform" style={{ color: GOLD, transform: open ? "rotate(90deg)" : "none" }}>▸</span>
+      </button>
+      {open ? <div className="border-t border-white/10 px-3 py-2.5 text-xs leading-relaxed text-slate-300">{children}</div> : null}
+    </div>
+  );
+}
+
+/** Nummerierter Abschnitt mit „was bewirkt dieser Block"-Zeile = der rote Faden (Q2). */
+function Section({ n, icon, title, lead, children }: { n: number; icon: string; title: string; lead: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <div className="flex items-center gap-2.5">
+        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{ backgroundColor: "rgba(200,162,74,0.16)", color: GOLD }}>{n}</span>
+        <h3 className="text-sm font-semibold text-white">{icon} {title}</h3>
+      </div>
+      <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{lead}</p>
+      <div className="mt-3 space-y-3">{children}</div>
+    </section>
+  );
+}
+
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
@@ -478,23 +507,24 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   const setStaff = (next: StaffMember[]) => update((d) => ({ ...d, staff: next }));
   const sms = draft.review?.smsContent ?? "";
   return (
-    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Marke, Team, Benachrichtigungen und Bewertungen — das Herz Ihres Systems." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Ihre Farbe">
-          <div className="flex items-center gap-2">
-            <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-9 w-12 cursor-pointer rounded border border-white/15 bg-transparent" />
-            <TextInput value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} />
-          </div>
-        </Field>
-        <Field label="Fall-Kürzel" hint="z. B. DA-0042">
-          <TextInput maxLength={4} value={draft.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, caseIdPrefix: e.target.value.toUpperCase() } }))} />
-        </Field>
-      </div>
+    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Das Herz Ihres Systems — in fünf Schritten: Ihre Marke, Ihr Team, Ihre Verfügbarkeit, Ihre Kommunikation und Ihre Aussenwirkung." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
+      <Section n={1} icon="🎨" title="Ihre Marke" lead="Farbe und Fall-Kürzel tragen jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Ihre Farbe">
+            <div className="flex items-center gap-2">
+              <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-9 w-12 cursor-pointer rounded border border-white/15 bg-transparent" />
+              <TextInput value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} />
+            </div>
+          </Field>
+          <Field label="Fall-Kürzel" hint="z. B. DA-0042">
+            <TextInput maxLength={4} value={draft.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, caseIdPrefix: e.target.value.toUpperCase() } }))} />
+          </Field>
+        </div>
+      </Section>
 
-      <div>
-        <p className="text-sm font-medium text-slate-200">Team & Rollen</p>
-        <p className="mt-0.5 text-xs text-slate-400">Leitung sieht alle Fälle, Techniker nur die eigenen.{pf.hints.dummyStaffNames.length ? " (Demo-Namen werden nicht übernommen.)" : ""}</p>
-        <div className="mt-2 space-y-2">
+      <Section n={2} icon="👥" title="Ihr Team & Rollen" lead="Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.">
+        {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
+        <div className="space-y-2">
           {staff.map((s, i) => (
             <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
               <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
@@ -507,13 +537,10 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
           ))}
           <button type="button" onClick={() => setStaff([...staff, { name: "", role: staff.length === 0 ? "admin" : "techniker", email: "" }])} className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-slate-300 hover:border-white/40">+ Mitarbeiter hinzufügen</button>
         </div>
-      </div>
+      </Section>
 
-      {/* Kalender & Verfügbarkeit — dynamischer Lern-Cascade (Referenz-Pattern) */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="text-sm font-semibold text-white">📅 Kalender & Verfügbarkeit</p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-400">Binden Sie Ihren Kalender an, sehen Sie beim Terminsetzen sofort, ob Sie oder ein Mitarbeiter schon belegt sind — <span className="text-slate-200">keine Doppelbuchung mehr.</span></p>
-        <div className="mt-3 space-y-3">
+      <Section n={3} icon="📅" title="Kalender & Verfügbarkeit" lead="Kalender anbinden → beim Terminsetzen sofort sehen, ob Sie oder ein Mitarbeiter schon belegt sind. So überplanen Sie niemanden — keine Doppelbuchung mehr.">
+        <div className="space-y-3">
           <Field label="Kalender anbinden?">
             <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
               onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
@@ -523,13 +550,21 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <Field label="Welcher Kalender-Anbieter?">
               <RadioGroup value={(draft.calendar?.provider === "outlook" || draft.calendar?.provider === "google") ? draft.calendar.provider : undefined}
                 onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, provider: v } }))}
-                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung" }]} />
+                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung (Welle 2)" }]} />
             </Field>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "outlook" ? (
-            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs leading-relaxed text-slate-300">
-              ✓ <span className="text-slate-200">So einfach:</span> Nach dem Freischalten verbinden Sie in Ihrem Leitsystem mit <span className="text-slate-200">einem Klick</span> (einmal bei Microsoft anmelden, Ihr Admin bestätigt). Wir prüfen dann die Kalender Ihrer Mitarbeiter (oben) auf Belegung. <span className="text-slate-400">Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter — eine „Tenant-ID" müssen Sie NICHT heraussuchen.</span>
-            </p>
+            <>
+              <Field label="Wer richtet die Verbindung ein (Ihr Microsoft-365-Administrator)?" hint="Die Person, die sich einmalig bei Microsoft anmeldet und die Freigabe bestätigt — oft Sie selbst oder Ihr IT-Betreuer.">
+                <TextInput placeholder="Name" value={draft.calendar?.adminName ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, adminName: e.target.value } }))} />
+              </Field>
+              <Field label="Dessen Microsoft-365-E-Mail">
+                <TextInput type="email" placeholder="admin@ihre-firma.ch" value={draft.calendar?.adminEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, adminEmail: e.target.value } }))} />
+              </Field>
+              <Disclosure summary="Wie läuft die Verbindung ab? (1 Klick — nichts heraussuchen)">
+                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Schritt 2) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
+              </Disclosure>
+            </>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "google" ? (
             <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs leading-relaxed text-amber-100/90">
@@ -537,28 +572,37 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             </p>
           ) : null}
         </div>
-      </div>
+      </Section>
 
-      <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
-        <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
-      </Field>
-      <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
+      <Section n={4} icon="📨" title="Benachrichtigungen & E-Mail" lead="Wohin Ihr System neue Fälle meldet — und welche Nachrichten automatisch an Sie und Ihre Kunden gehen.">
+        <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
+          <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
+        </Field>
+        <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
+        <Disclosure summary="Welche Nachrichten verschickt Ihr System automatisch?">
+          <ul className="space-y-1.5">
+            <li>📩 <span className="text-slate-200">Empfangsbestätigung</span> (SMS) — direkt nach jedem Fall, mit Link für Fotos/Angaben.</li>
+            <li>⏰ <span className="text-slate-200">Termin-Erinnerung</span> (E-Mail) — rund 24 h vor dem Termin.</li>
+            <li>⭐ <span className="text-slate-200">Bewertungsanfrage</span> (E-Mail) — wenn Sie einen Fall abschliessen.</li>
+          </ul>
+          <p className="mt-2 text-slate-400">Wortlaut und Kanal (SMS oder E-Mail) legen <span className="text-slate-300">Sie</span> fest — im nächsten Ausbauschritt. Sie entscheiden, was bei Ihren Kunden ankommt.</p>
+        </Disclosure>
+      </Section>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="text-sm font-semibold text-white">⭐ Bewertungen — Ihre Aussenwirkung</p>
-        <p className="mt-1 text-xs text-slate-400">Aus zufriedenen Kunden werden mit einem Klick öffentliche 5-Sterne-Bewertungen — das stärkste Signal für neue Aufträge.</p>
-        <div className="mt-3 space-y-3">
-          <Field label="Ihr Google-Bewertungslink" hint="Google-Unternehmensprofil → Rezensionen → „Rezensionen erhalten“ → Link kopieren. Unsicher? Tragen Sie hier Ihren Firmennamen ein, wir finden ihn.">
-            <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
-          </Field>
-          <Field label={`SMS-Absender (max. 11 Zeichen)`}>
-            <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
-          </Field>
-          <Field label={`SMS-Text (optional anpassen)`} hint={`${sms.length}/160 Zeichen · leer = unser bewährter Standard`}>
-            <TextArea maxLength={160} value={sms} placeholder="Leer lassen für Standard-Text" onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsContent: e.target.value.slice(0, 160) } }))} />
-          </Field>
-        </div>
-      </div>
+      <Section n={5} icon="⭐" title="Bewertungen — Ihre Aussenwirkung" lead="Aus zufriedenen Kunden werden mit einem Klick öffentliche 5-Sterne-Bewertungen — das stärkste Signal für neue Aufträge.">
+        <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
+          <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
+        </Field>
+        <Disclosure summary="Wo finde ich meinen Bewertungslink?">
+          Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
+        </Disclosure>
+        <Field label={`SMS-Absender (max. 11 Zeichen)`}>
+          <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
+        </Field>
+        <Field label={`SMS-Text (optional anpassen)`} hint={`${sms.length}/160 Zeichen · leer = unser bewährter Standard`}>
+          <TextArea maxLength={160} value={sms} placeholder="Leer lassen für Standard-Text" onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsContent: e.target.value.slice(0, 160) } }))} />
+        </Field>
+      </Section>
       <NotesField value={draft.notes?.system ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, system: val } }))} />
     </Detail>
   );
