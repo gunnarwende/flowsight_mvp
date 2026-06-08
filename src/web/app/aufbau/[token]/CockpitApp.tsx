@@ -433,7 +433,7 @@ function Overview({ brandColor, companyName, assistantName, progress, doneCount,
         <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">Bauen wir {companyName} auf</h1>
         <p className="mx-auto mt-3 max-w-[620px] text-sm leading-relaxed text-slate-300">
           80 % ist vorbereitet — Sie ergänzen die 20 %, die nur Sie kennen.
-          <span className="mt-1 block text-slate-400">Nichts ist live, bis Sie freigeben · Schweizer Datenschutz, keine Aufnahmen · jederzeit speicherbar, später änderbar.</span>
+          <span className="mt-1 block text-slate-400">Nichts ist live, bis Sie freigeben · jederzeit speicherbar, später änderbar.</span>
         </p>
         <div className="mt-3"><SaveDot state={saveState} /></div>
       </header>
