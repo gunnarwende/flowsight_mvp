@@ -310,7 +310,6 @@ const WISSEN_FIELDS: { key: keyof CockpitSession["prefill"]["voice"]["wissen"]; 
   { key: "serviceArea", label: "Einzugsgebiet" },
   { key: "servicesList", label: "Leistungen" },
   { key: "emergencyPolicy", label: "Notfall-Regelung" },
-  { key: "priceDeflect", label: "Antwort auf Preisfragen" },
 ];
 
 // T1: gängige CH-Telefonanbieter (steuert die Weiterleitungs-Anleitung).
@@ -684,22 +683,36 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       touched: false,
       render: () => (
         <>
-          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — stellen Sie es so ein, wie es zu Ihrem Betrieb passt (jederzeit änderbar).</p>
+          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — jederzeit änderbar.</p>
           <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-            🛡 <span className="text-slate-200">{lisaName}s feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie. Höchstens 7 Fragen, <span className="text-slate-200">keine Gesprächsaufnahme</span>.
+            🛡 <span className="text-slate-200">{lisaName}s feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie.
           </div>
-          {DISPOSITION_CARDS.map((c) => (
-            <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
-              <p className="text-sm font-semibold text-white">{c.titel}</p>
-              <p className="text-xs text-slate-400">{c.szenario}</p>
-              <div className="mt-2.5 flex flex-col gap-2.5">
-                <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">{lisaName}:</span><KorbPick value={disp[c.key].korb} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
-                {disp[c.key].korb !== "nichts" ? (
-                  <Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Mich dabei sofort benachrichtigen" />
-                ) : null}
+          <Field label={`Was ${lisaName} auf Preisfragen antwortet`} hint="Keine Zahlen nennen — höflich auf eine Besichtigung/Offerte lenken.">
+            <TextArea value={v.wissen?.priceDeflect ?? pf.voice.wissen.priceDeflect} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, priceDeflect: e.target.value } } }))} />
+          </Field>
+          {DISPOSITION_CARDS.map((c, i) => {
+            const k = disp[c.key].korb;
+            const push = disp[c.key].notify === "push";
+            const result = k === "fall"
+              ? `→ Fall im Leitsystem + E-Mail an Sie${push ? " + sofort Push aufs Handy" : ""}`
+              : k === "nachricht"
+                ? `→ Nachricht im Leitsystem + E-Mail an Sie${push ? " + Push" : ""}`
+                : "→ kein Eintrag — erledigt sich am Telefon";
+            return (
+              <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
+                <p className="text-sm font-semibold text-white"><span style={{ color: GOLD }}>{i + 1}.</span> {c.titel}</p>
+                <p className="text-xs text-slate-400">{c.szenario}</p>
+                <div className="mt-2.5 flex flex-col gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">{lisaName}:</span><KorbPick value={k} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
+                  {k !== "nichts" ? (
+                    <Toggle on={push} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Mich sofort aufs Handy benachrichtigen (Push)" />
+                  ) : null}
+                  <p className="text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>{result}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+          <p className="text-[11px] leading-relaxed text-slate-500">An Sie geht es per <span className="text-slate-300">E-Mail</span> (und optional <span className="text-slate-300">Push</span> aufs Handy) — <span className="text-slate-300">nie per SMS</span>. SMS gehen nur an Ihre Kunden.</p>
         </>
       ),
     },
