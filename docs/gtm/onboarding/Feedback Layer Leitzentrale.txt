@@ -1,0 +1,34 @@
+Feedback zu: Ihr Leitsystem — Einstellungen: 
+
+Ich bin jetzt hier auf dem Hauptbild und sehe hier oben Pfeilübersicht. Hier finden auch erstmal der Button, der schöne Button, den wir auch überall sehen wollen. Und zwar der Button, wenn ich beispielsweise Ihre Leser reingehe und dann den Strang, das soll Lisa wissen, öffnen, dann steht da oben ein schöner Button zurück zum Sternbild. Und wenn ich jetzt auf Lisa-Ebene generell bin, habe ich auch nur Strich Übersicht. Auch hier einen schönen Button einfügen. Dann weiter zum Leitsystem selber. Du hast da ein Icon verwendet mit so einer weißen Raute vor der Überschrift. Damit kann ich nichts anfangen. Vielleicht würde ich hier ein Gehirn einfügen, weil das ist letztendlich das Gehirn, oder? Oder ein Herz, ein weißes Herz. Das wäre super.
+
+Dann zum Icon selber. Also ich habe jetzt Desktop-Version, bin jetzt mal bei 100%. Sieht soweit sehr schön aus. Was mir hier fehlt, ist auch wieder das Training, die Liebe dahinter, etwas so einstellen zu wollen, nicht zu müssen, dass man etwas für sich macht. Also nur die Worte, wobei, nein, das passt hier an der Stelle. Ich habe mir das gerade mal durch überlegt und das ist ja super, das wollen wir hier nicht weiter trainieren. Das bleibt ja statisch und nicht dynamisch wie jetzt Voice-Agent, wo man immer noch schnell was basteln kann. Hier finde ich das, ehrlich gesagt, sehr treffend. Dann fange ich an mit dem ersten Stern und zwar mit der Marke. Hast du sehr schön umgesetzt. Was mir hier nur fehlt, ist ein strangspezifischer Hinweis. Beziehungsweise nein, hier an der Stelle ähnlich wie bei Lisa, beim Strang, so meldet sich Lisa, möchte ich hier bei der Marke Leitsystem auch nur unten Hinweis haben, Klammer auf, optional, Klammer zu und dann ein leeres Feld. Das passt. Mehr brauchen wir hier nicht unten als optional.
+
+
+Dann weiter zum Strang Ihr Team und Rollen. Bitte folgenden Text streichen: Die Demonamen aus dem Video werden nicht übernommen. Tragen Sie Ihre echten Personen ein. Bitte das canceln.Mitarbeiter hinzufügen ist super. Was nicht super ist, die Dropdown-Auswahl bei Leitung und Techniker, da hast du weiße Schrift auf weißem Hintergrund. Hier bitte Highend auf Dropdown achten, dass das stark leserlich ist, so ist die Schrift null leserlich. Unten dann bei dem Hinweis, das kannst du so stehen lassen, wobei nur eine Sache wieder die Vorauswahl des Textes bitte Strang für Strang dynamisch anpassen.
+
+Dann zum nächsten, Kalender und Verfügbarkeit. Hast du sehr clever, sehr schön gelöst, wie ich finde. Ja, passt, super. Lediglich unten wieder zwei typische Anwendungsfälle reinschreiben zur Vorauswahl, beispielsweise wir nutzen keinen Kalender oder sowas. Genau.
+
+
+
+Jetzt zum Strang Benachrichtigungen und E-Mail. Bitte hier Folgendes rausstreichen. Nicht aus Demo, das steht ganz oben. Und zwar ist davor noch Ihre Geschäfts-E-Mail, Klammer auf, und dann nicht aus Demo, Klammer zu. Demo spielt jetzt keine Rolle mehr. Und den einen Punkt verstehe ich zum Beispiel nicht, auch Rückrufnachrichten zusätzlich per E-Mail melden. Melden oder erhalten? Das ist ja das, was wir jetzt gerade umsetzen, oder? Schau mal bei Voice Agent, ist das nicht ein Thema, was wir jetzt gerade umgesetzt haben? Ich habe... Ja, auch da unten, also generell sehr super gemacht. Und unten auch wieder strangspezifisch vorausgewählt als zwei Themen. Sonst passt das.
+
+
+
+Gut, und dann bin ich schon bei Bewertungen Ihrer Außenwirkung. Sehr wichtiges Thema. Hast du auch schön symbolisiert mit dem Stern. Google Place ID, Profilname. Wäre ich es an der Stelle persönlich auch überfragt. Also wenn ich jetzt, wenn Dörfler AG jetzt zusagt und wir machen zusammen das Onboarding und er, wir sind jetzt gerade hier bei Google Place ID, ich wüsste jetzt nicht, was A damit gemeint ist. Also doch, du hast es unten drunter hingeschrieben. Sorry, nehme ich zurück. Ich weiss wieder, was gemeint ist. Aber ich wüsste jetzt nicht, was genau, wonach ich genau jetzt suchen muss und wo ich es vor allem finde.Der Rest sieht sehr schön aus. Passt auch hier unten betriebs- äh strandspezifisch vielleicht eine Sache vorausfinde, das ist sehr, sehr stark.
+
+
+
+Ich bin dann einen Schritt zurück zur Hauptübersicht, zur Hauptseite und was mir jetzt hier halt leider noch fehlt, ist dann, nachdem ich es voll ausgefüllt habe, der goldene Umriss der Card, dass ich damit jetzt fertig bin.
+
+
+
+Und jetzt stellt sich mir founderseitig so ein bisschen die Frage, was ist, oder aus Sicht von Döfler AG, Ihre Fälle sauber an einem Ort. Diese Card auf der Hauptseite, ich weiss jetzt nicht, ich kann da nichts draufklicken, ist ja nichts Dynamisches. Ansonsten, wenn da ich finde inhaltlich jetzt auch leer, muss ich sagen, können wir gerne eliminieren und dafür an Gunnar zum Freischalten senden, dieser Button höher legen, dass der Pfeil, der goldene Pfeil, dann darauf geht.
+
+Jetzt klicke ich auf an Gunnar zum Freischalten senden. Ist AVV wirklich vollständig und richtig? Sieht soweit gut aus. Die eingesetzten Dienstleister würde ich mal jetzt nicht so gross hervorheben. Ist, glaube ich, keine Pflicht. Ich würde es eher dezent mit untermischen. Das wäre noch ganz cool. Und dann bei dem Hinweis, was passiert nach dem Freischalten. Cool, passt. Super. Sehr schön.
+
+
+
+Ich wollte jetzt an Gunnar zum Freischalten senden. Jetzt erhalte ich aber eine Rückmeldung, dass ein paar Punkte noch nicht vollständig sind. Ist eine schöne Auflistung, aber zwei Sachen. Erstens hätte ich jetzt hier schon erwartet, per Link, dass ich dann darauf zu dem entsprechenden Feld zurückspringe. Zweitens, und das revidiert eigentlich Punkt Nummer eins, ist bei der Ausfüllung der einzelnen Stränge, egal ob Lisa oder Website oder vor Ort und vor allem auch Leitsystem, hätte ich erwartet, dass wenn ich etwas ausfülle und ich dann den Strang bestätige, erhalte ich ja dann den goldenen Stern. Oder bei Website ist dann die Card Gold. Das heißt für mich schon mal psychologisch, ich habe mit dem Thema abgeschlossen, ich bin fertig, juhu, wir haben es geschafft. Jetzt aber nochmal zurückspringen zu müssen, die Fehler zu suchen, katastrophal. Und ich hätte schon eher erwartet, dass das System so schlau ist, dass er im Hintergrund ein paar Pflichtfelder hat, die ich auszufüllen habe, um etwas zu senden, sodass der Stern eben nicht gold wird. Mit dem Hinweis, ja, hier fehlt das noch. Also direkt an der Wurzel behoben und nicht erst durch, alles schön, alles tutti frutti und dann am Ende kriegt man dann die Bescheinigung, dass noch einiges fehlt. Nicht schön gelöst. Bitte hier Umsetzung 2 würde ich präferieren, eher als 1, dass man dann direkt an den Step weiß, ja, hier ist noch was offen.
+
+und dass ich mir unten auf der Hauptseite mir selber einen PDF Auszug ziehen kann sehe ich nicht.
