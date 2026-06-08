@@ -123,10 +123,13 @@ function Section({ n, icon, title, lead, children }: { n: number; icon: string; 
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true" style={{ filter: "drop-shadow(0 0 16px rgba(212,168,67,0.75)) drop-shadow(0 0 36px rgba(212,168,67,0.45))" }}>
-      <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
-      <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
-    </svg>
+    <span className="fs-iconglow inline-block leading-none">
+      <style>{`@keyframes fsglow{0%,100%{filter:drop-shadow(0 0 12px rgba(212,168,67,.55)) drop-shadow(0 0 30px rgba(212,168,67,.28))}50%{filter:drop-shadow(0 0 22px rgba(212,168,67,.9)) drop-shadow(0 0 48px rgba(212,168,67,.5))}}.fs-iconglow svg{animation:fsglow 4.5s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.fs-iconglow svg{animation:none;filter:drop-shadow(0 0 16px rgba(212,168,67,.75)) drop-shadow(0 0 36px rgba(212,168,67,.45))}}`}</style>
+      <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke="#d4a843" strokeWidth="1.5" />
+        <circle cx="26" cy="26" r="6.5" fill="#d4a843" />
+      </svg>
+    </span>
   );
 }
 
@@ -742,6 +745,7 @@ const MISSING_LABEL: Record<string, string> = {
   staff: "Mindestens ein Mitarbeiter (mit E-Mail)", staff_admin: "Eine Person als Leitung",
   notification_email: "Geschäfts-E-Mail für neue Fälle", google_review_url: "Google-Bewertungslink",
   admin_email: "Login-E-Mail", avv: "AVV akzeptieren", greeting: "Begrüssung für Lisa", wizard_distribution: "Wo das Meldeformular lebt",
+  telco: "Ihr Telefonanbieter (Lisa-Strang)", emergency_contact: "Notfall-Empfänger (Name) — bei aktivem Notdienst", agency_email: "E-Mail der Web-Agentur",
 };
 
 function Freigabe({ token, draft, update, onBack, companyName }: {
