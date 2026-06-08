@@ -807,6 +807,7 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
     return (
       <Detail icon="🎉" title="Geschafft." onBack={onBack}>
         <p className="text-sm text-slate-300">Sie haben {companyName} aufgebaut. Gunnar schaut es kurz durch und meldet sich — dann gehen Sie live. Nichts ist verloren.</p>
+        <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="mt-4 inline-block rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>📄 Ihr Setup als PDF sichern</a>
       </Detail>
     );
   }
