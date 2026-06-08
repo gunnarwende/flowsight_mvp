@@ -106,6 +106,23 @@ function ChannelPick({ value, onChange }: { value: "sms" | "email"; onChange: (v
   );
 }
 
+/** „Kennen Sie das?" — legt dem Betrieb seine Alltagsschmerzen vor + zeigt je die Entlastung
+ *  (Welle 2 / emotionaler Hebel: „die verstehen meinen Alltag"). Einklappbar (Q4). */
+function PainHint({ items }: { items: { pain: string; relief: string }[] }) {
+  return (
+    <Disclosure summary="💡 Kennen Sie das?">
+      <ul className="space-y-2.5">
+        {items.map((it, i) => (
+          <li key={i} className="leading-relaxed">
+            <span className="text-slate-200">„{it.pain}"</span><br />
+            <span style={{ color: GOLD }}>→ </span><span className="text-slate-300">{it.relief}</span>
+          </li>
+        ))}
+      </ul>
+    </Disclosure>
+  );
+}
+
 /** Nummerierter Abschnitt mit „was bewirkt dieser Block"-Zeile = der rote Faden (Q2). */
 function Section({ n, icon, title, lead, children }: { n: number; icon: string; title: string; lead: string; children: React.ReactNode }) {
   return (
@@ -390,6 +407,9 @@ function VorOrt({ draft, update, onDone, onBack }: { draft: CockpitDraft; update
       <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-sm text-slate-300">
         Sie können jederzeit selbst einen Fall im Leitsystem erfassen — z. B. direkt beim Kunden. Nichts weiter einzustellen.
       </p>
+      <PainHint items={[
+        { pain: "Beim Kunden schnell etwas notiert — und vergessen, es einzutragen", relief: "Erfassen Sie den Fall direkt im Leitsystem, auch unterwegs vom Handy." },
+      ]} />
       <NotesField value={draft.notes?.vorort ?? ""} onChange={(v) => update((d) => ({ ...d, notes: { ...d.notes, vorort: v } }))} />
     </Detail>
   );
@@ -413,6 +433,11 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 
   return (
     <Detail icon="📞" title="Ihre Lisa" claim="Ihre Mitarbeiterin, die nie ein Gespräch verpasst — und jeden Auftrag festhält. In sechs Schritten eingestellt." onBack={onBack} onDone={onDone}>
+
+      <PainHint items={[
+        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
+        { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
+      ]} />
 
       <Section n={1} icon="🗣" title="So begrüsst Lisa" lead="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
         <Field label="Begrüssung">
@@ -528,6 +553,11 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
   return (
     <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look, in drei Schritten." onBack={onBack} onDone={onDone}>
 
+      <PainHint items={[
+        { pain: "Anfragen kommen nachts oder am Wochenende", relief: "Das Formular nimmt sie rund um die Uhr auf — Sie sehen sie am Morgen." },
+        { pain: "Kunden wissen nicht, was sie überhaupt angeben sollen", relief: "Geführte Fragen + Foto vom Schaden — Sie haben alles, bevor Sie hinfahren." },
+      ]} />
+
       <Section n={1} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
         <div className="space-y-2">
           {cats.map((c: WizardCategory, i: number) => (
@@ -610,6 +640,11 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   const rThr = draft.review?.internalThreshold ?? 3;
   return (
     <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Das Herz Ihres Systems — in fünf Schritten: Ihre Marke, Ihr Team, Ihre Verfügbarkeit, Ihre Kommunikation und Ihre Aussenwirkung." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
+      <PainHint items={[
+        { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
+        { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
+      ]} />
+
       <Section n={1} icon="🎨" title="Ihre Marke" lead="Farbe und Fall-Kürzel tragen jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Ihre Farbe">
@@ -801,6 +836,16 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
         <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs" style={{ borderColor: draft.golive?.avvAccepted ? GOLD : "rgba(255,255,255,0.3)", backgroundColor: draft.golive?.avvAccepted ? GOLD : "transparent", color: "#1a1a1a" }}>{draft.golive?.avvAccepted ? "✓" : ""}</span>
         <span className="text-sm text-slate-200">Ich akzeptiere die AVV. Schweizer Datenschutz (revDSG), Server in Frankfurt, keine Gesprächsaufnahmen.{draft.golive?.avvAccepted && draft.golive?.avvAcceptedAt ? <span className="mt-0.5 block text-[11px] text-slate-500">Akzeptiert · Version {draft.golive.avvVersion}</span> : null}</span>
       </button>
+
+      <Disclosure summary="Was passiert nach dem Freischalten?">
+        <ul className="space-y-1.5">
+          <li>🧪 Die <span className="text-slate-200">Demo-Fälle aus dem Video verschwinden</span> — Ihr erster echter Anruf wird Ihr erster Fall.</li>
+          <li>📍 Jeder Fall durchläuft: <span className="text-slate-200">Neu → Geplant → In Arbeit → Erledigt</span> — Sie sehen jederzeit, wo er steht.</li>
+          <li>📱 Installieren Sie das Leitsystem als <span className="text-slate-200">App aufs Handy</span> — jeder Fall ist auch unterwegs auf der Baustelle dabei.</li>
+          <li>📊 Jeden Montag bekommen Sie automatisch einen kurzen <span className="text-slate-200">Wochen-Rapport</span> (Fälle, Bewertungen) an Ihre Login-E-Mail.</li>
+          <li>🔒 Bis zum gemeinsamen Go-live ist nichts scharf — Gunnar schaut drüber, dann gehen Sie live.</li>
+        </ul>
+      </Disclosure>
 
       {missing.length > 0 ? (
         <div className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3">
