@@ -13,7 +13,9 @@
 - **„So soll Lisa reagieren" aufgeräumt** (7-Fragen-Text raus, Karten nummeriert 1–6, Kanal-Folge pro Karte „→ Fall+E-Mail+Push / Nachricht+E-Mail / kein Eintrag", „nie SMS"-Hinweis) + **Preisfragen → reagieren verschoben** + **Übersichts-Subline 1 Zeile** (Datenschutz/Aufnahmen raus).
 
 ## ⏭ OFFEN (Reihenfolge: Name → Badge → restliche UI → Website)
-- **Badge-Fix** · Einzugsgebiet entschärfen (kein Filter) · per-Stern strang-spezifische Beispiele + Komma-Labels + „So meldet sich"-Notizfeld minimal · 1-2-3-Ordnung in den übrigen Strängen · Reagieren-Symbol (🎧 — Founder fand's unklar) · Vor-Ort-Icon (Haustür statt „Ziegelblock") · **Website-Umbau** (Q2 raus, neue Ja/Nein-1, Integrations-Karte). Voice VA1-3 separat (Pre-Go-live).
+- ✅ Einzugsgebiet entschärft (kein Filter) + Notiz-Labels Komma (Lisa + Leitsystem).
+- **OFFEN (grosse Brocken, frische Runde):** **Website-Umbau** (Q2 raus, neue Ja/Nein-1, Integrations-Karte) · **Badge-Fix** (SW + Push + Zählquelle, Handy-Test).
+- **OFFEN (Design/Detail, frische Runde):** per-Stern strang-spezifische Beispiel-Placeholder + „So meldet sich"-Notiz minimal · 1-2-3-Ordnung in den übrigen Strängen · Reagieren-Symbol 🎧 · Vor-Ort-Icon (Haustür — braucht Emoji-vs-SVG-Konsistenzentscheid für alle 3 Strang-Icons). Voice VA1-3 separat (Pre-Go-live).
 
 ## IST-Wahrheit (am Code verifiziert — Basis für alles)
 - **3-Korb-Logik:** Lisa klassifiziert jeden Anruf → **Fall** (Auftrag/Reklamation) · **Nachricht** (Rückruf/Lieferant/Nachfrage/„Chef") · **Nichts** (Info/Spam).
