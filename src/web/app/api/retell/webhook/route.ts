@@ -456,6 +456,9 @@ export async function POST(req: Request) {
   const caseIdPrefix = tenantRow?.case_id_prefix ?? "FS";
   const tenantModules = tenantRow?.modules as Record<string, unknown> | null;
   const tenantNotificationEmail = typeof tenantModules?.notification_email === "string" ? tenantModules.notification_email : undefined;
+  // R8 (L-9): Cockpit-Toggle „Rückruf-Nachrichten zusätzlich per E-Mail an mich" — der
+  // Schalter steuert WIRKLICH den Mailversand bei Korb=Nachricht (Default aus).
+  const notifyMessagesByEmail = tenantModules?.notify_messages_email === true;
   // OC3/R6: per-Betrieb Dispositions-Policy — volle Korb+Notify-Config (Default = backward-compatible)
   const dispoCfg = resolveDispositionsConfig(tenantModules);
 
@@ -501,7 +504,7 @@ export async function POST(req: Request) {
       Sentry.setTag("decision", "disposition_nachricht");
       logDecision({ decision: "disposition_nachricht", call_type: callType, created, event, call_id: retellCallId, tenant_id: tenantId });
       // Runde 6 #2: kurze Zusammenfassungs-E-Mail an die Geschäftsmail (Founder-Lieblingsvariante).
-      if (created && tenantNotificationEmail) {
+      if (created && tenantNotificationEmail && notifyMessagesByEmail) {
         import("@/src/lib/email/resend").then(({ sendCallbackNotification }) =>
           sendCallbackNotification({
             notificationEmail: tenantNotificationEmail,

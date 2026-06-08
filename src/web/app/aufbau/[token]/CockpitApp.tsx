@@ -305,6 +305,14 @@ const LISA_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
   anruflogik: `z. B. „Heizungsausfall im Winter immer als Notfall behandeln", „Stammkunde Meier immer direkt an den Chef"`,
 };
 
+// Per-Leitsystem-Stern strang-spezifische Beispiele (R8/L-6). „marke" = minimal (s. Drill-in).
+const SYSTEM_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
+  team: `z. B. „Lehrling Sven darf keine Notfälle übernehmen", „Chef sieht alles, Monteure nur die eigene Region"`,
+  kalender: `z. B. „Wir nutzen keinen Kalender", „Nur der Chef-Kalender ist massgeblich"`,
+  nachrichten: `z. B. „Rechnungen immer CC an die Buchhaltung", „Notfälle zusätzlich aufs Privat-Handy"`,
+  bewertungen: `z. B. „Wir arbeiten nie mit Anbieter X", „Stammkunden fragen wir nicht aktiv nach Bewertung"`,
+};
+
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
 const DISPOSITION_CARDS: { key: keyof DispositionsConfig; titel: string; szenario: string; weg: string }[] = [
   { key: "d1_auftrag", titel: "Neuer Auftrag", szenario: "Schaden / Termin.", weg: "→ Fall im Leitsystem. Bei Notfall: sofort Push + E-Mail an Sie (Lisa stellt NICHT durch — sie hält den Fall fest)." },
@@ -407,7 +415,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
     <div className="flex min-h-dvh flex-col" style={{ background: "radial-gradient(1000px circle at 50% 54%, #18374f 0%, #0b1f33 56%)", color: "#e8eef5" }}>
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
-          <Overview brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
+          <Overview token={token} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa token={token} pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
@@ -430,8 +438,8 @@ function SaveDot({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
 }
 
 // ── Overview = die System-Karte ──────────────────────────────────────────────
-function Overview({ brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
-  brandColor: string; companyName: string; assistantName: string;
+function Overview({ token, brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
+  token: string; brandColor: string; companyName: string; assistantName: string;
   progress: Record<string, boolean>; doneCount: number; saveState: "idle" | "saving" | "saved" | "error";
   onOpen: (v: View) => void;
 }) {
@@ -492,34 +500,33 @@ function Overview({ brandColor, companyName, assistantName, progress, doneCount,
       </div>
       <div className="my-5 text-center text-2xl sm:hidden" style={{ color: `${GOLD}99` }}>↓</div>
 
-      {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
+      {/* Leitsystem-Knoten (klickbar) — der Held der Karte. L-13: goldener Umriss wenn bestätigt. */}
       <button type="button" onClick={() => onOpen("system")}
         className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30"
-        style={{ borderColor: "rgba(255,255,255,0.10)", backgroundColor: "rgba(255,255,255,0.03)" }}>
+        style={{ borderColor: progress.system ? `${GOLD}66` : "rgba(255,255,255,0.10)", backgroundColor: progress.system ? `${GOLD}0f` : "rgba(255,255,255,0.03)" }}>
         <BrandIcon size={116} />
         <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
         <p className="mt-0.5 text-base font-semibold" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
-        <p className="mt-4 text-xs leading-relaxed text-slate-400">
-          Marke · Team & Rollen · Benachrichtigung · Bewertung<br />
+        <p className="mt-4 text-xs leading-relaxed" style={{ color: progress.system ? GOLD : undefined }}>
+          <span className="text-slate-400">Marke · Team & Rollen · Benachrichtigung · Bewertung</span><br />
           {progress.system ? "✓ bestätigt" : "antippen zum Einstellen"}
         </p>
       </button>
 
+      {/* L-14: goldener Pfeil zeigt direkt auf den Freigabe-Button (statische Output-Card entfernt). */}
       <div className="my-6 text-center text-2xl" style={{ color: `${GOLD}99` }}>↓</div>
 
-      {/* Output */}
-      <div className="mx-auto max-w-[480px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center text-sm text-slate-300">
-        <p className="font-semibold text-white">📋 Ihre Fälle — sauber an einem Ort</p>
-        <p className="mt-1.5 text-xs leading-relaxed text-slate-400">Daraus entstehen Ihre nächsten Schritte (Weiterleitung · Formular platzieren · Freigabe).</p>
-      </div>
-
       {/* Freigabe */}
-      <div className="mt-12 text-center">
+      <div className="mt-4 text-center">
         <button type="button" onClick={() => onOpen("freigabe")} disabled={false}
           className="rounded-xl px-6 py-3 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
           An Gunnar zum Freischalten senden
         </button>
         {!allDone ? <p className="mt-2 text-[11px] text-slate-400">Tipp: gehen Sie zuerst die drei Stränge + Ihr Leitsystem durch.</p> : null}
+        {/* L-18: PDF-Auszug auch direkt von der Hauptseite ziehbar. */}
+        <p className="mt-5">
+          <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="text-xs font-medium text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-slate-200">📄 Ihren Setup-Stand als PDF sichern</a>
+        </p>
       </div>
     </>
   );
@@ -531,7 +538,7 @@ function Detail({ icon, title, claim, onBack, children, onDone, doneLabel = "Als
 }) {
   return (
     <div className="mx-auto max-w-[680px]">
-      <button type="button" onClick={onBack} className="text-sm text-slate-400 hover:text-white">← Übersicht</button>
+      <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Übersicht</button>
       <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{icon}</span>{title}</h2>
       {claim ? <p className="mt-1 text-sm text-slate-300">{claim}</p> : null}
       <div className="mt-5 space-y-5">{children}</div>
@@ -587,10 +594,13 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`lisa_${k}`]: true } }));
   const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
+  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit). Stern wird
+  // NUR gold, wenn missing() leer ist — sonst bleibt er offen + Inline-Hinweis.
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
     {
       key: "begruessung", star: `So meldet sich ${lisaName}`, icon: "🗣", title: `So meldet sich ${lisaName}`,
       touched: !!(v.greetingText && v.greetingText !== pf.voice.greetingSuggestion),
+      missing: () => (v.greetingText ?? pf.voice.greetingSuggestion).trim() ? [] : ["eine Begrüssung"],
       render: () => (
         <>
           <Field label="Wie soll Ihre rechte Hand am Telefon heissen?" hint={`Standard ist „Lisa“ — Sie können ihr aber jeden Namen geben. Er gilt dann überall: im Cockpit und am Telefon.`}>
@@ -605,6 +615,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
     {
       key: "telefonie", star: `So kommt der Anruf zu ${lisaName}`, icon: "☎️", title: `So kommt der Anruf zu ${lisaName}`,
       touched: !!v.telco?.provider,
+      missing: () => v.telco?.provider ? [] : ["Ihren Telefonanbieter"],
       render: () => (
         <>
           <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
@@ -628,6 +639,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
     {
       key: "notfall", star: `Wann ${lisaName} erreichbar ist`, icon: "🚨", title: `Wann ${lisaName} erreichbar ist`,
       touched: v.emergencyService !== undefined || !!(v.vacationNote ?? "").trim(),
+      missing: () => v.emergencyService === true && !(v.emergencyContact?.name ?? "").trim() ? ["den Notfall-Empfänger (Name)"] : [],
       render: () => (
         <>
           <Field label="Bieten Sie einen Notdienst an?">
@@ -733,6 +745,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   if (star) {
     const cat = CATS.find((c) => c.key === star);
     if (cat) {
+      const miss = cat.missing?.() ?? [];
       return (
         <div className="mx-auto max-w-[680px]">
           <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
@@ -746,7 +759,10 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
               <TextArea placeholder={cat.key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
             </Field>
           </div>
-          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+          {miss.length > 0 ? (
+            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
+          ) : null}
+          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
             {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
@@ -787,8 +803,16 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
   // R7-Punkt-1 (hart): Default = Ja. Nur explizites „Nein" blendet den Rest aus.
   const formRelevant = w.formRelevant !== false;
   const atAgency = w.integrationLocation === "agentur" || w.caretaker === "agentur";
+  // L-17: „✓ passt" erst, wenn Pflichtfelder sitzen (spiegelt submit). „Nein" = sofort fertig.
+  const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
+  const wMissing: string[] = !formRelevant
+    ? []
+    : [
+        ...(w.integrationLocation ? [] : ["wer Ihre Website betreut"]),
+        ...(atAgency && !emailOk(w.agencyEmail) ? ["die E-Mail der Web-Agentur"] : []),
+      ];
   return (
-    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={onDone}>
+    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={wMissing.length ? undefined : onDone}>
 
       <PainHint items={[
         { pain: "Anfragen kommen nachts oder am Wochenende", relief: "Das Formular nimmt sie rund um die Uhr auf — Sie sehen sie am Morgen." },
@@ -879,6 +903,9 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
       ) : null}
 
       <NotesField value={draft.notes?.website ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, website: val } }))} />
+      {wMissing.length ? (
+        <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Strang fertig ist, fehlt noch: {wMissing.join(", ")}.</p>
+      ) : null}
     </Detail>
   );
 }
@@ -896,7 +923,9 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`system_${k}`]: true } }));
   const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
+  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit).
+  const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
     {
       key: "marke", star: "Marke", icon: "🎨", title: "Ihre Marke",
       touched: !!(draft.branding?.brandColor || draft.branding?.caseIdPrefix),
@@ -917,17 +946,22 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
     {
       key: "team", star: "Team", icon: "👥", title: "Ihr Team & Rollen",
       touched: staff.length > 0,
+      missing: () => {
+        const valid = staff.filter((s) => s?.name?.trim() && emailOk(s.email));
+        if (valid.length === 0) return ["mindestens eine Person mit Name + E-Mail"];
+        if (!valid.some((s) => s.role === "admin")) return ["eine Person als Leitung"];
+        return [];
+      },
       render: () => (
         <>
           <p className="text-xs text-slate-400">Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.</p>
-          {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
           {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
           <div className="space-y-2">
             {staff.map((s, i) => (
               <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
                 <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
-                <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`}>
-                  <option value="admin">Leitung</option><option value="techniker">Techniker</option>
+                <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`} style={{ colorScheme: "dark" }}>
+                  <option value="admin" style={{ backgroundColor: "#0b1f33", color: "#fff" }}>Leitung</option><option value="techniker" style={{ backgroundColor: "#0b1f33", color: "#fff" }}>Techniker</option>
                 </select>
                 <button type="button" onClick={() => setStaff(staff.filter((_, j) => j !== i))} className="px-2 text-slate-400 hover:text-white">✕</button>
                 <div className="col-span-3"><TextInput type="email" placeholder="E-Mail" value={s.email} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, email: e.target.value } : x))} /></div>
@@ -985,12 +1019,13 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
     {
       key: "nachrichten", star: "Benachrichtigungen", icon: "📨", title: "Benachrichtigungen & E-Mail",
       touched: !!draft.review?.notificationEmail,
+      missing: () => emailOk(draft.review?.notificationEmail) ? [] : ["die Geschäfts-E-Mail für neue Fälle"],
       render: () => (
         <>
-          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
+          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail.">
             <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
           </Field>
-          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
+          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Rückruf-Nachrichten zusätzlich per E-Mail an mich (sonst nur in der Nachrichten-Liste)" />
           <div className="rounded-lg border border-white/10 bg-white/5 p-3">
             <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
             <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
@@ -1020,6 +1055,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
     {
       key: "bewertungen", star: "Bewertungen", icon: "⭐", title: "Bewertungen — Ihre Aussenwirkung",
       touched: !!draft.review?.googleReviewUrl,
+      missing: () => (draft.review?.googleReviewUrl ?? "").trim() ? [] : ["Ihren Google-Bewertungslink (oder Firmenname)"],
       render: () => (
         <>
           <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
@@ -1028,9 +1064,12 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
           <Disclosure summary="Wo finde ich meinen Bewertungslink?">
             Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
           </Disclosure>
-          <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne. Kennen Sie nicht? Der Link/Firmenname oben genügt fürs Erste.">
+          <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne — nur ein Komfort-Extra.">
             <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
           </Field>
+          <Disclosure summary="Was ist die Place-ID — und wo finde ich sie?">
+            Die Place-ID ist Googles eindeutige Kennung Ihres Profils (beginnt meist mit <span className="text-slate-200">„ChIJ…"</span>). Am einfachsten: Google nach <span className="text-slate-200">„Place ID Finder"</span> suchen, dort Ihren Firmennamen eingeben → die ID erscheint. <span className="text-slate-200">Sie müssen das nicht selbst suchen</span> — lassen Sie das Feld ruhig leer, der Bewertungslink oder Firmenname oben genügt vollkommen. Den Rest erledigen wir.
+          </Disclosure>
           <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
             <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
               options={[
@@ -1056,17 +1095,24 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   if (star) {
     const cat = CATS.find((c) => c.key === star);
     if (cat) {
+      const miss = cat.missing?.() ?? [];
       return (
         <div className="mx-auto max-w-[680px]">
           <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
           <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
           <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field label="Was läuft bei Ihnen noch, das wir unbedingt wissen sollten?" hint="Ihre Besonderheiten, Ausnahmen, Wünsche. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
-              <TextArea placeholder={`z. B. „Rechnungen immer an die Buchhaltung CC", „Wir arbeiten nie mit Anbieter X …"`} value={draft.starNotes?.[`system_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`system_${cat.key}`]: e.target.value } }))} />
+            <Field
+              label={cat.key === "marke" ? "Hinweis (optional)" : "Was läuft bei Ihnen noch, das wir unbedingt wissen sollten,"}
+              hint={cat.key === "marke" ? undefined : "Ihre Besonderheiten, Ausnahmen, Wünsche. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
+            >
+              <TextArea placeholder={cat.key === "marke" ? "" : (SYSTEM_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`system_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`system_${cat.key}`]: e.target.value } }))} />
             </Field>
           </div>
-          <button type="button" onClick={() => { markStar(cat.key); setStar(null); }} className="mt-5 rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+          {miss.length > 0 ? (
+            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
+          ) : null}
+          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
             {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
@@ -1077,7 +1123,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
   return (
-    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Bauen Sie Stern für Stern Ihr Leitsystem — das Herz Ihres Betriebs." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
+    <Detail icon="🤍" title="Ihr Leitsystem — Einstellungen" claim="Bauen Sie Stern für Stern Ihr Leitsystem — das Herz Ihres Betriebs." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
       <PainHint items={[
         { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
         { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
@@ -1099,7 +1145,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
 const MISSING_LABEL: Record<string, string> = {
   staff: "Mindestens ein Mitarbeiter (mit E-Mail)", staff_admin: "Eine Person als Leitung",
   notification_email: "Geschäfts-E-Mail für neue Fälle", google_review_url: "Google-Bewertungslink",
-  admin_email: "Login-E-Mail", avv: "AVV akzeptieren", greeting: "Begrüssung für Lisa", wizard_distribution: "Wo das Meldeformular lebt",
+  admin_email: "Login-E-Mail", avv: "AVV akzeptieren", greeting: "Begrüssung für Lisa", wizard_integration: "Wer Ihre Website betreut (Online-Formular)",
   telco: "Ihr Telefonanbieter (Lisa-Strang)", emergency_contact: "Notfall-Empfänger (Name) — bei aktivem Notdienst", agency_email: "E-Mail der Web-Agentur",
 };
 
@@ -1145,10 +1191,11 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
         {showAvv ? (
           <div className="border-t border-white/10 px-3 py-3">
             <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-300">{AVV_TEXT}</pre>
-            <p className="mt-3 text-xs font-medium text-slate-200">Eingesetzte Dienstleister (Subprozessoren):</p>
-            <ul className="mt-1 space-y-0.5 text-xs text-slate-400">
-              {AVV_SUBPROCESSORS.map((s) => (<li key={s.name}>• <span className="text-slate-300">{s.name}</span> — {s.zweck} ({s.ort})</li>))}
-            </ul>
+            {/* L-16: dezent untergemischt, nicht als hervorgehobener Block (keine Pflicht-Hervorhebung). */}
+            <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
+              <span className="text-slate-400">Eingesetzte Dienstleister:</span>{" "}
+              {AVV_SUBPROCESSORS.map((s) => `${s.name} (${s.zweck}, ${s.ort})`).join(" · ")}
+            </p>
           </div>
         ) : null}
       </div>
