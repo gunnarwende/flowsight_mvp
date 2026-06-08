@@ -150,3 +150,29 @@ Plus: **spielerisch + Spass + High-End-Optik.**
 ## Verbleibend offen (klein)
 - Dörflers Kalender-Anbieter (sobald Mail-Feedback da) — Bau läuft provider-agnostisch weiter.
 - Finaler Welle-1-Cut nach diesem Deepening (s. Synthese im Chat).
+
+## ═══ GEPARKTE IDEE (Founder, 08.06.) — Radiale 5-Sterne-Ebene pro Knoten (Welle-3-Visual) ═══
+
+> **Status: GEPARKT** (Founder: „inhaltlich erstmal weiterarbeiten, Idee nur parken"). Nicht jetzt bauen.
+> Founder hat ausdrücklich um Challenge + Ausbau gebeten.
+
+**Idee (wortgetreu sinngemäss):** Der Voice-Agent wird immer intensiver/komplexer/besser — wir *trainieren*
+ihn. Beim Klick auf den Strang **Voice Agent** eine **Ebene dazuholen**: in der **Mitte Lisa** mit einem
+**coolen Icon** (nicht nur Telefon — soll vermitteln, dass sie eine *Mitarbeiterin* des Betriebs ist).
+Drumherum **5 Kategorien = 5 Sterne**, alle mit **Pfeil hinein** Richtung Lisa. Klick auf eine Kategorie →
+**nächste Ebene** → Formular ausfüllen → zurück → der **Stern leuchtet GOLD** (vorher nicht / nur semi-gold).
+Dann nächste Kategorie usw. → Das **5-Sterne-Thema breit nutzen**, nicht nur als Formular (nur die letzte
+Ebene ist Formular), **zumindest Desktop** (Handy high-end adaptierbar). **Gleiches Muster für die
+Leitzentrale/Leitsystem** (App-Icon Mitte, Bereiche speisen ein, je Stern erledigt/nicht) — auch dort kommen
+mehr Themen dazu.
+
+**Senior-Take (Challenge + Ausbau, für später):**
+- **Stark:** fraktal/rekursiv zur Übersichts-System-Karte → konsistentes mentales Modell auf jeder Ebene.
+  Die 5 Sterne sind **Fortschritt UND Emotion** zugleich („Sie bauen sich eine 5-Sterne-Mitarbeiterin").
+  Passt: Lisa hat heute 6 Abschnitte → auf **5 verdichten** (z. B. Begrüssung · Telefonie · Notfall&Zeiten ·
+  Wissen · Dispositionen); Leitsystem hat 5.
+- **Challenges:** (1) Radial ist responsive heikel → Handy = vertikale Liste mit Stern-Status. (2) Die
+  Extra-Ebene kostet 1 Klick mehr → nur lohnend, wenn die Mittel-Visualisierung Stolz/Mehrwert erzeugt.
+  (3) Jeder Knoten muss sauber auf ~5 Kategorien passen, sonst wirkt's gezwungen.
+- **Empfehlung:** starkes **Welle-3-Visual-Konzept**. Wie beim roten Faden: **erst an Lisa prototypen**,
+  Founder kalibriert, dann auf Leitsystem ausrollen. Eigene Design-Spec, wenn Welle 1/2 inhaltlich steht.
