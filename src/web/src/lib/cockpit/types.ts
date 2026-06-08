@@ -135,6 +135,8 @@ export interface CockpitDraft {
   /** Echte Personen (🆕). Leer/fehlend = noch nicht erfasst. */
   staff?: StaffMember[];
   voice?: {
+    /** R6 #3: Wunschname der Telefon-Assistentin (Default „Lisa"). Propagiert durch Cockpit + Agent. */
+    assistantName?: string;
     greetingText?: string;
     kiDisclosure?: string;
     languages?: { de: boolean; intl: boolean };

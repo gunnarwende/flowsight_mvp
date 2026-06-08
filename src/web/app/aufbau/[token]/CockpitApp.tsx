@@ -393,7 +393,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
     <div className="flex min-h-dvh flex-col" style={{ background: "radial-gradient(1000px circle at 50% 54%, #18374f 0%, #0b1f33 56%)", color: "#e8eef5" }}>
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
-          <Overview brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
+          <Overview brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa token={token} pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
@@ -416,8 +416,8 @@ function SaveDot({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
 }
 
 // ── Overview = die System-Karte ──────────────────────────────────────────────
-function Overview({ brandColor, companyName, progress, doneCount, saveState, onOpen }: {
-  brandColor: string; companyName: string;
+function Overview({ brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
+  brandColor: string; companyName: string; assistantName: string;
   progress: Record<string, boolean>; doneCount: number; saveState: "idle" | "saving" | "saved" | "error";
   onOpen: (v: View) => void;
 }) {
@@ -459,7 +459,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
                   {done ? "✓ startklar" : "○ offen"}
                 </span>
               </div>
-              <p className="mt-3 text-base font-bold text-white">{s.titel}</p>
+              <p className="mt-3 text-base font-bold text-white">{s.key === "lisa" ? assistantName : s.titel}</p>
               <p className="text-xs text-slate-400">{s.unter}</p>
               <p className="mt-2 text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>✓ {s.nutzen}</p>
               <p className="mt-3 text-sm font-semibold transition-transform duration-200 group-hover:translate-x-0.5" style={{ color: GOLD }}>{s.cta} →</p>
@@ -561,6 +561,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const [star, setStar] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const v = draft.voice ?? {};
+  const lisaName = (v.assistantName ?? "").trim() || "Lisa";
   const disp = v.dispositions ?? DISPOSITION_DEFAULTS;
   const setDisp = (k: keyof DispositionsConfig, patch: Partial<DispositionsConfig[keyof DispositionsConfig]>) =>
     update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], ...patch } } } }));
@@ -574,16 +575,21 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 
   const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; render: () => React.ReactNode }[] = [
     {
-      key: "begruessung", star: "So meldet sich Lisa", icon: "🗣", title: "So meldet sich Lisa",
+      key: "begruessung", star: `So meldet sich ${lisaName}`, icon: "🗣", title: `So meldet sich ${lisaName}`,
       touched: !!(v.greetingText && v.greetingText !== pf.voice.greetingSuggestion),
       render: () => (
-        <Field label="Begrüssung" hint="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
-          <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
-        </Field>
+        <>
+          <Field label="Wie soll Ihre rechte Hand am Telefon heissen?" hint={`Standard ist „Lisa“ — Sie können ihr aber jeden Namen geben. Er gilt dann überall: im Cockpit und am Telefon.`}>
+            <TextInput placeholder="Lisa" maxLength={24} value={v.assistantName ?? ""} onChange={(e) => setV({ assistantName: e.target.value })} />
+          </Field>
+          <Field label="Begrüssung" hint={`Der erste Satz bei jedem Anruf — er macht erkennbar, dass ${lisaName} eine digitale Assistentin ist (in der Schweiz Pflicht).`}>
+            <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
+          </Field>
+        </>
       ),
     },
     {
-      key: "telefonie", star: "So kommt der Anruf zu Lisa", icon: "☎️", title: "So kommt der Anruf zu Lisa",
+      key: "telefonie", star: `So kommt der Anruf zu ${lisaName}`, icon: "☎️", title: `So kommt der Anruf zu ${lisaName}`,
       touched: !!v.telco?.provider,
       render: () => (
         <>
@@ -595,18 +601,18 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
               <TextInput placeholder="z. B. Wingo, Lebara, iWay …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
             </Field>
           ) : null}
-          <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
+          <Field label={`Wann soll ${lisaName} rangehen?`} hint={`Ab wann ein unbeantworteter Anruf zu ${lisaName} läuft.`}>
             <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
               options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
           </Field>
           <Disclosure summary="Wie richte ich die Weiterleitung ein?">
-            Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt Lisa.
+            Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt {lisaName}.
           </Disclosure>
         </>
       ),
     },
     {
-      key: "notfall", star: "Wann Lisa erreichbar ist", icon: "🚨", title: "Wann Lisa erreichbar ist",
+      key: "notfall", star: `Wann ${lisaName} erreichbar ist`, icon: "🚨", title: `Wann ${lisaName} erreichbar ist`,
       touched: v.emergencyService !== undefined || !!(v.vacationNote ?? "").trim(),
       render: () => (
         <>
@@ -618,7 +624,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           {v.emergencyService === true ? (
             <>
               <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
-                ⚠️ <span className="font-semibold">Lisa stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
+                ⚠️ <span className="font-semibold">{lisaName} stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
               </p>
               <Field label="Wer wird im Notfall sofort alarmiert?">
                 <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
@@ -628,22 +634,22 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
               </Field>
             </>
           ) : v.emergencyService === false ? (
-            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt Lisa den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
+            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt {lisaName} den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
           ) : null}
           <div className="border-t border-white/10 pt-3">
             <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
             <p className="mt-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-              Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren.{v.emergencyService ? " Bei einem Notfall wird Ihr Pikett-Dienst sofort informiert." : ""}
+              Auch dann nimmt {lisaName} jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren.{v.emergencyService ? " Bei einem Notfall wird Ihr Pikett-Dienst sofort informiert." : ""}
             </p>
           </div>
-          <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
+          <Field label="Geplante Betriebsferien? (optional)" hint={`z. B. „Betriebsferien 21.7.–4.8.“ — ${lisaName} weist Anrufer dann aktiv darauf hin.`}>
             <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
           </Field>
         </>
       ),
     },
     {
-      key: "wissen", star: "Das soll Lisa wissen", icon: "📚", title: "Das soll Lisa wissen",
+      key: "wissen", star: `Das soll ${lisaName} wissen`, icon: "📚", title: `Das soll ${lisaName} wissen`,
       touched: !!(v.wissen && Object.keys(v.wissen).length),
       render: () => (
         <>
@@ -669,20 +675,20 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       ),
     },
     {
-      key: "anruflogik", star: "So soll Lisa reagieren", icon: "🎧", title: "So soll Lisa reagieren",
+      key: "anruflogik", star: `So soll ${lisaName} reagieren`, icon: "🎧", title: `So soll ${lisaName} reagieren`,
       touched: false,
       render: () => (
         <>
-          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was Lisa bei welcher Anruf-Art tut. Sinnvoll vorbelegt — stellen Sie es so ein, wie es zu Ihrem Betrieb passt (jederzeit änderbar).</p>
+          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — stellen Sie es so ein, wie es zu Ihrem Betrieb passt (jederzeit änderbar).</p>
           <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-            🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie. Höchstens 7 Fragen, <span className="text-slate-200">keine Gesprächsaufnahme</span>.
+            🛡 <span className="text-slate-200">{lisaName}s feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie. Höchstens 7 Fragen, <span className="text-slate-200">keine Gesprächsaufnahme</span>.
           </div>
           {DISPOSITION_CARDS.map((c) => (
             <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
               <p className="text-sm font-semibold text-white">{c.titel}</p>
               <p className="text-xs text-slate-400">{c.szenario}</p>
               <div className="mt-2.5 flex flex-col gap-2.5">
-                <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">Lisa:</span><KorbPick value={disp[c.key].korb} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
+                <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">{lisaName}:</span><KorbPick value={disp[c.key].korb} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
                 {disp[c.key].korb !== "nichts" ? (
                   <Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Mich dabei sofort benachrichtigen" />
                 ) : null}
@@ -704,7 +710,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
           <div className="mt-5 space-y-4">{cat.render()}</div>
           <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field label="Was läuft bei Ihnen anders — das Lisa hier unbedingt wissen sollte?" hint="Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
+            <Field label={`Was läuft bei Ihnen anders — das ${lisaName} hier unbedingt wissen sollte?`} hint="Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar.">
               <TextArea placeholder={`z. B. „Bei Heizungsausfall zuerst nach Eigentümer/Mieter fragen", „Familie Meier ist Sonderfall …"`} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
             </Field>
           </div>
@@ -719,15 +725,16 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
   return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Bauen wir gemeinsam Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Lisa ist startklar">
+    <Detail icon="📞" title={`Ihre ${lisaName}`} claim="Bauen wir gemeinsam Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel={`${lisaName} ist startklar`}>
       <PainHint items={[
-        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
-        { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
+        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
+        { pain: "Ein Lieferant meldet sich (z. B. Bauteil verspätet) oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
+        { pain: "Werbe- und Spam-Anrufe kosten mich ständig Zeit", relief: `${lisaName} wimmelt Werbung freundlich ab — die kommt gar nicht erst zu Ihnen.` },
       ]} />
 
       <Constellation
         center={<LisaAvatar stars={doneN} />}
-        centerLabel="Lisa"
+        centerLabel={lisaName}
         awakeLabel="startklar"
         stars={(["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const)
           .map((k) => CATS.find((c) => c.key === k)!)

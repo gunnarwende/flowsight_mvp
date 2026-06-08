@@ -153,6 +153,7 @@ async function main() {
   if (smsSenderName) modules.sms_sender_name = smsSenderName;
   modules.greeting_text = greetingText;
   modules.ki_disclosure = str(drVoice.kiDisclosure);
+  modules.assistant_name = str(drVoice.assistantName).trim() || "Lisa"; // R6 #3: Wunschname der Assistentin
   modules.voice_dispositions = voiceDispositions;
   if (smsContent) modules.sms_content = smsContent;
   modules.notify_messages_email = notifyMessagesByEmail;
@@ -196,6 +197,7 @@ async function main() {
     cfg.tenant = { ...cfg.tenant, brand_color: brandColor, case_id_prefix: caseIdPrefix, sms_sender_name: smsSenderName };
     cfg.voice_agent = { ...cfg.voice_agent, ...wissenEff };
     // T4: Ferien + Notdienst-Flag → steuern das Erreichbarkeits-/Feiertags-Scripting im Prompt
+    cfg.voice_agent.assistant_name = str(drVoice.assistantName).trim() || "Lisa";
     cfg.voice_agent.vacation_note = str(drVoice.vacationNote).trim();
     cfg.voice_agent.emergency_service = drVoice.emergencyService === true;
     if (Array.isArray(dr.wizard?.categories)) cfg.wizard = { ...cfg.wizard, categories: dr.wizard.categories };
