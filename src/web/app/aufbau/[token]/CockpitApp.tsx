@@ -649,9 +649,6 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
           </Field>
           {v.emergencyService === true ? (
             <>
-              <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
-                ⚠️ <span className="font-semibold">{lisaName} stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
-              </p>
               <Field label="Wer wird im Notfall sofort alarmiert?">
                 <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
               </Field>
