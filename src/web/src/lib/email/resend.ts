@@ -868,6 +868,67 @@ export async function sendCockpitSubmittedAlert(
 }
 
 // ---------------------------------------------------------------------------
+// Proof-page first-view alert (Outreach-Engagement-Signal an den Founder)
+// ---------------------------------------------------------------------------
+
+interface ProofViewAlertPayload {
+  companyName: string;
+  slug: string;
+  token: string;
+}
+
+/**
+ * Alarmiert den Founder, sobald ein Prospect seine Beweis-Seite ZUM ERSTEN MAL
+ * öffnet (heisses Engagement-Signal → Tag-6-7-Anruf priorisieren). Empfänger =
+ * MAIL_REPLY_TO (Founder). Nur EINMAL pro Seite (First-View), kein Spam.
+ * Errors captured, never thrown — Tracking darf die Seite nie stören.
+ */
+export async function sendProofViewAlert(payload: ProofViewAlertPayload): Promise<boolean> {
+  const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const from = `FlowSight <${fromAddr}>`;
+  const to = process.env.MAIL_REPLY_TO;
+  const baseUrl = APP_BASE_URL;
+  const base: Record<string, unknown> = {
+    _tag: "resend", email_type: "proof_view_alert", area: "outreach",
+    slug: payload.slug, recipient_present: !!to,
+  };
+  if (!process.env.RESEND_API_KEY || !to) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: !to ? "no_MAIL_REPLY_TO" : "no_RESEND_API_KEY" }));
+    return false;
+  }
+  try {
+    const { data, error } = await getResend().emails.send({
+      from,
+      to,
+      subject: `👀 ${payload.companyName} hat Ihre Beweis-Seite geöffnet`,
+      text: [
+        `${payload.companyName} hat soeben die Beweis-Seite zum ersten Mal geöffnet — ein heisses Engagement-Signal.`,
+        ``,
+        `Seite:  ${baseUrl}/p/${payload.token}`,
+        ``,
+        `→ Watch-Tiefe (welche Takes, wie lange):`,
+        `   node --env-file=src/web/.env.local scripts/_ops/proof_watch_report.mjs --slug ${payload.slug}`,
+        ``,
+        `Kadenz: wärmster Moment für den persönlichen Anruf (Phase-1-Playbook).`,
+        `---`,
+        `Slug: ${payload.slug} · Token: ${payload.token}`,
+      ].join("\n"),
+    });
+    if (error) {
+      Sentry.captureException(error, { tags: { _tag: "resend", area: "outreach", provider: "resend", email_type: "proof_view_alert", decision: "failed", error_code: "RESEND_API_ERROR" } });
+      console.log(JSON.stringify({ ...base, decision: "failed", reason: "resend_api_error" }));
+      return false;
+    }
+    console.log(JSON.stringify({ ...base, decision: "sent", provider_message_id: data?.id ?? null }));
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, { tags: { _tag: "resend", area: "outreach", provider: "resend", email_type: "proof_view_alert", decision: "failed", error_code: "RESEND_EXCEPTION" } });
+    console.log(JSON.stringify({ ...base, decision: "failed", reason: "exception" }));
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Assignment notification email (staff gets notified when assigned to a case)
 // ---------------------------------------------------------------------------
 

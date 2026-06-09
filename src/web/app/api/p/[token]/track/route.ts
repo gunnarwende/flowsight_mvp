@@ -27,11 +27,12 @@ export async function POST(
     const supabase = getServiceClient();
     const { data } = await supabase
       .from("proof_pages")
-      .select("view_count, first_viewed_at")
+      .select("view_count, first_viewed_at, company_name, tenant_slug")
       .eq("token", token)
       .single();
 
     if (data) {
+      const isFirstView = !data.first_viewed_at;
       const now = new Date().toISOString();
       await supabase
         .from("proof_pages")
@@ -41,6 +42,18 @@ export async function POST(
           first_viewed_at: data.first_viewed_at ?? now,
         })
         .eq("token", token);
+
+      // First-View → Founder per E-Mail alarmieren (heisses Engagement-Signal,
+      // Tag-6-7-Anruf priorisieren). Nur einmal pro Seite, best-effort.
+      if (isFirstView) {
+        import("@/src/lib/email/resend").then(({ sendProofViewAlert }) =>
+          sendProofViewAlert({
+            companyName: data.company_name ?? data.tenant_slug ?? "Ein Prospect",
+            slug: data.tenant_slug ?? "",
+            token,
+          }),
+        ).catch(() => {});
+      }
     }
   } catch {
     // Tracking darf die Seite nie stören.
