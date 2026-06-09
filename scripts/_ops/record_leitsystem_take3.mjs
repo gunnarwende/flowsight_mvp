@@ -34,7 +34,7 @@ const { createClient } = require("../../src/web/node_modules/@supabase/supabase-
 
 const args = process.argv.slice(2);
 const slug = args.find((a) => a.startsWith("--slug"))?.split("=")[1] || "doerfler-ag";
-const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || "http://localhost:3000";
+const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || process.env.APP_URL || "http://localhost:3000";
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -337,7 +337,11 @@ try {
 }
 logEvent("back_to_list");
 await ensureSwitcherHidden();
-await page.waitForTimeout(3000);
+// FB (09.06.): Dashboard länger halten, bevor die "+ Neuer Fall"-Modal öffnet — die
+// universelle Maus braucht ~4,7s, um vom Zurück-Klick zum "+ Neuer Fall"-Button zu reisen.
+// case_back_full-Footage = [back_to_list..list_visible]; war 3,0s → Modal öffnete @~2:03,
+// Cursor erst @~2:07. Auf 6,7s verlängert, damit die Modal beim Cursor-Eintreffen erscheint.
+await page.waitForTimeout(6700);
 logEvent("list_visible");
 
 // ── C11: Click "+ Neuer Fall" button → Modal ──
