@@ -15,6 +15,7 @@
 | # | Betrieb | Variante | Proof-Token | **Versandt** | Status | Nächster Touch | Notiz |
 |---|---------|----------|-------------|--------------|--------|----------------|-------|
 | 1 | **Dörfler AG** (Oberrieden) | A (persönlich, notruf) | `8a0fbf247e745ab3d465db27` | **2026-06-09** | versendet (info@) | Tag-3-Nudge ~12.06 (nur falls kein View) · Tag-6-7-Anruf ~15.–16.06 | **Erster echter Outreach.** Reply-To→Outlook. Founder war Kunde (Dichtung). |
+| 2 | **Walter Leuthold** (Oberrieden) | A (verpasster Anruf / „auf dem Dach") | `dff8fd60c97fa22b94a0db24` | **2026-06-09** | versendet (mail@walter-leuthold.ch) | Tag-3-Nudge ~12.06 (nur falls kein View) · Tag-6-7-Anruf ~15.–16.06 | **Zweiter echter Outreach.** Reply-To→Outlook. Frische Daten 09.06 + T3/T4-Anker-Fix (PR #601). |
 
 ### Kadenz pro Prospect (McKinsey-/Mom-Test-Rhythmus)
 - **Tag 0** — Versand (`send_outreach --slug X --live`), Eintrag hier + Datum.
