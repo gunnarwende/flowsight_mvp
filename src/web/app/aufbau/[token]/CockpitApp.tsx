@@ -291,7 +291,7 @@ function BrandIcon({ size = 108 }: { size?: number }) {
 // ── Strang-Definitionen (für die Karte) ──────────────────────────────────────
 const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
   { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen", nutzen: "Kein Zettel geht verloren" },
-  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Kein Anruf bleibt liegen" },
+  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Anrufe werden aufgenommen und sichtbar gemacht" },
   { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
 ];
 
@@ -603,7 +603,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
       missing: () => (v.greetingText ?? pf.voice.greetingSuggestion).trim() ? [] : ["eine Begrüssung"],
       render: () => (
         <>
-          <Field label="Wie soll Ihre rechte Hand am Telefon heissen?" hint={`Standard ist „Lisa“ — Sie können ihr aber jeden Namen geben. Er gilt dann überall: im Cockpit und am Telefon.`}>
+          <Field label="Wie soll Ihre Telefon-Assistentin heissen?" hint={`Standard ist „Lisa“ — Sie können ihr aber jeden Namen geben. Er gilt dann überall: im Cockpit und am Telefon.`}>
             <TextInput placeholder="Lisa" maxLength={24} value={v.assistantName ?? ""} onChange={(e) => setV({ assistantName: e.target.value })} />
           </Field>
           <Field label="Begrüssung" hint={`Der erste Satz bei jedem Anruf — er macht erkennbar, dass ${lisaName} eine digitale Assistentin ist (in der Schweiz Pflicht).`}>
@@ -725,7 +725,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
                 <div className="mt-2.5 flex flex-col gap-2.5">
                   <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">{lisaName}:</span><KorbPick value={k} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
                   {k !== "nichts" ? (
-                    <Toggle on={push} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Mich sofort aufs Handy benachrichtigen (Push)" />
+                    <Toggle on={push} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Sofort aufs Handy melden (Push) — E-Mail kommt ohnehin" />
                   ) : null}
                   <p className="text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>{result}</p>
                 </div>
@@ -760,7 +760,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
             <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
           ) : null}
           <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
+            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
       );
@@ -770,7 +770,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
   return (
-    <Detail icon="📞" title={`Ihre ${lisaName}`} claim="Bauen wir gemeinsam Ihre rechte Hand am Telefon." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel={`${lisaName} ist startklar`}>
+    <Detail icon="📞" title={`Ihre ${lisaName}`} claim="Nimmt Anrufe auf, wenn gerade niemand kann." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel={`${lisaName} ist startklar`}>
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
         { pain: "Ein Lieferant meldet sich (z. B. Bauteil verspätet) oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
@@ -1110,7 +1110,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
           ) : null}
           <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-            {isDone(cat.key) ? "✓ Bleibt erledigt — zurück" : "✓ Dieser Punkt passt — Stern setzen"}
+            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
           </button>
         </div>
       );
