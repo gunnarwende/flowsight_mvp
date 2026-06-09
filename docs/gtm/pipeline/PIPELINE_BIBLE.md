@@ -220,7 +220,14 @@ node scripts/_ops/qg_video.mjs --slug <slug> --take <2|4> --video <pfad>
 `record_leitsystem_take3` SELBST — daher KEIN separates Pre-Recording, das wäre Doppel-Aufnahme).
 Dann: phase-library-Override aus Event-Log → `build_from_phase_schedule` → locked Audio
 `_locked/audio/take3.m4a` (1 ms-genau) → Loom → Maus-Layer → `qg_take3_vs_schablone` (5 Anchors;
-A4/A5 sind tolerante Schablonen-Vergleiche, die auch abgenommene Betriebe „failen" — kein Blocker).
+A4/A5 sind tolerante Schablonen-Vergleiche, die auch abgenommene Betriebe „failen" — kein Blocker)
+→ **`qg_t3_modal_timing` (G_T3_MODAL_NOT_EARLY)**.
+- **Modal-vor-Cursor-Fix (FB 09.06.):** Die „+ Neuer Fall"-Modal darf NICHT öffnen, bevor die
+  universelle Maus den Button erreicht hat. Wurzel: `record_leitsystem_take3` klickte den Button
+  OHNE Dashboard-Dwell (`list_visible`→Klick ≈0s) → keine Footage zum Halten → Modal „blutete"
+  durch (öffnete @~2:03, Cursor erst @~2:07). **Fix:** 6,7 s Dwell zwischen `back_to_list` und
+  `list_visible` (Dashboard sichtbar, während der Cursor reist) → Modal öffnet @~2:08,5 beim
+  Cursor-Eintreffen. Gate `G_T3_MODAL_NOT_EARLY` (s. §7) sichert das nachhaltig.
 
 **T4 (`build_take4_final --with-mouse`)** — `record_take4` (6 Parts) → Compose → locked Audio
 `_locked/audio/take4.m4a` → Loom → **Maus-Layer (universelles Dörfler `take4.json`)** → Toast
@@ -273,6 +280,7 @@ Jede vom Founder gefundene Fehlerklasse wird zu einem Gate → fängt sich beim 
 | `G_T4_CASEOPEN` | T4 | Case-Detail @11,0 s (SSIM-Bracket @10/@12 vs Dashboard) | @10>0,90 & @12<0,86 |
 | `G_T4_DOUBLESTAR` | T4 | genau 1 Gold-Fill-Region in [73,80] | =1 (≥2 = Doppelstern) |
 | `G_T3_KPI_NEU` | (Daten) | 2 offene Fälle (in `insert_take3_wizard_case`) | =2 |
+| `G_T3_MODAL_NOT_EARLY` | T3 | „+ Neuer Fall"-Modal öffnet NICHT vor dem Cursor (Dashboard @126 s sichtbar) | Listen-Region YAVG ≥200 (Dashboard ≈225 / Modal-Backdrop ≈178) |
 
 **Referenz-Auflösung** (G_T4_STARSYNC): sucht die Gold-Ref (Weinberger) in `07_stresstest/abgenommen/<slug>/`
 → `07_stresstest/<slug>/` → `master_takes/take4/<slug>_with_mouse.mp4`. So überlebt der Gate, wenn
