@@ -32,9 +32,11 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           APP_URL: ${{ secrets.APP_URL }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.APP_URL }}
-          # Für die OUTREACH/Watch-Signal-Sektion (Bunny per-Take-Statistik). Fehlt der
-          # Secret, bleibt die Sektion einfach leer (guarded).
+          # Für die OUTREACH/Watch-Signal-Sektion (Bunny per-Take-Statistik). Fehlt EINER
+          # der drei, bleibt die Sektion einfach leer (guarded — kein Crash mehr).
           BUNNY_STREAM_API_KEY: ${{ secrets.BUNNY_STREAM_API_KEY }}
+          BUNNY_STREAM_LIBRARY_ID: ${{ secrets.BUNNY_STREAM_LIBRARY_ID }}
+          BUNNY_STREAM_CDN_HOSTNAME: ${{ secrets.BUNNY_STREAM_CDN_HOSTNAME }}
         run: |
           OUTPUT=$(node scripts/_ops/morning_report.mjs 2>&1) || true
           echo "$OUTPUT"
