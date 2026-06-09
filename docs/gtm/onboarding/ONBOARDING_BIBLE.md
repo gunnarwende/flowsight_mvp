@@ -223,7 +223,9 @@ mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit har
 
 ## §9 · Anker & Links
 
-- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md) ← das „HOW"
+- **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
+- **📇 Gesprächskarte (Live-Call, 3 S.):** [`FlowSight_Customer_Journey_Short.md`](FlowSight_Customer_Journey_Short.md) — auf einen Blick „wo bin ich / welche Frage jetzt", inkl. wörtlicher Discovery-Fragen.
+- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md) ← das „HOW" für Phase 1 (Read-Along; geht in der Journey-Gesprächskarte auf).
 - **Pipeline-Bible (was davor passiert):** `docs/gtm/pipeline/PIPELINE_BIBLE.md`
 - **Discovery/Mom-Test-Quelle:** `docs/sales/discovery_questions.md` · **CTA-Strategie:** `docs/gtm/CTA.md`
 - **Reife-/Feedback-Loop:** `operating_model.md` · **Lessons:** `lessons_learned.md`
