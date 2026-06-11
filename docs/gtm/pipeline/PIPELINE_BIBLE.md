@@ -50,6 +50,8 @@ das Onboarding-Cockpit — liegt in der **Onboarding-Bible** (`docs/gtm/onboardi
 die Naht zwischen den Maschinen ist der Moment, in dem ein Mensch antwortet/anruft (Pipeline =
 automatisiert/ohne Founder; Onboarding = hochtouch/Founder im Loop).
 
+> **Phase-1-Crawl-Härtung (11.06., #608):** `crawl_extract.mjs` ist jetzt TLS-tolerant (`ignoreHTTPSErrors` — Cert-Mismatch-Sites crawlten sonst KOMPLETT leer, z.B. Leins), scannt die „Über uns/Team"-Seite auf Personen-Mails und überspringt SPA-Shells (nimmt die inhaltsreichste Kandidatenseite). **Bekannte Grenze:** reine JS-SPAs rendern Sub-Seiten als Shell → Personen-Mails nur im Raw-HTML. **Geplant: Vision-Discovery** (Screenshot + Vision statt nur `innerText`) für Entscheider-Kontakte **und** ein Gefühl für die Unternehmensgrösse → ticketlist **P12** (Beleg `docs/gtm/onboarding/Feedback/FB9.png`). **Entscheider-Regel:** eine Person, GL des Kern-Bereichs, nie `info@`/CC (`lessons_learned.md` S6).
+
 ---
 
 ## 2. `tenant_config.json` — Das Herz
@@ -229,18 +231,11 @@ A4/A5 sind tolerante Schablonen-Vergleiche, die auch abgenommene Betriebe „fai
   `list_visible` (Dashboard sichtbar, während der Cursor reist) → Modal öffnet @~2:08,5 beim
   Cursor-Eintreffen. Gate `G_T3_MODAL_NOT_EARLY` (s. §7) sichert das nachhaltig.
 
-**T4 (`build_take4_final --with-mouse`)** — `record_take4` (6 Parts) → Compose → **Reveal-Anker
-(`anchor_t4_reveal.mjs`, STEP 4, NEU 09.06.)** → locked Audio `_locked/audio/take4.m4a` → Loom →
-**Maus-Layer (universelles Dörfler `take4.json`)** → Toast „Bewertung erhalten" → Dev-Badge-Cover →
-**`apply_canonical_stars`** → `qg_t4_compare`.
+**T4 (`build_take4_final --with-mouse`)** — `record_take4` (6 Parts) → Compose → locked Audio
+`_locked/audio/take4.m4a` → Loom → **Maus-Layer (universelles Dörfler `take4.json`)** → Toast
+„Bewertung erhalten" → Dev-Badge-Cover → **`apply_canonical_stars`** → `qg_t4_compare`.
 - **SOLL T4:** Caseopen @11,0 s (`CASE_REVEAL_T`) · Stern-Fill 1 Gold-Region @~74,1 s im Fenster
   [72, 76,3] · Dauer ~176,8 s.
-- **✅ Caseopen-Jitter GELÖST (09.06., PR #601 — schließt den „5%-Rest"):** Der V3-Compose verankert
-  nichts → die Fall-Öffnung driftete pro Betrieb ±1-2 s (Walter: 9,6 s). `anchor_t4_reveal.mjs`
-  detektiert den echten Reveal per Scene-Change und pinnt ihn **längen-erhaltend, Segment-A-lokal**
-  (Telefon-Teil ab 29,0 s unberührt) deterministisch auf 11,0 s. Self-Gate **`G_T4_REVEAL_T`** (Build
-  bricht bei Abweichung >0,1 s ab). Gleiches Script (`--no-trim`, global) pinnt in T3 die
-  „+Neuer-Fall"-Modal auf **128,17 s** (= universelle Maus-Klick-Zeit) → Modal nie mehr vor dem Cursor.
 - ⚠️ **`--with-mouse` ist Pflicht für Delivery.** Ohne (Default zum schnellen Iterieren) werden
   Maus + Toast + Badge-Cover + canonical-stars ALLE übersprungen → G_T4_STARSYNC failt.
 
@@ -285,10 +280,9 @@ Jede vom Founder gefundene Fehlerklasse wird zu einem Gate → fängt sich beim 
 | `G_GREETING` | T2 | Firmenname in Lisa-Greeting (STT, Fuzzy ±1 für CH-Namen) | distinktives Wort gefunden |
 | `G_T4_STARSYNC` | T4 | Stern+Maus = Weinberger-Referenz (SSIM @74,0/74,2/74,4) | ≥0,94 |
 | `G_T4_CASEOPEN` | T4 | Case-Detail @11,0 s (SSIM-Bracket @10/@12 vs Dashboard) | @10>0,90 & @12<0,86 |
-| `G_T4_REVEAL_T` | T4 | **(09.06.)** Reveal exakt auf `CASE_REVEAL_T` (Scene-Change-Detektion in `anchor_t4_reveal.mjs`, self-gating) | 11,0 ±0,12 s |
 | `G_T4_DOUBLESTAR` | T4 | genau 1 Gold-Fill-Region in [73,80] | =1 (≥2 = Doppelstern) |
 | `G_T3_KPI_NEU` | (Daten) | 2 offene Fälle (in `insert_take3_wizard_case`) | =2 |
-| `G_T3_MODAL_NOT_EARLY` | T3 | **(event-basiert ab 09.06.)** Modal-Öffnungs-Frame per Scene-Change detektiert, geprüft gegen Maus-Klick-SOLL (ersetzt den alten Helligkeits-Proxy an fixer Zeit, der bei Drift falsch „PASS" gab) | Modal @128,17 ±0,3 s |
+| `G_T3_MODAL_NOT_EARLY` | T3 | „+ Neuer Fall"-Modal öffnet NICHT vor dem Cursor (Dashboard @126 s sichtbar) | Listen-Region YAVG ≥200 (Dashboard ≈225 / Modal-Backdrop ≈178) |
 
 **Referenz-Auflösung** (G_T4_STARSYNC): sucht die Gold-Ref (Weinberger) in `07_stresstest/abgenommen/<slug>/`
 → `07_stresstest/<slug>/` → `master_takes/take4/<slug>_with_mouse.mp4`. So überlebt der Gate, wenn

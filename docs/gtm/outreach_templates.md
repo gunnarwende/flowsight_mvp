@@ -18,6 +18,13 @@ Die März-Templates basieren auf einem überholten Modell (Test-Telefonnummer + 
 
 ### Template NEU (Tag 0) — Ein-Link-Modell (gilt ab 04.06., ersetzt Template 1/2 für die Video-Pipeline-Betriebe)
 
+> **⚠️ COPY-STAND 11.06.:** Die **live versandte** Copy pro Betrieb ist die **B-Vorlage** in `docs/customers/<slug>/outreach/email.<slug>.json` (Versand via `send_outreach.mjs --file …`). Sie ist diesem Muster gegenüber **verfeinert** (Founder-Lehren 11.06., → `lessons_learned.md` S6/S7):
+> - **„durchgespielt" raus** → „**sichtbar gemacht**" (klang nach Spielwiese/Demo).
+> - **Kein Konkurrenz-Drohsatz** bei etablierten Betrieben (Over-Claim) → reiner **Sichtbarkeits-Haken** + „im **hektischsten Alltag** geht nichts unter".
+> - **Anrede „Grüezi {Herr Nachname}"** (CH-warm), Link-Label signalisiert **Video** („Ihr persönlicher Video-Einblick").
+> - **Empfänger = eine Person, GL des Kern-Bereichs** (nie `info@`/CC, S6).
+> Das Muster unten bleibt als Struktur-Referenz (4 Beats + Ein-Link + Variante-A-CTA) gültig.
+
 **Voraussetzung:** Beweis-Seite `/p/<token>` steht (via `build_proof_page.mjs --slug <slug>`), Takes auf Bunny encodiert (status=4). Founder sendet aus eigener E-Mail an den **Inhaber mit Namen**.
 
 **Betreff:** `{salutation} — ich habe etwas für {company_name} ausprobiert`
@@ -29,7 +36,7 @@ _(z.B. „Herr Leuthold — ich habe etwas für Walter Leuthold ausprobiert")_
 >
 > ich bin Gunnar Wende aus Oberrieden. Ich baue ein Leitsystem für Sanitärbetriebe in der Region — damit kein Anruf und keine Anfrage mehr verloren geht.
 >
-> Ich habe {company_name} einmal komplett durchgespielt — vom Anruf bis zur Bewertung — und auf eine kurze, private Seite gelegt:
+> Ich habe {company_name} einmal sichtbar gemacht — vom Anruf bis zur Bewertung — und auf eine kurze, private Seite gelegt:
 >
 > 👉 **Ihr persönlicher Einblick:** {proof_url}
 >
@@ -76,7 +83,7 @@ _(Alt: „Herr Dörfler – bei Ihrem Einsatz bei uns sind mir zwei Dinge aufgef
 >
 > Zwei Dinge sind mir an dem Tag geblieben. **Erstens:** Mitten in der Arbeit kam ein Anruf rein, an den Sie nicht rangehen konnten. **Zweitens:** Ich hatte mir fest vorgenommen, Ihnen fünf Sterne zu geben – und hab's im Alltag dann schlicht vergessen. Gute Arbeit, die niemand sieht.
 >
-> Beides hat mich nicht mehr losgelassen. Ich habe der Dörfler AG daraufhin eine eigene App gebaut und einmal komplett durchgespielt – vom ersten Anruf bis zur Bewertung. Schauen Sie's an, wenn Sie ein paar Minuten haben:
+> Beides hat mich nicht mehr losgelassen. Ich habe der Dörfler AG daraufhin eine eigene App gebaut und einmal sichtbar gemacht – vom ersten Anruf bis zur Bewertung. Schauen Sie's an, wenn Sie ein paar Minuten haben:
 >
 > [FOTO – klickbar] 👉 Ihr persönlicher Einblick: https://flowsight.ch/p/8f1b4a4859e667341ddda95b
 >

@@ -4,9 +4,17 @@
 **Modus:** 2 (hat eigene Website: waeltisohn.ch, Wix)
 **ICP:** 8 (HOT)
 **Paket:** A+B-Full+C+D
-**Stand:** 2026-04-15
+**Stand:** 2026-06-11 — **OUTREACH versandt (live)**
 **Tenant-ID:** (noch nicht provisioniert)
 **Twilio-Nr:** (noch nicht zugewiesen)
+
+## Outreach-Log
+| Datum | Aktion | Detail |
+|---|---|---|
+| 11.06. | **Erstkontakt-Mail live** → `info@waeltisohn.ch` | Betreff „Herr Wälti — wer fängt die Anfrage, wenn alle unterwegs sind?". Beweis-Seite `/p/1ede83448da5…`. Resend-ID `322a9975`. Copy = B-Vorlage (Sichtbarkeits-Haken, kein Konkurrenz-Drohsatz, „im hektischsten Alltag"). Tracking auf null vor Versand. |
+
+> **Status:** `contacted`. Kein persönlicher Ansprechpartner auffindbar → `info@` (founder-bestätigt). **Nächster Schritt:** First-View-Alert beobachten → telefon. Follow-up in „ein paar Tagen" (wie im Closing angekündigt). Provisioning (unten) erst nach „Ja".
+> Hinweis: Der Block unten stammt aus dem alten Trial-Modell (vor Premium-Pivot) — die Blocker (Öffnungszeiten/GL/Notdienst) werden im **Onboarding-Cockpit** nach dem Ja erfasst, nicht mehr vorab.
 
 ## Eckdaten
 - Firma: Waelti & Sohn AG

@@ -1,37 +1,33 @@
 # FlowSight Sales Pipeline
 
 **Owner:** Founder
-**Aktualisiert:** 2026-06-09
-**Regel:** Jeder Prospect wird **max. 3×** kontaktiert, dann ruhen lassen (parken).
-**Modell (aktuell):** Premium, **kein Trial** — Proof-Seite (`/p/[token]`) → Versand → tracking-gesteuerte Kadenz → das Gespräch (Phase-1-Playbook) → Onboarding-Cockpit → Go-live/Zahlung. Pipeline-Bible (Video) + Onboarding-Bible (ab erstem menschlichem Kontakt). *(Altes Trial-Lifecycle-Modell unten = historisch, abgelöst.)*
-
----
-
-## 🎯 OUTREACH-LOG — aktives Tracking (SSOT für „wer wann kontaktiert")
-
-> **Zweck:** keine Doppel-Anfragen, Reminder für nächsten Touch, Engagement-Signal.
-> **First-View-Alert ist LIVE:** öffnet ein Prospect seine Beweis-Seite, kommt automatisch eine E-Mail an den Founder (`sendProofViewAlert`, im Track-Endpoint). Watch-Tiefe: `proof_watch_report.mjs --slug X`.
-
-| # | Betrieb | Variante | Proof-Token | **Versandt** | Status | Nächster Touch | Notiz |
-|---|---------|----------|-------------|--------------|--------|----------------|-------|
-| 1 | **Dörfler AG** (Oberrieden) | A (persönlich, notruf) | `8a0fbf247e745ab3d465db27` | **2026-06-09** | versendet (info@) | Tag-3-Nudge ~12.06 (nur falls kein View) · Tag-6-7-Anruf ~15.–16.06 | **Erster echter Outreach.** Reply-To→Outlook. Founder war Kunde (Dichtung). |
-| 2 | **Walter Leuthold** (Oberrieden) | A (verpasster Anruf / „auf dem Dach") | `dff8fd60c97fa22b94a0db24` | **2026-06-09** | versendet (mail@walter-leuthold.ch) | Tag-3-Nudge ~12.06 (nur falls kein View) · Tag-6-7-Anruf ~15.–16.06 | **Zweiter echter Outreach.** Reply-To→Outlook. Frische Daten 09.06 + T3/T4-Anker-Fix (PR #601). |
-
-### Kadenz pro Prospect (McKinsey-/Mom-Test-Rhythmus)
-- **Tag 0** — Versand (`send_outreach --slug X --live`), Eintrag hier + Datum.
-- **First-View** — automatische Alert-Mail → wärmster Lead, beim Anruf priorisieren.
-- **Tag 3** — sanfter Nudge **nur falls kein View** („kurz reingeschaut?"). Hat er geschaut → nicht nerven, auf Tag 6-7 warten.
-- **Tag 6-7** — persönlicher Anruf (`phase1_gespraech_playbook.md`), sortiert nach Watch-Signal (`proof_watch_report.mjs`).
-- **Max. 3 Kontakte** → dann parken (Re-Outreach frühestens in ~3 Monaten).
-- **Geparkt/Datum-Re-Touch** im Gespräch vereinbart → hier mit Datum festhalten.
-
-> **Offen (empfohlen, noch nicht gebaut):** automatischer Reminder-Cron (Tag-3/Tag-6-7 fällige Touches → Founder-Mail). Bis dahin = diese Tabelle manuell prüfen. Ticket in `ticketlist.md`.
+**Aktualisiert:** 2026-03-11
+**Regel:** Jeder Prospect wird maximal 3× kontaktiert, dann ruhen lassen.
+**Operating Model:** `docs/gtm/operating_model.md` (6 Phasen, Trial Lifecycle)
 
 ---
 
 ## Daten
 
-**Pipeline-CSV:** `docs/sales/pipeline.csv` · **Scout-CSV:** `docs/sales/scout_raw.csv`. Die CSVs = SSOT für Prospect-Rohdaten; das Outreach-Log oben = SSOT für Kontakt-Historie/Kadenz.
+**Pipeline-CSV:** `docs/sales/pipeline.csv` — 14 Prospects, ICP Scores, Leckerli-Pakete
+**Scout-CSV:** `docs/sales/scout_raw.csv` — Rohdaten aus `scout.mjs`
+
+> Die CSV-Dateien sind die SSOT für Prospect-Daten. Diese Markdown-Datei beschreibt den Prozess.
+
+---
+
+## Ablauf (Operating Model Kurzversion)
+
+```
+Phase 0: Scout     → 20 Prospects/Tag identifizieren (scout.mjs)
+Phase 1: Outreach  → Personalisierter Erstkontakt (Founder, persönlich)
+Phase 2: Provision → Trial in <20 Min (provision_trial.mjs)
+Phase 3: Trial     → 14 Tage eigenes System
+Phase 4: Decision  → Convert / Live-Dock / Offboard
+Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
+```
+
+**Vollständiges Modell:** `docs/gtm/operating_model.md`
 
 ---
 
@@ -49,6 +45,20 @@
 | `live_dock` | Echte Calls, Verlängerung (14d) | Final Decision Tag 24 |
 | `offboarded` | Sauber gelöscht | — |
 | `parked` | Kein Interesse jetzt | Re-Outreach in 3 Monaten |
+
+---
+
+## Aktiver Outreach-Stand (Beweis-Seite-Phase)
+
+| Datum | Betrieb | Empfänger | Kanal | Status | Beweis-Seite | Nächster Schritt |
+|---|---|---|---|---|---|---|
+| 04.06. | Dörfler AG | Brüder Dörfler | Mail + Besuch 11.06. | `contacted` | `/p/8f1b4a…` | First-View-Alert; warmer Nudge wenn kein View in ~3 Tagen (S1/S2/S3) |
+| 11.06. | Leins AG | **Michael Leins** (GL Sanitär & Heizung, `michael.leins@leinsag.ch`) | Mail (live) | `contacted` | `/p/2cf7d4…` | First-View-Alert → telefon. Follow-up in „ein paar Tagen" |
+| 11.06. | Wälti & Sohn | `info@waeltisohn.ch` | Mail (live) | `contacted` | `/p/1ede83…` | First-View-Alert → Follow-up |
+| (offen) | Walter Leuthold | — | Besuch geplant, nicht angetroffen | `scouted` | `/p/dff8fd…` | Vorher anrufen (S4), dann Besuch/Mail |
+
+> **Tracking-Reset 11.06.:** alle aktiven Beweis-Seiten auf `view_count=0` (eigene Test-Öffnungen raus) → First-View-Alerts ab jetzt unverfälscht. Inaktive Dörfler-Seite (`8f1b4a`, 55 Views) als Historie belassen.
+> **Entscheider-Auswahl:** eine Person, GL des Kern-Bereichs, nie `info@`/Sammel-CC → `lessons_learned.md` S6. Automatisierung: ticketlist **P12** (Vision-Discovery).
 
 ---
 
