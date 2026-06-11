@@ -135,7 +135,7 @@ export default function ProofClient({
           {greeting} — schön, dass Sie reinschauen.
         </h1>
         <p className="text-[15px] leading-relaxed text-slate-300">
-          Das ist {companyName}, einmal komplett durchgespielt — vom ersten Anruf bis zur Bewertung.
+          Das ist {companyName} — vom ersten Anruf bis zur Bewertung, einmal sichtbar gemacht.
         </p>
       </header>
 
@@ -197,8 +197,8 @@ export default function ProofClient({
           nicht eine zweite, schwächere CTA-Fläche. Kein Duplikat des T4-Video-Schlusses. */}
       <section className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-6">
         <p className="text-[15px] leading-relaxed text-slate-200">
-          Das war {companyName}, einmal komplett durchgespielt — von der ersten Anfrage bis zur
-          Bewertung. Mit Sorgfalt gebaut, hier aus Oberrieden.
+          Das war {companyName} — von der ersten Anfrage bis zur Bewertung, mit Sorgfalt gebaut,
+          hier aus Oberrieden.
         </p>
         <p className="text-sm font-semibold text-white">— Gunnar Wende</p>
       </section>
