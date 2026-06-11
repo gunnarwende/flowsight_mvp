@@ -446,7 +446,10 @@ function extractTelefon() {
 
 function extractEmail() {
   const emails = new Set();
-  for (const key of ["kontakt", "impressum", "home"]) {
+  // 11.06.: "team" ergänzt — die Über-uns/Team-Seite trägt die persönlichen Entscheider-
+  // Mails (z.B. michael.leins@… GL Sanitär/Heizung), die info@ nie liefert. innerText
+  // dekodiert HTML-Entities (&#64;→@) bereits, daher hier kein zusätzlicher Decode nötig.
+  for (const key of ["team", "kontakt", "impressum", "home"]) {
     const text = pageTexts[key];
     if (!text) continue;
     const matches = text.match(EMAIL_RE) || [];
@@ -1057,6 +1060,9 @@ async function main() {
     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     viewport: { width: 1280, height: 720 },
     locale: "de-CH",
+    // 11.06.: Cert-Mismatch (z.B. leins.ch: Cert deckt www-Host nicht) ließ den Crawl
+    // sonst KOMPLETT leer laufen (firma/inhaber/email alle leer). TLS-tolerant fetchen.
+    ignoreHTTPSErrors: true,
   });
 
   const page = await context.newPage();
@@ -1067,26 +1073,32 @@ async function main() {
 
   for (const [pageKey, patterns] of Object.entries(PAGE_PATTERNS)) {
     let found = false;
+    let best = null;
     for (const path of patterns) {
       const url = baseUrl + path;
       console.log(`  [${pageKey}] Trying: ${url}`);
 
       const crawlResult = await crawlPage(page, url, pageKey);
       if (crawlResult && crawlResult.text.trim().length > 50) {
-        pageTexts[pageKey] = crawlResult.text;
-        pageMeta[pageKey] = {
-          title: crawlResult.title,
-          ogSiteName: crawlResult.ogSiteName,
-          ogTitle: crawlResult.ogTitle,
-        };
-        pageSources[pageKey] = url;
-        allTexts.push(crawlResult.text);
-        result._meta.pages_crawled.push({ key: pageKey, url, chars: crawlResult.text.length });
-        pagesFound++;
-        found = true;
-        console.log(`  [${pageKey}] OK — ${crawlResult.text.length} chars${crawlResult.title ? ` (title: "${crawlResult.title.slice(0, 60)}")` : ""}`);
-        break;
+        if (!best || crawlResult.text.length > best.text.length) best = { ...crawlResult, url };
+        // SPA-Shell-Schutz (11.06.): manche Sites liefern für viele Routen denselben
+        // inhalts-armen Shell (≈ Home-Länge) — z.B. leins.ch /team = 1487-Zeichen-Shell,
+        // der echte Über-uns-Inhalt mit den Entscheider-Mails liegt erst auf /ueber-uns.
+        // Daher NICHT beim ersten Treffer abbrechen, sondern nur, wenn die Seite klar
+        // mehr Inhalt hat als der Shell-Baseline; sonst nächsten Kandidaten probieren.
+        const shellLen = (pageTexts.home && pageTexts.home.length) || 1500;
+        if (crawlResult.text.length > shellLen + 300) break;
       }
+    }
+    if (best) {
+      pageTexts[pageKey] = best.text;
+      pageMeta[pageKey] = { title: best.title, ogSiteName: best.ogSiteName, ogTitle: best.ogTitle };
+      pageSources[pageKey] = best.url;
+      allTexts.push(best.text);
+      result._meta.pages_crawled.push({ key: pageKey, url: best.url, chars: best.text.length });
+      pagesFound++;
+      found = true;
+      console.log(`  [${pageKey}] OK — ${best.text.length} chars @ ${best.url}${best.title ? ` (title: "${best.title.slice(0, 60)}")` : ""}`);
     }
     if (!found) {
       console.log(`  [${pageKey}] Not found (tried ${patterns.length} patterns)`);
