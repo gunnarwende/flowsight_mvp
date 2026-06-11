@@ -95,11 +95,13 @@ if (delta > 0) {
     `[0:v]trim=${cut.toFixed(3)}:${bEnd.toFixed(3)},setpts=PTS-STARTPTS[b];` +
     cSeg + `[a][b]${cLbl}concat=n=${nSeg}:v=1:a=0[v]`;
 } else {
-  // Event zu spät: vor dem Event um |δ| trimmen, am [.,SEG_END]-Ende um |δ| clonen.
-  const d = -delta;
+  // Event zu spät: den statischen Dwell VOR dem Event kürzen, sodass das Event exakt auf
+  // TARGET fällt. a = [0, TARGET] (endet im Dashboard, da TARGET<reveal → sauberer Frame);
+  // b = ab dem Event. bEnd respektiert no-trim/global (dur) bzw. lokal (SEG_END).
+  const bEnd = noTrim ? dur : SEG_END;
   fc =
-    `[0:v]trim=${d.toFixed(3)}:${reveal.toFixed(3)},setpts=PTS-STARTPTS[a];` +
-    `[0:v]trim=${reveal.toFixed(3)}:${SEG_END.toFixed(3)},setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=${d.toFixed(3)}[b];` +
+    `[0:v]trim=0:${TARGET.toFixed(3)},setpts=PTS-STARTPTS[a];` +
+    `[0:v]trim=${reveal.toFixed(3)}:${bEnd.toFixed(3)},setpts=PTS-STARTPTS[b];` +
     cSeg + `[a][b]${cLbl}concat=n=${nSeg}:v=1:a=0[v]`;
 }
 const cmd = `ffmpeg -hide_banner -loglevel error -y -i "${inPath}" -filter_complex "${fc}" -map "[v]" -r 30 -c:v libx264 -preset medium -crf 16 -pix_fmt yuv420p -movflags +faststart "${tmp}"`;
