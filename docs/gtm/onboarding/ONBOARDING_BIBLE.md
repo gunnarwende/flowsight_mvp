@@ -1,5 +1,8 @@
 # Onboarding-Bible (Cockpit-Ära)
 
+> **Säule 3 von 3** (Sales → Pipeline → **Onboarding**). Greift ab der Bau-/Kauf-Zusage. Davor: Sales-Säule
+> [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) (Akquise + Gespräch) · Asset-Produktion [`../pipeline/PIPELINE_BIBLE.md`](../pipeline/PIPELINE_BIBLE.md).
+
 > **Master-Doc.** Was passiert ab dem **ersten menschlichen Kontakt** eines interessierten
 > Prospects, bis er als **zahlender Kunde** autonom mit seinem System läuft.
 > Direkter Anschluss an `docs/gtm/pipeline/PIPELINE_BIBLE.md` (die endet beim Versand).
