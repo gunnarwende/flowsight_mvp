@@ -1,0 +1,118 @@
+{
+  "leins": {
+    "firma": "Leins AG",
+    "url": "https://www.leinsag.ch/",
+    "entscheider": "Michael Leins",
+    "rolle": "Geschäftsleiter Sanitär & Heizung",
+    "mail": "michael.leins@leinsag.ch",
+    "ma": 6,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "info@leinsag.ch",
+      "herbert.leins@leinsag.ch",
+      "michael.leins@leinsag.ch",
+      "beat.leins@leinsag.ch",
+      "skender.bunjaku@leinsag.ch",
+      "tayfun.besinci@leinsag.ch"
+    ],
+    "enriched_at": "2026-06-15"
+  },
+  "widmer sanitare anlagen": {
+    "firma": "Widmer Sanitäre Anlagen GmbH",
+    "url": "https://www.sanitaer-widmer.ch/",
+    "entscheider": "René Widmer",
+    "rolle": "Leitung",
+    "mail": "rene.widmer@sanitaer-widmer.ch",
+    "ma": 4,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "info@sanitaer-widmer.ch",
+      "rene.widmer@sanitaer-widmer.ch",
+      "vanessa.widmer@sanitaer-widmer.ch",
+      "gaby.widmer@sanitaer-widmer.ch"
+    ],
+    "enriched_at": "2026-06-15"
+  },
+  "girojet bodenheizungsreinigung": {
+    "firma": "Girojet AG - Bodenheizungsreinigung",
+    "url": "https://www.girojet.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 5,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@girojet.ch"
+    ],
+    "enriched_at": "2026-06-15"
+  },
+  "vivarte by schaub haustechnik": {
+    "firma": "Vivarte by Schaub Haustechnik AG",
+    "url": "http://www.vivarte-service.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 1,
+    "tariff": "Solo (900)",
+    "inhaber_am_telefon": "ja",
+    "core": false,
+    "size_source": "vision",
+    "mails_all": [],
+    "enriched_at": "2026-06-15"
+  },
+  "altner": {
+    "firma": "Altner AG",
+    "url": "http://www.altner.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 6,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [],
+    "enriched_at": "2026-06-15"
+  },
+  "bardia": {
+    "firma": "Bardia GmbH",
+    "url": "https://www.bardia.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": "bardiaservice@outlook.com",
+    "ma": 1,
+    "tariff": "Solo (900)",
+    "inhaber_am_telefon": "ja",
+    "core": false,
+    "size_source": "llm-text",
+    "mails_all": [
+      "bardiaservice@outlook.com"
+    ],
+    "enriched_at": "2026-06-15"
+  },
+  "azgebaudetechnik": {
+    "firma": "AZ-Gebäudetechnik AG",
+    "url": "http://www.az-gebaeudetechnik.ch/",
+    "entscheider": "AZ-Gebäudetechnik AG",
+    "rolle": "Unternehmen",
+    "mail": "info@az-gebaeudetechnik.ch",
+    "ma": 9,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@az-gebaeudetechnik.ch"
+    ],
+    "enriched_at": "2026-06-15"
+  }
+}

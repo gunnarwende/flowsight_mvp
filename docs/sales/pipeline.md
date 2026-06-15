@@ -48,6 +48,20 @@ Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
 
 ---
 
+## Aktiver Outreach-Stand (Beweis-Seite-Phase)
+
+| Datum | Betrieb | Empfänger | Kanal | Status | Beweis-Seite | Nächster Schritt |
+|---|---|---|---|---|---|---|
+| 04.06. | Dörfler AG | Brüder Dörfler | Mail + Besuch 11.06. | `contacted` | `/p/8f1b4a…` | First-View-Alert; warmer Nudge wenn kein View in ~3 Tagen (S1/S2/S3) |
+| 11.06. | Leins AG | **Michael Leins** (GL Sanitär & Heizung, `michael.leins@leinsag.ch`) | Mail (live) | `contacted` | `/p/2cf7d4…` | First-View-Alert → telefon. Follow-up in „ein paar Tagen" |
+| 11.06. | Wälti & Sohn | `info@waeltisohn.ch` | Mail (live) | `contacted` | `/p/1ede83…` | First-View-Alert → Follow-up |
+| (offen) | Walter Leuthold | — | Besuch geplant, nicht angetroffen | `scouted` | `/p/dff8fd…` | Vorher anrufen (S4), dann Besuch/Mail |
+
+> **Tracking-Reset 11.06.:** alle aktiven Beweis-Seiten auf `view_count=0` (eigene Test-Öffnungen raus) → First-View-Alerts ab jetzt unverfälscht. Inaktive Dörfler-Seite (`8f1b4a`, 55 Views) als Historie belassen.
+> **Entscheider-Auswahl:** eine Person, GL des Kern-Bereichs, nie `info@`/Sammel-CC → `docs/gtm/sales/lessons_learned_sales.md` S6. Automatisierung: ticketlist **P12** (Vision-Discovery).
+
+---
+
 ## Gewonnene Kunden
 
 | # | Firma | Ort | Module | MRR (CHF) | Go-Live |

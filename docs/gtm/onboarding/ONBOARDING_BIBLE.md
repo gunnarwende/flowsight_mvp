@@ -73,7 +73,7 @@ Crawl → tenant_config → 4 Takes → Proof-Seite      Phase 1 Gespräch → P
 
 ### Phase 1 — Das Gespräch
 Die menschliche Dialog-/Entscheidungs-Phase. Hier fällt Ja/Nein. **Owner: Founder.**
-→ **Live-Werkzeug: [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md)** — das öffnest du
+→ **Live-Werkzeug: [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md)** — das öffnest du
 vor/während jedem Kontakt und liest ab. (Das ist das „HOW".)
 
 ### Phase 2 — Cockpit (Bau) *(Folge-Bau)*
@@ -89,9 +89,17 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
   einmaliger Bau. Pickup-Sekunden = Telco-Weiterleitung (Kunden-Aktion, nicht Lisa-Config).
 - **Pro-Strang-Beweis-Loop:** konfigurieren → sofort testen (Retell-Web-Call, Testfälle `is_demo`) →
   Aha. **Finale:** „Schauen Sie, was Sie gebaut haben" (der Knall).
+- **Mehrsprachigkeit = Schablone, kein Extra-Bau:** Lisa ist der Zwei-Agent-Gold-Standard —
+  **DE-only** (Ela-Stimme, spricht nie eine Fremdsprache) ↔ **multilingual INTL** (Juniper, EN/FR/IT),
+  verbunden über `swap_to_intl_agent`/`swap_to_de_agent`. Wird am Go-live mit den 23 Platzhaltern via
+  `retell_sync.mjs` für jeden Betrieb **identisch** provisioniert (Dörfler = Referenz). Spec NICHT hier
+  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/redesign/voice.md`.
 
 ### Phase 3 — Review & Go-live (Pay) *(Folge-Bau, migriert v0-Operatives)*
 - **Founder-Review** des Cockpit-Ergebnisses (G11 — keine halb-konfigurierte Lisa geht live).
+- **Sprach-Switch-Akzeptanz (Go-live-Gate):** ein Testanruf DE→EN→FR→IT→DE — jeder Wechsel sauber,
+  Ela bleibt deutsch, INTL übernimmt die Fremdsprachen, Rückweg auf Deutsch greift. Checkliste:
+  `docs/runbooks/voice_multilingual_acceptance.md` (Dörfler validiert 09.06.).
 - **Zahlung** (Aktivierung + 1. Monat) am Go-live-Gate. **Nummer erst jetzt kaufen.**
 - **Zwei Stufen live:** A = sofort testbar (bereitgestellte Nr.) · B = echte Anrufe erst nach
   Weiterleitung (die eine Kunden-Aktion). v0-Schritte (Swisscom/Sunrise/Salt, PWA-Install) hierher.
@@ -104,6 +112,8 @@ beweist Monat für Monat den Wert (X Anrufe gefangen, Y Termine, Z Bewertungen).
 ---
 
 ## §4 · Pricing (der Frame zuerst, dann die Struktur)
+
+> **Kanonische Preis-Zahlen: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) §5** (zweistufig: Solo CHF 900 / Premium CHF 2'000). Hier nur der Frame.
 
 **Du verkaufst keine Software — du installierst ein Leitsystem + betreibst eine Telefonzentrale, die
 nie krank ist.** Anker = **eine Teilzeit-Empfangskraft (3–5k/Mo)** oder **ein verpasster
@@ -192,7 +202,7 @@ Voice-Agent `call_type` emittiert; nichts geht live bis Merge + `supabase db pus
 
 ## §9 · Anker & Links
 
-- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md) ← das „HOW"
+- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md) ← das „HOW"
 - **Pipeline-Bible (was davor passiert):** `docs/gtm/pipeline/PIPELINE_BIBLE.md`
 - **Discovery/Mom-Test-Quelle:** `docs/sales/discovery_questions.md` · **CTA-Strategie:** `docs/gtm/CTA.md`
 - **Reife-/Feedback-Loop:** `operating_model.md` · **Lessons:** `lessons_learned.md`

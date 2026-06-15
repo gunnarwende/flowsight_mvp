@@ -64,10 +64,16 @@ function resolveTakesDir() {
 const ABGENOMMEN = resolveTakesDir();
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-/** Derive a polite salutation from an owner full name → "Herr Nachname". */
+/** Derive a polite salutation from an owner full name → "Herr Nachname".
+ *  Nimmt NUR den ersten Inhaber (vor Komma) und strippt Gewerk-Klammern
+ *  (z. B. "Ramon Dörfler (Sanitärmeister), Luzian Dörfler (Spengler/Heizung)"
+ *  → "Herr Dörfler"), damit nie ein Rollen-Text wie "(Spengler/Heizung)"
+ *  in der Anrede landet. */
 function deriveSalutation(ownerName) {
   if (!ownerName || typeof ownerName !== "string") return null;
-  const parts = ownerName.trim().split(/\s+/);
+  const firstOwner = ownerName.split(/[,(]/)[0].trim(); // erster Inhaber, ohne Klammer-Gewerk
+  if (!firstOwner) return null;
+  const parts = firstOwner.split(/\s+/);
   const last = parts[parts.length - 1];
   return last ? `Herr ${last}` : null;
 }
@@ -150,7 +156,7 @@ async function main() {
   // 4) Token + DB row
   const token = randomBytes(12).toString("hex"); // 24 hex chars
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000); // +14 Tage
+  const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 Tage
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
@@ -177,7 +183,7 @@ async function main() {
   const url = `${baseUrl}/p/${token}`;
   console.log(`\n✅ Beweis-Seite erstellt:`);
   console.log(`   ${url}`);
-  console.log(`   gültig bis ${expiresAt.toISOString().slice(0, 10)} (14 Tage)`);
+  console.log(`   gültig bis ${expiresAt.toISOString().slice(0, 10)} (30 Tage)`);
   console.log(`\n   Lokal testen: http://localhost:3000/p/${token}\n`);
 }
 

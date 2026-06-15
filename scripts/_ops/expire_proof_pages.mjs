@@ -2,8 +2,8 @@
 /**
  * expire_proof_pages.mjs — Lifecycle-Cleanup der Beweis-Seiten.
  *
- * Strategie (project_email_phase_kickoff): „Video löschen nach 14 Tagen OHNE
- * Engagement." Pro Beweis-Seite ist `expires_at` = created + 14d gesetzt.
+ * Strategie (project_email_phase_kickoff): „Video löschen nach 30 Tagen OHNE
+ * Engagement." Pro Beweis-Seite ist `expires_at` = created + 30d gesetzt.
  *
  * Dieser Job (idempotent, als Cron gedacht — z.B. täglich):
  *   1. Findet aktive proof_pages mit abgelaufenem `expires_at`.
