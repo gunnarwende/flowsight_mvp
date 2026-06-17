@@ -122,10 +122,15 @@ export default async function Zusammenfassung({ params }: { params: Promise<{ to
       </Section>
 
       <Section title="Online-Meldeformular">
-        <Row label="Eigene Website" value={w.hasWebsite === true ? "Ja" : w.hasWebsite === false ? "Nein" : "—"} />
-        <Row label="Verteilung" value={w.distribution ?? "—"} />
-        {w.distribution === "embed" ? <Row label="Einbau durch" value={w.embedBy ?? "—"} /> : null}
-        {w.agencyName || w.agencyEmail ? <Row label="Web-Agentur" value={[w.agencyName, w.agencyEmail].filter(Boolean).join(" · ")} /> : null}
+        <Row label="Formular gewünscht" value={w.formRelevant === false ? "Nein — nur Voice + Leitsystem" : "Ja"} />
+        {w.formRelevant !== false ? (
+          <>
+            <Row label="Website-Betreuung" value={w.integrationLocation === "intern" ? "Wir selbst" : w.integrationLocation === "agentur" ? "Web-Agentur" : "—"} />
+            <Row label="Bestehendes Formular" value={w.formMode === "ersetzen" ? "Wird ersetzt" : w.formMode === "ergaenzen" ? "Ergänzend dazu" : "—"} />
+            <Row label="Einbau durch" value={w.caretaker === "wir" ? "FlowSight" : w.caretaker === "betrieb" ? "Wir selbst" : w.caretaker === "agentur" ? "Web-Agentur" : "—"} />
+            {w.agencyName || w.agencyEmail ? <Row label="Web-Agentur" value={[w.agencyName, w.agencyEmail].filter(Boolean).join(" · ")} /> : null}
+          </>
+        ) : null}
       </Section>
 
       <Section title="Benachrichtigungen & E-Mail">

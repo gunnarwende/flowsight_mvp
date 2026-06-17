@@ -5,12 +5,12 @@ import type {
   CockpitDraft,
   CockpitSession,
   DispositionsConfig,
+  DispositionKorb,
   StaffMember,
   WizardCategory,
 } from "@/src/lib/cockpit/types";
 import { DISPOSITION_DEFAULTS } from "@/src/lib/cockpit/types";
 import { AVV_TEXT, AVV_VERSION, AVV_SUBPROCESSORS } from "@/src/lib/cockpit/avv";
-import { startLisaTestCall, type TestCallPhase } from "./lisaTestCall";
 
 /**
  * Onboarding-Cockpit Co-Pilot — Redesign v2 (Phase 2, OC6).
@@ -106,6 +106,21 @@ function ChannelPick({ value, onChange }: { value: "sms" | "email"; onChange: (v
   );
 }
 
+/** Trainings-Regler: was Lisa bei einer Anruf-Art tut (Fall/Nachricht/nichts). */
+function KorbPick({ value, onChange }: { value: DispositionKorb; onChange: (v: DispositionKorb) => void }) {
+  const opts: { v: DispositionKorb; label: string }[] = [
+    { v: "fall", label: "Fall anlegen" }, { v: "nachricht", label: "Nur Nachricht" }, { v: "nichts", label: "Nichts" },
+  ];
+  return (
+    <div className="inline-flex flex-wrap gap-1 rounded-lg border border-white/15 p-0.5 text-xs">
+      {opts.map((o) => (
+        <button key={o.v} type="button" onClick={() => onChange(o.v)} className="rounded-md px-2.5 py-1 font-medium"
+          style={value === o.v ? { backgroundColor: GOLD, color: "#1a1a1a" } : { color: "#cbd5e1" }}>{o.label}</button>
+      ))}
+    </div>
+  );
+}
+
 /** „Kennen Sie das?" — legt dem Betrieb seine Alltagsschmerzen vor + zeigt je die Entlastung
  *  (Welle 2 / emotionaler Hebel: „die verstehen meinen Alltag"). Einklappbar (Q4). */
 function PainHint({ items }: { items: { pain: string; relief: string }[] }) {
@@ -137,6 +152,129 @@ function Section({ n, icon, title, lead, children }: { n: number; icon: string; 
   );
 }
 
+// ── Konstellation (Welle 3): Knoten als 5-Sterne-Sternbild (Entität in der Mitte) ──
+type StarState = "empty" | "partial" | "done";
+const PENTA = [{ x: 50, y: 15 }, { x: 87, y: 40 }, { x: 72, y: 83 }, { x: 28, y: 83 }, { x: 13, y: 40 }];
+// Innere Endpunkte am Avatar-Rand (gleicher Radius je Strahl → überall gleich, berührt sauber).
+const INNER = [{ x: 50, y: 37 }, { x: 62.6, y: 46.6 }, { x: 57.2, y: 60.8 }, { x: 42.8, y: 60.8 }, { x: 37.4, y: 46.6 }];
+// Äussere Endpunkte: kurz VOR der Stern-Mitte → Strahl endet am Stern-Rand (nicht in der Mitte).
+const OUTER = [{ x: 50, y: 19 }, { x: 83.1, y: 41 }, { x: 69.8, y: 79.7 }, { x: 30.2, y: 79.7 }, { x: 16.9, y: 41 }];
+
+function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
+  const fill = state === "done" ? GOLD : state === "partial" ? "rgba(200,162,74,0.35)" : "transparent";
+  const stroke = state === "empty" ? "rgba(255,255,255,0.4)" : GOLD;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={state === "done" ? { filter: "drop-shadow(0 0 6px rgba(212,168,67,0.85))" } : undefined}>
+      <path d="M12 2.2l2.85 6.2 6.75.7-5 4.55 1.4 6.65L12 17.6 5.6 20.3 7 13.65l-5-4.55 6.75-.7z" fill={fill} stroke={stroke} strokeWidth="1.3" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Lisa als Team — progressives Gesicht: pro gesetztem Stern erscheint ein Zug
+ *  (1★ Haare · 2★ Augen · 3★ Nase · 4★ Mund · 5★ Team mit Headset). Spielerischer
+ *  Onboarding-Moment: man baut Lisa Schritt für Schritt zur Kollegin. Kein Headset vorn. */
+function LisaAvatar({ size = 118, stars = 0 }: { size?: number; stars?: number }) {
+  const awake = stars >= 5;
+  const skin = "#f2d3bd", hair = "#5a3b27", lip = "#c87f6e", ink = "#3a2c25";
+  return (
+    <span className="inline-block leading-none transition-all duration-300" style={{ filter: awake ? "drop-shadow(0 0 22px rgba(212,168,67,0.85))" : "drop-shadow(0 0 13px rgba(212,168,67,0.42))" }}>
+      <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="#0e2336" stroke="#d4a843" strokeWidth="2.5" />
+        {/* Team dahinter — bei 5★ mit Headset */}
+        <g opacity="0.4">
+          <circle cx="34" cy="62" r="10.5" fill="#5a6b88" /><path d="M19 96c0-12 7-18 15-18s15 6 15 18z" fill="#3c4d6c" />
+          <circle cx="86" cy="62" r="10.5" fill="#5a6b88" /><path d="M71 96c0-12 7-18 15-18s15 6 15 18z" fill="#3c4d6c" />
+          {stars >= 5 ? (
+            <g stroke="#d4a843" strokeWidth="1.5" fill="none" strokeLinecap="round">
+              <path d="M25 62a9 9 0 0 1 18 0" /><path d="M42 62v4.5" />
+              <path d="M77 62a9 9 0 0 1 18 0" /><path d="M78 62v4.5" />
+            </g>
+          ) : null}
+        </g>
+        {/* Schultern */}
+        <path d="M36 99c0-15 11-24 24-24s24 9 24 24z" fill="#28395a" stroke="#d4a843" strokeWidth="1.4" />
+        {/* Haare hinten (1★) — rahmt das Gesicht */}
+        {stars >= 1 ? <path d="M40 54c0-15 9-25 20-25s20 10 20 25c0 8-1 15-3 21l-4-1c1-7 1-15 0-21-2 5-2 13-3 19H50c-1-6-1-14-3-19-1 6-1 14 0 21l-4 1c-2-6-3-13-3-21z" fill={hair} /> : null}
+        {/* Gesicht */}
+        <ellipse cx="60" cy="51" rx="14" ry="16" fill={skin} />
+        {/* Pony (1★) */}
+        {stars >= 1 ? <path d="M46 50c1-10 6.5-16 14-16s13 6 14 16c-3-6-8-8.5-14-8.5S49 44 46 50z" fill={hair} /> : null}
+        {/* Brauen + Augen (2★) */}
+        {stars >= 2 ? (
+          <g>
+            <path d="M51 46.3q3-1.6 6 0M63 46.3q3-1.6 6 0" stroke={hair} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+            <ellipse cx="54" cy="50" rx="2.5" ry="1.8" fill="#fff" /><ellipse cx="66" cy="50" rx="2.5" ry="1.8" fill="#fff" />
+            <circle cx="54" cy="50" r="1.45" fill={ink} /><circle cx="66" cy="50" r="1.45" fill={ink} />
+          </g>
+        ) : null}
+        {/* Nase (3★) */}
+        {stars >= 3 ? <path d="M60 52q-1.6 3 -2 4.4q1 1 2 1t2-1q-0.4-1.4-2-4.4z" fill="#e6b89f" /> : null}
+        {/* Mund + Wangen (4★) */}
+        {stars >= 4 ? (
+          <g>
+            <path d="M55 59q5 4.5 10 0q-5 2.2 -10 0z" fill={lip} />
+            <circle cx="49.5" cy="55" r="2.4" fill="#e89b87" opacity="0.45" /><circle cx="70.5" cy="55" r="2.4" fill="#e89b87" opacity="0.45" />
+          </g>
+        ) : null}
+      </svg>
+    </span>
+  );
+}
+
+function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
+  center: React.ReactNode; centerLabel: string; awakeLabel: string;
+  stars: { key: string; label: string; state: StarState }[];
+  onOpen: (key: string) => void;
+}) {
+  const doneCount = stars.filter((s) => s.state === "done").length;
+  const allDone = doneCount === stars.length;
+  const counter = allDone
+    ? <p className="text-[11px] font-semibold" style={{ color: GOLD }}>★ {awakeLabel}</p>
+    : <p className="text-[11px] text-slate-400">{doneCount}/{stars.length} Sterne</p>;
+  return (
+    <div>
+      {/* Desktop: radiale Konstellation */}
+      <div className="relative mx-auto hidden aspect-square w-full max-w-[420px] sm:block">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+          {stars.map((s, i) => (
+            <line key={s.key} x1={INNER[i].x} y1={INNER[i].y} x2={OUTER[i].x} y2={OUTER[i].y} stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.65 : 0.18} />
+          ))}
+        </svg>
+        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+          {center}
+          <p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>
+          {counter}
+        </div>
+        {stars.map((s, i) => {
+          const below = PENTA[i].y > 70; // untere zwei Sterne: Label unterhalb
+          return (
+            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
+              className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-transform duration-200 hover:scale-110"
+              style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
+              <span className={`absolute ${below ? "top-[calc(100%+3px)]" : "bottom-[calc(100%+3px)]"} w-[132px] text-center text-[11px] font-medium leading-tight text-slate-200`}>{s.label}</span>
+              <StarGlyph state={s.state} />
+            </button>
+          );
+        })}
+      </div>
+      {/* Handy: Sternen-Leiter */}
+      <div className="sm:hidden">
+        <div className="mb-4 flex flex-col items-center">{center}<p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>{counter}</div>
+        <div className="space-y-2">
+          {stars.map((s) => (
+            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
+              className="flex w-full items-center gap-3 rounded-xl border bg-white/5 px-3 py-2.5 text-left" style={{ borderColor: s.state === "done" ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
+              <StarGlyph state={s.state} size={24} />
+              <span className="flex-1 text-sm text-white">{s.label}</span>
+              <span className="text-slate-500">›</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
@@ -153,9 +291,27 @@ function BrandIcon({ size = 108 }: { size?: number }) {
 // ── Strang-Definitionen (für die Karte) ──────────────────────────────────────
 const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
   { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen", nutzen: "Kein Zettel geht verloren" },
-  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Kein Anruf bleibt liegen" },
+  { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Anrufe werden aufgenommen und sichtbar gemacht" },
   { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
 ];
+
+// Per-Stern „Was läuft bei Ihnen noch?"-Beispiele — STRANG-SPEZIFISCH + konkret
+// (2 knackige Sani-Fälle je Stern, keine vagen). „begruessung" ist die Ausnahme:
+// minimal (nur „Hinweis (optional)", kein Beispiel) — siehe Drill-in-Render.
+const LISA_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
+  telefonie: `z. B. „Notfall-Handy (zweite Nummer) NICHT umleiten", „Festnetz läuft über die Zentrale im Laden"`,
+  notfall: `z. B. „Am Wochenende nur Heizungsausfälle als Notfall", „Samstag bis 12 Uhr besetzt, danach Notdienst"`,
+  wissen: `z. B. „Wir machen keine Ölheizungen mehr", „Service-Abo-Kunden haben bei Terminen Vorrang"`,
+  anruflogik: `z. B. „Heizungsausfall im Winter immer als Notfall behandeln", „Stammkunde Meier immer direkt an den Chef"`,
+};
+
+// Per-Leitsystem-Stern strang-spezifische Beispiele (R8/L-6). „marke" = minimal (s. Drill-in).
+const SYSTEM_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
+  team: `z. B. „Lehrling Sven darf keine Notfälle übernehmen", „Chef sieht alles, Monteure nur die eigene Region"`,
+  kalender: `z. B. „Wir nutzen keinen Kalender", „Nur der Chef-Kalender ist massgeblich"`,
+  nachrichten: `z. B. „Rechnungen immer CC an die Buchhaltung", „Notfälle zusätzlich aufs Privat-Handy"`,
+  bewertungen: `z. B. „Wir arbeiten nie mit Anbieter X", „Stammkunden fragen wir nicht aktiv nach Bewertung"`,
+};
 
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
 const DISPOSITION_CARDS: { key: keyof DispositionsConfig; titel: string; szenario: string; weg: string }[] = [
@@ -172,7 +328,6 @@ const WISSEN_FIELDS: { key: keyof CockpitSession["prefill"]["voice"]["wissen"]; 
   { key: "serviceArea", label: "Einzugsgebiet" },
   { key: "servicesList", label: "Leistungen" },
   { key: "emergencyPolicy", label: "Notfall-Regelung" },
-  { key: "priceDeflect", label: "Antwort auf Preisfragen" },
 ];
 
 // T1: gängige CH-Telefonanbieter (steuert die Weiterleitungs-Anleitung).
@@ -181,8 +336,8 @@ const TELCO_OPTIONS = [
   { value: "sunrise" as const, label: "Sunrise" },
   { value: "salt" as const, label: "Salt" },
   { value: "quickline" as const, label: "Quickline" },
-  { value: "yallo" as const, label: "Yallo / Wingo / anderer" },
-  { value: "other" as const, label: "Weiss ich nicht / nicht dabei" },
+  { value: "yallo" as const, label: "Yallo" },
+  { value: "other" as const, label: "Anderer Anbieter" },
 ];
 // L3: die echten Default-Wortlaute der 3 automatischen Nachrichten (zum Vorausfüllen).
 const MSG_DEFAULTS = {
@@ -197,18 +352,23 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
   const init = session.draft ?? {};
   const [view, setView] = useState<View>("overview");
   const [draft, setDraft] = useState<CockpitDraft>(() => ({
+    // WICHTIG: gespeicherte Felder ZUERST spreaden, damit ALLE (auch neue wie assistantName,
+    // telco, emergency*, holidays*, agency*, googlePlaceId, internalThreshold, calendar,
+    // messages, starNotes) einen Reload überleben — danach nur die paar Default-Felder überschreiben.
+    ...init,
     branding: { brandColor: init.branding?.brandColor ?? pf.branding.brandColor, caseIdPrefix: init.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix },
     staff: init.staff ?? [],
     voice: {
+      ...init.voice,
       greetingText: init.voice?.greetingText ?? pf.voice.greetingSuggestion,
       languages: init.voice?.languages ?? pf.voice.languagesDefault,
       wissen: init.voice?.wissen ?? {},
       dispositions: init.voice?.dispositions ?? DISPOSITION_DEFAULTS,
       pickup: init.voice?.pickup,
     },
-    wizard: { categories: init.wizard?.categories ?? pf.wizard.categories, distribution: init.wizard?.distribution, embedBy: init.wizard?.embedBy, hasWebsite: init.wizard?.hasWebsite },
-    review: { notificationEmail: init.review?.notificationEmail ?? "", googleReviewUrl: init.review?.googleReviewUrl ?? "", smsSenderName: init.review?.smsSenderName ?? pf.review.smsSenderName, smsContent: init.review?.smsContent ?? "", notifyMessagesByEmail: init.review?.notifyMessagesByEmail ?? false },
-    golive: { adminEmail: init.golive?.adminEmail ?? "", avvAccepted: init.golive?.avvAccepted ?? false },
+    wizard: { ...init.wizard, categories: init.wizard?.categories ?? pf.wizard.categories, distribution: init.wizard?.distribution, embedBy: init.wizard?.embedBy, hasWebsite: init.wizard?.hasWebsite },
+    review: { ...init.review, notificationEmail: init.review?.notificationEmail ?? "", googleReviewUrl: init.review?.googleReviewUrl ?? "", smsSenderName: init.review?.smsSenderName ?? pf.review.smsSenderName, smsContent: init.review?.smsContent ?? "", notifyMessagesByEmail: init.review?.notifyMessagesByEmail ?? false },
+    golive: { ...init.golive, adminEmail: init.golive?.adminEmail ?? "", avvAccepted: init.golive?.avvAccepted ?? false },
     notes: init.notes ?? {},
     stepDone: init.stepDone ?? {},
   }));
@@ -255,7 +415,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
     <div className="flex min-h-dvh flex-col" style={{ background: "radial-gradient(1000px circle at 50% 54%, #18374f 0%, #0b1f33 56%)", color: "#e8eef5" }}>
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
-          <Overview brandColor={brandColor} companyName={session.company_name} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
+          <Overview token={token} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa token={token} pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
@@ -278,8 +438,8 @@ function SaveDot({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
 }
 
 // ── Overview = die System-Karte ──────────────────────────────────────────────
-function Overview({ brandColor, companyName, progress, doneCount, saveState, onOpen }: {
-  brandColor: string; companyName: string;
+function Overview({ token, brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
+  token: string; brandColor: string; companyName: string; assistantName: string;
   progress: Record<string, boolean>; doneCount: number; saveState: "idle" | "saving" | "saved" | "error";
   onOpen: (v: View) => void;
 }) {
@@ -291,7 +451,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
         <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">Bauen wir {companyName} auf</h1>
         <p className="mx-auto mt-3 max-w-[620px] text-sm leading-relaxed text-slate-300">
           80 % ist vorbereitet — Sie ergänzen die 20 %, die nur Sie kennen.
-          <span className="mt-1 block text-slate-400">Nichts ist live, bis Sie freigeben · Schweizer Datenschutz, keine Aufnahmen · jederzeit speicherbar, später änderbar.</span>
+          <span className="mt-1 block text-slate-400">Nichts ist live, bis Sie freigeben · jederzeit speicherbar, später änderbar.</span>
         </p>
         <div className="mt-3"><SaveDot state={saveState} /></div>
       </header>
@@ -321,7 +481,7 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
                   {done ? "✓ startklar" : "○ offen"}
                 </span>
               </div>
-              <p className="mt-3 text-base font-bold text-white">{s.titel}</p>
+              <p className="mt-3 text-base font-bold text-white">{s.key === "lisa" ? assistantName : s.titel}</p>
               <p className="text-xs text-slate-400">{s.unter}</p>
               <p className="mt-2 text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>✓ {s.nutzen}</p>
               <p className="mt-3 text-sm font-semibold transition-transform duration-200 group-hover:translate-x-0.5" style={{ color: GOLD }}>{s.cta} →</p>
@@ -334,40 +494,39 @@ function Overview({ brandColor, companyName, progress, doneCount, saveState, onO
       <div className="my-5 hidden sm:grid sm:grid-cols-3 sm:gap-6">
         {[0, 1, 2].map((i) => (
           <div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>
-            <span className="inline-block" style={{ transform: i === 0 ? "rotate(32deg)" : i === 2 ? "rotate(-32deg)" : "none" }}>↓</span>
+            <span className="inline-block" style={{ transform: i === 0 ? "rotate(-32deg)" : i === 2 ? "rotate(32deg)" : "none" }}>↓</span>
           </div>
         ))}
       </div>
       <div className="my-5 text-center text-2xl sm:hidden" style={{ color: `${GOLD}99` }}>↓</div>
 
-      {/* Leitsystem-Knoten (klickbar) — der Held der Karte */}
+      {/* Leitsystem-Knoten (klickbar) — der Held der Karte. L-13: goldener Umriss wenn bestätigt. */}
       <button type="button" onClick={() => onOpen("system")}
         className="mx-auto flex w-full max-w-[480px] flex-col items-center rounded-3xl border px-6 py-10 text-center transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-black/30"
-        style={{ borderColor: "rgba(255,255,255,0.10)", backgroundColor: "rgba(255,255,255,0.03)" }}>
+        style={{ borderColor: progress.system ? `${GOLD}66` : "rgba(255,255,255,0.10)", backgroundColor: progress.system ? `${GOLD}0f` : "rgba(255,255,255,0.03)" }}>
         <BrandIcon size={116} />
         <p className="mt-5 text-xl font-bold text-white">Ihr Leitsystem</p>
         <p className="mt-0.5 text-base font-semibold" style={{ color: brandColor === "#0b1f33" ? GOLD : brandColor }}>{companyName}</p>
-        <p className="mt-4 text-xs leading-relaxed text-slate-400">
-          Marke · Team & Rollen · Benachrichtigung · Bewertung<br />
+        <p className="mt-4 text-xs leading-relaxed" style={{ color: progress.system ? GOLD : undefined }}>
+          <span className="text-slate-400">Marke · Team & Rollen · Benachrichtigung · Bewertung</span><br />
           {progress.system ? "✓ bestätigt" : "antippen zum Einstellen"}
         </p>
       </button>
 
+      {/* L-14: goldener Pfeil zeigt direkt auf den Freigabe-Button (statische Output-Card entfernt). */}
       <div className="my-6 text-center text-2xl" style={{ color: `${GOLD}99` }}>↓</div>
 
-      {/* Output */}
-      <div className="mx-auto max-w-[480px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center text-sm text-slate-300">
-        <p className="font-semibold text-white">📋 Ihre Fälle — sauber an einem Ort</p>
-        <p className="mt-1.5 text-xs leading-relaxed text-slate-400">Daraus entstehen Ihre nächsten Schritte (Weiterleitung · Formular platzieren · Freigabe).</p>
-      </div>
-
       {/* Freigabe */}
-      <div className="mt-12 text-center">
+      <div className="mt-4 text-center">
         <button type="button" onClick={() => onOpen("freigabe")} disabled={false}
           className="rounded-xl px-6 py-3 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
           An Gunnar zum Freischalten senden
         </button>
         {!allDone ? <p className="mt-2 text-[11px] text-slate-400">Tipp: gehen Sie zuerst die drei Stränge + Ihr Leitsystem durch.</p> : null}
+        {/* L-18: PDF-Auszug auch direkt von der Hauptseite ziehbar. */}
+        <p className="mt-5">
+          <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="text-xs font-medium text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-slate-200">📄 Ihren Setup-Stand als PDF sichern</a>
+        </p>
       </div>
     </>
   );
@@ -379,7 +538,7 @@ function Detail({ icon, title, claim, onBack, children, onDone, doneLabel = "Als
 }) {
   return (
     <div className="mx-auto max-w-[680px]">
-      <button type="button" onClick={onBack} className="text-sm text-slate-400 hover:text-white">← Übersicht</button>
+      <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Übersicht</button>
       <h2 className="mt-3 flex items-center gap-2 text-xl font-bold text-white"><span>{icon}</span>{title}</h2>
       {claim ? <p className="mt-1 text-sm text-slate-300">{claim}</p> : null}
       <div className="mt-5 space-y-5">{children}</div>
@@ -420,126 +579,214 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
   token: string; pf: CockpitSession["prefill"]; draft: CockpitDraft;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
+  const [star, setStar] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
-  const [phase, setPhase] = useState<TestCallPhase>("idle");
   const v = draft.voice ?? {};
+  const lisaName = (v.assistantName ?? "").trim() || "Lisa";
   const disp = v.dispositions ?? DISPOSITION_DEFAULTS;
-  const setDisp = (k: keyof DispositionsConfig, notify: "push" | "board") =>
-    update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], notify } } } }));
+  const setDisp = (k: keyof DispositionsConfig, patch: Partial<DispositionsConfig[keyof DispositionsConfig]>) =>
+    update((d) => ({ ...d, voice: { ...d.voice, dispositions: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS), [k]: { ...(d.voice?.dispositions ?? DISPOSITION_DEFAULTS)[k], ...patch } } } }));
 
   const pickupLabel: Record<string, string> = { sofort: "Sofort", nach_10s: "Nach ~10 Sek.", nach_15s: "Nach ~15 Sek.", nach_20s: "Nach ~20 Sek.", nach_30s: "Nach ~30 Sek." };
   const provLabel: Record<string, string> = { swisscom: "Swisscom", sunrise: "Sunrise", salt: "Salt", quickline: "Quickline", yallo: "Ihrem Anbieter", other: "Ihrem Anbieter" };
   const setV = (patch: Partial<NonNullable<CockpitDraft["voice"]>>) => update((d) => ({ ...d, voice: { ...d.voice, ...patch } }));
+  const isDone = (k: string) => !!draft.stepDone?.[`lisa_${k}`];
+  const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`lisa_${k}`]: true } }));
+  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-  return (
-    <Detail icon="📞" title="Ihre Lisa" claim="Ihre Mitarbeiterin, die nie ein Gespräch verpasst — und jeden Auftrag festhält. In sechs Schritten eingestellt." onBack={onBack} onDone={onDone}>
-
-      <PainHint items={[
-        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: "Lisa nimmt jeden Anruf an — kein Auftrag geht mehr verloren." },
-        { pain: "Lieferanten und Werbeanrufe klauen mir ständig Zeit", relief: "Lisa filtert: nur echte Anliegen landen als Fall bei Ihnen." },
-      ]} />
-
-      <Section n={1} icon="🗣" title="So begrüsst Lisa" lead="Der erste Satz bei jedem Anruf — er macht erkennbar, dass Lisa eine digitale Assistentin ist (in der Schweiz Pflicht).">
-        <Field label="Begrüssung">
-          <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
-        </Field>
-      </Section>
-
-      <Section n={2} icon="☎️" title="Telefonie & Erreichbarkeit" lead="Damit Anrufe bei Lisa landen, leiten Sie Ihre bestehende Nummer weiter — die genaue Anleitung hängt von Ihrem Anbieter ab.">
-        <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
-          <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
-        </Field>
-        {v.telco?.provider === "other" || v.telco?.provider === "yallo" ? (
-          <Field label="Wie heisst Ihr Anbieter? (optional)">
-            <TextInput placeholder="z. B. Wingo, Lebara …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
+  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit). Stern wird
+  // NUR gold, wenn missing() leer ist — sonst bleibt er offen + Inline-Hinweis.
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
+    {
+      key: "begruessung", star: `So meldet sich ${lisaName}`, icon: "🗣", title: `So meldet sich ${lisaName}`,
+      touched: !!(v.greetingText && v.greetingText !== pf.voice.greetingSuggestion),
+      missing: () => (v.greetingText ?? pf.voice.greetingSuggestion).trim() ? [] : ["eine Begrüssung"],
+      render: () => (
+        <>
+          <Field label="Wie soll Ihre Telefon-Assistentin heissen?" hint={`Standard ist „Lisa“ — Sie können ihr aber jeden Namen geben. Er gilt dann überall: im Cockpit und am Telefon.`}>
+            <TextInput placeholder="Lisa" maxLength={24} value={v.assistantName ?? ""} onChange={(e) => setV({ assistantName: e.target.value })} />
           </Field>
-        ) : null}
-        <Field label="Wann soll Lisa rangehen?" hint="Ab wann ein unbeantworteter Anruf zu Lisa läuft.">
-          <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
-            options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
-        </Field>
-        <Disclosure summary="Wie richte ich die Weiterleitung ein?">
-          Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt Lisa.
-        </Disclosure>
-      </Section>
-
-      <Section n={3} icon="🚨" title="Notfall & Notdienst" lead="Bieten Sie ausserhalb der Zeiten einen Notdienst an? Dann muss glasklar sein, was Lisa im Notfall tut.">
-        <Field label="Bieten Sie einen Notdienst an?">
-          <RadioGroup value={v.emergencyService === undefined ? undefined : v.emergencyService ? "ja" : "nein"}
-            onChange={(val) => setV({ emergencyService: val === "ja" })}
-            options={[{ value: "ja", label: "Ja — wir sind im Notfall erreichbar" }, { value: "nein", label: "Nein — keinen Notdienst" }]} />
-        </Field>
-        {v.emergencyService === true ? (
-          <>
-            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">
-              ⚠️ <span className="font-semibold">Lisa stellt NICHT durch</span> (kein Live-Transfer). Sie nimmt den Notfall auf und <span className="font-semibold">alarmiert die unten genannte Person sofort</span> (Push + E-Mail), damit diese zurückruft.
+          <Field label="Begrüssung" hint={`Der erste Satz bei jedem Anruf — er macht erkennbar, dass ${lisaName} eine digitale Assistentin ist (in der Schweiz Pflicht).`}>
+            <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
+          </Field>
+        </>
+      ),
+    },
+    {
+      key: "telefonie", star: `So kommt der Anruf zu ${lisaName}`, icon: "☎️", title: `So kommt der Anruf zu ${lisaName}`,
+      touched: !!v.telco?.provider,
+      missing: () => v.telco?.provider ? [] : ["Ihren Telefonanbieter"],
+      render: () => (
+        <>
+          <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
+            <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
+          </Field>
+          {v.telco?.provider === "other" ? (
+            <Field label="Wie heisst Ihr Anbieter?">
+              <TextInput placeholder="z. B. Wingo, Lebara, iWay …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
+            </Field>
+          ) : null}
+          <Field label={`Wann soll ${lisaName} rangehen?`} hint={`Ab wann ein unbeantworteter Anruf zu ${lisaName} läuft.`}>
+            <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
+              options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
+          </Field>
+          <Disclosure summary="Wie richte ich die Weiterleitung ein?">
+            Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt {lisaName}.
+          </Disclosure>
+        </>
+      ),
+    },
+    {
+      key: "notfall", star: `Wann ${lisaName} erreichbar ist`, icon: "🚨", title: `Wann ${lisaName} erreichbar ist`,
+      touched: v.emergencyService !== undefined || !!(v.vacationNote ?? "").trim(),
+      missing: () => v.emergencyService === true && !(v.emergencyContact?.name ?? "").trim() ? ["den Notfall-Empfänger (Name)"] : [],
+      render: () => (
+        <>
+          <Field label="Bieten Sie einen Notdienst an?">
+            <RadioGroup value={v.emergencyService === undefined ? undefined : v.emergencyService ? "ja" : "nein"}
+              onChange={(val) => setV({ emergencyService: val === "ja" })}
+              options={[{ value: "ja", label: "Ja — wir sind im Notfall erreichbar" }, { value: "nein", label: "Nein — keinen Notdienst" }]} />
+          </Field>
+          {v.emergencyService === true ? (
+            <>
+              <Field label="Wer wird im Notfall sofort alarmiert?">
+                <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
+              </Field>
+              <Field label="Unter welcher Nummer?">
+                <TextInput placeholder="+41 …" value={v.emergencyContact?.phone ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, phone: e.target.value } })} />
+              </Field>
+            </>
+          ) : v.emergencyService === false ? (
+            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt {lisaName} den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
+          ) : null}
+          <div className="border-t border-white/10 pt-3">
+            <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
+            <p className="mt-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+              Auch dann nimmt {lisaName} jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren.{v.emergencyService ? " Bei einem Notfall wird Ihr Pikett-Dienst sofort informiert." : ""}
             </p>
-            <Field label="Wer wird im Notfall sofort alarmiert?">
-              <TextInput placeholder="Name (z. B. Ramon Dörfler)" value={v.emergencyContact?.name ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, name: e.target.value } })} />
-            </Field>
-            <Field label="Unter welcher Nummer?">
-              <TextInput placeholder="+41 …" value={v.emergencyContact?.phone ?? ""} onChange={(e) => setV({ emergencyContact: { ...v.emergencyContact, phone: e.target.value } })} />
-            </Field>
-          </>
-        ) : v.emergencyService === false ? (
-          <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt Lisa den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
-        ) : null}
-      </Section>
-
-      <Section n={4} icon="🕐" title="Feiertage & Ferien" lead="Lisa darf an einem Feiertag nicht „kommen Sie morgen“ sagen. So reagiert sie, wenn gerade nicht gearbeitet wird.">
-        <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
-        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          Auch dann nimmt Lisa jeden Fall <span className="text-slate-200">trotzdem auf</span> — nichts geht verloren. Sie setzt die Erwartung: {v.emergencyService ? "bei einem Notfall wird Ihr Pikett sofort alarmiert, sonst Rückmeldung am nächsten Werktag." : "Rückmeldung am nächsten Werktag."}
-        </p>
-        <Field label="Geplante Betriebsferien? (optional)" hint="z. B. „Betriebsferien 21.7.–4.8.“ — Lisa weist Anrufer dann aktiv darauf hin.">
-          <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
-        </Field>
-      </Section>
-
-      <Section n={5} icon="📚" title="Das sagt Ihre Lisa" lead="Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren. Tippen zum Aufklappen.">
-        <div className="space-y-2">
-          {WISSEN_FIELDS.map((f) => {
-            const isOpen = open === f.key;
+          </div>
+          <Field label="Geplante Betriebsferien? (optional)" hint={`z. B. „Betriebsferien 21.7.–4.8.“ — ${lisaName} weist Anrufer dann aktiv darauf hin.`}>
+            <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
+          </Field>
+        </>
+      ),
+    },
+    {
+      key: "wissen", star: `Das soll ${lisaName} wissen`, icon: "📚", title: `Das soll ${lisaName} wissen`,
+      touched: !!(v.wissen && Object.keys(v.wissen).length),
+      render: () => (
+        <>
+          <p className="text-xs text-slate-400">Aus Ihrer Website vorbereitet — bitte überfliegen und korrigieren. Tippen zum Aufklappen.</p>
+          <div className="space-y-2">
+            {WISSEN_FIELDS.map((f) => {
+              const isOpen = open === f.key;
+              return (
+                <div key={f.key} className="rounded-lg border border-white/10 bg-white/5">
+                  <button type="button" onClick={() => setOpen(isOpen ? null : f.key)} className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm text-white">
+                    <span>{f.label}</span><span className="text-lg leading-none" style={{ color: GOLD }}>{isOpen ? "−" : "+"}</span>
+                  </button>
+                  {isOpen ? (
+                    <div className="px-3 pb-3">
+                      {f.key === "serviceArea" ? <p className="mb-2 text-[11px] leading-relaxed text-slate-400">Nur als Info — <span className="text-slate-300">kein Filter</span>. {lisaName} lehnt Anfragen von ausserhalb NICHT ab, sondern nimmt sie ganz normal auf — Sie entscheiden danach, ob sich der Weg lohnt.</p> : null}
+                      <TextArea rows={f.key === "servicesList" ? 8 : 3} value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "anruflogik", star: `So soll ${lisaName} reagieren`, icon: "🎧", title: `So soll ${lisaName} reagieren`,
+      touched: false,
+      render: () => (
+        <>
+          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — jederzeit änderbar.</p>
+          <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            🛡 <span className="text-slate-200">{lisaName}s feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie.
+          </div>
+          <Field label={`Was ${lisaName} auf Preisfragen antwortet`} hint="Keine Zahlen nennen — höflich auf eine Besichtigung/Offerte lenken.">
+            <TextArea value={v.wissen?.priceDeflect ?? pf.voice.wissen.priceDeflect} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, priceDeflect: e.target.value } } }))} />
+          </Field>
+          {DISPOSITION_CARDS.map((c, i) => {
+            const k = disp[c.key].korb;
+            const push = disp[c.key].notify === "push";
+            const result = k === "fall"
+              ? `→ Fall im Leitsystem + E-Mail an Sie${push ? " + sofort Push aufs Handy" : ""}`
+              : k === "nachricht"
+                ? `→ Nachricht im Leitsystem + E-Mail an Sie${push ? " + Push" : ""}`
+                : "→ kein Eintrag — erledigt sich am Telefon";
             return (
-              <div key={f.key} className="rounded-lg border border-white/10 bg-white/5">
-                <button type="button" onClick={() => setOpen(isOpen ? null : f.key)} className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm text-white">
-                  <span>{f.label}</span><span className="text-lg leading-none" style={{ color: GOLD }}>{isOpen ? "−" : "+"}</span>
-                </button>
-                {isOpen ? (
-                  <div className="px-3 pb-3">
-                    <TextArea value={v.wissen?.[f.key] ?? pf.voice.wissen[f.key]} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, [f.key]: e.target.value } } }))} />
-                  </div>
-                ) : null}
+              <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
+                <p className="text-sm font-semibold text-white"><span style={{ color: GOLD }}>{i + 1}.</span> {c.titel}</p>
+                <p className="text-xs text-slate-400">{c.szenario}</p>
+                <div className="mt-2.5 flex flex-col gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2"><span className="text-[11px] text-slate-400">{lisaName}:</span><KorbPick value={k} onChange={(v) => setDisp(c.key, { korb: v })} /></div>
+                  {k !== "nichts" ? (
+                    <Toggle on={push} onChange={(on) => setDisp(c.key, { notify: on ? "push" : "board" })} label="Sofort aufs Handy melden (Push) — E-Mail kommt ohnehin" />
+                  ) : null}
+                  <p className="text-[11px] font-medium" style={{ color: `${GOLD}cc` }}>{result}</p>
+                </div>
               </div>
             );
           })}
-        </div>
-      </Section>
+          <p className="text-[11px] leading-relaxed text-slate-500">An Sie geht es per <span className="text-slate-300">E-Mail</span> (und optional <span className="text-slate-300">Push</span> aufs Handy) — <span className="text-slate-300">nie per SMS</span>. SMS gehen nur an Ihre Kunden.</p>
+        </>
+      ),
+    },
+  ];
 
-      <Section n={6} icon="🎧" title="Was Lisa bei welchem Anruf tut" lead="Sinnvoll vorbelegt — Sie bestätigen oder passen an. Jede Karte zeigt, wohin es geht.">
-        <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          🛡 <span className="text-slate-200">Lisas feste Grenzen (zu Ihrem Schutz):</span> Sie nennt nie Preise, sagt nie einen Termin verbindlich zu, stellt keine Ferndiagnose und verspricht keine Garantie. Sie stellt höchstens 7 kurze Fragen und <span className="text-slate-200">nimmt das Gespräch nicht auf</span>.
-        </div>
-        {DISPOSITION_CARDS.map((c) => (
-          <div key={c.key} className="rounded-lg border border-white/10 bg-white/5 p-3">
-            <p className="text-sm font-semibold text-white">{c.titel}</p>
-            <p className="text-xs text-slate-400">{c.szenario}</p>
-            <p className="mt-1 text-xs text-slate-300">{c.weg}</p>
-            {(c.key === "d1_auftrag" || c.key === "d5_reklamation") ? (
-              <div className="mt-2"><Toggle on={disp[c.key].notify === "push"} onChange={(on) => setDisp(c.key, on ? "push" : "board")} label={c.key === "d1_auftrag" ? "Bei Notfall sofort an mich melden" : "Sofort an mich melden"} /></div>
-            ) : null}
+  // Drill-in: eine Stern-Kategorie im Fokus (Option A „Eintauchen & zurück")
+  if (star) {
+    const cat = CATS.find((c) => c.key === star);
+    if (cat) {
+      const miss = cat.missing?.() ?? [];
+      return (
+        <div className="mx-auto max-w-[680px]">
+          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
+          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <div className="mt-5 space-y-4">{cat.render()}</div>
+          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
+            <Field
+              label={cat.key === "begruessung" ? "Hinweis (optional)" : `Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte,`}
+              hint={cat.key === "begruessung" ? undefined : "Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
+            >
+              <TextArea placeholder={cat.key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
+            </Field>
           </div>
-        ))}
-      </Section>
+          {miss.length > 0 ? (
+            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
+          ) : null}
+          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
+          </button>
+        </div>
+      );
+    }
+  }
 
-      <div className="rounded-xl border p-4 text-center" style={{ borderColor: `${GOLD}55`, backgroundColor: "rgba(255,255,255,0.03)" }}>
-        <p className="text-sm font-semibold text-white">Hören Sie Ihre Lisa</p>
-        <p className="mx-auto mt-1 max-w-[440px] text-xs text-slate-300">Rufen Sie jetzt an — ein Testfall, er landet nicht in Ihrer echten Liste.</p>
-        <button type="button" onClick={() => startLisaTestCall(token, setPhase)} disabled={phase === "connecting" || phase === "active"}
-          className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:opacity-70" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-          {({ idle: "📞 Lisa jetzt anrufen", connecting: "Verbinde …", active: "🔴 Im Gespräch", ended: "Nochmal anrufen", error: "Fehlgeschlagen — nochmal" } as Record<TestCallPhase, string>)[phase]}
-        </button>
-      </div>
+  const doneN = CATS.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === CATS.length;
+  return (
+    <Detail icon="📞" title={`Ihre ${lisaName}`} claim="Nimmt Anrufe auf, wenn gerade niemand kann." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel={`${lisaName} ist startklar`}>
+      <PainHint items={[
+        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
+        { pain: "Ein Lieferant meldet sich (z. B. Bauteil verspätet) oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
+        { pain: "Werbe- und Spam-Anrufe kosten mich ständig Zeit", relief: `${lisaName} wimmelt Werbung freundlich ab — die kommt gar nicht erst zu Ihnen.` },
+      ]} />
+
+      <Constellation
+        center={<LisaAvatar stars={doneN} />}
+        centerLabel={lisaName}
+        awakeLabel="startklar"
+        stars={(["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const)
+          .map((k) => CATS.find((c) => c.key === k)!)
+          .map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
+        onOpen={setStar}
+      />
+      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
 
       <NotesField value={draft.notes?.voice ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, voice: val } }))} />
     </Detail>
@@ -549,83 +796,113 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
 // ── Strang: Website ──────────────────────────────────────────────────────────
 function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["prefill"]; draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void }) {
   const cats = draft.wizard?.categories ?? pf.wizard.categories;
-  const hasWebsite = draft.wizard?.hasWebsite;
+  const w = draft.wizard ?? {};
+  // R7-Punkt-1 (hart): Default = Ja. Nur explizites „Nein" blendet den Rest aus.
+  const formRelevant = w.formRelevant !== false;
+  const atAgency = w.integrationLocation === "agentur" || w.caretaker === "agentur";
+  // L-17: „✓ passt" erst, wenn Pflichtfelder sitzen (spiegelt submit). „Nein" = sofort fertig.
+  const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
+  const wMissing: string[] = !formRelevant
+    ? []
+    : [
+        ...(w.integrationLocation ? [] : ["wer Ihre Website betreut"]),
+        ...(atAgency && !emailOk(w.agencyEmail) ? ["die E-Mail der Web-Agentur"] : []),
+      ];
   return (
-    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look, in drei Schritten." onBack={onBack} onDone={onDone}>
+    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={wMissing.length ? undefined : onDone}>
 
       <PainHint items={[
         { pain: "Anfragen kommen nachts oder am Wochenende", relief: "Das Formular nimmt sie rund um die Uhr auf — Sie sehen sie am Morgen." },
         { pain: "Kunden wissen nicht, was sie überhaupt angeben sollen", relief: "Geführte Fragen + Foto vom Schaden — Sie haben alles, bevor Sie hinfahren." },
       ]} />
 
-      <Section n={1} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
-        <div className="space-y-2">
-          {cats.map((c: WizardCategory, i: number) => (
-            <div key={i} className="flex items-center gap-2">
-              <TextInput value={c.label} disabled={c.fixed}
-                onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
-              {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+      {/* Punkt 1 — harter Gate: spielt das Formular überhaupt eine Rolle? */}
+      <Section n={1} icon="🧭" title="Spielt das Online-Meldeformular für Sie eine Rolle?" lead="Manche Betriebe wollen nur Lisa am Telefon und ihr Leitsystem — ganz ohne Online-Formular. Völlig in Ordnung.">
+        <RadioGroup value={w.formRelevant === false ? "nein" : "ja"}
+          onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formRelevant: val === "ja" } }))}
+          options={[
+            { value: "ja", label: "Ja — Anfragen sollen auch online reinkommen", hint: "Kunden melden sich rund um die Uhr per Formular, alles landet im Leitsystem." },
+            { value: "nein", label: "Nein — Telefon (Lisa) + Leitsystem genügen mir", hint: "Wir lassen das Online-Formular weg. Sie können es hier jederzeit wieder einschalten." },
+          ]} />
+        {!formRelevant ? (
+          <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            Alles klar — wir richten <span className="text-slate-200">kein Online-Formular</span> ein. Ihre Anfragen laufen über <span className="text-slate-200">Lisa am Telefon</span> und Ihr <span className="text-slate-200">Leitsystem</span>. Dieser Strang ist damit fertig — tippen Sie unten auf „✓ passt".
+          </p>
+        ) : null}
+      </Section>
+
+      {formRelevant ? (
+        <>
+          {/* Punkt 2 — Anliegen-Kategorien */}
+          <Section n={2} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
+            <div className="space-y-2">
+              {cats.map((c: WizardCategory, i: number) => (
+                <div key={i} className="flex items-center gap-2">
+                  <TextInput value={c.label} disabled={c.fixed}
+                    onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
+                  {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
 
-      <Section n={2} icon="🌐" title="Wo Ihr Formular lebt" lead="Damit das Meldeformular Ihre Kunden erreicht — passend dazu, ob Sie eine Website haben.">
-        <Field label="Haben Sie eine eigene Website?">
-          <RadioGroup value={hasWebsite === undefined ? undefined : hasWebsite ? "ja" : "nein"} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, hasWebsite: val === "ja" } }))}
-            options={[{ value: "ja", label: "Ja, wir haben eine Website" }, { value: "nein", label: "Nein / veraltet" }]} />
-        </Field>
+          {/* Punkt 3 — Fotos vom Schaden */}
+          <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
+            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+              Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
+            </p>
+          </Section>
 
-        {hasWebsite === true ? (
-          <Field label="Wo soll das Formular leben?">
-            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-              options={[
-                { value: "gbp_button", label: "Button im Google-Profil", hint: "Schaltfläche „Termin anfragen“ direkt bei Google — kein Website-Eingriff nötig" },
-                { value: "embed", label: "In meine Website einbauen", hint: "als eingebettetes Formular auf Ihrer Seite" },
-                { value: "agentur_mail", label: "Meine Web-Agentur baut es ein", hint: "wir schicken der Agentur die fertige Anleitung" },
-              ]} />
-          </Field>
-        ) : hasWebsite === false ? (
-          <Field label="Verteilung ohne Website">
-            <RadioGroup value={draft.wizard?.distribution} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, distribution: val } }))}
-              options={[
-                { value: "gbp_button", label: "Button im Google-Profil", hint: "der wichtigste Kanal ohne Website" },
-                { value: "qr", label: "QR-Code / Kurzlink", hint: "fürs Servicefahrzeug, die Rechnung, die Theke" },
-              ]} />
-          </Field>
-        ) : null}
-
-        {draft.wizard?.distribution === "embed" ? (
-          <Field label="Wer baut es in die Website ein?">
-            <RadioGroup value={draft.wizard?.embedBy} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, embedBy: val } }))}
-              options={[{ value: "intern", label: "Wir intern (wir haben Zugriff)" }, { value: "agentur", label: "Unsere Web-Agentur" }]} />
-          </Field>
-        ) : null}
-
-        {draft.wizard?.distribution === "agentur_mail" || (draft.wizard?.distribution === "embed" && draft.wizard?.embedBy === "agentur") ? (
-          <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
-            <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
-            <Field label="Name der Web-Agentur">
-              <TextInput placeholder="z. B. Muster Web GmbH" value={draft.wizard?.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
+          {/* Punkt 4 — Integration (der wichtigste): wie kommt das Formular auf die Website? */}
+          <Section n={4} icon="🔌" title="So binden wir das Formular ein" lead="Der wichtigste Punkt: Damit wir das Formular sauber auf Ihrer Website verankern, brauchen wir kurz, wie das bei Ihnen läuft.">
+            <Field label="Wer betreut Ihre Website?">
+              <RadioGroup value={w.integrationLocation} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, integrationLocation: val } }))}
+                options={[
+                  { value: "intern", label: "Wir selbst", hint: "Wir haben Zugriff auf unsere Website und können das Formular selbst verankern." },
+                  { value: "agentur", label: "Eine Web-Agentur", hint: "Eine Agentur betreut unsere Website — sie verankert das Formular für uns." },
+                ]} />
             </Field>
-            <Field label="E-Mail der Agentur">
-              <TextInput type="email" placeholder="kontakt@agentur.ch" value={draft.wizard?.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
+
+            {atAgency ? (
+              <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
+                <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
+                <Field label="Name der Web-Agentur">
+                  <TextInput placeholder="z. B. Muster Web GmbH" value={w.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
+                </Field>
+                <Field label="E-Mail der Agentur">
+                  <TextInput type="email" placeholder="kontakt@agentur.ch" value={w.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
+                </Field>
+              </div>
+            ) : null}
+
+            <Field label="Haben Sie schon ein Kontakt- oder Meldeformular auf der Website?">
+              <RadioGroup value={w.formMode} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formMode: val } }))}
+                options={[
+                  { value: "ersetzen", label: "Ja — das neue ersetzt das alte", hint: "Wir lösen Ihr bisheriges Formular ab, damit alles an einem Ort landet." },
+                  { value: "ergaenzen", label: "Es kommt ergänzend dazu", hint: "Ihr bestehendes Formular bleibt, das neue kommt zusätzlich dazu." },
+                ]} />
             </Field>
-          </div>
-        ) : null}
 
-        <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
-          👁 Ihr gebrandetes Formular ansehen (Vorschau)
-        </a>
-      </Section>
+            <Field label="Wer kümmert sich um den Einbau?">
+              <RadioGroup value={w.caretaker} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, caretaker: val } }))}
+                options={[
+                  { value: "wir", label: "FlowSight — machen wir für Sie", hint: "Wir verankern das Formular, Sie müssen nichts tun." },
+                  { value: "betrieb", label: "Wir selbst im Betrieb", hint: "Sie bekommen den fertigen Einbau-Schnipsel + Anleitung." },
+                  { value: "agentur", label: "Unsere Web-Agentur", hint: "Wir schicken der Agentur die fertige Anleitung." },
+                ]} />
+            </Field>
 
-      <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
-        <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-          Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
-        </p>
-      </Section>
+            <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
+              👁 Ihr gebrandetes Formular ansehen (Vorschau)
+            </a>
+          </Section>
+        </>
+      ) : null}
 
       <NotesField value={draft.notes?.website ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, website: val } }))} />
+      {wMissing.length ? (
+        <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Strang fertig ist, fehlt noch: {wMissing.join(", ")}.</p>
+      ) : null}
     </Detail>
   );
 }
@@ -635,50 +912,69 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   pf: CockpitSession["prefill"]; draft: CockpitDraft; brandColor: string;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
+  const [star, setStar] = useState<string | null>(null);
   const staff = draft.staff ?? [];
   const setStaff = (next: StaffMember[]) => update((d) => ({ ...d, staff: next }));
   const rThr = draft.review?.internalThreshold ?? 3;
-  return (
-    <Detail icon="◆" title="Ihr Leitsystem — Einstellungen" claim="Das Herz Ihres Systems — in fünf Schritten: Ihre Marke, Ihr Team, Ihre Verfügbarkeit, Ihre Kommunikation und Ihre Aussenwirkung." onBack={onBack} onDone={onDone} doneLabel="Einstellungen bestätigen">
-      <PainHint items={[
-        { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
-        { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
-      ]} />
+  const isDone = (k: string) => !!draft.stepDone?.[`system_${k}`];
+  const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`system_${k}`]: true } }));
+  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-      <Section n={1} icon="🎨" title="Ihre Marke" lead="Farbe und Fall-Kürzel tragen jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Ihre Farbe">
+  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit).
+  const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
+  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
+    {
+      key: "marke", star: "Marke", icon: "🎨", title: "Ihre Marke",
+      touched: !!(draft.branding?.brandColor || draft.branding?.caseIdPrefix),
+      render: () => (
+        <div className="space-y-4">
+          <Field label="Ihre Farbe" hint="Trägt jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
             <div className="flex items-center gap-2">
-              <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-9 w-12 cursor-pointer rounded border border-white/15 bg-transparent" />
+              <input type="color" value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} className="h-10 w-14 cursor-pointer rounded border border-white/15 bg-transparent" />
               <TextInput value={brandColor} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, brandColor: e.target.value } }))} />
             </div>
           </Field>
-          <Field label="Fall-Kürzel" hint="z. B. DA-0042">
+          <Field label="Fall-Kürzel" hint="Vor jeder Fallnummer — z. B. DA-0042.">
             <TextInput maxLength={4} value={draft.branding?.caseIdPrefix ?? pf.branding.caseIdPrefix} onChange={(e) => update((d) => ({ ...d, branding: { ...d.branding, caseIdPrefix: e.target.value.toUpperCase() } }))} />
           </Field>
         </div>
-      </Section>
-
-      <Section n={2} icon="👥" title="Ihr Team & Rollen" lead="Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.">
-        {pf.hints.dummyStaffNames.length ? <p className="text-xs text-slate-400">Die Demo-Namen aus dem Video werden nicht übernommen — tragen Sie Ihre echten Personen ein.</p> : null}
-        {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
-        <div className="space-y-2">
-          {staff.map((s, i) => (
-            <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-              <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
-              <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`}>
-                <option value="admin">Leitung</option><option value="techniker">Techniker</option>
-              </select>
-              <button type="button" onClick={() => setStaff(staff.filter((_, j) => j !== i))} className="px-2 text-slate-400 hover:text-white">✕</button>
-              <div className="col-span-3"><TextInput type="email" placeholder="E-Mail" value={s.email} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, email: e.target.value } : x))} /></div>
-            </div>
-          ))}
-          <button type="button" onClick={() => setStaff([...staff, { name: "", role: staff.length === 0 ? "admin" : "techniker", email: "" }])} className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-slate-300 hover:border-white/40">+ Mitarbeiter hinzufügen</button>
-        </div>
-      </Section>
-
-      <Section n={3} icon="📅" title="Kalender & Verfügbarkeit" lead="Kalender anbinden → beim Terminsetzen sofort sehen, ob Sie oder ein Mitarbeiter schon belegt sind. So überplanen Sie niemanden — keine Doppelbuchung mehr.">
+      ),
+    },
+    {
+      key: "team", star: "Team", icon: "👥", title: "Ihr Team & Rollen",
+      touched: staff.length > 0,
+      missing: () => {
+        const valid = staff.filter((s) => s?.name?.trim() && emailOk(s.email));
+        if (valid.length === 0) return ["mindestens eine Person mit Name + E-Mail"];
+        if (!valid.some((s) => s.role === "admin")) return ["eine Person als Leitung"];
+        return [];
+      },
+      render: () => (
+        <>
+          <p className="text-xs text-slate-400">Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.</p>
+          {staff.length <= 1 ? <p className="text-xs text-slate-400">Allein im Betrieb? Tragen Sie nur sich selbst als Leitung ein — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit weitere Personen hinzu.</p> : null}
+          <div className="space-y-2">
+            {staff.map((s, i) => (
+              <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                <TextInput placeholder="Name" value={s.name} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} />
+                <select value={s.role} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, role: e.target.value as StaffMember["role"] } : x))} className={`${inputCls} w-auto`} style={{ colorScheme: "dark" }}>
+                  <option value="admin" style={{ backgroundColor: "#0b1f33", color: "#fff" }}>Leitung</option><option value="techniker" style={{ backgroundColor: "#0b1f33", color: "#fff" }}>Techniker</option>
+                </select>
+                <button type="button" onClick={() => setStaff(staff.filter((_, j) => j !== i))} className="px-2 text-slate-400 hover:text-white">✕</button>
+                <div className="col-span-3"><TextInput type="email" placeholder="E-Mail" value={s.email} onChange={(e) => setStaff(staff.map((x, j) => j === i ? { ...x, email: e.target.value } : x))} /></div>
+              </div>
+            ))}
+            <button type="button" onClick={() => setStaff([...staff, { name: "", role: staff.length === 0 ? "admin" : "techniker", email: "" }])} className="rounded-lg border border-dashed border-white/20 px-3 py-2 text-sm text-slate-300 hover:border-white/40">+ Mitarbeiter hinzufügen</button>
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "kalender", star: "Kalender", icon: "📅", title: "Kalender & Verfügbarkeit",
+      touched: draft.calendar?.connect !== undefined,
+      render: () => (
         <div className="space-y-3">
+          <p className="text-xs text-slate-400">Kalender anbinden → beim Terminsetzen sofort sehen, ob jemand schon belegt ist. So überplanen Sie niemanden.</p>
           <Field label="Kalender anbinden?">
             <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
               onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
@@ -688,7 +984,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <Field label="Welcher Kalender-Anbieter?">
               <RadioGroup value={(draft.calendar?.provider === "outlook" || draft.calendar?.provider === "google") ? draft.calendar.provider : undefined}
                 onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, provider: v } }))}
-                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "in Vorbereitung (Welle 2)" }]} />
+                options={[{ value: "outlook", label: "Microsoft 365 / Outlook", hint: "voll unterstützt" }, { value: "google", label: "Google Kalender", hint: "richten wir für Sie ein" }]} />
             </Field>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "outlook" ? (
@@ -700,76 +996,143 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
                 <TextInput type="email" placeholder="admin@ihre-firma.ch" value={draft.calendar?.adminEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, adminEmail: e.target.value } }))} />
               </Field>
               <Disclosure summary="Wie läuft die Verbindung ab? (1 Klick — nichts heraussuchen)">
-                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Schritt 2) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
+                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Team-Stern) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
               </Disclosure>
             </>
           ) : null}
           {draft.calendar?.connect && draft.calendar?.provider === "google" ? (
-            <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs leading-relaxed text-amber-100/90">
-              Google-Kalender ist gerade im Aufbau — wir melden uns, sobald Sie verbinden können. Bis dahin setzen Sie Termine ohne Belegungs-Anzeige.
-            </p>
+            <>
+              <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+                ✓ <span className="text-slate-200">Perfekt.</span> Ihre Google-Kalender-Anbindung richten <span className="text-slate-200">wir</span> nach dem Freischalten für Sie ein — Sie müssen nichts weiter tun. Falls wir etwas brauchen, melden wir uns kurz.
+              </p>
+              <Field label="Welches Google-Konto sollen wir anbinden? (optional)" hint="Die geschäftliche Google-/Gmail-Adresse, deren Kalender wir auf Belegung prüfen sollen.">
+                <TextInput type="email" placeholder="kalender@ihre-firma.ch" value={draft.calendar?.googleAccountEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, googleAccountEmail: e.target.value } }))} />
+              </Field>
+            </>
           ) : null}
         </div>
-      </Section>
-
-      <Section n={4} icon="📨" title="Benachrichtigungen & E-Mail" lead="Wohin Ihr System neue Fälle meldet — und welche Nachrichten automatisch an Sie und Ihre Kunden gehen.">
-        <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail (nicht aus dem Demo).">
-          <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
-        </Field>
-        <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Auch Rückruf-Nachrichten zusätzlich per E-Mail melden" />
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
-          <div className="mt-3 space-y-3.5">
-            <div>
-              <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
-              <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
-              <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+      ),
+    },
+    {
+      key: "nachrichten", star: "Benachrichtigungen", icon: "📨", title: "Benachrichtigungen & E-Mail",
+      touched: !!draft.review?.notificationEmail,
+      missing: () => emailOk(draft.review?.notificationEmail) ? [] : ["die Geschäfts-E-Mail für neue Fälle"],
+      render: () => (
+        <>
+          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail.">
+            <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
+          </Field>
+          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Rückruf-Nachrichten zusätzlich per E-Mail an mich (sonst nur in der Nachrichten-Liste)" />
+          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+            <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
+            <div className="mt-3 space-y-3.5">
+              <div>
+                <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
+                <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
+                <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
+                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
+                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
-              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
-              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
-            </div>
+            <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
-        </div>
-      </Section>
+        </>
+      ),
+    },
+    {
+      key: "bewertungen", star: "Bewertungen", icon: "⭐", title: "Bewertungen — Ihre Aussenwirkung",
+      touched: !!draft.review?.googleReviewUrl,
+      missing: () => (draft.review?.googleReviewUrl ?? "").trim() ? [] : ["Ihren Google-Bewertungslink (oder Firmenname)"],
+      render: () => (
+        <>
+          <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
+            <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
+          </Field>
+          <Disclosure summary="Wo finde ich meinen Bewertungslink?">
+            Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
+          </Disclosure>
+          <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne — nur ein Komfort-Extra.">
+            <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
+          </Field>
+          <Disclosure summary="Was ist die Place-ID — und wo finde ich sie?">
+            Die Place-ID ist Googles eindeutige Kennung Ihres Profils (beginnt meist mit <span className="text-slate-200">„ChIJ…"</span>). Am einfachsten: Google nach <span className="text-slate-200">„Place ID Finder"</span> suchen, dort Ihren Firmennamen eingeben → die ID erscheint. <span className="text-slate-200">Sie müssen das nicht selbst suchen</span> — lassen Sie das Feld ruhig leer, der Bewertungslink oder Firmenname oben genügt vollkommen. Den Rest erledigen wir.
+          </Disclosure>
+          <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
+            <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
+              options={[
+                { value: "2", label: "Nur ≤ 2 Sterne intern" },
+                { value: "3", label: "≤ 3 Sterne intern", hint: "unsere Empfehlung" },
+                { value: "4", label: "≤ 4 Sterne intern", hint: "nur 5★ gehen öffentlich" },
+                { value: "0", label: "Alle öffentlich", hint: "jede Bewertung geht direkt zu Google" },
+              ]} />
+          </Field>
+          <Disclosure summary="Was erlebt mein Kunde — und wann landet es auf Google?">
+            {rThr === 0
+              ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
+              : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
+          </Disclosure>
+          <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
+            <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
+          </Field>
+        </>
+      ),
+    },
+  ];
 
-      <Section n={5} icon="⭐" title="Bewertungen — Ihre Aussenwirkung" lead="Aus zufriedenen Kunden werden mit einem Klick öffentliche 5-Sterne-Bewertungen — das stärkste Signal für neue Aufträge.">
-        <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
-          <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
-        </Field>
-        <Disclosure summary="Wo finde ich meinen Bewertungslink?">
-          Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
-        </Disclosure>
-        <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne. Kennen Sie nicht? Der Link/Firmenname oben genügt fürs Erste.">
-          <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
-        </Field>
-        <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
-          <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}
-            options={[
-              { value: "2", label: "Nur ≤ 2 Sterne intern" },
-              { value: "3", label: "≤ 3 Sterne intern", hint: "unsere Empfehlung" },
-              { value: "4", label: "≤ 4 Sterne intern", hint: "nur 5★ gehen öffentlich" },
-              { value: "0", label: "Alle öffentlich", hint: "jede Bewertung geht direkt zu Google" },
-            ]} />
-        </Field>
-        <Disclosure summary="Was erlebt mein Kunde — und wann landet es auf Google?">
-          {rThr === 0
-            ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
-            : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
-        </Disclosure>
-        <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
-          <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
-        </Field>
-      </Section>
+  if (star) {
+    const cat = CATS.find((c) => c.key === star);
+    if (cat) {
+      const miss = cat.missing?.() ?? [];
+      return (
+        <div className="mx-auto max-w-[680px]">
+          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
+          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
+          <div className="mt-5 space-y-4">{cat.render()}</div>
+          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
+            <Field
+              label={cat.key === "marke" ? "Hinweis (optional)" : "Was läuft bei Ihnen noch, das wir unbedingt wissen sollten,"}
+              hint={cat.key === "marke" ? undefined : "Ihre Besonderheiten, Ausnahmen, Wünsche. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
+            >
+              <TextArea placeholder={cat.key === "marke" ? "" : (SYSTEM_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`system_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`system_${cat.key}`]: e.target.value } }))} />
+            </Field>
+          </div>
+          {miss.length > 0 ? (
+            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
+          ) : null}
+          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
+          </button>
+        </div>
+      );
+    }
+  }
+
+  const doneN = CATS.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === CATS.length;
+  return (
+    <Detail icon="🤍" title="Ihr Leitsystem — Einstellungen" claim="Bauen Sie Stern für Stern Ihr Leitsystem — das Herz Ihres Betriebs." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
+      <PainHint items={[
+        { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
+        { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
+      ]} />
+      <Constellation
+        center={<span style={{ filter: allDone ? "drop-shadow(0 0 18px rgba(212,168,67,0.7))" : undefined }}><BrandIcon size={96} /></span>}
+        centerLabel="Ihr Leitsystem"
+        awakeLabel="startklar"
+        stars={CATS.map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
+        onOpen={setStar}
+      />
+      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
       <NotesField value={draft.notes?.system ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, system: val } }))} />
     </Detail>
   );
@@ -779,7 +1142,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
 const MISSING_LABEL: Record<string, string> = {
   staff: "Mindestens ein Mitarbeiter (mit E-Mail)", staff_admin: "Eine Person als Leitung",
   notification_email: "Geschäfts-E-Mail für neue Fälle", google_review_url: "Google-Bewertungslink",
-  admin_email: "Login-E-Mail", avv: "AVV akzeptieren", greeting: "Begrüssung für Lisa", wizard_distribution: "Wo das Meldeformular lebt",
+  admin_email: "Login-E-Mail", avv: "AVV akzeptieren", greeting: "Begrüssung für Lisa", wizard_integration: "Wer Ihre Website betreut (Online-Formular)",
   telco: "Ihr Telefonanbieter (Lisa-Strang)", emergency_contact: "Notfall-Empfänger (Name) — bei aktivem Notdienst", agency_email: "E-Mail der Web-Agentur",
 };
 
@@ -825,10 +1188,11 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
         {showAvv ? (
           <div className="border-t border-white/10 px-3 py-3">
             <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-300">{AVV_TEXT}</pre>
-            <p className="mt-3 text-xs font-medium text-slate-200">Eingesetzte Dienstleister (Subprozessoren):</p>
-            <ul className="mt-1 space-y-0.5 text-xs text-slate-400">
-              {AVV_SUBPROCESSORS.map((s) => (<li key={s.name}>• <span className="text-slate-300">{s.name}</span> — {s.zweck} ({s.ort})</li>))}
-            </ul>
+            {/* L-16: dezent untergemischt, nicht als hervorgehobener Block (keine Pflicht-Hervorhebung). */}
+            <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
+              <span className="text-slate-400">Eingesetzte Dienstleister:</span>{" "}
+              {AVV_SUBPROCESSORS.map((s) => `${s.name} (${s.zweck}, ${s.ort})`).join(" · ")}
+            </p>
           </div>
         ) : null}
       </div>

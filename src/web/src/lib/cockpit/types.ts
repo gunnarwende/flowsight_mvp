@@ -135,6 +135,8 @@ export interface CockpitDraft {
   /** Echte Personen (🆕). Leer/fehlend = noch nicht erfasst. */
   staff?: StaffMember[];
   voice?: {
+    /** R6 #3: Wunschname der Telefon-Assistentin (Default „Lisa"). Propagiert durch Cockpit + Agent. */
+    assistantName?: string;
     greetingText?: string;
     kiDisclosure?: string;
     languages?: { de: boolean; intl: boolean };
@@ -156,14 +158,24 @@ export interface CockpitDraft {
   };
   wizard?: {
     categories?: WizardCategory[];
-    /** „link" entfernt; QR für website-lose Betriebe. */
-    distribution?: "gbp_button" | "embed" | "agentur_mail" | "qr";
-    /** Bei Embed: wer baut ein? */
-    embedBy?: "intern" | "agentur";
-    hasWebsite?: boolean;
+    /** R7-Punkt-1 (hart): Spielt das Online-Meldeformular für dieses Leitsystem überhaupt eine Rolle?
+     *  undefined = noch nicht beantwortet, true = ja (Default-Vorschlag), false = nein → Strang ohne Formular fertig. */
+    formRelevant?: boolean;
+    /** R7-Punkt-4: Wo das Formular technisch verankert wird. intern = Betrieb hat Zugriff, agentur = Web-Agentur baut ein. */
+    integrationLocation?: "intern" | "agentur";
+    /** R7-Punkt-4: bestehendes Online-Formular ersetzen oder das neue ergänzend dazustellen? */
+    formMode?: "ersetzen" | "ergaenzen";
+    /** R7-Punkt-4: wer kümmert sich um den Einbau? */
+    caretaker?: "wir" | "betrieb" | "agentur";
     /** W1: Web-Agentur-Kontakt, wenn der Einbau dort liegt (sonst Sackgasse). */
     agencyName?: string;
     agencyEmail?: string;
+    /** @deprecated R7 — abgelöst durch formRelevant/integrationLocation/formMode/caretaker. Für Altsessions belassen. */
+    distribution?: "gbp_button" | "embed" | "agentur_mail" | "qr";
+    /** @deprecated R7 — ersetzt durch integrationLocation. */
+    embedBy?: "intern" | "agentur";
+    /** @deprecated R7 — „Haben Sie eine Website?" entfernt (Eigentor). */
+    hasWebsite?: boolean;
   };
   review?: {
     notificationEmail?: string; // 🆕 echte Ops-Mail
@@ -193,6 +205,8 @@ export interface CockpitDraft {
     provider?: "outlook" | "google" | "none";
     adminName?: string;
     adminEmail?: string;
+    /** Bei Google: das geschäftliche Konto, dessen Kalender wir anbinden (wir richten ein, K4). */
+    googleAccountEmail?: string;
   };
   golive?: {
     adminEmail?: string; // 🆕 OTP-Login (B1-Pre-Provision)
@@ -203,6 +217,9 @@ export interface CockpitDraft {
   };
   /** Freitext-Hinweise des Inhabers je Strang (fängt die „20 %, die nur er kennt"). */
   notes?: { vorort?: string; voice?: string; website?: string; system?: string };
+  /** Per-Stern „aus dem Inhaber rauskitzeln": was läuft in SEINEM Betrieb anders/wichtig?
+   *  Key = `${strang}_${katKey}` (z. B. lisa_wissen, system_marke). Schlüssel für 100%-Abdeckung. */
+  starNotes?: Record<string, string>;
   /** Pro Strang/Schritt: erledigt? (treibt das Fortschritts-Band). */
   stepDone?: Record<string, boolean>;
 }
