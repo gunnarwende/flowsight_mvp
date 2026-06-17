@@ -206,6 +206,7 @@ Voice-Agent `call_type` emittiert; nichts geht live bis Merge + `supabase db pus
 ## §9 · Anker & Links
 
 - **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md) ← das „HOW"
+- **Rückmelde-Versprechen & Wunschtermin (Voice-Erwartung):** [`phase2_rueckmelde_termin_logik.md`](phase2_rueckmelde_termin_logik.md) — schließt die „Wann?"-Lücke; Stufen 0–4, per-Tenant, Lisa setzt Erwartung + nimmt Wunschzeiten auf (kein fixer Termin).
 - **Pipeline-Bible (was davor passiert):** `docs/gtm/pipeline/PIPELINE_BIBLE.md`
 - **Discovery/Mom-Test-Quelle:** `docs/sales/discovery_questions.md` · **CTA-Strategie:** `docs/gtm/CTA.md`
 - **Reife-/Feedback-Loop:** `operating_model.md` · **Lessons:** `lessons_learned.md`
