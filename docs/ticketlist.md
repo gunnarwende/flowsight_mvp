@@ -1,5 +1,7 @@
 # Ticketlist — FlowSight (SSOT)
 
+**Updated:** 2026-06-17 — **Customer-Journey-Tag.** Customer Journey Bible neu (`docs/gtm/CUSTOMER_JOURNEY_BIBLE.md`) = oberstes Orchestrator-Dok; FlowSight als EINE Customer Journey / Schwungkreis (weg vom 3-Säulen-Framing, D103) → über STATUS/Zielarchitektur/Business-Briefing + Bible-Header reconciled. Stern 5 warmes Verkaufsgespräch → **Version 1** (8 Challenge-Punkte; commit 1b7a2e6). OC8 Rückmelde-Versprechen + Wunschtermin (`phase2_rueckmelde_termin_logik.md`): Lisa per-Tenant ohne falsche Terminversprechen (Stufen 0–4, Sweet Spot 1+2). Cockpit kanonisch (#603) verifiziert. **Nächstes:** ChatGPT2-Ergebnis Stern 5 challengen; OC8 Cockpit-Feld (Stufe 1+2) bauen. Vorlauf:
+
 **Updated:** 2026-06-16 EOD — Zwei offene Punkte geschlossen. **Cockpit go-live-fähig** (Founder-getestet) → OC5/OC6 ✅. **Sales-Voice-Agent Preis-Drift geschlossen:** die Repo-Exports (was `retell_sync.mjs` liest) trugen noch „299" → nächster Sync hätte den Preis re-live gesetzt; DE+INTL bereinigt (kein Preis am Telefon, Wert-Anker) + re-published, API-verifiziert (DE Flow v21/INTL v16). Siehe GTM3b. Offen bleibt P12 Vision (Backlog, niedrig). Vorlauf:
 
 **Updated:** 2026-06-15 — **🎯 SALES ALS EIGENE SÄULE GEBAUT (Säule 1/3: Sales · Pipeline · Onboarding).** Neue **SALES_BIBLE** (`docs/gtm/sales/SALES_BIBLE.md`) = SSOT der täglichen Akquise, Kern = **Abend-Ritual „Sales-Maschine go"** (CC legt für den Folgetag pro Betrieb Vorbereitungsblatt + Tagesblatt bereit). **ICP zweistufig** (Leitsignal „Inhaber-am-Telefon"; Solo 1–3 → CHF 900 / Premium 4–12 → CHF 2'000). **Region:** Ring 0 Velo (Oberrieden/Horgen/Thalwil/Rüschlikon) · Ring 1 Telefon · Ring 2 Kanton. **Lead-Motor:** `build_leads.mjs` → `docs/sales/leads.csv` + `todays_list.mjs` + **P12 `enrich_leads.mjs`** (robustes Link-Following behebt Leins-`/Ueber-uns.htm` + mailto + KI-/Vision-Entscheider → `leads_enriched.json`; verifiziert Leins→Michael Leins, Widmer→René Widmer). Bunny 14→30d. SSOT-Cleanup (ICP/Preis kanonisch in SALES_BIBLE). Zielarchitektur **D102**. Memory `project_sales_machine_phase0`. **Sales-Tasks unten (SAL-Block).** **Nächstes:** Wochenplan (10-Tage-Lern-Sprint), Crawl-Ausbau Ring 1/2. Vorlauf:
@@ -72,7 +74,7 @@
 
 ---
 
-## SALES — Säule 1 (tägliche Akquise)
+## SALES — tägliche Akquise (Customer-Journey-Sterne 1·2·4·5·8)
 
 > SSOT: `docs/gtm/sales/SALES_BIBLE.md`. Daten/CRM: `docs/sales/leads.csv` (+ `leads.md`, `todays_list.md`). Lessons: `docs/gtm/sales/lessons_learned_sales.md`.
 

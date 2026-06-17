@@ -1,7 +1,7 @@
 # Onboarding-Bible (Cockpit-Ära)
 
-> **Säule 3 von 3** (Sales → Pipeline → **Onboarding**). Greift ab der Bau-/Kauf-Zusage. Davor: Sales-Säule
-> [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) (Akquise + Gespräch) · Asset-Produktion [`../pipeline/PIPELINE_BIBLE.md`](../pipeline/PIPELINE_BIBLE.md).
+> **Abschnitt der Customer Journey: Aufbau → Go-live → Begleitung (Sterne 6–8)** (Sales → Pipeline → **Onboarding**). Greift ab der Bau-/Kauf-Zusage.
+> Orchestrator: [`../CUSTOMER_JOURNEY_BIBLE.md`](../CUSTOMER_JOURNEY_BIBLE.md) · davor: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) (Akquise + Gespräch) · Asset-Produktion [`../pipeline/PIPELINE_BIBLE.md`](../pipeline/PIPELINE_BIBLE.md).
 
 > **Master-Doc.** Was passiert ab dem **ersten menschlichen Kontakt** eines interessierten
 > Prospects, bis er als **zahlender Kunde** autonom mit seinem System läuft.

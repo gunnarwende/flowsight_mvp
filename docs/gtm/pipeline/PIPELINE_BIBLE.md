@@ -1,8 +1,8 @@
 # PIPELINE_BIBLE — Die Gold-Contact-Video-Pipeline
 
-> **Säule 2 von 3** (Sales → **Pipeline** → Onboarding). Die Pipeline produziert das Asset (Beweis-Seite) und
-> läuft **auf Sales-Kommando** (für Weg-1-Ja-Sager), nicht spekulativ kalt. Vorgelagert: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) ·
-> nachgelagert: [`../onboarding/ONBOARDING_BIBLE.md`](../onboarding/ONBOARDING_BIBLE.md).
+> **Abschnitt der Customer Journey: die Simulation (Stern 3)** (Sales → **Pipeline** → Onboarding). Die Pipeline produziert das Asset (Beweis-Seite) und
+> läuft **auf Sales-Kommando** (für Weg-1-Ja-Sager), nicht spekulativ kalt. Orchestrator: [`../CUSTOMER_JOURNEY_BIBLE.md`](../CUSTOMER_JOURNEY_BIBLE.md) ·
+> vorgelagert: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) · nachgelagert: [`../onboarding/ONBOARDING_BIBLE.md`](../onboarding/ONBOARDING_BIBLE.md).
 
 > **Schlüsseldokument.** Beschreibt, wie die Pipeline **JETZT funktioniert** (Stand 03.06.2026):
 > wie man sie steuert, antriggert, worauf zu achten ist — und wie man sie auf eine **neue
