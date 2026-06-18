@@ -10,6 +10,14 @@
 > Historie (§1–§69, alle FB-Punkte + Session-Logs) liegt 1:1 in
 > [`docs/archive/PIPELINE_BIBLE_historie_bis_20260603.md`](../../archive/PIPELINE_BIBLE_historie_bis_20260603.md).
 
+> **Liefer-Weg + Ein-Kommando (Stand 18.06.2026 — Runbook: [`NEUER_BETRIEB_VIDEO_RUNBOOK.md`](NEUER_BETRIEB_VIDEO_RUNBOOK.md)):**
+> Für einen NEUEN Betrieb ist der **kanonische** Weg `build_take2/3/4_final` → `collect_delivery` →
+> Staging nach `07_stresstest/abgenommen/<slug>/` (T1 canonical + T2/T3/T4) → `build_proof_page` →
+> **Hochkant** (`make_t2_portrait` + `proof_add_variants` — **PFLICHT**, sonst zeigt das Handy die kleine
+> Querformat-T2 = Mobile-Drift). **`produce_videos.mjs`** zieht das in EINEM Kommando durch.
+> **NICHT `run_pipeline_multi`** (älter, falsches Ablage-Format → speist `collect_delivery`/`build_proof_page` nicht).
+> `send_outreach --live` schaltet das Beweis-Seiten-Tracking automatisch scharf (S8). Siehe Zielarchitektur **D104**.
+
 ---
 
 ## 0. Zweck & Nutzung

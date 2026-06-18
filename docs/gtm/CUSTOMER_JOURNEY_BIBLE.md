@@ -189,9 +189,9 @@ ElevenLabs = TTS, Bunny = Video-Stream.
 
 **Stand (Kurzfassung — Details immer in STATUS):**
 - Phase: **Sales.** 0 zahlende Kunden.
-- Pipeline (Stern 3): funktional + gesichert (~95 %), 7 Betriebe produziert.
+- **Stern 1→3→4 in der Praxis bewiesen (18.06.):** erster Kalt-Rep-Tag → 3 Treffer → alle 3 über die Pipeline produziert + live versandt (Burkhardt, Schäfli + Dieterich, Serafini); Antworten/First-Views laufen, warmer Rückruf (Stern 5) folgt.
+- Pipeline (Stern 3): funktional + **gehärtet** — kanonischer Weg `build_take*_final`, Ein-Kommando `produce_videos.mjs` inkl. Hochkant-Pflichtschritt, Tracking-Scharfschaltung beim Live-Versand. Runbook: `pipeline/NEUER_BETRIEB_VIDEO_RUNBOOK.md`.
 - Onboarding-Cockpit (Stern 6): Design komplett, Build offen (OC-Backlog).
-- Erste Mehrfach-Versände live (Leins, Wälti).
 
 **Fixentscheidungen (gelten immer):**
 - Ausgabe an Kunden = **E-Mail**. WhatsApp = Founder-Ops-Alerts, intern, ohne PII.
