@@ -1,0 +1,166 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-18T15:19:33.857Z",
+  "_founder_actions_needed": [
+    "inhaber"
+  ],
+  "tenant": {
+    "slug": "schaefli-dieterich",
+    "name": "Schäfli + Dieterich AG",
+    "case_id_prefix": "SD",
+    "brand_color": "#212529",
+    "sms_sender_name": "SchaefliDiet"
+  },
+  "voice_agent": {
+    "company_name": "Schäfli und Dieterich AG",
+    "domain": "Sanitär und Heizung",
+    "owner_names": "",
+    "address": "Zürcherstrasse 254, 8500 Frauenfeld",
+    "phone": "052 723 30 60",
+    "email": "empfang@haustechnet.ch",
+    "website": "http://www.haustechnet.ch/",
+    "founded": "",
+    "team_section": "",
+    "memberships": "Gebäudetechnik",
+    "google_rating": "4.5 Sterne bei 28 Bewertungen",
+    "opening_hours": "Mo-Do: 07:00-12:00\nFr: 07:00-12:00",
+    "opening_hours_spoken": "Wir sind Mo-Do: 07:00-12:00, Fr: 07:00-12:00 für Sie erreichbar.",
+    "emergency_policy": "– 16:00 7-TAGE SERVICE TEL. 052 723 30 60 Unser Pikettdienst ist bei Notfällen auch ausserhalb der Öffnungszeiten für Sie da. Webdesign Aisberg.ch",
+    "services_list": "Sanitär: Bad- und Heizungsplaner\nHeizung: WÄRME, Dünki Wärmetechnik GmbH aus Frauenfeld schliesst sich per 01.07.2026 mit der Schäfli + Dieterich AG zusammen., In einem innovativen Team arbeiten wir stets daran, uns nachhaltig und kontinuierlich weiterzuentwickeln, wodurch wir dy, Geschäftsintegration der Dünki Wärmetechnik GmbH, Bad- und Heizungsplaner\nBeratung/Planung: Sie haben schon ein Projekt im Kopf und wollen schnell starten? Hier können Sie uns erste Angaben und Ideen senden. Wir, Büro | Shop + Beratung\nKundendienst: SERVICE, Rundum-Service, 7-TAGE SERVICE",
+    "service_area": "8500 Frauenfeld",
+    "service_area_spoken": "Wir sind in Frauenfeld und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Zürcherstrasse 254, 8500 Frauenfeld.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.5,
+    "google_review_count": 28,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8500"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Frauenfeld",
+      "plz": "8500",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Frauenfeld",
+      "plz": "8500",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Schäfli + Dieterich AG",
+    "firma_silben": 7,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "SD",
+    "modus": 2,
+    "google_stars": 4.5,
+    "video_hook": "Gemeinsam in die Zukunft",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "empfang@haustechnet.ch"
+  },
+  "_seed_time": "2026-06-18T06:04:00.000Z",
+  "_take2_detail_switch_sec": 87.672,
+  "_wizard_time": "2026-06-18T06:56:00.000Z",
+  "_wizard_case_id": "9107ff30-4fef-4ae6-b2f4-5a8f56bd5316",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "SD-0050",
+  "_demo_now": "2026-06-18T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-18T06:08:00.000Z",
+  "_appointment_start": "2026-06-19T06:00:00.000Z",
+  "_appointment_end": "2026-06-19T08:00:00.000Z",
+  "_reminder_time": "2026-06-18T07:02:00.000Z",
+  "_completion_time": "2026-06-18T07:02:00.000Z",
+  "_review_sent_time": "2026-06-18T07:04:00.000Z",
+  "_review_rated_time": "2026-06-18T07:06:00.000Z",
+  "_review_token": "fecda3c94a976481",
+  "_review_token_long": "fecda3c94a9764816e795af6865945eac7ac648a7d4657534362ba30be0b0757",
+  "_case_created_at": "2026-06-18T06:56:00+00:00"
+}

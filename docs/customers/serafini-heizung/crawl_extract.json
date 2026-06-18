@@ -1,0 +1,142 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-18T15:19:34.208Z",
+    "source_url": "https://www.heizungsanitär-serafini.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.heizungsanitär-serafini.ch/",
+        "chars": 1368
+      }
+    ]
+  },
+  "firma": {
+    "value": "Serafini Heizung & Sanitär",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Bündtweg 3, 8280 Kreuzlingen",
+    "source": "website_home",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 79 511 58 41",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "serafini.h.s@gmail.com",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 5,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Willkommen bei SERAFINI Heizung & Sanitär, Ihrem Experten",
+        "für professionelle Sanitär- und Heizungsinstallationen.",
+        "SERAFINI Heizung & Sanitär ist ein renommiertes Unternehmen, das sich auf die Installation hochwertiger Sanitär- und Hei",
+        "SERAFINI Heizung & Sanitär"
+      ],
+      "Heizung": [
+        "Willkommen bei SERAFINI Heizung & Sanitär, Ihrem Experten",
+        "für professionelle Sanitär- und Heizungsinstallationen.",
+        "SERAFINI Heizung & Sanitär ist ein renommiertes Unternehmen, das sich auf die Installation hochwertiger Sanitär- und Hei",
+        "SERAFINI Heizung & Sanitär"
+      ],
+      "Beratung/Planung": [
+        "Unsere Projekte"
+      ],
+      "Kundendienst": [
+        "Services"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Willkommen bei SERAFINI Heizung & Sanitär, Ihrem Experten",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#0000ee",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.heizungsanitär-serafini.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "_zefix": {
+    "official_name": "Serafini Heizung & Sanitär",
+    "uid": "CHE-431.681.917",
+    "ehraid": 1689461,
+    "legal_seat": "Kreuzlingen",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-431.681.917",
+    "match_score": 80
+  }
+}

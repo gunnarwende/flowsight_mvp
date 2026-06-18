@@ -1,0 +1,166 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-18T15:16:10.297Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "burkhardt-heizungen",
+    "name": "Burkhardt",
+    "case_id_prefix": "BU",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "Burkhardt"
+  },
+  "voice_agent": {
+    "company_name": "Burkhardt",
+    "domain": "Sanitär, Heizung und Solar",
+    "owner_names": "Roger und Bruno Burkhardt",
+    "address": "8274 Tägerwilen",
+    "phone": "071 669 11 65",
+    "email": "info@burkhardt-heizungen.ch",
+    "website": "http://www.burkhardt-heizungen.ch/",
+    "founded": "2015",
+    "team_section": "",
+    "memberships": "",
+    "google_rating": "4.8 Sterne bei 22 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "n. 24 Std. Reparaturdienst 071 / 669`11`65 Notfallreparaturen und Service an sämtlichen Heizungsanlagen & Sanitärinstallationen Wir beraten Sie gerne und erstellen Ihnen ein Angebot. Rog",
+    "services_list": "Sanitär: Sanitär, Burkhardt Heizungen & Sanitär in Tägerwilen, Seit über 55 Jahren arbeitet die Firma Burkhardt Heizungen & Sanitär professionell rund um Heizungen und Sanitärinst, Heizungsanlagen & Sanitärinstallationen, Roger & Bruno Burkhardt (eidg. FA Chefmonteur-Sanitär & Heizung EFZ)\nHeizung: Heizungen, Burkhardt Heizungen & Sanitär in Tägerwilen, Seit über 55 Jahren arbeitet die Firma Burkhardt Heizungen & Sanitär professionell rund um Heizungen und Sanitärinst, Heizungsanlagen & Sanitärinstallationen, Roger & Bruno Burkhardt (eidg. FA Chefmonteur-Sanitär & Heizung EFZ)\nSolar/Erneuerbar: Solar\nBeratung/Planung: Das bedeutet für Sie: fachkompetente Beratung, sowie zuverlässige und qualitätsvolle Arbeiten.\nKundendienst: 24 Std. Reparaturservice, Wir pflegen die Kultur eines Familienunternehmens, Kundenzufriedenheit ist unser oberstes Ziel., 24 Std. Reparaturdienst 071 / 669`11`65, Notfallreparaturen und Service an sämtlichen",
+    "service_area": "8274 Tägerwilen, 8134 Adliswil, 8135 Langnau am Albis",
+    "service_area_spoken": "Wir sind in Tägerwilen und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der 8274 Tägerwilen.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.8,
+    "google_review_count": 22,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8274",
+      "8134",
+      "8135"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Tägerwilen",
+      "plz": "8274",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Adliswil",
+      "plz": "8134",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Burkhardt",
+    "firma_silben": 2,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "BU",
+    "modus": 2,
+    "google_stars": 4.8,
+    "video_hook": "Gegründet 2015.",
+    "call_proof_variante": "C"
+  },
+  "prospect": {
+    "email": "info@burkhardt-heizungen.ch"
+  },
+  "_seed_time": "2026-06-18T06:04:00.000Z",
+  "_take2_detail_switch_sec": 86.787,
+  "_wizard_time": "2026-06-18T06:56:00.000Z",
+  "_wizard_case_id": "8677435e-22df-4084-bbdd-2b426b0d342c",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "BU-0050",
+  "_demo_now": "2026-06-18T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-18T06:08:00.000Z",
+  "_appointment_start": "2026-06-19T06:00:00.000Z",
+  "_appointment_end": "2026-06-19T08:00:00.000Z",
+  "_reminder_time": "2026-06-18T07:02:00.000Z",
+  "_completion_time": "2026-06-18T07:02:00.000Z",
+  "_review_sent_time": "2026-06-18T07:04:00.000Z",
+  "_review_rated_time": "2026-06-18T07:06:00.000Z",
+  "_review_token": "a34c2b3a1c1abbb0",
+  "_review_token_long": "a34c2b3a1c1abbb0158787b21909f0dcdb64bbea095d62684a6f79716902133b",
+  "_case_created_at": "2026-06-18T06:56:00+00:00"
+}
