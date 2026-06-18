@@ -141,7 +141,8 @@ async function llmDecider(teamText, mails) {
 Bestimme den ENTSCHEIDER für ein Telefon-/Erreichbarkeits-Produkt: die Geschäftsleitung des KERN-Bereichs
 Sanitär/Heizung (NICHT der Gründer falls operativ raus, NICHT ein Techniker, NICHT "info@"). Ordne ihm seine
 persönliche Mail aus der Liste zu. Antworte NUR mit JSON, keine Erklärung:
-{"decider":{"name":"...","role":"...","email":"..."},"team_size":<Zahl|null>,"is_core_sanitaer_heizung":<bool>,"has_office_reception":<bool>}
+{"decider":{"name":"VOLLER PERSONENNAME","role":"...","email":"..."},"team_size":<Zahl|null>,"is_core_sanitaer_heizung":<bool>,"has_office_reception":<bool>,"confidence":"hoch"|"mittel"|"niedrig"}
+'name' MUSS ein echter Personenname sein, NIEMALS der Firmenname; bei Unsicherheit decider null + confidence "niedrig".
 Mails: ${JSON.stringify(mails)}
 Text:
 ${(teamText || "").slice(0, 6000)}`;
@@ -161,12 +162,14 @@ ${(teamText || "").slice(0, 6000)}`;
 async function visionRead(buf) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key || !buf) return null;
-  const prompt = `Dies ist ein Screenshot der "Über uns/Team"-Seite eines Schweizer Handwerksbetriebs (Sanitär/Heizung).
+  const prompt = `Dies ist ein Screenshot der "Über uns/Team/Kontakt"-Seite eines Schweizer Handwerksbetriebs (Sanitär/Heizung).
 Gib NUR valides JSON zurück, keine Erklärung:
-{"team_size": <Zahl sichtbarer Mitarbeiter/Köpfe oder null>,
- "deciders": [{"name":"...","role":"...","email":"... oder null"}],  // Geschäftsführer/Inhaber/GL des Kern-Bereichs Sanitär/Heizung zuerst
+{"team_size": <Zahl klar sichtbarer Personen/Köpfe oder null>,
+ "deciders": [{"name":"VOLLER PERSONENNAME (Vor- + Nachname)","role":"...","email":"... oder null"}],
  "is_core_sanitaer_heizung": <true/false>,
- "has_office_reception": <true/false>}`;
+ "has_office_reception": <true/false>,
+ "confidence": "hoch"|"mittel"|"niedrig"}
+Regeln: 'name' MUSS ein echter Personenname sein, NIEMALS der Firmenname. Geschäftsführer/Inhaber/GL des Kern-Bereichs Sanitär/Heizung zuerst (nicht Techniker, nicht "info@"). Wenn keine klare Person mit Führungsrolle sichtbar ist: deciders:[] und confidence:"niedrig".`;
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -189,7 +192,7 @@ Gib NUR valides JSON zurück, keine Erklärung:
 
 function tariffFor(ma) {
   if (ma == null) return "TBD (Crawl)";
-  if (ma <= 3) return "Solo (900)";
+  if (ma <= 3) return "Solo (950)";
   if (ma <= 12) return "Premium (2000)";
   return "DQ (zu groß)";
 }
@@ -204,7 +207,7 @@ async function enrichOne(firma, url) {
 
   // Eindeutig bei 1 Personen-Mail; sonst entscheidet die KI (S6: GL Kern-Bereich), nicht „erste".
   // Text-reiche Über-uns-Seite → Claude im TEXT-Modus (zuverlässiger als Screenshot); sonst Vision-Fallback.
-  let ma = t.sizeText, decider = null, role = null, mail = t.person.length === 1 ? t.person[0] : null, office = t.office, core = t.core, src = "text";
+  let ma = t.sizeText, decider = null, role = null, mail = t.person.length === 1 ? t.person[0] : null, office = t.office, core = t.core, src = "text", confidence = null;
   const teamText = (pickTeamPage(site.pages) || {}).text || "";
   let a = null;
   if (!NO_VISION) {
@@ -216,13 +219,14 @@ async function enrichOne(firma, url) {
     if (typeof a.is_core_sanitaer_heizung === "boolean") core = a.is_core_sanitaer_heizung;
     if (typeof a.has_office_reception === "boolean") office = a.has_office_reception;
     const d0 = a.decider || (a.deciders || [])[0];
-    if (d0 && d0.name) { decider = d0.name; role = d0.role || null; if (d0.email) mail = String(d0.email).toLowerCase(); }
-    console.log(`  [${src}] size=${ma ?? "?"} decider=${decider || "—"} (${role || "?"}) mail=${mail || "—"} core=${core}`);
+    if (d0 && d0.name && normName(d0.name) !== normName(firma)) { decider = d0.name; role = d0.role || null; if (d0.email) mail = String(d0.email).toLowerCase(); }
+    confidence = a.confidence || null;
+    console.log(`  [${src}] size=${ma ?? "?"} decider=${decider || "—"} (${role || "?"}) mail=${mail || "—"} core=${core} conf=${confidence || "?"}`);
   }
   const inhaberTel = ma != null ? (ma <= 3 ? "ja" : office ? "nein" : "?") : "?";
   return {
     firma, url, entscheider: decider, rolle: role, mail, ma: ma ?? null, tariff: tariffFor(ma),
-    inhaber_am_telefon: inhaberTel, core, size_source: src, mails_all: t.mails,
+    inhaber_am_telefon: inhaberTel, core, size_source: src, confidence, mails_all: t.mails,
     enriched_at: new Date().toISOString().slice(0, 10),
   };
 }
@@ -247,7 +251,7 @@ async function main() {
     const NC = /\b(bau|renovation|energieberatung|planung|kuchen|küchen|ausstellung)\b/i;
     const CO = /sanit|heiz|haustechnik|installat|spengler/i;
     targets = targets
-      .filter((t) => (t.tariff?.startsWith("TBD") || !t.entscheider) && !(NC.test(t.firma) && !CO.test(t.firma)))
+      .filter((t) => (t.tariff?.startsWith("TBD") || !t.entscheider) && !(NC.test(t.firma) && !CO.test(t.firma)) && !/yellow\.|local\.ch/i.test(t.url || ""))
       .slice(0, LIMIT);
   }
   console.log(`enrich_leads: ${targets.length} Betrieb(e)${NO_VISION ? " (nur Text)" : ""}${DRY ? " [DRY]" : ""}`);

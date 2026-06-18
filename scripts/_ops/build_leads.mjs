@@ -76,7 +76,7 @@ const CORE = /sanit|heiz|haustechnik|installat|spengler/i;
 // ── Tarif aus MA-Größe (§4) ──────────────────────────────────────────
 function tariffFor(ma) {
   if (ma == null) return { tariff: "TBD (Crawl)", maProxy: "?" };
-  if (ma <= 3) return { tariff: "Solo (900)", maProxy: String(ma) };
+  if (ma <= 3) return { tariff: "Solo (950)", maProxy: String(ma) };
   if (ma <= 12) return { tariff: "Premium (2000)", maProxy: String(ma) };
   return { tariff: "DQ (zu groß)", maProxy: String(ma) };
 }

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FlowSight — Customer Journey</title>
+<style>
+  :root{
+    --gold:#c8a24a; --gold-soft:rgba(200,162,74,.16); --gold-line:rgba(200,162,74,.5);
+    --sales:#c8a24a; --pipe:#6db3df; --onb:#9ccb6b;
+    --ink:#e8eef5; --muted:#9fb2c4; --muted2:#6f8398;
+    --card:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    --line:rgba(255,255,255,.12);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    min-height:100dvh; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1300px circle at 50% 18%, #18374f 0%, #0a1c2e 60%) fixed;
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 28px 70px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  h1{font-size:27px;font-weight:800;margin:8px 0 2px;color:#fff}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 6px}
+  .legend{display:flex;gap:18px;justify-content:center;margin:4px 0 0;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+  /* ── Schwungrad ── */
+  .wheelwrap{position:relative;width:100%;height:min(64vh,640px);margin:6px 0 4px}
+  .wheel-svg{position:absolute;inset:0;width:100%;height:100%}
+  .hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+  .hub .ring{width:118px;height:118px;border-radius:50%;border:2px dashed rgba(200,162,74,.4);display:flex;align-items:center;justify-content:center;animation:spin 26s linear infinite}
+  .hub .ico{font-size:30px;color:var(--gold)}
+  .hub .lbl{margin-top:8px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:rgba(200,162,74,.45);font-weight:700;pointer-events:none}
+  .arrow{position:absolute;transform-origin:center;color:var(--gold);font-size:16px;opacity:.85;pointer-events:none}
+  .arrowlbl{position:absolute;transform:translate(-50%,-50%);font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
+  .node{position:absolute;transform:translate(-50%,-50%);width:140px;text-align:center;cursor:default}
+  .node.click{cursor:pointer}
+  .node .star{position:relative;width:62px;height:62px;margin:0 auto;display:flex;align-items:center;justify-content:center;transition:.18s}
+  .node .star svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 3px 10px rgba(0,0,0,.4))}
+  .node .num{position:relative;font-weight:800;font-size:18px;color:#0a1c2e}
+  .node.click:hover .star{transform:scale(1.12)}
+  .node .nm{margin-top:9px;font-size:13px;font-weight:700;color:#fff;line-height:1.2}
+  .node .tagmini{display:inline-block;margin-top:4px;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px}
+  .badge{font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--muted);margin-left:4px}
+  .badge.live{background:var(--gold);color:#0a1c2e}
+
+  /* ── Funnel dashboard ── */
+  .secthead{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:26px 2px 12px;display:flex;justify-content:space-between;align-items:center}
+  .secthead .tagx{font-size:10px;color:var(--muted2);letter-spacing:.04em;text-transform:none;font-weight:600}
+  .dash{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}
+  .panel{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:20px}
+  .frow{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+  .fname{width:140px;font-size:12px;color:var(--muted);text-align:right;flex:0 0 auto}
+  .fbar-wrap{flex:1;height:30px;border-radius:8px;background:rgba(255,255,255,.04);overflow:hidden;position:relative}
+  .fbar{height:100%;border-radius:8px;background:linear-gradient(90deg,#d8b25a,#9d7a2d);display:flex;align-items:center;padding-left:11px;font-weight:800;font-size:13px;color:#0a1c2e;min-width:34px;transition:width .5s}
+  .fconv{width:54px;font-size:11px;color:var(--gold);font-weight:700;flex:0 0 auto}
+  .goal{margin-bottom:18px}
+  .goal .gtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .goal .gname{font-size:13px;color:var(--muted)}
+  .goal .gval{font-size:22px;font-weight:800;color:#fff}
+  .goal .gval b{color:var(--gold)}
+  .gbar{height:11px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .gbar > div{height:100%;border-radius:999px;background:linear-gradient(90deg,#d8b25a,var(--gold));transition:width .6s}
+  .note{color:var(--muted2);font-size:11px;margin-top:10px}
+
+  /* ── Detail / lean ── */
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;background:none;border:none;cursor:pointer;padding:6px 2px;margin-bottom:10px}
+  .back:hover{color:#fff}
+  .bigbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
+  .bigbtn{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:22px 18px;text-align:center;cursor:pointer;transition:.16s}
+  .bigbtn:hover{transform:translateY(-2px);border-color:var(--gold-line)}
+  .bigbtn .bt{font-size:17px;font-weight:800;color:#fff}
+  .bigbtn .bd{font-size:12px;color:var(--muted);margin-top:5px}
+  .infopanel{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:22px;font-size:15px;color:var(--ink);max-width:760px}
+
+  /* ── Übersicht = Zweigbaum (breit) ── */
+  .tree-root{display:flex;justify-content:center;margin:4px 0 18px}
+  .tnode{border:1px solid var(--gold-line);background:var(--gold-soft);border-radius:12px;padding:11px 16px;max-width:560px;text-align:center}
+  .tnode .tn-k{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+  .tnode .tn-t{font-size:14px;color:#fff;margin-top:3px}
+  .branchgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+  .branch{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 13px;cursor:pointer;transition:.14s;border-top:3px solid var(--muted2)}
+  .branch:hover{transform:translateY(-2px);border-color:var(--gold-line)}
+  .branch.ja{border-top-color:var(--gold)}
+  .branch.exit{border-top-color:#c2554e}
+  .branch .resp{font-weight:800;color:#fff;font-size:14px}
+  .branch .lead{font-size:11px;color:var(--muted);margin:5px 0 8px}
+  .branch .subs{display:flex;flex-wrap:wrap;gap:5px}
+  .subtag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .subtag.ja{color:var(--gold);border-color:var(--gold-line);background:var(--gold-soft)}
+  .subtag.exit{color:#d98079;border-color:rgba(194,85,78,.45);background:rgba(194,85,78,.12)}
+  .converge{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .chain{flex:1;min-width:280px;border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:rgba(255,255,255,.03)}
+  .chain.ja{border-color:var(--gold-line)}
+  .chain .ch-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+  .chain.ja .ch-h{color:var(--gold)} .chain.exit .ch-h{color:#d98079}
+  .chain .steps{font-size:13px;color:var(--ink)}
+  .chain .steps b{color:var(--gold)}
+
+  /* ── Live / Drill (lesbare Breite zentriert) ── */
+  .narrow{max-width:720px}
+  .tabs{display:flex;gap:8px;margin:6px 0 16px;max-width:720px}
+  .tab{flex:1;text-align:center;padding:9px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer}
+  .tab.on{background:var(--gold);color:#0a1c2e;border-color:var(--gold)}
+  .say{border:1px solid var(--line);border-left:3px solid var(--gold);background:rgba(255,255,255,.04);border-radius:12px;padding:18px;font-size:18px;line-height:1.55;color:#fff;white-space:pre-wrap}
+  .say .cue{color:var(--gold);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:9px}
+  .choices{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+  .choice{width:100%;text-align:left;min-height:50px;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-size:15px;font-weight:600;cursor:pointer;transition:.14s;display:flex;align-items:center;gap:10px}
+  .choice:hover{border-color:var(--gold);background:rgba(200,162,74,.1)}
+  .choice .ar{margin-left:auto;color:var(--gold)}
+  .resultcard{text-align:center;padding:30px 20px;border:1px solid var(--line);background:var(--card);border-radius:16px}
+  .resultcard .big{font-size:21px;font-weight:800;color:#fff}.resultcard.win .big{color:var(--gold)}
+  .resultcard .sm{color:var(--muted);font-size:13px;margin-top:9px}
+  .restart{margin-top:18px;padding:11px 20px;border-radius:11px;border:1px solid var(--gold);background:var(--gold);color:#0a1c2e;font-weight:800;cursor:pointer}
+  .drillbar{display:flex;justify-content:space-between;color:var(--muted2);font-size:12px;margin-bottom:10px}
+  .reveal{margin-top:14px;width:100%;padding:13px;border-radius:12px;border:1px solid var(--gold);background:var(--gold);color:#0a1c2e;font-weight:800;font-size:15px;cursor:pointer}
+  .answer{margin-top:14px;border:1px solid var(--line);border-left:3px solid var(--gold);background:rgba(255,255,255,.04);border-radius:12px;padding:16px;font-size:16px;line-height:1.55;color:#fff;white-space:pre-wrap}
+  .drillnav{display:flex;gap:9px;margin-top:14px}
+  .dn{flex:1;padding:12px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-weight:700;cursor:pointer}
+  .dn.prim{background:var(--gold);color:#0a1c2e;border-color:var(--gold)}
+  .frozen{font-size:10.5px;color:var(--muted2);margin-top:22px;text-align:center}
+  .fullbleed{width:94vw;position:relative;left:50%;right:50%;margin-left:-47vw;margin-right:-47vw;padding:0 14px}
+  .leadtbl{width:100%;border-collapse:collapse;font-size:13px}
+  .leadtbl th{text-align:left;color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:6px 10px;border-bottom:1px solid var(--line)}
+  .leadtbl td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+  .leadtbl tbody tr:hover td{background:rgba(255,255,255,.02)}
+  .lstatus{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .st-open{color:var(--muted);background:rgba(255,255,255,.06)}
+  .st-ja{color:#0a1c2e;background:var(--gold)}
+  .st-rq{color:#cfe0a0;background:rgba(157,203,107,.16)}
+  .st-no{color:#d98079;background:rgba(194,85,78,.16)}
+  .lcall{background:var(--gold);color:#0a1c2e;border:none;border-radius:8px;padding:7px 12px;font-weight:800;font-size:12px;cursor:pointer}
+  .lout{display:inline-flex;gap:4px;margin-top:6px}
+  .lout button{width:30px;height:28px;border-radius:7px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);cursor:pointer;font-size:13px}
+  .lout button.ja{border-color:var(--gold-line);color:var(--gold)}
+  .lout button:hover{border-color:var(--gold)}
+  .bizhdr{font-size:12px;color:var(--gold);font-weight:700;margin-bottom:8px}
+  .inhinput{width:100%;min-width:140px;background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 7px;color:var(--ink);font-size:13px;font-family:inherit}
+  .inhinput:hover{border-color:var(--line)}
+  .inhinput:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.05)}
+  .inhinput::placeholder{color:var(--muted2);font-style:italic}
+  .inhinput.sm{width:60px;min-width:0;max-width:60px;text-align:center;padding:5px 4px}
+  .inhinput.lg{min-width:150px}
+  .svcbox{width:240px;min-width:200px;min-height:34px;background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 7px;color:var(--ink);font-family:inherit;font-size:12px;line-height:1.45;white-space:pre-wrap;overflow:hidden;resize:vertical;field-sizing:content}
+  .svcbox:hover{border-color:var(--line)}
+  .svcbox:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.05)}
+  .svcbox::placeholder{color:var(--muted2);font-style:italic}
+  .notesbox{width:100%;min-height:96px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--ink);font-family:inherit;font-size:14px;line-height:1.55;resize:vertical}
+  .notesbox:focus{outline:none;border-color:var(--gold)}
+  .notesbox::placeholder{color:var(--muted2)}
+  .treesay{font-size:12.5px;color:var(--ink);line-height:1.5;white-space:pre-wrap;margin:6px 0 9px;border-left:2px solid var(--gold-line);padding-left:9px}
+  .treelive{margin-top:4px;font-size:11px;font-weight:700;color:var(--gold);background:transparent;border:1px solid var(--gold-line);border-radius:8px;padding:5px 10px;cursor:pointer}
+  .treelive:hover{background:var(--gold-soft)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* Wortlaut Cold Call: 1:1 aus docs/gtm/sales/cold_call_script.md (EINGEFROREN). */
+
+const PCOL={sales:"var(--sales)",pipeline:"var(--pipe)",onboarding:"var(--onb)"};
+const STEPS=[
+  {id:"kontakt",n:1,name:"Kontakt",pillar:"sales",info:"Lead-Liste + kurze Recherche (Website gegenchecken), bevor du wählst. Der Funnel-Einstieg."},
+  {id:"coldcall",n:2,name:"Cold Call",pillar:"sales",detail:true},
+  {id:"simulation",n:3,name:"Simulation",pillar:"pipeline",info:"Nach dem Ja: die Pipeline baut die 4 Videos + Prüfung, Mail rund 35 Minuten nach dem Anruf. Automatische Fabrik — der Kunde sieht sie nie."},
+  {id:"gesehen",n:4,name:"Gesehen",pillar:"pipeline",info:"First-View-Signal — der Aha. Die 4 Videos zeigen fast alles ausser Preis."},
+  {id:"gespraech",n:5,name:"Verkaufsgespräch",pillar:"sales",soon:true,info:"Das eigentliche Gespräch nach dem Klick: Discovery, Konsequenz, Commitment, Brücke, Preis. Kommt als zweiter Baum."},
+  {id:"aufbau",n:6,name:"Aufbau (Cockpit)",pillar:"onboarding",soon:true,info:"Der Kunde baut sein Leitsystem geführt selbst im Cockpit. Kommt."},
+  {id:"golive",n:7,name:"Go-live & Vertrag",pillar:"onboarding",soon:true,info:"Founder-Review (Freigabe), dann Zahlung am Go-live — das ist der Vertragsabschluss. Weiterleitung, erste echte Anrufe."},
+  {id:"begleitung",n:8,name:"Begleitung & Wert",pillar:"onboarding",soon:true,info:"Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten: mitschauen, mitlernen, Nähe. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz, der Schwung trägt zurück zu Kontakt."},
+];
+const NEXT=["anrufen","senden","Klick","nachfassen","Zusage","Freigabe","begleiten","Referenz"];
+const LEADS_TG=[{"id":"ChIJGcP3jxmSmkcR1wELZEznmRY","firma":"Schäfli + Dieterich AG","ort":"Frauenfeld","tel":"052 723 30 60","web":"www.haustechnet.ch","webfull":"http://www.haustechnet.ch/","rating":"4.5","reviews":"28","inhaber":"?","ma":"4","tarif":"Premium (2000)","mail":"empfang@haustechnet.ch","services":"Sanitär, Heizung, Wärmetechnik, Energie, Bad-Planung, Gebäudetechnik"},{"id":"ChIJq9WDxKmRmkcRjoYoVMjCC1Y","firma":"Schütz Gebäudetechnik AG","ort":"Frauenfeld","tel":"052 375 13 70","web":"www.schuetzgebaeudetechnikag.ch","webfull":"https://www.schuetzgebaeudetechnikag.ch/","rating":"5","reviews":"17","inhaber":"?","ma":"?","tarif":"TBD","mail":"info@schuetzgebaeudetechnikag.ch","services":"Heizungsbau, Montage, Heizungsservice, Systemberatung, Planung & Projektierung, Service & Unterhalt, Wohnraumlüftung"},{"id":"ChIJM2DvYE_3mkcR3hqWH-ZJiK8","firma":"Serafini Heizung & Sanitär","ort":"Kreuzlingen","tel":"079 511 58 41","web":"www.heizungsanitär-serafini.ch","webfull":"https://www.heizungsanitär-serafini.ch/","rating":"5","reviews":"5","inhaber":"Herr Serafini H.S.","ma":"1","tarif":"Solo (950)","mail":"serafini.h.s@gmail.com","services":"Heizungsinstallation, Sanitärinstallation, Wartung, Service"},{"id":"ChIJ5ySGACP3mkcR71edAMAQ5Kg","firma":"Rickenbach AG Sanitär Heizung","ort":"Kreuzlingen","tel":"071 677 40 77","web":"www.rickenbach-ag.ch","webfull":"http://www.rickenbach-ag.ch/","rating":"4.6","reviews":"7","inhaber":"Herr Thomas Rickenbach","ma":"7","tarif":"Premium (2000)","mail":"info@rickenbach-ag.ch","services":"Sanitär, Heizung, Badsanierung, Wärmepumpen, Alternativ-Energien, Solaranlagen, Erdsondenbohrungen, Zentralstaubsauger-Systeme, Boilerentkalkung, Brennerservice"},{"id":"ChIJQbz5kbH8mkcR7KllMKGh8as","firma":"musa & partner ag","ort":"Amriswil","tel":"071 411 16 06","web":"www.musa-partner-ag.ch","webfull":"https://www.musa-partner-ag.ch/","rating":"5","reviews":"9","inhaber":"Albert Wagner","ma":"?","tarif":"TBD","mail":"musa-partner-ag@bluewin.ch","services":"Sanitär, Spenglerei, Badumbau, Reparaturservice, Neubau, Boiler-Wartung, Wasserfilter-Wartung, Entstopfungen"},{"id":"ChIJ6d3ycWTjmkcRFPmMNwd0VNY","firma":"Hutt GmbH","ort":"Amriswil","tel":"071 774 09 09","web":"hutt.ch","webfull":"https://hutt.ch/","rating":"5","reviews":"4","inhaber":"Herr Remo Hutterli","ma":"1","tarif":"Solo (950)","mail":"info@hutt.ch","services":"Sanitär, Spenglerei, Motorradbau/-umbau, Bad-Sanierung"},{"id":"ChIJeycs9Qsdm0cRpA6tpi8OpDo","firma":"Haustechnik Eugster AG","ort":"Arbon","tel":"071 454 60 60","web":"haustechnik-eugster.ch","webfull":"https://haustechnik-eugster.ch/","rating":"4.7","reviews":"57","inhaber":"Herr Andreas Albrecht","ma":"?","tarif":"TBD","mail":"andreas.albrecht@haustechnik-eugster.ch","services":"Sanitär, Badumbau, Heizungstechnik, Solaranlagen, Spenglertechnik, Trinkwasser"},{"id":"ChIJJQxdzRd0kEcRttanSpFs5vs","firma":"Meier Sanitär/Heizung","ort":"Hochfelden","tel":"078 871 46 54","web":"www.sanitaer-hochfelden.ch","webfull":"http://www.sanitaer-hochfelden.ch/","rating":"4.8","reviews":"33","inhaber":"Herr Christian Meier","ma":"1","tarif":"Solo (950)","mail":"christian.meier1@gmx.ch","services":"Sanitär, Heizungsinstallationen, Badumbauten, Sanitärservice, Wasseraufbereitung"},{"id":"ChIJiz3O5k3lmkcRKloxotqS-Mk","firma":"MS Gebäudetechnik GmbH","ort":"Amriswil","tel":"071 410 06 49","web":"ms-gebaeudetechnik.ch","webfull":"https://ms-gebaeudetechnik.ch/","rating":"5","reviews":"25","inhaber":"Herr Marjan Shabani","ma":"1","tarif":"Solo (950)","mail":"info@ms-gebaeudetechnik.ch","services":"Heizungssysteme, Wärmepumpen, Erdsonden, Lüftungssysteme, Warmwasseraufbereitung, Boiler-Installation, Heizungsservice/-sanierung"},{"id":"ChIJXXC4IaL2mkcRA0SCcjpW67Q","firma":"Burkhardt Heizungen & Sanitär GmbH","ort":"Tägerwilen","tel":"071 669 11 65","web":"www.burkhardt-heizungen.ch","webfull":"http://www.burkhardt-heizungen.ch/","rating":"4.8","reviews":"22","inhaber":"Herr Roger Burkhardt, Herr Bruno Burkhardt","ma":"2","tarif":"Solo (950)","mail":"?","services":"Heizung, Sanitär, Solar, 24h-Reparaturservice, Werkleitungen VKR, Notfallreparaturen"},{"id":"ChIJG9Yxab8bm0cR386E4Tk2qmc","firma":"MB Sanitär Heizung AG","ort":"Rorschacherberg","tel":"071 858 28 88","web":"www.mbsh.ch","webfull":"http://www.mbsh.ch/","rating":"4.7","reviews":"20","inhaber":"Herr Marco Brüesch","ma":"?","tarif":"TBD","mail":"info@mbsh.ch","services":"Sanitär, Heizung, Kälte, Lüftung, Service, Wartung, 24h Pikett"},{"id":"ChIJKxqlh1b8mkcRe-wADD2T5NM","firma":"Wattinger Schwendener Sanitär Heizung GmbH","ort":"Uttwil","tel":"071 463 17 07","web":"wattinger-schwendener.ch","webfull":"http://wattinger-schwendener.ch/","rating":"4.9","reviews":"13","inhaber":"Herr Thomas Wattinger, Herr Simon Schwendener","ma":"2","tarif":"Solo (950)","mail":"th.wattinger@bluewin.ch","services":"Sanitär, Heizung, Sanitäre Installationen, Heizungsanlagen, Wasserversorgung, Planung"},{"id":"ChIJVVVVVRH9mkcRXJZyfUjaieo","firma":"Regiotherm AG","ort":"Romanshorn","tel":"071 466 60 10","web":"regiotherm.ch/heizsysteme","webfull":"https://regiotherm.ch/heizsysteme/","rating":"4.5","reviews":"12","inhaber":"Herr Jozsef Simon","ma":"?","tarif":"TBD","mail":"jozsef.simon@regiotherm.ch","services":"Heizung, Gasheizung, Wärmepumpe, Hybridlösungen, Warmwasserlösungen, Kontrolle & Wartung, Gas/Biogas"},{"id":"ChIJBTGRIQmTmkcR74ydee0tdSc","firma":"Künzi Haustechnik AG","ort":"Matzingen","tel":"052 376 41 50","web":"kuenzi-haustechnik.ch","webfull":"https://kuenzi-haustechnik.ch/","rating":"5","reviews":"12","inhaber":"Herr Ernst Künzi","ma":"2","tarif":"Solo (950)","mail":"nk@kuenzi-haustechnik.ch","services":"Sanitär, Heizung, Solaranlagen, Raumlufttechnik, Planung & Beratung, Service"},{"id":"ChIJH7yjs0_3mkcRNrusY2G2PJE","firma":"Fuchs GmbH Heizung Sanitär Schweiz","ort":"Tägerwilen","tel":"071 222 03 22","web":"www.fuchs-haustechnik.de/fuchs-ch","webfull":"https://www.fuchs-haustechnik.de/fuchs-ch/","rating":"4.6","reviews":"11","inhaber":"Herr Martin Fuchs","ma":"10","tarif":"Premium (2000)","mail":"info@fuchs-haustechnik.ch","services":"Sanitär, Heizung, Klima, Badsanierung, Badneubau, Gebäudetechnik, Kundendienst, Fliesenleger, Badplanung"},{"id":"ChIJBTu5SjONmkcRQe6SE1Bqg_k","firma":"Thur Haustechnik AG","ort":"Frauenfeld","tel":"079 241 31 82","web":"www.thur-haustechnik.ch","webfull":"https://www.thur-haustechnik.ch/","rating":"5","reviews":"9","inhaber":"Herr Florian Gjergji","ma":"?","tarif":"TBD","mail":"info@thur-haustechnik.ch","services":"Sanitär, Heizung & Wärme, Lüftung, Installation, Wartung, Reparaturen, Wärmepumpen, Fussbodenheizung, Kontrollierte Wohnraumlüftung"},{"id":"ChIJ30VOzEbwmkcR5bCr-QPLeh0","firma":"Witzig J. Sanitär, Heizungen, Solartechnik","ort":"Berg","tel":"071 636 11 77","web":"www.witzig-solar.ch","webfull":"http://www.witzig-solar.ch/","rating":"5","reviews":"8","inhaber":"Herr Jürg Witzig","ma":"?","tarif":"TBD","mail":"info@witzig-solar.ch","services":"Sanitär, Heizung, Solartechnik (PV + Thermisch), Wärmepumpen, Wasserenthärtung, Boilerentkalkung, Regenwassernutzung"},{"id":"ChIJ01cn3kmNmkcRLxL3EHrk-AE","firma":"R. Gerber AG Sanitär/Heizungen","ort":"Felben-Wellhausen","tel":"052 765 18 85","web":"www.rgerberag.ch","webfull":"http://www.rgerberag.ch/","rating":"5","reviews":"6","inhaber":"Herr Simon Gerber","ma":"4","tarif":"Premium (2000)","mail":"mail@rgerberag.ch","services":"Sanitär, Heizung, Rohrleitungsbau, Boilerservice, Wasserenthärtung, Regenwassernutzung, Bodenheizung, Sonnenenergie, Wartung/Service"},{"id":"ChIJgduOYCzxmkcR8vN0y0Jyrc0","firma":"Brühwiler Sanitär | Heizung | Solar","ort":"Weinfelden","tel":"071 622 30 43","web":"www.sanitär-heizung-solar.ch","webfull":"https://www.sanitär-heizung-solar.ch/","rating":"5","reviews":"6","inhaber":"Herr Benedikt Gutersohn","ma":"1","tarif":"Solo (950)","mail":"?","services":"Sanitär, Heizung, Solar, Neubauten, Reparatur & Service, Umbau & Renovationen"},{"id":"ChIJjdeCs2j8mkcRKYcunjcNE6Y","firma":"Strässle Installationen AG","ort":"Amriswil","tel":"071 414 07 70","web":"www.straessle.com","webfull":"https://www.straessle.com/","rating":"4.6","reviews":"49","inhaber":"?","ma":"?","tarif":"TBD","mail":"info@straessle.com","services":"Heizung & Kälte, Lüftung, Sanitär, Spenglerei, Service, Badumbau, Heizungssanierung, Wärmepumpe, Solaranlagen"}];
+const REGION_NAME="Thurgau";
+
+const FUNNEL=[
+  {k:"Wählversuche",v:48},{k:"Erreicht",v:17},{k:"Ja zur Simulation",v:6},
+  {k:"Gesehen (Klick)",v:4},{k:"Warmes Gespräch",v:2},{k:"Onboarding",v:1},{k:"Kunde",v:0},
+];
+const GOALS=[
+  {name:"Gespräche heute",cur:6,target:10},
+  {name:"Ja zur Simulation / Woche",cur:6,target:12},
+  {name:"Abschlüsse / Woche",cur:1,target:2},
+];
+
+/* ── Cold-Call-Baum (Wortlaut 1:1) ── */
+const COLD={
+  start:{title:"Wer hebt ab?",say:"",choices:[{label:"Inhaber direkt",go:"opener"},{label:"Mitarbeiter / Büro",go:"gatekeeper"}]},
+  gatekeeper:{cue:"Gatekeeper",say:"Grüezi, Gunnar Wende hier. Ich hätte eine kurze Frage an Herrn [Name] — es geht um neue Kundenanfragen bei [Betrieb] und einen konkreten Vorschlag dazu. Ist er gerade kurz erreichbar?",choices:[{label:"„Worum geht es genau?“",go:"gk_worum"},{label:"„Schicken Sie an info@…“",go:"gk_info"},{label:"Verbindet zum Inhaber",go:"opener"}]},
+  gk_worum:{cue:"Worum geht es?",say:"Es geht um ein Leitsystem: Neue Kundenanfragen über Telefon, Website oder direkt aus einem Gespräch heraus laufen an einem Ort zusammen. So sieht Herr [Name], was eingegangen ist, was offen ist und was weiterlaufen muss. Ich würde ihn dazu gerne kurz persönlich fragen, ob das für [Betrieb] überhaupt ein Thema ist.",choices:[{label:"Verbindet zum Inhaber",go:"opener"},{label:"„An info@ schicken“",go:"gk_info"}]},
+  gk_info:{cue:"„An info@ schicken“",say:"Gerne, das kann ich machen.\n\nNur damit es nicht irgendwo untergeht: Es ist bewusst für Herrn [Name] vorbereitet. Gibt es eine direkte Mailadresse von ihm — oder soll ich es an info@ schicken und an Herrn [Name] adressieren?\n\nWenn nur info@ möglich ist:\nAlles klar, dann schicke ich es an info@ und adressiere es direkt an Herrn [Name].\n\nWäre es sinnvoll, wenn ich morgen oder übermorgen nochmals kurz nachfasse, ob es bei ihm angekommen ist?",choices:[{label:"Notiert — Ende",go:"end"}]},
+  opener:{cue:"Opener Inhaber",say:"Grüezi Herr [Name], Gunnar Wende aus Oberrieden.\n\nIch mache es kurz, weil Sie wahrscheinlich mitten im Tagesgeschäft sind: Ich habe mir [Betrieb] angeschaut und etwas Konkretes zu Ihren Kundenanfragen vorbereitet.\n\nDarf ich Ihnen in 30 Sekunden sagen, warum ich konkret Sie anrufe?",choices:[{label:"„Ja“ (30 Sekunden)",go:"s30"},{label:"„Keine Zeit“",go:"keineZeit"},{label:"„Was kostet das?“",go:"preis"},{label:"„Kein Interesse“",go:"keinInteresse"},{label:"„Wir haben genug Anfragen“",go:"genug"},{label:"„Wir haben schon ein System“",go:"system"},{label:"„Schicken Sie Unterlagen“",go:"unterlagen"},{label:"„Wer sind Sie?“",go:"werSind"}]},
+  s30:{cue:"Er gibt 30 Sekunden",say:"Danke.\n\nDer Punkt ist einfach: Bei [Gewerk] kommen neue Kundenanfragen heute über verschiedene Wege rein — Telefon, Website, E-Mail oder direkt aus einem Gespräch heraus.\n\nUnd wenn im Tagesgeschäft viel gleichzeitig läuft, ist genau die Frage: Bleibt am Ende wirklich alles sichtbar — was reingekommen ist, was offen ist und was weiterlaufen muss?\n\nGenau dafür habe ich etwas Konkretes für Ihren Betrieb vorbereitet: eine kurze, für Ihren Betrieb vorbereitete Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.\n\nDarf ich Ihnen den Link per Mail schicken und mich morgen oder übermorgen nochmals kurz melden?",choices:[{label:"„Ja, schicken Sie es mir“",go:"ja"},{label:"„Was kostet das?“",go:"preis"},{label:"„Kein Interesse“",go:"keinInteresse"},{label:"„Schauen, aber nicht nachrufen“",go:"nichtNachrufen"}]},
+  keineZeit:{cue:"„Keine Zeit“",say:"Verstehe ich, dann will ich Sie nicht aufhalten.\n\nDann nur ganz kurz: Ich habe etwas Konkretes für Ihren Betrieb vorbereitet — eine kurze Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.\n\nDarf ich Ihnen den Link per Mail schicken und mich danach einmal kurz melden?",choices:[{label:"„Ja, schicken Sie“",go:"ja"},{label:"„Nein“",go:"nein"}]},
+  preis:{cue:"„Was kostet das?“",say:"Verstehe ich, die Frage ist völlig berechtigt.\n\nIch würde Ihnen jetzt am Telefon aber ungern eine Zahl nennen, bevor Sie gesehen haben, was ich für Ihren Betrieb vorbereitet habe. Schauen Sie sich zuerst die kurze Videoseite in Ruhe an.\n\nWenn Sie danach sagen, das bringt Ihnen keinen konkreten Nutzen, dann ist das Thema erledigt. Wenn Sie sagen, das trifft einen Punkt, dann sprechen wir sauber über Aufwand und Kosten.\n\nDarf ich Ihnen den Link schicken?",choices:[{label:"„Ja, schicken Sie“",go:"ja"},{label:"„Kein Interesse“",go:"keinInteresse"}]},
+  keinInteresse:{cue:"„Kein Interesse“",say:"Verstehe ich, das ist völlig in Ordnung.\n\nNur damit ich Sie richtig einordne: Ist das Thema bei Ihnen bereits sauber gelöst — oder möchten Sie sich gerade grundsätzlich nicht damit beschäftigen?",choices:[{label:"„Bei uns läuft das schon“",go:"laeuftSchon"},{label:"„Möchte mich nicht beschäftigen“",go:"nichtBeschaeftigen"}]},
+  laeuftSchon:{cue:"„Bei uns läuft das schon“",say:"Das ist gut.\n\nGenau deshalb will ich es Ihnen auch nicht am Telefon erklären. Ich habe es bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",choices:[{label:"„Ja, schicken Sie“",go:"ja"},{label:"„Nein“",go:"nein"}]},
+  nichtBeschaeftigen:{cue:"„Möchte mich nicht beschäftigen“",say:"Verstehe ich. Dann respektiere ich das und will Ihnen nichts aufdrängen.\n\nDanke für die klare Rückmeldung, Herr [Name]. Ich wünsche Ihnen einen guten Tag.",choices:[{label:"Ende",go:"end"}]},
+  genug:{cue:"„Wir haben genug Anfragen“",say:"Das ist gut — und genau da setzt es eigentlich an.\n\nMir geht es nicht darum, Ihnen noch mehr Anfragen zu bringen. Der Punkt ist eher: Wenn viele Anfragen reinkommen, wird es umso wichtiger, dass sichtbar bleibt, was eingegangen ist, was offen ist und was weiterlaufen muss.\n\nIch habe das bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",choices:[{label:"„Ja, schicken Sie“",go:"ja"},{label:"„Nein“",go:"nein"}]},
+  system:{cue:"„Wir haben schon ein System“",say:"Das ist gut — dann haben Sie bereits eine Grundlage.\n\nMir geht es auch nicht darum, am Telefon zu behaupten, dass Sie etwas ersetzen müssen. Der Punkt ist eher, ob neue Kundenanfragen aus Telefon, Website, E-Mail und direkten Gesprächen wirklich an einem Ort sichtbar weiterlaufen.\n\nIch habe das bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",choices:[{label:"„Ja, schicken Sie“",go:"ja"},{label:"„Nein“",go:"nein"}]},
+  unterlagen:{cue:"„Schicken Sie Unterlagen“",say:"Gerne.\n\nIch schicke Ihnen aber keine allgemeinen Unterlagen, sondern den Link zur kurzen Videoseite, die ich bewusst konkret für Ihren Betrieb vorbereitet habe.\n\nDort sehen Sie deutlich schneller, ob darin ein konkreter Nutzen für [Betrieb] steckt.\n\nWas ist für Sie besser — per Mail oder direkt aufs Handy?",choices:[{label:"Kanal nennt er → bestätigen",go:"bestaetigen"}]},
+  werSind:{cue:"„Wer sind Sie genau?“",say:"Gerne.\n\nMein Name ist Gunnar Wende, ich bin aus Oberrieden. Ich baue ein Leitsystem für Sanitärbetriebe, damit neue Kundenanfragen aus Telefon, Website, E-Mail und direkten Gesprächen an einem Ort sichtbar weiterlaufen.\n\nIch habe mir [Betrieb] angeschaut und deshalb etwas Konkretes für Ihren Betrieb vorbereitet.\n\nDarf ich Ihnen den Link zur kurzen Videoseite schicken?",choices:[{label:"„Welche Firma?“",go:"welcheFirma"},{label:"„Ja, schicken Sie“",go:"ja"}]},
+  welcheFirma:{cue:"„Welche Firma?“",say:"Ich baue das unter dem Namen FlowSight auf — aber der Name ist hier gar nicht der wichtige Punkt.\n\nWichtiger ist: Ich habe für [Betrieb] konkret vorbereitet, wie neue Kundenanfragen sichtbarer aufgenommen und weitergeführt werden können.\n\nDarf ich Ihnen den Link zur kurzen Videoseite schicken?",choices:[{label:"„Ja, schicken Sie“",go:"ja"}]},
+  nichtNachrufen:{cue:"„Schauen, aber nicht nachrufen“",say:"Natürlich, das respektiere ich.\n\nDann schicke ich Ihnen den Link einfach zu. Schauen Sie es sich in Ruhe an — ich habe es bewusst konkret für Ihren Betrieb vorbereitet.\n\nWenn Sie darin einen konkreten Nutzen für [Betrieb] sehen, können Sie mir direkt auf die Mail antworten. Wenn nicht, müssen Sie nichts machen.",choices:[{label:"Kanal abfragen → bestätigen",go:"bestaetigen"}]},
+  ja:{cue:"„Ja, schicken Sie es mir“",say:"Sehr gerne.\n\nWas ist für Sie besser — per Mail oder direkt aufs Handy?\n\n[Pause. Adresse notieren.]\n\nPerfekt, danke. Dann schicke ich Ihnen den Link zur kurzen Videoseite. Ich habe es bewusst konkret für Ihren Betrieb vorbereitet — schauen Sie es sich einfach in Ruhe an.\n\nIch melde mich morgen oder übermorgen nochmals kurz und frage nur, ob Sie darin einen konkreten Nutzen für Ihren Betrieb sehen.\n\nPasst das so?",choices:[{label:"Adresse bestätigen",go:"bestaetigen"},{label:"Lieber Rückruf statt Mail",go:"rueckruf"}]},
+  bestaetigen:{cue:"Mailadresse bestätigen",say:"Perfekt, danke.\n\nIch wiederhole kurz: [Mailadresse wiederholen].\n\nStimmt das so?\n\nWenn schwierig:\nDanke. Damit ich es sauber notiere: Können Sie mir die Adresse kurz buchstabieren?\n\n[Adresse wiederholen.]\n\nPerfekt, stimmt das so?",choices:[{label:"Bestätigt → Abschluss",go:"abschlussPositiv"}]},
+  abschlussPositiv:{cue:"Abschluss positiv",say:"Perfekt, danke. Dann schicke ich Ihnen den Link gleich per Mail.\n\nSchauen Sie es sich einfach in Ruhe an — ich habe es bewusst konkret für Ihren Betrieb vorbereitet.\n\nIch melde mich morgen oder übermorgen nochmals kurz und frage nur, ob Sie darin einen konkreten Nutzen für [Betrieb] sehen.\n\nPasst das so?",choices:[{label:"Geschafft",go:"win"}]},
+  rueckruf:{cue:"Rückruf statt Mail",say:"Alles klar, dann rufe ich Sie lieber nochmals an.\n\nWann erwische ich Sie besser — eher über Mittag oder gegen Abend?",choices:[{label:"Termin notiert",go:"win"}]},
+  nein:{cue:"Klares Nein",say:"Verstehe ich. Dann respektiere ich das und will Ihnen nichts aufdrängen.\n\nDanke für die klare Rückmeldung, Herr [Name]. Ich wünsche Ihnen einen guten Tag.",choices:[{label:"Ende",go:"end"}]},
+  win:{result:"win",title:"Volltreffer — Ja zur Simulation.",note:"Heute noch: Simulation bauen + senden (~35 Min). Folge-Anruf steht. Das triggert die Pipeline."},
+  end:{result:"rep",title:"Rep gesammelt.",note:"Jeder Nein bringt dich näher zum Ja. Kurz in die Lessons, nächster Call."},
+};
+const JA=new Set(["ja","bestaetigen","abschlussPositiv","win","rueckruf","unterlagen","welcheFirma"]);
+const EXIT=new Set(["nein","end","nichtBeschaeftigen","gk_info"]);
+const dcls=id=>JA.has(id)?"ja":EXIT.has(id)?"exit":"mid";
+const DRILL=["preis","keineZeit","keinInteresse","laeuftSchon","genug","system","unterlagen","werSind","welcheFirma","nichtNachrufen","gk_worum","gk_info"].map(id=>({cue:COLD[id].cue,answer:COLD[id].say}));
+
+let view={name:"home"};
+const app=document.getElementById("app");
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function set(v){view=v;render();window.scrollTo(0,0);}
+// Live-Navigation mit History (eine Ebene zurück)
+let LHIST=[];
+function enterLive(node){LHIST=[];set({name:"live",node});}
+function liveGo(next){LHIST.push(view.node);set({name:"live",node:next});}
+function liveBack(){if(LHIST.length){set({name:"live",node:LHIST.pop()});}else{set({name:"step",id:"coldcall"});}}
+
+// ── Stern 1: Kontaktliste + Protokoll (localStorage) ──
+let BIZ=null;
+const inject=s=>(s||"").replace(/\[Betrieb\]/g,BIZ?BIZ.firma:"[Betrieb]").replace(/\[Name\]/g,(BIZ&&BIZ.name)?BIZ.name:"[Name]").replace(/\[Gewerk\]/g,(BIZ&&BIZ.gewerk)?BIZ.gewerk:"einem Betrieb wie Ihrem");
+const LKEY="fs_journey_log";
+const logGet=()=>{try{return JSON.parse(localStorage.getItem(LKEY)||"{}");}catch(e){return {};}};
+const logSet=o=>localStorage.setItem(LKEY,JSON.stringify(o));
+function setOutcome(id,outcome){const l=logGet();const now=new Date();const rec={outcome,ts:now.toISOString()};if(outcome==="abgelehnt"){const d=new Date(now);d.setMonth(d.getMonth()+2);rec.suppressUntil=d.toISOString().slice(0,10);}l[id]=rec;logSet(l);render();}
+// Inhaber: manuell editierbar (localStorage), Override > Crawl-Wert. Nie raten — leer = offen.
+const IKEY="fs_journey_inhaber";
+const inhGet=()=>{try{return JSON.parse(localStorage.getItem(IKEY)||"{}");}catch(e){return {};}};
+const getInhaber=id=>{const m=inhGet()[id];if(m!==undefined&&m!=="")return m;const l=LEADS_TG.find(x=>x.id===id);return l&&l.inhaber?String(l.inhaber):"";};
+function saveInhaber(id,val){const o=inhGet();const v=(val||"").trim();if(v)o[id]=v;else delete o[id];localStorage.setItem(IKEY,JSON.stringify(o));}
+// Größe: manuell editierbar (localStorage). "klein?"/"?" = Vermutung → NICHT vorbefüllen, offen lassen.
+const GKEY="fs_journey_groesse";
+const grGet=()=>{try{return JSON.parse(localStorage.getItem(GKEY)||"{}");}catch(e){return {};}};
+const getGroesse=id=>{const m=grGet()[id];if(m!==undefined&&m!=="")return m;const l=LEADS_TG.find(x=>x.id===id);return l&&l.ma?String(l.ma):"";};
+function saveGroesse(id,val){const o=grGet();const v=(val||"").trim();if(v)o[id]=v;else delete o[id];localStorage.setItem(GKEY,JSON.stringify(o));}
+// E-Mail: manuell editierbar (localStorage). Crawl später; unsicher → offen. Hier trägst du die Mail vom "Ja"-Anruf ein.
+const MKEY="fs_journey_mail";
+const mlGet=()=>{try{return JSON.parse(localStorage.getItem(MKEY)||"{}");}catch(e){return {};}};
+const getMail=id=>{const m=mlGet()[id];if(m!==undefined&&m!=="")return m;const l=LEADS_TG.find(x=>x.id===id);return l&&l.mail?String(l.mail):"";};
+function saveMail(id,val){const o=mlGet();const v=(val||"").trim();if(v)o[id]=v;else delete o[id];localStorage.setItem(MKEY,JSON.stringify(o));}
+// Leistungen/Services: manuell editierbar (localStorage). Crawl später (Services-/Leistungen-Seite); unsicher → offen.
+const SKEY="fs_journey_services";
+const svGet=()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}");}catch(e){return {};}};
+const getServices=id=>{const m=svGet()[id];if(m!==undefined&&m!=="")return m;const l=LEADS_TG.find(x=>x.id===id);return l&&(l.services||l.leistungen)?String(l.services||l.leistungen):"";};
+function saveServices(id,val){const o=svGet();const v=(val||"").trim();if(v)o[id]=v;else delete o[id];localStorage.setItem(SKEY,JSON.stringify(o));}
+function autoSize(el){if(!el)return;el.style.height="auto";el.style.height=(el.scrollHeight+2)+"px";}
+// Dynamisches Gewerk fürs Live-Skript: 2–3 Kern-Gewerke aus Leistungen + Firmenname (kein Leistungs-Dump).
+function gewerkPhrase(services,firma){
+  const src=((services||"")+" "+(firma||"")).toLowerCase();
+  const map=[["sanit","Sanitär"],["heiz","Heizung"],["l[üu]ft","Lüftung"],["klima","Klima"],["k[äa]lte","Kälte"],["spengler","Spenglerei"],["solar","Solar"],["w[äa]rmepump","Wärmepumpen"],["bad","Badumbau"],["geb[äa]udetech","Gebäudetechnik"],["haustech","Haustechnik"]];
+  const found=[];for(const [rx,lab] of map){if(new RegExp(rx).test(src)&&!found.includes(lab))found.push(lab);if(found.length>=3)break;}
+  if(!found.length)return "einem Betrieb wie Ihrem";
+  const list=found.length===1?found[0]:found.slice(0,-1).join(", ")+" und "+found[found.length-1];
+  return "einem Betrieb wie Ihrem mit "+list;
+}
+// Crawl-Notizen für die nächste Liste (localStorage; per Kopieren an Claude geben)
+const NKEY="fs_journey_notes";
+const getNotes=()=>{try{return localStorage.getItem(NKEY)||"";}catch(e){return "";}};
+function saveNotes(v){try{localStorage.setItem(NKEY,v);}catch(e){}}
+function copyNotes(){const t=getNotes();if(!t.trim()){alert("Noch keine Notizen.");return;}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>alert("Notizen kopiert — beim nächsten Crawling Claude in den Chat geben."),()=>alert("Kopieren nicht möglich — Text bitte manuell markieren."));}else{alert("Kopieren nicht möglich — Text bitte manuell markieren.");}}
+function startCall(id){const l=LEADS_TG.find(x=>x.id===id)||null;let nm=(getInhaber(id)||"").split(",")[0].replace(/^\s*(Herr|Frau)\s+/i,"").trim();const ok=nm&&nm.length>=3&&!/\bAG\b|\bGmbH\b|Unternehmen|\?/.test(nm);BIZ=l?{firma:l.firma,name:ok?nm:null,gewerk:gewerkPhrase(getServices(id),l.firma)}:null;enterLive("start");}
+function logStats(){const l=Object.values(logGet());const today=new Date().toISOString().slice(0,10);const w=new Date();w.setDate(w.getDate()-6);const wk=w.toISOString().slice(0,10);return {dials:l.length,erreicht:l.filter(r=>r.outcome!=="kein-anschluss").length,ja:l.filter(r=>r.outcome==="ja").length,gesprToday:l.filter(r=>r.outcome!=="kein-anschluss"&&(r.ts||"").slice(0,10)===today).length,jaWeek:l.filter(r=>r.outcome==="ja"&&(r.ts||"").slice(0,10)>=wk).length};}
+function fmtStatus(id){const r=logGet()[id];if(!r)return {txt:"offen",cls:"st-open"};if(r.outcome==="ja")return {txt:"JA · Simulation senden",cls:"st-ja"};if(r.outcome==="kein-anschluss")return {txt:"kein Anschluss · morgen wieder",cls:"st-rq"};if(r.outcome==="abgelehnt")return {txt:"abgelehnt · gesperrt bis "+(r.suppressUntil||""),cls:"st-no"};if(r.outcome==="rueckruf")return {txt:"Rückruf vereinbart",cls:"st-rq"};return {txt:r.outcome,cls:"st-open"};}
+function renderKontakt(){
+  const log=logGet();const today=new Date().toISOString().slice(0,10);
+  const leads=LEADS_TG.slice().sort((a,b)=>{const sa=log[a.id]&&log[a.id].outcome==="abgelehnt"&&(log[a.id].suppressUntil||"")>today?1:0;const sb=log[b.id]&&log[b.id].outcome==="abgelehnt"&&(log[b.id].suppressUntil||"")>today?1:0;return sa-sb;});
+  const rows=leads.map((l,i)=>{const st=fmtStatus(l.id);
+    const inh=`<input class="inhinput" value="${esc(getInhaber(l.id))}" placeholder="Inhaber eintragen…" onchange="saveInhaber('${l.id}',this.value)" />`;
+    const groesse=`<input class="inhinput sm" value="${esc(getGroesse(l.id))}" placeholder="Größe?" onchange="saveGroesse('${l.id}',this.value)" />`;
+    const mail=`<input class="inhinput" type="email" value="${esc(getMail(l.id))}" placeholder="E-Mail eintragen…" onchange="saveMail('${l.id}',this.value)" />`;
+    const services=`<textarea class="svcbox" placeholder="Leistungen…" oninput="autoSize(this)" onchange="saveServices('${l.id}',this.value)">${esc(getServices(l.id))}</textarea>`;
+    return `<tr><td>${i+1}</td><td><b>${esc(l.firma)}</b><div style="color:var(--muted2);font-size:11px">${esc(l.ort)} · ${esc(l.tarif)}</div></td><td>${inh}</td><td>${groesse}</td><td>${services}</td><td><a href="https://${esc(l.web)}" target="_blank" style="color:var(--gold)">${esc(l.web)}</a></td><td style="white-space:nowrap">${esc(l.tel)}<div style="color:var(--muted2);font-size:11px">${l.rating||"-"}★/${l.reviews||"-"}</div></td><td>${mail}</td><td><span class="lstatus ${st.cls}">${st.txt}</span></td><td><button class="lcall" onclick="startCall('${l.id}')">▶ Cold Call</button><div class="lout"><button onclick="setOutcome('${l.id}','kein-anschluss')" title="kein Anschluss → morgen wieder">∅</button><button onclick="setOutcome('${l.id}','rueckruf')" title="Rückruf vereinbart">↻</button><button onclick="setOutcome('${l.id}','abgelehnt')" title="abgelehnt → 2 Monate gesperrt">✕</button><button class="ja" onclick="setOutcome('${l.id}','ja')" title="Ja → Simulation senden">✓</button></div></td></tr>`;}).join("");
+  app.innerHTML=`<button class="back" onclick="set({name:'home'})">&larr; Schwungrad</button>
+    <div class="eyebrow">Stern 1 · Sales · Region ${esc(REGION_NAME)}</div>
+    <h1>Kontaktliste <span style="font-size:14px;color:var(--muted);font-weight:600">(${LEADS_TG.length} Betriebe)</span></h1>
+    <p class="sub">Website + Sanitär + 1–12 MA. Inhaber, Größe und E-Mail direkt eintragbar: war beim Crawl nicht sicher zu finden, also prüf die Website und trag es hier ein (lokal gespeichert). Die Größe zeigt dir, wer rangeht (Ein-Mann oder Büro); die E-Mail trägst du beim „Ja" ein. „Cold Call" setzt den Namen direkt ins Gespräch. Nach dem Call ein Tipp: ∅ kein Anschluss · ↻ Rückruf · ✕ abgelehnt (2 Mt gesperrt) · ✓ Ja.</p>
+    <div class="fullbleed"><table class="leadtbl"><thead><tr><th>#</th><th>Firma</th><th>Inhaber</th><th>Größe</th><th>Leistungen</th><th>Website prüfen</th><th>Telefon</th><th>E-Mail</th><th>Status</th><th>Aktion</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="secthead" style="margin-top:24px"><span>Notizen fürs nächste Crawling / die nächste Liste</span><span class="tagx">lokal gespeichert · per Knopf an Claude geben</span></div>
+    <textarea class="notesbox" placeholder="Auffälligkeiten notieren … z.B. „Betrieb X ist Bau, nicht Sanitär“ · „Inhaber heisst Y“ · „Nummer veraltet“ · „zu gross, >12 MA“ · „keine echte Website mehr“" oninput="saveNotes(this.value)">${esc(getNotes())}</textarea>
+    <button class="treelive" style="margin-top:10px" onclick="copyNotes()">Notizen kopieren → an Claude geben</button>`;
+  document.querySelectorAll(".svcbox").forEach(autoSize);
+}
+function render(){const n=view.name;
+  if(n==="home")return home();
+  if(n==="step")return step(view.id);
+  if(n==="tree")return tree();
+  if(n==="live")return live();
+  if(n==="drill")return drill();}
+
+function starSVG(col){return `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L21.8 9.2l-5 4.7 1.3 6.9L12 17.5 5.9 20.8l1.3-6.9-5-4.7 6.9-.94z" fill="${col}" stroke="rgba(0,0,0,.25)" stroke-width=".5"/></svg>`;}
+
+function home(){
+  app.innerHTML=`
+    <div class="eyebrow">FlowSight — nur für mich</div>
+    <h1>Customer Journey</h1>
+    <p class="sub">Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück. Klick einen Stern für die Ebene darunter.</p>
+    <div class="wheelwrap" id="wheel">
+      <svg class="wheel-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <ellipse cx="50" cy="50" rx="40" ry="38" fill="none" stroke="rgba(200,162,74,.20)" stroke-width="0.4" stroke-dasharray="2 1.8"/>
+      </svg>
+    </div>
+    <div class="secthead"><span>Funnel — wo es hakt</span><span class="tagx">aus deinen Calls · lokal gespeichert (ein Tipp pro Call)</span></div>
+    <div class="dash">
+      <div class="panel">${funnelBars()}</div>
+      <div class="panel">${goalGauges()}<div class="note">Du pflegst hier nichts von Hand — der Funnel füllt sich automatisch aus den geloggten Calls. Tages- und Wochenziel siehst du oben.</div></div>
+    </div>
+    <div class="frozen">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (eingefroren).</div>`;
+  layoutWheel();
+}
+function layoutWheel(){
+  const w=document.getElementById("wheel");const N=STEPS.length;
+  const pos=idx=>{const a=(-Math.PI/2)+idx*(2*Math.PI/N);return [50+40*Math.cos(a),50+42*Math.sin(a)];};
+  STEPS.forEach((s,i)=>{
+    const [x,y]=pos(i);
+    const d=document.createElement("div");
+    d.className="node click";
+    d.style.left=x+"%"; d.style.top=y+"%";
+    const badge=s.detail?'<span class="badge live">aktiv</span>':(s.soon?'<span class="badge">kommt</span>':'');
+    d.innerHTML=`<div class="star">${starSVG(PCOL[s.pillar])}<span class="num">${s.n}</span></div><div class="nm">${s.name}${badge}</div>`;
+    d.onclick=()=>set({name:"step",id:s.id});
+    w.appendChild(d);
+  });
+}
+function funnelBars(){
+  const s=logStats();
+  const F=[{k:"Wählversuche",v:s.dials},{k:"Erreicht",v:s.erreicht},{k:"Ja zur Simulation",v:s.ja},{k:"Gesehen (Klick)",v:0},{k:"Warmes Gespräch",v:0},{k:"Onboarding",v:0},{k:"Kunde",v:0}];
+  const max=Math.max(...F.map(f=>f.v),1);
+  return F.map((f,i)=>{
+    const pct=Math.max(5,Math.round(f.v/max*100));
+    const conv=i>0&&F[i-1].v?Math.round(f.v/F[i-1].v*100)+"%":"";
+    return `<div class="frow"><div class="fname">${f.k}</div><div class="fbar-wrap"><div class="fbar" style="width:${pct}%">${f.v}</div></div><div class="fconv">${conv}</div></div>`;
+  }).join("");
+}
+function goalGauges(){
+  const s=logStats();
+  const G=[{name:"Gespräche heute",cur:s.gesprToday,target:10},{name:"Ja zur Simulation / Woche",cur:s.jaWeek,target:12}];
+  return G.map(g=>{const pct=Math.min(100,Math.round(g.cur/Math.max(1,g.target)*100));
+    return `<div class="goal"><div class="gtop"><span class="gname">${g.name}</span><span class="gval"><b>${g.cur}</b> / ${g.target}</span></div><div class="gbar"><div style="width:${pct}%"></div></div></div>`;}).join("");
+}
+
+function step(id){
+  if(id==="kontakt")return renderKontakt();
+  const s=STEPS.find(x=>x.id===id);
+  if(id==="coldcall"){
+    app.innerHTML=`<button class="back" onclick="set({name:'home'})">&larr; Schwungrad</button>
+      <div class="eyebrow">Stern 2 · Sales</div><h1>Cold Call</h1>
+      <p class="sub">Ziel: das Ja, die Simulation schicken zu dürfen. Kein Preis, keine Discovery.</p>
+      <div class="bigbtns">
+        <div class="bigbtn" onclick="set({name:'tree'})"><div class="bt">Übersicht</div><div class="bd">Der Gesprächsbaum auf einen Blick</div></div>
+        <div class="bigbtn" onclick="enterLive('start')"><div class="bt">Live</div><div class="bd">Beim Telefonieren durchklicken</div></div>
+        <div class="bigbtn" onclick="set({name:'drill',i:0,show:false})"><div class="bt">Drill</div><div class="bd">Einwand → Antwort abrufen</div></div>
+      </div>`;
+    return;
+  }
+  app.innerHTML=`<button class="back" onclick="set({name:'home'})">&larr; Schwungrad</button>
+    <div class="eyebrow">Stern ${s.n} · ${s.pillar==="sales"?"Sales":s.pillar==="pipeline"?"Pipeline":"Onboarding"}</div>
+    <h1>${s.name} ${s.soon?'<span class="badge">kommt</span>':''}</h1>
+    <div class="infopanel">${esc(s.info)}</div>`;
+}
+
+function tree(){
+  const op=COLD.opener;
+  const branches=op.choices.map(c=>{
+    const t=COLD[c.go];
+    const cls=t.choices?(t.choices.some(x=>dcls(x.go)==="ja")?"ja":"exit"):dcls(c.go);
+    const subs=(t.choices||[]).map(x=>`<span class="subtag ${dcls(x.go)}">${esc(x.label)} ${dcls(x.go)==="ja"?"&rarr; Ja":dcls(x.go)==="exit"?"&rarr; Stopp":""}</span>`).join("");
+    return `<div class="branch ${cls}">
+      <div class="resp">Er: ${esc(c.label)}</div>
+      <div class="treesay">${esc(t.say)}</div>
+      <div class="subs">${subs||'<span class="subtag ja">&rarr; Link anbieten</span>'}</div>
+      <button class="treelive" onclick="enterLive('${c.go}')">Live ab hier &rarr;</button></div>`;
+  }).join("");
+  app.innerHTML=`<button class="back" onclick="set({name:'step',id:'coldcall'})">&larr; Cold Call</button>
+    <div class="eyebrow">Cold Call · Übersicht (voller Wortlaut)</div><h1>Der Gesprächsbaum</h1>
+    <p class="sub">Alles zum Lernen ausgeschrieben: Opener → was er sagt → dein Wortlaut → wohin es führt. „Live ab hier" springt zum Durchklicken.</p>
+    <div class="tree-root"><div class="tnode"><div class="tn-k">Start · Opener — du sagst</div><div class="tn-t" style="white-space:pre-wrap;text-align:left">${esc(COLD.opener.say)}</div></div></div>
+    <div class="branchgrid">${branches}</div>
+    <div class="converge">
+      <div class="chain ja"><div class="ch-h">Ja-Pfad &rarr; Ziel</div><div class="steps">Kanal abfragen (Mail/Handy) &rarr; <b>bestätigen</b> &rarr; Abschluss &rarr; <b>Simulation senden</b></div></div>
+      <div class="chain exit"><div class="ch-h">Sauberer Ausstieg</div><div class="steps">„nicht beschäftigen“ · klares Nein &rarr; würdig raus, Rep gesammelt</div></div>
+    </div>`;
+}
+
+function live(){
+  const node=COLD[view.node]||COLD.start;
+  const backbar=`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+    <button class="back" onclick="liveBack()">&larr; eine Ebene zurück</button>
+    <button class="back" onclick="set({name:'step',id:'coldcall'})" style="margin-left:auto;color:var(--muted2)">Cold Call &times;</button></div>`;
+  if(node.result){
+    app.innerHTML=`${backbar}
+      <div class="narrow"><div class="resultcard ${node.result==="win"?"win":""}"><div class="big">${node.result==="win"?"🏆 ":""}${esc(node.title)}</div><div class="sm">${esc(node.note)}</div>
+      <button class="restart" onclick="enterLive('start')">Nochmal von vorn</button></div></div>`;return;}
+  app.innerHTML=`${backbar}
+    <div class="narrow">
+      ${BIZ?`<div class="bizhdr">im Gespräch: ${esc(BIZ.firma)}</div>`:""}
+      <div class="say">${node.cue?`<span class="cue">${esc(inject(node.cue))}</span>`:""}${esc(inject(node.say))||'<span style="color:var(--muted)">Tippe, wer abhebt:</span>'}</div>
+      <div class="choices">${node.choices.map(c=>`<button class="choice" onclick="liveGo('${c.go}')">${esc(c.label)}<span class="ar">&rarr;</span></button>`).join("")}</div>
+    </div>`;
+}
+function drill(){
+  const d=DRILL[view.i];
+  app.innerHTML=`<button class="back" onclick="set({name:'step',id:'coldcall'})">&larr; Cold Call</button>
+    <div class="narrow">
+      <div class="drillbar"><span>Drill · aktiv abrufen</span><span>${view.i+1} / ${DRILL.length}</span></div>
+      <div class="say"><span class="cue">Er sagt</span>${esc(d.cue)}</div>
+      ${view.show?`<div class="answer">${esc(d.answer)}</div>`:`<button class="reveal" onclick="set({name:'drill',i:${view.i},show:true})">Antwort zeigen</button>`}
+      <div class="drillnav"><button class="dn" onclick="set({name:'drill',i:${(view.i-1+DRILL.length)%DRILL.length},show:false})">&larr; Zurück</button><button class="dn prim" onclick="set({name:'drill',i:${(view.i+1)%DRILL.length},show:false})">Nächster &rarr;</button></div>
+    </div>`;
+}
+render();
+</script>
+</body>
+</html>
