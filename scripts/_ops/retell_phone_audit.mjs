@@ -103,7 +103,7 @@ try {
     console.log(`  To:    ${agentName} [${fixAgentId}]`);
 
     await retellPatch(`/update-phone-number/${phoneId}`, {
-      inbound_agent_id: fixAgentId,
+      inbound_agents: [{ agent_id: fixAgentId, weight: 1 }],
     });
 
     console.log(`\n  ✓ DONE — ${targetPhone.phone_number} now routes to ${agentName}\n`);

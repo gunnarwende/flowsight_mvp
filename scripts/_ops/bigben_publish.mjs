@@ -331,8 +331,9 @@ async function main() {
     } else {
       await patch(`/update-conversation-flow/${flowId}`, { global_prompt: after });
       console.log(`  ✓ flow patched`);
-      await post(`/publish-agent/${agentId}`, {});
-      console.log(`  ✓ agent published`);
+      const _av = await get(`/get-agent/${agentId}`);
+      await post(`/publish-agent-version/${agentId}`, { version: _av.version ?? _av.agent_version });
+      console.log(`  ✓ agent published (v${_av.version ?? _av.agent_version})`);
     }
     console.log("");
   }
@@ -343,11 +344,13 @@ async function main() {
       const _pn = await get("/v2/list-phone-numbers");  // v2: { items, ... }
       const phones = _pn.items ?? _pn;
       for (const p of phones) {
-        if ((p.inbound_agent_id === ids.en_agent_id || p.inbound_agent_id === ids.de_agent_id) && p.inbound_agent_version != null) {
+        const boundId = p.inbound_agent_id ?? p.inbound_agents?.[0]?.agent_id;
+        const pinnedVer = p.inbound_agent_version ?? p.inbound_agents?.[0]?.agent_version;
+        if ((boundId === ids.en_agent_id || boundId === ids.de_agent_id) && pinnedVer != null) {
           await patch(`/update-phone-number/${encodeURIComponent(p.phone_number)}`, {
-            inbound_agent_id: p.inbound_agent_id,
+            inbound_agents: [{ agent_id: boundId, weight: 1 }],
           });
-          console.log(`  ✓ ${p.phone_number} unpinned (was v${p.inbound_agent_version})`);
+          console.log(`  ✓ ${p.phone_number} unpinned (was v${pinnedVer})`);
         }
       }
     } catch (e) {

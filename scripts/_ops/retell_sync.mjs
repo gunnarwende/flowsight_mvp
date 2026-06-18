@@ -327,11 +327,15 @@ try {
   // ── Step 4: Publish ─────────────────────────────────────────────────
   console.log("━━━ Step 4: Publish ━━━\n");
 
-  await retellPost(`/publish-agent/${deAgentId}`, {});
-  console.log(`  ✓ DE agent published`);
-
-  await retellPost(`/publish-agent/${intlAgentId}`, {});
-  console.log(`  ✓ INTL agent published`);
+  // Neue API (Deprecation 07-2026): /publish-agent-version braucht die konkrete Version.
+  const publishLatest = async (agentId, label) => {
+    const a = await retellGet(`/get-agent/${agentId}`);
+    const version = a.version ?? a.agent_version;
+    await retellPost(`/publish-agent-version/${agentId}`, { version });
+    console.log(`  ✓ ${label} published (v${version})`);
+  };
+  await publishLatest(deAgentId, "DE agent");
+  await publishLatest(intlAgentId, "INTL agent");
   console.log("");
 
   // ── Step 4b: Unpin phone number versions ──────────────────────────
@@ -344,11 +348,15 @@ try {
       const _pn = await retellGet("/v2/list-phone-numbers");  // v2: { items, ... }
       const phones = _pn.items ?? _pn;
       for (const p of phones) {
-        if (p.inbound_agent_id === agentId && p.inbound_agent_version != null) {
+        // Liest altes (inbound_agent_id/version) UND neues (inbound_agents[]) Listen-Format.
+        const boundId = p.inbound_agent_id ?? p.inbound_agents?.[0]?.agent_id;
+        const pinnedVer = p.inbound_agent_version ?? p.inbound_agents?.[0]?.agent_version;
+        if (boundId === agentId && pinnedVer != null) {
+          // Neue API: inbound_agents[] statt deprecated inbound_agent_id. Ohne agent_version = neueste (unpinned).
           await retellPatch(`/update-phone-number/${encodeURIComponent(p.phone_number)}`, {
-            inbound_agent_id: agentId,
+            inbound_agents: [{ agent_id: agentId, weight: 1 }],
           });
-          console.log(`  ✓ ${p.phone_number} unpinned (was v${p.inbound_agent_version})`);
+          console.log(`  ✓ ${p.phone_number} unpinned (was v${pinnedVer})`);
         }
       }
     } catch (e) {
