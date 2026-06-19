@@ -1,0 +1,435 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import {
+  COLD, DRILL, injectColdText, gewerkPhrase, type ColdNode,
+} from "./journey/coldCallScript";
+
+// ── Typen ─────────────────────────────────────────────────────────────────
+interface Lead {
+  id: string;
+  place_id: string;
+  firma: string;
+  ort: string | null;
+  ring: string | null;
+  ma_proxy: string | null;
+  tariff: string | null;
+  inhaber_am_telefon: string | null;
+  entscheider: string | null;
+  rolle: string | null;
+  mail: string | null;
+  telefon: string | null;
+  website: string | null;
+  rating: number | null;
+  reviews: number | null;
+  icp_score: number | null;
+  tier: string | null;
+  signale: string | null;
+  status: string | null;
+}
+interface FunnelItem { star: number; key: string; label: string; value: number; }
+interface JourneyData {
+  leads: Lead[];
+  funnel: FunnelItem[];
+  stats: { gespraecheHeute: number; jaWoche: number; waehlversucheHeute: number };
+  snapshot_at: string;
+}
+type Biz = { firma: string; name: string | null; gewerk: string };
+type View =
+  | { name: "home" }
+  | { name: "kontakt" }
+  | { name: "coldcall" }
+  | { name: "live"; node: string }
+  | { name: "drill"; i: number; show: boolean }
+  | { name: "step"; star: number };
+
+// Stern → Säule → Farbe
+const PILLAR: Record<number, { name: string; dot: string; bar: string }> = {
+  1: { name: "Sales", dot: "bg-gold-500", bar: "bg-gold-500" },
+  2: { name: "Sales", dot: "bg-gold-500", bar: "bg-gold-500" },
+  3: { name: "Pipeline", dot: "bg-sky-500", bar: "bg-sky-500" },
+  4: { name: "Pipeline", dot: "bg-sky-500", bar: "bg-sky-500" },
+  5: { name: "Sales", dot: "bg-gold-500", bar: "bg-gold-500" },
+  6: { name: "Onboarding", dot: "bg-emerald-500", bar: "bg-emerald-500" },
+  7: { name: "Onboarding", dot: "bg-emerald-500", bar: "bg-emerald-500" },
+  8: { name: "Onboarding", dot: "bg-emerald-500", bar: "bg-emerald-500" },
+};
+const STARS = [
+  { star: 1, name: "Kontakt", view: "kontakt" as const },
+  { star: 2, name: "Cold Call", view: "coldcall" as const },
+  { star: 3, name: "Simulation", view: "step" as const },
+  { star: 4, name: "Gesehen", view: "step" as const },
+  { star: 5, name: "Verkaufsgespräch", view: "step" as const },
+  { star: 6, name: "Aufbau", view: "step" as const },
+  { star: 7, name: "Go-live", view: "step" as const },
+  { star: 8, name: "Begleitung", view: "step" as const },
+];
+const STAR_INFO: Record<number, string> = {
+  3: "Nach dem Ja baut die Pipeline die 4 Videos + Prüfung, Mail rund 35 Minuten nach dem Anruf. Automatische Fabrik — der Kunde sieht sie nie. (PIPELINE_BIBLE)",
+  4: "First-View-Signal — der Aha. Die 4 Videos zeigen fast alles ausser dem Preis. Klick auf die Beweis-Seite = Übergang zum warmen Follow-up.",
+  5: "Das eigentliche warme Gespräch nach dem Klick: Reaktion, Discovery, Konsequenz, Brücke, Preis, Abschluss. Wortlaut Version 1 in stern5_warmes_verkaufsgespraech_uebergabe_cc.md — als Live/Drill kommt als nächster Bau-Schritt.",
+  6: "Der Kunde baut sein Leitsystem geführt selbst im Cockpit (/aufbau/[token]). confirm-not-create. (ONBOARDING_BIBLE)",
+  7: "Founder-Review (Freigabe), dann Zahlung am Go-live — der Vertragsabschluss. Weiterleitung, erste echte Anrufe.",
+  8: "Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz und speist Stern 1.",
+};
+
+export function JourneyView() {
+  const [data, setData] = useState<JourneyData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<View>({ name: "home" });
+  const [biz, setBiz] = useState<Biz | null>(null);
+  const [liveHist, setLiveHist] = useState<string[]>([]);
+  const [ringFilter, setRingFilter] = useState<"akut" | "alle">("akut");
+  const [search, setSearch] = useState("");
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/ceo/journey");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setData(await res.json());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Fehler");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const go = (v: View) => { setView(v); window.scrollTo(0, 0); };
+
+  // ── API-Helfer ────────────────────────────────────────────────────────
+  async function patchLead(id: string, fields: Partial<Lead>) {
+    setData((d) => d && { ...d, leads: d.leads.map((l) => (l.id === id ? { ...l, ...fields } : l)) });
+    await fetch("/api/ceo/journey/lead", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, fields }),
+    });
+  }
+  async function logEvent(lead: Lead, event_type: string, lead_status?: string) {
+    if (lead_status) {
+      setData((d) => d && { ...d, leads: d.leads.map((l) => (l.id === lead.id ? { ...l, status: lead_status } : l)) });
+    }
+    await fetch("/api/ceo/journey/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lead_id: lead.id, event_type, lead_status }),
+    });
+    load();
+  }
+
+  function startCall(lead: Lead) {
+    const nm = (lead.entscheider || "").split(",")[0].replace(/^\s*(Herr|Frau)\s+/i, "").trim();
+    const ok = nm && nm.length >= 3 && !/\bAG\b|\bGmbH\b|Unternehmen|\?/.test(nm);
+    setBiz({ firma: lead.firma, name: ok ? nm : null, gewerk: gewerkPhrase(lead.signale || "", lead.firma) });
+    logEvent(lead, "call_dialed");
+    setLiveHist([]);
+    go({ name: "live", node: "start" });
+  }
+
+  if (loading) return <Skeleton />;
+  if (error) return <ErrorBox msg={error} onRetry={load} />;
+  if (!data) return null;
+
+  // ── Render-Weiche ───────────────────────────────────────────────────────
+  if (view.name === "kontakt") return <KontaktView />;
+  if (view.name === "coldcall") return <ColdCallHub />;
+  if (view.name === "live") return <LiveView node={view.node} />;
+  if (view.name === "drill") return <DrillView i={view.i} show={view.show} />;
+  if (view.name === "step") return <StepInfo star={view.star} />;
+  return <Home />;
+
+  // ── Home: Funnel + Stern-Navigation ────────────────────────────────────
+  function Home() {
+    const max = Math.max(...data!.funnel.map((f) => f.value), 1);
+    return (
+      <div>
+        <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
+          sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
+
+        {/* Stern-Navigation */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+          {STARS.map((s) => {
+            const val = data!.funnel.find((f) => f.star === s.star)?.value ?? 0;
+            const p = PILLAR[s.star];
+            return (
+              <button key={s.star}
+                onClick={() => go(s.view === "step" ? { name: "step", star: s.star } : s.view === "kontakt" ? { name: "kontakt" } : { name: "coldcall" })}
+                className="text-left bg-white rounded-xl border border-navy-200 p-3 hover:border-gold-400 hover:shadow-sm transition">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${p.dot}`} />
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400">Stern {s.star}</span>
+                </div>
+                <div className="text-sm font-bold text-navy-900 mt-1">{s.name}</div>
+                <div className="text-lg font-extrabold text-navy-900">{val}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Funnel + Ziele */}
+        <div className="grid lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 bg-white rounded-xl border border-navy-200 p-5">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-navy-400 mb-4">Funnel — wo es hakt</h3>
+            <div className="space-y-2.5">
+              {data!.funnel.map((f) => {
+                const pct = Math.max(4, Math.round((f.value / max) * 100));
+                return (
+                  <div key={f.key} className="flex items-center gap-3">
+                    <div className="w-36 text-xs text-navy-500 text-right shrink-0">{f.label}</div>
+                    <div className="flex-1 h-7 rounded-md bg-navy-50 overflow-hidden">
+                      <div className={`h-full ${PILLAR[f.star].bar} flex items-center pl-2.5 text-[12px] font-bold text-white rounded-md transition-all`} style={{ width: `${pct}%` }}>
+                        {f.value}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="bg-white rounded-xl border border-navy-200 p-5">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-navy-400 mb-4">Heute / Woche</h3>
+            <Gauge name="Gespräche heute" cur={data!.stats.gespraecheHeute} target={10} />
+            <Gauge name="Ja zur Simulation / Woche" cur={data!.stats.jaWoche} target={12} />
+            <p className="text-[11px] text-navy-400 mt-3">Der Funnel füllt sich automatisch aus den geloggten Calls — du pflegst hier nichts von Hand.</p>
+          </div>
+        </div>
+        <p className="text-[10px] text-navy-300 mt-4">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (eingefroren). Stand: {new Date(data!.snapshot_at).toLocaleString("de-CH")}</p>
+      </div>
+    );
+  }
+
+  // ── Stern 1: Kontaktliste (DB-gestützt) ─────────────────────────────────
+  function KontaktView() {
+    const q = search.trim().toLowerCase();
+    let rows = data!.leads;
+    if (ringFilter === "akut") rows = rows.filter((l) => l.ring === "0" || l.ring === "1");
+    if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
+
+    return (
+      <div>
+        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
+        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`}
+          sub="Inhaber, Größe und E-Mail direkt eintragbar (DB-gespeichert). Cold Call setzt den Namen ins Gespräch. Nach dem Call: ∅ kein Anschluss · ↻ Rückruf · ✕ abgelehnt · ✓ Ja." />
+
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <div className="flex rounded-lg border border-navy-200 overflow-hidden text-xs">
+            <button onClick={() => setRingFilter("akut")} className={`px-3 py-1.5 font-semibold ${ringFilter === "akut" ? "bg-navy-900 text-white" : "bg-white text-navy-500"}`}>Ring 0+1</button>
+            <button onClick={() => setRingFilter("alle")} className={`px-3 py-1.5 font-semibold ${ringFilter === "alle" ? "bg-navy-900 text-white" : "bg-white text-navy-500"}`}>Alle</button>
+          </div>
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Suchen…"
+            className="px-3 py-1.5 rounded-lg border border-navy-200 text-sm flex-1 min-w-[140px] max-w-xs" />
+        </div>
+
+        <div className="overflow-x-auto bg-white rounded-xl border border-navy-200">
+          <table className="w-full text-[13px] border-collapse">
+            <thead>
+              <tr className="text-left text-navy-400 text-[10px] uppercase tracking-wide">
+                <th className="px-3 py-2 border-b border-navy-100">Firma</th>
+                <th className="px-3 py-2 border-b border-navy-100">Inhaber</th>
+                <th className="px-3 py-2 border-b border-navy-100">Größe</th>
+                <th className="px-3 py-2 border-b border-navy-100">Telefon</th>
+                <th className="px-3 py-2 border-b border-navy-100">E-Mail</th>
+                <th className="px-3 py-2 border-b border-navy-100">Status</th>
+                <th className="px-3 py-2 border-b border-navy-100">Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((l) => (
+                <tr key={l.id} className="align-top hover:bg-navy-50/40">
+                  <td className="px-3 py-2.5 border-b border-navy-50">
+                    <div className="font-semibold text-navy-900">{l.firma}</div>
+                    <div className="text-[11px] text-navy-400">{l.ort} · {l.tariff || "TBD"} · {l.rating ?? "—"}★/{l.reviews ?? "—"}</div>
+                    {l.website && <a href={l.website.startsWith("http") ? l.website : `https://${l.website}`} target="_blank" rel="noreferrer" className="text-[11px] text-gold-600 hover:underline">Website ↗</a>}
+                  </td>
+                  <td className="px-3 py-2.5 border-b border-navy-50">
+                    <Edit value={l.entscheider} placeholder="Inhaber…" onSave={(v) => patchLead(l.id, { entscheider: v })} />
+                  </td>
+                  <td className="px-3 py-2.5 border-b border-navy-50 w-16">
+                    <Edit value={l.ma_proxy} placeholder="?" onSave={(v) => patchLead(l.id, { ma_proxy: v })} small />
+                  </td>
+                  <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap text-navy-600">{l.telefon || "—"}</td>
+                  <td className="px-3 py-2.5 border-b border-navy-50">
+                    <Edit value={l.mail} placeholder="E-Mail…" onSave={(v) => patchLead(l.id, { mail: v })} />
+                  </td>
+                  <td className="px-3 py-2.5 border-b border-navy-50"><StatusPill status={l.status} /></td>
+                  <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap">
+                    <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-2.5 py-1.5 text-[12px] font-bold hover:bg-gold-400">▶ Cold Call</button>
+                    <div className="flex gap-1 mt-1.5">
+                      <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
+                      <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
+                      <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
+                      <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Stern 2: Cold Call Hub ──────────────────────────────────────────────
+  function ColdCallHub() {
+    return (
+      <div>
+        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
+        <PageHead eyebrow="Stern 2 · Sales" title="Cold Call"
+          sub="Ziel: das Ja, die Simulation schicken zu dürfen. Kein Preis, keine Discovery." />
+        <div className="grid sm:grid-cols-3 gap-3">
+          <HubCard title="Übersicht" desc="Der Gesprächsbaum auf einen Blick" onClick={() => go({ name: "live", node: "opener" })} />
+          <HubCard title="Live" desc="Beim Telefonieren durchklicken" onClick={() => { setLiveHist([]); go({ name: "live", node: "start" }); }} />
+          <HubCard title="Drill" desc="Einwand → Antwort abrufen" onClick={() => go({ name: "drill", i: 0, show: false })} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Live (Cold Call durchklicken) ───────────────────────────────────────
+  function LiveView({ node: nodeId }: { node: string }) {
+    const node: ColdNode = COLD[nodeId] || COLD.start;
+    const back = () => {
+      if (liveHist.length) { const h = [...liveHist]; const prev = h.pop()!; setLiveHist(h); go({ name: "live", node: prev }); }
+      else go({ name: "coldcall" });
+    };
+    const goNode = (next: string) => { setLiveHist((h) => [...h, nodeId]); go({ name: "live", node: next }); };
+
+    if (node.result) {
+      const win = node.result === "win";
+      return (
+        <div>
+          <BackBtn onClick={back} label="zurück" />
+          <div className={`max-w-xl mx-auto text-center rounded-2xl border p-8 ${win ? "border-gold-300 bg-gold-50" : "border-navy-200 bg-white"}`}>
+            <div className={`text-xl font-extrabold ${win ? "text-gold-700" : "text-navy-900"}`}>{node.title}</div>
+            <div className="text-sm text-navy-500 mt-2">{node.note}</div>
+            <button onClick={() => { setLiveHist([]); go({ name: "live", node: "start" }); }} className="mt-5 bg-gold-500 text-navy-950 font-bold rounded-lg px-5 py-2.5 hover:bg-gold-400">Nochmal von vorn</button>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-3">
+          <BackBtn onClick={back} label="eine Ebene zurück" />
+          <button onClick={() => go({ name: "coldcall" })} className="text-xs text-navy-400 hover:text-navy-600">Cold Call ×</button>
+        </div>
+        {biz && <div className="text-xs text-gold-600 font-semibold mb-2">im Gespräch: {biz.firma}</div>}
+        <div className="rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-5 whitespace-pre-wrap text-[17px] leading-relaxed text-navy-900">
+          {node.cue && <span className="block text-gold-600 font-bold text-[11px] uppercase tracking-wide mb-2">{injectColdText(node.cue, biz)}</span>}
+          {injectColdText(node.say || "", biz) || <span className="text-navy-400">Tippe, wer abhebt:</span>}
+        </div>
+        <div className="mt-3 flex flex-col gap-2">
+          {(node.choices || []).map((c) => (
+            <button key={c.go} onClick={() => goNode(c.go)}
+              className="text-left px-4 py-3 rounded-lg border border-navy-200 bg-white hover:border-gold-400 hover:bg-gold-50 text-[15px] font-medium text-navy-800 flex items-center">
+              {c.label}<span className="ml-auto text-gold-500">→</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Drill (Einwand → Antwort) ───────────────────────────────────────────
+  function DrillView({ i, show }: { i: number; show: boolean }) {
+    const d = DRILL[i];
+    return (
+      <div className="max-w-2xl mx-auto">
+        <BackBtn onClick={() => go({ name: "coldcall" })} label="Cold Call" />
+        <div className="flex justify-between text-xs text-navy-400 mb-2"><span>Drill · aktiv abrufen</span><span>{i + 1} / {DRILL.length}</span></div>
+        <div className="rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-5 text-[17px] text-navy-900">
+          <span className="block text-gold-600 font-bold text-[11px] uppercase tracking-wide mb-2">Er sagt</span>{d.cue}
+        </div>
+        {show
+          ? <div className="mt-3 rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-4 whitespace-pre-wrap text-[16px] leading-relaxed text-navy-900">{d.answer}</div>
+          : <button onClick={() => go({ name: "drill", i, show: true })} className="mt-3 w-full bg-gold-500 text-navy-950 font-bold rounded-lg py-3 hover:bg-gold-400">Antwort zeigen</button>}
+        <div className="flex gap-2 mt-3">
+          <button onClick={() => go({ name: "drill", i: (i - 1 + DRILL.length) % DRILL.length, show: false })} className="flex-1 py-3 rounded-lg border border-navy-200 bg-white font-semibold text-navy-700">← Zurück</button>
+          <button onClick={() => go({ name: "drill", i: (i + 1) % DRILL.length, show: false })} className="flex-1 py-3 rounded-lg bg-gold-500 text-navy-950 font-bold">Nächster →</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Andere Sterne: Info ─────────────────────────────────────────────────
+  function StepInfo({ star }: { star: number }) {
+    const s = STARS.find((x) => x.star === star)!;
+    return (
+      <div>
+        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
+        <PageHead eyebrow={`Stern ${star} · ${PILLAR[star].name}`} title={s.name} sub="" />
+        <div className="max-w-2xl rounded-xl border border-navy-200 bg-white p-5 text-[15px] text-navy-700 leading-relaxed">
+          {STAR_INFO[star] || "—"}
+        </div>
+      </div>
+    );
+  }
+}
+
+// ── Kleine UI-Bausteine ───────────────────────────────────────────────────
+function PageHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub: string }) {
+  return (
+    <div className="mb-5">
+      <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-600">{eyebrow}</div>
+      <h1 className="text-2xl font-extrabold text-navy-900 mt-1">{title}</h1>
+      {sub && <p className="text-sm text-navy-500 mt-1 max-w-3xl">{sub}</p>}
+    </div>
+  );
+}
+function BackBtn({ onClick, label }: { onClick: () => void; label: string }) {
+  return <button onClick={onClick} className="inline-flex items-center gap-1.5 text-sm text-navy-400 hover:text-navy-700 mb-3">← {label}</button>;
+}
+function HubCard({ title, desc, onClick }: { title: string; desc: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="text-center bg-white rounded-2xl border border-navy-200 p-6 hover:-translate-y-0.5 hover:border-gold-400 transition">
+      <div className="text-lg font-extrabold text-navy-900">{title}</div>
+      <div className="text-xs text-navy-500 mt-1">{desc}</div>
+    </button>
+  );
+}
+function Gauge({ name, cur, target }: { name: string; cur: number; target: number }) {
+  const pct = Math.min(100, Math.round((cur / Math.max(1, target)) * 100));
+  return (
+    <div className="mb-4">
+      <div className="flex justify-between items-baseline mb-1.5"><span className="text-[13px] text-navy-500">{name}</span><span className="text-lg font-extrabold text-navy-900"><span className="text-gold-600">{cur}</span> / {target}</span></div>
+      <div className="h-2.5 rounded-full bg-navy-100 overflow-hidden"><div className="h-full rounded-full bg-gold-500 transition-all" style={{ width: `${pct}%` }} /></div>
+    </div>
+  );
+}
+function StatusPill({ status }: { status: string | null }) {
+  const map: Record<string, { txt: string; cls: string }> = {
+    ja: { txt: "JA · Simulation", cls: "bg-gold-500 text-navy-950" },
+    abgelehnt: { txt: "abgelehnt", cls: "bg-red-100 text-red-700" },
+    rueckruf: { txt: "Rückruf", cls: "bg-emerald-100 text-emerald-700" },
+    "kein-anschluss": { txt: "kein Anschluss", cls: "bg-amber-100 text-amber-700" },
+  };
+  const s = (status && map[status]) || { txt: status || "neu", cls: "bg-navy-100 text-navy-500" };
+  return <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${s.cls}`}>{s.txt}</span>;
+}
+function OutBtn({ children, title, onClick, ja }: { children: React.ReactNode; title: string; onClick: () => void; ja?: boolean }) {
+  return <button title={title} onClick={onClick} className={`w-7 h-7 rounded-md border text-[13px] ${ja ? "border-gold-400 text-gold-600 hover:bg-gold-50" : "border-navy-200 text-navy-500 hover:border-gold-400"}`}>{children}</button>;
+}
+function Edit({ value, placeholder, onSave, small }: { value: string | null; placeholder: string; onSave: (v: string) => void; small?: boolean }) {
+  // Uncontrolled: hält die Tipp-Eingabe selbst, speichert per onBlur. defaultValue
+  // spiegelt den optimistisch aktualisierten DB-Wert (kein State/Effect nötig).
+  return (
+    <input defaultValue={value ?? ""} placeholder={placeholder} key={value ?? ""}
+      onBlur={(e) => { if (e.target.value !== (value ?? "")) onSave(e.target.value); }}
+      className={`bg-transparent border border-transparent hover:border-navy-200 focus:border-gold-400 focus:bg-white rounded px-1.5 py-1 text-[13px] outline-none ${small ? "w-14 text-center" : "w-full min-w-[120px]"}`} />
+  );
+}
+function Skeleton() {
+  return <div className="animate-pulse space-y-3"><div className="h-8 w-48 bg-navy-100 rounded" /><div className="h-32 bg-navy-100 rounded-xl" /><div className="h-64 bg-navy-100 rounded-xl" /></div>;
+}
+function ErrorBox({ msg, onRetry }: { msg: string; onRetry: () => void }) {
+  return (
+    <div className="rounded-xl border border-red-200 bg-red-50 p-5">
+      <p className="text-sm text-red-700 font-medium">Konnte Customer Journey nicht laden: {msg}</p>
+      <button onClick={onRetry} className="mt-3 text-sm font-semibold text-navy-700 underline">Erneut versuchen</button>
+    </div>
+  );
+}
