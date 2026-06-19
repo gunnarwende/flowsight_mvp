@@ -1,0 +1,164 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-19T08:15:11.497Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "wattinger-schwendener",
+    "name": "Wattinger Schwendener Sanitär Heizung GmbH",
+    "case_id_prefix": "WC",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "WattingerSc"
+  },
+  "voice_agent": {
+    "company_name": "Wattinger Schwendener Sanitär Heizung GmbH",
+    "domain": "Sanitär und Heizung",
+    "owner_names": "Thomas Wattinger, Simon Schwendener",
+    "address": "Dozwilerstrasse 2, 8592 Uttwil",
+    "phone": "077 419 04 29",
+    "email": "th.wattinger@bluewin.ch",
+    "website": "http://wattinger-schwendener.ch/",
+    "founded": "1919",
+    "team_section": "Geschäftsleitung: Thomas Wattinger Sanitärmonteur, Simon Schwendener\nUnser Team besteht aus 6 Mitarbeitenden.",
+    "memberships": "",
+    "google_rating": "4.9 Sterne bei 13 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: Sanitärmonteur, Ing. FH Heizung-Sanitär, Sanitär- und Heizungsmonteur, Chefmonteur Heizung, Die Firma wurde 1919 von Emil Wattinger als Schmiede in Uttwil gegründet, vis-à-vis dem Restaurant Frohsinn. 1926 erfolg, Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge, Per 1. Januar 2021 überführt Thomas Wattinger die Einzelfirma und deren Geschäftstätigkeiten in die Wattinger Schwendene\nHeizung: Sanitärmonteur, Ing. FH Heizung-Sanitär, Sanitär- und Heizungsmonteur, Chefmonteur Heizung, Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge, Per 1. Januar 2021 überführt Thomas Wattinger die Einzelfirma und deren Geschäftstätigkeiten in die Wattinger Schwendene, Wattinger Schwendener Sanitär Heizung GmbH\nUmbau/Sanierung: Im Jahr 1973 übernimmt Alfred Wattinger sen. das Geschäft. Man konzentrierte sich auf Installationen in Um- und Neubaute\nBeratung/Planung: Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge\nKundendienst: Die Firma wurde 1919 von Emil Wattinger als Schmiede in Uttwil gegründet, vis-à-vis dem Restaurant Frohsinn. 1926 erfolg",
+    "service_area": "8592 Uttwil",
+    "service_area_spoken": "Wir sind in Uttwil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Dozwilerstrasse 2, 8592 Uttwil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.9,
+    "google_review_count": 13,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8592"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Uttwil",
+      "plz": "8592",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Uttwil",
+      "plz": "8592",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Wattinger Schwendener Sanitär Heizung GmbH",
+    "firma_silben": 11,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "WC",
+    "modus": 2,
+    "google_stars": 4.9,
+    "video_hook": "Seit 1919 für Sie da.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "th.wattinger@bluewin.ch"
+  },
+  "_seed_time": "2026-06-19T06:04:00.000Z",
+  "_take2_detail_switch_sec": 85.659,
+  "_wizard_time": "2026-06-19T06:56:00.000Z",
+  "_wizard_case_id": "6ce5ae4b-ee16-46be-a5cc-6cdb6b3f8166",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "WC-0050",
+  "_demo_now": "2026-06-19T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-19T06:08:00.000Z",
+  "_appointment_start": "2026-06-20T06:00:00.000Z",
+  "_appointment_end": "2026-06-20T08:00:00.000Z",
+  "_reminder_time": "2026-06-19T07:02:00.000Z",
+  "_completion_time": "2026-06-19T07:02:00.000Z",
+  "_review_sent_time": "2026-06-19T07:04:00.000Z",
+  "_review_rated_time": "2026-06-19T07:06:00.000Z",
+  "_review_token": "161ed516be324a9d",
+  "_review_token_long": "161ed516be324a9dc4c01499b811a6d6b8f54c3d36dbe50ce8c397b9b90b6d32",
+  "_case_created_at": "2026-06-19T06:56:00+00:00"
+}

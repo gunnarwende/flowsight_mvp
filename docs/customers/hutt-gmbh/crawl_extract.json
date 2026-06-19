@@ -1,0 +1,154 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:18:16.010Z",
+    "source_url": "https://hutt.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://hutt.ch/",
+        "chars": 796
+      },
+      {
+        "key": "kontakt",
+        "url": "https://hutt.ch/kontakt",
+        "chars": 400
+      },
+      {
+        "key": "impressum",
+        "url": "https://hutt.ch/impressum",
+        "chars": 2549
+      }
+    ]
+  },
+  "firma": {
+    "value": "Hutt GmbH",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Handelsregistereintrag Eingetragene Firma",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Weinfelderstrasse 74, 8580 Amriswil",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 71 774 09 09",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@hutt.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 4,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitär, Spengler &",
+        "Sanitär",
+        "Von der kompletten Sanitärinstallation über Reparaturen bis zum regelmässigen Unterhalt. Schnell vor Ort bei Notfällen u",
+        "Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte"
+      ],
+      "Umbau/Sanierung": [
+        "Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte"
+      ],
+      "Beratung/Planung": [
+        "Offerte anfragen",
+        "Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte"
+      ],
+      "Kundendienst": [
+        "Rundumservice",
+        "Von der kompletten Sanitärinstallation über Reparaturen bis zum regelmässigen Unterhalt. Schnell vor Ort bei Notfällen u"
+      ],
+      "Spenglerei": [
+        "Dachrinnen, Dachhängel und Einkleidungen von Dachgauben. Alle Blecharbeiten fachgerecht und zuverlässig ausgeführt."
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "zuverlässig ausgeführt",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": null,
+    "source": "",
+    "verified": false
+  },
+  "website_url": {
+    "value": "https://hutt.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Hutt GmbH",
+    "uid": "CHE-359.932.333",
+    "ehraid": 1567478,
+    "legal_seat": "Amriswil",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-359.932.333",
+    "match_score": 100
+  }
+}

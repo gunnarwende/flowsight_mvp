@@ -97,6 +97,8 @@ Patterns u.a. `24h`, **`24/7`** (Slash-Variante — Obrist-Fix 03.06.), `rund um
 `pikett`, `auch an Sonn-/Feiertagen`, `jederzeit`, `Tag und Nacht`. Bloßes „Notfall" reicht NICHT
 (könnte „Bei Notfall Feuerwehr rufen" sein). Default = B (preis). **notruf ≈ 60 %, preis ≈ 40 %.**
 
+> **OFFEN — Gewerk ↔ Demo-Szenario (19.06.):** Die T2-Notruf-Variante simuliert einen **Rohrbruch (Keller unter Wasser) = Sanitär-Notfall.** **Reine Heizungs-/Gebäudetechnik-Betriebe ohne Sanitär** (z. B. MS Gebäudetechnik, Regiotherm) dürfen diese Demo NICHT bekommen → Gewerk-Mismatch („die haben uns nicht verstanden"). Erkennen über `voice_agent.domain`/services ohne „sanit". Bis eine **Heizungs-Notfall-T2-Variante** existiert („Heizung ausgefallen / kein Warmwasser"), solche Betriebe zurückstellen. Welle 1: MS + Regiotherm deshalb geparkt.
+
 **`sanitizeBrandColor(hex)` → nur sanitär-taugliches Blau/Türkis** (Founder 03.06.). Rote/gelbe/
 schwarze/grüne/blasse Farben wirken im Video falsch (Rot = Fehler/Alarm — Schaub-Bug `#e73744`).
 Regel: nur hue 175–260 mit genug Sättigung+Helligkeit behalten; sonst Fallback **`#2b6cb0`**

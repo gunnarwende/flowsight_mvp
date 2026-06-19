@@ -190,6 +190,7 @@ ElevenLabs = TTS, Bunny = Video-Stream.
 **Stand (Kurzfassung — Details immer in STATUS):**
 - Phase: **Sales.** 0 zahlende Kunden.
 - **Stern 1→3→4 in der Praxis bewiesen (18.06.):** erster Kalt-Rep-Tag → 3 Treffer → alle 3 über die Pipeline produziert + live versandt (Burkhardt, Schäfli + Dieterich, Serafini); Antworten/First-Views laufen, warmer Rückruf (Stern 5) folgt.
+- **Welle 1 komplett versandt (19.06.):** 10 Simulationen live an echte Betriebe (+ Rickenbach, musa, Hutt, Künzi, Wattinger + Schwendener, R. Gerber, Brühwiler), 2 zurückgestellt (MS + Regiotherm = reine Heizung → Heizungs-Notfall-T2-Variante fehlt). Lehren: harter E-Mail-Domain-Check vor Versand (Cockpit-Liste = Quelle, nicht Crawl), dynamische Inhaber-Anrede, feste Schablone „nicht erreicht" (`sales/templates/email_nicht_erreicht.md`).
 - Pipeline (Stern 3): funktional + **gehärtet** — kanonischer Weg `build_take*_final`, Ein-Kommando `produce_videos.mjs` inkl. Hochkant-Pflichtschritt, Tracking-Scharfschaltung beim Live-Versand. Runbook: `pipeline/NEUER_BETRIEB_VIDEO_RUNBOOK.md`.
 - Onboarding-Cockpit (Stern 6): Design komplett, Build offen (OC-Backlog).
 

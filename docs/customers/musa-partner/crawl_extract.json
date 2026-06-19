@@ -1,0 +1,155 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:13:31.211Z",
+    "source_url": "https://www.musa-partner-ag.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.musa-partner-ag.ch/",
+        "chars": 866
+      },
+      {
+        "key": "team",
+        "url": "https://www.musa-partner-ag.ch/ueber-uns",
+        "chars": 1387
+      },
+      {
+        "key": "services",
+        "url": "https://www.musa-partner-ag.ch/leistungen",
+        "chars": 906
+      },
+      {
+        "key": "kontakt",
+        "url": "https://www.musa-partner-ag.ch/kontakt",
+        "chars": 1211
+      },
+      {
+        "key": "impressum",
+        "url": "https://www.musa-partner-ag.ch/impressum",
+        "chars": 371
+      }
+    ]
+  },
+  "firma": {
+    "value": "musa & partner ag",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Kirchstrasse 38, 8580 Amriswil",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "071 411 16 06",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "musa-partner-ag@bluewin.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 9,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1938",
+    "source": "website_team",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitär",
+        "Seit 1938 bieten wir kompetente Lösungen im Sanitär- und Spenglerbereich für Sie an.",
+        "Leistungen Sanitär"
+      ],
+      "Beratung/Planung": [
+        "Gerne erstellen wir eine kostenlose Offerte für Ihr Bauvorhaben."
+      ],
+      "Spenglerei": [
+        "Leistungen Spenglerei"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Herzlich Willkommen bei der",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#0000ee",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.musa-partner-ag.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Familienbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "musa & partner ag",
+    "uid": "CHE-115.301.190",
+    "ehraid": 966820,
+    "legal_seat": "Amriswil",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-115.301.190",
+    "match_score": 100
+  }
+}

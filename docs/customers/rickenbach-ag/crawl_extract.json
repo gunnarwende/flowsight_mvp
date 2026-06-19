@@ -1,0 +1,177 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:15:11.880Z",
+    "source_url": "http://www.rickenbach-ag.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "http://www.rickenbach-ag.ch/",
+        "chars": 6585
+      },
+      {
+        "key": "impressum",
+        "url": "http://www.rickenbach-ag.ch/impressum",
+        "chars": 2293
+      }
+    ]
+  },
+  "firma": {
+    "value": "Rickenbach AG",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Remo Friberg",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Hafenstrasse 11, 8280 Kreuzlingen",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "telefon": {
+    "value": "071 677 40 77, +41 71 677 40 77",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@rickenbach-ag.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Montag": "07.00-11.30"
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 4.6,
+    "review_count": 7,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1963",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Rickenbach Sanitär Heizungen Kreuzlingen",
+        "Sanitär",
+        "fachmännische Leistungen rund um Sanitär",
+        "Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!"
+      ],
+      "Heizung": [
+        "Rickenbach Sanitär Heizungen Kreuzlingen",
+        "Heizung",
+        "professionelle Leistungen rund um Heizung",
+        "Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!"
+      ],
+      "Boiler/Warmwasser": [
+        "Boilerentkalkung und Wartung"
+      ],
+      "Rohrbruch/Leitungen": [
+        "Ein Zentralstaubsauger ist einfach das beste Haushaltsreinigungssystem. Er ist geräuscharm, leistungsstark und einfach z"
+      ],
+      "Umbau/Sanierung": [
+        "Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem umfangreichen Service beg",
+        "– Badezimmersanierungen",
+        "– Gesamtsanierungen",
+        "– Neubauten",
+        "Wir erfüllen Badträume! Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem u"
+      ],
+      "Solar/Erneuerbar": [
+        "– Wärmepumpen",
+        "– Erneuerbare Energie – Sonnenenergie",
+        "– Wärmepumpen Luft & Wasser",
+        "– Thermische Solaranlagen",
+        "– Solarwärme für Heizung und Wasser"
+      ],
+      "Beratung/Planung": [
+        "alle Bereiche fachkompetente Beratung",
+        "Bei Beratung, Planung und Ausführung von Heizungsinstallationen stehen wir Ihnen im Raum Kreuzlingen und Umgebung gerne",
+        "Konnte die Firma ihr neu erstelltes Geschäftshaus an der Hafenstrasse 11 Kreuzlingen beziehen. Dadurch konnte eine gute",
+        "Fachkompetente Beratung sowie zuverlässige und qualitätsvolle Arbeiten von qualifizierten Experten."
+      ],
+      "Kundendienst": [
+        "Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!",
+        "Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem umfangreichen Service beg",
+        "Serviceprogramm",
+        "– Unterhalt und Services an Heizgeräten"
+      ],
+      "Spenglerei": [
+        "Wurde die Firma Rickenbach Sanitär und Heizung durch Hansruedi Rickenbach eidg. dipl. Sanitärinstallateur gegründet. Sch"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Hafenstrasse 11, 8280 Kreuzlingen",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#01509f",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "http://www.rickenbach-ag.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Lehrbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Rickenbach AG",
+    "uid": "CHE-423.807.530",
+    "ehraid": 1354821,
+    "legal_seat": "Kreuzlingen",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-423.807.530",
+    "match_score": 100
+  }
+}

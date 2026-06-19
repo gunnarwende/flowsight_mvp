@@ -1,0 +1,166 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-19T08:14:10.317Z",
+  "_founder_actions_needed": [
+    "inhaber"
+  ],
+  "tenant": {
+    "slug": "musa-partner",
+    "name": "musa & partner ag",
+    "case_id_prefix": "MP",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "musa ag"
+  },
+  "voice_agent": {
+    "company_name": "musa & partner ag",
+    "domain": "Sanitär und Spenglerei",
+    "owner_names": "Rico Musa",
+    "address": "Kirchstrasse 38, 8580 Amriswil",
+    "phone": "071 411 16 06",
+    "email": "musa-partner-ag@bluewin.ch",
+    "website": "https://www.musa-partner-ag.ch/",
+    "founded": "1938",
+    "team_section": "",
+    "memberships": "",
+    "google_rating": "5 Sterne bei 9 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: Sanitär, Seit 1938 bieten wir kompetente Lösungen im Sanitär- und Spenglerbereich für Sie an., Leistungen Sanitär\nBeratung/Planung: Gerne erstellen wir eine kostenlose Offerte für Ihr Bauvorhaben.\nSpenglerei: Leistungen Spenglerei",
+    "service_area": "8580 Amriswil",
+    "service_area_spoken": "Wir sind in Amriswil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Kirchstrasse 38, 8580 Amriswil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 9,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8580"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "musa & partner ag",
+    "firma_silben": 5,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "MP",
+    "modus": 2,
+    "google_stars": 5,
+    "video_hook": "Seit 1938 für Sie da.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "musa-partner-ag@bluewin.ch"
+  },
+  "_seed_time": "2026-06-19T06:04:00.000Z",
+  "_take2_detail_switch_sec": 87.737,
+  "_wizard_time": "2026-06-19T06:56:00.000Z",
+  "_wizard_case_id": "96fd2eb3-5bd5-4d61-89b7-4cd48ae9a71f",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "MP-0050",
+  "_demo_now": "2026-06-19T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-19T06:08:00.000Z",
+  "_appointment_start": "2026-06-20T06:00:00.000Z",
+  "_appointment_end": "2026-06-20T08:00:00.000Z",
+  "_reminder_time": "2026-06-19T07:02:00.000Z",
+  "_completion_time": "2026-06-19T07:02:00.000Z",
+  "_review_sent_time": "2026-06-19T07:04:00.000Z",
+  "_review_rated_time": "2026-06-19T07:06:00.000Z",
+  "_review_token": "fbf626c91bbbf6e0",
+  "_review_token_long": "fbf626c91bbbf6e0ad1bf9a59cb1021dc3b0a06138abc861dff6a6ed652e5e9a",
+  "_case_created_at": "2026-06-19T06:56:00+00:00"
+}

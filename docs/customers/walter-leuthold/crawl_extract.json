@@ -1,0 +1,150 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-01T09:38:01.042Z",
+    "source_url": "https://walter-leuthold.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://walter-leuthold.ch/",
+        "chars": 1891
+      },
+      {
+        "key": "kontakt",
+        "url": "https://walter-leuthold.ch/kontakt",
+        "chars": 919
+      },
+      {
+        "key": "impressum",
+        "url": "https://walter-leuthold.ch/impressum",
+        "chars": 2671
+      }
+    ]
+  },
+  "firma": {
+    "value": "Walter Leuthold, Sanitär-Spenglerei",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Seestrasse 98a, 8942 Oberrieden",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 44 720 16 90, +41 79 417 74 41",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "mail@walter-leuthold.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": "rtung Spengler Auf dem Dach Am Haus Kontakt 7/24h Notfall Kontakt Walter Leuthold Sanitär Haustechnik & Spenglerei Seestrasse 98a 8942 Oberrieden Schweiz +41 44 720 16 90 +41 79 417 74 41 Kontak",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "+41 44 720 16 90"
+  },
+  "google": {
+    "rating": 4.9,
+    "review_count": 44,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitär",
+        "Sanitär Haustechnik",
+        "Für Ihre Gesundheit, Entspannung und Hygiene sorgt sich Ihr Sanitär. Dank perfekt funktionierenden sanitären Installatio",
+        "Sie denken beim Begriff Sanitär sicher zuerst an das Badezimmer mit den Armaturen für Lavabo, Badewanne und Dusche. Aber"
+      ],
+      "Boiler/Warmwasser": [
+        "Um Ihnen ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern b",
+        "Für Ihre Gesundheit, Entspannung und Hygiene sorgt sich Ihr Sanitär. Dank perfekt funktionierenden sanitären Installatio"
+      ],
+      "Kundendienst": [
+        "Reparaturen"
+      ],
+      "Spenglerei": [
+        "Spenglerei"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Voreinstellungen anzeigen",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#1e73be",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://walter-leuthold.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "24h Notdienst",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Walter Leuthold, Sanitär-Spenglerei",
+    "uid": "CHE-102.025.075",
+    "ehraid": 600874,
+    "legal_seat": "Oberrieden",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-102.025.075",
+    "match_score": 80
+  }
+}

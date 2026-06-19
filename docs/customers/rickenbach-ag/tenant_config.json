@@ -1,0 +1,166 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-19T08:15:43.945Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "rickenbach-ag",
+    "name": "Rickenbach AG",
+    "case_id_prefix": "RA",
+    "brand_color": "#01509f",
+    "sms_sender_name": "RickenbachA"
+  },
+  "voice_agent": {
+    "company_name": "Rickenbach AG",
+    "domain": "Sanitär, Heizung, Spenglerei und Solar",
+    "owner_names": "Rickenbach",
+    "address": "Hafenstrasse 11, 8280 Kreuzlingen",
+    "phone": "071 677 40 77",
+    "email": "info@rickenbach-ag.ch",
+    "website": "http://www.rickenbach-ag.ch/",
+    "founded": "1963",
+    "team_section": "Geschäftsleitung: Remo Friberg",
+    "memberships": "",
+    "google_rating": "4.6 Sterne bei 7 Bewertungen",
+    "opening_hours": "Montag: 07.00-11.30",
+    "opening_hours_spoken": "Wir sind Montag: 07.00-11.30 für Sie erreichbar.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: Rickenbach Sanitär Heizungen Kreuzlingen, Sanitär, fachmännische Leistungen rund um Sanitär, Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!\nHeizung: Rickenbach Sanitär Heizungen Kreuzlingen, Heizung, professionelle Leistungen rund um Heizung, Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!\nBoiler/Warmwasser: Boilerentkalkung und Wartung\nRohrbruch/Leitungen: Ein Zentralstaubsauger ist einfach das beste Haushaltsreinigungssystem. Er ist geräuscharm, leistungsstark und einfach z\nUmbau/Sanierung: Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem umfangreichen Service beg, – Badezimmersanierungen, – Gesamtsanierungen, – Neubauten, Wir erfüllen Badträume! Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem u\nSolar/Erneuerbar: – Wärmepumpen, – Erneuerbare Energie – Sonnenenergie, – Wärmepumpen Luft & Wasser, – Thermische Solaranlagen, – Solarwärme für Heizung und Wasser\nBeratung/Planung: alle Bereiche fachkompetente Beratung, Bei Beratung, Planung und Ausführung von Heizungsinstallationen stehen wir Ihnen im Raum Kreuzlingen und Umgebung gerne, Konnte die Firma ihr neu erstelltes Geschäftshaus an der Hafenstrasse 11 Kreuzlingen beziehen. Dadurch konnte eine gute, Fachkompetente Beratung sowie zuverlässige und qualitätsvolle Arbeiten von qualifizierten Experten.\nKundendienst: Dienstleistungen und ein Service, der begeistert – Heizung und Sanitär vom Experten in Ihrer Region!, Profitieren Sie von hochwertigen Ideen rund um Bad und Sanitär und lassen Sie sich von unserem umfangreichen Service beg, Serviceprogramm, – Unterhalt und Services an Heizgeräten\nSpenglerei: Wurde die Firma Rickenbach Sanitär und Heizung durch Hansruedi Rickenbach eidg. dipl. Sanitärinstallateur gegründet. Sch",
+    "service_area": "8280 Kreuzlingen, 8134 Adliswil, 8135 Langnau am Albis",
+    "service_area_spoken": "Wir sind in Kreuzlingen und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Hafenstrasse 11, 8280 Kreuzlingen.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 4.6,
+    "google_review_count": 7,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8280",
+      "8134",
+      "8135"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Kreuzlingen",
+      "plz": "8280",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Adliswil",
+      "plz": "8134",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Rickenbach AG",
+    "firma_silben": 4,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "RA",
+    "modus": 2,
+    "google_stars": 4.6,
+    "video_hook": "Seit 1963 für Sie da.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@rickenbach-ag.ch"
+  },
+  "_seed_time": "2026-06-19T06:04:00.000Z",
+  "_take2_detail_switch_sec": 86.555,
+  "_wizard_time": "2026-06-19T06:56:00.000Z",
+  "_wizard_case_id": "72158b6f-c6c8-4a9c-9c7e-028e5f08a3db",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "RA-0050",
+  "_demo_now": "2026-06-19T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-19T06:08:00.000Z",
+  "_appointment_start": "2026-06-20T06:00:00.000Z",
+  "_appointment_end": "2026-06-20T08:00:00.000Z",
+  "_reminder_time": "2026-06-19T07:02:00.000Z",
+  "_completion_time": "2026-06-19T07:02:00.000Z",
+  "_review_sent_time": "2026-06-19T07:04:00.000Z",
+  "_review_rated_time": "2026-06-19T07:06:00.000Z",
+  "_review_token": "fe7115db1ea26fad",
+  "_review_token_long": "fe7115db1ea26fad1ad31fd94597b9bc4fcfd6b6f457202f320774c2bded02b5",
+  "_case_created_at": "2026-06-19T06:56:00+00:00"
+}

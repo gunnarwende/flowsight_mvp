@@ -1,0 +1,170 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:17:20.103Z",
+    "source_url": "https://www.sanitär-heizung-solar.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.sanitär-heizung-solar.ch/",
+        "chars": 924
+      },
+      {
+        "key": "team",
+        "url": "https://www.sanitär-heizung-solar.ch/ueber-uns",
+        "chars": 1398
+      },
+      {
+        "key": "services",
+        "url": "https://www.sanitär-heizung-solar.ch/dienstleistungen",
+        "chars": 1819
+      },
+      {
+        "key": "kontakt",
+        "url": "https://www.sanitär-heizung-solar.ch/kontakt",
+        "chars": 1083
+      },
+      {
+        "key": "karriere",
+        "url": "https://www.sanitär-heizung-solar.ch/offene-stellen",
+        "chars": 770
+      }
+    ]
+  },
+  "firma": {
+    "value": "Sanitär-Heizung-Solar GmbH",
+    "source": "website_title",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Pestalozzistrasse 22, 8570 Weinfelden",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "071 622 30 43",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "",
+    "source": "not_found",
+    "verified": false
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Montag-Donnerstag": "07.00-12.00 und 13.15-17.15",
+      "Freitag": "07.00-12.00 und 13.15-16.30"
+    },
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 6,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1982",
+    "source": "website_team",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Hier erhalten Sie einen groben Überblick über unsere Dienstleistungen: Als renommiertes Sanitärunternehmen sind wir best"
+      ],
+      "Heizung": [
+        "Heizung"
+      ],
+      "Boiler/Warmwasser": [
+        "Tropft bei Ihnen ständig der Wasserhahn oder haben Sie Probleme beim Abfluss? Kein Problem: Wir helfen Ihnen gerne und u"
+      ],
+      "Verstopfung/Abfluss": [
+        "Tropft bei Ihnen ständig der Wasserhahn oder haben Sie Probleme beim Abfluss? Kein Problem: Wir helfen Ihnen gerne und u"
+      ],
+      "Umbau/Sanierung": [
+        "Neubauten",
+        "Umbau & Renovationen"
+      ],
+      "Solar/Erneuerbar": [
+        "Hier erhalten Sie einen groben Überblick über unsere Dienstleistungen: Als renommiertes Sanitärunternehmen sind wir best"
+      ],
+      "Beratung/Planung": [
+        "Hier erhalten Sie einen groben Überblick über unsere Dienstleistungen: Als renommiertes Sanitärunternehmen sind wir best"
+      ],
+      "Kundendienst": [
+        "Reparatur- und Servicearbeiten",
+        "Tropft bei Ihnen ständig der Wasserhahn oder haben Sie Probleme beim Abfluss? Kein Problem: Wir helfen Ihnen gerne und u"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "Gebäudetechnik",
+      "verband",
+      "suissetec"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": "Home Dienstleistungen Lieferanten / Partner Bilder Über uns Kontakt Offene Stellen; Offene Stellen; COOKIE EINSTELLUNGEN",
+    "source": "website_jobs",
+    "verified": true
+  },
+  "markenpartner": {
+    "value": [
+      "Geberit"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "werte": {
+    "value": "Qualität  Wir beraten Sie gerne unverbindlich zu Ihren Wünschen Mitarbeiter gesucht: Sanitärinstallateur/in EFZ (persönliche Anfrage) Wir bitten Vermittler / Temporärbüros etc",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#009ddd",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.sanitär-heizung-solar.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": null
+}

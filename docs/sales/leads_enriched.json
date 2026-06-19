@@ -114,5 +114,657 @@
       "info@az-gebaeudetechnik.ch"
     ],
     "enriched_at": "2026-06-15"
+  },
+  "ruegg spengler sanitar heizung solar": {
+    "firma": "Rüegg AG Spengler Sanitär Heizung Solar",
+    "url": "http://www.rubema.ch/",
+    "entscheider": "Rüegg AG",
+    "rolle": "Geschäftsführung",
+    "mail": "info@rubema.ch",
+    "ma": 18,
+    "tariff": "DQ (zu groß)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@rubema.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "sunier sanitar heizung": {
+    "firma": "Sunier AG Sanitär + Heizung",
+    "url": "http://www.sunier.ch/",
+    "entscheider": "Sunier AG",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": "info@sunier.ch",
+    "ma": 3,
+    "tariff": "Solo (900)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@sunier.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "ferrat sanitar": {
+    "firma": "Ferrat Sanitär AG",
+    "url": "https://www.sanitaer-ferrat.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@sanitaer-ferrat.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "nosid heizung & sanitar": {
+    "firma": "Nosid GmbH Heizung & Sanitär",
+    "url": "https://www.nosid.ch/?utm_source=google&utm_medium=wix_google_business_profile&utm_campaign=10967618509586842304",
+    "entscheider": "NOSDI",
+    "rolle": "Geschäftsleitung",
+    "mail": "info.nosid@gmail.com",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "info.nosid@gmail.com",
+      "official-private-server@hotmail.com"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "ogad spenglerei & dachdeckerei": {
+    "firma": "OGAD Spenglerei & Dachdeckerei",
+    "url": "https://www.ogad.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": "ogad.info@gmail.com",
+    "ma": 1,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": false,
+    "size_source": "llm-text",
+    "confidence": "niedrig",
+    "mails_all": [
+      "ogad.info@gmail.com"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "leutenegger sanitar und spenglerei": {
+    "firma": "Leutenegger Sanitär und Spenglerei AG",
+    "url": "http://www.sanitaer-leutenegger.ch/",
+    "entscheider": "Leutenegger",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": null,
+    "ma": 5,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [],
+    "enriched_at": "2026-06-16"
+  },
+  "emiprofi": {
+    "firma": "EmiProfi GmbH",
+    "url": "https://www.emiprofi.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 3,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": false,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@emiprofi.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "lyrenmann": {
+    "firma": "Lyrenmann AG",
+    "url": "http://www.lyrenmann.ch/",
+    "entscheider": "Claudio Giordano",
+    "rolle": "Operative Geschäftsführer",
+    "mail": "info@lyrenmann.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "info@lyrenmann.ch",
+      "rickenbach@lyrenmann.ch",
+      "otelfingen@lyrenmann.ch",
+      "schaffhausen@lyrenmann.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "suremann reto sanitar und spenglerreparaturen": {
+    "firma": "Suremann Reto Sanitär- und Spengler-Reparaturen",
+    "url": "https://yellow.local.ch/d/HkXD-Y6cCN3PNSNrVIIm5w",
+    "entscheider": "Suremann Reto",
+    "rolle": "Inhaber / Geschäftsleitung Sanitär & Spengler",
+    "mail": "resutec@bluewin.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "resutec@bluewin.ch",
+      "resutec@bluewin.ch\\"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "gisler heizungen & sanitar": {
+    "firma": "Gisler Heizungen & Sanitär GmbH",
+    "url": "http://www.sanitaer-gisler.ch/",
+    "entscheider": "Gisler",
+    "rolle": "Geschäftsführer/Inhaber",
+    "mail": "info@sanitaer-gisler.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@sanitaer-gisler.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "fiorentino haustechnik": {
+    "firma": "Fiorentino Haustechnik GmbH",
+    "url": "https://yellow.local.ch/d/OEVrcE0YInOvM3844TiJ0g",
+    "entscheider": "Fiorentino Haustechnik GmbH",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": null,
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [],
+    "enriched_at": "2026-06-16"
+  },
+  "daniel lang spenglerei sanitar": {
+    "firma": "Daniel Lang Spenglerei - Sanitär",
+    "url": "https://www.langsanitaer.ch/",
+    "entscheider": "Daniel Lang",
+    "rolle": "Inhaber / Eidg. dipl. Sanitärinstallateur",
+    "mail": "info@langsanitaer.ch",
+    "ma": 1,
+    "tariff": "Solo (900)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@langsanitaer.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "tobler hans fur sanitare anlagen": {
+    "firma": "Tobler Hans AG für sanitäre Anlagen",
+    "url": "https://yellow.local.ch/d/zDw9ZMILjZ0ORHZUfWQdQw",
+    "entscheider": "Tobler",
+    "rolle": "Inhaber/Geschäftsleitung Tobler Sanitär AG",
+    "mail": "sanitaer-tobler@bluewin.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "llm-text",
+    "mails_all": [
+      "sanitaer-tobler@bluewin.ch",
+      "sanitaer-tobler@bluewin.ch\\"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "denzler sanitarspenglerei": {
+    "firma": "Denzler Sanitär-Spenglerei GmbH",
+    "url": "http://www.denzler-haustech.ch/",
+    "entscheider": "Denzler",
+    "rolle": "Geschäftsführer/Inhaber",
+    "mail": "info@denzler-hautech.ch",
+    "ma": 10,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@denzler-haustech.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "hediger haustechnik heizung sanitar": {
+    "firma": "Hediger Haustechnik GmbH Heizung + Sanitär",
+    "url": "https://www.hediger-gmbh.ch/",
+    "entscheider": "HEDIGER Haustechnik GmbH",
+    "rolle": "Geschäftsführung",
+    "mail": "info@hediger-gmbh.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@hediger-gmbh.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "isenegger sanitar & heizung": {
+    "firma": "Isenegger Sanitär & Heizung GmbH",
+    "url": "http://www.isenegger-sanitaer.ch/",
+    "entscheider": "Isenegger",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": "info@isenegger-sanitaer.ch",
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [
+      "info@isenegger-sanitaer.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "elge heizung sanitar luftung": {
+    "firma": "ELGE AG Heizung - Sanitär - Lüftung",
+    "url": "http://elge.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 2,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [],
+    "enriched_at": "2026-06-17"
+  },
+  "rudolf und katharina blattner": {
+    "firma": "Rudolf und Katharina Blattner",
+    "url": "https://yellow.local.ch/d/zvDTAHoPzhDyXT6DxI4WjQ",
+    "entscheider": "Rudolf Blattner-Bächtold",
+    "rolle": "Inhaber",
+    "mail": null,
+    "ma": 5,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "mails_all": [],
+    "enriched_at": "2026-06-16"
+  },
+  "sustech heizung luftung photovoltaik energieoptimierung": {
+    "firma": "Sustech AG | Heizung | Lüftung | Photovoltaik | Energieoptimierung",
+    "url": "http://www.sustech.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 6,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": false,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@sustech.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "planerpartner haustechnikplanung heizung luftung sanitar": {
+    "firma": "planerpartner GmbH Haustechnikplanung Heizung, Lüftung, Sanitär",
+    "url": "http://www.planerpartner.ch/",
+    "entscheider": "planerpartner GmbH",
+    "rolle": "Geschäftsführung",
+    "mail": "info@planerpartner.ch",
+    "ma": 9,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": false,
+    "size_source": "vision",
+    "mails_all": [
+      "info@planerpartner.ch"
+    ],
+    "enriched_at": "2026-06-16"
+  },
+  "gebruder kessler": {
+    "firma": "Gebrüder Kessler AG",
+    "url": "http://kessler-gk.ch/",
+    "entscheider": "Urs Kessler",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": null,
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "mittel",
+    "mails_all": [
+      "info@kessler-gk.ch%20",
+      "info@kessler-gk.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "laski haustechnik": {
+    "firma": "Laski - Haustechnik GmbH",
+    "url": "https://laski-haustechnik.digitalone.site/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [],
+    "enriched_at": "2026-06-17"
+  },
+  "nikollbibaj sanitar & heizung": {
+    "firma": "Nikollbibaj GmbH - Sanitär & Heizung",
+    "url": "http://www.nikollbibaj.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 11,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [],
+    "enriched_at": "2026-06-17"
+  },
+  "leutenegger installations": {
+    "firma": "Leutenegger Installations AG",
+    "url": "http://www.leutenegger-insta.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@leutenegger-insta.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "bosshard spenglerei & sanitar": {
+    "firma": "Bosshard Spenglerei & Sanitär AG",
+    "url": "http://www.sanitaer-bosshard.ch/",
+    "entscheider": "Bosshard",
+    "rolle": "Inhaber/Geschäftsführer",
+    "mail": null,
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "mittel",
+    "mails_all": [],
+    "enriched_at": "2026-06-17"
+  },
+  "bayar heizung sanitar und kalte": {
+    "firma": "Bayar Gmbh - Heizung, Sanitär und Kälte",
+    "url": "https://bayar-gmbh.ch/",
+    "entscheider": "Mehmet Bayar",
+    "rolle": "Inhaber",
+    "mail": "m.bayar@bayar-energie.ch",
+    "ma": 9,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "llm-text",
+    "confidence": "hoch",
+    "mails_all": [
+      "m.bayar@bayar-energie.ch",
+      "r.poltera@bayar-energie.ch",
+      "j.gierth@bayar-energie.ch",
+      "l.shllaku@bayar-energie.ch",
+      "e.bayar@bayar-energie.ch",
+      "y.kryshtopa@bayar-energie.ch",
+      "d.hussein@bayar-energie.ch",
+      "m.farman@bayar-energie.ch",
+      "m.aydogan@bayar-energie.ch",
+      "info@bayar-energie.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "ganz sanitar heizung": {
+    "firma": "Ganz Sanitär / Heizung",
+    "url": "http://www.ganzsanitaer.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 3,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [],
+    "enriched_at": "2026-06-17"
+  },
+  "greenlinehaustechnik sanitar heizung luftung zurich": {
+    "firma": "Greenline-Haustechnik | Sanitär, Heizung, Lüftung Zürich",
+    "url": "https://www.greenline-haustechnik.ch/",
+    "entscheider": "Enver Bajrami",
+    "rolle": "Geschäftsführer",
+    "mail": "e.bajrami@greenline-haustechnik.ch",
+    "ma": 2,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "llm-text",
+    "confidence": "mittel",
+    "mails_all": [
+      "info@greenline-haustechnik.ch",
+      "j.gashi@greenline-haustechnik.ch",
+      "e.bajrami@greenline-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "meier r & co": {
+    "firma": "Meier R. & Co",
+    "url": "http://www.meiersanitaer.ch/",
+    "entscheider": "R. Meier",
+    "rolle": "Inhaber / Geschäftsleitung Sanitär R. Meier & Co.",
+    "mail": "meier.sanitaer@bluewin.ch",
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "llm-text",
+    "confidence": "mittel",
+    "mails_all": [
+      "meier.sanitaer@bluewin.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "kuhn haustechnik sanitar heizung badwerkstatt": {
+    "firma": "Kuhn Haustechnik AG | Sanitär | Heizung | Badwerkstatt",
+    "url": "https://kuhnhaustechnik.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@kuhn-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "b m haustechnik sanitar heizung 24 service": {
+    "firma": "B M Haustechnik GmbH Sanitär Heizung 24 Service",
+    "url": "https://bmhaustechnik.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 9,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@bmhaustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "markus staub": {
+    "firma": "Markus Staub GmbH",
+    "url": "http://www.markusstaub.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "hoch",
+    "mails_all": [
+      "info@markusstaub.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "stahli haustechnik": {
+    "firma": "Stähli Haustechnik AG",
+    "url": "http://www.staehli-haustechnik.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 10,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@staehli-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "sanitar tech": {
+    "firma": "Sanitär Tech",
+    "url": "http://www.sanitaertech.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 8,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@sanitaer-tech.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "emu haustechnik": {
+    "firma": "EMU Haustechnik GmbH",
+    "url": "https://emu-haustechnik.ch/",
+    "entscheider": "Edon Mustafa",
+    "rolle": "Inhaber und Geschäftsführer",
+    "mail": "info@emu-haustechnik.ch",
+    "ma": 1,
+    "tariff": "Solo (950)",
+    "inhaber_am_telefon": "ja",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "hoch",
+    "mails_all": [
+      "info@emu-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "rupp haustechnik sanitar": {
+    "firma": "Rupp Haustechnik Sanitär GmbH",
+    "url": "http://www.rupp-haustechnik.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 5,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "info@rupp-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "warmetec": {
+    "firma": "Wärmetec GmbH",
+    "url": "http://www.waermetec.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": null,
+    "ma": 12,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "?",
+    "core": true,
+    "size_source": "text",
+    "confidence": null,
+    "mails_all": [
+      "info@waermetec.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "steimer haustechnik": {
+    "firma": "Steimer Haustechnik AG",
+    "url": "http://www.steimer-haustechnik.ch/",
+    "entscheider": null,
+    "rolle": null,
+    "mail": "steimer@steimer-haustechnik.ch",
+    "ma": 5,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "vision",
+    "confidence": "niedrig",
+    "mails_all": [
+      "steimer@steimer-haustechnik.ch"
+    ],
+    "enriched_at": "2026-06-17"
+  },
+  "sager haustechnik": {
+    "firma": "Sager Haustechnik AG",
+    "url": "https://www.sagerag.ch/",
+    "entscheider": "Martin Sager",
+    "rolle": "Geschäftsführer, dipl. Sanitärinstallateur / Spengler",
+    "mail": "martin.sager@sagerag.ch",
+    "ma": 11,
+    "tariff": "Premium (2000)",
+    "inhaber_am_telefon": "nein",
+    "core": true,
+    "size_source": "llm-text",
+    "confidence": "hoch",
+    "mails_all": [
+      "info@sagerag.ch",
+      "martin.sager@sagerag.ch",
+      "giuseppe.picone@sagerag.ch"
+    ],
+    "enriched_at": "2026-06-17"
   }
 }

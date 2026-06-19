@@ -1,0 +1,155 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:15:44.378Z",
+    "source_url": "https://regiotherm.ch/heizsysteme/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://regiotherm.ch/heizsysteme/",
+        "chars": 4146
+      },
+      {
+        "key": "team",
+        "url": "https://regiotherm.ch/heizsysteme/ueber-uns",
+        "chars": 7539
+      },
+      {
+        "key": "services",
+        "url": "https://regiotherm.ch/heizsysteme/dienstleistungen",
+        "chars": 1566
+      },
+      {
+        "key": "impressum",
+        "url": "https://regiotherm.ch/heizsysteme/impressum",
+        "chars": 2613
+      }
+    ]
+  },
+  "firma": {
+    "value": "Regiotherm AG",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Ansprechpartner Administration Finanzen",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "erweg 6b, 8590 Romans",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "telefon": {
+    "value": "+41 71 466 80 01, 071 466 60 10",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@regiotherm.ch, georg.engels@regiotherm.ch, monica.freund@regiotherm.ch, marisa.isik@regiotherm.ch, francesco.garofalo@regiotherm.ch, silvia.tessaro@regiotherm.ch, stefan.lang@regiotherm.ch, edward.ferreira@regiotherm.ch, mario.jahr@regiotherm.ch, francesco.carangelo@regiotherm.ch, mike.rohner@regiotherm.ch, aljosha.depablo@regiotherm.ch, jozsef.simon@regiotherm.ch, fabio.palmieri@regiotherm.ch, oliver.zagrajski@regiotherm.ch, reto.egloff@regiotherm.ch, simon.kaiser@regiotherm.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Mo-Do": "08:00-12:00 und 13:30-16:30"
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "notdienst": {
+    "value": "­linie Daten­schutz Impressum Zum Inhalt springen Notfalltelefon Kundenservice Angebote & Services Bera­tung Heiz­sy­steme Kontrolle & Wartung Gas/Biogas HEIZ­SY­STEME Mass­ge­schnei­derte Wärme­lö­su",
+    "source": "website_home",
+    "verified": true,
+    "phone": null
+  },
+  "google": {
+    "rating": 4.5,
+    "review_count": 12,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1912",
+    "source": "website_team",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Heizung": [
+        "Heiz­sy­steme"
+      ],
+      "Boiler/Warmwasser": [
+        "Um Ihnen ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern u"
+      ],
+      "Kundendienst": [
+        "Kundenservice",
+        "Angebote & Services",
+        "Kontrolle & Wartung",
+        "Wir sind Ihr kompe­tenter Ansprech­partner rund ums Gas. Wir unter­stützen Gemeinden und Werke mit indi­vi­du­ellen, pra",
+        "Unsere Services:"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "verband"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Einwilligung verwalten",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#cb3725",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://regiotherm.ch/heizsysteme/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Regiotherm AG",
+    "uid": "CHE-109.289.965",
+    "ehraid": 635232,
+    "legal_seat": "Romanshorn",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-109.289.965",
+    "match_score": 100
+  }
+}

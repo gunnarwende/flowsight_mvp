@@ -1,14 +1,45 @@
 {
   "_meta": {
-    "crawled_at": "2026-04-20T09:34:03.582Z",
+    "crawled_at": "2026-06-11T13:01:13.999Z",
     "source_url": "https://www.leins.ch",
     "crawler": "playwright",
-    "pages_crawled": []
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.leins.ch/",
+        "chars": 1487
+      },
+      {
+        "key": "team",
+        "url": "https://www.leins.ch/team",
+        "chars": 1487
+      },
+      {
+        "key": "services",
+        "url": "https://www.leins.ch/dienstleistungen",
+        "chars": 1487
+      },
+      {
+        "key": "kontakt",
+        "url": "https://www.leins.ch/contact",
+        "chars": 1487
+      },
+      {
+        "key": "karriere",
+        "url": "https://www.leins.ch/karriere",
+        "chars": 1487
+      },
+      {
+        "key": "impressum",
+        "url": "https://www.leins.ch/impressum",
+        "chars": 8412
+      }
+    ]
   },
   "firma": {
-    "value": "",
-    "source": "not_found",
-    "verified": false
+    "value": "Leins AG",
+    "source": "website_title+zefix_verified",
+    "verified": true
   },
   "inhaber": {
     "value": null,
@@ -16,25 +47,26 @@
     "verified": false
   },
   "adresse": {
-    "value": "",
-    "source": "not_found",
-    "verified": false
+    "value": "Glärnischstrasse 18, 8810 Horgen",
+    "source": "website_kontakt",
+    "verified": true
   },
   "telefon": {
-    "value": "",
-    "source": "not_found",
-    "verified": false
+    "value": "043 244 66 55",
+    "source": "website_kontakt",
+    "verified": true
   },
   "email": {
-    "value": "",
-    "source": "not_found",
-    "verified": false
+    "value": "info@leinsag.ch",
+    "source": "website_kontakt",
+    "verified": true
   },
   "oeffnungszeiten": {
-    "value": null,
-    "source": "not_found",
-    "verified": false,
-    "action": "founder_confirm"
+    "value": {
+      "Mo-Fr": "07.00-12.00"
+    },
+    "source": "website_kontakt",
+    "verified": true
   },
   "notdienst": {
     "value": null,
@@ -60,9 +92,29 @@
     "note": "NIEMALS aus Fotos herleiten"
   },
   "leistungen": {
-    "value": {},
-    "source": "not_found",
-    "verified": false
+    "value": {
+      "Sanitär": [
+        "SANITÄR",
+        "Spenglerei, Sanitär, Heizung und Blitzschutz - alles aus einer Hand",
+        "Als kompetentes Unternehmen für Sanitär und Heizung in Horgen und Kilchberg bieten wir Ihnen ein umfassendes Leistungssp",
+        "Unser Ziel ist es, Ihnen als zuverlässiger Partner zur Seite zu stehen und Ihre Sanitär- und Heizungsprobleme schnell un",
+        "Sanitär"
+      ],
+      "Heizung": [
+        "HEIZUNG",
+        "Spenglerei, Sanitär, Heizung und Blitzschutz - alles aus einer Hand",
+        "Als kompetentes Unternehmen für Sanitär und Heizung in Horgen und Kilchberg bieten wir Ihnen ein umfassendes Leistungssp",
+        "Unser Ziel ist es, Ihnen als zuverlässiger Partner zur Seite zu stehen und Ihre Sanitär- und Heizungsprobleme schnell un",
+        "Heizung"
+      ],
+      "Spenglerei": [
+        "SPENGLEREI",
+        "Spenglerei, Sanitär, Heizung und Blitzschutz - alles aus einer Hand",
+        "Spenglerei"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
   },
   "einzugsgebiet": {
     "value": null,
@@ -86,14 +138,14 @@
     "verified": false
   },
   "werte": {
-    "value": null,
-    "source": "not_found",
-    "verified": false
+    "value": "zuverlässig arbeitet und dass Ihre sanitären Einrichtungen immer einwandfrei funktionieren",
+    "source": "website_home",
+    "verified": true
   },
   "brand_color": {
-    "value": null,
-    "source": "",
-    "verified": false
+    "value": "#da261c",
+    "source": "website_home",
+    "verified": true
   },
   "website_url": {
     "value": "https://www.leins.ch",
@@ -101,9 +153,17 @@
     "verified": true
   },
   "besonderheiten": {
-    "value": null,
-    "source": "not_found",
-    "verified": false
+    "value": "Laden",
+    "source": "website_home",
+    "verified": true
   },
-  "_zefix": null
+  "_zefix": {
+    "official_name": "LEINS AG",
+    "uid": "CHE-109.893.569",
+    "ehraid": 699470,
+    "legal_seat": "Horgen",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-109.893.569",
+    "match_score": 100
+  }
 }
