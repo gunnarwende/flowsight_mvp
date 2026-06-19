@@ -26,6 +26,23 @@ const { createClient } = require("../../src/web/node_modules/@supabase/supabase-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LEADS = path.resolve(__dirname, "../../docs/sales/leads.csv");
 const DRY = process.argv.includes("--dry-run");
+const BOOTSTRAP = process.argv.includes("--bootstrap");
+
+// SCHUTZ: Seit Phase 2 ist die DB die SSOT — Founder-Spalten (status, Inhaber,
+// Mail, Notiz …) werden im /ceo-Journey-Tool gepflegt. Ein voller CSV→DB-Upsert
+// würde diese Tool-Edits mit (veralteten) CSV-Werten überschreiben. Deshalb
+// läuft dieser Bootstrap-Sync nur noch mit explizitem --bootstrap.
+if (!BOOTSTRAP && !DRY) {
+  console.error([
+    "BLOCKIERT: leads.csv → DB ist nur der einmalige Bootstrap.",
+    "Die DB ist jetzt SSOT; Leads pflegst du im /ceo-Journey-Tool.",
+    "Ein voller Upsert würde Tool-Edits überschreiben.",
+    "",
+    "Wenn du wirklich neu bootstrappen willst: --bootstrap anhängen.",
+    "Vorschau ohne Schreiben: --dry-run.",
+  ].join("\n"));
+  process.exit(1);
+}
 
 // ── CSV-Parser (semikolon, BOM, Quoting) — identisch zu build_leads.mjs ───
 function parseCsv(txt) {

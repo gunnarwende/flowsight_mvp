@@ -49,7 +49,8 @@ export async function GET() {
   // ── Proof-Pages (Stern 3 Simulation + Stern 4 Gesehen) ──────────────
   const { data: proofs } = await supabase
     .from("proof_pages")
-    .select("token, view_count, status");
+    .select("token, company_name, variant, view_count, first_viewed_at, last_viewed_at, status, lead_id, created_at")
+    .order("created_at", { ascending: false });
   const pp = proofs ?? [];
   const simSent = pp.length;
   const seen = pp.filter((p) => (p.view_count ?? 0) > 0).length;
@@ -57,7 +58,8 @@ export async function GET() {
   // ── Cockpit-Sessions (Stern 6 Aufbau + Stern 7 Go-live) ─────────────
   const { data: cockpits } = await supabase
     .from("cockpit_sessions")
-    .select("status");
+    .select("token, company_name, slug, status, lead_id, created_at, submitted_at, approved_at, live_at")
+    .order("created_at", { ascending: false });
   const cs = cockpits ?? [];
   const onboarding = cs.filter((c) => ["building", "submitted", "approved"].includes(c.status)).length;
   const kunden = cs.filter((c) => c.status === "live").length;
@@ -96,6 +98,8 @@ export async function GET() {
     leads: all,
     funnel,
     stats,
+    proofs: pp,
+    cockpits: cs,
     snapshot_at: new Date().toISOString(),
   });
 }

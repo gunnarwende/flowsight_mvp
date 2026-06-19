@@ -29,10 +29,22 @@ interface Lead {
   status: string | null;
 }
 interface FunnelItem { star: number; key: string; label: string; value: number; }
+interface Proof {
+  token: string; company_name: string; variant: string | null;
+  view_count: number | null; first_viewed_at: string | null; last_viewed_at: string | null;
+  status: string | null; lead_id: string | null; created_at: string;
+}
+interface Cockpit {
+  token: string; company_name: string | null; slug: string | null; status: string;
+  lead_id: string | null; created_at: string; submitted_at: string | null;
+  approved_at: string | null; live_at: string | null;
+}
 interface JourneyData {
   leads: Lead[];
   funnel: FunnelItem[];
   stats: { gespraecheHeute: number; jaWoche: number; waehlversucheHeute: number };
+  proofs: Proof[];
+  cockpits: Cockpit[];
   snapshot_at: string;
 }
 type Biz = { firma: string; name: string | null; gewerk: string };
@@ -432,19 +444,86 @@ export function JourneyView() {
     );
   }
 
-  // ── Andere Sterne: Info ─────────────────────────────────────────────────
+  // ── Stern 3/4/6/7/8: Info + echte Liste ─────────────────────────────────
   function StepInfo({ star }: { star: number }) {
     const s = STARS.find((x) => x.star === star)!;
+    const proofs = data!.proofs;
+    const cockpits = data!.cockpits;
+    const fmtDate = (d: string | null) => (d ? new Date(d).toLocaleDateString("de-CH") : "—");
+
+    let list: React.ReactNode = null;
+    if (star === 3) {
+      list = <ProofList rows={proofs} title="Versandte Simulationen" empty="Noch keine Beweis-Seiten." />;
+    } else if (star === 4) {
+      const seen = proofs.filter((p) => (p.view_count ?? 0) > 0);
+      list = <ProofList rows={seen} title="Gesehen (geöffnet)" empty="Noch keine First-Views." showViews />;
+    } else if (star === 6) {
+      const building = cockpits.filter((c) => ["building", "submitted", "approved"].includes(c.status));
+      list = <CockpitList rows={building} title="Im Aufbau" empty="Noch keine Cockpit-Sessions." fmtDate={fmtDate} />;
+    } else if (star === 7) {
+      const live = cockpits.filter((c) => c.status === "live");
+      list = <CockpitList rows={live} title="Go-live / Kunde" empty="Noch keine Go-lives." fmtDate={fmtDate} />;
+    } else if (star === 8) {
+      const live = cockpits.filter((c) => c.status === "live");
+      list = <CockpitList rows={live} title="In Begleitung" empty="Noch keine laufenden Kunden." fmtDate={fmtDate} />;
+    }
+
     return (
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
         <PageHead eyebrow={`Stern ${star} · ${PILLAR[star].name}`} title={s.name} sub="" />
-        <div className="max-w-2xl rounded-xl border border-navy-200 bg-white p-5 text-[15px] text-navy-700 leading-relaxed">
+        <div className="max-w-2xl rounded-xl border border-navy-200 bg-white p-5 text-[15px] text-navy-700 leading-relaxed mb-4">
           {STAR_INFO[star] || "—"}
         </div>
+        {list}
       </div>
     );
   }
+}
+
+// ── Listen für Stern 3/4 (Beweis-Seiten) und 6/7/8 (Cockpit) ───────────────
+function ProofList({ rows, title, empty, showViews }: { rows: Proof[]; title: string; empty: string; showViews?: boolean }) {
+  return (
+    <div className="bg-white rounded-xl border border-navy-200 p-4 max-w-2xl">
+      <h3 className="text-[11px] font-bold uppercase tracking-wider text-navy-400 mb-3">{title} ({rows.length})</h3>
+      {rows.length === 0 ? <p className="text-sm text-navy-400">{empty}</p> : (
+        <div className="divide-y divide-navy-50">
+          {rows.map((p) => (
+            <div key={p.token} className="flex items-center gap-3 py-2.5">
+              <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-navy-900 text-sm truncate">{p.company_name}</div>
+                <div className="text-[11px] text-navy-400">{p.variant === "notruf" ? "Notruf" : "Preis"} · versandt {new Date(p.created_at).toLocaleDateString("de-CH")}</div>
+              </div>
+              {showViews
+                ? <span className="text-[12px] font-bold text-gold-600 shrink-0">{p.view_count}× gesehen</span>
+                : <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${(p.view_count ?? 0) > 0 ? "bg-emerald-100 text-emerald-700" : "bg-navy-100 text-navy-500"}`}>{(p.view_count ?? 0) > 0 ? "gesehen" : "still"}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+function CockpitList({ rows, title, empty, fmtDate }: { rows: Cockpit[]; title: string; empty: string; fmtDate: (d: string | null) => string }) {
+  return (
+    <div className="bg-white rounded-xl border border-navy-200 p-4 max-w-2xl">
+      <h3 className="text-[11px] font-bold uppercase tracking-wider text-navy-400 mb-3">{title} ({rows.length})</h3>
+      {rows.length === 0 ? <p className="text-sm text-navy-400">{empty}</p> : (
+        <div className="divide-y divide-navy-50">
+          {rows.map((c) => (
+            <div key={c.token} className="flex items-center gap-3 py-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-navy-900 text-sm truncate">{c.company_name || c.slug || "—"}</div>
+                <div className="text-[11px] text-navy-400">Status {c.status} · seit {fmtDate(c.created_at)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ── Kleine UI-Bausteine ───────────────────────────────────────────────────

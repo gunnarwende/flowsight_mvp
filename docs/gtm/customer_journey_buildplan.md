@@ -114,9 +114,19 @@ eine Quelle — „Grüezi Herr X" in Seite und Mail stammt aus derselben Connec
     Übersicht/Live (Phasen-Stepper 1–9) + Drill (Einwand-Katalog 7.1–7.28).
     Wortlaut 1:1 aus `warmCallScript.ts` (eingefroren, Version 1). Stern-5-Kachel
     öffnet jetzt den Hub statt eines Info-Panels. TS + ESLint sauber, Smoke grün.
-  - **Tranche 2b (offen):** alte Pipeline-Smart-Call-Liste in die Journey
-    absorbieren + Route `/ceo/pipeline` entfernen; `proof_pages.lead_id`-Backfill
-    (Welle 1) für rückwirkendes „Gesehen".
+  - **Tranche 2b (DONE 19.06.):** alte `/ceo/pipeline` (Trial-Modell, 500,
+    ungenutzt) entfernt — Seite + API + `PipelineView` gelöscht (Journey ist der
+    kanonische Funnel). `proof_pages.lead_id`-Backfill gelaufen
+    (`backfill_proof_lead_ids.mjs`, 16/18 Seiten an Lead verknüpft, Präfix-Match
+    eindeutig). Sterne 3/4/6/7/8 sind jetzt echte Listen (versandte Simulationen,
+    Gesehen mit View-Count, Cockpit-Sessions) statt Info-Panels — API liefert
+    `proofs` + `cockpits`. `sync_leads_to_db` mit `--bootstrap`-Riegel geschützt
+    (DB ist SSOT; voller CSV-Upsert würde Tool-Edits überschreiben).
+  - **Tranche 2c (offen — bewusster Stopp):** Lead-Motor-Flip. `build_leads`
+    soll DB-autoritativ werden (Founder-Spalten aus DB bewahren, Maschinen-Spalten
+    aus dem Crawl mergen, CSV als Export schreiben). Braucht den echten
+    Scout-Zyklus des Founders zum Verifizieren — nicht blind umbauen, sonst
+    Risiko für den Lead-Crawl. Bis dahin: Tool-Edits sind via Riegel sicher.
   - **Augen offen:** Vorbestehender ESLint-Fehler `CeoShell.tsx:97`
     (`react-hooks/set-state-in-effect`, neue Regel) — codebase-weit, separat von
     diesem Projekt; ggf. eslint-Config-Severity klären, nicht per Datei flicken.
