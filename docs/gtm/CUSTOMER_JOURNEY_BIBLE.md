@@ -171,6 +171,7 @@ Dies ist der Doc-Satz, der FlowSight 1:1 abbildet. Für die Arbeit mit ChatGPT
 | **Business-Briefing** | `docs/business_briefing.md` | Geschäftliche Einordnung. |
 | **Customer Journey Bible** | `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` | **Dieses Dokument — der Orchestrator über allem.** |
 | **Customer Journey (visuell)** | `docs/gtm/customer_journey.html` | Das Schwungrad zum Draufschauen + operatives Tool (Kontaktliste, Cold-Call-Baum, Funnel). Stern-Details werden hier gepflegt. |
+| **Customer Journey — Bauplan** | `docs/gtm/customer_journey_buildplan.md` | Bau-/Architekturdetail für die Journey als Software (DB-SSOT, Schema, Phasen, Fund-Protokoll). Kein Orchestrator — trägt nur das Bau-Detail. |
 | **Sales-Bible** | `docs/gtm/sales/SALES_BIBLE.md` | Sterne 1, 2, 4, 5, 8 — kalt + warm verkaufen. ICP/Preis kanonisch. |
 | **Pipeline-Bible** | `docs/gtm/pipeline/PIPELINE_BIBLE.md` | Stern 3 — die Simulation/Video-Fabrik. |
 | **Onboarding-Bible** | `docs/gtm/onboarding/ONBOARDING_BIBLE.md` | Sterne 6, 7, 8 — Cockpit, Go-live, Begleitung. |

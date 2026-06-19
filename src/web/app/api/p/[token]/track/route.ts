@@ -27,12 +27,13 @@ export async function POST(
     const supabase = getServiceClient();
     const { data } = await supabase
       .from("proof_pages")
-      .select("view_count, first_viewed_at")
+      .select("view_count, first_viewed_at, lead_id, tenant_slug")
       .eq("token", token)
       .single();
 
     if (data) {
       const now = new Date().toISOString();
+      const isFirstView = !data.first_viewed_at;
       await supabase
         .from("proof_pages")
         .update({
@@ -41,6 +42,18 @@ export async function POST(
           first_viewed_at: data.first_viewed_at ?? now,
         })
         .eq("token", token);
+
+      // Customer Journey: First-View = der "Gesehen"-Übergang (Stern 3→4).
+      // Nur EINMAL pro Beweis-Seite ins append-only Log (nicht bei jedem Poll).
+      if (isFirstView) {
+        await supabase.from("journey_events").insert({
+          lead_id: data.lead_id ?? null,
+          proof_token: token,
+          event_type: "proof_viewed",
+          source: "track",
+          payload: { tenant_slug: data.tenant_slug ?? null },
+        });
+      }
     }
   } catch {
     // Tracking darf die Seite nie stören.
