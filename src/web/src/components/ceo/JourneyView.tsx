@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   COLD, DRILL, injectColdText, gewerkPhrase, type ColdNode,
 } from "./journey/coldCallScript";
+import { WARM_PHASES, WARM_DRILL } from "./journey/warmCallScript";
 
 // ── Typen ─────────────────────────────────────────────────────────────────
 interface Lead {
@@ -41,6 +42,9 @@ type View =
   | { name: "coldcall" }
   | { name: "live"; node: string }
   | { name: "drill"; i: number; show: boolean }
+  | { name: "warm" }
+  | { name: "warmlive"; i: number }
+  | { name: "warmdrill"; i: number; show: boolean }
   | { name: "step"; star: number };
 
 // Stern → Säule → Farbe
@@ -59,7 +63,7 @@ const STARS = [
   { star: 2, name: "Cold Call", view: "coldcall" as const },
   { star: 3, name: "Simulation", view: "step" as const },
   { star: 4, name: "Gesehen", view: "step" as const },
-  { star: 5, name: "Verkaufsgespräch", view: "step" as const },
+  { star: 5, name: "Verkaufsgespräch", view: "warm" as const },
   { star: 6, name: "Aufbau", view: "step" as const },
   { star: 7, name: "Go-live", view: "step" as const },
   { star: 8, name: "Begleitung", view: "step" as const },
@@ -138,6 +142,9 @@ export function JourneyView() {
   if (view.name === "coldcall") return <ColdCallHub />;
   if (view.name === "live") return <LiveView node={view.node} />;
   if (view.name === "drill") return <DrillView i={view.i} show={view.show} />;
+  if (view.name === "warm") return <WarmHub />;
+  if (view.name === "warmlive") return <WarmLive i={view.i} />;
+  if (view.name === "warmdrill") return <WarmDrill i={view.i} show={view.show} />;
   if (view.name === "step") return <StepInfo star={view.star} />;
   return <Home />;
 
@@ -156,7 +163,12 @@ export function JourneyView() {
             const p = PILLAR[s.star];
             return (
               <button key={s.star}
-                onClick={() => go(s.view === "step" ? { name: "step", star: s.star } : s.view === "kontakt" ? { name: "kontakt" } : { name: "coldcall" })}
+                onClick={() => go(
+                  s.view === "kontakt" ? { name: "kontakt" }
+                  : s.view === "coldcall" ? { name: "coldcall" }
+                  : s.view === "warm" ? { name: "warm" }
+                  : { name: "step", star: s.star }
+                )}
                 className="text-left bg-white rounded-xl border border-navy-200 p-3 hover:border-gold-400 hover:shadow-sm transition">
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${p.dot}`} />
@@ -350,6 +362,71 @@ export function JourneyView() {
         <div className="flex gap-2 mt-3">
           <button onClick={() => go({ name: "drill", i: (i - 1 + DRILL.length) % DRILL.length, show: false })} className="flex-1 py-3 rounded-lg border border-navy-200 bg-white font-semibold text-navy-700">← Zurück</button>
           <button onClick={() => go({ name: "drill", i: (i + 1) % DRILL.length, show: false })} className="flex-1 py-3 rounded-lg bg-gold-500 text-navy-950 font-bold">Nächster →</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Stern 5: Warmes Verkaufsgespräch (Hub / Live / Drill) ───────────────
+  function WarmHub() {
+    return (
+      <div>
+        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
+        <PageHead eyebrow="Stern 5 · Sales" title="Warmes Verkaufsgespräch"
+          sub="Das eigentliche Gespräch nach dem Klick. Ziel: Zusage zum geführten Aufbau. Wortlaut 1:1 aus stern5_warmes_verkaufsgespraech_uebergabe_cc.md (eingefroren)." />
+        <div className="grid sm:grid-cols-3 gap-3">
+          <HubCard title="Übersicht" desc="Alle Phasen 1–9 auf einen Blick" onClick={() => go({ name: "warmlive", i: 0 })} />
+          <HubCard title="Live" desc="Phase für Phase durchgehen" onClick={() => go({ name: "warmlive", i: 0 })} />
+          <HubCard title="Drill" desc="Einwand → Antwort abrufen (28)" onClick={() => go({ name: "warmdrill", i: 0, show: false })} />
+        </div>
+        {biz && <p className="text-xs text-gold-600 mt-3">Aktiver Betrieb fürs Skript: {biz.firma}</p>}
+      </div>
+    );
+  }
+
+  function WarmLive({ i }: { i: number }) {
+    const p = WARM_PHASES[i];
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-2">
+          <BackBtn onClick={() => go({ name: "warm" })} label="Stern 5" />
+          <span className="text-xs text-navy-400">{i + 1} / {WARM_PHASES.length}</span>
+        </div>
+        <h2 className="text-lg font-extrabold text-navy-900 mb-3">{p.title}</h2>
+        <div className="space-y-3">
+          {p.blocks.map((b, j) => (
+            <div key={j} className="rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-4">
+              {b.label && <span className="block text-gold-600 font-bold text-[11px] uppercase tracking-wide mb-1.5">{b.label}</span>}
+              <div className="whitespace-pre-wrap text-[16px] leading-relaxed text-navy-900">{injectColdText(b.text, biz)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button disabled={i === 0} onClick={() => go({ name: "warmlive", i: i - 1 })} className="flex-1 py-3 rounded-lg border border-navy-200 bg-white font-semibold text-navy-700 disabled:opacity-40">← Phase zurück</button>
+          {i < WARM_PHASES.length - 1
+            ? <button onClick={() => go({ name: "warmlive", i: i + 1 })} className="flex-1 py-3 rounded-lg bg-gold-500 text-navy-950 font-bold">Nächste Phase →</button>
+            : <button onClick={() => go({ name: "warm" })} className="flex-1 py-3 rounded-lg bg-navy-900 text-white font-bold">Fertig</button>}
+        </div>
+        <button onClick={() => go({ name: "warmdrill", i: 0, show: false })} className="mt-3 w-full text-sm text-gold-600 hover:underline">Einwand kommt? → zum Drill</button>
+      </div>
+    );
+  }
+
+  function WarmDrill({ i, show }: { i: number; show: boolean }) {
+    const d = WARM_DRILL[i];
+    return (
+      <div className="max-w-2xl mx-auto">
+        <BackBtn onClick={() => go({ name: "warm" })} label="Stern 5" />
+        <div className="flex justify-between text-xs text-navy-400 mb-2"><span>Einwand-Drill · warmes Gespräch</span><span>{i + 1} / {WARM_DRILL.length}</span></div>
+        <div className="rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-5 text-[17px] text-navy-900">
+          <span className="block text-gold-600 font-bold text-[11px] uppercase tracking-wide mb-2">Er sagt</span>{d.cue}
+        </div>
+        {show
+          ? <div className="mt-3 rounded-xl border border-navy-200 border-l-4 border-l-gold-500 bg-white p-4 whitespace-pre-wrap text-[16px] leading-relaxed text-navy-900">{injectColdText(d.answer, biz)}</div>
+          : <button onClick={() => go({ name: "warmdrill", i, show: true })} className="mt-3 w-full bg-gold-500 text-navy-950 font-bold rounded-lg py-3 hover:bg-gold-400">Antwort zeigen</button>}
+        <div className="flex gap-2 mt-3">
+          <button onClick={() => go({ name: "warmdrill", i: (i - 1 + WARM_DRILL.length) % WARM_DRILL.length, show: false })} className="flex-1 py-3 rounded-lg border border-navy-200 bg-white font-semibold text-navy-700">← Zurück</button>
+          <button onClick={() => go({ name: "warmdrill", i: (i + 1) % WARM_DRILL.length, show: false })} className="flex-1 py-3 rounded-lg bg-gold-500 text-navy-950 font-bold">Nächster →</button>
         </div>
       </div>
     );

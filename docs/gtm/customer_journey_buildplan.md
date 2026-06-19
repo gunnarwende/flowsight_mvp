@@ -110,9 +110,13 @@ eine Quelle — „Grüezi Herr X" in Seite und Mail stammt aus derselben Connec
     DB-gestützt mit Inline-Edit (Inhaber/Größe/Mail) + Outcome-Buttons; Stern 2
     Cold Call (Übersicht/Live/Drill, Wortlaut 1:1 aus `coldCallScript.ts`).
     Stern 3–8 vorerst Info-Panels. TS sauber, neue Dateien ESLint-sauber.
-  - **Tranche 2 (offen):** Stern 5 warmes Gespräch als Live/Drill; alte
-    Pipeline-Smart-Call-Liste in die Journey absorbieren + Route `/ceo/pipeline`
-    entfernen; `proof_pages.lead_id`-Backfill (Welle 1) für rückwirkendes „Gesehen".
+  - **Tranche 2a (DONE 19.06.):** Stern 5 warmes Verkaufsgespräch als Hub —
+    Übersicht/Live (Phasen-Stepper 1–9) + Drill (Einwand-Katalog 7.1–7.28).
+    Wortlaut 1:1 aus `warmCallScript.ts` (eingefroren, Version 1). Stern-5-Kachel
+    öffnet jetzt den Hub statt eines Info-Panels. TS + ESLint sauber, Smoke grün.
+  - **Tranche 2b (offen):** alte Pipeline-Smart-Call-Liste in die Journey
+    absorbieren + Route `/ceo/pipeline` entfernen; `proof_pages.lead_id`-Backfill
+    (Welle 1) für rückwirkendes „Gesehen".
   - **Augen offen:** Vorbestehender ESLint-Fehler `CeoShell.tsx:97`
     (`react-hooks/set-state-in-effect`, neue Regel) — codebase-weit, separat von
     diesem Projekt; ggf. eslint-Config-Severity klären, nicht per Datei flicken.
