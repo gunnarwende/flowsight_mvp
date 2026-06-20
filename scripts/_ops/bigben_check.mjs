@@ -62,6 +62,14 @@ async function main() {
     console.log(`  call_id: ${c.call_id}`);
     console.log(`  ► call_type=${JSON.stringify(cad.call_type)}  is_reservation=${JSON.stringify(cad.is_reservation)}  callback_requested=${JSON.stringify(cad.callback_requested)}`);
     console.log(`  ► guest_name=${JSON.stringify(cad.guest_name ?? cad.caller_name ?? cad.reporter_name)}  party_size=${JSON.stringify(cad.party_size)}  time=${JSON.stringify(cad.reservation_time)}`);
+    // For booking/callback-flagged calls, print the full transcript so a lost
+    // reservation can be reconstructed + the guest called back.
+    const isActionable = cad.is_reservation === true || cad.callback_requested === true ||
+      ["mixed", "reservation", "callback"].includes(cad.call_type);
+    if (isActionable) {
+      console.log(`  ── transcript (${c.call_id}) ──`);
+      console.log((c.transcript ?? "(no transcript)").split("\n").map((l) => "    " + l).join("\n"));
+    }
   }
 
   // ── 3. Did they land? pub_reservations + pub_callback_requests ───────────
