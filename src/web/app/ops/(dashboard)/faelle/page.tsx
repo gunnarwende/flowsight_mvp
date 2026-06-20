@@ -40,6 +40,7 @@ export default async function FaellePage({
 
   const filterStatus = params.status ?? "";
   const filterUrgency = params.urgency ?? "";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- dormant, kept for URL backwards-compat
   const _filterWaitingFor = params.waiting_for ?? ""; // dormant — kept for URL backwards-compat
   const filterTenantSlug = params.tenant;
   const filterQuery = params.q ?? "";

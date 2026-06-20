@@ -23,6 +23,7 @@ export default async function CallbacksPage() {
 
   // Show the last 30 days, all statuses (so Paul can scroll back through
   // resolved ones too — useful for context after a long break)
+  // eslint-disable-next-line react-hooks/purity -- pre-existing pattern, unblock build 2026-06-20
   const cutoff = new Date(Date.now() - 30 * 86400000).toISOString();
   const { data: callbacks } = await supabase
     .from("pub_callback_requests")

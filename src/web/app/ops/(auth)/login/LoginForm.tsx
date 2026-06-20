@@ -26,8 +26,6 @@ function safeNext(raw: string | null): string | null {
 const GOLD = "#c8965a";
 const GOLD_HOVER = "#d4a96e";
 const NAVY = "#1a2744";
-const NAVY_800 = "#243352";
-const NAVY_700 = "#2e4066";
 const NAVY_400 = "#7b8fb3";
 const TEXT_SEC = "#64645f";
 const STATUS_ERR = "#c45c4a";

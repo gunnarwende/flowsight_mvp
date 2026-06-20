@@ -23,8 +23,6 @@ const EDITABLE_KEYS = [
   "business_calendar_email",
 ] as const;
 
-type EditableKey = (typeof EDITABLE_KEYS)[number];
-
 async function checkTechnikerBlock(scope: { tenantId?: string | null; isProspect?: boolean }) {
   if (scope.tenantId && !scope.isProspect) {
     const authClient = await getAuthClient();

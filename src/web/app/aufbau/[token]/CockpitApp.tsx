@@ -129,7 +129,7 @@ function PainHint({ items }: { items: { pain: string; relief: string }[] }) {
       <ul className="space-y-2.5">
         {items.map((it, i) => (
           <li key={i} className="leading-relaxed">
-            <span className="text-slate-200">„{it.pain}"</span><br />
+            <span className="text-slate-200">„{it.pain}&quot;</span><br />
             <span style={{ color: GOLD }}>→ </span><span className="text-slate-300">{it.relief}</span>
           </li>
         ))}
@@ -418,7 +418,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
           <Overview token={token} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
-        {view === "lisa" && <Lisa token={token} pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
+        {view === "lisa" && <Lisa pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
         {view === "website" && <Website pf={pf} draft={draft} update={update} onDone={() => markDone("website")} onBack={() => setView("overview")} />}
         {view === "system" && <SystemNode pf={pf} draft={draft} brandColor={brandColor} update={update} onDone={() => markDone("system")} onBack={() => setView("overview")} />}
         {view === "freigabe" && <Freigabe token={token} draft={draft} update={update} onBack={() => setView("overview")} companyName={session.company_name} />}
@@ -575,8 +575,8 @@ function VorOrt({ draft, update, onDone, onBack }: { draft: CockpitDraft; update
 }
 
 // ── Strang: Lisa ─────────────────────────────────────────────────────────────
-function Lisa({ token, pf, draft, update, onDone, onBack }: {
-  token: string; pf: CockpitSession["prefill"]; draft: CockpitDraft;
+function Lisa({ pf, draft, update, onDone, onBack }: {
+  pf: CockpitSession["prefill"]; draft: CockpitDraft;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
   const [star, setStar] = useState<string | null>(null);
@@ -657,7 +657,7 @@ function Lisa({ token, pf, draft, update, onDone, onBack }: {
               </Field>
             </>
           ) : v.emergencyService === false ? (
-            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt {lisaName} den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag." Niemand wird nachts gestört.</p>
+            <p className="text-xs leading-relaxed text-slate-400">Ausserhalb der Öffnungszeiten nimmt {lisaName} den Fall trotzdem auf und sagt: „Wir melden uns am nächsten Werktag.&quot; Niemand wird nachts gestört.</p>
           ) : null}
           <div className="border-t border-white/10 pt-3">
             <Toggle on={v.holidaysClosed ?? true} onChange={(on) => setV({ holidaysClosed: on })} label="An Schweizer Feiertagen & ausserhalb der Öffnungszeiten gilt: geschlossen" />
@@ -826,7 +826,7 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
           ]} />
         {!formRelevant ? (
           <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-            Alles klar — wir richten <span className="text-slate-200">kein Online-Formular</span> ein. Ihre Anfragen laufen über <span className="text-slate-200">Lisa am Telefon</span> und Ihr <span className="text-slate-200">Leitsystem</span>. Dieser Strang ist damit fertig — tippen Sie unten auf „✓ passt".
+            Alles klar — wir richten <span className="text-slate-200">kein Online-Formular</span> ein. Ihre Anfragen laufen über <span className="text-slate-200">Lisa am Telefon</span> und Ihr <span className="text-slate-200">Leitsystem</span>. Dieser Strang ist damit fertig — tippen Sie unten auf „✓ passt&quot;.
           </p>
         ) : null}
       </Section>
@@ -996,7 +996,7 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
                 <TextInput type="email" placeholder="admin@ihre-firma.ch" value={draft.calendar?.adminEmail ?? ""} onChange={(e) => update((d) => ({ ...d, calendar: { ...d.calendar, adminEmail: e.target.value } }))} />
               </Field>
               <Disclosure summary="Wie läuft die Verbindung ab? (1 Klick — nichts heraussuchen)">
-                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden"</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Team-Stern) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID" o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
+                Nach dem Freischalten öffnen Sie im Leitsystem <span className="text-slate-200">Einstellungen → Kalender</span> und klicken <span className="text-slate-200">„Mit Microsoft verbinden&quot;</span>. Die oben genannte Person meldet sich <span className="text-slate-200">einmal</span> mit ihrer Microsoft-365-E-Mail an und bestätigt die Freigabe — fertig. Wir prüfen dann die Kalender Ihrer Mitarbeiter (Team-Stern) auf Belegung. Voraussetzung: Microsoft 365 mit Postfach je Mitarbeiter. Eine „Tenant-ID&quot; o. Ä. müssen Sie <span className="text-slate-200">nicht</span> heraussuchen.
               </Disclosure>
             </>
           ) : null}
@@ -1034,12 +1034,12 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
               </div>
               <div>
                 <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}"</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}&quot;</p>
                 <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
               </div>
               <div>
                 <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}"</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}&quot;</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
                 <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
               </div>
@@ -1059,13 +1059,13 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
             <TextInput placeholder="https://g.page/r/… oder Firmenname" value={draft.review?.googleReviewUrl ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googleReviewUrl: e.target.value } }))} />
           </Field>
           <Disclosure summary="Wo finde ich meinen Bewertungslink?">
-            Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten"</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
+            Öffnen Sie Ihr <span className="text-slate-200">Google-Unternehmensprofil</span> → <span className="text-slate-200">Rezensionen</span> → <span className="text-slate-200">„Mehr Rezensionen erhalten&quot;</span> → Link kopieren und hier einfügen. Kein Profil zur Hand? Firmenname genügt, wir finden ihn.
           </Disclosure>
           <Field label="Google Place-ID / Profilname (optional)" hint="Für die automatische, wöchentliche Aktualisierung Ihrer Sterne — nur ein Komfort-Extra.">
             <TextInput placeholder="z. B. ChIJ… oder exakter Profilname" value={draft.review?.googlePlaceId ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, googlePlaceId: e.target.value } }))} />
           </Field>
           <Disclosure summary="Was ist die Place-ID — und wo finde ich sie?">
-            Die Place-ID ist Googles eindeutige Kennung Ihres Profils (beginnt meist mit <span className="text-slate-200">„ChIJ…"</span>). Am einfachsten: Google nach <span className="text-slate-200">„Place ID Finder"</span> suchen, dort Ihren Firmennamen eingeben → die ID erscheint. <span className="text-slate-200">Sie müssen das nicht selbst suchen</span> — lassen Sie das Feld ruhig leer, der Bewertungslink oder Firmenname oben genügt vollkommen. Den Rest erledigen wir.
+            Die Place-ID ist Googles eindeutige Kennung Ihres Profils (beginnt meist mit <span className="text-slate-200">„ChIJ…&quot;</span>). Am einfachsten: Google nach <span className="text-slate-200">„Place ID Finder&quot;</span> suchen, dort Ihren Firmennamen eingeben → die ID erscheint. <span className="text-slate-200">Sie müssen das nicht selbst suchen</span> — lassen Sie das Feld ruhig leer, der Bewertungslink oder Firmenname oben genügt vollkommen. Den Rest erledigen wir.
           </Disclosure>
           <Field label="Welche Bewertungen sollen intern bleiben?" hint="Schwächere Bewertungen landen NICHT öffentlich auf Google, sondern als internes Feedback bei Ihnen.">
             <RadioGroup value={String(rThr)} onChange={(val) => update((d) => ({ ...d, review: { ...d.review, internalThreshold: Number(val) as 0 | 2 | 3 | 4 } }))}

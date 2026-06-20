@@ -50,6 +50,7 @@ export default async function ReviewPage({ params, searchParams }: PageProps) {
   // ── 90-day expiry ──────────────────────────────────────────────────
   const REVIEW_LINK_MAX_AGE_DAYS = 90;
   const sentAt = caseRow.review_sent_at ? new Date(caseRow.review_sent_at) : new Date(caseRow.created_at);
+  // eslint-disable-next-line react-hooks/purity -- pre-existing pattern, unblock build 2026-06-20
   const daysSinceSent = (Date.now() - sentAt.getTime()) / (1000 * 60 * 60 * 24);
   if (daysSinceSent > REVIEW_LINK_MAX_AGE_DAYS) {
     return (

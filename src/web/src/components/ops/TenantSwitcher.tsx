@@ -42,7 +42,7 @@ const STATUS_COLORS: Record<string, string> = {
   offboarded: "#6b7280",     // gray
 };
 
-export function TenantSwitcher({ activeTenantId, homeTenantId, viewAsRole }: TenantSwitcherProps) {
+export function TenantSwitcher({ activeTenantId, viewAsRole }: TenantSwitcherProps) {
   const router = useRouter();
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [open, setOpen] = useState(false);

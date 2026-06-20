@@ -8,7 +8,6 @@ export function DeleteButton({ caseId, isDeleted }: { caseId: string; isDeleted:
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const action = isDeleted ? "restore" : "delete";
   const label = isDeleted ? "Wiederherstellen" : "Löschen";
   const confirmText = isDeleted
     ? "Diesen Fall wirklich wiederherstellen?"

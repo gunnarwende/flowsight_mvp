@@ -80,7 +80,6 @@ export default async function StartPage({
   if (!c) notFound();
 
   const accent = c.brandColor ?? "#2b6cb0";
-  const voicePhone = c.voicePhone ?? c.contact.phone;
   const voicePhoneRaw = c.voicePhoneRaw ?? c.contact.phoneRaw;
   const voicePhoneFormatted = formatPhone(voicePhoneRaw);
   const hasEmergency = c.emergency?.enabled === true;

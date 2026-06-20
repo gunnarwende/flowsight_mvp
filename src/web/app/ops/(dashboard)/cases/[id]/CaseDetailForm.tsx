@@ -6,7 +6,6 @@ import { deriveReviewStatus } from "@/src/lib/reviews/deriveReviewStatus";
 import type { CaseEvent } from "@/src/components/ops/CaseTimeline";
 import { AttachmentsSection } from "./AttachmentsSection";
 import { AppointmentPicker } from "@/src/components/ops/AppointmentPicker";
-import { getStatusColorClass } from "@/src/lib/cases/statusColors";
 import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
 
 // ---------------------------------------------------------------------------

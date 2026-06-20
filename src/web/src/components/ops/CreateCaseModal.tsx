@@ -460,6 +460,7 @@ export function CreateCaseModal({
                   >
                     {/* Thumbnail for images */}
                     {sf.previewUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- pre-existing pattern, unblock build 2026-06-20
                       <img
                         src={sf.previewUrl}
                         alt={sf.file.name}

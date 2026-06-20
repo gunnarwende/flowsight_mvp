@@ -26,7 +26,7 @@ export function TenantGrid() {
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<Tab>("alle");
   const [initialVersions, setInitialVersions] = useState<Record<string, string>>({});
-  const [currentVersions, setCurrentVersions] = useState<Record<string, string>>({});
+  const [, setCurrentVersions] = useState<Record<string, string>>({});
   const [updatedTenants, setUpdatedTenants] = useState<Set<string>>(new Set());
 
   const fetchTenants = useCallback(async () => {

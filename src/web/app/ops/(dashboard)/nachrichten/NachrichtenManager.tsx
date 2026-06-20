@@ -66,7 +66,7 @@ export function NachrichtenManager({ initialCallbacks }: { initialCallbacks: Nac
         <h1 className="text-lg font-bold text-[#1e3a5f]">Nachrichten</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           Rückruf-Wünsche und Nachfragen, die Lisa aufgenommen hat — kein Auftrag,
-          sondern „bitte zurückrufen".
+          sondern „bitte zurückrufen&quot;.
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export function NachrichtenManager({ initialCallbacks }: { initialCallbacks: Nac
                     {c.caller_phone}
                   </a>
                 )}
-                {c.topic && <p className="text-xs text-gray-700 mt-1 italic">„{c.topic}"</p>}
+                {c.topic && <p className="text-xs text-gray-700 mt-1 italic">„{c.topic}&quot;</p>}
                 <p className="text-[11px] text-gray-500 mt-2">{fmtTime(c.created_at)}</p>
               </div>
               <div className="mt-3 flex gap-2">

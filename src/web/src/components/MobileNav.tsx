@@ -7,6 +7,7 @@ import { SITE } from "@/src/lib/marketing/constants";
 
 function OverlayPortal({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- pre-existing pattern, unblock build 2026-06-20
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
   return createPortal(children, document.body);

@@ -31,7 +31,7 @@ export async function PATCH(
   const supabase = getServiceClient();
 
   // Verify ownership
-  let query = supabase.from("staff").select("tenant_id").eq("id", id).single();
+  const query = supabase.from("staff").select("tenant_id").eq("id", id).single();
   const { data: existing } = await query;
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!scope.isAdmin && existing.tenant_id !== scope.tenantId) {

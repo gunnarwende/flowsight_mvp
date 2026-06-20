@@ -31,8 +31,6 @@ const FIXED_CATEGORIES = [
   { value: "Kontakt", label: "Kontakt", icon: <IconChat />, hint: "Frage, Rückruf" },
 ] as const;
 
-const ALL_CATEGORIES = [...TOP_CATEGORIES, ...FIXED_CATEGORIES];
-
 const URGENCIES = [
   { value: "notfall", label: "Notfall", hint: "Sofort — Wasser läuft, Gefahr", color: "red" },
   { value: "dringend", label: "Dringend", hint: "Heute/morgen — funktioniert nicht", color: "amber" },
@@ -92,21 +90,6 @@ function IconFlame() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
       <path d="M12 2c0 4-4 6-4 10a4 4 0 0 0 8 0c0-4-4-6-4-10z" />
       <path d="M12 18a2 2 0 0 1-2-2c0-1 2-3 2-3s2 2 2 3a2 2 0 0 1-2 2z" />
-    </svg>
-  );
-}
-function IconThermo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
-      <path d="M14 14.76V3.5a2.5 2.5 0 1 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
-    </svg>
-  );
-}
-function IconBurst() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7">
-      <path d="M4 14h3l2-4 3 8 3-8 2 4h3" />
-      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
     </svg>
   );
 }

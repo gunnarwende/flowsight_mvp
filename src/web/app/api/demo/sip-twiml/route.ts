@@ -49,7 +49,7 @@ function buildTwiml(target: string): string {
 </Response>`;
 }
 
-function buildErrorTwiml(dialed: string | null): string {
+function buildErrorTwiml(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say language="de-DE">Diese Nummer ist nicht konfiguriert. Bitte prüfen Sie die gewählte Nummer.</Say>
@@ -75,7 +75,7 @@ async function routeCall(request: NextRequest): Promise<Response> {
   console.log(JSON.stringify({ _tag: "sip_twiml", to, dialed, target: target ?? "UNKNOWN" }));
 
   if (!target) {
-    return new Response(buildErrorTwiml(dialed), {
+    return new Response(buildErrorTwiml(), {
       headers: { "Content-Type": "application/xml" },
     });
   }
