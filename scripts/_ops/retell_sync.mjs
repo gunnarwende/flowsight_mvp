@@ -233,38 +233,41 @@ if (dryRun) {
 
 try {
   // ── Step 1: Create/update conversation flows ────────────────────────
-  // Swap tools are stripped on create (agents don't exist yet).
-  // On update, we also strip them — they're re-added in step 3.
+  // Retell REJECTS node/structure updates on a PUBLISHED flow
+  // ("Cannot update published conversation flow"). For existing flows we
+  // therefore patch ONLY the global_prompt (the common per-sync change) and
+  // leave the nodes — incl. their already-linked agent_swap tools — untouched.
+  // This mirrors the proven bigben_publish.mjs path. Full node creation + swap
+  // linking happens only on first CREATE (Step 3), while the flow is a draft.
   console.log("━━━ Step 1: Conversation Flows ━━━\n");
 
   const deFlowParams = extractFlowParams(deConfig);
   const intlFlowParams = extractFlowParams(intlConfig);
 
   let deFlowId, intlFlowId;
+  let deFlowCreated = false,
+    intlFlowCreated = false;
 
   if (existing.de_flow_id) {
-    const body = { ...deFlowParams, nodes: stripSwapTools(deFlowParams.nodes) };
-    await retellPatch(`/update-conversation-flow/${existing.de_flow_id}`, body);
+    await retellPatch(`/update-conversation-flow/${existing.de_flow_id}`, {
+      global_prompt: deFlowParams.global_prompt,
+    });
     deFlowId = existing.de_flow_id;
-    console.log(`  ✓ DE flow updated:   ${deFlowId}`);
+    console.log(`  ✓ DE flow prompt updated:   ${deFlowId}`);
   } else {
     const body = { ...deFlowParams, nodes: stripSwapTools(deFlowParams.nodes) };
     const res = await retellPost("/create-conversation-flow", body);
     deFlowId = res.conversation_flow_id;
+    deFlowCreated = true;
     console.log(`  ✓ DE flow created:   ${deFlowId}`);
   }
 
   if (existing.intl_flow_id) {
-    const body = {
-      ...intlFlowParams,
-      nodes: stripSwapTools(intlFlowParams.nodes),
-    };
-    await retellPatch(
-      `/update-conversation-flow/${existing.intl_flow_id}`,
-      body
-    );
+    await retellPatch(`/update-conversation-flow/${existing.intl_flow_id}`, {
+      global_prompt: intlFlowParams.global_prompt,
+    });
     intlFlowId = existing.intl_flow_id;
-    console.log(`  ✓ INTL flow updated: ${intlFlowId}`);
+    console.log(`  ✓ INTL flow prompt updated: ${intlFlowId}`);
   } else {
     const body = {
       ...intlFlowParams,
@@ -272,6 +275,7 @@ try {
     };
     const res = await retellPost("/create-conversation-flow", body);
     intlFlowId = res.conversation_flow_id;
+    intlFlowCreated = true;
     console.log(`  ✓ INTL flow created: ${intlFlowId}`);
   }
   console.log("");
@@ -306,22 +310,31 @@ try {
   }
   console.log("");
 
-  // ── Step 3: Cross-link swap tools ───────────────────────────────────
+  // ── Step 3: Cross-link swap tools (newly created flows only) ─────────
+  // Existing (published) flows keep their already-linked swap tools — and
+  // Retell would reject a node patch on them anyway. Only freshly created
+  // draft flows need their agent_swap targets wired here.
   console.log("━━━ Step 3: Cross-link swap tools ━━━\n");
 
-  // DE flow → swap to INTL agent
-  const deNodesLinked = withSwapAgentId(deFlowParams.nodes, intlAgentId);
-  await retellPatch(`/update-conversation-flow/${deFlowId}`, {
-    nodes: deNodesLinked,
-  });
-  console.log(`  ✓ DE flow → swap to INTL: ${intlAgentId}`);
+  if (deFlowCreated) {
+    const deNodesLinked = withSwapAgentId(deFlowParams.nodes, intlAgentId);
+    await retellPatch(`/update-conversation-flow/${deFlowId}`, {
+      nodes: deNodesLinked,
+    });
+    console.log(`  ✓ DE flow → swap to INTL: ${intlAgentId}`);
+  } else {
+    console.log(`  • DE flow existing — swap tools left intact`);
+  }
 
-  // INTL flow → swap to DE agent
-  const intlNodesLinked = withSwapAgentId(intlFlowParams.nodes, deAgentId);
-  await retellPatch(`/update-conversation-flow/${intlFlowId}`, {
-    nodes: intlNodesLinked,
-  });
-  console.log(`  ✓ INTL flow → swap to DE: ${deAgentId}`);
+  if (intlFlowCreated) {
+    const intlNodesLinked = withSwapAgentId(intlFlowParams.nodes, deAgentId);
+    await retellPatch(`/update-conversation-flow/${intlFlowId}`, {
+      nodes: intlNodesLinked,
+    });
+    console.log(`  ✓ INTL flow → swap to DE: ${deAgentId}`);
+  } else {
+    console.log(`  • INTL flow existing — swap tools left intact`);
+  }
   console.log("");
 
   // ── Step 4: Publish ─────────────────────────────────────────────────
