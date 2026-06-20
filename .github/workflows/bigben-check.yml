@@ -1,0 +1,34 @@
+name: BigBen Check
+
+# READ-ONLY. Health check for the BigBen Pub voice path: proves whether the
+# sync-calls route's v3 fetch still works, lists recent calls to BigBen's
+# number + their analysis, and shows whether they landed in pub_reservations /
+# pub_callback_requests. Never mutates.
+
+on:
+  workflow_dispatch:
+    inputs:
+      to_number:
+        description: "BigBen number (E.164)"
+        required: false
+        type: string
+        default: "+41445054818"
+
+jobs:
+  check:
+    name: bigben-voice-health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check BigBen voice path
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          [ -n "${RETELL_API_KEY:-}" ] || { echo "::error::RETELL_API_KEY not set"; exit 1; }
+          node scripts/_ops/bigben_check.mjs "${{ github.event.inputs.to_number }}"
