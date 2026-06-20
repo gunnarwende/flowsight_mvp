@@ -202,7 +202,44 @@ function withSwapAgentId(nodes, targetAgentId) {
   return clone;
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────
+// ── Self-healing flow upsert ───────────────────────────────────────────────
+
+/**
+ * Update an existing flow's prompt, OR create a fresh draft flow if it is
+ * locked. Retell rejects updates to a PUBLISHED conversation flow ("Cannot
+ * update published conversation flow"). The sustainable state (see BigBen) is
+ * a never-published draft flow that calls reach via the published AGENT +
+ * phone-number version unpin. So when we hit a locked flow we create a new
+ * draft from the local config, and the caller re-points the agent to it.
+ *
+ * Returns { flowId, created } — created=true means swap tools must be linked
+ * (Step 3) and agent_ids.json gets the new id.
+ */
+async function upsertFlow(existingFlowId, flowParams, label) {
+  if (existingFlowId) {
+    try {
+      await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
+        global_prompt: flowParams.global_prompt,
+      });
+      console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}`);
+      return { flowId: existingFlowId, created: false };
+    } catch (err) {
+      if (!/Cannot update published conversation flow/i.test(err.message)) throw err;
+      console.log(
+        `  ⚠ ${label} flow ${existingFlowId} is published/locked — creating fresh draft flow`
+      );
+    }
+  }
+  const body = { ...flowParams, nodes: stripSwapTools(flowParams.nodes) };
+  const res = await retellPost("/create-conversation-flow", body);
+  console.log(
+    `  ✓ ${label} flow ${existingFlowId ? "re-created (draft)" : "created"}: ${res.conversation_flow_id}` +
+      (existingFlowId ? ` (was ${existingFlowId})` : "")
+  );
+  return { flowId: res.conversation_flow_id, created: true };
+}
+
+
 
 console.log("\n╔════════════════════════════════════════════════════╗");
 console.log("║         FlowSight — Retell Agent Sync             ║");
@@ -244,40 +281,12 @@ try {
   const deFlowParams = extractFlowParams(deConfig);
   const intlFlowParams = extractFlowParams(intlConfig);
 
-  let deFlowId, intlFlowId;
-  let deFlowCreated = false,
-    intlFlowCreated = false;
-
-  if (existing.de_flow_id) {
-    await retellPatch(`/update-conversation-flow/${existing.de_flow_id}`, {
-      global_prompt: deFlowParams.global_prompt,
-    });
-    deFlowId = existing.de_flow_id;
-    console.log(`  ✓ DE flow prompt updated:   ${deFlowId}`);
-  } else {
-    const body = { ...deFlowParams, nodes: stripSwapTools(deFlowParams.nodes) };
-    const res = await retellPost("/create-conversation-flow", body);
-    deFlowId = res.conversation_flow_id;
-    deFlowCreated = true;
-    console.log(`  ✓ DE flow created:   ${deFlowId}`);
-  }
-
-  if (existing.intl_flow_id) {
-    await retellPatch(`/update-conversation-flow/${existing.intl_flow_id}`, {
-      global_prompt: intlFlowParams.global_prompt,
-    });
-    intlFlowId = existing.intl_flow_id;
-    console.log(`  ✓ INTL flow prompt updated: ${intlFlowId}`);
-  } else {
-    const body = {
-      ...intlFlowParams,
-      nodes: stripSwapTools(intlFlowParams.nodes),
-    };
-    const res = await retellPost("/create-conversation-flow", body);
-    intlFlowId = res.conversation_flow_id;
-    intlFlowCreated = true;
-    console.log(`  ✓ INTL flow created: ${intlFlowId}`);
-  }
+  const deUpsert = await upsertFlow(existing.de_flow_id, deFlowParams, "DE");
+  const intlUpsert = await upsertFlow(existing.intl_flow_id, intlFlowParams, "INTL");
+  const deFlowId = deUpsert.flowId;
+  const intlFlowId = intlUpsert.flowId;
+  const deFlowCreated = deUpsert.created;
+  const intlFlowCreated = intlUpsert.created;
   console.log("");
 
   // ── Step 2: Create/update agents ────────────────────────────────────
