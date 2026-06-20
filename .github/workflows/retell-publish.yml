@@ -62,7 +62,7 @@ jobs:
           echo "Running: retell_sync.mjs $FLAGS"
           node scripts/_ops/retell_sync.mjs $FLAGS
 
-      - name: Verify is_published=true
+      - name: Verify a fresh version was published
         id: verify
         if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
@@ -76,26 +76,33 @@ jobs:
           const key = process.env.RETELL_API_KEY;
           const ids = JSON.parse(fs.readFileSync("retell/agent_ids.json", "utf8"))[prefix] || {};
           const targets = [["DE", ids.de_agent_id], ["INTL", ids.intl_agent_id]].filter(([,id]) => id);
+          // Healthy published state (like BigBen): get-agent returns the DRAFT head
+          // (is_published=false), with the just-published version one below it.
+          // So verify via version history: the highest PUBLISHED version must be at
+          // or just below the latest version (i.e. a recent publish happened).
           (async () => {
-            let allPub = true; const lines = [];
+            let allOk = true; const lines = [];
             for (const [label, id] of targets) {
-              const r = await fetch(`https://api.retellai.com/get-agent/${id}`, {
+              const r = await fetch(`https://api.retellai.com/get-agent-versions/${id}`, {
                 headers: { Authorization: `Bearer ${key}` },
               });
-              const a = await r.json().catch(() => ({}));
-              const pub = a.is_published === true;
-              allPub = allPub && pub;
-              lines.push(`${pub ? "✅" : "🔴"} ${label} ${id} is_published=${a.is_published}`);
+              const vs = await r.json().catch(() => []);
+              const arr = Array.isArray(vs) ? vs : [];
+              const latest = Math.max(...arr.map((v) => v.version));
+              const maxPub = Math.max(...arr.filter((v) => v.is_published).map((v) => v.version), -1);
+              const ok = maxPub >= latest - 1; // published head, with at most a fresh draft on top
+              allOk = allOk && ok;
+              lines.push(`${ok ? "✅" : "🔴"} ${label} ${id} latest=v${latest} published_head=v${maxPub}`);
             }
             const verdict = targets.length === 0
               ? "🔴 no agent IDs found for prefix"
-              : (allPub ? `✅ ${prefix}: all published` : `🔴 ${prefix}: NOT all published`);
+              : (allOk ? `✅ ${prefix}: published version is current` : `🔴 ${prefix}: published head stale`);
             console.log(lines.join("\n"));
             console.log(verdict);
             fs.appendFileSync(process.env.GITHUB_OUTPUT,
               `status=${verdict}\n` +
               `summary<<EOF\n${[...lines, verdict].join("\n")}\nEOF\n`);
-            if (!allPub || targets.length === 0) process.exit(1);
+            if (!allOk || targets.length === 0) process.exit(1);
           })();
           NODE
 
