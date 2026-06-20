@@ -202,40 +202,40 @@ function withSwapAgentId(nodes, targetAgentId) {
   return clone;
 }
 
-// ── Self-healing flow upsert ───────────────────────────────────────────────
+// ── Versioning helpers ─────────────────────────────────────────────────────
 
 /**
- * Update an existing flow's prompt, OR create a fresh draft flow if it is
- * locked. Retell rejects updates to a PUBLISHED conversation flow ("Cannot
- * update published conversation flow"). The sustainable state (see BigBen) is
- * a never-published draft flow that calls reach via the published AGENT +
- * phone-number version unpin. So when we hit a locked flow we create a new
- * draft from the local config, and the caller re-points the agent to it.
- *
- * Returns { flowId, created } — created=true means swap tools must be linked
- * (Step 3) and agent_ids.json gets the new id.
+ * Retell only lets you edit the LATEST version of an agent/flow, and a
+ * PUBLISHED latest is immutable ("Cannot update published agent / conversation
+ * flow"). An agent and its conversation flow SHARE a version number, so creating
+ * a new agent draft version (POST /create-agent-version) ALSO yields an editable
+ * flow draft under the SAME ids. Call this BEFORE patching an existing agent.
+ * No-op if the latest version is already an unpublished draft (the healthy
+ * BigBen state, e.g. Doerfler INTL). Verified live via retell_inspect:
+ * Doerfler DE agent v0–v7 were ALL published (no draft) → locked.
  */
+async function ensureEditableDraft(agentId, label) {
+  const a = await retellGet(`/get-agent/${agentId}`);
+  if (a.is_published) {
+    await retellPost(`/create-agent-version/${agentId}`, { base_version: a.version });
+    console.log(`  ✓ ${label} editable draft created from published v${a.version}`);
+  } else {
+    console.log(`  • ${label} already editable (draft v${a.version})`);
+  }
+}
+
+/** Update an existing flow's prompt, or create one for a brand-new tenant. */
 async function upsertFlow(existingFlowId, flowParams, label) {
   if (existingFlowId) {
-    try {
-      await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
-        global_prompt: flowParams.global_prompt,
-      });
-      console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}`);
-      return { flowId: existingFlowId, created: false };
-    } catch (err) {
-      if (!/Cannot update published conversation flow/i.test(err.message)) throw err;
-      console.log(
-        `  ⚠ ${label} flow ${existingFlowId} is published/locked — creating fresh draft flow`
-      );
-    }
+    await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
+      global_prompt: flowParams.global_prompt,
+    });
+    console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}`);
+    return { flowId: existingFlowId, created: false };
   }
   const body = { ...flowParams, nodes: stripSwapTools(flowParams.nodes) };
   const res = await retellPost("/create-conversation-flow", body);
-  console.log(
-    `  ✓ ${label} flow ${existingFlowId ? "re-created (draft)" : "created"}: ${res.conversation_flow_id}` +
-      (existingFlowId ? ` (was ${existingFlowId})` : "")
-  );
+  console.log(`  ✓ ${label} flow created:   ${res.conversation_flow_id}`);
   return { flowId: res.conversation_flow_id, created: true };
 }
 
@@ -269,13 +269,21 @@ if (dryRun) {
 }
 
 try {
+  // ── Step 0: ensure editable drafts (unlock published agents/flows) ──
+  // A published latest version is immutable; create a draft version first so
+  // the flow + agent patches below land. No-op for already-draft tenants.
+  if (existing.de_agent_id || existing.intl_agent_id) {
+    console.log("━━━ Step 0: Ensure editable drafts ━━━\n");
+    if (existing.de_agent_id) await ensureEditableDraft(existing.de_agent_id, "DE");
+    if (existing.intl_agent_id) await ensureEditableDraft(existing.intl_agent_id, "INTL");
+    console.log("");
+  }
+
   // ── Step 1: Create/update conversation flows ────────────────────────
-  // Retell REJECTS node/structure updates on a PUBLISHED flow
-  // ("Cannot update published conversation flow"). For existing flows we
-  // therefore patch ONLY the global_prompt (the common per-sync change) and
-  // leave the nodes — incl. their already-linked agent_swap tools — untouched.
-  // This mirrors the proven bigben_publish.mjs path. Full node creation + swap
-  // linking happens only on first CREATE (Step 3), while the flow is a draft.
+  // For existing flows patch ONLY the global_prompt (nodes + already-linked
+  // agent_swap tools stay intact). Full node creation + swap linking (Step 3)
+  // happens only on first CREATE. Step 0 has already unlocked any published
+  // latest version, so these patches hit an editable draft.
   console.log("━━━ Step 1: Conversation Flows ━━━\n");
 
   const deFlowParams = extractFlowParams(deConfig);
