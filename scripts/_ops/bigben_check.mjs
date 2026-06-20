@@ -67,8 +67,17 @@ async function main() {
     const isActionable = cad.is_reservation === true || cad.callback_requested === true ||
       ["mixed", "reservation", "callback"].includes(cad.call_type);
     if (isActionable) {
-      console.log(`  ── transcript (${c.call_id}) ──`);
-      console.log((c.transcript ?? "(no transcript)").split("\n").map((l) => "    " + l).join("\n"));
+      // The list endpoint strips transcript + some analysis fields. Fetch the
+      // call detail to recover the full booking (esp. reservation_date) + transcript.
+      const dr = await fetch(`${RETELL}/v2/get-call/${c.call_id}`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      const det = await dr.json().catch(() => null);
+      const dcad = det?.call_analysis?.custom_analysis_data ?? {};
+      console.log(`  ── full analysis (${c.call_id}) → HTTP ${dr.status} ──`);
+      console.log(`    ${JSON.stringify(dcad)}`);
+      console.log(`  ── transcript ──`);
+      console.log(((det?.transcript ?? c.transcript) ?? "(no transcript)").split("\n").map((l) => "    " + l).join("\n"));
     }
   }
 
