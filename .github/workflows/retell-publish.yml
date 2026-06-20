@@ -107,9 +107,14 @@ jobs:
           NODE
 
       - name: Commit refreshed agent_ids.json
+        # Best-effort: main is branch-protected (PR-only), so a direct push is
+        # rejected. agent_ids.json only changes on first-time tenant creation
+        # (new IDs) or its last_synced timestamp — never critical for a
+        # re-publish. Never fail the job over this housekeeping commit.
         if: ${{ github.event.inputs.dry_run != 'true' }}
+        continue-on-error: true
         run: |
-          set -euo pipefail
+          set -uo pipefail
           if git diff --quiet -- retell/agent_ids.json; then
             echo "agent_ids.json unchanged — nothing to commit"
           else
@@ -117,8 +122,11 @@ jobs:
             git config user.email "bot@flowsight.ch"
             git add retell/agent_ids.json
             git commit -m "chore(retell): refresh agent_ids after publish (${{ github.event.inputs.prefix }})"
-            git push origin HEAD:${{ github.ref_name }}
-            echo "Committed + pushed agent_ids.json"
+            if git push origin HEAD:${{ github.ref_name }}; then
+              echo "Committed + pushed agent_ids.json"
+            else
+              echo "::warning::agent_ids.json push blocked (branch protection) — timestamp-only, safe to ignore"
+            fi
           fi
 
   notify:

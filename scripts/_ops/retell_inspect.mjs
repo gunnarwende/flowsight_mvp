@@ -74,6 +74,14 @@ for (const pre of prefixes) {
       } else {
         console.log(`    versions → HTTP ${v.status}: ${JSON.stringify(v.d)}`);
       }
+      // Surface the reporter_name analysis-field rule (was the caller-name bug)
+      if (r.ok && Array.isArray(r.d.post_call_analysis_data)) {
+        const rn = r.d.post_call_analysis_data.find((f) => f.name === "reporter_name");
+        if (rn) {
+          const restricted = /only fill if/i.test(rn.description);
+          console.log(`    reporter_name: ${restricted ? "🔴 RESTRICTED" : "✅ all call types"} — …${rn.description.slice(-70)}`);
+        }
+      }
     } else if (k.endsWith("_flow_id")) {
       const r = await get(`/get-conversation-flow/${id}`);
       console.log(`\n  FLOW  ${k} = ${id}  → HTTP ${r.status}`);
