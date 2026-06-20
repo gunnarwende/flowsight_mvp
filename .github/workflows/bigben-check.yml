@@ -13,6 +13,11 @@ on:
         required: false
         type: string
         default: "+41445054818"
+      fetch_limit:
+        description: "How many recent calls to scan (wider = deeper sweep)"
+        required: false
+        type: string
+        default: "50"
 
 jobs:
   check:
@@ -31,4 +36,4 @@ jobs:
         run: |
           set -euo pipefail
           [ -n "${RETELL_API_KEY:-}" ] || { echo "::error::RETELL_API_KEY not set"; exit 1; }
-          node scripts/_ops/bigben_check.mjs "${{ github.event.inputs.to_number }}"
+          node scripts/_ops/bigben_check.mjs "${{ github.event.inputs.to_number }}" "${{ github.event.inputs.fetch_limit }}"
