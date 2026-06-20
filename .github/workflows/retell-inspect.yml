@@ -1,0 +1,35 @@
+name: Retell Inspect
+
+# READ-ONLY diagnostic. GETs each tenant's Retell flows + agents and prints
+# their scalar state (is_published, version, …). Never mutates anything — safe
+# to run against live customers (BigBen). Used to find why one tenant's flow
+# rejects updates ("Cannot update published conversation flow") while another
+# patches fine.
+
+on:
+  workflow_dispatch:
+    inputs:
+      prefixes:
+        description: "Comma-separated agent_ids prefixes to inspect"
+        required: false
+        type: string
+        default: "doerfler,bigben-pub"
+
+jobs:
+  inspect:
+    name: inspect
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Inspect Retell state
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+        run: |
+          set -euo pipefail
+          [ -n "${RETELL_API_KEY:-}" ] || { echo "::error::RETELL_API_KEY not set"; exit 1; }
+          node scripts/_ops/retell_inspect.mjs "${{ github.event.inputs.prefixes }}"
