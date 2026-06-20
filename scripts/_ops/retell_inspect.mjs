@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * retell_inspect.mjs — READ-ONLY Retell state inspector.
+ * retell_inspect.mjs — READ-ONLY deep Retell state inspector.
  *
- * For each given prefix (from retell/agent_ids.json) it GETs every flow + agent
- * and prints the SCALAR fields (is_published, version, timestamps, …) — the
- * large fields (global_prompt, nodes) are stripped for readability.
+ * For each given prefix (from retell/agent_ids.json) it GETs:
+ *   - each agent (scalar fields) + its FULL version history (version/is_published)
+ *   - each conversation flow (scalar fields)
+ *   - all phone numbers, showing which agent + pinned version they route to
  *
- * Purpose: understand WHY an update to one tenant's conversation flow is
- * rejected ("Cannot update published conversation flow") while another tenant
- * (BigBen) patches fine daily. Pure GET — never mutates anything.
+ * Large fields (global_prompt, nodes) are stripped. Pure GET — never mutates.
+ * Goal: understand the REAL live versioning/publish state (docs can be stale).
  *
  * Usage:  node scripts/_ops/retell_inspect.mjs [prefix1,prefix2,...]
  * Env:    RETELL_API_KEY (required)
@@ -47,6 +47,12 @@ function scalars(o) {
   return out;
 }
 
+// collect our agent ids for phone cross-reference
+const agentIdSet = new Set();
+for (const pre of prefixes)
+  for (const [k, id] of Object.entries(ids[pre] || {}))
+    if (k.endsWith("_agent_id")) agentIdSet.add(id);
+
 for (const pre of prefixes) {
   const o = ids[pre];
   console.log(`\n═══════════ ${pre} ═══════════`);
@@ -55,15 +61,38 @@ for (const pre of prefixes) {
     continue;
   }
   for (const [k, id] of Object.entries(o)) {
-    if (k.endsWith("_flow_id")) {
-      const r = await get(`/get-conversation-flow/${id}`);
-      console.log(`\n  FLOW  ${k} = ${id}  → HTTP ${r.status}`);
-      console.log("   ", JSON.stringify(r.ok ? scalars(r.d) : r.d));
-    } else if (k.endsWith("_agent_id")) {
+    if (k.endsWith("_agent_id")) {
       const r = await get(`/get-agent/${id}`);
       console.log(`\n  AGENT ${k} = ${id}  → HTTP ${r.status}`);
+      console.log("   ", JSON.stringify(r.ok ? scalars(r.d) : r.d));
+      const v = await get(`/get-agent-versions/${id}`);
+      if (v.ok && Array.isArray(v.d)) {
+        const rows = v.d
+          .map((x) => `v${x.version}${x.is_published ? "*PUB" : "·draft"}`)
+          .join("  ");
+        console.log(`    versions (${v.d.length}): ${rows}`);
+      } else {
+        console.log(`    versions → HTTP ${v.status}: ${JSON.stringify(v.d)}`);
+      }
+    } else if (k.endsWith("_flow_id")) {
+      const r = await get(`/get-conversation-flow/${id}`);
+      console.log(`\n  FLOW  ${k} = ${id}  → HTTP ${r.status}`);
       console.log("   ", JSON.stringify(r.ok ? scalars(r.d) : r.d));
     }
   }
 }
+
+console.log(`\n═══════════ phone numbers ═══════════`);
+const pn = await get("/v2/list-phone-numbers");
+if (!pn.ok) {
+  console.log(`  → HTTP ${pn.status}: ${JSON.stringify(pn.d)}`);
+} else {
+  for (const p of pn.d.items ?? pn.d) {
+    const mark = agentIdSet.has(p.inbound_agent_id) ? " ◀── ours" : "";
+    console.log(
+      `  ${p.phone_number}  inbound=${p.inbound_agent_id} v=${p.inbound_agent_version ?? "latest"}${mark}`
+    );
+  }
+}
+
 console.log("\n(done — read-only, nothing mutated)");
