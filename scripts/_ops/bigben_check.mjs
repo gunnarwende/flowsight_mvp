@@ -15,10 +15,11 @@
  *   3. Reads pub_reservations (source=voice) + pub_callback_requests so we can
  *      see whether the latest calls actually landed.
  *
- * Usage:  node scripts/_ops/bigben_check.mjs [to_number]
+ * Usage:  node scripts/_ops/bigben_check.mjs [to_number] [fetchLimit]
  * Env:    RETELL_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 const toNumber = process.argv[2] || "+41445054818"; // BigBen Pub
+const fetchLimit = Number(process.argv[3] || 50);   // widen for a deeper sweep
 const RETELL = "https://api.retellai.com";
 const key = process.env.RETELL_API_KEY;
 const SB = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
@@ -47,12 +48,13 @@ async function main() {
   const r = await fetch(`${RETELL}/v3/list-calls`, {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ limit: 50, sort_order: "descending" }),
+    body: JSON.stringify({ limit: fetchLimit, sort_order: "descending" }),
   });
   const data = await r.json().catch(() => null);
   if (!r.ok) { console.error(`list-calls ${r.status}: ${JSON.stringify(data)}`); process.exit(1); }
   const all = data.items ?? data ?? [];
-  const calls = all.filter((c) => c.to_number === toNumber).slice(0, 8);
+  const bigbenCalls = all.filter((c) => c.to_number === toNumber);
+  const calls = bigbenCalls.slice(0, 8);
 
   console.log(`\n═══════════ 2. recent Retell calls → ${toNumber} (${calls.length}) ═══════════`);
   for (const c of calls) {
@@ -98,6 +100,41 @@ async function main() {
     }
   } else {
     console.log("\n(Supabase env not set — skipped landing check)");
+  }
+
+  // ── 4. Sweep: every reservation/callback call vs DB — landed or LOST? ─────
+  if (SB && SBKEY) {
+    const H = { apikey: SBKEY, Authorization: `Bearer ${SBKEY}` };
+    const today = new Date().toISOString().slice(0, 10);
+    const actionable = bigbenCalls.filter((c) => {
+      const cad = c.call_analysis?.custom_analysis_data ?? {};
+      return cad.is_reservation === true || cad.callback_requested === true ||
+        ["mixed", "reservation", "callback"].includes(cad.call_type);
+    });
+    console.log(`\n═══════════ 4. sweep: ${actionable.length} reservation/callback calls across ${bigbenCalls.length} BigBen calls (window=${fetchLimit}) ═══════════`);
+    console.log(`    (today=${today} — a LOST call with a future date is still recoverable)`);
+    let lostFuture = 0;
+    for (const c of actionable) {
+      // pull detail for the real reservation_date
+      const dr = await fetch(`${RETELL}/v2/get-call/${c.call_id}`, { headers: { Authorization: `Bearer ${key}` } });
+      const det = await dr.json().catch(() => null);
+      const cad = det?.call_analysis?.custom_analysis_data ?? c.call_analysis?.custom_analysis_data ?? {};
+      // did it land? match by call_id in either table
+      const resQ = `${SB}/rest/v1/pub_reservations?note=ilike.*${c.call_id}*&select=id,reservation_date,status`;
+      const cbQ = `${SB}/rest/v1/pub_callback_requests?call_id=eq.${c.call_id}&select=id,status`;
+      const [resR, cbR] = await Promise.all([fetch(resQ, { headers: H }), fetch(cbQ, { headers: H })]);
+      const resRows = await resR.json().catch(() => []);
+      const cbRows = await cbR.json().catch(() => []);
+      const landed = (Array.isArray(resRows) && resRows.length > 0) || (Array.isArray(cbRows) && cbRows.length > 0);
+      const date = cad.reservation_date ?? "?";
+      const future = typeof date === "string" && date > today;
+      const flag = landed ? "✅ landed" : (future ? "🔴 LOST · FUTURE (recoverable)" : "⚪ lost · past (moot)");
+      if (!landed && future) lostFuture++;
+      console.log(`\n• ${ts(c.start_timestamp)}  ${c.call_id}  type=${JSON.stringify(cad.call_type)}`);
+      console.log(`    guest=${JSON.stringify(cad.guest_name ?? cad.caller_name)} party=${JSON.stringify(cad.party_size)} date=${JSON.stringify(date)} time=${JSON.stringify(cad.reservation_time)}  from=${c.from_number ?? "?"}`);
+      console.log(`    → ${flag}`);
+    }
+    console.log(`\n  VERDICT: ${lostFuture === 0 ? "✅ no LOST future bookings in window" : `🔴 ${lostFuture} LOST future booking(s) — recover these`}`);
   }
   console.log("\n(done — read-only, nothing mutated)");
 }
