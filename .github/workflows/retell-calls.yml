@@ -1,0 +1,38 @@
+name: Retell Calls
+
+# READ-ONLY. Lists recent Retell calls to a number + their post-call analysis
+# (call_type, …) + transcript, and checks Supabase to see whether the call
+# landed in tenant_callbacks (NACHRICHT) vs cases (FALL). Never mutates.
+
+on:
+  workflow_dispatch:
+    inputs:
+      to_number:
+        description: "Phone number called (E.164)"
+        required: false
+        type: string
+        default: "+41445057420"
+      limit:
+        description: "How many recent calls"
+        required: false
+        type: string
+        default: "3"
+
+jobs:
+  calls:
+    name: inspect-calls
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Inspect calls + landing
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          [ -n "${RETELL_API_KEY:-}" ] || { echo "::error::RETELL_API_KEY not set"; exit 1; }
+          node scripts/_ops/retell_calls.mjs "${{ github.event.inputs.to_number }}" "${{ github.event.inputs.limit }}"
