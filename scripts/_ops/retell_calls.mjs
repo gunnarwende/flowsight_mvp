@@ -22,15 +22,17 @@ if (!key) { console.error("FATAL: RETELL_API_KEY not set"); process.exit(1); }
 function ts(ms) { return ms ? new Date(ms).toISOString().replace("T", " ").slice(0, 19) : "?"; }
 
 async function main() {
-  // ── Retell: recent calls to the number ──────────────────────────────────
+  // ── Retell: recent calls (no server filter — v3 filter format is brittle;
+  //    fetch recent and filter by to_number client-side) ───────────────────
   const r = await fetch(`${RETELL}/v3/list-calls`, {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ filter_criteria: { to_number: [toNumber] }, limit, sort_order: "descending" }),
+    body: JSON.stringify({ limit: 50, sort_order: "descending" }),
   });
   const data = await r.json().catch(() => null);
   if (!r.ok) { console.error(`list-calls ${r.status}: ${JSON.stringify(data)}`); process.exit(1); }
-  const calls = data.items ?? data ?? [];
+  const all = data.items ?? data ?? [];
+  const calls = all.filter((c) => c.to_number === toNumber).slice(0, limit);
 
   console.log(`═══════════ Retell calls → ${toNumber} (${calls.length}) ═══════════`);
   for (const c of calls) {
