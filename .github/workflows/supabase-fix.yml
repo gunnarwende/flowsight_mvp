@@ -1,0 +1,155 @@
+name: Supabase Fix
+
+# GATED, on-demand data operation against Supabase via PostgREST. Lets the
+# founder authorise a precise data correction from the phone (e.g. fix a
+# wrong case field, flip a tenant flag, remove a bad row) while Claude drives
+# the diagnosis. Pure curl against {SUPABASE_URL}/rest/v1 — no raw SQL.
+#
+# Safety leitplanken:
+#   • UPDATE/DELETE REQUIRE a non-empty filter -> no accidental table-wide wipe.
+#   • Always SELECT before (and after, for writes) so the run log shows exactly
+#     what changed.
+#   • `production` environment carries the Required-Reviewer rule -> the founder
+#     gets a one-tap approval before any write touches live data.
+#
+# Filter syntax = PostgREST, e.g.  id=eq.4f3c...  |  tenant_id=eq.<uuid>&status=eq.new
+
+on:
+  workflow_dispatch:
+    inputs:
+      table:
+        description: "Table name (e.g. cases, tenants, tenant_callbacks)"
+        required: true
+        type: string
+      operation:
+        description: "Operation"
+        required: true
+        type: choice
+        default: select
+        options: [select, update, delete]
+      filter:
+        description: "PostgREST filter (e.g. id=eq.<uuid>). REQUIRED for update/delete."
+        required: false
+        type: string
+      patch:
+        description: "JSON body for UPDATE (e.g. {\"status\":\"done\"}). Ignored for select/delete."
+        required: false
+        type: string
+
+concurrency:
+  group: supabase-fix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    name: data-op
+    runs-on: ubuntu-latest
+    environment: production   # <-- Required-Reviewer gate lives here
+    outputs:
+      status: ${{ steps.run.outputs.status }}
+      summary: ${{ steps.run.outputs.summary }}
+    steps:
+      - name: Run data operation
+        id: run
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TABLE: ${{ github.event.inputs.table }}
+          OP: ${{ github.event.inputs.operation }}
+          FILTER: ${{ github.event.inputs.filter }}
+          PATCH: ${{ github.event.inputs.patch }}
+        run: |
+          set -uo pipefail
+          [ -n "${SUPABASE_URL:-}" ] && [ -n "${SERVICE_KEY:-}" ] || { echo "::error::Supabase secrets not set"; exit 1; }
+
+          BASE="${SUPABASE_URL%/}/rest/v1/${TABLE}"
+          AUTH=(-H "apikey: ${SERVICE_KEY}" -H "Authorization: Bearer ${SERVICE_KEY}")
+          REPORT=""
+          add() { REPORT="${REPORT}$1"$'\n'; echo -e "$1"; }
+
+          add "── Supabase Fix ──"
+          add "table:  ${TABLE}"
+          add "op:     ${OP}"
+          add "filter: ${FILTER:-<none>}"
+
+          # Guard: writes must be filtered
+          if { [ "$OP" = "update" ] || [ "$OP" = "delete" ]; }; then
+            case "${FILTER:-}" in
+              *=*) : ;;  # ok, looks like a real filter
+              *) echo "::error::${OP} requires a non-empty filter (e.g. id=eq.<uuid>) — refusing table-wide ${OP}"; exit 1 ;;
+            esac
+          fi
+          if [ "$OP" = "update" ]; then
+            [ -n "${PATCH:-}" ] || { echo "::error::update requires a JSON patch"; exit 1; }
+          fi
+
+          Q=""
+          [ -n "${FILTER:-}" ] && Q="?${FILTER}"
+
+          # ── BEFORE snapshot (always) ──────────────────────────────────────
+          add ""
+          add "── BEFORE ──"
+          BEFORE=$(curl -sS -m 30 "${AUTH[@]}" "${BASE}${Q}&select=*" 2>/dev/null || echo "[]")
+          NB=$(echo "$BEFORE" | jq 'length' 2>/dev/null || echo "?")
+          add "rows matched: ${NB}"
+          echo "$BEFORE" | jq '.' 2>/dev/null | head -60 || echo "$BEFORE" | head -20
+
+          VERDICT="ℹ️ select only"
+
+          # ── WRITE ─────────────────────────────────────────────────────────
+          if [ "$OP" = "update" ]; then
+            add ""
+            add "── UPDATE patch: ${PATCH} ──"
+            RESP=$(curl -sS -m 30 -X PATCH "${AUTH[@]}" \
+                     -H "Content-Type: application/json" \
+                     -H "Prefer: return=representation" \
+                     -d "${PATCH}" "${BASE}${Q}" 2>/dev/null || echo "[]")
+            NU=$(echo "$RESP" | jq 'length' 2>/dev/null || echo "?")
+            add "rows updated: ${NU}"
+            echo "$RESP" | jq '.' 2>/dev/null | head -60
+            VERDICT="✅ updated ${NU} row(s) in ${TABLE}"
+          elif [ "$OP" = "delete" ]; then
+            add ""
+            add "── DELETE ──"
+            RESP=$(curl -sS -m 30 -X DELETE "${AUTH[@]}" \
+                     -H "Prefer: return=representation" \
+                     "${BASE}${Q}" 2>/dev/null || echo "[]")
+            ND=$(echo "$RESP" | jq 'length' 2>/dev/null || echo "?")
+            add "rows deleted: ${ND}"
+            echo "$RESP" | jq '.' 2>/dev/null | head -60
+            VERDICT="✅ deleted ${ND} row(s) from ${TABLE}"
+          fi
+
+          add ""
+          add "$VERDICT"
+          {
+            echo "status=${VERDICT}"
+            echo "summary<<EOF"
+            echo "$REPORT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+  notify:
+    name: telegram-notify
+    runs-on: ubuntu-latest
+    needs: [fix]
+    if: always()
+    steps:
+      - name: Send result
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ needs.fix.result }}
+          VERDICT: ${{ needs.fix.outputs.status }}
+          REPORT: ${{ needs.fix.outputs.summary }}
+        run: |
+          [ -n "${BOT_TOKEN:-}" ] && [ -n "${CHAT_ID:-}" ] || { echo "Telegram not configured — skip"; exit 0; }
+          HEAD="🗄️ Supabase Fix — ${VERDICT:-result: $RESULT}"
+          TEXT="${HEAD}
+
+          ${REPORT:-(no detail)}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sS -m 20 -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            --data-urlencode text="${TEXT}" \
+            -d disable_web_page_preview=true >/dev/null || echo "::warning::Telegram send failed"
