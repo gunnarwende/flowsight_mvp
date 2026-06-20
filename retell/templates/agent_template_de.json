@@ -57,7 +57,7 @@
     {
       "type": "string",
       "name": "reporter_name",
-      "description": "Full name of the caller as stated during the call (e.g. \"Gunnar Wende\", \"Frau Müller\"). Return exactly as heard — do not correct spelling. If the caller did not give their name, return empty string. Only fill if call_type is \"auftrag\" or \"reklamation\".",
+      "description": "Full name of the caller as stated during the call (e.g. \"Gunnar Wende\", \"Frau Müller\"). Return exactly as heard — do not correct spelling. If the caller did not give their name, return empty string. Fill for ALL call types whenever a name is mentioned (auftrag, reklamation, callback, nachfrage) — a name is always useful.",
       "required": false
     },
     {
