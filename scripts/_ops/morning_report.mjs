@@ -369,7 +369,27 @@ try {
     .from("proof_pages")
     .select("token, tenant_slug, company_name, created_at, view_count, last_viewed_at")
     .eq("status", "active");
-  leads = (leadPages || []).map((p) => classifyLead(p, now.getTime()));
+
+  // MR2: ehrliche T2-Watch-Tiefe je Seite — eigene Founder-Views (is_preview) ausgeschlossen.
+  // Tabelle fehlt evtl. noch (Migration nicht angewandt) → guarded, Report läuft ohne Tiefe.
+  const t2ByToken = {};
+  try {
+    const { data: watch, error: eWatch } = await supabase
+      .from("proof_watch")
+      .select("token, take, max_pct, is_preview")
+      .in("take", ["t2", "t2_portrait"])
+      .eq("is_preview", false);
+    if (eWatch) console.error("Query proof_watch:", eWatch.message);
+    for (const w of watch || []) {
+      if ((w.max_pct ?? 0) > (t2ByToken[w.token] ?? 0)) t2ByToken[w.token] = w.max_pct;
+    }
+  } catch (e) {
+    console.error("Query proof_watch (skipped):", e.message);
+  }
+
+  leads = (leadPages || []).map((p) =>
+    classifyLead({ ...p, t2_pct: t2ByToken[p.token] ?? null }, now.getTime()),
+  );
 } catch (e) {
   console.error("Query proof_pages (leads):", e.message);
 }

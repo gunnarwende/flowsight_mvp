@@ -13,6 +13,137 @@ interface Props {
   videos: { t1?: string; t2?: string; t2_portrait?: string; t3?: string; t4?: string };
 }
 
+type WatchCtx = { token: string; sessionId: string; preview: boolean };
+type Take = "t1" | "t2" | "t2_portrait" | "t3" | "t4";
+
+// player.js message shape (Bunny's iframe player speaks this protocol).
+type PlayerJsMsg = {
+  context?: string;
+  event?: string;
+  value?: { seconds?: number; duration?: number };
+};
+
+/**
+ * MR2 — honest per-take watch depth.
+ *
+ * The Bunny player is a cross-origin <iframe>, so we cannot read its
+ * currentTime directly. We use the player.js postMessage protocol (which Bunny's
+ * embed speaks) to subscribe to timeupdate/ended and track the MAX % watched per
+ * take, then POST it to /api/p/[token]/watch. Strictly fail-safe — any error is
+ * swallowed so the proof page never breaks for a real prospect.
+ */
+function useBunnyWatch(
+  iframeRef: React.RefObject<HTMLIFrameElement | null>,
+  take: Take,
+  ctx: WatchCtx | null
+) {
+  useEffect(() => {
+    if (!ctx || !ctx.sessionId) return;
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    let maxPct = 0;
+    let maxSec = 0;
+    let lastSent = 0;
+
+    const post = (method: string, value: string) => {
+      try {
+        iframe.contentWindow?.postMessage(
+          JSON.stringify({ context: "player.js", version: "0.0.1", method, value }),
+          "*"
+        );
+      } catch {
+        /* never break the page */
+      }
+    };
+    const subscribe = () => {
+      post("addEventListener", "ready");
+      post("addEventListener", "timeupdate");
+      post("addEventListener", "ended");
+    };
+
+    const send = (final = false) => {
+      if (maxPct <= 0) return;
+      if (!final && maxPct - lastSent < 10) return; // throttle: every +10 %
+      lastSent = maxPct;
+      const body = JSON.stringify({
+        take,
+        pct: maxPct,
+        seconds: maxSec,
+        sessionId: ctx.sessionId,
+        preview: ctx.preview,
+      });
+      try {
+        const url = `/api/p/${ctx.token}/watch`;
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+        } else {
+          void fetch(url, {
+            method: "POST",
+            body,
+            headers: { "Content-Type": "application/json" },
+            keepalive: true,
+          }).catch(() => {});
+        }
+      } catch {
+        /* never break the page */
+      }
+    };
+
+    const onMessage = (e: MessageEvent) => {
+      if (e.source !== iframe.contentWindow) return;
+      let data: PlayerJsMsg | null = null;
+      if (typeof e.data === "string") {
+        try {
+          data = JSON.parse(e.data) as PlayerJsMsg;
+        } catch {
+          return;
+        }
+      } else if (e.data && typeof e.data === "object") {
+        data = e.data as PlayerJsMsg;
+      }
+      if (!data || data.context !== "player.js") return;
+
+      if (data.event === "ready") {
+        subscribe();
+      } else if (data.event === "timeupdate" && data.value) {
+        const { seconds = 0, duration = 0 } = data.value;
+        if (duration > 0) {
+          const pct = Math.min(100, Math.round((seconds / duration) * 100));
+          if (pct > maxPct) maxPct = pct;
+          if (seconds > maxSec) maxSec = Math.round(seconds);
+          send();
+        }
+      } else if (data.event === "ended") {
+        maxPct = 100;
+        send(true);
+      }
+    };
+
+    const onLoad = () => subscribe();
+    const onHide = () => {
+      if (document.hidden) send(true);
+    };
+    const onPageHide = () => send(true);
+
+    window.addEventListener("message", onMessage);
+    iframe.addEventListener("load", onLoad);
+    document.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", onPageHide);
+    // Player may already be ready before our load handler attaches.
+    const t = window.setTimeout(subscribe, 1500);
+
+    return () => {
+      send(true);
+      window.removeEventListener("message", onMessage);
+      iframe.removeEventListener("load", onLoad);
+      document.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onPageHide);
+      window.clearTimeout(t);
+    };
+  }, [iframeRef, take, ctx]);
+}
+
 /**
  * 16:10 responsive Bunny player (takes are 1440×900 desktop-format).
  * Optional posterUrl: ein selbst gewähltes Standbild liegt über dem Bunny-Player,
@@ -26,6 +157,8 @@ function Player({
   lead = false,
   posterUrl,
   aspect = "1440 / 900",
+  take,
+  watch = null,
 }: {
   libraryId: string;
   guid?: string;
@@ -33,9 +166,15 @@ function Player({
   lead?: boolean;
   posterUrl?: string;
   aspect?: string;
+  take?: Take;
+  watch?: WatchCtx | null;
 }) {
   const [started, setStarted] = useState(false);
   const [posterOk, setPosterOk] = useState(!!posterUrl);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // T1 (lead/poster) wird nicht getrackt: geteiltes canonical Video → kein
+  // Per-Prospect-Signal, und das Poster-Remount macht das Subscribe unzuverlässig.
+  useBunnyWatch(iframeRef, take ?? "t2", take && !lead ? watch : null);
   if (!guid) return null;
   const showPoster = !!posterUrl && posterOk && !started;
   return (
@@ -67,6 +206,7 @@ function Player({
         </button>
       ) : (
         <iframe
+          ref={iframeRef}
           src={bunnyEmbedUrl(libraryId, guid, { preload: lead, autoplay: started })}
           title={title}
           loading={lead ? "eager" : "lazy"}
@@ -107,12 +247,36 @@ export default function ProofClient({
   libraryId,
   videos,
 }: Props) {
-  // Page-Open-Tracking: einmal pro Mount (Bunny liefert die Watch-Detail-Analytik).
+  // Page-Open-Tracking: einmal pro Mount (Kadenz-Signal Tag 0/3/6-7).
   const tracked = useRef(false);
   useEffect(() => {
     if (tracked.current) return;
     tracked.current = true;
     fetch(`/api/p/${token}/track`, { method: "POST", keepalive: true }).catch(() => {});
+  }, [token]);
+
+  // MR2-Watch-Kontext (client-only): stabile Sitzungs-ID + Founder-Ausschluss via
+  // ?preview=1. Erst im Browser gesetzt (kein window/crypto bei SSR).
+  const [watch, setWatch] = useState<WatchCtx | null>(null);
+  useEffect(() => {
+    let sid = "";
+    try {
+      sid =
+        sessionStorage.getItem("pw_sid") ||
+        (typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Math.random().toString(36).slice(2));
+      sessionStorage.setItem("pw_sid", sid);
+    } catch {
+      sid = Math.random().toString(36).slice(2);
+    }
+    let preview = false;
+    try {
+      preview = new URLSearchParams(window.location.search).get("preview") === "1";
+    } catch {
+      /* ignore */
+    }
+    setWatch({ token, sessionId: sid, preview });
   }, [token]);
 
   // T1 ist canonical (betriebsübergreifend identisch) → EIN Gesichts-Standbild für alle
@@ -148,7 +312,7 @@ export default function ProofClient({
         </span>
       </div>
 
-      {/* T1 Lead */}
+      {/* T1 Lead — nicht getrackt (canonical) */}
       <section className="space-y-3">
         <Player
           libraryId={libraryId}
@@ -164,7 +328,13 @@ export default function ProofClient({
         {/* Geräteweiche: Desktop = Querformat (approved), Handy = Hochformat (mobil-optimiert).
             CSS-Toggle statt JS → kein Hydration-Flash, keine Bunny-Magie nötig. */}
         <div className={videos.t2_portrait ? "hidden sm:block" : ""}>
-          <Player libraryId={libraryId} guid={videos.t2} title={`${companyName} — Der Anruf`} />
+          <Player
+            libraryId={libraryId}
+            guid={videos.t2}
+            title={`${companyName} — Der Anruf`}
+            take="t2"
+            watch={watch}
+          />
         </div>
         {videos.t2_portrait && (
           <div className="mx-auto max-w-[520px] sm:hidden">
@@ -173,6 +343,8 @@ export default function ProofClient({
               guid={videos.t2_portrait}
               title={`${companyName} — Der Anruf`}
               aspect="600 / 900"
+              take="t2_portrait"
+              watch={watch}
             />
           </div>
         )}
@@ -182,14 +354,26 @@ export default function ProofClient({
         label="Die Online-Meldung"
         blurb="Eine Anfrage über das Formular landet direkt strukturiert im Leitsystem — nichts geht verloren."
       >
-        <Player libraryId={libraryId} guid={videos.t3} title={`${companyName} — Online-Meldung`} />
+        <Player
+          libraryId={libraryId}
+          guid={videos.t3}
+          title={`${companyName} — Online-Meldung`}
+          take="t3"
+          watch={watch}
+        />
       </Step>
 
       <Step
         label="Vom Auftrag zur Bewertung"
         blurb="Der Fall wird abgewickelt — und im richtigen Moment laden Sie den Kunden zur Google-Bewertung ein: nicht automatisch nach jedem Fall, sondern wenn es passt."
       >
-        <Player libraryId={libraryId} guid={videos.t4} title={`${companyName} — Bewertung`} />
+        <Player
+          libraryId={libraryId}
+          guid={videos.t4}
+          title={`${companyName} — Bewertung`}
+          take="t4"
+          watch={watch}
+        />
       </Step>
 
       {/* Warmer Abschluss — Founder-Signatur, KEIN Ask. Der CTA lebt in der E-Mail
