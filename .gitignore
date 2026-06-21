@@ -90,3 +90,6 @@ docs/gtm/pipeline/06_video_production/_generated/
 
 # Root-level stray scripting text (tracked in docs/gtm/ instead)
 /Final_generic_scripting.txt
+
+# all logs (catch _devserver.log etc.)
+*.log

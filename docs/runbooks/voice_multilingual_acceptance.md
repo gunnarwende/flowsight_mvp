@@ -15,8 +15,8 @@
 7. [ ] **INTL prompt: FOLLOW MODE:** "no language lock; follow caller language; can repeat in requested language; never refuse switch"
 8. [ ] **Dashboard: Publish DE agent** — note version: _____ time: _____
 9. [ ] **Dashboard: Publish INTL agent** — note version: _____ time: _____
-10. [ ] **Proof call EN-start:** say "English." → verify immediate transfer (agent_transfer within 5s)
-11. [ ] **Mid-call switch:** say "In French please." → verify agent switches to French
+10. [x] **Proof call EN-start:** say "English." → verify immediate transfer (agent_transfer within 5s) — ✅ Dörfler 09.06. (1× `swap_to_intl_agent` → TRANSFER SUCCESS)
+11. [x] **Mid-call switch:** say "In French please." → verify agent switches to French — ✅ Dörfler 09.06. (INTL FOLLOW: EN→FR→IT alle sauber)
 12. [ ] **Switch back:** say "German/Deutsch." → verify agent switches back (no refusal)
 13. [ ] **Run Spur 1+2:** `node scripts/run_chain.mjs voice --id <call_id> --with-audio` → 0 criticals in trigger/transfer
 14. [ ] **Reprompt timing:** agent does NOT chain multiple questions without user input; `skip_response_edge` removed from Intake; `responsiveness: 0.9`
@@ -27,15 +27,20 @@
 
 ## Evidence Archive
 
+### Dörfler AG — VA2 Sprach-Switch ✅ GRÜN (Founder-getestet 2026-06-09)
+
 | Field | Value |
 |-------|-------|
-| Proof call ID | |
-| agent_version (from raw JSON) | |
-| Transfer timestamp | |
-| FR switch confirmed | |
-| DE switch-back confirmed | |
-| Spur 1+2 report path | |
-| Acceptance date | |
+| Proof call ID | `call_ac3196f119c1f3946cb92fe04e0` |
+| Nummer | +41445057420 (Dörfler AG Test) |
+| DE-Agent | `agent_4cb307354a2a29d195f656b542` v7 · Ela `custom_voice_3d93cf97…` · Flow `conversation_flow_f51cc5a64702` (`is_transfer_cf: true`) |
+| INTL-Agent | `agent_fb4b956eec31db9c591880fdeb` · Juniper `custom_voice_cf152ba48…` · Flow `conversation_flow_608d542979bb` (`is_transfer_cf: true`, `flex_mode: false`) |
+| Transfer | 1× `swap_to_intl_agent` → `TRANSFER SUCCESS` (DE→INTL bei „Englisch?") |
+| Switches bestätigt | DE→EN→FR→IT alle nahtlos (Founder: „absolute Weltklasse, jeder Switch reibungslos") |
+| Rückweg DE | **Config-verifiziert** (INTL `swap_to_de_agent` → DE-Agent, beide `is_transfer_cf: true`) — Live-Test EN→DE noch offen (nice-to-have, kein Blocker) |
+| Acceptance date | 2026-06-09 (Founder) |
+
+**Fazit:** Zwei-Agent-Architektur (Ela DE-only ↔ Juniper INTL) verdrahtet + live bewiesen. Schablone — wird via `retell_sync.mjs` für jeden Neukunden identisch provisioniert.
 
 ## Key Learnings
 

@@ -171,7 +171,7 @@ Der Kunde beschreibt (keine technischen Fragen): wie Lisa reagiert · was Fall/N
 
 ## §9 Preis-Choreografie (Premium-Pivot)
 
-> **Kanonische Preis-Zahlen: [`SALES_BIBLE.md`](SALES_BIBLE.md) §5** (Solo CHF 900 / Premium CHF 2'000). Hier die *Choreografie* (wie man den Preis im Gespräch setzt) — nicht die Zahlen-SSOT.
+> **Kanonische Preis-Zahlen: [`SALES_BIBLE.md`](SALES_BIBLE.md) §5** (Solo CHF 950 / Premium CHF 2'000). Hier die *Choreografie* (wie man den Preis im Gespräch setzt) — nicht die Zahlen-SSOT.
 
 **Grundsatz:** Preis nie als Feature-Preis. Preis als **Go-Live-Preis für ein funktionierendes Leitsystem**, verankert gegen den geschaffenen Zustand (steuerbarer Betrieb / verpasste 15–30k-Aufträge), nicht gegen Funktionen.
 
