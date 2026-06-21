@@ -152,6 +152,7 @@ Keine.
 | V3 | **Ortsnamen NICHT wiederholen** | mittel | READY TO TEST (PRs #198 + #202) |
 | V5 | **SMS kommt nicht an (eCall)** | hoch | READY TO TEST (PR #200 + #202) |
 | V6 | **Namens-Frage falsch formuliert** | mittel | READY TO TEST (PRs #198 + #202) |
+| V7 | **Dörfler DE v14 + INTL v74 unpublished (is_published=false)** — `retell-inspect` (Run #5, 2026-06-21) zeigt beide Agent+Flow-Köpfe als Draft; live serviert v13/v73. Klären ob gewollt, sonst `retell-publish prefix=doerfler` (dry_run zuerst). Nummer `+41445057420` korrekt auf inbound=DE-Agent. | mittel | OFFEN — prüfen ob Drafts gewollt |
 
 ---
 
