@@ -191,9 +191,12 @@ export function getDemoTimes(opts = {}) {
   const wizardLeitsystemDet  = Z(8, 58);  // Fall-Detail +1 min (FB1)
 
   // ── Take 4 Akt 1 — Bestätigung ──
+  // REF FB17 (31.05. PM): Bestätigung @ 08:08 (matches Take 2 phoneSmsConfirmTime),
+  // Reminder @ 09:02 — Phone-Day-1 zeigt die Erinnerung wenn sie ankommt.
+  // Phone-Statusbar-Uhr = reminder time (latest event).
   const terminSaveTime       = Z(8, 58);  // Click "Termin versenden"
-  const confirmSmsSent       = Z(8, 58);  // Termin-Bestätigung an Kunde
-  const reminder24hSent      = Z(8, 58);  // <24h → feuert sofort
+  const confirmSmsSent       = Z(8, 8);   // Bestätigung an Kunde (= Take 2 Confirm)
+  const reminder24hSent      = Z(9, 2);   // Reminder fires (REF FB17)
   const appointmentStart     = ZT(8, 0);
   const appointmentEnd       = ZT(10, 0);
 
@@ -210,9 +213,9 @@ export function getDemoTimes(opts = {}) {
     take2_call_ended:  "08:07",   // Call-Ended Screen
     take2_sms_notif:   "08:08",   // SMS-Notification
     take2_sms_open:    "08:08",   // SMS geöffnet
-    take4_akt1_home:   "08:58",   // Bestätigung kommt
-    take4_akt1_sms:    "08:58",   // Bestätigungs-SMS-Notif
-    take4_akt1_rem:    "08:58",   // 24h-Reminder
+    take4_akt1_home:   "09:02",   // Reminder kommt (Phone-Day-1 Statusbar, REF FB17)
+    take4_akt1_sms:    "09:02",   // Reminder-SMS-Notif
+    take4_akt1_rem:    "09:02",   // 24h-Reminder
     take4_akt2_home:   "09:04",   // Review-SMS kommt
     take4_akt2_sms:    "09:04",   // Review-SMS-Notif
     take4_review:      "09:04",   // Review-Screen

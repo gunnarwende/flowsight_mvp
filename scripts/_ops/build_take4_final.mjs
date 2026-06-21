@@ -122,6 +122,13 @@ const anchorPath = join(previewDir, "take4_anchor.mp4");
 copyFileSync(tComplete, anchorPath);
 console.log(`  ✓ anchor: ${anchorPath}`);
 
+// ── STEP 4 (NEU 09.06.): Reveal-Anker — Fall-Öffnung exakt auf CASE_REVEAL_T=11,0s.
+// Wurzel: V3-Compose verankert nichts → die Fall-Öffnung wandert pro Betrieb ±1-2s
+// (Walter: 9,63s). Hier wird sie tenant-agnostisch (Scene-Change-Detektion) längen-
+// erhaltend auf 11,0s gepinnt — VOR dem Audio-Mux, damit Audio/Loom sauber sitzen.
+logStep(4, "Reveal-Anker: Fall-Öffnung → 11,0s (gegen V3-Compose-Drift)");
+run("node", ["scripts/_ops/anchor_t4_reveal.mjs", "--in", anchorPath, "--target", "11.0"]);
+
 // ── STEP 5: Mux locked universal audio ──
 logStep(5, "Mux locked universal audio (1ms-genau)");
 const anchorWithAudio = join(previewDir, "take4_anchor_with_audio.mp4");

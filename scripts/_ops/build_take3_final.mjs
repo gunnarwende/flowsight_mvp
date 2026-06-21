@@ -150,6 +150,18 @@ if (!existsSync(anchorPath)) {
   process.exit(3);
 }
 
+// ── STEP 5c (NEU 09.06.): Modal-Anker — "+ Neuer Fall" exakt auf 128,17s pinnen.
+// Wurzel: die Modal-Öffnung steckt in der Aufnahme und driftet pro Betrieb (Walter:
+// 126,6s) — die universelle Maus (Dörfler take3.json) klickt aber @128,17s → Modal vor
+// Cursor. Hier wird die Modal-Öffnung tenant-agnostisch (Scene-Change) global auf 128,17s
+// geschoben (Wizard davor unberührt, Formular-Fill folgt mit dem Cursor, Closing trimmt).
+// VOR dem Audio-Mux, damit Audio/Loom/Maus sauber sitzen.
+logStep(5.6, "Modal-Anker: +Neuer-Fall → 128,17s (Cursor-Sync)");
+// --no-trim: nur Freeze einfügen; der Audio-Mux (STEP 6, -shortest) richtet die Länge
+// exakt auf die 1ms-Locked-Audio = Schablonen-Länge 149,46s aus (kein Tail-Trim-Drift).
+run("node", ["scripts/_ops/anchor_t4_reveal.mjs", "--in", anchorPath,
+  "--target", "128.17", "--win-from", "124", "--win-to", "131", "--no-trim"]);
+
 // ── STEP 6: Mux locked universal audio (1ms-genau, AAC stream-copy)
 logStep(6, "Mux locked universal audio (1ms-genau)");
 const anchorWithAudio = join(previewDir, "take3_anchor_with_audio.mp4");
@@ -195,6 +207,12 @@ if (!skipQg) {
     // Build fortsetzen — die visuelle Prüfung entscheidet über echte Defekte.
     console.error("\n⚠ QG had findings — review above (nicht-fatal; oft erwartete Datum/Prefix/Daten-Diffs gegen veraltete Referenz)");
   }
+
+  // STEP 9.5 (FB 09.06.): Modal-Timing-Gate — die "+ Neuer Fall"-Modal darf NICHT
+  // öffnen, bevor die universelle Maus den Button erreicht hat (Cursor-vor-Modal).
+  logStep(9.5, "Quality Gate: Modal-Timing (G_T3_MODAL_NOT_EARLY)");
+  const mtRes = spawnSync("node", ["scripts/_ops/qg_t3_modal_timing.mjs", "--video", join(masterDir, `${slug}_with_mouse.mp4`)], { stdio: "inherit" });
+  if (mtRes.status !== 0) console.error("\n⚠ G_T3_MODAL_NOT_EARLY FAIL — Modal öffnet zu früh (record_leitsystem_take3 list_visible-Dwell prüfen)");
 }
 
 const finalOut = join(masterDir, `${slug}_with_mouse.mp4`);

@@ -95,7 +95,9 @@ check(
   phoneCase ? `got=${phoneCase.created_at}, want=${demoTime.iso.phoneCaseSavedTime}` : "case not found"
 );
 
-if (config._wizard_case_id) {
+// Wizard-Case-Check nur ab Take 3 (Bug-Fix 26.05.: Stale _wizard_case_id
+// im config nach seed-delete liess Take 2 fälschlich failen).
+if (Number(take) >= 3 && config._wizard_case_id) {
   const { data: wizardCase } = await sb.from("cases")
     .select("created_at")
     .eq("id", config._wizard_case_id)
@@ -114,7 +116,9 @@ check(
   `got=${config._seed_time}, want=${demoTime.iso.phoneCallStartTime}`
 );
 
-if (config._completion_time) {
+// Take-4-Felder nur ab Take 4 checken (Bug-Fix 26.05.: stale _completion_time
+// nach seed-delete liess Take 2 fälschlich failen).
+if (Number(take) >= 4 && config._completion_time) {
   check(
     "[4] _completion_time = demoTime.completionTime (heute 09:02)",
     sameMinute(config._completion_time, demoTime.iso.completionTime),
@@ -122,7 +126,7 @@ if (config._completion_time) {
   );
 }
 
-if (config._review_sent_time) {
+if (Number(take) >= 4 && config._review_sent_time) {
   check(
     "[5] _review_sent_time = demoTime.reviewSmsSent (heute 09:04, +2 min — FB11)",
     sameMinute(config._review_sent_time, demoTime.iso.reviewSmsSent),

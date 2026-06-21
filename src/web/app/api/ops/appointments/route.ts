@@ -3,6 +3,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 import { generateIcs } from "@/src/lib/ics/generateIcs";
 import { sendAppointmentIcsEmail } from "@/src/lib/email/resend";
+import { shouldSkipDispatch } from "@/src/lib/dispatch-guard";
 
 /**
  * GET /api/ops/appointments — List appointments (optionally filtered by case_id or staff_id)
@@ -123,23 +124,28 @@ export async function POST(req: NextRequest) {
     method: "REQUEST",
   });
 
-  // Send ICS email (fire-and-forget — don't block API response)
-  sendAppointmentIcsEmail({
-    appointmentId: data.id,
-    caseId: case_id,
-    seqNumber: caseRow?.seq_number,
-    caseIdPrefix: tenantRow?.case_id_prefix ?? "FS",
-    tenantDisplayName: tenantRow?.name,
-    staffName: staffInfo?.display_name ?? "Techniker",
-    staffEmail: staffInfo?.email ?? undefined,
-    scheduledAt: scheduled_at,
-    durationMin: effectiveDuration,
-    category: caseRow?.category,
-    city: caseRow?.city,
-    notes: notes ?? undefined,
-    icsContent,
-    method: "REQUEST",
-  }).catch(() => {}); // fire-and-forget
+  // DEMO/DEV guard — pipeline + dev-server never send real ICS emails by default.
+  if (shouldSkipDispatch()) {
+    console.log("[appointments] dispatch skipped (dev/demo mode)");
+  } else {
+    // Send ICS email (fire-and-forget — don't block API response)
+    sendAppointmentIcsEmail({
+      appointmentId: data.id,
+      caseId: case_id,
+      seqNumber: caseRow?.seq_number,
+      caseIdPrefix: tenantRow?.case_id_prefix ?? "FS",
+      tenantDisplayName: tenantRow?.name,
+      staffName: staffInfo?.display_name ?? "Techniker",
+      staffEmail: staffInfo?.email ?? undefined,
+      scheduledAt: scheduled_at,
+      durationMin: effectiveDuration,
+      category: caseRow?.category,
+      city: caseRow?.city,
+      notes: notes ?? undefined,
+      icsContent,
+      method: "REQUEST",
+    }).catch(() => {}); // fire-and-forget
+  }
 
   return NextResponse.json(data, { status: 201 });
 }

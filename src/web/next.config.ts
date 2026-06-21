@@ -3,8 +3,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // FB68: Disable Next.js dev badge ("N / 3 issues") so it never appears in
-  // screen recordings. Affects only development; production ignores the flag.
+  // FB68/T4-V8 (31.05.): Disable Next.js dev badges ("N / 3 issues" / build status)
+  // so they never appear in screen recordings. Affects only development;
+  // production ignores the flag. Recording script also has CSS+JS injection
+  // as belt-and-suspenders.
   devIndicators: false,
 };
 

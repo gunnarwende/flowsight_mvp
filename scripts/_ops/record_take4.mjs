@@ -35,7 +35,7 @@ const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_R
 
 const args = process.argv.slice(2);
 const slug = args.find((a) => a.startsWith("--slug"))?.split("=")[1] || "doerfler-ag";
-const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || "http://localhost:3000";
+const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || process.env.APP_URL || "http://localhost:3000";
 
 // S4: Speed-Flag — fast für Dev-Runs, normal für Prod, demo für High-End-Review
 const speedArg = args.find((a) => a.startsWith("--speed"))?.split("=")[1] || "normal";

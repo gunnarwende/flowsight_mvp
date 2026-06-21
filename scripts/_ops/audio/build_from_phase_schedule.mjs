@@ -171,11 +171,20 @@ for (let i = 0; i < scheduleEntries.length - 1; i++) {
   }
 }
 
-// Audio file check
-const audioFile = path.join(GENERATED, "takes", tenant, `take${fileSuffix}.wav`);
+// Audio file check — V102 universal audio fallback (28.05.):
+// Per-tenant audio at _generated/takes/<tenant>/take<N>_<variant>.wav is preferred.
+// If missing (new tenant), fall back to universal locked audio at
+// _locked/audio/take<N>_<variant>.wav (extracted from V50 once, used for all).
+let audioFile = path.join(GENERATED, "takes", tenant, `take${fileSuffix}.wav`);
 if (!fs.existsSync(audioFile)) {
-  console.error(`audio missing: ${audioFile}`);
-  process.exit(1);
+  const universalAudio = path.join(PIPELINE_ROOT, "_locked", "audio", `take${fileSuffix}.wav`);
+  if (fs.existsSync(universalAudio)) {
+    console.log(`per-tenant audio missing → using universal locked: ${universalAudio}`);
+    audioFile = universalAudio;
+  } else {
+    console.error(`audio missing: ${audioFile} (and universal fallback ${universalAudio} also missing)`);
+    process.exit(1);
+  }
 }
 const audioInfo = await ffprobeInfo(audioFile);
 const totalScheduled = scheduleEntries[scheduleEntries.length - 1].end;

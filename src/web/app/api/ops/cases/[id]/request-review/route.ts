@@ -8,6 +8,7 @@ import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { generateVerifyToken, generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 import { normalizeSwissPhone } from "@/src/lib/phone/normalizeSwissPhone";
+import { shouldSkipDispatch } from "@/src/lib/dispatch-guard";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/request-review
@@ -199,8 +200,8 @@ export async function POST(
   const reviewToken = generateVerifyToken(id, row.created_at);
   const reviewSurfaceUrl = `${APP_BASE_URL}/review/${id}?token=${reviewToken}`;
 
-  // ── Demo mode: skip SMS/Email dispatch, mark as sent, log event ──────
-  if (process.env.DEMO_NO_DISPATCH === "1") {
+  // ── Demo/Dev guard: skip SMS/Email dispatch, mark as sent, log event ─
+  if (shouldSkipDispatch()) {
     await supabase.from("case_events").insert({
       case_id: id,
       event_type: "review_requested",

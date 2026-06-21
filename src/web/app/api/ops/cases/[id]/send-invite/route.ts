@@ -5,6 +5,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 import { getAuthClient } from "@/src/lib/supabase/server-auth";
 import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdentity";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
+import { shouldSkipDispatch } from "@/src/lib/dispatch-guard";
 
 // ---------------------------------------------------------------------------
 // ICS helpers
@@ -241,8 +242,9 @@ export async function POST(
     attendeeEmail: to,
   });
 
-  // ── Demo mode: skip dispatch (no Resend call, event still logged) ─────
-  if (process.env.DEMO_NO_DISPATCH === "1") {
+  // ── Demo/Dev mode: skip dispatch (no Resend call, event still logged) ─
+  // dev-default = skip (Founder ask 31.05.: no real emails during pipeline iterations).
+  if (shouldSkipDispatch()) {
     await supabase.from("case_events").insert({
       case_id: id,
       event_type: "invite_sent",

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/src/lib/supabase/server";
 import { validateVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { shouldSkipDispatch } from "@/src/lib/dispatch-guard";
 
 // POST /api/review/[caseId]/rate — Save customer rating + optional text from review surface
 export async function POST(
@@ -89,8 +90,8 @@ export async function POST(
     },
   });
 
-  // Demo mode: skip push + negative-review email alert
-  if (process.env.DEMO_NO_DISPATCH === "1") {
+  // Demo/Dev guard: skip push + negative-review email alert
+  if (shouldSkipDispatch()) {
     return NextResponse.json({ ok: true, demo: true });
   }
 

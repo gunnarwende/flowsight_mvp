@@ -6,6 +6,7 @@ import { resolveTenantIdentityById } from "@/src/lib/tenants/resolveTenantIdenti
 import { formatCaseId } from "@/src/lib/cases/formatCaseId";
 import { sendTerminConfirmationToMelder } from "@/src/lib/email/resend";
 import { sendSms } from "@/src/lib/sms/sendSms";
+import { shouldSkipDispatch } from "@/src/lib/dispatch-guard";
 
 // ---------------------------------------------------------------------------
 // POST /api/ops/cases/[id]/notify-melder
@@ -76,8 +77,8 @@ export async function POST(
   let emailSent = false;
   let smsSent = false;
 
-  // ── Demo mode: skip dispatch, log event, short-circuit ────────────────
-  if (process.env.DEMO_NO_DISPATCH === "1") {
+  // ── Demo/Dev guard: skip dispatch, log event, short-circuit ──────────
+  if (shouldSkipDispatch()) {
     await supabase.from("case_events").insert({
       case_id: id,
       event_type: "melder_termin_notified",

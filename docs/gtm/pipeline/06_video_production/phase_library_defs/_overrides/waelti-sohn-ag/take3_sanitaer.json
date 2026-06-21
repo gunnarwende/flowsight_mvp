@@ -2,431 +2,306 @@
   "take": 3,
   "industry": "sanitaer",
   "tenant": "waelti-sohn-ag",
-  "description": "Auto-generated 2026-04-28 via auto_calibrate_phase_library_v2.mjs (pixel-state-detection)",
-  "master": "doerfler-ag",
-  "masterDuration": 66.867,
-  "tenantDuration": 67.633,
-  "_calibration": {
-    "method": "v2_piecewise_linear",
-    "anchorsTotal": 5,
-    "anchorsDetected": 6,
-    "controlPoints": [
-      {
-        "masterT": 0,
-        "tenantT": 0,
-        "source": "sentinel_start"
-      },
-      {
-        "masterT": 32.75,
-        "tenantT": 32.75,
-        "source": "anchor:wizard_end_virtual"
-      },
-      {
-        "masterT": 38.2,
-        "tenantT": 38.2,
-        "source": "anchor:success_to_dashboard"
-      },
-      {
-        "masterT": 47.43,
-        "tenantT": 48.47,
-        "source": "anchor:dashboard_to_case_detail"
-      },
-      {
-        "masterT": 59.07,
-        "tenantT": 59.87,
-        "source": "anchor:case_back_to_dashboard"
-      },
-      {
-        "masterT": 61.27,
-        "tenantT": 62.03,
-        "source": "anchor:modal_opens"
-      },
-      {
-        "masterT": 64.87,
-        "tenantT": 65.63,
-        "source": "anchor:modal_closes"
-      },
-      {
-        "masterT": 66.87,
-        "tenantT": 67.63,
-        "source": "sentinel_end"
-      }
-    ],
-    "detectedAnchors": [
-      {
-        "id": "wizard_end_virtual",
-        "masterT": 32.75,
-        "tenantT": 32.75,
-        "drift": 0
-      },
-      {
-        "id": "success_to_dashboard",
-        "masterT": 38.2,
-        "tenantT": 38.2,
-        "drift": 0
-      },
-      {
-        "id": "dashboard_to_case_detail",
-        "masterT": 47.43,
-        "tenantT": 48.47,
-        "drift": 1.04
-      },
-      {
-        "id": "case_back_to_dashboard",
-        "masterT": 59.07,
-        "tenantT": 59.87,
-        "drift": 0.8
-      },
-      {
-        "id": "modal_opens",
-        "masterT": 61.27,
-        "tenantT": 62.03,
-        "drift": 0.76
-      },
-      {
-        "id": "modal_closes",
-        "masterT": 64.87,
-        "tenantT": 65.63,
-        "drift": 0.76
-      }
-    ]
-  },
+  "description": "V2c auto-generated from event logs. Wizard recording=35.13s, splice -ss 2.0 → wizard portion 33.13s in source. Leit start in source @ 33.13s. Total source ~68.88s.",
+  "generated_at": "2026-06-11T07:52:49.534Z",
+  "splice_trim": 2,
+  "wizard_used_in_source": 33.13,
+  "leit_start_in_source": 33.13,
+  "max_source_time": 68.88,
   "phases": [
     {
       "name": "wizard1_intro",
       "range": [
-        6,
-        6.5
-      ],
-      "_source": "pre_anchor_identity"
+        3.55,
+        4.05
+      ]
     },
     {
       "name": "wizard1_kategorie_leck",
       "range": [
-        7.5,
-        8.3
-      ],
-      "_source": "pre_anchor_identity"
+        7.66,
+        8.11
+      ]
     },
     {
       "name": "wizard1_prio_normal",
       "range": [
-        8.5,
-        9.3
-      ],
-      "_source": "pre_anchor_identity"
+        8.28,
+        8.73
+      ]
     },
     {
       "name": "wizard1_weiter_active",
       "range": [
-        9.3,
-        10
-      ],
-      "_source": "pre_anchor_identity"
+        8.57,
+        8.82
+      ]
     },
     {
       "name": "wizard1_to_2",
       "range": [
-        10,
-        10.6
-      ],
-      "_source": "pre_anchor_identity"
+        8.92,
+        9.17
+      ]
     },
     {
       "name": "wizard2_empty",
       "range": [
-        10.6,
-        11.5
-      ],
-      "_source": "pre_anchor_identity"
+        9.37,
+        9.62
+      ]
     },
     {
       "name": "wizard2_strasse_typing",
       "range": [
-        11.5,
-        13.8
-      ],
-      "_source": "pre_anchor_identity"
+        9.67,
+        11.97
+      ]
     },
     {
       "name": "wizard2_nr_typing",
       "range": [
-        13.8,
-        14.5
-      ],
-      "_source": "pre_anchor_identity"
+        12.17,
+        12.67
+      ]
     },
     {
       "name": "wizard2_plz_typing",
       "range": [
-        14.5,
-        15.5
-      ],
-      "_source": "pre_anchor_identity"
+        12.87,
+        13.87
+      ]
     },
     {
       "name": "wizard2_ort_typing",
       "range": [
-        15.5,
-        17
-      ],
-      "_source": "pre_anchor_identity"
+        14.07,
+        16.29
+      ]
     },
     {
       "name": "wizard2_complete",
       "range": [
-        17,
-        17.8
-      ],
-      "_source": "pre_anchor_identity"
+        16.39,
+        16.99
+      ]
     },
     {
       "name": "wizard2_to_3",
       "range": [
-        17.8,
-        19.5
-      ],
-      "_source": "pre_anchor_identity"
+        16.98,
+        17.23
+      ]
     },
     {
       "name": "wizard3_intro",
       "range": [
-        19.5,
-        20.5
-      ],
-      "_source": "pre_anchor_identity"
+        17.43,
+        17.69
+      ]
     },
     {
       "name": "wizard3_name_typing",
       "range": [
-        20.5,
-        22
-      ],
-      "_source": "pre_anchor_identity"
+        17.74,
+        19.24
+      ]
     },
     {
       "name": "wizard_break",
       "range": [
-        21.9,
-        22
-      ],
-      "_source": "short_phase_identity"
+        19.24,
+        19.29
+      ]
     },
     {
       "name": "wizard3_telefon_typing",
       "range": [
-        22,
-        23.5
-      ],
-      "_source": "pre_anchor_identity"
+        19.44,
+        20.44
+      ]
     },
     {
       "name": "wizard3_email_typing",
       "range": [
-        23.5,
-        25.5
-      ],
-      "_source": "anchored_interpolated"
+        20.64,
+        23.83
+      ]
     },
     {
       "name": "wizard3_beschr_focus",
       "range": [
-        25.5,
-        26.5
-      ],
-      "_source": "anchored_interpolated"
+        23.53,
+        23.81
+      ]
     },
     {
       "name": "wizard3_beschr_typing",
       "range": [
-        26.5,
-        31
-      ],
-      "_source": "anchored_interpolated"
+        23.83,
+        30.03
+      ]
     },
     {
       "name": "wizard3_beschr_done",
       "range": [
-        31,
-        32.5
-      ],
-      "_source": "anchored_interpolated"
+        30.08,
+        30.95
+      ]
     },
     {
       "name": "wizard3_submit",
       "range": [
-        32.5,
-        33.5
-      ],
-      "_source": "anchored_interpolated"
+        31.05,
+        32.28
+      ]
     },
     {
       "name": "success_screen",
       "range": [
-        34,
-        34.1
-      ],
-      "_source": "short_phase_identity"
+        32.38,
+        32.53
+      ]
     },
     {
       "name": "success_to_leit",
       "range": [
-        38,
-        39.65
-      ],
-      "_source": "anchored_interpolated"
+        32.63,
+        33.08
+      ]
     },
     {
       "name": "leit_face_hold",
       "range": [
-        38.31,
-        38.42
-      ],
-      "_source": "anchored_interpolated_forced"
+        37.69,
+        37.89
+      ]
     },
     {
       "name": "leit_dashboard_view",
       "range": [
-        38.42,
-        44.65
-      ],
-      "_source": "anchored_interpolated"
-    },
-    {
-      "name": "case_back_full",
-      "range": [
-        60.29,
-        61.77
-      ],
-      "_source": "anchored_interpolated"
-    },
-    {
-      "name": "neuer_fall_modal",
-      "range": [
-        62.26,
-        66.26
-      ],
-      "_source": "anchored_interpolated"
+        37.59,
+        41.67
+      ]
     },
     {
       "name": "leit_dashboard_intro",
       "range": [
-        39.65,
-        42.43
-      ],
-      "_source": "anchored_interpolated"
+        37.59,
+        40.09
+      ]
     },
     {
       "name": "leit_dashboard_kpi_neu",
       "range": [
-        42.43,
-        44.65
-      ],
-      "_source": "anchored_interpolated"
+        40.09,
+        41.59
+      ]
     },
     {
       "name": "leit_dashboard_kpi_bewertung",
       "range": [
-        44.65,
-        46.88
-      ],
-      "_source": "anchored_interpolated"
+        41.59,
+        43.09
+      ]
     },
     {
       "name": "leit_to_case",
       "range": [
-        46.88,
-        48.54
-      ],
-      "_source": "anchored_interpolated"
+        41.47,
+        42.47
+      ]
     },
     {
       "name": "case_detail_intro",
       "range": [
-        48.54,
-        50.49
-      ],
-      "_source": "anchored_interpolated"
+        42.02,
+        43.47
+      ]
     },
     {
       "name": "case_detail_uebersicht",
       "range": [
-        50.49,
-        52.94
-      ],
-      "_source": "anchored_interpolated"
+        43.47,
+        45.48
+      ]
     },
     {
       "name": "case_detail_beschreibung",
       "range": [
-        52.94,
-        54.9
-      ],
-      "_source": "anchored_interpolated"
+        45.49,
+        47.49
+      ]
     },
     {
       "name": "case_detail_kontakt",
       "range": [
-        54.9,
-        56.86
-      ],
-      "_source": "anchored_interpolated"
+        47.49,
+        48.49
+      ]
     },
     {
       "name": "case_detail_verlauf",
       "range": [
-        56.86,
-        59.8
-      ],
-      "_source": "anchored_interpolated"
+        48.49,
+        51.5
+      ]
     },
     {
       "name": "case_to_dashboard",
       "range": [
-        59.8,
-        61.27
-      ],
-      "_source": "anchored_interpolated"
+        51.5,
+        53.83
+      ]
+    },
+    {
+      "name": "case_back_full",
+      "range": [
+        54.03,
+        60.19
+      ]
     },
     {
       "name": "dashboard_after_case",
       "range": [
-        61.27,
-        62.26
-      ],
-      "_source": "anchored_interpolated"
+        60.24,
+        60.27
+      ]
     },
     {
       "name": "neuer_fall_modal_open",
       "range": [
-        62.26,
-        63.76
-      ],
-      "_source": "anchored_interpolated"
+        60.42,
+        61.82
+      ]
     },
     {
       "name": "neuer_fall_modal_view",
       "range": [
-        63.76,
-        65.26
-      ],
-      "_source": "anchored_interpolated"
+        61.82,
+        63.57
+      ]
+    },
+    {
+      "name": "neuer_fall_modal",
+      "range": [
+        60.62,
+        63.87
+      ]
     },
     {
       "name": "neuer_fall_modal_close",
       "range": [
-        65.26,
-        66.26
-      ],
-      "_source": "anchored_interpolated"
+        63.87,
+        64.37
+      ]
     },
     {
       "name": "dashboard_final",
       "range": [
-        66.26,
-        67.27
-      ],
-      "_source": "post_anchor_extrapolated"
+        64.37,
+        68.78
+      ]
     }
   ]
 }

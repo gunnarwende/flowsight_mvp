@@ -102,7 +102,8 @@ if (!config._wizard_time || !config._wizard_case_id) {
 
 // A10: demo_time.mjs — fixed demo clock (today 07:59 / tomorrow 08:00).
 // Workday-Gate: throws wenn heute ODER morgen kein CH-Werktag.
-const dt = getDemoTimes();
+// SKIP_WORKDAY_GATE=1 erlaubt Demo-Builds an Feiertagen (Founder-Override).
+const dt = getDemoTimes({ skipGate: process.env.SKIP_WORKDAY_GATE === "1" });
 const times = {
   demoNow: dt.iso.demoNow,
   start: dt.iso.appointmentStart,

@@ -24,6 +24,20 @@ export const VOICES = {
     model: "eleven_multilingual_v2",
     name: "Gunnar Clone (Fallback)",
   },
+  // Roleplay-Training: Stimme des angerufenen Betriebs (Sanitär-Inhaber). Deutsch, tief, middle-aged.
+  prospect: {
+    id: "JiW03c2Gt43XNUQAumRP",
+    lang: "de",
+    model: "eleven_multilingual_v2",
+    name: "Helmut (Prospect/Betrieb)",
+  },
+  // Roleplay-Training: DEINE Sätze (Verkäufer-Seite), ausdrucksstarke weibliche Coach-Stimme. Deutsch.
+  coach: {
+    id: "v3V1d2rk6528UrLKRuy8",
+    lang: "de",
+    model: "eleven_multilingual_v2",
+    name: "Susi (Coach / deine Sätze)",
+  },
 };
 
 function hashKey(obj) {

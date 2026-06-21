@@ -22,7 +22,7 @@ import { chromium } from "playwright";
 
 const args = process.argv.slice(2);
 const slug = args.find((a) => a.startsWith("--slug"))?.split("=")[1] || "doerfler-ag";
-const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || "http://localhost:3000";
+const baseUrl = args.find((a) => a.startsWith("--base-url"))?.split("=")[1] || process.env.APP_URL || "http://localhost:3000";
 
 // ── DETERMINISTIC MODE V2c (29.05): T3 pipeline per-field typing speeds
 // kalibriert auf Apr-30 Schablone (canonical 42-phase override).
