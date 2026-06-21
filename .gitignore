@@ -93,3 +93,14 @@ docs/gtm/pipeline/06_video_production/_generated/
 
 # all logs (catch _devserver.log etc.)
 *.log
+
+# cleanup 21.06: lokale Arbeits-/Debug-Artefakte (nie committen)
+/_shots/
+Bunny.txt
+docs/**/_tmp_*/
+docs/**/_tmp*/
+docs/**/concat*.txt
+scripts/_ops/today_sf_*.png
+scripts/_ops/QG_*.png
+scripts/_ops/APR_*.png
+scripts/_ops/PEV*.png
