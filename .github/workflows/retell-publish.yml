@@ -1,0 +1,155 @@
+name: Retell Publish
+
+# GATED, on-demand publish of a tenant's Retell voice agents from the JSON
+# configs in retell/exports/. Runs scripts/_ops/retell_sync.mjs which
+# create/updates the DE+INTL conversation flows + agents, cross-links the
+# language-swap tools, and PUBLISHES (draft -> live). Then VERIFIES
+# is_published=true via the Retell API and commits the updated agent_ids.json
+# back so the next run stays idempotent (no duplicate agents).
+#
+# Why gated: publishing changes what real callers hear. The `production`
+# environment carries a Required-Reviewer rule -> triggering this sends the
+# founder a one-tap approval before anything goes live. (See runbook.)
+#
+# House rule (CLAUDE.md): EVERY Retell change must end with publish, else
+# silent routing failures. This workflow makes "publish from the phone" safe.
+
+on:
+  workflow_dispatch:
+    inputs:
+      prefix:
+        description: "Tenant prefix (matches retell/exports/<prefix>_agent.json). Needs BOTH <prefix>_agent.json and <prefix>_agent_intl.json."
+        required: true
+        type: string
+      dry_run:
+        description: "Dry-run (no API calls, no publish)"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: retell-publish-${{ github.event.inputs.prefix }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # to commit the refreshed retell/agent_ids.json back
+
+jobs:
+  publish:
+    name: sync-and-publish
+    runs-on: ubuntu-latest
+    environment: production   # <-- Required-Reviewer gate lives here
+    outputs:
+      status: ${{ steps.verify.outputs.status }}
+      summary: ${{ steps.verify.outputs.summary }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync + publish agents
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+        run: |
+          set -euo pipefail
+          [ -n "${RETELL_API_KEY:-}" ] || { echo "::error::RETELL_API_KEY secret not set"; exit 1; }
+          FLAGS="--prefix ${{ github.event.inputs.prefix }}"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          echo "Running: retell_sync.mjs $FLAGS"
+          node scripts/_ops/retell_sync.mjs $FLAGS
+
+      - name: Verify a fresh version was published
+        id: verify
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
+          PREFIX: ${{ github.event.inputs.prefix }}
+        run: |
+          set -uo pipefail
+          node - "$PREFIX" <<'NODE' | tee /tmp/verify.txt
+          const fs = require("fs");
+          const prefix = process.argv[2];
+          const key = process.env.RETELL_API_KEY;
+          const ids = JSON.parse(fs.readFileSync("retell/agent_ids.json", "utf8"))[prefix] || {};
+          const targets = [["DE", ids.de_agent_id], ["INTL", ids.intl_agent_id]].filter(([,id]) => id);
+          // Healthy published state (like BigBen): get-agent returns the DRAFT head
+          // (is_published=false), with the just-published version one below it.
+          // So verify via version history: the highest PUBLISHED version must be at
+          // or just below the latest version (i.e. a recent publish happened).
+          (async () => {
+            let allOk = true; const lines = [];
+            for (const [label, id] of targets) {
+              const r = await fetch(`https://api.retellai.com/get-agent-versions/${id}`, {
+                headers: { Authorization: `Bearer ${key}` },
+              });
+              const vs = await r.json().catch(() => []);
+              const arr = Array.isArray(vs) ? vs : [];
+              const latest = Math.max(...arr.map((v) => v.version));
+              const maxPub = Math.max(...arr.filter((v) => v.is_published).map((v) => v.version), -1);
+              const ok = maxPub >= latest - 1; // published head, with at most a fresh draft on top
+              allOk = allOk && ok;
+              lines.push(`${ok ? "✅" : "🔴"} ${label} ${id} latest=v${latest} published_head=v${maxPub}`);
+            }
+            const verdict = targets.length === 0
+              ? "🔴 no agent IDs found for prefix"
+              : (allOk ? `✅ ${prefix}: published version is current` : `🔴 ${prefix}: published head stale`);
+            console.log(lines.join("\n"));
+            console.log(verdict);
+            fs.appendFileSync(process.env.GITHUB_OUTPUT,
+              `status=${verdict}\n` +
+              `summary<<EOF\n${[...lines, verdict].join("\n")}\nEOF\n`);
+            if (!allOk || targets.length === 0) process.exit(1);
+          })();
+          NODE
+
+      - name: Commit refreshed agent_ids.json
+        # Best-effort: main is branch-protected (PR-only), so a direct push is
+        # rejected. agent_ids.json only changes on first-time tenant creation
+        # (new IDs) or its last_synced timestamp — never critical for a
+        # re-publish. Never fail the job over this housekeeping commit.
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if git diff --quiet -- retell/agent_ids.json; then
+            echo "agent_ids.json unchanged — nothing to commit"
+          else
+            git config user.name "flowsight-bot"
+            git config user.email "bot@flowsight.ch"
+            git add retell/agent_ids.json
+            git commit -m "chore(retell): refresh agent_ids after publish (${{ github.event.inputs.prefix }})"
+            if git push origin HEAD:${{ github.ref_name }}; then
+              echo "Committed + pushed agent_ids.json"
+            else
+              echo "::warning::agent_ids.json push blocked (branch protection) — timestamp-only, safe to ignore"
+            fi
+          fi
+
+  notify:
+    name: telegram-notify
+    runs-on: ubuntu-latest
+    needs: [publish]
+    if: always()
+    steps:
+      - name: Send result
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ needs.publish.result }}
+          VERDICT: ${{ needs.publish.outputs.status }}
+          REPORT: ${{ needs.publish.outputs.summary }}
+        run: |
+          [ -n "${BOT_TOKEN:-}" ] && [ -n "${CHAT_ID:-}" ] || { echo "Telegram not configured — skip"; exit 0; }
+          HEAD="📞 Retell Publish — ${VERDICT:-result: $RESULT}"
+          TEXT="${HEAD}
+
+          ${REPORT:-(dry-run or no detail)}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sS -m 20 -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            --data-urlencode text="${TEXT}" \
+            -d disable_web_page_preview=true >/dev/null || echo "::warning::Telegram send failed"

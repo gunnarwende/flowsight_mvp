@@ -384,6 +384,45 @@ interface ReporterConfirmationPayload {
  *
  * Errors are captured to Sentry but never thrown.
  */
+export interface CallbackEmailPayload {
+  notificationEmail?: string;
+  tenantName?: string;
+  reason: "callback" | "order_followup";
+  callerName: string | null;
+  callerPhone: string;
+  topic: string | null;
+}
+
+/** Runde 6 #2: kurze Zusammenfassungs-Mail an die Geschäftsmail bei einer Nachricht/
+ *  Rückruf (Lieferant, Rückfrage zu Auftrag, „Chef sprechen"). KEIN Fall — die Mail
+ *  landet im gewohnten Posteingang, die Nachricht zusätzlich im Leitsystem. */
+export async function sendCallbackNotification(payload: CallbackEmailPayload): Promise<boolean> {
+  const to = payload.notificationEmail || process.env.MAIL_REPLY_TO;
+  if (!process.env.RESEND_API_KEY || !to) return false;
+  const from = buildFromAddress(payload.tenantName);
+  const kind = payload.reason === "order_followup" ? "Rückfrage zu laufendem Auftrag" : "Rückruf-Bitte / Nachricht";
+  const caller = payload.callerName?.trim() || "Anrufer";
+  try {
+    const { APP_BASE_URL } = await import("@/src/lib/config/appUrl");
+    const { error } = await getResend().emails.send({
+      from,
+      to,
+      subject: `📞 ${kind} — ${caller}${payload.callerPhone ? ` (${payload.callerPhone})` : ""}`,
+      html: `<div style="font-family:system-ui,-apple-system,sans-serif;max-width:520px;color:#111">
+        <p style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#b8902f;font-weight:700;margin:0">Neue Nachricht — kein Fall</p>
+        <h2 style="margin:6px 0 2px;color:#0b1f33">${escapeHtml(kind)}</h2>
+        <p style="margin:10px 0 4px;font-size:15px"><b>${escapeHtml(caller)}</b>${payload.callerPhone ? ` · ${escapeHtml(payload.callerPhone)}` : ""}</p>
+        ${payload.topic ? `<p style="margin:8px 0;padding:10px 12px;background:#f6f7f9;border-radius:8px;color:#333">${escapeHtml(payload.topic)}</p>` : ""}
+        <p style="font-size:13px;color:#555;margin:14px 0 0">Bitte zurückrufen. Liegt auch in Ihrem Leitsystem unter <a href="${APP_BASE_URL}/ops/nachrichten" style="color:#b8902f">Nachrichten</a>.</p>
+      </div>`,
+      text: `${kind}\n${caller}${payload.callerPhone ? ` · ${payload.callerPhone}` : ""}\n${payload.topic ?? ""}\n\nLiegt im Leitsystem unter Nachrichten: ${APP_BASE_URL}/ops/nachrichten`,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 export async function sendReporterConfirmation(
   payload: ReporterConfirmationPayload
 ): Promise<boolean> {
@@ -823,6 +862,67 @@ export async function sendCockpitSubmittedAlert(
     Sentry.captureException(err, {
       tags: { _tag: "resend", area: "onboarding", provider: "resend", email_type: "cockpit_submitted", decision: "failed", error_code: "RESEND_EXCEPTION" },
     });
+    console.log(JSON.stringify({ ...base, decision: "failed", reason: "exception" }));
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Proof-page first-view alert (Outreach-Engagement-Signal an den Founder)
+// ---------------------------------------------------------------------------
+
+interface ProofViewAlertPayload {
+  companyName: string;
+  slug: string;
+  token: string;
+}
+
+/**
+ * Alarmiert den Founder, sobald ein Prospect seine Beweis-Seite ZUM ERSTEN MAL
+ * öffnet (heisses Engagement-Signal → Tag-6-7-Anruf priorisieren). Empfänger =
+ * MAIL_REPLY_TO (Founder). Nur EINMAL pro Seite (First-View), kein Spam.
+ * Errors captured, never thrown — Tracking darf die Seite nie stören.
+ */
+export async function sendProofViewAlert(payload: ProofViewAlertPayload): Promise<boolean> {
+  const fromAddr = process.env.MAIL_FROM ?? "noreply@send.flowsight.ch";
+  const from = `FlowSight <${fromAddr}>`;
+  const to = process.env.MAIL_REPLY_TO;
+  const baseUrl = APP_BASE_URL;
+  const base: Record<string, unknown> = {
+    _tag: "resend", email_type: "proof_view_alert", area: "outreach",
+    slug: payload.slug, recipient_present: !!to,
+  };
+  if (!process.env.RESEND_API_KEY || !to) {
+    console.log(JSON.stringify({ ...base, decision: "skipped", reason: !to ? "no_MAIL_REPLY_TO" : "no_RESEND_API_KEY" }));
+    return false;
+  }
+  try {
+    const { data, error } = await getResend().emails.send({
+      from,
+      to,
+      subject: `👀 ${payload.companyName} hat Ihre Beweis-Seite geöffnet`,
+      text: [
+        `${payload.companyName} hat soeben die Beweis-Seite zum ersten Mal geöffnet — ein heisses Engagement-Signal.`,
+        ``,
+        `Seite:  ${baseUrl}/p/${payload.token}`,
+        ``,
+        `→ Watch-Tiefe (welche Takes, wie lange):`,
+        `   node --env-file=src/web/.env.local scripts/_ops/proof_watch_report.mjs --slug ${payload.slug}`,
+        ``,
+        `Kadenz: wärmster Moment für den persönlichen Anruf (Phase-1-Playbook).`,
+        `---`,
+        `Slug: ${payload.slug} · Token: ${payload.token}`,
+      ].join("\n"),
+    });
+    if (error) {
+      Sentry.captureException(error, { tags: { _tag: "resend", area: "outreach", provider: "resend", email_type: "proof_view_alert", decision: "failed", error_code: "RESEND_API_ERROR" } });
+      console.log(JSON.stringify({ ...base, decision: "failed", reason: "resend_api_error" }));
+      return false;
+    }
+    console.log(JSON.stringify({ ...base, decision: "sent", provider_message_id: data?.id ?? null }));
+    return true;
+  } catch (err) {
+    Sentry.captureException(err, { tags: { _tag: "resend", area: "outreach", provider: "resend", email_type: "proof_view_alert", decision: "failed", error_code: "RESEND_EXCEPTION" } });
     console.log(JSON.stringify({ ...base, decision: "failed", reason: "exception" }));
     return false;
   }

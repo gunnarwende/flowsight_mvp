@@ -67,6 +67,7 @@ async function main() {
 
   const placeholders = {
     company_name: va.company_name || config.tenant?.name || "",
+    assistant_name: va.assistant_name || "Lisa",
     domain: va.domain || "",
     owner_names: va.owner_names || "",
     address: va.address || "",

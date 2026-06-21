@@ -1,0 +1,38 @@
+name: Outreach Reminder
+
+on:
+  schedule:
+    # Täglich 07:15 UTC (zwischen lifecycle-tick 07:00 und morning-report 07:30)
+    - cron: "15 7 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  reminder:
+    name: outreach-reminder
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        run: cd src/web && npm ci
+
+      - name: Run outreach reminder
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          APP_URL: ${{ secrets.APP_URL }}
+          # Für die Founder-Digest-Mail (nur wenn ein Touch fällig ist). Fehlt der
+          # RESEND/MAIL-Secret, bleibt es beim Konsolen-Board (kein Crash).
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_REPLY_TO: ${{ secrets.MAIL_REPLY_TO }}
+        run: node scripts/_ops/outreach_reminder.mjs --email

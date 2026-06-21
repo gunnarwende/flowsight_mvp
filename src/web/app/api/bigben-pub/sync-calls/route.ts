@@ -50,21 +50,24 @@ async function runSync() {
     // Only calls from last 2 hours
     const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
 
+    // Retell v3 list-calls rejects the array form of filter_criteria
+    // ("to_number must be object") with a 400 -> this route used to 502 on
+    // every tick and sync nothing (silent voice outage). Fetch recent calls
+    // unfiltered and filter to BigBen's number client-side — the shape that is
+    // verified working. The 2h window below narrows it further anyway.
+    const BIGBEN_NUMBER = "+41445054818";
     const res = await fetch("https://api.retellai.com/v3/list-calls", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        filter_criteria: { to_number: ["+41445054818"] },
-        limit: 20,
-        sort_order: "descending",
-      }),
+      body: JSON.stringify({ limit: 100, sort_order: "descending" }),
     });
 
     if (!res.ok) return NextResponse.json({ error: "retell_error" }, { status: 502 });
     // v3 list-calls: { items, pagination_key, has_more } statt Top-Level-Array.
     const _cr = await res.json();
-    const calls = Array.isArray(_cr) ? _cr : (_cr.items ?? []);
-    if (!Array.isArray(calls)) return NextResponse.json({ synced: 0 });
+    const allCalls = Array.isArray(_cr) ? _cr : (_cr.items ?? []);
+    if (!Array.isArray(allCalls)) return NextResponse.json({ synced: 0 });
+    const calls = allCalls.filter((c: { to_number?: string }) => c.to_number === BIGBEN_NUMBER);
 
     // Filter to recent calls only
     const recentCalls = calls.filter((c: { start_timestamp?: number }) =>

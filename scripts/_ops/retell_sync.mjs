@@ -202,7 +202,84 @@ function withSwapAgentId(nodes, targetAgentId) {
   return clone;
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────
+// ── Versioning helpers ─────────────────────────────────────────────────────
+
+/**
+ * Retell only lets you edit the LATEST version of an agent/flow, and a
+ * PUBLISHED latest is immutable ("Cannot update published agent / conversation
+ * flow"). An agent and its conversation flow SHARE a version number, so creating
+ * a new agent draft version (POST /create-agent-version) ALSO yields an editable
+ * flow draft under the SAME ids. Call this BEFORE patching an existing agent.
+ * No-op if the latest version is already an unpublished draft (the healthy
+ * BigBen state, e.g. Doerfler INTL). Verified live via retell_inspect:
+ * Doerfler DE agent v0–v7 were ALL published (no draft) → locked.
+ */
+async function ensureEditableDraft(agentId, label) {
+  const a = await retellGet(`/get-agent/${agentId}`);
+  if (a.is_published) {
+    await retellPost(`/create-agent-version/${agentId}`, { base_version: a.version });
+    console.log(`  ✓ ${label} editable draft created from published v${a.version}`);
+  } else {
+    console.log(`  • ${label} already editable (draft v${a.version})`);
+  }
+}
+
+/** Update an existing flow's prompt, or create one for a brand-new tenant. */
+async function upsertFlow(existingFlowId, flowParams, label) {
+  if (existingFlowId) {
+    // Always update the global_prompt. Additionally overlay each node's TEXT
+    // from the export onto the LIVE nodes — preserving live structure, edges
+    // and already-linked agent_swap tools (we only change instruction.text).
+    // This closes the long-standing drift where node prompts (e.g. a tenant
+    // copied from a template) were never refreshed. Best-effort: if Retell
+    // rejects the nodes payload we still land the global_prompt so a publish
+    // never half-fails.
+    let nodes = null;
+    let overlaid = 0;
+    try {
+      const live = await retellGet(`/get-conversation-flow/${existingFlowId}`);
+      const byId = new Map((flowParams.nodes || []).map((n) => [n.id, n]));
+      const byName = new Map((flowParams.nodes || []).map((n) => [n.name, n]));
+      nodes = (live.nodes || []).map((ln) => {
+        const en = byId.get(ln.id) || byName.get(ln.name);
+        const t = en?.instruction?.text;
+        if (
+          t != null && ln.instruction && typeof ln.instruction === "object" &&
+          "text" in ln.instruction && ln.instruction.text !== t
+        ) {
+          overlaid++;
+          return { ...ln, instruction: { ...ln.instruction, text: t } };
+        }
+        return ln;
+      });
+    } catch (e) {
+      console.log(`  ⚠ ${label} could not read live nodes (${e.message}) — global_prompt only`);
+    }
+    if (nodes && overlaid > 0) {
+      try {
+        await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
+          global_prompt: flowParams.global_prompt,
+          nodes,
+        });
+        console.log(`  ✓ ${label} flow updated:   ${existingFlowId} (global_prompt + ${overlaid} node text(s))`);
+        return { flowId: existingFlowId, created: false };
+      } catch (e) {
+        console.log(`  ⚠ ${label} node overlay rejected (${e.message}) — retrying global_prompt only`);
+      }
+    }
+    await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
+      global_prompt: flowParams.global_prompt,
+    });
+    console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}${overlaid ? " (node text NOT updated)" : ""}`);
+    return { flowId: existingFlowId, created: false };
+  }
+  const body = { ...flowParams, nodes: stripSwapTools(flowParams.nodes) };
+  const res = await retellPost("/create-conversation-flow", body);
+  console.log(`  ✓ ${label} flow created:   ${res.conversation_flow_id}`);
+  return { flowId: res.conversation_flow_id, created: true };
+}
+
+
 
 console.log("\n╔════════════════════════════════════════════════════╗");
 console.log("║         FlowSight — Retell Agent Sync             ║");
@@ -232,48 +309,32 @@ if (dryRun) {
 }
 
 try {
+  // ── Step 0: ensure editable drafts (unlock published agents/flows) ──
+  // A published latest version is immutable; create a draft version first so
+  // the flow + agent patches below land. No-op for already-draft tenants.
+  if (existing.de_agent_id || existing.intl_agent_id) {
+    console.log("━━━ Step 0: Ensure editable drafts ━━━\n");
+    if (existing.de_agent_id) await ensureEditableDraft(existing.de_agent_id, "DE");
+    if (existing.intl_agent_id) await ensureEditableDraft(existing.intl_agent_id, "INTL");
+    console.log("");
+  }
+
   // ── Step 1: Create/update conversation flows ────────────────────────
-  // Swap tools are stripped on create (agents don't exist yet).
-  // On update, we also strip them — they're re-added in step 3.
+  // For existing flows patch ONLY the global_prompt (nodes + already-linked
+  // agent_swap tools stay intact). Full node creation + swap linking (Step 3)
+  // happens only on first CREATE. Step 0 has already unlocked any published
+  // latest version, so these patches hit an editable draft.
   console.log("━━━ Step 1: Conversation Flows ━━━\n");
 
   const deFlowParams = extractFlowParams(deConfig);
   const intlFlowParams = extractFlowParams(intlConfig);
 
-  let deFlowId, intlFlowId;
-
-  if (existing.de_flow_id) {
-    const body = { ...deFlowParams, nodes: stripSwapTools(deFlowParams.nodes) };
-    await retellPatch(`/update-conversation-flow/${existing.de_flow_id}`, body);
-    deFlowId = existing.de_flow_id;
-    console.log(`  ✓ DE flow updated:   ${deFlowId}`);
-  } else {
-    const body = { ...deFlowParams, nodes: stripSwapTools(deFlowParams.nodes) };
-    const res = await retellPost("/create-conversation-flow", body);
-    deFlowId = res.conversation_flow_id;
-    console.log(`  ✓ DE flow created:   ${deFlowId}`);
-  }
-
-  if (existing.intl_flow_id) {
-    const body = {
-      ...intlFlowParams,
-      nodes: stripSwapTools(intlFlowParams.nodes),
-    };
-    await retellPatch(
-      `/update-conversation-flow/${existing.intl_flow_id}`,
-      body
-    );
-    intlFlowId = existing.intl_flow_id;
-    console.log(`  ✓ INTL flow updated: ${intlFlowId}`);
-  } else {
-    const body = {
-      ...intlFlowParams,
-      nodes: stripSwapTools(intlFlowParams.nodes),
-    };
-    const res = await retellPost("/create-conversation-flow", body);
-    intlFlowId = res.conversation_flow_id;
-    console.log(`  ✓ INTL flow created: ${intlFlowId}`);
-  }
+  const deUpsert = await upsertFlow(existing.de_flow_id, deFlowParams, "DE");
+  const intlUpsert = await upsertFlow(existing.intl_flow_id, intlFlowParams, "INTL");
+  const deFlowId = deUpsert.flowId;
+  const intlFlowId = intlUpsert.flowId;
+  const deFlowCreated = deUpsert.created;
+  const intlFlowCreated = intlUpsert.created;
   console.log("");
 
   // ── Step 2: Create/update agents ────────────────────────────────────
@@ -306,22 +367,31 @@ try {
   }
   console.log("");
 
-  // ── Step 3: Cross-link swap tools ───────────────────────────────────
+  // ── Step 3: Cross-link swap tools (newly created flows only) ─────────
+  // Existing (published) flows keep their already-linked swap tools — and
+  // Retell would reject a node patch on them anyway. Only freshly created
+  // draft flows need their agent_swap targets wired here.
   console.log("━━━ Step 3: Cross-link swap tools ━━━\n");
 
-  // DE flow → swap to INTL agent
-  const deNodesLinked = withSwapAgentId(deFlowParams.nodes, intlAgentId);
-  await retellPatch(`/update-conversation-flow/${deFlowId}`, {
-    nodes: deNodesLinked,
-  });
-  console.log(`  ✓ DE flow → swap to INTL: ${intlAgentId}`);
+  if (deFlowCreated) {
+    const deNodesLinked = withSwapAgentId(deFlowParams.nodes, intlAgentId);
+    await retellPatch(`/update-conversation-flow/${deFlowId}`, {
+      nodes: deNodesLinked,
+    });
+    console.log(`  ✓ DE flow → swap to INTL: ${intlAgentId}`);
+  } else {
+    console.log(`  • DE flow existing — swap tools left intact`);
+  }
 
-  // INTL flow → swap to DE agent
-  const intlNodesLinked = withSwapAgentId(intlFlowParams.nodes, deAgentId);
-  await retellPatch(`/update-conversation-flow/${intlFlowId}`, {
-    nodes: intlNodesLinked,
-  });
-  console.log(`  ✓ INTL flow → swap to DE: ${deAgentId}`);
+  if (intlFlowCreated) {
+    const intlNodesLinked = withSwapAgentId(intlFlowParams.nodes, deAgentId);
+    await retellPatch(`/update-conversation-flow/${intlFlowId}`, {
+      nodes: intlNodesLinked,
+    });
+    console.log(`  ✓ INTL flow → swap to DE: ${deAgentId}`);
+  } else {
+    console.log(`  • INTL flow existing — swap tools left intact`);
+  }
   console.log("");
 
   // ── Step 4: Publish ─────────────────────────────────────────────────

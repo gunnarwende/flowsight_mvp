@@ -360,9 +360,17 @@ const dateStr = now.toLocaleDateString("de-CH", {
 
 // ── Outreach / Watch-Signal: Bunny-Watch-Statistik × proof_pages ──
 // Pro aktive Beweis-Seite: geöffnet? welche Takes wie tief? Gerät? + ausgeschriebene
-// Handlung (anrufen / Reminder). Guarded: ohne BUNNY_STREAM_API_KEY einfach leer.
+// Handlung (anrufen / Reminder). Guarded: fehlt IRGENDEIN Bunny-Env (API-Key, Library-ID
+// oder CDN-Hostname), wird die Watch-Sektion still übersprungen — der Tagesüberblick darf
+// NIE an einer optionalen Integration crashen (bunnyEnv() wirft sonst weiter unten).
 async function buildWatchSignalLines() {
-  if (!process.env.BUNNY_STREAM_API_KEY) return [];
+  if (
+    !process.env.BUNNY_STREAM_API_KEY ||
+    !process.env.BUNNY_STREAM_LIBRARY_ID ||
+    !process.env.BUNNY_STREAM_CDN_HOSTNAME
+  ) {
+    return [];
+  }
   let pages = [];
   try {
     const { data } = await supabase

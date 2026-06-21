@@ -29,12 +29,16 @@ function missingFields(draft: CockpitDraft): string[] {
   if (!EMAIL_RE.test(draft.golive?.adminEmail ?? "")) missing.push("admin_email");
   if (draft.golive?.avvAccepted !== true) missing.push("avv");
   if (!(draft.voice?.greetingText ?? "").trim()) missing.push("greeting");
-  if (!draft.wizard?.distribution) missing.push("wizard_distribution");
   if (!draft.voice?.telco?.provider) missing.push("telco");
   // Notfall-Empfänger ist Pflicht, sobald ein Notdienst angeboten wird (sonst läuft die Alarmierung ins Leere).
   if (draft.voice?.emergencyService === true && !(draft.voice?.emergencyContact?.name ?? "").trim()) missing.push("emergency_contact");
-  // Wenn der Einbau bei der Agentur liegt: Kontakt nötig, sonst Sackgasse.
-  if ((draft.wizard?.distribution === "agentur_mail" || (draft.wizard?.distribution === "embed" && draft.wizard?.embedBy === "agentur")) && !EMAIL_RE.test(draft.wizard?.agencyEmail ?? "")) missing.push("agency_email");
+  // R7-Wizard-Modell: Online-Formular nur Pflicht-relevant, wenn der Betrieb es überhaupt will (formRelevant !== false).
+  if (draft.wizard?.formRelevant !== false) {
+    if (!draft.wizard?.integrationLocation) missing.push("wizard_integration");
+    // Liegt der Einbau bei der Agentur: Kontakt nötig, sonst Sackgasse.
+    const atAgency = draft.wizard?.integrationLocation === "agentur" || draft.wizard?.caretaker === "agentur";
+    if (atAgency && !EMAIL_RE.test(draft.wizard?.agencyEmail ?? "")) missing.push("agency_email");
+  }
 
   return missing;
 }

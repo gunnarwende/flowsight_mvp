@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InstallPrompt } from "./InstallPrompt";
@@ -29,6 +29,15 @@ const NAV_ITEMS: NavItem[] = [
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Nachrichten",
+    href: "/ops/nachrichten",
+    icon: (
+      <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
       </svg>
     ),
   },
@@ -144,8 +153,50 @@ export function OpsShell({
   const [mobilePreview, setMobilePreview] = useState(false);
   const pathname = usePathname();
 
-  // Build nav items dynamically based on modules
+  // In-App-Nav-Zähler: offene Fälle + pending Nachrichten (SSOT, gleiche Quelle
+  // wie der App-Icon-Badge). Beim Laden + alle 30s, damit die Zahlen mit der
+  // Leitzentrale/Nachrichten-Liste mitlaufen. Pub-Tenants haben kein Nachrichten-Nav.
   const isPubTenant = !!(hasEvents || hasReservations);
+  const [navCounts, setNavCounts] = useState<{ cases: number; messages: number } | null>(null);
+  useEffect(() => {
+    if (isPubTenant) return;
+    let cancelled = false;
+    const load = () =>
+      fetch("/api/ops/badge-count", { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d: { cases?: number; messages?: number; total?: number } | null) => {
+          if (cancelled || !d) return;
+          setNavCounts({ cases: d.cases ?? 0, messages: d.messages ?? 0 });
+          // App-Icon-Badge app-weit auf den echten Stand setzen (nicht nur auf der
+          // Leitzentrale). So ist der Badge auch korrekt, wenn der Inhaber nach
+          // einem Push auf /ops/nachrichten o.ä. landet. 0 => Badge weg.
+          const nav = navigator as Navigator & {
+            setAppBadge?: (n?: number) => void;
+            clearAppBadge?: () => void;
+          };
+          if ("setAppBadge" in navigator) {
+            const total = typeof d.total === "number" ? d.total : (d.cases ?? 0) + (d.messages ?? 0);
+            if (total > 0) nav.setAppBadge?.(total);
+            else nav.clearAppBadge?.();
+          }
+        })
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [isPubTenant, pathname]);
+
+  function navCountFor(href: string): number {
+    if (!navCounts) return 0;
+    if (href === "/ops/cases") return navCounts.cases;
+    if (href === "/ops/nachrichten") return navCounts.messages;
+    return 0;
+  }
+
+  // Build nav items dynamically based on modules
   const allNavItems: NavItem[] = isPubTenant
     ? [
         // Pub nav: only Dashboard + Help (Events/Reservations are sub-pages of Dashboard)
@@ -231,6 +282,7 @@ export function OpsShell({
             );
           }
           const active = isNavActive(item.href);
+          const count = navCountFor(item.href);
           return (
             <Link
               key={item.label}
@@ -249,6 +301,15 @@ export function OpsShell({
             >
               {item.icon}
               <span>{item.label}</span>
+              {count > 0 ? (
+                <span
+                  className="ml-auto min-w-[20px] px-1.5 py-0.5 rounded-full text-[11px] font-semibold text-white text-center leading-none"
+                  style={{ backgroundColor: color }}
+                  aria-label={`${count} offen`}
+                >
+                  {count > 99 ? "99+" : count}
+                </span>
+              ) : null}
             </Link>
           );
         })}

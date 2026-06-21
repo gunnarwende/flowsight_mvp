@@ -93,25 +93,16 @@ async function main() {
   const avvAcceptedAt = str(drGolive.avvAcceptedAt).trim();
   const drWizard = dr.wizard ?? {};
   const pickup = str(drVoice.pickup);
-  const distribution = str(drWizard.distribution);
+  // R7: Formular-Strang neu modelliert. formRelevant !== false = Formular gewollt (Default Ja).
+  const formRelevant = drWizard.formRelevant !== false;
   const calProvider = (dr.calendar?.connect && dr.calendar?.provider && dr.calendar.provider !== "none") ? dr.calendar.provider : "none";
   const notes = dr.notes ?? {};
 
-  // Dispositions-Policy → das schmale Format, das der Webhook liest (resolveVoiceDispositions).
-  // WICHTIG: Hat der Kunde die Toggles nie angefasst (kein dispositions im Draft), gelten die
-  // Sicherheits-Defaults (VOICE_DISPOSITIONS_DEFAULTS): Reklamation-Push AN, Callback-Push AUS.
-  // NICHT auf false fallen — das würde die Reklamations-Alarmierung still abschalten.
+  // R6 #1: VOLLE per-Disposition-Policy (d1-d6 korb+notify) → der Webhook liest sie direkt
+  // (resolveDispositionsConfig) und routet danach (Fall/Nachricht/nichts) + Push (notify).
+  // Fehlt eine Disposition im Draft, greifen serverseitig die Sanitär-Defaults.
   const disp = drVoice.dispositions ?? {};
-  const hasNotify = (k) => disp[k] && typeof disp[k].notify === "string";
-  const voiceDispositions = {
-    reklamationPush: hasNotify("d5_reklamation") ? disp.d5_reklamation.notify === "push" : true,
-    callbackPush:
-      hasNotify("d3_rueckruf") || hasNotify("d4_nachfrage")
-        ? disp.d3_rueckruf?.notify === "push" || disp.d4_nachfrage?.notify === "push"
-        : false,
-    // volle Policy fürs Audit / spätere Nutzung mitschreiben
-    full: disp,
-  };
+  const voiceDispositions = { ...disp };
 
   // echte Staff (Cockpit) → staff-Rows (display_name!). Dummys werden deaktiviert.
   const staff = Array.isArray(dr.staff) ? dr.staff.filter((s) => s && str(s.name).trim() && str(s.email).trim()) : [];
@@ -142,7 +133,7 @@ async function main() {
   console.log(`    google_review_url  = ${googleReviewUrl || "(LEER!)"}`);
   console.log(`    sms_sender_name    = ${smsSenderName}`);
   console.log(`    greeting_text      = ${greetingText.slice(0, 70)}…`);
-  console.log(`    voice_dispositions = reklamationPush=${voiceDispositions.reklamationPush}, callbackPush=${voiceDispositions.callbackPush}`);
+  console.log(`    voice_dispositions = ${Object.entries(voiceDispositions).map(([k, v]) => `${k}:${v?.korb ?? "?"}${v?.notify === "push" ? "+push" : ""}`).join(", ") || "(Defaults)"}`);
   console.log(`  tenants.case_id_prefix = ${caseIdPrefix}`);
   console.log(`  staff (echte, ${staff.length}): ${staff.map((s) => `${s.name} [${s.role}] ${s.email}`).join(" | ") || "(KEINE!)"}`);
   console.log(`  admin-login email  = ${adminEmail || "(LEER!)"}`);
@@ -163,17 +154,26 @@ async function main() {
   if (smsSenderName) modules.sms_sender_name = smsSenderName;
   modules.greeting_text = greetingText;
   modules.ki_disclosure = str(drVoice.kiDisclosure);
+  modules.assistant_name = str(drVoice.assistantName).trim() || "Lisa"; // R6 #3: Wunschname der Assistentin
   modules.voice_dispositions = voiceDispositions;
   if (smsContent) modules.sms_content = smsContent;
   modules.notify_messages_email = notifyMessagesByEmail;
   modules.calendar_intent = calProvider; // tatsächliche Verbindung = OAuth nach Go-live (setzt calendar_ms_tenant_id)
+  if (str(dr.calendar?.googleAccountEmail).trim()) modules.calendar_google_account = str(dr.calendar.googleAccountEmail).trim(); // K4: Konto, das wir bei Bedarf anbinden
   // Welle 1: Telefonie, Notfall/Notdienst, Feiertage, Agentur, Bewertungen, Nachrichten-Kanäle
   if (drVoice.telco?.provider) modules.telco_provider = drVoice.telco.provider === "other" || drVoice.telco.provider === "yallo" ? (str(drVoice.telco.otherName) || drVoice.telco.provider) : drVoice.telco.provider;
   modules.emergency_service = drVoice.emergencyService === true;
   if (drVoice.emergencyContact?.name || drVoice.emergencyContact?.phone) modules.emergency_contact = { name: str(drVoice.emergencyContact?.name), phone: str(drVoice.emergencyContact?.phone) };
   modules.holidays_closed = drVoice.holidaysClosed !== false; // Default geschlossen
   if (str(drVoice.vacationNote).trim()) modules.vacation_note = str(drVoice.vacationNote).trim();
-  if (drWizard.agencyName || drWizard.agencyEmail) modules.web_agency = { name: str(drWizard.agencyName), email: str(drWizard.agencyEmail) };
+  // R7: Online-Formular-Integration (Punkt 1 + Punkt 4)
+  modules.wizard_form_relevant = formRelevant;
+  if (formRelevant) {
+    if (drWizard.integrationLocation) modules.wizard_integration = drWizard.integrationLocation; // intern | agentur
+    if (drWizard.formMode) modules.wizard_form_mode = drWizard.formMode; // ersetzen | ergaenzen
+    if (drWizard.caretaker) modules.wizard_caretaker = drWizard.caretaker; // wir | betrieb | agentur
+    if (drWizard.agencyName || drWizard.agencyEmail) modules.web_agency = { name: str(drWizard.agencyName), email: str(drWizard.agencyEmail) };
+  }
   if (str(dr.review?.googlePlaceId).trim()) modules.google_place_id = str(dr.review.googlePlaceId).trim();
   modules.review_internal_threshold = typeof dr.review?.internalThreshold === "number" ? dr.review.internalThreshold : 3;
   if (str(dr.messages?.confirmSms).trim()) modules.sms_content = str(dr.messages.confirmSms).trim();
@@ -205,6 +205,7 @@ async function main() {
     cfg.tenant = { ...cfg.tenant, brand_color: brandColor, case_id_prefix: caseIdPrefix, sms_sender_name: smsSenderName };
     cfg.voice_agent = { ...cfg.voice_agent, ...wissenEff };
     // T4: Ferien + Notdienst-Flag → steuern das Erreichbarkeits-/Feiertags-Scripting im Prompt
+    cfg.voice_agent.assistant_name = str(drVoice.assistantName).trim() || "Lisa";
     cfg.voice_agent.vacation_note = str(drVoice.vacationNote).trim();
     cfg.voice_agent.emergency_service = drVoice.emergencyService === true;
     if (Array.isArray(dr.wizard?.categories)) cfg.wizard = { ...cfg.wizard, categories: dr.wizard.categories };
@@ -229,10 +230,17 @@ async function main() {
   const pickupSec = { sofort: "sofort", nach_10s: "nach ~10s", nach_15s: "nach ~15s", nach_20s: "nach ~20s", nach_30s: "nach ~30s" }[pickup] || "(nicht gewählt)";
   console.log(`  4. Telefon-Weiterleitung beim Kunden einrichten (Anbieter: ${modules.telco_provider || "(nicht gewählt)"}, Rufumleitung ${pickupSec}) → echte Anrufe fliessen (Stufe B).`);
   if (modules.emergency_service && modules.emergency_contact) console.log(`     ⚠️ Notdienst aktiv → Notfall-Alarm an: ${[modules.emergency_contact.name, modules.emergency_contact.phone].filter(Boolean).join(", ")} (Push+E-Mail, kein Live-Transfer).`);
-  console.log(`  5. Wizard verteilen: ${distribution || "(nicht gewählt)"}${drWizard.embedBy ? " (Einbau: " + drWizard.embedBy + ")" : ""}.`);
-  if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
+  if (!formRelevant) {
+    console.log(`  5. Online-Meldeformular: NICHT gewollt — Betrieb nutzt nur Voice (Lisa) + Leitsystem. Kein Wizard-Einbau.`);
+  } else {
+    const careLabel = { wir: "FlowSight baut ein", betrieb: "Betrieb selbst (Schnipsel+Anleitung)", agentur: "Web-Agentur" }[str(drWizard.caretaker)] || "(wer kümmert sich: nicht gewählt)";
+    const modeLabel = { ersetzen: "ersetzt bestehendes Formular", ergaenzen: "ergänzend dazu" }[str(drWizard.formMode)] || "(ersetzen/ergänzen: nicht gewählt)";
+    console.log(`  5. Online-Formular einbauen: Website-Betreuung ${str(drWizard.integrationLocation) || "(nicht gewählt)"}, ${modeLabel}, Einbau durch ${careLabel}.`);
+    if (modules.web_agency) console.log(`     → Einbau-Anleitung an Web-Agentur senden: ${[modules.web_agency.name, modules.web_agency.email].filter(Boolean).join(", ") || "(Kontakt fehlt!)"}.`);
+  }
   const calAdmin = [dr.calendar?.adminName, dr.calendar?.adminEmail].filter((x) => str(x).trim()).join(", ");
-  console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? "Google — noch im Aufbau, später verbinden" : "nicht angebunden"}.`);
+  const googleAcct = str(dr.calendar?.googleAccountEmail).trim();
+  console.log(`  6. Kalender: ${calProvider === "outlook" ? `Betrieb verbindet im Leitsystem (Einstellungen → Kalender, 1× Microsoft-Login${calAdmin ? `; Admin: ${calAdmin}` : ""})` : calProvider === "google" ? `Google — WIR richten die Anbindung ein (K4-Bau bei echtem Bedarf${googleAcct ? `; Konto: ${googleAcct}` : ""})` : "nicht angebunden"}.`);
   console.log(`  Danach Session auf "live" setzen.`);
   const noteLines = Object.entries(notes).filter(([, v]) => str(v).trim());
   if (noteLines.length) {
