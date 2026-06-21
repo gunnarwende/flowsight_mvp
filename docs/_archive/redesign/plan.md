@@ -120,7 +120,7 @@ Drei Dokumente. Drei Rollen. Keine Doppelpflege.
 
 | Dokument | Rolle | Wann lesen |
 |----------|-------|-----------|
-| **docs/redesign/plan.md** | Build-Steuerung: Wochenplan, Streams, Gates, Founder-Aufgaben | "Was mache ich diese Woche?" |
+| **docs/_archive/redesign/plan.md** | Build-Steuerung: Wochenplan, Streams, Gates, Founder-Aufgaben | "Was mache ich diese Woche?" |
 | **docs/ticketlist.md** | Bugs, Findings, Backlog, operative Tickets | "Was ist kaputt / offen?" |
 | **docs/STATUS.md** | Laufendes Lagebild: was ist live, aktueller Stand | "Was ist der Zustand des Systems?" |
 

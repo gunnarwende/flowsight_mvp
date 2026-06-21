@@ -297,7 +297,7 @@ Mechanik: HttpOnly-Cookie `fs_active_tenant` überschreibt JWT `tenant_id` **nur
 
 Sicherheit: (1) Cookie nur gelesen wenn JWT `role=admin` → nicht spoofbar; (2) HttpOnly → kein XSS-Zugriff; (3) RLS als zweite Verteidigungslinie; (4) **E-Mail-Versand immer `case.tenant_id`** → Cookie irrelevant für Mails; (5) Techniker-Micro-Surface = HMAC, nicht betroffen; (6) Cookie per-Device. Impersonation = Amber-Banner („Ansicht: {Betrieb} — Nicht Ihr Betrieb"). Betriebe sehen keinen Switcher/Banner.
 
-(Quelle: `docs/redesign/scaling_access.md`.)
+(Quelle: `docs/_archive/redesign/scaling_access.md`.)
 
 ### Zentrale Tenant-Felder (modules JSONB)
 
@@ -765,7 +765,7 @@ postCallSms.ts  →  sendSms()  →  sendSmsEcall()  →  eCall REST API
 
 ## 12a. Kommunikationsregeln (Entschieden 15.04.2026)
 
-Sieben verbindliche Kanal-Regeln für alle Benachrichtigungen im System. Abgeleitet aus Code-Audit (25+ Trigger, 5 Kanäle, 5 Akteurs-Typen) und Stress-Test mit 3 ICP-Profilen (2-MA, 15-MA, 25-MA Betrieb). Vollständige Analyse: `docs/redesign/leitstand/kommunikationsmatrix_v2.md`.
+Sieben verbindliche Kanal-Regeln für alle Benachrichtigungen im System. Abgeleitet aus Code-Audit (25+ Trigger, 5 Kanäle, 5 Akteurs-Typen) und Stress-Test mit 3 ICP-Profilen (2-MA, 15-MA, 25-MA Betrieb). Vollständige Analyse: `docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md`.
 
 ### KR-1: Ein Kanal pro Empfänger pro Ereignis
 Kein Empfänger bekommt die gleiche Information über zwei Kanäle gleichzeitig. Primär-Kanäle: Endkunde Voice = SMS, Endkunde Wizard = Email, Betrieb = Email, Techniker = Push, Founder = Telegram. Sekundär-Kanal nur als Fallback wenn Primär nicht verfügbar.
@@ -929,7 +929,7 @@ Der Leitstand (OPS) = fallzentrierte Betriebssteuerung. Atom = **der Fall** (Leb
 
 **Anti-Drift:** OPS ist KEIN CRM/ERP/Helpdesk/vollständiger-Kalender/Chat/Native-App. Tests pro Feature: Fall-Lebenszyklus-Test · Paralleltool-Test (→ Integrationslayer ICS/SMS statt erweitern) · Komplexitäts-Test (braucht 5-Mann-Betrieb das täglich?). Sprache = Branche, nicht SaaS (Fall statt Ticket, Mitarbeiter statt Agent, Leitstand statt Dashboard).
 
-(Quelle: `docs/redesign/leitstand/leitstand.md`.)
+(Quelle: `docs/_archive/redesign/leitstand/leitstand.md`.)
 
 ### Demo-Dashboard (Prospect-Erlebnis)
 
@@ -960,7 +960,7 @@ Phase 1 LIVE (20.03.2026). Vertieft D32.
 - **Token-Ablage:** `tenants.modules.calendar_ms_tenant_id` + `calendar_app_token` (**AES-256-GCM** App-Layer, kein Supabase Vault) + `calendar_app_token_expires_at` + `calendar_provider="microsoft"`. Key = `CALENDAR_ENCRYPTION_KEY` (Vercel Env, 64 hex/32 byte); Utility `tokenEncryption.ts`.
 - **Produktprinzip:** kein Zwei-Tool-Gefühl — Outlook ist Hintergrund-Infrastruktur. Phase 2 (offen) = Write-back FlowSight → Outlook.
 
-(Quelle: `docs/redesign/leitstand/kalender_integration_outlook_implementation_log.md`.)
+(Quelle: `docs/_archive/redesign/leitstand/kalender_integration_outlook_implementation_log.md`.)
 
 ---
 

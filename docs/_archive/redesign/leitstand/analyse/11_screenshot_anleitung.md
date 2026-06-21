@@ -7,7 +7,7 @@
 ## Zielordner
 
 ```
-docs/redesign/leitstand/analyse/aktueller_stand/
+docs/_archive/redesign/leitstand/analyse/aktueller_stand/
 ```
 
 ---

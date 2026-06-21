@@ -485,7 +485,7 @@ Die Hybrid-Empfehlung in §5 basierte auf der falschen Annahme, dass OpenAI Real
 
 ## 9. Pricing- und Margen-Implikation
 
-**Vollständige Analyse:** `docs/redesign/leitstand/pricing_und_marge.md`
+**Vollständige Analyse:** `docs/_archive/redesign/leitstand/pricing_und_marge.md`
 
 ### Kernaussage
 

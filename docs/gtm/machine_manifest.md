@@ -2,7 +2,7 @@
 
 **Erstellt:** 2026-03-13 | **Owner:** CC + Founder
 **Version:** 4.1 — BigBen Pub Erster Kunde (Updated 14.04.: Website KEIN Produktbestandteil. BigBen Pub onboarded: Voice EN, Events, Reservierungen, Dashboard. Erste Nicht-Sanitaer-Branche bewiesen. Gastro-Module (pub_events, pub_reservations) = neue Produktachse.)
-**Referenz:** `docs/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/redesign/scaling_access.md` (Thema A)
+**Referenz:** `docs/_archive/redesign/plan.md` (S5), `docs/architecture/contracts/prospect_manifest.md`, `docs/_archive/redesign/scaling_access.md` (Thema A)
 
 ---
 
@@ -675,4 +675,4 @@ Cluster-Zuordnung: Erste 3 Ziffern der PLZ. Einfach, deterministisch.
 - **Schatztruhe:** `docs/gtm/schatztruhe_final.md`
 - **Operating Model:** `docs/gtm/operating_model.md`
 - **Quality Gates:** `docs/gtm/quality_gates.md`
-- **Plan S5:** `docs/redesign/plan.md` (§ S5)
+- **Plan S5:** `docs/_archive/redesign/plan.md` (§ S5)

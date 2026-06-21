@@ -121,7 +121,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **Google-Count:** Google-Bewertungsanzahl aus weekly Crawl im FlowBar sichtbar
 - **Gold-Status:** Fälle mit rating ≥ 4 werden gold markiert in der Leitzentrale
 - Google Review URL pro Tenant konfigurierbar (Settings-Seite)
-- **E2E-Plan:** `docs/redesign/leitstand/plan_google_bewertungen.md`
+- **E2E-Plan:** `docs/_archive/redesign/leitstand/plan_google_bewertungen.md`
 
 ### 3.6 Morning Report
 - Täglicher Statusbericht: 15 KPIs + Trial Status + Health, Severity-Ampel (GREEN/YELLOW/RED)
@@ -161,7 +161,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **Self-Assignment unterdrückt** bei ≤3 MA (kein Spam bei Kleinbetrieben)
 - **Negativ-Review: immer E-Mail-Alert** zusätzlich zu Push (darf nicht untergehen)
 - **SMS-Budget-Schutz:** Email-Fallback wo möglich (~38% SMS-Einsparung)
-- Vollständige Analyse: `docs/redesign/leitstand/kommunikationsmatrix_v2.md`, Architektur-Regeln: §12a in `zielarchitektur.md`
+- Vollständige Analyse: `docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md`, Architektur-Regeln: §12a in `zielarchitektur.md`
 
 ### 3.10 Google Review Crawl (seit 04.04.2026)
 - **Wöchentlicher Crawl:** GH Actions Cron (Montag 06:00 UTC)
@@ -244,7 +244,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - Anker = verpasster Auftrag / Teilzeit-Empfangskraft, nie „andere Apps". Sprache raus: Tool / Abo / günstig / teuer.
 - 0 Kunden → Richtwerte; erste 3–5 = Preis-Findung (nie rabattieren, Scarcity 10/Mo).
 - Preis **nicht öffentlich** auf der Website (Pricing-Seite entfernt, PR #544) — wird im Gespräch genannt, nie im Video.
-- Detail: SALES_BIBLE §5 + Onboarding-Bible §4; alte Tier-Analyse `docs/redesign/leitstand/pricing_und_marge.md` (Historie).
+- Detail: SALES_BIBLE §5 + Onboarding-Bible §4; alte Tier-Analyse `docs/_archive/redesign/leitstand/pricing_und_marge.md` (Historie).
 
 ---
 
