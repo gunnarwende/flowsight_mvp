@@ -152,7 +152,8 @@ Keine.
 | V3 | **Ortsnamen NICHT wiederholen** | mittel | READY TO TEST (PRs #198 + #202) |
 | V5 | **SMS kommt nicht an (eCall)** | hoch | READY TO TEST (PR #200 + #202) |
 | V6 | **Namens-Frage falsch formuliert** | mittel | READY TO TEST (PRs #198 + #202) |
-| V7 | **Dörfler DE v14 + INTL v74 unpublished (is_published=false)** — `retell-inspect` (Run #5, 2026-06-21) zeigt beide Agent+Flow-Köpfe als Draft; live serviert v13/v73. Klären ob gewollt, sonst `retell-publish prefix=doerfler` (dry_run zuerst). Nummer `+41445057420` korrekt auf inbound=DE-Agent. | mittel | OFFEN — prüfen ob Drafts gewollt |
+| V7 | **Dörfler DE v14 + INTL v74 unpublished (is_published=false)** — `retell-inspect` (Run #5, 2026-06-21) zeigte beide Agent+Flow-Köpfe als Draft; live serviert v13/v73. Inhalt geprüft (reporter_name-Regel DE rein, kein Brunner, Preise DE=INTL = keine Preisnennung), Dry-Run grün → `retell-publish prefix=doerfler dry_run=false` scharf geschaltet (Founder-Gate 2×). Nummer `+41445057420` korrekt auf inbound=DE-Agent. | mittel | PUBLISHED — verifizieren via retell-inspect |
+| V7b | **INTL reporter_name — bewusst entscheiden (Follow-up zu V7)** — `reporter_name` ist nur im DE-Agent ein eigenes Extraktionsfeld, nicht im INTL-Transfer-Ziel. Prüfen ob INTL den Namen explizit ziehen soll (englische Anrufer = Minderheit; Name steht ohnehin im Transcript). Bewusst als eigener, geprüfter Export-Edit — nicht ans DE-Publish gebolzt. | niedrig | OFFEN |
 
 ---
 
