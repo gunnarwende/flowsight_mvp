@@ -1,9 +1,9 @@
 name: Outreach Reminder
 
 on:
-  schedule:
-    # Täglich 07:15 UTC (zwischen lifecycle-tick 07:00 und morning-report 07:30)
-    - cron: "15 7 * * *"
+  # Schedule entfernt 21.06.: die Outreach-Kadenz (Tag 0/3/6-7) ist in den Morning
+  # Report (morning_report.mjs) eingeflossen → keine zweite Tages-Mail mehr.
+  # Bleibt manuell auslösbar (Konsolen-Board / Ad-hoc-Digest via --email).
   workflow_dispatch: {}
 
 jobs:
