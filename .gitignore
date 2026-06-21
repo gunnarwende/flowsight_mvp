@@ -104,3 +104,5 @@ scripts/_ops/today_sf_*.png
 scripts/_ops/QG_*.png
 scripts/_ops/APR_*.png
 scripts/_ops/PEV*.png
+
+supabase/.branches/
