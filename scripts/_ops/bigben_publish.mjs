@@ -329,6 +329,20 @@ async function main() {
       // Print first 300 chars of patched prompt for visual check
       console.log(`  preview: ${after.slice(0, 300).replace(/\n/g, " | ")}`);
     } else {
+      // Retell verbietet das Patchen eines PUBLIZIERTEN Flows ("Cannot update
+      // published conversation flow"). Agent + Flow teilen die Version → ein
+      // editierbarer Draft (POST /create-agent-version) entsperrt den Flow unter
+      // denselben IDs. No-op, falls die neueste Version bereits ein Draft ist.
+      // (Bewährtes Muster aus retell_sync.mjs — der Grund, warum Dörfler publishen
+      // kann und BigBen bisher mit 400 scheiterte.)
+      const cur = await get(`/get-agent/${agentId}`);
+      const curVer = cur.version ?? cur.agent_version;
+      if (cur.is_published) {
+        await post(`/create-agent-version/${agentId}`, { base_version: curVer });
+        console.log(`  ✓ editierbarer Draft aus publizierter v${curVer} erzeugt`);
+      } else {
+        console.log(`  • bereits editierbar (Draft v${curVer})`);
+      }
       await patch(`/update-conversation-flow/${flowId}`, { global_prompt: after });
       console.log(`  ✓ flow patched`);
       const _av = await get(`/get-agent/${agentId}`);
