@@ -210,7 +210,7 @@ ElevenLabs = TTS, Bunny = Video-Stream.
 - Voice = **intake-only**, max 7 Fragen, Recording OFF, **nie Preis**, nie fixe Termine.
 - Onboarding: **kein Trial, monatlich kündbar, zahlend am Go-live.**
 - Retell: jede Agent-Änderung endet mit **publish**.
-- **Website ist kein Produktbestandteil (D83, 14.04.).** Produktgrenze: Voice + Wizard + Leitzentrale + Reviews + SMS — Modul 2 ist Standard, Wizard-Einstieg `/start/[slug]` fuer alle Betriebe. Eine Basis-Website (Legacy-Template) entsteht **nur als Fallback**, wenn **alle vier** Bedingungen zutreffen: (1) keine oder kaputte Website (SSL, mobil unbrauchbar), (2) kein sinnvoller Kontakt-/CTA-Pfad, (3) die Web-Praesenz beschaedigt aktiv Vertrauen, (4) der Betrieb **fragt aktiv danach** — FlowSight bietet es nicht an. GTM-Sprache: „Ihre bestehende Website bleibt wie sie ist — wir integrieren uns nahtlos." (Quelle: `docs/gtm/website/entscheidung_final.md`)
+- **Website ist kein Produktbestandteil (D83, 14.04.).** Produktgrenze: Voice + Wizard + Leitzentrale + Reviews + SMS — Modul 2 ist Standard, Wizard-Einstieg `/start/[slug]` fuer alle Betriebe. Eine Basis-Website (Legacy-Template) entsteht **nur als Fallback**, wenn **alle vier** Bedingungen zutreffen: (1) keine oder kaputte Website (SSL, mobil unbrauchbar), (2) kein sinnvoller Kontakt-/CTA-Pfad, (3) die Web-Praesenz beschaedigt aktiv Vertrauen, (4) der Betrieb **fragt aktiv danach** — FlowSight bietet es nicht an. GTM-Sprache: „Ihre bestehende Website bleibt wie sie ist — wir integrieren uns nahtlos." (Quelle: `docs/_archive/gtm-website/entscheidung_final.md`)
 
 ---
 
