@@ -34,9 +34,14 @@ export function classifyLead(page, now = Date.now()) {
   const views = page.view_count ?? 0;
   const opened = views > 0;
   const name = page.company_name || page.tenant_slug || "—";
+  // Ehrliche Watch-Tiefe der Anruf-Demo T2 (MR2). null = noch kein sauberes Signal.
+  const t2Pct = Number.isFinite(page.t2_pct) ? page.t2_pct : null;
+  const deepT2 = t2Pct != null && t2Pct >= 60;
 
   let prio, emoji, action;
-  if (opened && ageD >= 1) {
+  if (opened && deepT2) {
+    prio = 6; emoji = "🔥🔥"; action = `ANRUFEN — hat die Anruf-Demo (T2) zu ${t2Pct}% gesehen — heißestes Signal`;
+  } else if (opened && ageD >= 1) {
     prio = 5; emoji = "🔥"; action = 'ANRUFEN (warm) — „Was war Ihr erster Eindruck?"';
   } else if (opened) {
     prio = 4; emoji = "👀"; action = "heute geöffnet — heute/morgen anrufen";
@@ -51,7 +56,7 @@ export function classifyLead(page, now = Date.now()) {
   }
 
   return {
-    name, ageD, opened, views,
+    name, ageD, opened, views, t2Pct,
     lastViewedAt: page.last_viewed_at || null,
     token: page.token || null,
     prio, emoji, action,
@@ -66,7 +71,8 @@ function leadMeta(l) {
   const opened = l.opened
     ? `geöffnet ${l.views}×${l.lastViewedAt ? ` (zuletzt ${relAge(Math.max(0, Math.floor((Date.now() - new Date(l.lastViewedAt).getTime()) / DAY)))})` : ""}`
     : "noch nicht geöffnet";
-  return `Tag ${l.ageD} · ${opened}`;
+  const depth = l.t2Pct != null ? ` · T2 ${l.t2Pct}% gesehen` : "";
+  return `Tag ${l.ageD} · ${opened}${depth}`;
 }
 
 // ── Severity + reason (traceable color) ─────────────────────────────────────
