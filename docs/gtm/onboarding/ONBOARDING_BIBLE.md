@@ -103,7 +103,7 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
   **DE-only** (Ela-Stimme, spricht nie eine Fremdsprache) ↔ **multilingual INTL** (Juniper, EN/FR/IT),
   verbunden über `swap_to_intl_agent`/`swap_to_de_agent`. Wird am Go-live mit den 23 Platzhaltern via
   `retell_sync.mjs` für jeden Betrieb **identisch** provisioniert (Dörfler = Referenz). Spec NICHT hier
-  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/redesign/voice.md`.
+  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/architecture/references/voice.md`.
 
 ### Phase 3 — Review & Go-live (Pay) *(Folge-Bau, migriert v0-Operatives)*
 - **Founder-Review** des Cockpit-Ergebnisses (G11 — keine halb-konfigurierte Lisa geht live).

@@ -199,7 +199,7 @@ FlowSight ist das Leitsystem f&uuml;r Schweizer Handwerksbetriebe. Wir digitalis
 - **AI-Copilot:** Model-agnostisch (Claude + GPT). Pulse-Kommentar, Tenant-Insights
 - **Design:** Navy+Gold, Mobile-first, PWA installierbar (CEO + pro Tenant getrennt)
 - **Skalierbar für 500+ Betriebe:** Pagination, Search, Filter, Server-side Aggregation
-- **Gesamtplan:** `docs/redesign/flowsight_ceo_app.md` (27 Features, 10 Phasen, alle LIVE)
+- **Gesamtplan:** `docs/architecture/references/flowsight_ceo_app.md` (27 Features, 10 Phasen, alle LIVE)
 
 ### 3.12 Sales Voice Agent "Lisa"
 - Auf Geschäftsnummer +41 44 552 09 19

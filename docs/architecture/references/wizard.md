@@ -1,5 +1,8 @@
 # Wizard — Zielbild (Gold)
 
+> **Stand & Geltung (Live-Verifikation 2026-06-21, currentness: partial):** Design-/Erlebnis-Referenz aus dem Gold-Redesign 03/2026. Verbindlicher Live-Stand = Code (CustomerWizardForm.tsx, api/cases/route.ts) + docs/architecture/zielarchitektur.md. Kern (Notfall-Abfang, Fuehrung, FS-Fall-Nr, gebrandete Korrektur, Kategorie-Einheit) stimmt; ueberholt sind die SMS-zentrierte Post-Submit-Kette (Wizard-Bestaetigung ist seit 15.04. E-Mail-primaer, Wizard-SMS default AUS, zielarchitektur KR-1/KR-4) sowie die noch nicht umgesetzte PLZ-Autofill/Service-Area-Logik und die Telefon/E-Mail-Format-Validierung im Wizard.
+
+
 **Typ:** SSOT-Zielbild (Gold)
 **Stand:** 2026-03-12
 **IST-Grundlage:** wizard_ist.md (20 dokumentierte Luecken, L1–L20)

@@ -331,6 +331,6 @@ Phase A ──→ Phase B ──→ Phase C ──→ Checkpoint
 | `docs/brand/website_playbook.md` | Website-Playbook (wenn vorhanden) |
 | `docs/gtm/gold_contact.md` | Kaufpsychologie + Prospect Journey (Nordstern) |
 | `docs/gtm/verkaufspsychologie.md` | Touchpoint-Architektur |
-| `docs/redesign/identity_contract.md` | Branding-Regeln (R1-R7, E1-E5) |
+| `docs/architecture/contracts/identity_contract.md` | Branding-Regeln (R1-R7, E1-E5) |
 | `src/web/src/lib/marketing/constants.ts` | Marketing-Konstanten |
 | `src/web/app/(marketing)/page.tsx` | Aktuelle Homepage (Ausgangspunkt) |

@@ -1,5 +1,8 @@
 # Review — Zielbild (Gold)
 
+> **Stand & Geltung (Live-Verifikation 2026-06-21, currentness: partial):** Design-Referenz aus dem Gold-Redesign 03/2026. Verbindlicher Live-Stand = Code (src/web/app/review/[caseId]/) + zielarchitektur.md (D27/D28/D49/D65). Die Prinzipien P1-P5, Identity-Compliance, Fallbezug-Block, kein Auto-Send und das Tracking gelten weiter. UEBERHOLT: das Kernkapitel 3 "kein Google-Klon / keine Sterne auf der Surface" (RS7) und die Kill-Liste K1/K7 — das Live-Produkt nutzt bewusst einen interaktiven Sterne-Vorfilter (>=4* Chips+Google, <=3* internes Feedback); ausserdem refresh_reviews.mjs (Kap. 6) ersetzt durch crawl_google_reviews.mjs.
+
+
 **Typ:** SSOT-Zielbild (Gold)
 **Stand:** 2026-03-12
 **IST-Grundlage:** review_ist.md (15 dokumentierte Luecken, L1–L15)
