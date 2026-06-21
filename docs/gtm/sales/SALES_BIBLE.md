@@ -143,7 +143,7 @@ Drei Segmente aus Scout-Daten — das Geld sitzt in **A**:
 - **B — Website-schwach** (keine/veraltete Site, 1–5 MA, <10 Reviews): grösster Pain, aber **geringste Zahlungsbereitschaft, höchste Delivery-Reibung, grösstes Churn-Risiko** (kann CHF 950/Mo schlecht tragen → kündigt nach 3 Mt), schwächster Social Proof.
 - **C — gemischt** (brauchbare Site, 3–8 MA): mittlere Zahlungsbereitschaft, Website-Refresh ggf. späterer Upsell.
 
-**Konsequenz für ICP-Scoring:** „keine Website" ist **kein Bonus**, sondern ein Warnsignal für höheren Aufwand + niedrigere Zahlungsbereitschaft. *(Quelle: website/analyse_modul1_vs_modul2.md §6)*
+**Konsequenz für ICP-Scoring:** „keine Website" ist **kein Bonus**, sondern ein Warnsignal für höheren Aufwand + niedrigere Zahlungsbereitschaft. *(Quelle: _archive/gtm-website/analyse_modul1_vs_modul2.md §6)*
 
 ---
 
