@@ -65,4 +65,4 @@
 
 - Billing guards: ticketlist F10 (DONE)
 - Backup awareness: [backup_awareness.md](backup_awareness.md)
-- Video-Projekt: `docs/redesign/redesign_website/Website_Video.md` (§8 Tool-Stack, §17 Voraussetzungen)
+- Video-Projekt: `docs/_archive/redesign/redesign_website/Website_Video.md` (§8 Tool-Stack, §17 Voraussetzungen)
