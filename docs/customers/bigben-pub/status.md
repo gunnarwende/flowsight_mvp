@@ -14,6 +14,8 @@
 - **Deal:** Erster zahlender Kunde. 300 CHF einmalig + ~23 CHF/Mo. Barter-Deal (Free Drinks).
 - **Go-Live Target:** 30.04.2026 (Founder danach auf Philippinen, 4 Wochen Testphase)
 
+> **Stand 21.06.2026 — AKTIV.** Big Ben ist FlowSights **erster zahlender Live-Kunde** (seit Ende April) und **laufend produktiv** — keine offene „ist der überhaupt live?"-Frage. Voice EN+DE unter +41 44 505 48 18. Der Workflow `bigben-voice-daily.yml` hält Lisas gesprochenes Datum + Events 3×/Tag aktuell (live-kritisch). Reservierungen/Events werden über `/ops` gepflegt; im Morning-Report erscheinen offene Reservierungen als **FYI** (Kunden-Health), nicht als Founder-To-Do.
+
 ## Status
 - Setup: **LIVE** (Tenant converted, 14.04.2026, Barter-Deal)
 - Website: **LIVE** — flowsight.ch/bigben-pub (dark theme kennedys.ch, dynamic events, EN/DE)
