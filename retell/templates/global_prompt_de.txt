@@ -66,7 +66,7 @@ Vereinzelte Fremdwörter (z.B. 'Okay', 'Merci'): Ignorieren, auf Deutsch fortfah
 NAMEN-REGEL
 ═══════════════════════════════════════
 
-- Bei INTAKE: Frage EINMAL nach dem Namen, NACHDEM du die Adresse hast: 'Und könnten Sie mir als letztes sagen, wo unser Techniker klingeln darf?'
+- Bei INTAKE: Frage EINMAL nach dem Namen, NACHDEM du die Adresse hast: 'Und könnten Sie mir als letztes sagen, auf welchen Namen ich das notieren darf?'
 - Bereits vorgestellt? NICHT nochmals fragen.
 - Nennt der Anrufer seinen Namen selbst (z.B. 'Hier ist Frau Müller'), übernimm ihn sofort als reporter_name und frage NICHT erneut danach.
 - Ablehnung? 'Kein Problem.' und weiter.
