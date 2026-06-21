@@ -49,6 +49,14 @@ WhatsApp (intern, ohne PII).
 
 ---
 
+## 1.1 North Star (Positionierung)
+
+FlowSight verkauft **kein** KI / keine Telefonassistentin / keine App / keine SMS — sondern ein **Leitsystem**. Staerkste Positionierung: **inhabergefuehrten Handwerksbetrieben helfen, vom Reagieren zum Steuern zu kommen.** Das ist groesser als „keine Anfrage geht verloren" — Letzteres ist nur der konkrete Beweis, die Transformation ist weg vom Nachrennen/Blindflug hin zu Sichtbarkeit, Kontrolle, Steuerbarkeit. Lisa/Wizard/Leitzentrale sind Mechanismen, nicht die Verkaufsstory. (Quelle: `docs/archive/onboarding/FlowSight_Customer_Journey_Long.md` §1)
+
+Discovery-Anker (warmes Gespraech, Stern 5): zuerst Realitaet, dann Konsequenz, dann Commitment. Zwei Kernfragen — **R1:** „Wenn heute um 14 Uhr jemand anruft und niemand rangeht — was passiert dann normalerweise?"; **R2:** „Woher wissen Sie eigentlich, dass keine Anfragen verloren gehen?" (verschiebt von Erreichbarkeit zu **Sichtbarkeit**).
+
+---
+
 ## 2. Das Modell: der Schwungkreis
 
 Acht Sterne, eine Schleife. Der entscheidende Gedanke ist die **Ökonomie-Umkehr**:
@@ -202,6 +210,7 @@ ElevenLabs = TTS, Bunny = Video-Stream.
 - Voice = **intake-only**, max 7 Fragen, Recording OFF, **nie Preis**, nie fixe Termine.
 - Onboarding: **kein Trial, monatlich kündbar, zahlend am Go-live.**
 - Retell: jede Agent-Änderung endet mit **publish**.
+- **Website ist kein Produktbestandteil (D83, 14.04.).** Produktgrenze: Voice + Wizard + Leitzentrale + Reviews + SMS — Modul 2 ist Standard, Wizard-Einstieg `/start/[slug]` fuer alle Betriebe. Eine Basis-Website (Legacy-Template) entsteht **nur als Fallback**, wenn **alle vier** Bedingungen zutreffen: (1) keine oder kaputte Website (SSL, mobil unbrauchbar), (2) kein sinnvoller Kontakt-/CTA-Pfad, (3) die Web-Praesenz beschaedigt aktiv Vertrauen, (4) der Betrieb **fragt aktiv danach** — FlowSight bietet es nicht an. GTM-Sprache: „Ihre bestehende Website bleibt wie sie ist — wir integrieren uns nahtlos." (Quelle: `docs/gtm/website/entscheidung_final.md`)
 
 ---
 

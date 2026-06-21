@@ -116,6 +116,7 @@
 | D102 | **Sales als eigene Säule — 3-Säulen-Architektur + zweistufiger ICP + Lead-Motor (15.06.2026).** Sales ist eigene Säule mit SSOT `docs/gtm/sales/SALES_BIBLE.md` (Abend-Ritual „Sales-Maschine go": CC legt abends pro Betrieb Vorbereitungsblatt + Tagesblatt für den Folgetag bereit; Vor-Ort/Telefon-Motoren; Region-Ringe). **Reihenfolge Sales → Pipeline → Onboarding** kodiert die Ökonomie-Umkehr: Sales qualifiziert (kalt) → Pipeline baut nur für Ja-Sager → Onboarding liefert; Schwungrad Kunde→Referenz→Sales. Pipeline-Versand (war „Phase 3 Outreach") ist Sales untergeordnet. **ICP zweistufig** (Leitsignal „Inhaber-am-Telefon?"; Solo 1–3 MA → CHF 900, Premium 4–12 → CHF 2'000; Größe = Preis-Schalter; schärft D101/ersetzt D35-Tiers für Akquise). **Eine-SSOT-pro-Fakt-Regel** (ICP/Preis kanonisch in SALES_BIBLE, andere Docs verlinken). **Lead-Motor** (Code): `build_leads.mjs` (scout_raw → `docs/sales/leads.csv` SSOT, Merge-by-place_id) + `todays_list.mjs` (Tagesblätter) + **P12 `enrich_leads.mjs`** (robustes Link-Following — behebt Leins-`/Ueber-uns.htm` — + mailto-Scan + KI-Entscheider S6 + Vision-Fallback → `leads_enriched.json`). Bunny-Beweis-Seiten 14→30 Tage. | **ENTSCHIEDEN** ✅ | Founder + CC | `docs/gtm/sales/`, `build_leads.mjs`, `enrich_leads.mjs`, Memory `project_sales_machine_phase0` |
 | D103 | **Customer Journey Bible = Orchestrator; Schwungkreis statt 3-Säulen-Framing (17.06.2026).** Neue `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` ist das **oberste Dokument**: FlowSight wird als **eine Customer Journey / ein Schwungkreis** geführt (8 Sterne: 1 Kontakt · 2 Cold Call · 3 Simulation · 4 Gesehen · 5 Verkaufsgespräch · 6 Aufbau · 7 Go-live & Vertrag · 8 Begleitung & Wert; Schleife 8→1 via Referenz). Das frühere „3-Säulen-Modell" (D102) wird im **Naming** abgelöst — die drei Bibles sind keine Säulen, sondern **Handbücher für Abschnitte der Reise**. **D102-Substanz bleibt gültig** (Ökonomie-Umkehr Sales→Pipeline→Onboarding, zweistufiger ICP, Lead-Motor). HTML `docs/gtm/customer_journey.html` = visuelles/operatives Tool (Stern-Details dort, keine Doppelpflege). Eine-SSOT-pro-Fakt (ICP/Preis kanonisch in SALES_BIBLE). Reconciled über STATUS/ticketlist/Business-Briefing + Sales/Pipeline/Onboarding-Bible-Header. Mit-gebaut 17.06.: Stern-5-Warmgespräch v1 + OC8 Rückmelde/Wunschtermin (Lisa per-Tenant ohne falsche Terminversprechen). | **ENTSCHIEDEN** ✅ | Founder + CC | `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md`, Memory `project_customer_journey_bible` |
 | D104 | **Video-Delivery gehärtet + Retell-API-Migration (18.06.2026).** Kanonischer Liefer-Weg = **`build_take2/3/4_final`** (→ `_generated/previews` + `master_takes/take3\|4/<slug>_with_mouse`), NICHT `run_pipeline_multi` (älter, falsches Ablage-Format). **`produce_videos.mjs`** (füllt Orchestrator-Schritt 5) kettet provision→seed→Takes→`collect_delivery`→Staging nach `07_stresstest/abgenommen/<slug>/`→`build_proof_page`→**Hochkant** (`make_t2_portrait`+`proof_add_variants`) in EINEM Kommando. **Hochkant-Variante (`t2_portrait`) ist PFLICHT** (Handy: Screen gross + EIN runder Loom; Fehlen = Mobile-Drift). `send_outreach --live` schaltet das Beweis-Seiten-Tracking automatisch scharf (S8). **Retell-Deprecations migriert:** Publish → `/publish-agent-version/{id}` mit `{version}`; Phone → `inbound_agents[]` statt `inbound_agent_id` (Fristen 07-20 / 03-31). Runbook: `docs/gtm/pipeline/NEUER_BETRIEB_VIDEO_RUNBOOK.md`. | **ENTSCHIEDEN** ✅ | Founder + CC | `produce_videos.mjs`, `make_t2_portrait.mjs`, `retell_sync.mjs`, Memory `project_video_pipeline_lineage` |
+| D105 | **Voice-Agent-Schablone-Master = Doerfler AG (KANONISCH, Founder 21.06.2026).** Die DE- und INTL-Schablone für ALLE Betriebe ist `doerfler_agent.json` + `doerfler_agent_intl.json` (Doerfler AG = Gold-Standard). Jeder neue Voice-Agent wird aus diesem Master abgeleitet (23 Platzhalter-Swap, vgl. D68), nicht aus einem anderen Tenant. Eine SSOT pro Fakt: bei „Voice-Schablone" zuerst Doerfler. `is_transfer_cf: true` auf BEIDEN Flows + Publish-Pflicht bleiben (vgl. CLAUDE.md Retell-Regel). | **ENTSCHIEDEN** ✅ | Founder | `retell/exports/doerfler_agent.json` + `_intl.json`, D68, `retell_sync.mjs` |
 
 ---
 
@@ -290,6 +291,14 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 
 **Entscheidung (D8): UMGESETZT.** RLS für Production + API-Layer (`resolveTenantScope.ts`) als zusätzliche Absicherung. Demo-Modus via Tenant-Flag `is_demo`.
 
+### Tenant-Switcher — Cookie-Mechanik (D17/D21)
+
+Mechanik: HttpOnly-Cookie `fs_active_tenant` überschreibt JWT `tenant_id` **nur für `role=admin`**. `resolveTenantScope.ts` ist der **einzige Choke-Point** — alle 10+ API-Routes + Dashboard-Seiten lesen davon, eine Änderung dort kaskadiert überall hin.
+
+Sicherheit: (1) Cookie nur gelesen wenn JWT `role=admin` → nicht spoofbar; (2) HttpOnly → kein XSS-Zugriff; (3) RLS als zweite Verteidigungslinie; (4) **E-Mail-Versand immer `case.tenant_id`** → Cookie irrelevant für Mails; (5) Techniker-Micro-Surface = HMAC, nicht betroffen; (6) Cookie per-Device. Impersonation = Amber-Banner („Ansicht: {Betrieb} — Nicht Ihr Betrieb"). Betriebe sehen keinen Switcher/Banner.
+
+(Quelle: `docs/redesign/scaling_access.md`.)
+
 ### Zentrale Tenant-Felder (modules JSONB)
 
 Bereits implementiert oder geplant:
@@ -308,6 +317,45 @@ Bereits implementiert oder geplant:
 | `notification_email` | string | Empfänger für Ops-Mails | ⚠️ Hardcoded in env |
 
 **Empfehlung:** `brand_color` und `notification_email` in `modules` JSONB migrieren. Dann ist **ein einziger DB-Eintrag** die Quelle für alle Tenant-Konfiguration.
+
+### Variablen-Referenz (welches Feld wohin fliesst)
+
+Kanonische Zuordnung aus dem Prospect Manifest. SSOT pro Betrieb = `tenant_config.json` (bzw. `prospect_manifest`); jede Oberfläche liest transitiv von dort.
+
+| Variable | Quelle | Konsument(en) |
+|----------|--------|---------------|
+| `{legal_name}` | company.legal_name | E-Mail, Video-Script, Voice-Agent, /start |
+| `{short_name}` | company.short_name | SMS-Sender, Leitstand-Tab, Telegram-Alert |
+| `{brand_color}` | company.brand_color | /start, /kunden, Wizard-Akzent, DB primary_color |
+| `{sms_sender}` | provisioning.sms_sender_name (≤11 Zeichen) | SMS + Video-Beweis |
+| `{region_ref}` | outreach.region_reference | E-Mail-Body, Video-Script |
+| `{video_hook}` | outreach.video_hook | Video Szene 1, Teleprompter |
+| `{prospect_email}` | outreach.prospect_email (Entscheider, nie info@) | E-Mail-Empfänger |
+| `{test_phone}` | provisioning.twilio_number_display | E-Mail, Video-CTA, /start |
+
+(Quelle: `docs/architecture/contracts/prospect_manifest.md` — vollständige Tabelle + JSON-Schema dort.)
+
+### Tenant Identity Contract (R1–R7 + E1–E6)
+
+Verbindliche Wahrheitstabelle für Tenant-Identität. Grundprinzip: **FlowSight ist unsichtbare Infrastruktur** — der Betrieb sieht sein System, nicht unsere Software (wie Stripe beim Shop).
+
+**7 Konsistenzregeln (testbar):**
+- **R1** Ein Name, eine Quelle: `display_name` == `tenants.name`; Registry `companyName` identisch.
+- **R2** Kategorien identisch über Website/Wizard/Voice (`services[]`/`categories[]` aus einer Quelle).
+- **R3** PLZ-Einzugsgebiet (`service_area_plz[]`) einheitlich über Voice/Wizard/Post-Call.
+- **R4** FlowSight unsichtbar im Betriebskontext — einzige Ausnahme: E-Mail-Absender + rechtliche Dokumente.
+- **R5** `short_name` NUR wo Platz fehlt (SMS ≤11 Zeichen, Browser-Tab, Telegram); sonst `display_name`.
+- **R6** Keine Halluzination von Tenant-Daten (Lisa/Wizard nur aus Config; vgl. voice.md Halluzinationsverbot).
+- **R7** `slug` = einziger systemweiter Identifier (Supabase, Registry, Agent-JSON-Prefix, URL, docs/customers/).
+
+**Kernentscheidungen:**
+- **E1/E2** `display_name` überall sichtbar; `short_name` (Rechtsform weg, ≤15 Zeichen) nur in SMS/Tab/Telegram; `legal_name` für Vertrag/Impressum/AVV.
+- **E3** Genau eine `brand_color` (Hex) pro Tenant.
+- **E4** E-Mail-Absender-Pattern = `{display_name} via FlowSight`; From = `noreply@send.flowsight.ch`; Reply-To = `{contact_email}`. „via FlowSight" ist die EINZIGE erlaubte Sichtbarkeit (Zustellbarkeit/verifizierte Domain).
+- **E5** Duale SSOT (Supabase Runtime + TS CustomerSite Registry Build-Time): bei jedem Update beide synchron; **bei Konflikt gewinnt Supabase**.
+- **E6** Voice-Greeting wird pro Tenant manuell formuliert (`greeting_text`), kein starrer Template-String.
+
+(Quelle: `docs/redesign/identity_contract.md` — Oberflächen-Matrix, Verstoss-Beispiele + Prüf-Checkliste dort.)
 
 ---
 
@@ -542,6 +590,8 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 2. **`brand_color`** in modules → Dashboard-Branding, E-Mail-Header
 3. **`notification_email`** in modules → statt Env-Var pro Tenant
 4. **`demo_sms_target`** in modules → SMS-Ziel für Demo-Calls (statt globaler DEMO_SIP_CALLER_ID)
+
+**Default-Tenant-Fallback:** Die Case-API nutzt `FALLBACK_TENANT_ID` (UUID des geseedeten Erst-Tenants `doerfler-ag`) als Default, wenn keine Tenant-Resolution greift. Gesetzt in Vercel-Env (alle Umgebungen) + `src/web/.env.local`; Seed via `supabase/seed/seed_default_tenant.sql`. (Quelle: `docs/runbooks/supabase_seed_tenant.md`.)
 
 ---
 
@@ -869,6 +919,18 @@ Nicht: "Das ist ein Tool, das ich benutze." Sondern: "Das ist die Schaltzentrale
 | KPI-Zahlen (nur eigene) | ❌ Offen | "So steht mein Betrieb" |
 | Benutzername | ✅ E-Mail im Header | Persönlich |
 
+### Leitstand-Produktvertrag (5 Bereiche + Rollen + Anti-Drift)
+
+Der Leitstand (OPS) = fallzentrierte Betriebssteuerung. Atom = **der Fall** (Lebenszyklus Eingang → Triage → Termin → Einsatz → Abschluss → Review). Ein Produkt, progressive Nutzungstiefe statt Produktsplitting.
+
+**Fünf Bereiche:** **Puls** (priorisierte Handlungsliste: Achtung/Heute/In Arbeit/Abschluss — keine KPI-Karten, Handlungsimpulse) · **Fall** (Tiefenansicht: Was/Wo/Dringlich/Wer/Wann + Termin-Block + Timeline) · **Einsatzplan** (Cross-Case-Liste nach Mitarbeiter, kein Kalender-Widget) · **Zahlen** (Wochen-/Monats-Trends, Anti-BI: max 8 Kennzahlen) · **Einstellungen** (Staff, Termin-Defaults, Branding). Plus **zwei Micro-Surfaces** ausserhalb OPS: Techniker (`/einsatz/[token]`) + Melder (`/meldung/[token]`), je HMAC-Token, kein Login.
+
+**Rollenmodell:** Disponentin = Primärrolle (ganztags) · Meister/Inhaber = Voll + Mobile · **Techniker = KEIN OPS-Login** (HMAC-SMS-Link, 2 Taps) · Prospect = reduziert (Status/Beschreibung/Timeline, keine PII/Notizen) · Founder/Admin = Superset, tenant-übergreifend · Melder = kein Login.
+
+**Anti-Drift:** OPS ist KEIN CRM/ERP/Helpdesk/vollständiger-Kalender/Chat/Native-App. Tests pro Feature: Fall-Lebenszyklus-Test · Paralleltool-Test (→ Integrationslayer ICS/SMS statt erweitern) · Komplexitäts-Test (braucht 5-Mann-Betrieb das täglich?). Sprache = Branche, nicht SaaS (Fall statt Ticket, Mitarbeiter statt Agent, Leitstand statt Dashboard).
+
+(Quelle: `docs/redesign/leitstand/leitstand.md`.)
+
 ### Demo-Dashboard (Prospect-Erlebnis)
 
 Wenn ein Prospect das Dashboard öffnet, muss er sehen:
@@ -887,6 +949,18 @@ Wenn ein Prospect das Dashboard öffnet, muss er sehen:
 | Neuinstallationen | 3 | Badezimmer-Umbau, neue Heizung, Boiler-Ersatz | normal |
 | Wartung | 2 | Heizungswartung, Entkalkung | low |
 | Anfragen / Kontakt | 2 | Offerte gewünscht, allgemeine Frage | low |
+
+### Kalender-Integration (Outlook) — technischer Stack
+
+Phase 1 LIVE (20.03.2026). Vertieft D32.
+
+- **Consent-Modell: Application Permissions (client_credentials)** — NICHT Delegated OAuth (Versuche 1+2 scheiterten: Microsoft erzwingt Admin-Redirect bei `Calendars.Read` in Multi-Tenant-Apps). App authentifiziert sich selbst; Admin erteilt einmalig App-Consent im Azure Portal. Permission = `Calendars.Read` (Application).
+- **Abruf:** `GET /users/{email}/calendarView` pro Mitarbeiter; Mapping `staff.email` = Outlook-Adresse (1:1). Nur Free/Busy (showAs ≠ free), keine Termindetails im UI.
+- **Exchange-Online-Pflicht:** `MailboxNotEnabledForRESTAPI` = User hat kein Exchange-Online-Postfach (auch bei M365-Lizenz möglich); Test = Login auf outlook.office.com.
+- **Token-Ablage:** `tenants.modules.calendar_ms_tenant_id` + `calendar_app_token` (**AES-256-GCM** App-Layer, kein Supabase Vault) + `calendar_app_token_expires_at` + `calendar_provider="microsoft"`. Key = `CALENDAR_ENCRYPTION_KEY` (Vercel Env, 64 hex/32 byte); Utility `tokenEncryption.ts`.
+- **Produktprinzip:** kein Zwei-Tool-Gefühl — Outlook ist Hintergrund-Infrastruktur. Phase 2 (offen) = Write-back FlowSight → Outlook.
+
+(Quelle: `docs/redesign/leitstand/kalender_integration_outlook_implementation_log.md`.)
 
 ---
 
@@ -931,6 +1005,12 @@ Seed-Script Logik:
 - Migration: `supabase/migrations/20260310000000_rls_tenant_isolation.sql`
 - Seed-Script: `scripts/_ops/seed_demo_data.mjs --tenant=<id> --gewerk=sanitaer`
 - Cleanup: `--clean` Flag löscht bestehende Demo-Cases vor Neuerstellung
+
+### Status `archived` — Testdaten-Hygiene
+
+`archived` ist ein eigener Case-Status (CHECK-Constraint: `new, contacted, scheduled, done, archived`). Partial Index: `idx_cases_status WHERE status NOT IN ('done','archived')`. Wirkung: archivierte Fälle sind in allen Default-/„Alle"-Views, in den Dashboard-Tiles und im Morning-Report aus ALLEN KPIs ausgeschlossen (nur via Filter „Archiviert" sichtbar); Fall-Erstellung (Wizard/Voice) startet immer als `new`. Genutzt für Dev/Test-Fälle, ohne sie physisch zu löschen (Audit bleibt).
+
+(Quelle: `docs/runbooks/archive_test_data.md`.)
 
 ---
 
@@ -1157,6 +1237,20 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | 2 | Outreach-Timing — wann ist Weinberger-Erlebnis gut genug für Outreach? | Quality Gate für ersten echten Outreach |
 | 3 | Pricing-Kommunikation — wie passt Starter/Alltag/Wachstum zu Leckerli? | Prospect fragt nach Preis |
 | 4 | Video-Aufnahme Weinberger (Leckerli A) — Skript + Setup | Einziger Founder-only Deliverable |
+
+---
+
+## Runtime-Identifier (nicht-geheim)
+
+Nicht-geheime Binding-Werte (keine Secrets — die liegen in Vercel-Env, vgl. `docs/architecture/env_vars.md`):
+
+| System | Wert |
+|--------|------|
+| Supabase Project Ref | `oyouhwcwkdcblioecduo` (EU; Dashboard `https://supabase.com/dashboard/project/oyouhwcwkdcblioecduo`) |
+| Sentry | Org `flowsight-gmbh`, Project `flowsight-mvp` (EU, de.sentry.io); hardcoded in `next.config.ts` |
+| Vercel | Project `flowsight-mvp`, Root Directory `src/web`, Framework Next.js |
+
+(Quelle: `docs/archive/architecture/runtime_bindings.md`.)
 
 ---
 
