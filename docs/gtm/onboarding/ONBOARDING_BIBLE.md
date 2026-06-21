@@ -261,7 +261,7 @@ mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit har
 
 ## §9 · Anker & Links
 
-- **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
+- **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](../sales/FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
 - **📇 Gesprächskarte (Live-Call, 3 S.):** [`FlowSight_Customer_Journey_Short.md`](FlowSight_Customer_Journey_Short.md) — auf einen Blick „wo bin ich / welche Frage jetzt", inkl. wörtlicher Discovery-Fragen.
 - **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md) ← das „HOW" für Phase 1 (Read-Along; geht in der Journey-Gesprächskarte auf).
 - **Rückmelde-Versprechen & Wunschtermin (Voice-Erwartung):** [`phase2_rueckmelde_termin_logik.md`](phase2_rueckmelde_termin_logik.md) — schließt die „Wann?"-Lücke; Stufen 0–4, per-Tenant, Lisa setzt Erwartung + nimmt Wunschzeiten auf (kein fixer Termin).

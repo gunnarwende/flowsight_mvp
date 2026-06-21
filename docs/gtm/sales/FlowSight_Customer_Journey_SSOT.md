@@ -86,6 +86,12 @@ Unbeantwortete Frage = Unsicherheit. Im Schweizer KMU-Markt führt Unsicherheit 
 
 **Definition of Done Phase 0:** ein menschlicher Kontakt ist hergestellt (Pfad A/B/C) und ein Discovery-Gespräch terminiert oder direkt geführt.
 
+### Kanäle (Entscheidung 11.06.)
+Kanal-Stack nach Stärke für die Gold-ICP: **vor Ort > Anruf > WhatsApp (warm) > SMS (warm) > E-Mail (durable Beleg).**
+- **E-Mail ist nicht der Lead-Kanal**, sondern der dauerhafte Beleg-/Link-Träger. Der Inhaber lebt nicht im Postfach („wenig im Office") → geführt wird mit dem **Menschen** (Besuch/Anruf), die Mail liefert nur den Beweis-Link.
+- **WhatsApp = warmer Liefer-Kanal, kein Kalt-Blast.** Kalt programmatisch ist tabu (Meta-Ban-Risiko bei unsolicited Business-initiated + UWG + aufdringlich). **Sofort nutzbar:** nach jedem Besuch/Anruf den `/p/`-Link **manuell per WhatsApp vom Founder-Handy** nachschicken (solicited, ~90 % Öffnung). Automatisierter WhatsApp-Business-API-Weg nur für **solicited** Follow-ups (24h-Fenster/Template) — Build erst bei Skalierung.
+- **Mail-Copy-Prinzipien (aus Lessons S6–S8):** keine Demo-Sprache („durchgespielt"); Haken zum Profil matchen + nie über-claimen; am Link das Format signalisieren („Video-Einblick"). Details: `lessons_learned_sales.md`.
+
 ---
 
 ## §5 Discovery — WARM vs COLD getrennt
