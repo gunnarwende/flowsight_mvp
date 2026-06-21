@@ -48,7 +48,7 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 - **`gtm/pipeline/`** — `NEUER_BETRIEB_VIDEO_RUNBOOK`, `quality_gates`, `02_crawl_extract`, `03_derive_config`, `feedback/versand_timing_analyse`, `master_takes/_delivery/*`.
 - **`gtm/icp/`** — `stresstest_*`, `market/`.
 - **`brand/`** — `brand_system`, `style_dna`, `speech_clone/`, `gbp/`, `LinkedIn/`.
-- **`runbooks/`** — Ops-/Setup-Runbooks (Voice, Kalender, SMS, Provisioning, Incident …).
+- **`runbooks/`** — Ops-/Setup-Runbooks (Voice, Kalender, SMS, Provisioning, Incident …). **Arbeitsweise:** [`session_ritual.md`](runbooks/session_ritual.md) (Tagesabschluss + Handy-Tipps) · [`mobile_ops.md`](runbooks/mobile_ops.md) (Live-Ops vom Handy).
 - **`compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
 - **`sales/`** — `leads.csv` (+ `leads.md`), `crawl_feedback`, `pipeline`, `discovery_questions`.
 
