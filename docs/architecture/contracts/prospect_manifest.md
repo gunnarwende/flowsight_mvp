@@ -3,7 +3,7 @@
 **Erstellt:** 2026-03-13 | **Owner:** CC
 **Erweitert:** prospect_card.md (v1.0 Scout-Output)
 **Version:** 2.0 — Gold-Contact Proof-Capture-Maschine
-**Referenz:** `docs/gtm/machine_manifest.md`, `docs/gtm/video_manifest.md`
+**Referenz:** `docs/_archive/gtm-legacy/machine_manifest.md`, `docs/_archive/gtm-legacy/video_manifest.md`
 
 ---
 

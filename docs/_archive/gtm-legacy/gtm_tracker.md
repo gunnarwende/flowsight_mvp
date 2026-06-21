@@ -1,7 +1,7 @@
 # GTM Pipeline — Execution Tracker
 
 **Erstellt:** 2026-03-09 | **Aktualisiert:** 2026-03-11 | **Owner:** CC + Founder
-**Referenz:** `docs/gtm/operating_model.md`
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md`
 **Regel:** CC aktualisiert nach jedem Deliverable. Founder reviewed wöchentlich.
 
 ---

@@ -1,7 +1,7 @@
 # Quality Gates — GTM Prospect Delivery
 
 **Erstellt:** 2026-03-09 | **Owner:** CC + Founder
-**Referenz:** `docs/gtm/operating_model.md`
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md`
 **Regel:** KEIN Outreach ohne alle Gates PASS für das gewählte Leckerli-Paket.
 
 ---

@@ -391,7 +391,7 @@ Anruf → Lisa erkennt Intent
 | `docs/architecture/contracts/identity_contract.md` | Branding-Regeln (R1-R7, E1-E5) |
 | `docs/_archive/redesign/leitstand/plan_Leitsystem.md` | Phase 2 Tasks (§2.1-2.5) |
 | `docs/compliance/data_processing.md` | Subprocessors + Retention |
-| `docs/gtm/operating_model.md` | Trial-Lifecycle Kommunikation |
+| `docs/_archive/gtm-legacy/operating_model.md` | Trial-Lifecycle Kommunikation |
 | `src/web/src/lib/email/resend.ts` | Alle E-Mail-Templates (Code) |
 | `src/web/src/lib/sms/` | Alle SMS-Templates (Code) |
 | `src/web/app/api/retell/webhook/route.ts` | Voice-Intake + Post-Call Notifications |

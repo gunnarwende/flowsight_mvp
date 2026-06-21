@@ -256,8 +256,8 @@ Restliche 4 (A1, A4, A5, A9) werden manuell geprueft.
 
 ## Referenzen
 
-- **Machine Manifest:** `docs/gtm/machine_manifest.md` (Schritt 9)
+- **Machine Manifest:** `docs/_archive/gtm-legacy/machine_manifest.md` (Schritt 9)
 - **Prospect Manifest:** `docs/architecture/contracts/prospect_manifest.md` (QA-Block Schema)
-- **Quality Gates (bestehend):** `docs/gtm/quality_gates.md` (Gate 1-5, gelten weiterhin)
-- **Gold Contact:** `docs/gtm/gold_contact.md` (Nordstern, Abbruchkriterium)
+- **Quality Gates (bestehend):** `docs/_archive/gtm-legacy/quality_gates.md` (Gate 1-5, gelten weiterhin)
+- **Gold Contact:** `docs/_archive/gtm-legacy/gold_contact.md` (Nordstern, Abbruchkriterium)
 - **Plan S5:** `docs/_archive/redesign/plan.md` (§ S5.6)

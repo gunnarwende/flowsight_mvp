@@ -1,7 +1,7 @@
 # Provisioning Runbook — Prospect → Outreach-Ready (<25 Min)
 
 **Erstellt:** 2026-03-09 | **Owner:** CC
-**Referenz:** `docs/gtm/operating_model.md`
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md`
 **Validiert durch:** Weinberger AG Goldstandard (ICP 90+, A+B+C+D)
 
 ---
@@ -190,7 +190,7 @@ demo_url → flowsight.ch/kunden/<slug>
 
 ## Schritt 7: Quality Gates prüfen — ~2 Min
 
-Siehe `docs/gtm/quality_gates.md` — alle Gates für das gewählte Leckerli-Paket durchlaufen.
+Siehe `docs/_archive/gtm-legacy/quality_gates.md` — alle Gates für das gewählte Leckerli-Paket durchlaufen.
 
 ---
 
@@ -199,7 +199,7 @@ Siehe `docs/gtm/quality_gates.md` — alle Gates für das gewählte Leckerli-Pak
 Nach jedem Provisioning:
 
 1. `docs/customers/<slug>/status.md` — Leckerli-Status aktualisieren
-2. `docs/gtm/gtm_tracker.md` — Prospect-Zähler erhöhen
+2. `docs/_archive/gtm-legacy/gtm_tracker.md` — Prospect-Zähler erhöhen
 3. `docs/STATUS.md` — Kundenzahl + Aktueller Stand
 4. `docs/ticketlist.md` — Snapshot aktualisieren
 

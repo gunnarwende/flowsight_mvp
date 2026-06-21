@@ -1,7 +1,7 @@
 # Einsatzlogik-Engine (G6)
 
 **Erstellt:** 2026-03-09 | **Owner:** CC
-**Referenz:** `docs/gtm/operating_model.md`
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md`
 **Input:** Prospect Card (`prospect_card.json`)
 **Output:** Leckerli-Paket + Asset-Liste + Provisioning-Steps
 

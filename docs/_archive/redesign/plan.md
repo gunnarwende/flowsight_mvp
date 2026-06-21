@@ -347,7 +347,7 @@ S1-S4 bauen das Produkt. S5 baut die **Skalierungs-Pipeline**, die das Produkt a
 
 **Zielkapazitaet:** 10 Betriebe/Tag (5x Modus 1 + 5x Modus 2)
 **Architektur:** Proof-Capture-Maschine + Founder-Batch-Narration (kein Avatar, kein HeyGen)
-**Referenzdokumente:** `docs/gtm/machine_manifest.md`, `docs/gtm/video_manifest.md`, `docs/gtm/qa_gate.md`
+**Referenzdokumente:** `docs/_archive/gtm-legacy/machine_manifest.md`, `docs/_archive/gtm-legacy/video_manifest.md`, `docs/_archive/gtm-legacy/qa_gate.md`
 
 ### Pipeline-Uebersicht
 

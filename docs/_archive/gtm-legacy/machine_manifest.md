@@ -450,7 +450,7 @@ Self-hosted auf Vercel als MP4. NICHT Loom.
 **Output:** QA-Block im Prospect Manifest
 **Dauer:** ~5 Min Auto + ~3 Min Manual pro Prospect
 
-Vollstaendige QA-Spezifikation: `docs/gtm/qa_gate.md`
+Vollstaendige QA-Spezifikation: `docs/_archive/gtm-legacy/qa_gate.md`
 
 ### Kurzfassung
 
@@ -500,7 +500,7 @@ node --env-file=.env.local scripts/_ops/send_outreach_mail.mjs {slug} {email}
 
 **Owner:** Founder (persoenlich)
 **Trigger:** Signal oder Zeitablauf
-**Referenz:** `docs/gtm/operating_model.md` (Phase 3: Trial)
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md` (Phase 3: Trial)
 
 ### Follow-up Timeline
 
@@ -669,10 +669,10 @@ Cluster-Zuordnung: Erste 3 Ziffern der PLZ. Einfach, deterministisch.
 ## Referenzen
 
 - **Prospect Manifest:** `docs/architecture/contracts/prospect_manifest.md`
-- **Video Manifest:** `docs/gtm/video_manifest.md`
-- **QA Gate:** `docs/gtm/qa_gate.md`
-- **Gold Contact:** `docs/gtm/gold_contact.md`
-- **Schatztruhe:** `docs/gtm/schatztruhe_final.md`
-- **Operating Model:** `docs/gtm/operating_model.md`
-- **Quality Gates:** `docs/gtm/quality_gates.md`
+- **Video Manifest:** `docs/_archive/gtm-legacy/video_manifest.md`
+- **QA Gate:** `docs/_archive/gtm-legacy/qa_gate.md`
+- **Gold Contact:** `docs/_archive/gtm-legacy/gold_contact.md`
+- **Schatztruhe:** `docs/_archive/gtm-legacy/schatztruhe_final.md`
+- **Operating Model:** `docs/_archive/gtm-legacy/operating_model.md`
+- **Quality Gates:** `docs/_archive/gtm-legacy/quality_gates.md`
 - **Plan S5:** `docs/_archive/redesign/plan.md` (§ S5)

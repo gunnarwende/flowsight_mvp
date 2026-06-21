@@ -203,5 +203,5 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | `identity_contract.md` | Branding-Regeln (R1–R7, FlowSight unsichtbar) |
 | `brand_system.md` | Farben, Typografie, Logo (Signal Dot) |
 | `case_contract.md` | Datenmodell (Pflichtfelder, Lifecycle) |
-| `docs/gtm/gold_contact.md` | GTM Nordstern (5-Stufen-Kaufpsychologie, 7 WOW-Momente) |
-| `docs/gtm/operating_model.md` | Trial-Lifecycle (14 Tage, 5 Phasen) |
+| `docs/_archive/gtm-legacy/gold_contact.md` | GTM Nordstern (5-Stufen-Kaufpsychologie, 7 WOW-Momente) |
+| `docs/_archive/gtm-legacy/operating_model.md` | Trial-Lifecycle (14 Tage, 5 Phasen) |

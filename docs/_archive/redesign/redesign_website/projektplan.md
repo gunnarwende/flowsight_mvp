@@ -329,7 +329,7 @@ Phase A ──→ Phase B ──→ Phase C ──→ Checkpoint
 | `docs/redesign/redesign website/Redesign Website.md` | Analyse + Problembeschreibung (Arbeitsgrundlage) |
 | `docs/brand/brand_system.md` | Farben, Typografie, Regeln (Design-Basis) |
 | `docs/brand/website_playbook.md` | Website-Playbook (wenn vorhanden) |
-| `docs/gtm/gold_contact.md` | Kaufpsychologie + Prospect Journey (Nordstern) |
+| `docs/_archive/gtm-legacy/gold_contact.md` | Kaufpsychologie + Prospect Journey (Nordstern) |
 | `docs/gtm/verkaufspsychologie.md` | Touchpoint-Architektur |
 | `docs/architecture/contracts/identity_contract.md` | Branding-Regeln (R1-R7, E1-E5) |
 | `src/web/src/lib/marketing/constants.ts` | Marketing-Konstanten |

@@ -4,7 +4,7 @@
 **Zweck:** Generisches Speakflow-Template fuer alle Betriebe ab Betrieb 2 (nach Doerfler AG).
 **Gold-Standard:** Doerfler AG Take 2 = 1:1 Vorlage (nicht mehr). Takes 1/3/4 abgeleitet aus Doerfler-Script - update seit 17.04. - neues script für maschine_manifest pipeline für maximale persönliche und skalierende Pipeline
 **Regel:** Platzhalter `{{...}}` werden pro Betrieb ersetzt. Alles andere ist identisch.
-**Referenz:** `docs/gtm/vorstellung.md` (Skalierungsstrategie), `docs/gtm/machine_manifest.md` (Pipeline)
+**Referenz:** `docs/_archive/gtm-legacy/vorstellung.md` (Skalierungsstrategie), `docs/_archive/gtm-legacy/machine_manifest.md` (Pipeline)
 
 ---
 

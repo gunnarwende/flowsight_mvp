@@ -2,7 +2,7 @@
 
 **Version:** 1.0 | **Datum:** 2026-04-10
 **Zweck:** Definitive Vorlage für die Einrichtung des Leitsystems pro neuem Betrieb.
-**Referenz:** `docs/gtm/machine_manifest.md` (Schritt 4: Provisionieren)
+**Referenz:** `docs/_archive/gtm-legacy/machine_manifest.md` (Schritt 4: Provisionieren)
 
 ---
 
