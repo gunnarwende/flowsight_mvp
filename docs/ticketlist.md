@@ -165,6 +165,8 @@ Keine.
 | # | Titel | Status |
 |---|-------|--------|
 | #80 | BigBen Pub — Pauls Fotos/Videos | Wartet auf Paul (Go-Live 30.04.) |
+| OPS1 | **Deploy-Mail-Lärm abstellen (Founder, am Laptop)** — pro Vercel-Deploy kommen 2 Mails ins Outlook (nervt). Quelle: Vercel-Deploy-Mails + Sentry-Deploy-Benachrichtigung (`withSentryConfig`, Org `flowsight-gmbh`/Projekt `flowsight-mvp`, legt pro Deploy ein Release an). Sind **Account-Notification-Settings, nicht im Repo**. Abstellen: (1) Vercel → `vercel.com/account/notifications` → Kategorie „Deployments" Email = **off** (persönlich, betrifft nur eigenes Postfach). (2) Sentry → `sentry.io/settings/account/notifications/` → „Deploys" = **Never** — **Issue-Alerts/Workflow NICHT anfassen** (Monitoring behalten). Optional Outlook-Regel als Sofort-Pflaster (Absender `vercel.com`/`sentry.io` + Betreff „Deploy" → Ordner + gelesen). | OFFEN — Founder, ab morgen |
+| OPS2 | **Vercel + Sentry Plan/Usage prüfen (Founder, am Laptop)** — Klarheit über Kosten. Modell: **kein Pro-Deploy-Preis** bei beiden. Vercel = Abo (Hobby gratis / Pro ~$20 pro Member/Mo) + nutzungsbasierte Overages (Bandbreite/Compute/Functions) → `vercel.com` → Settings → Billing + Usage. Sentry = nach Event-Volumen (Errors/Transactions/Replays), Release/Deploy gratis; `tracesSampleRate 0.05` + Replays 0 halten es günstig → `sentry.io` → Settings → Subscription/Usage. Tatsächlichen Plan/Rechnung kann CC nicht sehen (Account-Ebene). | OFFEN — Founder, ab morgen |
 
 ---
 
