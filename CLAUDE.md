@@ -11,6 +11,7 @@
 - Retell: EVERY agent change MUST end with publish. Unpublished agents cause silent routing failures. Use retell_sync.mjs (auto-publishes) or manually publish in Dashboard after JSON import. Verify: is_published=true via API.
 
 ## SSOT Paths
+- Doku-Wegweiser (Einstieg, Routing nach Fragetyp): docs/INDEX.md
 - Company status + document map: docs/STATUS.md
 - Tickets + backlog: docs/ticketlist.md
 - Customer files: docs/customers/<slug>/status.md
