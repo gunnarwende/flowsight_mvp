@@ -239,7 +239,7 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 | `docs/gtm/operating_model.md` | GTM Operating Model (6 Phasen, Trial Lifecycle, Quality Gates) |
 | `docs/gtm/gtm_tracker.md` | GTM Execution-Tracker (G1-G12 Building Blocks) |
 | `docs/architecture/zielarchitektur.md` | Zielarchitektur — 30 Decisions, Business + Produkt + GTM + CEO-App |
-| `docs/redesign/flowsight_ceo_app.md` | **CEO-App Gesamtplan** — 27 Features, 10 Phasen, alle LIVE. Founder-Tasks, DB-Schema, AI-Architektur |
+| `docs/architecture/references/flowsight_ceo_app.md` | **CEO-App Gesamtplan** — 27 Features, 10 Phasen, alle LIVE. Founder-Tasks, DB-Schema, AI-Architektur |
 | `docs/sales/pipeline.md` | Sales Pipeline Prozess + Tool-Referenz |
 | `CLAUDE.md` | Repo-Guardrails, Conventions |
 | `docs/customers/<slug>/status.md` | Pro-Kunde Status |

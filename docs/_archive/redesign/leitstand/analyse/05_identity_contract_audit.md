@@ -1,7 +1,7 @@
 # 05 — Identity Contract Audit
 
 > R1–R7 Konsistenzregeln gegen Code-Realität im Leitstand.
-> Referenz: `docs/redesign/identity_contract.md`
+> Referenz: `docs/architecture/contracts/identity_contract.md`
 
 ---
 

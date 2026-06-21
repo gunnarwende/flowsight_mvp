@@ -1,8 +1,11 @@
 # FlowSight CEO-App — Gesamtplan
 
+> **Stand & Geltung (Live-Verifikation 2026-06-21, currentness: partial):** Design-/Bauplan-Referenz aus dem CEO-App-Redesign 03/2026 (v4.0). Kern stimmt weiter mit dem Live-Produkt (Route-Group /ceo/*, CeoShell-Navy-Sidebar, Sektionen Pulse/Betriebe/Finanzen/Monitoring/Notifications/Knowledge/Team/Admin, PWA, Web-Push, AI-Provider — vgl. zielarchitektur D25-D31). Verbindlicher Live-Stand = Code (src/web/app/ceo, src/web/src/components/ceo) + zielarchitektur.md. Ueberholt: die Journey-/Schwungkreis-Sektion (/ceo/journey, gebaut 06/2026) fehlt komplett; Pipeline ist in Journey absorbiert (kein eigenes /ceo/pipeline); Trial-/SaaS-Funnel-Framing (14-Tage-Trial, Scout->Trial->Convert) ist durch D57/D101/D102 abgeloest; AI-Model-IDs sind Platzhalter.
+
+
 **Version:** 4.0 | **Datum:** 2026-03-20
 **Status:** ALLE 10 PHASEN + Sentry Digest + Web Push + PWA LIVE (PRs #304-#322). Alle Founder Tasks F1-F8 erledigt.
-**Pfad:** `docs/redesign/flowsight_ceo_app.md`
+**Pfad:** `docs/architecture/references/flowsight_ceo_app.md`
 
 ### Fortschritt
 

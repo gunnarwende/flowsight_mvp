@@ -1,5 +1,8 @@
 # Tenant Identity Contract
 
+> **Stand & Geltung (Live-Verifikation 2026-06-21, currentness: partial):** Design-Referenz aus dem Gold-Contact-Redesign (03/2026). Verbindlicher Live-Stand = Code (src/web/src/lib/tenants/resolveTenantIdentity.ts, src/web/src/lib/email/resend.ts, customers/registry.ts) + docs/architecture/zielarchitektur.md (Abschnitt "Tenant Identity Contract", traegt R1-R7 + E1-E6 bereits 1:1). Kern (Felder, Oberflaechen-Matrix, R1-R7, E1-E6) ist current; die als "Zielbild/Migrationspfad" markierten Stellen sind teils schon umgesetzt (siehe staleParts).
+
+
 **Typ:** Bindendes Querschnittsdokument (kein Zielbild, kein Strang)
 **Status:** SSOT-Referenz — gilt ab sofort fuer alle Straenge
 **Letzte Aenderung:** 2026-03-12

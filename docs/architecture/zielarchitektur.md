@@ -36,7 +36,7 @@
 | D22 | Rollen-Switch: Admin kann als Techniker testen (Cookie `fs_view_as_role`) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D23 | Support-System: "Hilfe"-Seite → GitHub Issue (+ Resend Fallback) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D24 | Benachrichtigungs-Kommunikationsmatrix: 25+ Trigger, 5 Kanäle, 5 Akteure | **ENTSCHIEDEN** ✅ | Founder + CC | Matrix_kommunikation.md |
-| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/redesign/flowsight_ceo_app.md` |
+| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/architecture/references/flowsight_ceo_app.md` |
 | D29 | CEO-App als Route Group im bestehenden App (`/ceo/*`), nicht separates Projekt | **ENTSCHIEDEN** ✅ | Founder + CC | Gleiche Auth, gleicher Deploy, gleiche DB |
 | D30 | AI-Provider model-agnostisch: Anthropic + OpenAI austauschbar pro Feature, graceful degradation | **ENTSCHIEDEN** ✅ | Founder + CC | `src/lib/ai/`, Feature→Model Config |
 | D31 | Web Push Notifications für CEO via VAPID + Service Worker. Push bei Notfall, Trial-Expiry, Health RED | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ceo/push/`, `sw.js`, VAPID Keys |
@@ -355,7 +355,7 @@ Verbindliche Wahrheitstabelle für Tenant-Identität. Grundprinzip: **FlowSight 
 - **E5** Duale SSOT (Supabase Runtime + TS CustomerSite Registry Build-Time): bei jedem Update beide synchron; **bei Konflikt gewinnt Supabase**.
 - **E6** Voice-Greeting wird pro Tenant manuell formuliert (`greeting_text`), kein starrer Template-String.
 
-(Quelle: `docs/redesign/identity_contract.md` — Oberflächen-Matrix, Verstoss-Beispiele + Prüf-Checkliste dort.)
+(Quelle: `docs/architecture/contracts/identity_contract.md` — Oberflächen-Matrix, Verstoss-Beispiele + Prüf-Checkliste dort.)
 
 ---
 

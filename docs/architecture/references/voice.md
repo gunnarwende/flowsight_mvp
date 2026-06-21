@@ -1,5 +1,8 @@
 # Lisa — Voice Agent Zielbild
 
+> **Stand & Geltung (Live-Verifikation 2026-06-21, currentness: partial):** Design-Referenz / Zielbild aus dem Gold-Contact-Redesign (03/2026). Verbindlicher Live-Stand = Code (retell/exports/*_agent.json, retell_sync.mjs, webhook/route.ts) + docs/architecture/zielarchitektur.md. Der Erlebnis- und Verhaltens-Kern (Lisa-Persona, Dual-Mode, No-Gos, Empathie, Halluzinationsverbot, 23 Platzhalter, 420s Cap, Sprachwechsel) ist live; ueberholt sind die Architektur-Wetten in §4.3/4.4 (Juniper-Single-Agent), §6.2/12 (PLZ-Verzeichnis), §7.2 (4-stufige completeness) und §7.3/7.4 (Twilio-SMS/Peoplefone) — siehe zielarchitektur D34/D51/D54/D55/D68/D69.
+
+
 > **Status:** SSOT-Zielbild (Gold) | **Stand:** 2026-03-12 | **Owner:** Founder + CC
 > **Kontext:** Gold-Contact-Redesign, 4-Wochen-Sprint (12.03.–10.04.2026)
 > **IST-Zustand:** `docs/_archive/redesign/voice_ist.md` (694 Zeilen, 14 Sektionen)
