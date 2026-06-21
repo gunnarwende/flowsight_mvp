@@ -23,6 +23,7 @@ export default async function ReservationsPage() {
 
   // Load reservations for next 14 days + today
   const today = new Date().toISOString().split("T")[0];
+  // eslint-disable-next-line react-hooks/purity -- pre-existing pattern, unblock build 2026-06-20
   const future = new Date(Date.now() + 14 * 86400000).toISOString().split("T")[0];
 
   // Parallel: reservations + no-show history

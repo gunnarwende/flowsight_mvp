@@ -1,0 +1,171 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-01T09:39:03.485Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "weinberger-ag",
+    "name": "Jul. Weinberger AG",
+    "case_id_prefix": "JW",
+    "brand_color": "#004994",
+    "sms_sender_name": "Weinberger"
+  },
+  "voice_agent": {
+    "company_name": "Jul. Weinberger AG",
+    "domain": "Sanitär, Heizung und Lüftung",
+    "owner_names": "Markus Niedermann",
+    "address": "Zürcherstrasse 73, 8800 Thalwil",
+    "phone": "044 721 22 23",
+    "email": "info@julweinberger.ch",
+    "website": "https://julweinberger.ch/",
+    "founded": "1912",
+    "team_section": "Geschäftsleitung: Markus Niedermann\nUnser Team besteht aus 32 Mitarbeitenden.",
+    "memberships": "",
+    "google_rating": "4.4 Sterne bei 20 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: Sanitär / Lüftung, Seit 2007 ist die Ausführung von sanitären Anlagen eine der Kernkompetenzen der Firma. Ob Neubau oder Sanierung – wir re, Gemeinsam mit Ihnen realisieren wir Ihr neues Wunschbad – ganz nach Ihren Bedürfnissen und Budget, sei es eine Kompletts, Sanitärinstallationen\nHeizung: Heizung / Alternativenergien, Gerne beraten wir Sie bei der Neuanschaffung oder Sanierung Ihrer Heizungsanlage. Dabei berücksichtigen wir alle geltend, Heizungsinstallationen / Lüftungen\nLüftung/Klima: Sanitär / Lüftung, Heizungsinstallationen / Lüftungen\nUmbau/Sanierung: Seit 2007 ist die Ausführung von sanitären Anlagen eine der Kernkompetenzen der Firma. Ob Neubau oder Sanierung – wir re, Gerne beraten wir Sie bei der Neuanschaffung oder Sanierung Ihrer Heizungsanlage. Dabei berücksichtigen wir alle geltend, Badumbau, Gemeinsam mit Ihnen realisieren wir Ihr neues Wunschbad – ganz nach Ihren Bedürfnissen und Budget, sei es eine Kompletts\nBeratung/Planung: Beratung/Planung\nKundendienst: Kundendienst, Service / Reparatur, Wir stehen Ihnen jederzeit zur Verfügung, um Ihnen einen zuverlässigen und effizienten Service zu bieten.",
+    "service_area": "8800 Thalwil, 8802 Kilchberg, 8803 Rüschlikon, 8804 Au ZH, 8805 Richterswil, 8810 Horgen, 8820 Wädenswil, 8942 Oberrieden",
+    "service_area_spoken": "Wir sind in Thalwil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "Offene Stellen; Wir sind ein zukunftsorientiertes Unternehmen mit attraktiven Anstellungsbedingungen. Wir legen grossen Wert auf ein gutes Arbeitsklima und die Ausbildung von Lernenden. Eine attraktive Unternehmenskultur fördern wir mit regelmässigen internen Anlässen, Mitarbeiterinformationen und durch die Unterstützung von internen wie externen Weiterbildungen. Ein attraktiver Arbeitgeber zu sein, ist für uns von grosser Bedeutung. Denn davon profitieren schlussendlich alle: das Unternehmen, die Mitarbeitenden und die Kunden.; In dieser Funktion verstehen Sie es, eine Baustelle administrativ und technisch selbständig zu führen, Mitarbeiter zu motivieren und Lernende auszubilden. Dank Ihrem Fachwissen können Sie bei Um- und Neubauten Ihre Erfahrungen einbringen. Zudem passen Sie diese Fähigkeiten den individuellen Kundenbedürfnissen an.; Abgeschlossene Ausbildung als Sanitärinstallateur/in EFZ; Berufserfahrung als selbständiger Monteur",
+    "jobs_spoken": "Ja, wir haben aktuell offene Stellen. Offene Stellen; Wir sind ein zukunftsorientiertes Unternehmen mit attraktiven Anstellungsbedingungen. Wir legen grossen Wert auf ein gutes Arbeitsklima und die Ausbildung von Lernenden. Eine attraktive Unternehmenskultur fördern wir mit regelmässigen internen Anlässen, Mitarbeiterinformationen und durch die Unterstützung von internen wie externen Weiterbildungen. Ein attraktiver Arbeitgeber zu sein, ist für uns von grosser Bedeutung. Denn davon profitieren schlussendlich alle: das Unternehmen, die Mitarbeitenden und die Kunden.; In dieser Funktion verstehen Sie es, eine Baustelle administrativ und technisch selbständig zu führen, Mitarbeiter zu motivieren und Lernende auszubilden. Dank Ihrem Fachwissen können Sie bei Um- und Neubauten Ihre Erfahrungen einbringen. Zudem passen Sie diese Fähigkeiten den individuellen Kundenbedürfnissen an.; Abgeschlossene Ausbildung als Sanitärinstallateur/in EFZ; Berufserfahrung als selbständiger Monteur",
+    "address_spoken": "Sie finden uns an der Zürcherstrasse 73, 8800 Thalwil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 100,
+    "google_rating": 4.4,
+    "google_review_count": 20,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8800",
+      "8802",
+      "8803",
+      "8804",
+      "8805",
+      "8810",
+      "8820",
+      "8942"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Thalwil",
+      "plz": "8800",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Kilchberg",
+      "plz": "8802",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Jul. Weinberger AG",
+    "firma_silben": 4,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "JW",
+    "modus": 2,
+    "google_stars": 4.4,
+    "video_hook": "Seit 1912 für Sie da.",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@julweinberger.ch"
+  },
+  "_seed_time": "2026-06-01T06:04:00.000Z",
+  "_take2_detail_switch_sec": 85.465,
+  "_wizard_time": "2026-06-01T06:56:00.000Z",
+  "_wizard_case_id": "ef290864-defd-4f1c-b494-fadd9035cb4a",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "JW-0050",
+  "_demo_now": "2026-06-01T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-01T06:08:00.000Z",
+  "_appointment_start": "2026-06-02T06:00:00.000Z",
+  "_appointment_end": "2026-06-02T08:00:00.000Z",
+  "_reminder_time": "2026-06-01T07:02:00.000Z",
+  "_completion_time": "2026-06-01T07:02:00.000Z",
+  "_review_sent_time": "2026-06-01T07:04:00.000Z",
+  "_review_rated_time": "2026-06-01T07:06:00.000Z",
+  "_review_token": "388b0720089bd304",
+  "_review_token_long": "388b0720089bd3046f42a99aa47c846e6bf87ff52fdd0497bc823537db5273cb",
+  "_case_created_at": "2026-06-01T06:56:00+00:00"
+}

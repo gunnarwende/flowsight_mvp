@@ -1,0 +1,146 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:15:01.871Z",
+    "source_url": "http://wattinger-schwendener.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "http://wattinger-schwendener.ch/",
+        "chars": 1830
+      }
+    ]
+  },
+  "firma": {
+    "value": "Wattinger Schwendener Sanitär Heizung GmbH",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Thomas Wattinger Sanitärmonteur, Simon Schwendener",
+    "source": "website_home",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Dozwilerstrasse 2, 8592 Uttwil",
+    "source": "website_home",
+    "verified": true
+  },
+  "telefon": {
+    "value": "077 419 04 29, 079 584 86 09, 071 463 17 07",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "th.wattinger@bluewin.ch, s.schwendener@gmx.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 4.9,
+    "review_count": 13,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1919",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": 6,
+    "source": "website_home",
+    "verified": true
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitärmonteur, Ing. FH Heizung-Sanitär",
+        "Sanitär- und Heizungsmonteur, Chefmonteur Heizung",
+        "Die Firma wurde 1919 von Emil Wattinger als Schmiede in Uttwil gegründet, vis-à-vis dem Restaurant Frohsinn. 1926 erfolg",
+        "Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge",
+        "Per 1. Januar 2021 überführt Thomas Wattinger die Einzelfirma und deren Geschäftstätigkeiten in die Wattinger Schwendene"
+      ],
+      "Heizung": [
+        "Sanitärmonteur, Ing. FH Heizung-Sanitär",
+        "Sanitär- und Heizungsmonteur, Chefmonteur Heizung",
+        "Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge",
+        "Per 1. Januar 2021 überführt Thomas Wattinger die Einzelfirma und deren Geschäftstätigkeiten in die Wattinger Schwendene",
+        "Wattinger Schwendener Sanitär Heizung GmbH"
+      ],
+      "Umbau/Sanierung": [
+        "Im Jahr 1973 übernimmt Alfred Wattinger sen. das Geschäft. Man konzentrierte sich auf Installationen in Um- und Neubaute"
+      ],
+      "Beratung/Planung": [
+        "Ab 1996 führt Alfred Wattinger jun., Sanitär-Installateur, alleine den Betrieb weiter. Im Juni 2012 gibt Alfred Wattinge"
+      ],
+      "Kundendienst": [
+        "Die Firma wurde 1919 von Emil Wattinger als Schmiede in Uttwil gegründet, vis-à-vis dem Restaurant Frohsinn. 1926 erfolg"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Sanitärmonteur, Ing. FH Heizung-Sanitär",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": null,
+    "source": "",
+    "verified": false
+  },
+  "website_url": {
+    "value": "http://wattinger-schwendener.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Lehrbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Wattinger Schwendener Sanitär Heizung GmbH",
+    "uid": "CHE-382.656.817",
+    "ehraid": 1469733,
+    "legal_seat": "Uttwil",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-382.656.817",
+    "match_score": 100
+  }
+}

@@ -18,7 +18,7 @@ Die März-Templates basieren auf einem überholten Modell (Test-Telefonnummer + 
 
 ### Template NEU (Tag 0) — Ein-Link-Modell (gilt ab 04.06., ersetzt Template 1/2 für die Video-Pipeline-Betriebe)
 
-> **⚠️ COPY-STAND 11.06.:** Die **live versandte** Copy pro Betrieb ist die **B-Vorlage** in `docs/customers/<slug>/outreach/email.<slug>.json` (Versand via `send_outreach.mjs --file …`). Sie ist diesem Muster gegenüber **verfeinert** (Founder-Lehren 11.06., → `lessons_learned.md` S6/S7):
+> **⚠️ COPY-STAND 11.06.:** Die **live versandte** Copy pro Betrieb ist die **B-Vorlage** in `docs/customers/<slug>/outreach/email.<slug>.json` (Versand via `send_outreach.mjs --file …`). Sie ist diesem Muster gegenüber **verfeinert** (Founder-Lehren 11.06., → `sales/lessons_learned_sales.md` S6/S7):
 > - **„durchgespielt" raus** → „**sichtbar gemacht**" (klang nach Spielwiese/Demo).
 > - **Kein Konkurrenz-Drohsatz** bei etablierten Betrieben (Over-Claim) → reiner **Sichtbarkeits-Haken** + „im **hektischsten Alltag** geht nichts unter".
 > - **Anrede „Grüezi {Herr Nachname}"** (CH-warm), Link-Label signalisiert **Video** („Ihr persönlicher Video-Einblick").

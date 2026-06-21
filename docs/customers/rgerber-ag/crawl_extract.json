@@ -1,0 +1,158 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:18:02.508Z",
+    "source_url": "http://www.rgerberag.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "http://www.rgerberag.ch/",
+        "chars": 2438
+      }
+    ]
+  },
+  "firma": {
+    "value": "R Gerber AG",
+    "source": "website_title",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Simon Gerber",
+    "source": "website_home",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Dorfstrasse 3, 8552 Felben",
+    "source": "website_home",
+    "verified": true
+  },
+  "telefon": {
+    "value": "052 765 18 85",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "mail@rgerberag.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 6,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1914",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Ihr Fachmann für sanitäre Anlagen und Heizungsinstallationen.",
+        "Sanitär",
+        "Wir verlegen und montieren Trink-, Abwasser-, Gas- und Luftleitungen fachmännisch, präzise und termingerecht und führen",
+        "Als Sanitär mit langjähriger Berufserfahrung planen und realisieren wir nach Ihren Wünschen:",
+        "eidg. dipl. Sanitärmeister"
+      ],
+      "Heizung": [
+        "Ihr Fachmann für sanitäre Anlagen und Heizungsinstallationen.",
+        "Heizung",
+        "Ihre Bedürfnisse der Wärmenutzung setzen wir nach den aktuellen, ökologischen und wirtschaftlichen Punkten um.",
+        "Öl-/Holz-/Gasheizungen",
+        "Bodenheizungssysteme"
+      ],
+      "Boiler/Warmwasser": [
+        "Boilerservice / Auswechslungen"
+      ],
+      "Rohrbruch/Leitungen": [
+        "1953 übernahm Alfred Gerber den Betrieb und erweiterte das Angebot mit den Ausführungen von sanitären Installationen, Ro"
+      ],
+      "Verstopfung/Abfluss": [
+        "Alle Dienstleistungen aus einer Hand: Planung, Lieferung, Montage/Installation von Gas-, Wasser-, Abwasser- und Luftleit",
+        "Wir verlegen und montieren Trink-, Abwasser-, Gas- und Luftleitungen fachmännisch, präzise und termingerecht und führen",
+        "Abwasserpumpen"
+      ],
+      "Umbau/Sanierung": [
+        "Neubauten",
+        "Renovationen / Sanierungen",
+        "Renovationen/Sanierungen"
+      ],
+      "Beratung/Planung": [
+        "Alle Dienstleistungen aus einer Hand: Planung, Lieferung, Montage/Installation von Gas-, Wasser-, Abwasser- und Luftleit"
+      ],
+      "Kundendienst": [
+        "Nutzen Sie unseren zuverlässigen Reparatur- und Wartungsservice für Ihre Haustechnikanlagen.",
+        "Boilerservice / Auswechslungen",
+        "Haustechnische Wartungsaufgaben",
+        "Service"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "innung",
+      "suissetec"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Ihr Fachmann für sanitäre Anlagen und Heizungsinstallationen.",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#007bff",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "http://www.rgerberag.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Familienbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": null
+}

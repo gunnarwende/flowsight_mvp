@@ -43,7 +43,7 @@ function deriveLeitsystemName(
     return modules.leitsystem_name;
   }
   // Strip common Swiss legal suffixes
-  let name = shortName
+  const name = shortName
     .replace(/\s+(&\s+Co\.\s*)?((AG|GmbH|SA|Sàrl|Ltd|KG)\.?)$/i, "")
     .trim();
   // If two words remain and both start uppercase → likely "Firstname Lastname" → take last

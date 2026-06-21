@@ -1,0 +1,176 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:18:45.137Z",
+    "source_url": "https://kuenzi-haustechnik.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://kuenzi-haustechnik.ch/",
+        "chars": 2142
+      },
+      {
+        "key": "team",
+        "url": "https://kuenzi-haustechnik.ch/ueber-uns",
+        "chars": 1626
+      },
+      {
+        "key": "kontakt",
+        "url": "https://kuenzi-haustechnik.ch/kontakt",
+        "chars": 966
+      },
+      {
+        "key": "impressum",
+        "url": "https://kuenzi-haustechnik.ch/impressum",
+        "chars": 11932
+      }
+    ]
+  },
+  "firma": {
+    "value": "Künzi Haustechnik AG",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "9548 Matzingen",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "052 376 41 50, 052 376 30 39, +41 33 533 20 53",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@myls.ch, info@kuenzi-haustechnik.ch, nk@kuenzi-haustechnik.ch, jf@kuenzi-haustechnik.ch, tc@kuenzi-haustechnik.ch, sg@kuenzi-haustechnik.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": "052 376 41 50 / Hauptnummer 052 376 30 39 / Notfallnummer info@kuenzi-haustechnik.ch Öffnungszeiten Mo. - Fr. 07:00 - 17:00 Uhr Sa. und So. geschlossen Hier klicken © 2026– Designed by myls Gm",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "052 376 41 50"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 12,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1989",
+    "source": "website_team",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": 13,
+    "source": "website_team",
+    "verified": true
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Ihre Sanitär- und Heizungsinstallationen erstellt, unterhaltet oder instandstellt?",
+        "Ihr Badezimmer renoviert und verschönert?",
+        "Sanitär"
+      ],
+      "Heizung": [
+        "Ihre Sanitär- und Heizungsinstallationen erstellt, unterhaltet oder instandstellt?",
+        "Heizungssanierungen kompetent ausführt?",
+        "Wie Wärmepumpen und Solaranlagen.",
+        "Heizung",
+        "Heizkessel alles was im Bereich Haustechnik mit Wärme zu tun hat und wofür Installationen und Leitungen nötig sind."
+      ],
+      "Verstopfung/Abfluss": [
+        "Alles was im Bereich Haustechnik mit Trink- oder Abwasser zu tun hat und wofür Installationen und Leitungen nötig sind."
+      ],
+      "Lüftung/Klima": [
+        "Ihren Wohnraum mit einer Raumlüftung ausstattet?"
+      ],
+      "Umbau/Sanierung": [
+        "Heizungssanierungen kompetent ausführt?",
+        "Ihr Badezimmer renoviert und verschönert?"
+      ],
+      "Solar/Erneuerbar": [
+        "Wie Wärmepumpen und Solaranlagen.",
+        "Solaranlagen",
+        "Elektrische Energie kann durch Solarstrom erzeugt werden. Die Sonne ist eine unerschöpfliche Energiequelle."
+      ],
+      "Beratung/Planung": [
+        "Planung & Beratung",
+        "Wasser- und Wärmetechnik setzt eine sorgfältige und sehr individuelle Planung der Installation voraus."
+      ],
+      "Kundendienst": [
+        "Ihre Sanitär- und Heizungsinstallationen erstellt, unterhaltet oder instandstellt?",
+        "Service"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "Minergie",
+      "Gebäudetechnik"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Diese Website verwendet Cookies. Mit einem Klick auf OK stimmen Sie der Benutzung von Cookies zu. Mehr erfahren",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#ef333a",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://kuenzi-haustechnik.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Lehrbetrieb, ISO zertifiziert",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Künzi Haustechnik AG",
+    "uid": "CHE-106.743.608",
+    "ehraid": 251569,
+    "legal_seat": "Matzingen",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-106.743.608",
+    "match_score": 80
+  }
+}

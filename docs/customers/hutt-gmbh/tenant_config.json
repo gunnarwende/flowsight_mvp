@@ -1,0 +1,164 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-19T08:18:44.769Z",
+  "_founder_actions_needed": [],
+  "tenant": {
+    "slug": "hutt-gmbh",
+    "name": "Hutt GmbH",
+    "case_id_prefix": "HG",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "Hutt GmbH"
+  },
+  "voice_agent": {
+    "company_name": "Hutt GmbH",
+    "domain": "Sanitär und Spenglerei",
+    "owner_names": "Remo Hutterli",
+    "address": "Weinfelderstrasse 74, 8580 Amriswil",
+    "phone": "+41 71 774 09 09",
+    "email": "info@hutt.ch",
+    "website": "https://hutt.ch/",
+    "founded": "",
+    "team_section": "Geschäftsleitung: Handelsregistereintrag Eingetragene Firma",
+    "memberships": "",
+    "google_rating": "5 Sterne bei 4 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "",
+    "services_list": "Sanitär: Sanitär, Spengler &, Sanitär, Von der kompletten Sanitärinstallation über Reparaturen bis zum regelmässigen Unterhalt. Schnell vor Ort bei Notfällen u, Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte\nUmbau/Sanierung: Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte\nBeratung/Planung: Offerte anfragen, Von massgeschneiderten Motorrad-Umbauten bis zu einzigartigen Badezimmer-Ideen. Ich realisiere deine kreativen Projekte\nKundendienst: Rundumservice, Von der kompletten Sanitärinstallation über Reparaturen bis zum regelmässigen Unterhalt. Schnell vor Ort bei Notfällen u\nSpenglerei: Dachrinnen, Dachhängel und Einkleidungen von Dachgauben. Alle Blecharbeiten fachgerecht und zuverlässig ausgeführt.",
+    "service_area": "8580 Amriswil",
+    "service_area_spoken": "Wir sind in Amriswil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Weinfelderstrasse 74, 8580 Amriswil.",
+    "categories": "Verstopfung | Leck | Umbau/Sanierung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Umbau/Sanierung",
+        "label": "Umbau/Sanierung",
+        "hint": "Umbau, Bad-Renovation",
+        "iconKey": "wrench"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 4,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Umbau/Sanierung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8580"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Boiler",
+      "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "Hutt GmbH",
+    "firma_silben": 1,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "HG",
+    "modus": 2,
+    "google_stars": 5,
+    "video_hook": "zuverlässig ausgeführt",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@hutt.ch"
+  },
+  "_seed_time": "2026-06-19T06:04:00.000Z",
+  "_take2_detail_switch_sec": 85.571,
+  "_wizard_time": "2026-06-19T06:56:00.000Z",
+  "_wizard_case_id": "35e56c2f-3785-46c0-b967-1f4e41f8e38d",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "HG-0050",
+  "_demo_now": "2026-06-19T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-19T06:08:00.000Z",
+  "_appointment_start": "2026-06-20T06:00:00.000Z",
+  "_appointment_end": "2026-06-20T08:00:00.000Z",
+  "_reminder_time": "2026-06-19T07:02:00.000Z",
+  "_completion_time": "2026-06-19T07:02:00.000Z",
+  "_review_sent_time": "2026-06-19T07:04:00.000Z",
+  "_review_rated_time": "2026-06-19T07:06:00.000Z",
+  "_review_token": "1574cdda6f4263b6",
+  "_review_token_long": "1574cdda6f4263b6ae39edbf2e0a0e42ee1d496bbb6de4656abdd6eae786d524",
+  "_case_created_at": "2026-06-19T06:56:00+00:00"
+}

@@ -1,0 +1,167 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-19T08:14:10.714Z",
+    "source_url": "https://ms-gebaeudetechnik.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://ms-gebaeudetechnik.ch/",
+        "chars": 7267
+      },
+      {
+        "key": "team",
+        "url": "https://ms-gebaeudetechnik.ch/unser-team",
+        "chars": 322
+      },
+      {
+        "key": "services",
+        "url": "https://ms-gebaeudetechnik.ch/dienstleistungen",
+        "chars": 2088
+      },
+      {
+        "key": "kontakt",
+        "url": "https://ms-gebaeudetechnik.ch/kontakt",
+        "chars": 234
+      }
+    ]
+  },
+  "firma": {
+    "value": "MS Gebäudetechnik GmbH",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Weinfelderstrasse 104a, 8580 Amriswil",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "071 410 06 49",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@ms-gebaeudetechnik.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": "AG Vielen Dank für die schnelle Hilfe bei meinem Notfall am Sonntag! Euer Heizung-Service in Amriswil ist wirklich top! Ich war beeindruckt von der prompten Reaktion und dem professionellen Service, d",
+    "source": "website_home",
+    "verified": true,
+    "phone": null
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 25,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Heizung": [
+        "LUFTWÄRMEPUMPE",
+        "Effiziente Heizlösungen durch Nutzung der Umgebungswärme für maximale Energieeinsparungen.",
+        "ERDWÄRME/ ERDSONDE",
+        "Nachhaltige Heizsysteme, die die Erdwärme zur Energiegewinnung nutzen und hohen Komfort bieten.​",
+        "LUFT-WASSER-WÄRMEPUMPE"
+      ],
+      "Lüftung/Klima": [
+        "LÜFTUNG",
+        "Optimales Raumklima und frische Luft durch unsere leistungsstarken Lüftungssysteme.​",
+        "KLIMA​",
+        "Hochwertige Klimaanlagen für ideale Temperaturregelung und Komfort.​"
+      ],
+      "Solar/Erneuerbar": [
+        "LUFTWÄRMEPUMPE",
+        "LUFT-WASSER-WÄRMEPUMPE"
+      ],
+      "Beratung/Planung": [
+        "Projekte"
+      ],
+      "Kundendienst": [
+        "WARTUNG",
+        "Zuverlässiger Service für die Wartung und Reparatur aller Marken, um stets effiziente und funktionierende Anlagen zu gew",
+        "KOMPLETTSERVICE"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "Gebäudetechnik",
+      "innung"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Qualität und Expertise umgesetzt werden",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": null,
+    "source": "",
+    "verified": false
+  },
+  "website_url": {
+    "value": "https://ms-gebaeudetechnik.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "ISO zertifiziert, Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "MS Gebäudetechnik GmbH",
+    "uid": "CHE-216.596.798",
+    "ehraid": 1551036,
+    "legal_seat": "Amriswil",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://tg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-216.596.798",
+    "match_score": 80
+  }
+}

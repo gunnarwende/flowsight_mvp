@@ -28,7 +28,7 @@ const SUFFIX_STRIP_ORDER = [
 
 export function shortenDisplayName(fullName: string | null | undefined, maxLen = 19): string {
   if (!fullName) return "Leitsystem";
-  let name = fullName.trim();
+  const name = fullName.trim();
   if (name.length <= maxLen) return name;
 
   // Progressiv Suffixe abstreifen bis unter Grenze

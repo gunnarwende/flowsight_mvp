@@ -1,0 +1,166 @@
+{
+  "_derived_from": "crawl_extract.json",
+  "_derived_at": "2026-06-19T08:15:01.479Z",
+  "_founder_actions_needed": [
+    "inhaber"
+  ],
+  "tenant": {
+    "slug": "ms-gebaeudetechnik",
+    "name": "MS Gebäudetechnik GmbH",
+    "case_id_prefix": "MG",
+    "brand_color": "#2b6cb0",
+    "sms_sender_name": "MS GmbH"
+  },
+  "voice_agent": {
+    "company_name": "MS Gebäudetechnik GmbH",
+    "domain": "Heizung, Lüftung und Solar",
+    "owner_names": "",
+    "address": "Weinfelderstrasse 104a, 8580 Amriswil",
+    "phone": "071 410 06 49",
+    "email": "info@ms-gebaeudetechnik.ch",
+    "website": "https://ms-gebaeudetechnik.ch/",
+    "founded": "",
+    "team_section": "",
+    "memberships": "Gebäudetechnik, innung",
+    "google_rating": "5 Sterne bei 25 Bewertungen",
+    "opening_hours": "",
+    "opening_hours_spoken": "Bitte kontaktieren Sie uns telefonisch für unsere aktuellen Öffnungszeiten.",
+    "emergency_policy": "AG Vielen Dank für die schnelle Hilfe bei meinem Notfall am Sonntag! Euer Heizung-Service in Amriswil ist wirklich top! Ich war beeindruckt von der prompten Reaktion und dem professionellen Service, d",
+    "services_list": "Heizung: LUFTWÄRMEPUMPE, Effiziente Heizlösungen durch Nutzung der Umgebungswärme für maximale Energieeinsparungen., ERDWÄRME/ ERDSONDE, Nachhaltige Heizsysteme, die die Erdwärme zur Energiegewinnung nutzen und hohen Komfort bieten.​, LUFT-WASSER-WÄRMEPUMPE\nLüftung/Klima: LÜFTUNG, Optimales Raumklima und frische Luft durch unsere leistungsstarken Lüftungssysteme.​, KLIMA​, Hochwertige Klimaanlagen für ideale Temperaturregelung und Komfort.​\nSolar/Erneuerbar: LUFTWÄRMEPUMPE, LUFT-WASSER-WÄRMEPUMPE\nBeratung/Planung: Projekte\nKundendienst: WARTUNG, Zuverlässiger Service für die Wartung und Reparatur aller Marken, um stets effiziente und funktionierende Anlagen zu gew, KOMPLETTSERVICE",
+    "service_area": "8580 Amriswil",
+    "service_area_spoken": "Wir sind in Amriswil und der näheren Umgebung für Sie da.",
+    "price_section": "",
+    "price_deflect": "Für eine genaue Einschätzung schauen sich unsere Techniker das am liebsten vor Ort an. Soll ich Ihre Kontaktdaten aufnehmen?",
+    "jobs_section": "",
+    "jobs_spoken": "Aktuell haben wir keine offenen Stellen. Schauen Sie aber gerne auf unserer Website vorbei.",
+    "address_spoken": "Sie finden uns an der Weinfelderstrasse 104a, 8580 Amriswil.",
+    "categories": "Verstopfung | Leck | Heizung | Allgemein | Angebot | Kontakt"
+  },
+  "wizard": {
+    "categories": [
+      {
+        "value": "Verstopfung",
+        "label": "Verstopfung",
+        "hint": "Abfluss, WC, Kanalisation",
+        "iconKey": "drain"
+      },
+      {
+        "value": "Leck",
+        "label": "Leck",
+        "hint": "Wasserschaden, undichte Stelle",
+        "iconKey": "drop"
+      },
+      {
+        "value": "Heizung",
+        "label": "Heizung",
+        "hint": "Heizung, Wärmepumpe",
+        "iconKey": "flame"
+      },
+      {
+        "value": "Allgemein",
+        "label": "Allgemein",
+        "hint": "Sonstiges Anliegen",
+        "iconKey": "clipboard",
+        "fixed": true
+      },
+      {
+        "value": "Angebot",
+        "label": "Angebot",
+        "hint": "Offerte, Beratung",
+        "iconKey": "document",
+        "fixed": true
+      },
+      {
+        "value": "Kontakt",
+        "label": "Kontakt",
+        "hint": "Frage, Rückruf",
+        "iconKey": "chat",
+        "fixed": true
+      }
+    ]
+  },
+  "seed": {
+    "case_count": 50,
+    "google_rating": 5,
+    "google_review_count": 25,
+    "staff_names": [
+      "Max Mustermann",
+      "Anna Beispiel",
+      "Peter Muster"
+    ],
+    "categories_weighted": {
+      "Verstopfung": 28,
+      "Leck": 28,
+      "Heizung": 28,
+      "Allgemein": 5,
+      "Angebot": 5,
+      "Kontakt": 5
+    },
+    "service_area_plz": [
+      "8580"
+    ],
+    "featured_case": {
+      "kategorie": "Verstopfung",
+      "beschreibung": "Abfluss in der Küche komplett verstopft. Wasser läuft über.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Dringend"
+    },
+    "phone_demo_case": {
+      "kategorie": "Rohrbruch",
+      "urgency": "dringend",
+      "source": "voice",
+      "reporter_name": "Wende",
+      "reporter_phone": "076 489 89 80",
+      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
+      "strasse": "Seestrasse",
+      "hausnummer": "14",
+      "stadt": "Oberrieden",
+      "plz": "8942",
+      "dringlichkeit": "Dringend"
+    },
+    "notfall_case": {
+      "kategorie": "Heizung",
+      "beschreibung": "Heizung komplett ausgefallen — Haus kühlt ab. Sofortmassnahme erforderlich."
+    },
+    "wizard_demo_case": {
+      "kategorie": "Leck",
+      "beschreibung": "Badsanierung geplant — möchten gerne eine Beratung und Offerte.",
+      "stadt": "Amriswil",
+      "plz": "8580",
+      "dringlichkeit": "Normal"
+    },
+    "include_2025_data": true
+  },
+  "video": {
+    "firma_display": "MS Gebäudetechnik GmbH",
+    "firma_silben": 5,
+    "telefon_display": "+41 44 505 74 21",
+    "display_phone": "+41 44 505 74 21",
+    "prefix": "MG",
+    "modus": 2,
+    "google_stars": 5,
+    "video_hook": "Qualität und Expertise umgesetzt werden",
+    "call_proof_variante": "B"
+  },
+  "prospect": {
+    "email": "info@ms-gebaeudetechnik.ch"
+  },
+  "_seed_time": "2026-06-19T06:04:00.000Z",
+  "_take2_detail_switch_sec": 86.196,
+  "_wizard_time": "2026-06-19T06:56:00.000Z",
+  "_wizard_case_id": "f14b8f50-17ba-493f-9145-0e2318159e33",
+  "_wizard_seq_number": 50,
+  "_wizard_case_label": "MG-0050",
+  "_demo_now": "2026-06-19T06:04:00.000Z",
+  "_confirmation_sent_time": "2026-06-19T06:08:00.000Z",
+  "_appointment_start": "2026-06-20T06:00:00.000Z",
+  "_appointment_end": "2026-06-20T08:00:00.000Z",
+  "_reminder_time": "2026-06-19T07:02:00.000Z",
+  "_completion_time": "2026-06-19T07:02:00.000Z",
+  "_review_sent_time": "2026-06-19T07:04:00.000Z",
+  "_review_rated_time": "2026-06-19T07:06:00.000Z",
+  "_review_token": "c4b812594330b0b3",
+  "_review_token_long": "c4b812594330b0b31451ef01ff6a9b6508ef555433949214b02d833373ce8e8d",
+  "_case_created_at": "2026-06-19T06:56:00+00:00"
+}

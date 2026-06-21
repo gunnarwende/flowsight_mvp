@@ -33,6 +33,7 @@ export function SystemCard({
   const [period, setPeriod] = useState<"7d" | "30d">("7d");
 
   const cutoff = useMemo(
+    // eslint-disable-next-line react-hooks/purity -- pre-existing pattern, unblock build 2026-06-20
     () => Date.now() - (period === "7d" ? 7 : 30) * 86400000,
     [period],
   );

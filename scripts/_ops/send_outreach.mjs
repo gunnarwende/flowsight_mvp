@@ -108,3 +108,15 @@ const res = await fetch("https://api.resend.com/emails", {
 console.log(res.ok
   ? `✅ gesendet an ${to}  ${live && !toOverride ? "🔴 LIVE" : "🧪 Test"}\n   Betreff: ${mail.subject}\n   Foto: ${photoB64 ? "inline ✓" : "—"}  Link: ${link}\n   ${await res.text()}`
   : `❌ ${res.status}: ${await res.text()}`);
+
+// S8 — Scharfschalten beim ECHTEN Betriebs-Versand (--live, nicht --to-Test):
+// Tracking auf null, damit die Founder-Review-Views VOR dem Versand das First-View-Signal
+// nicht verfälschen. Ab jetzt = nächster Aufruf der echte Betrieb. (Founder danach NICHT mehr öffnen.)
+if (res.ok && live && !toOverride) {
+  const { error: rstErr } = await sb.from("proof_pages")
+    .update({ view_count: 0, first_viewed_at: null, last_viewed_at: null })
+    .eq("token", pp.token);
+  console.log(rstErr
+    ? `   ⚠ Tracking-Reset fehlgeschlagen: ${rstErr.message}`
+    : `   🔔 Tracking scharfgeschaltet (auf null) — der nächste View = der Betrieb.`);
+}

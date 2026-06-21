@@ -55,7 +55,6 @@ export function PubDashboard({
   upcomingEvents,
   pendingReservations,
   todayReservations,
-  upcomingReservations,
   noShowMap,
   sourceStats,
   pendingCallbackCount,
@@ -83,8 +82,6 @@ export function PubDashboard({
   const pendingCount = pendingReservations.length;
   const todayGuestCount = todayReservations.reduce((s, r) => s + r.party_size, 0);
 
-  // Compute week stats
-  const weekGuestCount = [...todayReservations, ...upcomingReservations].reduce((s, r) => s + r.party_size, 0);
   const sportEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "sport");
   const pubEvents = [...todayEvents, ...upcomingEvents].filter(e => e.category === "event");
 

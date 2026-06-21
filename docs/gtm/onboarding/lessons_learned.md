@@ -1,54 +1,13 @@
-# Lessons Learned — Customer Journey (Sales → Onboarding → Go-live)
+# Lessons Learned — ONBOARDING & Go-live (Post-Conversion)
 
-> **Lebendes Dokument.** Der Lessons-Loop aus [`FlowSight_Customer_Journey_SSOT.md`](FlowSight_Customer_Journey_SSOT.md) §15.
-> Ergänzt **innerhalb 24h nach jedem echten Prospect-/Kunden-Kontakt** (Detail ist sonst weg).
-> **Zwei Phasen:** **Teil 1 — SALES** (Outreach → Beweis-Seite → Discovery → Founder-Review) · **Teil 2 — ONBOARDING/GO-LIVE** (Cockpit → Live-Setup → Hand-Over → Validierung).
+> **Lebendes Dokument der Onboarding-Säule.** Greift ab dem „Ja" → Cockpit → Live-Setup → Validierung.
+> Ergänzt **innerhalb 24h nach jedem echten Kunden-Kontakt** (Detail ist sonst weg).
+> Die G-Regeln sind in [`ONBOARDING_BIBLE.md`](ONBOARDING_BIBLE.md) §5 cockpit-gerahmt formalisiert; hier die Geschichte dahinter.
+>
+> **Sales-/Discovery-Lessons (vor dem „Ja", S-Regeln):** → [`../sales/lessons_learned_sales.md`](../sales/lessons_learned_sales.md).
 > Verwandt: `docs/customers/lessons-learned.md` (Demo-Pipeline-Lessons pro Betrieb).
 
 ---
-
-# TEIL 1 — SALES & DISCOVERY
-
-*(Aktueller Fokus seit Outreach-Phase 06/2026. Gesprächskarte für den Live-Call: `FlowSight_Customer_Journey_Short.md`.)*
-
-## Goldene Sales-Regeln (aus echten Gesprächen extrahiert)
-
-| Regel | Vorfall | Lehre |
-|---|---|---|
-| **S1 — Eröffnung: GEBEN statt FRAGEN** | Dörfler 11.06 (Besuch) | „Haben Sie die Mail angeschaut?" stellt den Handwerker auf die Probe (Hausaufgabe gemacht?) → Abwehr. Besser das **Geschenk** voranstellen: *„Ich hab Ihnen ein kurzes Video für Ihren Betrieb gemacht, wollte kurz Gesicht zeigen."* Geben entwaffnet, Prüfen verteidigt. |
-| **S2 — Beziehungs-Brücke ZUERST** | Dörfler 11.06 | Founder war Dörflers Kunde (Dichtung) — die wärmste In-Road, aber **ungenutzt** → blieb „fremder Vertreter" → Skepsis. Jede bestehende Beziehung im **ersten Satz** nennen: *„Sie haben mir ja damals die Dichtung gemacht."* Schmilzt Skepsis sofort. |
-| **S3 — Druck rausnehmen + Raum lesen ✅ (BESTÄTIGT, stärkste Skill)** | Dörfler 11.06 | Was funktioniert hat: skeptischen Blick + „will weiter"-Signal gelesen, **nicht gepusht**, warm + kurz raus mit Neugier-Saat (*„machen Sie in Ruhe, könnte für Sie interessant sein"*) + Blickkontakt → live gesehen, wie der Druck abfiel + er zustimmend nickte. **Besuch ist gewonnen, wenn der Eindruck = „echter Typ, kein Drücker"** — auch ohne konkretes Ergebnis. |
-| **S4 — Besuch #1 = Gesicht + Saat, NICHT Abschluss** | Dörfler/Walter 11.06 | Ziel des ersten persönlichen Besuchs: Gesicht zeigen, Neugier säen, **kein Schaden** — nicht an der Tür verkaufen/Discovery durchziehen. Realismus: Handwerker ist oft auf der Baustelle (Walter nicht angetroffen). → **Kurz vorher anrufen** macht aus der kalten Tür einen eingeladenen Besuch + sichert Anwesenheit. |
-| **S5 — Skepsis ist normal, nicht persönlich** | Dörfler 11.06 | Ein fremder Typ vor der Werkstatt = erstmal „Vertreter"-Verdacht. Der skeptische Blick ist Default, nicht Ablehnung. Er schmilzt, sobald klar wird: kein Druck (→ S3). |
-| **S6 — Entscheider: EINE Person, GL des Kern-Bereichs — nie `info@`/CC** | Leins-Versand 11.06 (Beleg `Feedback/FB9.png`) | Leins „Über uns" zeigt 4 Köpfe: Gründer (Herbert), 2 Geschäftsleiter (Michael = Sanitär/Heizung, Beat = Spenglerei), 1 Techniker. **Anschreiben:** den GL des **Kern-Bereichs**, in dem der FlowSight-Schmerz sitzt (Anruf/Notdienst = Sanitär/Heizung → **Michael**) — er **entscheidet** UND **fühlt** den Schmerz. NICHT den Gründer (oft operativ raus), NICHT Techniker, NICHT mehrere im CC oder `info@`. **Warum:** Sammel-Mail riecht nach Massenversand → killt den „persönlich, vom Nachbarn aus Oberrieden"-Frame. Persönliche Mail + korrekte Rolle erlauben echte Anrede + bereichsgenauen Aufhänger. → speist Pipeline-Task **P12** (Vision-Discovery findet diese Köpfe automatisch). |
-| **S7 — Bei etablierten Betrieben: Sichtbarkeit, NICHT Konkurrenz-Drohung** | Copy-Reframe 11.06 | Der Drohsatz „sonst sagt der Kunde: danke, hat sich schon erledigt" ist ein **Over-Claim** für etablierte Betriebe — deren Anrufe sind meist **Bestandskunden**, nicht abgewanderte Neukunden. Wirkt unglaubwürdig/aggressiv. **Besser:** reiner Sichtbarkeits-Haken — *„was passiert mit den Anfragen, die niemand sieht?"* + „im hektischsten Alltag geht nichts unter". Spannung aus dem **eigenen Alltag** (hektisch, alle unterwegs), nicht aus Angst. „durchgespielt" raus (klang nach Spielwiese/Demo) → „sichtbar gemacht". |
-
-## Gespräch-Log
-
-### 2026-06-11 · Dörfler AG (ein Bruder, Oberrieden) — persönlicher Besuch
-- **Kontext:** kalt (Mail 09.06, noch nicht geöffnet). Founder vor Ort nach Arzttermin in Oberrieden. Erster persönlicher Sales-Besuch überhaupt.
-- **Verlauf:** vor der Werkstatt getroffen (arbeitete mit anderen), ~10 Sek warten, **sehr skeptischer Blick**, kurzes Händeschütteln. Eröffnung: *„Haben Sie schon dazu gekommen, die Mail anzuschauen?"* → *„Nein, bin zurzeit wenig im Office"*, wollte weiter. Founder nahm den Druck raus, Neugier-Saat, warmer Exit → **Druck fiel sichtbar ab, zustimmendes Nicken.**
-- **Ergebnis:** **Kein Nein** — Saat gepflanzt, Gesicht hinterlassen, nächster Kontakt jetzt wärmer.
-- **Nächster Schritt:** First-View-Alert beobachten → bei keinem View in ~3 Tagen reibungsarmer Nudge (*„ich weiß, Sie sind selten im Office — das Video sind 60 Sek aufs Handy, hier nochmal der Link"*).
-- **Lessons:** → **S1** (mit Email-Frage statt Geschenk eröffnet → Abwehr), **S2** (Dichtungs-Brücke ungenutzt — größter verschenkter Hebel), **S3** (Druck-raus ✅ instinktiv stark gemeistert).
-- **Walter Leuthold:** nicht angetroffen (Baustelle) → S4 (vorher anrufen).
-
-### 2026-06-11 · Leins AG (Michael Leins) + Wälti & Sohn — Mail-Versand (live)
-- **Kontext:** kalt, erster Kontakt. Zweiter + dritter echter Outreach nach Dörfler.
-- **Leins → `michael.leins@leinsag.ch`** (GL Sanitär & Heizung): Entscheider via Screenshot der „Über uns"-Seite bestimmt (`Feedback/FB9.png`) → **S6**. Anrede „Grüezi Herr Leins". Betreff „was passiert mit den Anfragen, die niemand sieht?".
-- **Wälti → `info@waeltisohn.ch`** (founder-bestätigt, kein persönlicher Kontakt auffindbar). Betreff „wer fängt die Anfrage, wenn alle unterwegs sind?".
-- **Copy-Stand (Lehre verbaut):** Sichtbarkeits-Haken statt Konkurrenz-Drohung (S7), „im hektischsten Alltag", Link = „Ihr persönlicher Video-Einblick".
-- **Tracking vor Versand auf null** (eigene Test-Öffnungen raus) → saubere First-View-Alerts.
-- **Nächster Schritt:** First-View-Alert beobachten; bei View → warmer telefonischer Follow-up in „ein paar Tagen" (wie im Closing angekündigt).
-
-<!-- Template Sales: ### YYYY-MM-DD · <Betrieb> (<Person>, <Ort>) — <Kanal: Besuch/Call/Mail-Reply>
-- Kontext (warm/kalt, Video gesehen?): · Verlauf: · Ergebnis: · Nächster Schritt: · Lessons (→ S#): -->
-
----
-
-# TEIL 2 — ONBOARDING & GO-LIVE (Post-Conversion)
-
-> Greift ab dem „Ja" → Cockpit → Live-Setup → Validierung. Historie: bisher **1 Live-Kunde** (BigBen Pub, Barter — anderes Modul, aber die technischen Lessons gelten betriebsübergreifend). Die G-Regeln sind in `ONBOARDING_BIBLE.md` §5 cockpit-gerahmt formalisiert; hier die Geschichte dahinter.
 
 ## Goldene Regeln (G1-G12, aus Vorfällen)
 

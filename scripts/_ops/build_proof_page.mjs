@@ -64,10 +64,20 @@ function resolveTakesDir() {
 const ABGENOMMEN = resolveTakesDir();
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-/** Derive a polite salutation from an owner full name → "Herr Nachname". */
+/** Derive a polite salutation from an owner full name → "Herr Nachname".
+ *  Nimmt NUR den ersten Inhaber (vor Komma) und strippt Gewerk-Klammern
+ *  (z. B. "Ramon Dörfler (Sanitärmeister), Luzian Dörfler (Spengler/Heizung)"
+ *  → "Herr Dörfler"), damit nie ein Rollen-Text wie "(Spengler/Heizung)"
+ *  in der Anrede landet. */
 function deriveSalutation(ownerName) {
   if (!ownerName || typeof ownerName !== "string") return null;
-  const parts = ownerName.trim().split(/\s+/);
+  // GUARD (19.06., „Friberg"-NoGo): NIE eine geratene/Müll-Anrede auf die Kundenseite.
+  // Rollen-/Regist
+  const BAD = /handelsregister|eingetragene|ansprechpartner|administration|finanzen|firma|unternehmen|gmbh|\bag\b|sanit[äa]rmonteur|monteur|gesch[äa]ftsf|inhaber|mitarbeiter|team|büro|buchhaltung/i;
+  const firstOwner = ownerName.split(/[,(]/)[0].trim(); // erster Inhaber, ohne Klammer-Gewerk
+  if (!firstOwner || BAD.test(firstOwner)) return null;  // Müll → lieber neutral „Grüezi"
+  const parts = firstOwner.split(/\s+/).filter((p) => /^[A-Za-zÄÖÜäöüéèêàçëï.\-]{2,}$/.test(p) && !BAD.test(p));
+  if (parts.length < 2) return null;                     // braucht Vor- + Nachname, sonst neutral
   const last = parts[parts.length - 1];
   return last ? `Herr ${last}` : null;
 }
@@ -92,10 +102,11 @@ async function main() {
     console.error("ERROR: config.tenant.name missing");
     process.exit(1);
   }
-  const ownerName =
-    config?.voice_agent?.owner_names || config?.seed?.owner_names || config?.owner_names || null;
-  const ownerStr = Array.isArray(ownerName) ? ownerName[0] : ownerName;
-  const contact = arg("contact") || ownerStr || null;
+  // Anrede NUR aus explizitem --salutation/--contact (founder-bestätigt). Der gecrawlte
+  // owner_names wird NICHT mehr automatisch in die Kundenseite gezogen — ein echter-aussehender,
+  // aber FALSCHER Crawl-Name ("Friberg"-NoGo 19.06.) ist algorithmisch nicht erkennbar.
+  // Default: neutral "Grüezi". Confirmed Namen setzt Founder/CC per --salutation oder DB.
+  const contact = arg("contact") || null;
   const salutation = arg("salutation") || deriveSalutation(contact) || null;
 
   // C = notruf, B = preis (PIPELINE_BIBLE §2)
@@ -150,7 +161,7 @@ async function main() {
   // 4) Token + DB row
   const token = randomBytes(12).toString("hex"); // 24 hex chars
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000); // +14 Tage
+  const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 Tage
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
@@ -177,7 +188,7 @@ async function main() {
   const url = `${baseUrl}/p/${token}`;
   console.log(`\n✅ Beweis-Seite erstellt:`);
   console.log(`   ${url}`);
-  console.log(`   gültig bis ${expiresAt.toISOString().slice(0, 10)} (14 Tage)`);
+  console.log(`   gültig bis ${expiresAt.toISOString().slice(0, 10)} (30 Tage)`);
   console.log(`\n   Lokal testen: http://localhost:3000/p/${token}\n`);
 }
 

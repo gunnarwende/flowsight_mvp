@@ -1,5 +1,8 @@
 # Onboarding-Bible (Cockpit-Ära)
 
+> **Abschnitt der Customer Journey: Aufbau → Go-live → Begleitung (Sterne 6–8)** (Sales → Pipeline → **Onboarding**). Greift ab der Bau-/Kauf-Zusage.
+> Orchestrator: [`../CUSTOMER_JOURNEY_BIBLE.md`](../CUSTOMER_JOURNEY_BIBLE.md) · davor: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) (Akquise + Gespräch) · Asset-Produktion [`../pipeline/PIPELINE_BIBLE.md`](../pipeline/PIPELINE_BIBLE.md).
+
 > **Master-Doc.** Was passiert ab dem **ersten menschlichen Kontakt** eines interessierten
 > Prospects, bis er als **zahlender Kunde** autonom mit seinem System läuft.
 > Direkter Anschluss an `docs/gtm/pipeline/PIPELINE_BIBLE.md` (die endet beim Versand).
@@ -76,7 +79,7 @@ Crawl → tenant_config → 4 Takes → Proof-Seite      Phase 1 Gespräch → P
 
 ### Phase 1 — Das Gespräch
 Die menschliche Dialog-/Entscheidungs-Phase. Hier fällt Ja/Nein. **Owner: Founder.**
-→ **Live-Werkzeug: [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md)** — das öffnest du
+→ **Live-Werkzeug: [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md)** — das öffnest du
 vor/während jedem Kontakt und liest ab. (Das ist das „HOW".)
 
 ### Phase 2 — Cockpit (Bau) *(Folge-Bau)*
@@ -96,9 +99,17 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
   **Finale:** „Schauen Sie, was Sie gebaut haben" (der Knall).
 - **Test-Call-Status:** der In-Cockpit-Retell-Web-Call ist aktuell **entfernt** (zu hohe Erwartung, bis
   Voice VA1-3 sitzen). Testfälle laufen weiter über `is_demo` (G6: fallen beim Go-live raus).
+- **Mehrsprachigkeit = Schablone, kein Extra-Bau:** Lisa ist der Zwei-Agent-Gold-Standard —
+  **DE-only** (Ela-Stimme, spricht nie eine Fremdsprache) ↔ **multilingual INTL** (Juniper, EN/FR/IT),
+  verbunden über `swap_to_intl_agent`/`swap_to_de_agent`. Wird am Go-live mit den 23 Platzhaltern via
+  `retell_sync.mjs` für jeden Betrieb **identisch** provisioniert (Dörfler = Referenz). Spec NICHT hier
+  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/redesign/voice.md`.
 
 ### Phase 3 — Review & Go-live (Pay) *(Folge-Bau, migriert v0-Operatives)*
 - **Founder-Review** des Cockpit-Ergebnisses (G11 — keine halb-konfigurierte Lisa geht live).
+- **Sprach-Switch-Akzeptanz (Go-live-Gate):** ein Testanruf DE→EN→FR→IT→DE — jeder Wechsel sauber,
+  Ela bleibt deutsch, INTL übernimmt die Fremdsprachen, Rückweg auf Deutsch greift. Checkliste:
+  `docs/runbooks/voice_multilingual_acceptance.md` (Dörfler validiert 09.06.).
 - **Zahlung** (Aktivierung + 1. Monat) am Go-live-Gate. **Nummer erst jetzt kaufen.**
 - **Zwei Stufen live:** A = sofort testbar (bereitgestellte Nr.) · B = echte Anrufe erst nach
   Weiterleitung (die eine Kunden-Aktion). v0-Schritte (Swisscom/Sunrise/Salt, PWA-Install) hierher.
@@ -111,6 +122,8 @@ beweist Monat für Monat den Wert (X Anrufe gefangen, Y Termine, Z Bewertungen).
 ---
 
 ## §4 · Pricing (der Frame zuerst, dann die Struktur)
+
+> **Kanonische Preis-Zahlen: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) §5** (zweistufig: Solo CHF 900 / Premium CHF 2'000). Hier nur der Frame.
 
 **Du verkaufst keine Software — du installierst ein Leitsystem + betreibst eine Telefonzentrale, die
 nie krank ist.** Anker = **eine Teilzeit-Empfangskraft (3–5k/Mo)** oder **ein verpasster
@@ -225,7 +238,8 @@ mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit har
 
 - **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
 - **📇 Gesprächskarte (Live-Call, 3 S.):** [`FlowSight_Customer_Journey_Short.md`](FlowSight_Customer_Journey_Short.md) — auf einen Blick „wo bin ich / welche Frage jetzt", inkl. wörtlicher Discovery-Fragen.
-- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md) ← das „HOW" für Phase 1 (Read-Along; geht in der Journey-Gesprächskarte auf).
+- **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md) ← das „HOW" für Phase 1 (Read-Along; geht in der Journey-Gesprächskarte auf).
+- **Rückmelde-Versprechen & Wunschtermin (Voice-Erwartung):** [`phase2_rueckmelde_termin_logik.md`](phase2_rueckmelde_termin_logik.md) — schließt die „Wann?"-Lücke; Stufen 0–4, per-Tenant, Lisa setzt Erwartung + nimmt Wunschzeiten auf (kein fixer Termin).
 - **Pipeline-Bible (was davor passiert):** `docs/gtm/pipeline/PIPELINE_BIBLE.md`
 - **Discovery/Mom-Test-Quelle:** `docs/sales/discovery_questions.md` · **CTA-Strategie:** `docs/gtm/CTA.md`
 - **Reife-/Feedback-Loop:** `operating_model.md` · **Lessons:** `lessons_learned.md`

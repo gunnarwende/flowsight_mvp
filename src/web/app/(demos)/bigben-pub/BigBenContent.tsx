@@ -569,32 +569,6 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function BigEventCard({
-  emoji,
-  title,
-  when,
-  desc,
-  accent,
-}: {
-  emoji: string;
-  title: string;
-  when: string;
-  desc: string;
-  accent: string;
-}) {
-  return (
-    <div className="group relative overflow-hidden rounded-2xl border border-[#3a2e26] bg-[#2a1f1a] p-7 shadow-sm transition-all hover:shadow-lg">
-      <div className={`absolute left-0 top-0 h-1 w-full bg-gradient-to-r ${accent}`} />
-      <div className="text-4xl">{emoji}</div>
-      <h3 className="mt-4 font-serif text-xl font-bold">{title}</h3>
-      <p className={`mt-1 inline-block rounded-full bg-gradient-to-r ${accent} px-3 py-0.5 text-xs font-bold text-white`}>
-        {when}
-      </p>
-      <p className="mt-3 text-sm leading-relaxed text-[#a89478]">{desc}</p>
-    </div>
-  );
-}
-
 function MiniFeature({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
   return (
     <div className="rounded-xl border border-[#3a2e26] bg-[#2a1f1a] p-5 shadow-sm">
@@ -637,13 +611,6 @@ function DynamicEvents({ lang }: { lang: Lang }) {
 
   const sport = events.filter((e) => e.category === "sport");
   const pubEvents = events.filter((e) => e.category === "event");
-
-  function fmtDate(iso: string) {
-    const d = new Date(iso + "T12:00:00");
-    const day = d.toLocaleDateString(lang === "en" ? "en-GB" : "de-CH", { weekday: "short" }).replace(/\.$/, "");
-    const date = d.toLocaleDateString(lang === "en" ? "en-GB" : "de-CH", { day: "2-digit", month: "2-digit" });
-    return `${day} ${date}`;
-  }
 
   function fmtTime(time: string | null) {
     return time ? time.substring(0, 5) : "";

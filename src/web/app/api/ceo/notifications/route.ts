@@ -37,7 +37,7 @@ export async function GET() {
 
   // Resolve tenant names via cases
   const caseIds = [...new Set((events ?? []).map((e) => e.case_id))];
-  let caseTenantMap: Record<string, string> = {};
+  const caseTenantMap: Record<string, string> = {};
 
   if (caseIds.length > 0) {
     const { data: cases } = await supabase

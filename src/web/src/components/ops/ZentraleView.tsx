@@ -229,7 +229,6 @@ function derivePulsSignal(g: LeitsystemGroups): {
 export function ZentraleView({
   cases,
   todayAppointments,
-  caseIdPrefix = "FS",
   weekStats,
   reviewStats,
 }: {
@@ -462,7 +461,6 @@ function ModuleCard({
   emptyText,
   tinted,
   tintClass,
-  fullWidth,
 }: {
   href: string;
   label: string;

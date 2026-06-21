@@ -1,0 +1,182 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-02T12:53:22.186Z",
+    "source_url": "https://www.sanitaer-kilchberg.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://www.sanitaer-kilchberg.ch/",
+        "chars": 2897
+      },
+      {
+        "key": "team",
+        "url": "https://www.sanitaer-kilchberg.ch/team",
+        "chars": 528
+      },
+      {
+        "key": "services",
+        "url": "https://www.sanitaer-kilchberg.ch/dienstleistungen",
+        "chars": 2709
+      },
+      {
+        "key": "impressum",
+        "url": "https://www.sanitaer-kilchberg.ch/impressum",
+        "chars": 1006
+      }
+    ]
+  },
+  "firma": {
+    "value": "Wälti & Sohn AG",
+    "source": "website_og_site_name+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Heinz Wälti",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Gartenweg 2, 8135 Langnau am Albis",
+    "source": "website_impressum",
+    "verified": true
+  },
+  "telefon": {
+    "value": "044 713 03 04",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@waeltisohn.ch, service@waeltisohn.ch, umbau@waeltisohn.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 5,
+    "review_count": 11,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "1952",
+    "source": "website_home",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "SANITÄR",
+        "WC",
+        "Defekter WC Sitz",
+        "WC-Rollenhalter, Griffe, ...)",
+        "Installationen von WC`s die mit Wasser reinigen"
+      ],
+      "Heizung": [
+        "HEIZUNG",
+        "Heizkörper / Radiatoren / Ventile",
+        "Fehlender Komfort (Heizstaab)",
+        "Reparaturen von bestehenden Heizkörpern",
+        "Installation von Thermostatventilen"
+      ],
+      "Boiler/Warmwasser": [
+        "Boiler Service (Entkalkung)"
+      ],
+      "Rohrbruch/Leitungen": [
+        "Geräusche von Wasser und Abwasserleitungen"
+      ],
+      "Verstopfung/Abfluss": [
+        "Verstopfte Abläufe",
+        "Geräusche von Wasser und Abwasserleitungen"
+      ],
+      "Umbau/Sanierung": [
+        "Umbau"
+      ],
+      "Solar/Erneuerbar": [
+        "Integration von erneuerbaren Energien in bestehende Systeme"
+      ],
+      "Beratung/Planung": [
+        "Unterbaumöbel (Beratung und Montage)",
+        "Beratung für Heizungsersatz",
+        "Karriereberatung"
+      ],
+      "Kundendienst": [
+        "Service",
+        "SERVICE",
+        "Boiler Service (Entkalkung)",
+        "Wartung und Unterhalt"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": [
+      "Franke"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "werte": {
+    "value": "WIE DÜRFEN WIR IHNEN HELFEN?",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#0000ee",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "https://www.sanitaer-kilchberg.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Showroom, Laden, Lehrbetrieb, Familienbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Wälti & Sohn AG",
+    "uid": "CHE-190.443.228",
+    "ehraid": 1569384,
+    "legal_seat": "Langnau am Albis",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zh.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-190.443.228",
+    "match_score": 100
+  }
+}

@@ -27,7 +27,7 @@ export async function POST(
     const supabase = getServiceClient();
     const { data } = await supabase
       .from("proof_pages")
-      .select("view_count, first_viewed_at, company_name, tenant_slug")
+      .select("view_count, first_viewed_at, lead_id, company_name, tenant_slug")
       .eq("token", token)
       .single();
 
@@ -43,9 +43,18 @@ export async function POST(
         })
         .eq("token", token);
 
-      // First-View → Founder per E-Mail alarmieren (heisses Engagement-Signal,
-      // Tag-6-7-Anruf priorisieren). Nur einmal pro Seite, best-effort.
       if (isFirstView) {
+        // Customer Journey: First-View = der "Gesehen"-Übergang (Stern 3→4).
+        // Nur EINMAL pro Beweis-Seite ins append-only Log (nicht bei jedem Poll).
+        await supabase.from("journey_events").insert({
+          lead_id: data.lead_id ?? null,
+          proof_token: token,
+          event_type: "proof_viewed",
+          source: "track",
+          payload: { tenant_slug: data.tenant_slug ?? null },
+        });
+        // First-View → Founder per E-Mail alarmieren (heisses Engagement-Signal,
+        // Tag-6-7-Anruf priorisieren). Nur einmal pro Seite, best-effort.
         import("@/src/lib/email/resend").then(({ sendProofViewAlert }) =>
           sendProofViewAlert({
             companyName: data.company_name ?? data.tenant_slug ?? "Ein Prospect",

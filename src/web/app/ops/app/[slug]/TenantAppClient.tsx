@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 export function TenantAppClient({
   name,
-  tenantId: _tenantId,
   slug,
   isPub,
 }: {

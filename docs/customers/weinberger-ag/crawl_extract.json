@@ -1,0 +1,169 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-01T09:38:01.049Z",
+    "source_url": "https://julweinberger.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "https://julweinberger.ch/",
+        "chars": 2841
+      },
+      {
+        "key": "team",
+        "url": "https://julweinberger.ch/team",
+        "chars": 1179
+      },
+      {
+        "key": "services",
+        "url": "https://julweinberger.ch/kompetenzen",
+        "chars": 1565
+      },
+      {
+        "key": "kontakt",
+        "url": "https://julweinberger.ch/kontakt",
+        "chars": 686
+      },
+      {
+        "key": "karriere",
+        "url": "https://julweinberger.ch/offene-stellen",
+        "chars": 2686
+      },
+      {
+        "key": "impressum",
+        "url": "https://julweinberger.ch/impressum",
+        "chars": 2092
+      }
+    ]
+  },
+  "firma": {
+    "value": "JulWeinberger",
+    "source": "website_og_site_name",
+    "verified": true
+  },
+  "inhaber": {
+    "value": "Markus Niedermann",
+    "source": "website_team",
+    "verified": true
+  },
+  "adresse": {
+    "value": "Zürcherstrasse 73, 8800 Thalwil",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "044 721 22 23",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@julweinberger.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "skip"
+  },
+  "google": {
+    "rating": 4.4,
+    "review_count": 20,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": 32,
+    "source": "website_team",
+    "verified": true
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitär / Lüftung",
+        "Seit 2007 ist die Ausführung von sanitären Anlagen eine der Kernkompetenzen der Firma. Ob Neubau oder Sanierung – wir re",
+        "Gemeinsam mit Ihnen realisieren wir Ihr neues Wunschbad – ganz nach Ihren Bedürfnissen und Budget, sei es eine Kompletts",
+        "Sanitärinstallationen"
+      ],
+      "Heizung": [
+        "Heizung / Alternativenergien",
+        "Gerne beraten wir Sie bei der Neuanschaffung oder Sanierung Ihrer Heizungsanlage. Dabei berücksichtigen wir alle geltend",
+        "Heizungsinstallationen / Lüftungen"
+      ],
+      "Lüftung/Klima": [
+        "Sanitär / Lüftung",
+        "Heizungsinstallationen / Lüftungen"
+      ],
+      "Umbau/Sanierung": [
+        "Seit 2007 ist die Ausführung von sanitären Anlagen eine der Kernkompetenzen der Firma. Ob Neubau oder Sanierung – wir re",
+        "Gerne beraten wir Sie bei der Neuanschaffung oder Sanierung Ihrer Heizungsanlage. Dabei berücksichtigen wir alle geltend",
+        "Badumbau",
+        "Gemeinsam mit Ihnen realisieren wir Ihr neues Wunschbad – ganz nach Ihren Bedürfnissen und Budget, sei es eine Kompletts"
+      ],
+      "Beratung/Planung": [
+        "Beratung/Planung"
+      ],
+      "Kundendienst": [
+        "Kundendienst",
+        "Service / Reparatur",
+        "Wir stehen Ihnen jederzeit zur Verfügung, um Ihnen einen zuverlässigen und effizienten Service zu bieten."
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": "Offene Stellen; Wir sind ein zukunftsorientiertes Unternehmen mit attraktiven Anstellungsbedingungen. Wir legen grossen Wert auf ein gutes Arbeitsklima und die Ausbildung von Lernenden. Eine attraktive Unternehmenskultur fördern wir mit regelmässigen internen Anlässen, Mitarbeiterinformationen und durch die Unterstützung von internen wie externen Weiterbildungen. Ein attraktiver Arbeitgeber zu sein, ist für uns von grosser Bedeutung. Denn davon profitieren schlussendlich alle: das Unternehmen, die Mitarbeitenden und die Kunden.; In dieser Funktion verstehen Sie es, eine Baustelle administrativ und technisch selbständig zu führen, Mitarbeiter zu motivieren und Lernende auszubilden. Dank Ihrem Fachwissen können Sie bei Um- und Neubauten Ihre Erfahrungen einbringen. Zudem passen Sie diese Fähigkeiten den individuellen Kundenbedürfnissen an.; Abgeschlossene Ausbildung als Sanitärinstallateur/in EFZ; Berufserfahrung als selbständiger Monteur",
+    "source": "website_jobs",
+    "verified": true
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Ihr Experte für leistungsstarke Haustechnik aus Thalwil!",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": null,
+    "source": "",
+    "verified": false
+  },
+  "website_url": {
+    "value": "https://julweinberger.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Lehrbetrieb, Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": null
+}

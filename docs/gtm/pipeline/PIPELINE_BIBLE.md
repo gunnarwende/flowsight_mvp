@@ -1,10 +1,22 @@
 # PIPELINE_BIBLE — Die Gold-Contact-Video-Pipeline
 
+> **Abschnitt der Customer Journey: die Simulation (Stern 3)** (Sales → **Pipeline** → Onboarding). Die Pipeline produziert das Asset (Beweis-Seite) und
+> läuft **auf Sales-Kommando** (für Weg-1-Ja-Sager), nicht spekulativ kalt. Orchestrator: [`../CUSTOMER_JOURNEY_BIBLE.md`](../CUSTOMER_JOURNEY_BIBLE.md) ·
+> vorgelagert: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md) · nachgelagert: [`../onboarding/ONBOARDING_BIBLE.md`](../onboarding/ONBOARDING_BIBLE.md).
+
 > **Schlüsseldokument.** Beschreibt, wie die Pipeline **JETZT funktioniert** (Stand 03.06.2026):
 > wie man sie steuert, antriggert, worauf zu achten ist — und wie man sie auf eine **neue
 > Branche** (Elektriker, Garage, …) repliziert. Autoritativ + tief. Vollständige Entstehungs-
 > Historie (§1–§69, alle FB-Punkte + Session-Logs) liegt 1:1 in
 > [`docs/archive/PIPELINE_BIBLE_historie_bis_20260603.md`](../../archive/PIPELINE_BIBLE_historie_bis_20260603.md).
+
+> **Liefer-Weg + Ein-Kommando (Stand 18.06.2026 — Runbook: [`NEUER_BETRIEB_VIDEO_RUNBOOK.md`](NEUER_BETRIEB_VIDEO_RUNBOOK.md)):**
+> Für einen NEUEN Betrieb ist der **kanonische** Weg `build_take2/3/4_final` → `collect_delivery` →
+> Staging nach `07_stresstest/abgenommen/<slug>/` (T1 canonical + T2/T3/T4) → `build_proof_page` →
+> **Hochkant** (`make_t2_portrait` + `proof_add_variants` — **PFLICHT**, sonst zeigt das Handy die kleine
+> Querformat-T2 = Mobile-Drift). **`produce_videos.mjs`** zieht das in EINEM Kommando durch.
+> **NICHT `run_pipeline_multi`** (älter, falsches Ablage-Format → speist `collect_delivery`/`build_proof_page` nicht).
+> `send_outreach --live` schaltet das Beweis-Seiten-Tracking automatisch scharf (S8). Siehe Zielarchitektur **D104**.
 
 ---
 
@@ -84,6 +96,8 @@ für Betriebsdaten, keines hat hardcoded Firmennamen. Liegt unter `docs/customer
 Patterns u.a. `24h`, **`24/7`** (Slash-Variante — Obrist-Fix 03.06.), `rund um die uhr`, `7 tage`,
 `pikett`, `auch an Sonn-/Feiertagen`, `jederzeit`, `Tag und Nacht`. Bloßes „Notfall" reicht NICHT
 (könnte „Bei Notfall Feuerwehr rufen" sein). Default = B (preis). **notruf ≈ 60 %, preis ≈ 40 %.**
+
+> **OFFEN — Gewerk ↔ Demo-Szenario (19.06.):** Die T2-Notruf-Variante simuliert einen **Rohrbruch (Keller unter Wasser) = Sanitär-Notfall.** **Reine Heizungs-/Gebäudetechnik-Betriebe ohne Sanitär** (z. B. MS Gebäudetechnik, Regiotherm) dürfen diese Demo NICHT bekommen → Gewerk-Mismatch („die haben uns nicht verstanden"). Erkennen über `voice_agent.domain`/services ohne „sanit". Bis eine **Heizungs-Notfall-T2-Variante** existiert („Heizung ausgefallen / kein Warmwasser"), solche Betriebe zurückstellen. Welle 1: MS + Regiotherm deshalb geparkt.
 
 **`sanitizeBrandColor(hex)` → nur sanitär-taugliches Blau/Türkis** (Founder 03.06.). Rote/gelbe/
 schwarze/grüne/blasse Farben wirken im Video falsch (Rot = Fehler/Alarm — Schaub-Bug `#e73744`).
@@ -401,6 +415,10 @@ docs/customers/<slug>/outreach/email.json gunnar_face_circle.png   ← Phase 3: 
 ---
 
 ## 12. Phase 3 — Verpackung & Versand (Beweis-Seite + Outreach)
+
+> **Nähte-Reframe (15.06., 3-Säulen-Modell):** Der Versand ist **Sales untergeordnet** — er passiert auf
+> Kommando der Sales-Säule (nach Weg-1-„ja, schicken Sie"), **nicht spekulativ kalt**. Für kaltes Scale baut
+> die Pipeline **erst bei Signal**; vorgebaut nur für warme/lokale wenige. Steuerung + ICP: [`../sales/SALES_BIBLE.md`](../sales/SALES_BIBLE.md).
 
 „**Mail = Deckel, Seite = Schatz.**" Die 4 abgenommenen Takes werden NICHT als Anhang verschickt,
 sondern auf eine private Seite gelegt; die Mail trägt **EINEN** Link dorthin.

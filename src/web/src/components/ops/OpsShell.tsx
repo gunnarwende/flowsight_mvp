@@ -84,14 +84,12 @@ export function OpsShell({
   staffRole,
   isAdmin,
   isFounder,
-  isImpersonating,
   activeTenantId,
   homeTenantId,
   viewAsRole,
   showRoleToggle,
   hasEvents,
   hasReservations,
-  pendingReservations,
   children,
 }: {
   userEmail: string;

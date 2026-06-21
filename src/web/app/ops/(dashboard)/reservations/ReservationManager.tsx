@@ -188,7 +188,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
             router.refresh();
           }
         }
-      } catch (_err) { /* best effort */ }
+      } catch { /* best effort */ }
     }
     // Initial sync on mount
     syncOnce();
@@ -206,7 +206,7 @@ export function ReservationManager({ reservations, noShowMap }: { reservations: 
         lastSyncResult.current = data;
         router.refresh();
       }
-    } catch (_err) { /* ignore */ }
+    } catch { /* ignore */ }
     setSyncing(false);
   }
 

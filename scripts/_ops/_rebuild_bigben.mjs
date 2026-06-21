@@ -125,13 +125,15 @@ async function main() {
   }]});
   console.log("DE->EN swap linked");
 
-  // 9. Publish ONCE (version = 1, no patches after!)
-  await post("/publish-agent/" + enAgent.agent_id, {});
-  await post("/publish-agent/" + deAgent.agent_id, {});
+  // 9. Publish ONCE (neue API: publish-agent-version mit { version })
+  const _enV = (await get("/get-agent/" + enAgent.agent_id)).version;
+  await post("/publish-agent-version/" + enAgent.agent_id, { version: _enV });
+  const _deV = (await get("/get-agent/" + deAgent.agent_id)).version;
+  await post("/publish-agent-version/" + deAgent.agent_id, { version: _deV });
   console.log("Published (once, no patches)");
 
-  // 10. Phone
-  await patch("/update-phone-number/+41445054818", { inbound_agent_id: enAgent.agent_id });
+  // 10. Phone (neue API: inbound_agents[] statt inbound_agent_id)
+  await patch("/update-phone-number/+41445054818", { inbound_agents: [{ agent_id: enAgent.agent_id, weight: 1 }] });
 
   // Verify all numbers
   const _pn = await get("/v2/list-phone-numbers");  // v2: { items, ... }

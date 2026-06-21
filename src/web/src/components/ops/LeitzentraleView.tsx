@@ -235,7 +235,6 @@ function computeEndCutoff(period: PeriodValue, selectedYear?: number): number | 
 export function LeitzentraleView({
   cases,
   caseIdPrefix,
-  weekStats,
   avgRating,
   staffName,
   staffRole,

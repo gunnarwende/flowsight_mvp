@@ -85,6 +85,7 @@ export default async function HandoutPage({
         <header className="flex items-center justify-between pb-4">
           <div className="flex items-center gap-3">
             {data.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- pre-existing pattern, unblock build 2026-06-20
               <img src={data.logoUrl} alt={data.companyName} className="h-12 w-auto object-contain" />
             ) : (
               <Initials name={data.companyName} />

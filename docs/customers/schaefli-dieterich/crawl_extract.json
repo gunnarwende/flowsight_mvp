@@ -1,0 +1,164 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-18T15:16:10.659Z",
+    "source_url": "http://www.haustechnet.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "http://www.haustechnet.ch/",
+        "chars": 2295
+      },
+      {
+        "key": "team",
+        "url": "http://www.haustechnet.ch/team",
+        "chars": 2306
+      },
+      {
+        "key": "services",
+        "url": "http://www.haustechnet.ch/dienstleistungen",
+        "chars": 2306
+      },
+      {
+        "key": "kontakt",
+        "url": "http://www.haustechnet.ch/kontakt",
+        "chars": 2306
+      },
+      {
+        "key": "karriere",
+        "url": "http://www.haustechnet.ch/karriere",
+        "chars": 2306
+      },
+      {
+        "key": "impressum",
+        "url": "http://www.haustechnet.ch/impressum",
+        "chars": 2306
+      }
+    ]
+  },
+  "firma": {
+    "value": "Dieterich AG",
+    "source": "website_title",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "Zürcherstrasse 254, 8500 Frauenfeld",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "052 723 30 60",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "empfang@haustechnet.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": {
+      "Mo-Do": "07:00-12:00",
+      "Fr": "07:00-12:00"
+    },
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "notdienst": {
+    "value": "– 16:00 7-TAGE SERVICE TEL. 052 723 30 60 Unser Pikettdienst ist bei Notfällen auch ausserhalb der Öffnungszeiten für Sie da. Webdesign Aisberg.ch",
+    "source": "website_kontakt",
+    "verified": true,
+    "phone": "052 723 30 60"
+  },
+  "google": {
+    "rating": 4.5,
+    "review_count": 28,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Bad- und Heizungsplaner"
+      ],
+      "Heizung": [
+        "WÄRME",
+        "Dünki Wärmetechnik GmbH aus Frauenfeld schliesst sich per 01.07.2026 mit der Schäfli + Dieterich AG zusammen.",
+        "In einem innovativen Team arbeiten wir stets daran, uns nachhaltig und kontinuierlich weiterzuentwickeln, wodurch wir dy",
+        "Geschäftsintegration der Dünki Wärmetechnik GmbH",
+        "Bad- und Heizungsplaner"
+      ],
+      "Beratung/Planung": [
+        "Sie haben schon ein Projekt im Kopf und wollen schnell starten? Hier können Sie uns erste Angaben und Ideen senden. Wir",
+        "Büro | Shop + Beratung"
+      ],
+      "Kundendienst": [
+        "SERVICE",
+        "Rundum-Service",
+        "7-TAGE SERVICE"
+      ]
+    },
+    "source": "website_services",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": [
+      "Gebäudetechnik"
+    ],
+    "source": "website_home",
+    "verified": true
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Gemeinsam in die Zukunft",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#0d6efd",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "http://www.haustechnet.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Laden, Lehrbetrieb",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": null
+}

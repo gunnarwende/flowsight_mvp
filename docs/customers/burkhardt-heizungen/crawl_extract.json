@@ -1,0 +1,165 @@
+{
+  "_meta": {
+    "crawled_at": "2026-06-18T15:15:41.656Z",
+    "source_url": "http://www.burkhardt-heizungen.ch/",
+    "crawler": "playwright",
+    "pages_crawled": [
+      {
+        "key": "home",
+        "url": "http://www.burkhardt-heizungen.ch/",
+        "chars": 1019
+      },
+      {
+        "key": "team",
+        "url": "http://www.burkhardt-heizungen.ch/ueber-uns",
+        "chars": 1626
+      },
+      {
+        "key": "kontakt",
+        "url": "http://www.burkhardt-heizungen.ch/kontakt",
+        "chars": 498
+      },
+      {
+        "key": "impressum",
+        "url": "http://www.burkhardt-heizungen.ch/impressum",
+        "chars": 1133
+      }
+    ]
+  },
+  "firma": {
+    "value": "Burkhardt",
+    "source": "website_title+zefix_verified",
+    "verified": true
+  },
+  "inhaber": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "adresse": {
+    "value": "8274 Tägerwilen",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "telefon": {
+    "value": "071 669 11 65",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "email": {
+    "value": "info@burkhardt-heizungen.ch",
+    "source": "website_kontakt",
+    "verified": true
+  },
+  "oeffnungszeiten": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "founder_confirm"
+  },
+  "notdienst": {
+    "value": "n. 24 Std. Reparaturdienst 071 / 669`11`65 Notfallreparaturen und Service an sämtlichen Heizungsanlagen & Sanitärinstallationen Wir beraten Sie gerne und erstellen Ihnen ein Angebot. Rog",
+    "source": "website_home",
+    "verified": true,
+    "phone": null
+  },
+  "google": {
+    "rating": 4.8,
+    "review_count": 22,
+    "source": "google_api",
+    "verified": true
+  },
+  "gruendung": {
+    "value": "2015",
+    "source": "website_team",
+    "verified": true
+  },
+  "team_groesse": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "note": "NIEMALS aus Fotos herleiten"
+  },
+  "leistungen": {
+    "value": {
+      "Sanitär": [
+        "Sanitär",
+        "Burkhardt Heizungen & Sanitär in Tägerwilen",
+        "Seit über 55 Jahren arbeitet die Firma Burkhardt Heizungen & Sanitär professionell rund um Heizungen und Sanitärinst",
+        "Heizungsanlagen & Sanitärinstallationen",
+        "Roger & Bruno Burkhardt (eidg. FA Chefmonteur-Sanitär & Heizung EFZ)"
+      ],
+      "Heizung": [
+        "Heizungen",
+        "Burkhardt Heizungen & Sanitär in Tägerwilen",
+        "Seit über 55 Jahren arbeitet die Firma Burkhardt Heizungen & Sanitär professionell rund um Heizungen und Sanitärinst",
+        "Heizungsanlagen & Sanitärinstallationen",
+        "Roger & Bruno Burkhardt (eidg. FA Chefmonteur-Sanitär & Heizung EFZ)"
+      ],
+      "Solar/Erneuerbar": [
+        "Solar"
+      ],
+      "Beratung/Planung": [
+        "Das bedeutet für Sie: fachkompetente Beratung, sowie zuverlässige und qualitätsvolle Arbeiten."
+      ],
+      "Kundendienst": [
+        "24 Std. Reparaturservice",
+        "Wir pflegen die Kultur eines Familienunternehmens, Kundenzufriedenheit ist unser oberstes Ziel.",
+        "24 Std. Reparaturdienst 071 / 669`11`65",
+        "Notfallreparaturen und Service an sämtlichen"
+      ]
+    },
+    "source": "website_home",
+    "verified": true
+  },
+  "einzugsgebiet": {
+    "value": null,
+    "source": "not_found",
+    "verified": false,
+    "action": "auto_derive_from_plz"
+  },
+  "mitgliedschaften": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "stellenangebote": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "markenpartner": {
+    "value": null,
+    "source": "not_found",
+    "verified": false
+  },
+  "werte": {
+    "value": "Aktuell sind 21 Gäste und keine Mitglieder online",
+    "source": "website_home",
+    "verified": true
+  },
+  "brand_color": {
+    "value": "#e00000",
+    "source": "website_home",
+    "verified": true
+  },
+  "website_url": {
+    "value": "http://www.burkhardt-heizungen.ch/",
+    "source": "input",
+    "verified": true
+  },
+  "besonderheiten": {
+    "value": "Familienbetrieb, Laden",
+    "source": "website_home",
+    "verified": true
+  },
+  "_zefix": {
+    "official_name": "Burkhardt",
+    "uid": "CHE-115.764.087",
+    "ehraid": 984862,
+    "legal_seat": "Zug",
+    "status": "EXISTIEREND",
+    "cantonal_excerpt": "https://zg.chregister.ch/cr-portal/auszug/auszug.xhtml?uid=CHE-115.764.087",
+    "match_score": 100
+  }
+}

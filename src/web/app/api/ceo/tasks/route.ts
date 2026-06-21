@@ -22,7 +22,7 @@ export async function GET() {
 
   // Resolve tenant names
   const tenantIds = [...new Set((data ?? []).filter((t) => t.tenant_id).map((t) => t.tenant_id))];
-  let tenantMap: Record<string, string> = {};
+  const tenantMap: Record<string, string> = {};
   if (tenantIds.length > 0) {
     const { data: tenants } = await supabase
       .from("tenants")

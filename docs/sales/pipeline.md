@@ -58,7 +58,7 @@ Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
 | (offen) | Walter Leuthold | — | Besuch geplant, nicht angetroffen | `scouted` | `/p/dff8fd…` | Vorher anrufen (S4), dann Besuch/Mail |
 
 > **Tracking-Reset 11.06.:** alle aktiven Beweis-Seiten auf `view_count=0` (eigene Test-Öffnungen raus) → First-View-Alerts ab jetzt unverfälscht. Inaktive Dörfler-Seite (`8f1b4a`, 55 Views) als Historie belassen.
-> **Entscheider-Auswahl:** eine Person, GL des Kern-Bereichs, nie `info@`/Sammel-CC → `lessons_learned.md` S6. Automatisierung: ticketlist **P12** (Vision-Discovery).
+> **Entscheider-Auswahl:** eine Person, GL des Kern-Bereichs, nie `info@`/Sammel-CC → `docs/gtm/sales/lessons_learned_sales.md` S6. Automatisierung: ticketlist **P12** (Vision-Discovery).
 
 ---
 

@@ -50,10 +50,6 @@ interface RetellWebhookPayload {
 const VALID_URGENCIES = ["notfall", "dringend", "normal"] as const;
 type CaseUrgency = (typeof VALID_URGENCIES)[number];
 
-function isValidUrgency(v: unknown): v is CaseUrgency {
-  return typeof v === "string" && VALID_URGENCIES.includes(v as CaseUrgency);
-}
-
 /** Normalize urgency: lowercase + alias mapping → valid enum or null */
 function normalizeUrgency(raw: string | undefined | null): CaseUrgency | null {
   if (!raw) return null;

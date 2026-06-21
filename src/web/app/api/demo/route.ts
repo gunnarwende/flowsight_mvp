@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import * as Sentry from "@sentry/nextjs";
 import { sendSms } from "@/src/lib/sms/sendSms";
-import { SITE } from "@/src/lib/marketing/constants";
 
 /**
  * POST /api/demo — Demo request from flowsight.ch marketing form.

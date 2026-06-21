@@ -23,6 +23,6 @@
 | 11.06. | **Erstkontakt-Mail live** → `michael.leins@leinsag.ch` | Betreff „Herr Leins — was passiert mit den Anfragen, die niemand sieht?". Beweis-Seite `/p/2cf7d463e93f…`. Resend-ID `8b825e62`. Copy = B-Vorlage (Sichtbarkeits-Haken, 3-Bereiche-Bezug, „im hektischsten Alltag"). Tracking auf null vor Versand. |
 
 > **Status:** `contacted`.
-> **Ansprechpartner-Entscheid:** Michael Leins (GL des Kern-Bereichs Sanitär & Heizung — wo der Anruf-/Notdienst-Schmerz sitzt) — entscheidet UND fühlt den Schmerz. Eine Person, kein Sammel-CC (→ `lessons_learned.md` S6). Anrede „Grüezi Herr Leins".
+> **Ansprechpartner-Entscheid:** Michael Leins (GL des Kern-Bereichs Sanitär & Heizung — wo der Anruf-/Notdienst-Schmerz sitzt) — entscheidet UND fühlt den Schmerz. Eine Person, kein Sammel-CC (→ `docs/gtm/sales/lessons_learned_sales.md` S6). Anrede „Grüezi Herr Leins".
 > **Crawl-Hinweis:** leins.ch ist eine JS-SPA — Personen-Mails wurden vom Text-Crawler nicht erfasst (nur Shell). Michael manuell via `curl -k …/ueber-uns` gefunden. Nachhaltige Lösung = ticketlist **P12** (Vision-Discovery).
 > **Nächster Schritt:** First-View-Alert beobachten → telefon. Follow-up in „ein paar Tagen". Provisioning erst nach „Ja" (über Onboarding-Cockpit).
