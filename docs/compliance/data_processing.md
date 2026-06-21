@@ -16,6 +16,7 @@ All vendors process data on behalf of FlowSight GmbH. No vendor receives data be
 | **Twilio** | Telephony carrier | Call metadata (from/to numbers, duration, SIP routing) | US + EU (Twilio infrastructure) | No call recording. Call logs retained per Twilio default (see Twilio Console → Settings). |
 | **Peoplefone** | Brand number + forwarding | Call metadata (forwarding logs) | Switzerland | Simple PSTN forward, no data storage beyond routing logs. |
 | **Resend** | Email delivery | Recipient email, subject, body content | US (Resend infrastructure) | Transactional email only. Resend retains delivery logs per their policy. |
+| **eCall.ch** | SMS delivery (CH) | Recipient phone number, SMS body (≤160 chars, transactional) | Switzerland | Transactional only. REST/HTTPS via `sendSmsEcall.ts`. Returns `message_id`; delivery-status query parked (Post-MVP). Business Account Typ A. |
 | **Sentry** | Error monitoring | Error traces, tags (tenant_id, case_id, source). No PII in tags by design. | US (Sentry infrastructure) | 90-day default retention. No contact info in Sentry events — only IDs and decision tags. |
 
 ### What no vendor sees
@@ -107,7 +108,33 @@ UPDATE tenants SET modules = '{}'::jsonb WHERE id = '<TENANT_ID>';
 - [ ] Resend: No per-tenant config (shared API key, tenant resolved at send time)
 - [ ] Document deletion in docs/customers/`<slug>`/status.md with date and reason
 
-## 4. References
+## 4. SMS-Versand & CH-Compliance (eCall.ch)
+
+Provider: **eCall.ch** (CH-based, see Subprocessors). SMS is transactional only — never marketing.
+
+| Rule | Detail |
+|------|--------|
+| Sender | Alphanumeric allowed, max **11 chars** (e.g. `BrunnerHT`, `Doerfler`). One alpha sender per tenant. |
+| Carrier approval | **None required** in Switzerland — no A2P/carrier registration step. |
+| Content | **Transactional only** (case confirmation, appointment, review, reminder). No marketing. |
+| Opt-out / Help | Honour **STOP** (opt-out) and **HELP** keywords. |
+| Volume | Low (**< 10/day**). |
+| Length | **≤ 160 chars** — at 161+ eCall bills 2 SMS (double cost). Sentry warns on >160. |
+
+(Quelle: docs/runbooks/twilio_a2p_registration.md, docs/redesign/leitstand/plan_Leitsystem.md)
+
+### Final SMS templates (all ≤ 160 chars)
+
+| Template | Chars | Text |
+|----------|-------|------|
+| Post-Call | ~130 | `{Firma}: Ihre Meldung {Kat} wurde erfasst. Bitte Name & Adresse prüfen und Fotos hochladen: {URL}` |
+| Termin | ~81 | `{Firma}: Ihr Termin am {Tag} {Datum}, {Zeit}–{Ende}. Bei Fragen: {Tel}.` |
+| Review | ~110 | `{Firma}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns: {URL}` |
+| 24h Reminder | ~100 | `{Firma}: Erinnerung — Ihr Termin morgen {Tag} {Datum}, {Zeit}–{Ende}. Bei Fragen: {Tel}.` |
+
+(Quelle: docs/redesign/leitstand/plan_Leitsystem.md)
+
+## 5. References
 
 - Secrets policy: docs/runbooks/99-secrets-policy.md
 - Incident triage: docs/runbooks/90-incident-triage.md

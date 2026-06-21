@@ -107,10 +107,34 @@ Filter ist die Absicherung. **Wichtig:** Das Leitsystem rendert die Farbe aus de
 `tenants.modules.primary_color` — der Seed synct `tenant.brand_color → primary_color` (§6); ohne
 das bleibt eine alte Onboard-Farbe stehen.
 
+> **Evidence-Prinzip (keine erfundenen Fakten).** Jeder in die Config einfliessende Fakt wird gelabelt:
+> **Verified** (aus gefetchtem HTML / Founder-Artefakt → direkt nutzbar) · **Assumption** (kontext-inferiert →
+> Founder-Review-Flag) · **TBD** (unbekannt → vor der Video-Produktion aufloesen). Inhaber/Entscheider-Mail:
+> sicher gecrawlt→eintragen, unsicher→offen lassen, nie erfinden.
+> (Quelle: docs/archive/customer_modernization_pipeline.md — Evidence Model)
+
 ### Runtime-Felder (vom Seed/Build geschrieben, NICHT manuell)
 
 `_seed_time`, `_wizard_time`, `_wizard_case_id`, `_wizard_case_label`, `_appointment_*`,
 `_review_*`, `_demo_now` — demo_time-SSoT-Werte, regenerieren bei jedem Run (nicht committen nötig).
+
+---
+
+## 2a. Voice-Agent-Schablone (DE + INTL) — kanonisch
+
+> **KANONISCHE ENTSCHEIDUNG (Founder 21.06., live-verifiziert).** Die Voice-Agent-Schablone fuer
+> ALLE Betriebe (DE **und** INTL) ist **Doerfler AG**:
+> `retell/exports/doerfler_agent.json` + `retell/exports/doerfler_agent_intl.json`.
+> Sync ausschliesslich via **`retell_sync.mjs --prefix doerfler`** (auto-published).
+> ⚠️ **Stale, NICHT nutzen:** `retell/exports/doerfler_ag_agent.json` (Alt-Datei, falscher Stand).
+
+**Provisioning-Pflicht (aus `global_prompt_de.txt`, 23 Platzhalter):**
+- 23 Platzhalter mit Betriebsdaten ersetzen → in beide Exports (DE + `_intl`) einsetzen.
+- **`is_transfer_cf: true` auf BEIDEN Flows** (DE + INTL) — sonst scheitert jeder Sprachwechsel-Rueckswitch (DE↔EN/FR/IT).
+- Telefonnummer ueber **`inbound_agent_id`** zuordnen (NICHT `agent_id`!) — danach ALLE Nummern pruefen.
+- Smoke-Test: 1× Intake + 1× Info + 1× Sprachwechsel DE→EN→DE.
+
+(Quelle: Founder-Entscheid 21.06.; machine_manifest.md Schritt 4)
 
 ---
 
@@ -273,6 +297,12 @@ offene Fälle (Phone + Wizard) → exit 2 bei Abweichung (blockt T4-Build).
 **Zeit-SSoT (`_lib/demo_time.mjs`):** Zürich-deterministisch relativ zu „heute". Alle Takes nutzen
 dieselben Zeiten (Phone 08:08, Wizard 08:56 etc.) → Datum/Uhrzeit konsistent über alle 4 Takes.
 
+> **Werktag- + Reminder-Regel (demo_time-SSoT):** Demo-Termine landen auf dem **Folgetag (+24 h)**;
+> die Zeit-SSoT erzeugt nur **Werktag→Werktag**-Daten (kein Wochenend-Datum im Video → wirkt sonst
+> unecht). Der gezeigte 24-h-SMS-Reminder muss im echten System auch wirklich ausloesen
+> (BigBen-Lehre 19.04.: Reminder kam trotz 28 h Vorlauf NICHT — fuer Sanitaer/Heizung muss das sitzen).
+> (Quelle: verbesserungsvorschlaege_video_pipeline.md #9)
+
 ---
 
 ## 7. Quality Gates — der vollständige Katalog
@@ -317,6 +347,8 @@ T2-Pause 8,554 s @33,045 · T4-Caseopen SSIM-Drop 0,98→0,77 @11,0 · T4-Stern-
 | **Abgebrochene Builds: `_tmp_take{3,4}/` löschen** | sonst `rmdir ENOTEMPTY` beim Maus-Layer-Render. Pfad: `_generated/mouse_recordings/<slug>/_tmp_take*`. |
 | **Nach jedem Platzieren: `ffprobe`-Dauer-Check** | Kopie kann den Master mid-write erwischen → truncated (Stark-T4 1,8 MB statt 14,9 MB, „kann nicht öffnen"). Dauer>0 + Größe plausibel prüfen. |
 | **Verify visuell am echten Frame** (`-ss` NACH `-i`, accurate-seek) | Metriken können trügen; Gold-Vergleich am Frame ist Wahrheit. |
+| **Kein blindes `overlay`+`enable`-Re-Encode auf 1440×900 H.264** | Ohne starken Hardware-Encoder >1 h Encoding / Files >300 MB → fror die Pipeline ein (29.04.-Crash). Kritische Overlays kommen aus der Gold-Referenz-Region (apply_canonical_stars) oder in EINEN Filtergraph gemerged (§9), nicht als langer Einzel-Re-Encode. |
+| **Approved Take SOFORT sichern** | Jeder founder-abgenommene Take direkt nach Approval nach `master_takes/` (bzw. `07_stresstest/abgenommen/<slug>/`) kopieren — sonst zerstoert ein folgender Build-Lauf die Source (4–6 h Verlust am 29.04.). |
 | Greeting-TTS bei neuem Betrieb frisch erzeugen | Stale TTS (alter Name/Länge) sprengt sonst den Slot. |
 
 ### Platzierung & Abnahme-Workflow
@@ -339,6 +371,17 @@ T4-Recording pro Build:
   `waitForTimeout`) → Maus/Audio-Desync („Maus hängt hinterher", Marti-Befund). **Echter Fix
   (nächste Wochen):** Part-5-`holdUntilMaster`-Anker (wie Part 1) + caseopen-Anker state-basiert
   (`waitForSelector` statt Zeit). Optionaler Wächter: `G_T4_ERLEDIGT`-Sync-Gate.
+
+**New-Tenant-Self-Sufficiency (Stresstest 01.06., 3 Betriebe parallel).** Die Pipeline ist fuer
+**vorbereitete** Betriebe robust, fuer **frisch gecrawlte** noch nicht turnkey — Restkette per-Tenant-Voraussetzungen:
+- **T2-`schedule`-Generator** braucht notruf+preis-Master in EINEM Tenant — Doerfler hat nur notruf,
+  Leins nur preis → schlaegt fuer neue Betriebe fehl. (Workaround: beide Master in einem Referenz-Tenant.)
+- **T3** braucht per-Tenant `loom_t3.mp4`; greift kein Shared-Fallback, blockiert T3 (Walter-Befund).
+- **Wizard-Recording-Timeout** (8 s `locator.click`) tenant-spezifisch moeglich (Weinberger-Befund).
+- Schon gefixt: `_overrides/<slug>/`-mkdir (T2 STEP 1.5), per-Tenant `homescreen`-PNG, take3-`.schedule`-Generator.
+- **Empfehlung:** systematischer Self-Sufficiency-Audit (Backup-first, Doerfler/Leins gelockt als Referenz,
+  jede Aenderung einzeln verifiziert) statt Schicht-fuer-Schicht-Whack-a-mole.
+> (Quelle: 07_stresstest/README.md)
 
 **Effizienz-Hebel (offen) — Messdaten + verifizierter Ausführungsplan (04.06.2026 Dörfler-Run):**
 
@@ -470,6 +513,18 @@ klein/inhabergeführt) · **B** Notdienst („7/24-Versprechen vs. Realität") �
    Rating+Anzahl, Geo, Gewerk) → Archetyp wählen → Slots füllen → `email.json` schreiben
    (deterministisch, founder-gated, A/B-gelernt).
 2. **Inhaber-E-Mail-Anreicherung:** Impressum/Zefix/LinkedIn statt `info@`.
+
+---
+
+## 13. Bewusste Ablehnungen (Ton & Stil)
+
+Die Schablone faehrt bewusst den **CH-Ton: passiv-zielstrebig, nicht salesig.** Vom Founder abgelehnte
+Vorschlaege (damit sie nicht wieder eingebaut werden):
+- **Kein emotionaler/salesiger Closer** (#10) — statt "…haette schon laengst laufen sollen" nur leise
+  Verschaerfung: *"Wenn Sie beim Zuschauen an ein, zwei Stellen gedacht haben: ja, genau so etwas wuerde uns helfen —"*.
+- **Kein Verpasster-Anruf-Kontrast** in T2 (#11).
+- **Kein geaenderter T1-Einstieg** (#19) — Script ist FROZEN, laeuft wie es ist.
+> (Quelle: verbesserungsvorschlaege_video_pipeline.md #10/#11/#19)
 
 ---
 

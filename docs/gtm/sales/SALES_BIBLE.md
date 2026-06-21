@@ -41,6 +41,16 @@ an Fremde = schwächster Kanal für misstrauischste Zielgruppe), **(2) rückwär
 jedem Lebenszeichen verbrannt) → *Mensch qualifiziert zuerst, Asset belohnt danach*, **(3) falscher Nordstern**
 („Videos geschaut?" statt „qualifizierte Gespräche/Woche"). Das Video ist Türöffner, nicht der Verkauf.
 
+## §0a · Was darf nie passieren (sofortiger Abbruch)
+
+Der Betrieb testet nicht zweimal. Jeder Punkt = verbrannte Chance.
+
+**Vertrauensbrüche:** Lisa sagt falschen Firmennamen · Lisa gibt falsche Infos (Preise/Zeiten — lieber „das müsste ich prüfen") · SMS kommt nicht (stärkster WOW stirbt) · Website 404/fremde Firma/kaputtes Layout · SMS an falsche Nummer (Datenschutz). **Prävention: E2E-Test als Quality Gate vor JEDEM Kontakt.**
+
+**Verkaufs-Fehler:** Preis/Vertrag im Erstkontakt (Wechsel von Staunen zu Verhandeln) · E-Mail sieht nach Template aus · technisches Setup nötig („ich bin Sanitär, nicht IT") · Founder meldet sich am Folgetermin nicht (High-Touch ohne Touch).
+
+**System-Ausfälle:** System fällt während Test aus · Dashboard leer beim ersten Login · Review an unzufriedenen Kunden (1-Stern statt 5). *(Quelle: gold_contact.md §4)*
+
 ---
 
 ## §1 · „Sales-Maschine go" — das Abend-Ritual (das Herz)
@@ -77,6 +87,34 @@ Nach JEDEM Gespräch: Founder gibt CC 1:1-Feedback (Inhalt, Emotion, Aufbau, Erg
 4. **Geben entwaffnet, Prüfen verteidigt** (S1). Nie „Haben Sie die Mail angeschaut?" → das Geschenk voran.
 5. **Lokal schlägt breit.** Eine glaubwürdige lokale Referenz (Dörfler) > 500 Kalt-Mails.
 6. **Du bist *kein* glatter Verkäufer — das ist deine Waffe.** Skepsis ist Default (S5), schmilzt bei „kein Drücker" (S3).
+7. **Spiegel-Effekt — Geschenk statt Demo.** Jeder Berührungspunkt zeigt dem Betrieb *sich selbst* in unerwarteter Qualität (sein Name in Lisa, sein Firmenname als SMS-Absender, seine Reviews auf der Seite). Wirkt in 30 Sek auf drei Ebenen: **Wiedererkennung** („das ist meine Firma") → **Aufwertung** („so gut sah mein Betrieb nie aus") → **Projektion** („wenn das mit echten Kunden so läuft…"). Die Demo sagt „kauf mich", das Geschenk sagt „ich habe an dich gedacht". *(Quelle: gold_contact.md §2)*
+
+---
+
+## §2a · Das 5-Stufen-Kaufmodell
+
+Ein Betrieb sagt Ja, wenn fünf Dinge **gleichzeitig** stimmen — fehlt eine Stufe, kippt es.
+
+1. **Schmerz** — „Ich verliere wirklich etwas." (selbst-entdeckt, nie präsentiert — das System hält den Spiegel)
+2. **Beweis** — „Es funktioniert. Jetzt. Für mich." (sein Name, seine Daten — nicht generische Demo)
+3. **Risiko-Null** — „Ich kann nichts verlieren." (muss spürbar sein, nicht erklärt — monatlich kündbar, zahlt am Go-live)
+4. **Soziale Bestätigung** — „Frau / Kunde / Kollege findet das gut." (stärkste Form: sein eigener Endkunde)
+5. **Handlungsdruck** — „Jetzt, nicht irgendwann." (nur ehrlich: Region exklusiv, persönliche Verfügbarkeit — nie „nur noch 3 Tage")
+
+Fehlt **Schmerz** → „brauche ich nicht". Fehlt **Beweis** → „funktioniert das wirklich?". Fehlt **Risiko-Null** → „was wenn…?". Fehlt **Sozial** → „muss nochmal drüber nachdenken" (= mit Partner reden). Fehlt **Druck** → „ja, irgendwann" (= nie). *(Quelle: gold_contact.md §1)*
+
+## §2b · Sechs Psychologie-Hebel + defensives Verkaufen
+
+| Hebel | Prinzip | Einsatz |
+|---|---|---|
+| **Vorleistung** (Reciprocity) | wer zuerst gibt, dem will man zurückgeben | „Ich habe für Sie etwas ausprobiert" — Seite/Lisa/Nummer existieren schon |
+| **Lokale Nähe** | „einer von uns" schlägt „bester Anbieter" | „aus Oberrieden", PLZ in Lisas Antwort, Ort im Gruss |
+| **Proof-Staffelung** | einer = Zufall, drei = System, fünf = Überzeugung | visuell → auditiv → physisch (SMS) → strukturell → temporal |
+| **Curiosity Gap** | offene Schleifen lassen das Hirn nicht los | E-Mail öffnet die Schleife, erklärt NICHT was Lisa tut — das Video schliesst sie |
+| **Loss Aversion** | drohender Verlust > möglicher Gewinn | „Nummer ist für Sie reserviert — ein Betrieb, eine Region" |
+| **Cognitive Ease** | je einfacher, desto vertrauenswürdiger | „kein Login, kein Vertrag — einfach anrufen" |
+
+**Defensives Verkaufen (Schweizer Marktpsychologie):** Niemals Druck. Niedrige Erwartung rein („ich hätte gern Ihr ehrliches Feedback, auch kritisch") → Erlebnis übertrifft sie → Kinnlade fällt. „Feedback gesucht" entwaffnet den Skeptiker, bevor er überhaupt schaut. *(Quelle: schatztruhe_final.md §2)*
 
 ---
 
@@ -97,6 +135,16 @@ Baustelle — oder fängt es ein echtes Büro zuverlässig ab?* „Ja, Inhaber a
 **Disqualifikatoren:** 15+ MA mit Disposition/CRM · kaputte/keine Website (Sonderfall) · >50 Rev + ≥4.8★.
 **Größe = Preis-Schalter** → der Lead-Motor (§14) muss verlässlichen MA-Proxy liefern (Crawl/Vision).
 
+## §3a · Segment-Lehre (Website-Stärke als Lead-Qualitätssignal)
+
+Drei Segmente aus Scout-Daten — das Geld sitzt in **A**:
+
+- **A — Website-stark** (gute Site, 20+ Reviews, 5–15 MA): höchste Zahlungsbereitschaft, geringste Delivery-Reibung, klarster Pain, bestes Referenzpotential. **Bestes Fit.**
+- **B — Website-schwach** (keine/veraltete Site, 1–5 MA, <10 Reviews): grösster Pain, aber **geringste Zahlungsbereitschaft, höchste Delivery-Reibung, grösstes Churn-Risiko** (kann CHF 950/Mo schlecht tragen → kündigt nach 3 Mt), schwächster Social Proof.
+- **C — gemischt** (brauchbare Site, 3–8 MA): mittlere Zahlungsbereitschaft, Website-Refresh ggf. späterer Upsell.
+
+**Konsequenz für ICP-Scoring:** „keine Website" ist **kein Bonus**, sondern ein Warnsignal für höheren Aufwand + niedrigere Zahlungsbereitschaft. *(Quelle: website/analyse_modul1_vs_modul2.md §6)*
+
 ---
 
 ## §4 · Region — drei konzentrische Ringe
@@ -108,6 +156,13 @@ Baustelle — oder fängt es ein echtes Büro zuverlässig ab?* „Ja, Inhaber a
 | **2** | Telefon (Skalierung) | restl. Kanton ZH | ~300–400 ICP | später |
 
 Ring 0 jetzt Hauptfokus; Ring 1 parallel klein (Telefon-Bewegung lernen); Ring 2 später.
+
+## §4a · Markt & Sweetspot (Kontext)
+
+- **Adressierbarer Markt** (Sanitär/Heizung 3–30 MA): **~970 Kanton Zürich · ~5'700 Deutschschweiz · ~15'000 CH**. Markt gross genug — nicht jeden nehmen.
+- **Sweetspot = 5–15 MA** (optimal 8–15): hier entsteht die operative Komplexität (Termine, Zuweisung, Koordination), die das Leitsystem unverzichtbar macht. ~450 in Zürich. **1–2 MA** sind NICHT Kern — sie brauchen einen Anrufbeantworter, kein Leitsystem („mitnehmen wenn sie kommen, nicht jagen").
+- **Kategorie:** FlowSight ist ein **vertikales Field-Service-/Leitsystem** (Vergleich: ServiceTitan, Jobber, Housecall Pro — keines mit Voice-AI/CH-Dialekt), kein „AI-Telefonassistent". Diese Abgrenzung schützt den Preis.
+- **Kostentreiber:** **SMS dominiert (57–84 % der variablen Kosten)**, nicht Voice. Jeder SMS→E-Mail-Shift verbessert direkt die Marge. *(Quelle: redesign/leitstand/pricing_und_marge.md §5–§6)*
 
 ---
 
@@ -243,6 +298,43 @@ hektischen Alltag, nicht aus Angst.
   vor Verständnis" (z.B. technische Fragen), nicht für den Preis.
 - **Tonalität:** die Struktur nutzen, nie den glatten Closer-Ton — es muss „echter Typ, kein Drücker" bleiben (S3/S5).
 
+## §11a · Die drei harten Mom-Test-Fragen
+
+**Regel:** Past behavior > future intent — nie „Würden Sie…", immer „Was haben Sie…". Vor jedem Call die 3 Fragen aufschreiben, nicht improvisieren. Nicht pitchen, bevor Frage 1+2 beantwortet sind.
+
+1. **Past-Behavior-Anker:** „Wenn nächste Woche das Telefon klingelt, während Sie auf dem Dach stehen — was machen Sie genau?" (will: konkrete Handlung mit Reibung; „ich rufe abends zurück" = kein Schmerz → Lead schwach)
+2. **Verlust-Quantifizierung:** „Wie viele Aufträge im letzten Monat sind Ihnen entgangen, weil Sie nicht ans Telefon konnten?" (Zahl ODER „weiss nicht" — **„weiss nicht" IST die Schmerzstelle**: „Wäre es wertvoll, das in 30 Tagen exakt zu wissen?")
+3. **Commitment-Probe:** „Wenn ich Ihnen heute eine Lösung gebe und Sie merken in 30 Tagen, sie bringt nichts — was kostet Sie das?" (will bewusste Kalkulation; „nichts, ich teste ja" = nicht im Commitment)
+
+**Verbote (Mom-Test):** keine „Würden Sie X zahlen?", kein „Glauben Sie, das wäre nützlich?", kein „Was halten Sie von unserer Lösung?" — Future-Intent + Höflichkeits-/Compliments-Falle. *(Quelle: discovery_questions.md)*
+
+**Bonus-Closer (Referral als Vertrauens-Lackmus):** „Wenn das System Ihnen 3 verpasste Aufträge im Monat zurückholt — kennen Sie 2 andere Betriebe, denen das auch helfen würde?" Bricht die Höflichkeits-Falle: wer nicht referieren will, glaubt selbst nicht an die Lösung. **Bei jedem Nein die Referral-Tür öffnen** — ein echtes Nein, das einen anderen Betrieb nennt, ist wertvoller als ein höfliches Ja. *(Quelle: discovery_questions.md)*
+
+## §11b · Einwand-One-Pager (Sanitär)
+
+**Prinzip:** nicht rechtfertigen, nicht überreden. Jeden Einwand zuerst *würdigen*, dann mit Past-Behavior-/Verlust-Frage zurückgeben. Der Einwand ist fast nie der echte Grund — dahinter: Aufwand-Angst, Geld, oder „läuft das schon?".
+
+| Einwand | Echte Angst | Antwort (würdigen → zurückgeben) |
+|---|---|---|
+| „Keine Zeit, kein IT-Mensch." | Aufwand/Pflege | „Genau dafür gebaut — Sie richten nichts ein, läuft erst wenn Sie Ja sagen; macht's mehr Arbeit als spart, hören wir auf." |
+| „Was kostet das?" (zu früh) | Preis-Anker zu früh | **Nicht beziffern.** „Gern — aber erst wenn klar ist, ob's zu Ihnen passt. Sonst reden wir über Geld für etwas, das Sie vielleicht gar nicht brauchen." |
+| „Meine Frau/Sekretärin nimmt ab." | „brauch ich nicht" | „Und wenn die auch grad nicht kann — Baustelle, Mittag, Ferien? Es geht nicht ums Ersetzen, sondern dass nichts durchfällt." |
+| „Die rufen halt nochmal an." | Verlust-Blindheit | „Manche schon. Wissen Sie, wie viele NICHT nochmal anrufen, sondern gleich den Nächsten?" |
+| „Hab schon einen 24/7-Notdienst." | (berechtigter Stolz) | **Würdigen:** „Stark, den haben wenige so sauber. Hier geht's nicht um Erreichbarkeit — sondern dass jeder Anruf als sauberer Fall landet statt im Kopf/auf dem Zettel." |
+| „KI? Datenschutz?" | Misstrauen/Technik | „Schweizer Nummer, Server Frankfurt, DSGVO-konform, keine Gesprächsaufnahmen." |
+| „Ersetzt das meine Leute?" | Loyalität/Identität | „Nein. Fängt nur auf, was sonst durchfällt. Ihre Leute machen die Arbeit." |
+| „Bin schon bei einer Agentur reingefallen." | Web-Agentur-Trauma | „Verstehe ich. Kein Projekt, kein Vorab-Honorar, monatlich kündbar — Sie sehen's erst laufen." |
+| „Läuft das jetzt schon bei mir?" | Kontrollverlust-Panik | „Nein, nichts ist scharf — das war eine Vorschau nur für Sie. Live geht es erst, wenn SIE das Wort geben." |
+*(Quelle: discovery_questions.md)*
+
+## §11c · Wedge-Beispiel: Betrieb mit echtem Notdienst (Dörfler)
+
+Hat der Betrieb bereits einen echten 24/7-Notdienst → **nicht „Erreichbarkeit" verkaufen** (haben sie, würde herablassend wirken). Der Wedge ist:
+- **(a) Struktur statt Zettel/Kopf:** Wenn beide auf dem Einsatz sind, wird der Anruf trotzdem ein sauberer Fall — nichts geht verloren.
+- **(b) Bewertungen sichtbar machen:** gute Arbeit / 4,7★, aber zahlt nicht automatisch auf den Ruf ein.
+
+Angepasste Discovery: „Wenn beide grad auf dem Einsatz sind und es klingelt — was passiert mit dem Anruf?" · „Wie viele Anliegen gehen im Monat unter, weil sie auf einem Zettel/im Kopf hängen?" · „Ihre Sterne — fragen Sie aktiv nach Bewertungen, oder ergeben die sich von allein?" **Anti:** Notdienst nicht kleinreden — würdigen. Kein Preis, kein „KI"-Buzzword. *(Quelle: discovery_questions.md)*
+
 ---
 
 ## §12 · Funnel & das 30-Kunden-Ziel (ehrlich)
@@ -258,6 +350,21 @@ hektischen Alltag, nicht aus Angst.
 Nach Versand **Tracking auf null** (`proof_pages`) → First-View-Alert unverfälscht. Founder schaut danach nicht
 selbst (S8). Beweis-Seiten **30 Tage** (`build_proof_page.mjs`, `extend_proof_pages.mjs`, `expire_proof_pages.mjs`).
 Watch-Tiefe lesen (`proof_watch_report.mjs`).
+
+## §13a · Versand-Timing (E-Mail-Outreach)
+
+- **Tage:** Dienstag–Donnerstag. Montag = Inbox-Überflutung, Freitag = Wochenend-Modus, Wochenende = privat.
+- **Fenster:** **06:30–07:15** (Handy-Check vor Abfahrt zur Baustelle, E-Mail ganz oben) · **12:00–12:45** (Mittagspause, Mobile-Check) · **18:30–19:30** (Feierabend zuhause — *bestes Fenster für Video-Content*). Frühmorgens schlägt 09:00; das Büro-B2B-Fenster greift bei Handwerkern nicht.
+- **Saison:** Peak **September–November** (Heizungssaison — Volumen hochfahren). Tief **20. Dez–6. Jan + Juli–August** (Betriebsferien — Volumen runter).
+- **Kadenz:** Erstversand Di/Mi 06:45 → Unopened-Resend Do 18:30 (neue Betreffzeile) → Follow-up nächster Di 12:15. **Follow-up-Anruf 48h nach Versand** (nicht 24h = gierig, nicht 72h = Momentum weg). *(Quelle: versand_timing_analyse.md; schatztruhe_final.md §11)*
+
+## §13b · Founder-Release-Gate (vor jedem Versand)
+
+Leitfrage: **„Würde ich diesen Prospect jetzt ohne Bauchweh kontaktieren — ja oder nein?"** Nicht Checklisten, nicht CI — das gefühlte Gold-Erlebnis entscheidet.
+
+10 Berührungspunkte: 1) persönliche E-Mail (kein Template, Firmenname im Betreff) 2) prospect-spezifisches Asset/Video 3) Webfläche auf iPhone (sein Name, schnell) 4) Voice-Agent angerufen (Lisa sagt Firmennamen, PLZ ok) 5) SMS-Moment (richtiger Absender, Link/Upload) 6) Welcome/Magic Link (kein Passwort) 7) Dashboard mobil (sein Testfall, Demo-Cases nicht störend) 8) Trial-Journey-Mails (richtiger Ton) 9) Folge-Call-Script vorbereitet (Variante bei Skepsis) 10) Closing-Readiness (Preis klar, nächster Schritt).
+
+Bewertung: **10/10** raus · **8–9/10** raus, Rest nachziehen (kein Kill-Punkt betroffen) · **<8** geht NICHT raus. **Mindestens 3 von 5 Prospects** müssen das Gate bestehen, sonst Start verschieben — das ist kein Scheitern, das ist Qualitätskontrolle. *(Quelle: redesign/plan.md §8)*
 
 ---
 
