@@ -170,6 +170,18 @@ Keine.
 
 ---
 
+## OFFEN — Tagesüberblick (Morning Report)
+
+Founder-Feedback 21.06.: aktueller Report verwirrt (BigBen-Reservierungen ohne Bezug, „0× geöffnet · T1 100%" widersprüchlich, Rot nicht nachvollziehbar, mobil unleserlich, kommt 12:51 statt 07:45). An Customer Journey (Schwungkreis, Phase Sales) ausgerichtet.
+
+| # | Titel | Status |
+|---|-------|--------|
+| MR1 | **Morning-Report-Redesign (`morning_report.mjs` + `morning-report.yml`)** — (1) Beweis-Seiten-Block auf **kanonische Kadenz** `outreach_templates.md` (Tag 0 Mail → **Tag 3** Reminder → **Tag 6-7** Anruf, max 3 Touches, **Tag 14** Ablauf→parken), pro Betrieb „Tag X seit Versand · geöffnet? (wie oft/wann) · → Handlung". (2) **Verlässliches Signal only** (`proof_pages.created_at`/`view_count`/`last_viewed_at`); irreführende Watch-% **raus** (T1 = geteiltes canonical Video → wertlos; Rest verrauscht). (3) **Nachvollziehbares Rot** (Status-Zeile sagt *warum*). (4) **BigBen/Kunden-Reservierungen = FYI-Label**, nicht mehr Rot-Trigger. (5) **Responsive Mobil-HTML** statt Monospace-Plaintext. (6) **Timing 07:45** (cron 05:30 UTC + Caveat GitHub-Delay). (7) **2 Mails → 1** (`outreach-reminder.yml` Schedule aus, Kadenz wandert in Report). (8) **Telegram aus** (Founder will's nicht mehr). | IN ARBEIT (PR) |
+| MR2 | **High-End Watch-Tracking (der strategische Hebel)** — „Wer geschaut hat zuerst" (Tag 6-7) ist nur so gut wie das Watch-Signal. Heute unehrlich: T1-% = geteiltes Video, T2/T3/T4-% verrauscht durch **eigene Views** (manueller Reset 11.06. belegt das Problem) + 14-Tage-Aggregat. Bauen: eigene Views ausschließen · Tiefe **pro Sitzung** · Fokus **T2** (= Kauf-Signal) · T1 ignorieren → dann „🔥 hat T2 tief geschaut" als scharfes Signal in den Report. | OFFEN (groß, nach MR1) |
+| MR3 | **Video-Skript Voll-Extraktion + Zielgruppen-Analyse** — T1/T3/T4 + Rest-T2 (App-Erklärung) Wort für Wort extrahieren (Quellen: `speakflow_final.txt`, `Final_generic_scripting.txt`, `build_take3/4_final`, 10 Pool-Fragen). Dann **ehrliche Analyse:** wo kürzen/zusammenschneiden (aktuell ~13 Min, niemand schaut alles), und **nach ICP-Größe segmentieren** — 1-MA-Schmerz (verpasster Anruf = Auftrag weg → T2 stark) ≠ 4–14-MA-mit-Sekretariat (Überblick/Sichtbarkeit → T3/T4 stark). Maschine bleibt, nur Skript+Schnitt+Targeting schärfen. | OFFEN (eigenes Projekt, nach MR1+MR2) |
+
+---
+
 ## OFFEN — Kommunikations-Hygiene (Sofort-Sprint)
 
 > Aus Kommunikationsmatrix-Stresstest (3 ICP-Profile). Reduziert Notification-Noise/Churn. Alle 5 = kleiner Aufwand (S). (Quelle: docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md §7)

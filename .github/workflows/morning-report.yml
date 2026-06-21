@@ -2,8 +2,10 @@ name: Morning Report
 
 on:
   schedule:
-    # Daily at 07:30 UTC (08:30 CET / 09:30 CEST) — 30min after lifecycle-tick
-    - cron: "30 7 * * *"
+    # 05:30 UTC ≈ 07:30 CEST (Sommer) / 06:30 CET (Winter). Ziel: Founder hat ihn ~07:45.
+    # GitHub-Action-Crons sind "best effort" und können verspäten — der frühe Slot gibt
+    # Puffer. Garantiert-pünktlich nur via Vercel Cron (Folge-Ticket, falls nötig).
+    - cron: "30 5 * * *"
   workflow_dispatch: {}
 
 jobs:
@@ -26,79 +28,40 @@ jobs:
         run: cd src/web && npm ci
 
       - name: Run morning report
-        id: report
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           APP_URL: ${{ secrets.APP_URL }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.APP_URL }}
-          # Für die OUTREACH/Watch-Signal-Sektion (Bunny per-Take-Statistik). Fehlt EINER
-          # der drei, bleibt die Sektion einfach leer (guarded — kein Crash mehr).
-          BUNNY_STREAM_API_KEY: ${{ secrets.BUNNY_STREAM_API_KEY }}
-          BUNNY_STREAM_LIBRARY_ID: ${{ secrets.BUNNY_STREAM_LIBRARY_ID }}
-          BUNNY_STREAM_CDN_HOSTNAME: ${{ secrets.BUNNY_STREAM_CDN_HOSTNAME }}
         run: |
-          OUTPUT=$(node scripts/_ops/morning_report.mjs 2>&1) || true
-          echo "$OUTPUT"
+          # Schreibt /tmp/morning_report.{subject,txt,html} + loggt den Report.
+          node scripts/_ops/morning_report.mjs || true
+          # Fallbacks, falls der Lauf vor dem Schreiben abbrach (Report darf nie ganz fehlen).
+          [ -s /tmp/morning_report.subject ] || printf 'FlowSight · Tagesüberblick' > /tmp/morning_report.subject
+          [ -s /tmp/morning_report.txt ] || printf 'Report konnte nicht erzeugt werden — bitte Actions-Logs prüfen.' > /tmp/morning_report.txt
+          [ -s /tmp/morning_report.html ] || cp /tmp/morning_report.txt /tmp/morning_report.html
 
-          # Founder-Betreff aus der Marker-Zeile (mit Status-Symbol + Fazit); Fallback falls fehlt
-          SUBJECT_LINE=$(echo "$OUTPUT" | grep '^__SUBJECT__:' | head -1 | sed 's/^__SUBJECT__://')
-          [ -z "$SUBJECT_LINE" ] && SUBJECT_LINE="FlowSight · Tagesüberblick"
-          echo "subject=$SUBJECT_LINE" >> "$GITHUB_OUTPUT"
-
-          # Report-Body OHNE die Marker-Zeile für die nachgelagerten Schritte
-          CLEAN=$(echo "$OUTPUT" | grep -v '^__SUBJECT__:')
-          echo "report<<REPORT_EOF" >> "$GITHUB_OUTPUT"
-          echo "$CLEAN" >> "$GITHUB_OUTPUT"
-          echo "REPORT_EOF" >> "$GITHUB_OUTPUT"
-
-      - name: Send Telegram
-        if: always()
-        env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          REPORT: ${{ steps.report.outputs.report }}
-        run: |
-          # Trim to Telegram 4096 char limit
-          BODY=$(echo "$REPORT" | head -30)
-
-          HTTP_CODE=$(curl -sS -o /tmp/tg_response.txt -w "%{http_code}" \
-            -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d text="${BODY}" \
-            -d disable_web_page_preview=true)
-
-          echo "Telegram HTTP status: ${HTTP_CODE}"
-          if [ "$HTTP_CODE" -ne 200 ]; then
-            echo "Telegram response:"
-            cat /tmp/tg_response.txt
-          fi
-
-      # E-Mail TÄGLICH (Founder nutzt Outlook, kein Telegram). Severity steht im Betreff.
+      # E-Mail TÄGLICH (Founder nutzt Outlook). Severity + Grund stehen im Betreff.
+      # Telegram-Versand wurde am 21.06. entfernt (Founder will Telegram nicht mehr).
       - name: Send Email (daily)
         if: always()
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           FOUNDER_EMAIL: ${{ secrets.FOUNDER_EMAIL }}
-          REPORT: ${{ steps.report.outputs.report }}
-          SUBJECT: ${{ steps.report.outputs.subject }}
         run: |
           if [ -z "$RESEND_API_KEY" ] || [ -z "$FOUNDER_EMAIL" ]; then
             echo "Missing RESEND_API_KEY or FOUNDER_EMAIL — skipping email"
             exit 0
           fi
-          [ -z "$SUBJECT" ] && SUBJECT="FlowSight · Tagesüberblick"
-          # Convert plain text to simple HTML (preserve line breaks)
-          HTML_BODY=$(echo "$REPORT" | sed 's/$/<br>/g' | sed 's/^/<p style="font-family:monospace;margin:0">/' | sed 's/$/<\/p>/')
-          WRAPPED="<div style=\"background:#0b1120;color:#e2e8f0;padding:24px;border-radius:8px;font-family:monospace;font-size:14px;line-height:1.8\"><div style=\"height:4px;background:#d4a853;border-radius:2px;margin-bottom:16px\"></div>${HTML_BODY}</div>"
+          SUBJECT=$(cat /tmp/morning_report.subject)
 
-          # Send via Resend API
+          # html/text als --rawfile = robust gegen Sonderzeichen/Zeilenumbrüche (kein sed-Gebastel).
           PAYLOAD=$(jq -n \
             --arg from "no-reply@flowsight.ch" \
             --arg to "$FOUNDER_EMAIL" \
             --arg subject "$SUBJECT" \
-            --arg html "$WRAPPED" \
-            --arg text "$REPORT" \
+            --rawfile html /tmp/morning_report.html \
+            --rawfile text /tmp/morning_report.txt \
             '{from: $from, to: $to, subject: $subject, html: $html, text: $text}')
 
           HTTP_CODE=$(curl -sS -o /tmp/resend_response.txt -w "%{http_code}" \
