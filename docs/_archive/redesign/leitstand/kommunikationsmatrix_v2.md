@@ -473,12 +473,12 @@ Wenn Termin-SMS und Reminder-SMS nur bei Voice-Fällen (ohne Email) gesendet wer
 
 | Dokument | Rolle |
 |----------|-------|
-| `docs/redesign/leitstand/Matrix_kommunikation.md` | Vorgänger v1 (18.03.2026) |
+| `docs/_archive/redesign/leitstand/Matrix_kommunikation.md` | Vorgänger v1 (18.03.2026) |
 | `docs/architecture/zielarchitektur.md` | Zielarchitektur (§12 SMS, §11 OTP) |
 | `docs/architecture/contracts/case_contract.md` | Fall-Datenmodell |
 | `docs/architecture/env_vars.md` | Provider-Credentials |
 | `docs/redesign/identity_contract.md` | Branding-Regeln R1-R7 |
-| `docs/redesign/leitstand/plan_bewertungen_abschluss.md` | Review-System Abschlussplan |
+| `docs/_archive/redesign/leitstand/plan_bewertungen_abschluss.md` | Review-System Abschlussplan |
 | `src/web/src/lib/email/resend.ts` | Alle E-Mail-Templates (Code) |
 | `src/web/src/lib/sms/postCallSms.ts` | Post-Call SMS (Code) |
 | `src/web/src/lib/push/sendOpsPush.ts` | Push-Notifications (Code) |

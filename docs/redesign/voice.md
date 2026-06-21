@@ -2,7 +2,7 @@
 
 > **Status:** SSOT-Zielbild (Gold) | **Stand:** 2026-03-12 | **Owner:** Founder + CC
 > **Kontext:** Gold-Contact-Redesign, 4-Wochen-Sprint (12.03.–10.04.2026)
-> **IST-Zustand:** `docs/redesign/voice_ist.md` (694 Zeilen, 14 Sektionen)
+> **IST-Zustand:** `docs/_archive/redesign/voice_ist.md` (694 Zeilen, 14 Sektionen)
 
 ---
 

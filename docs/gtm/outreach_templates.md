@@ -264,7 +264,7 @@ sich etwas aendert. Schoenen Tag."
 | — | Pause | Danach | Kein weiterer Kontakt bis Signal |
 
 **Lifecycle-E-Mails** (Welcome, Day-5-Nudge, Day-13-Erinnerung, Offboarding) sind KEIN Outreach.
-Sie laufen automatisch nach Trial-Start via `lifecycle/tick`. Dokumentation: `docs/redesign/prospect_journey.md`.
+Sie laufen automatisch nach Trial-Start via `lifecycle/tick`. Dokumentation: `docs/_archive/redesign/prospect_journey.md`.
 
 ---
 

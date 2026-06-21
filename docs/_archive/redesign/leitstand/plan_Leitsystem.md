@@ -100,7 +100,7 @@ Jede Stufe ist sichtbar, steuerbar, abschliessbar. Die Bewertung (Google-Sterne)
 | 2.6 | **Zustellberichte** | GEPARKT | eCall liefert message_id. Delivery-Status-Abfrage = Post-MVP. |
 | 2.7 | **Anti-Spam** | **DONE** | Resend SPF/DKIM/DMARC verifiziert auf send.flowsight.ch. |
 
-**Kommunikationsmatrix:** `docs/redesign/leitstand/Matrix_kommunikation.md` — SSOT für alle Benachrichtigungen (25+ Trigger, 5 Kanäle, 5 Akteure). K1–K5 Entscheidungen fixiert.
+**Kommunikationsmatrix:** `docs/_archive/redesign/leitstand/Matrix_kommunikation.md` — SSOT für alle Benachrichtigungen (25+ Trigger, 5 Kanäle, 5 Akteure). K1–K5 Entscheidungen fixiert.
 
 **SMS-Templates final:**
 

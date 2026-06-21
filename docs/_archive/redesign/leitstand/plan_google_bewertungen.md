@@ -3,7 +3,7 @@
 **Version:** 1.0 | **Datum:** 2026-03-20
 **Autor:** CC (Head Ops) + Founder-Input
 **Status:** Phase 1 LIVE (Pre-Filter), Phase 2 OFFEN (Google-Abgleich)
-**Pfad:** `docs/redesign/leitstand/plan_google_bewertungen.md`
+**Pfad:** `docs/_archive/redesign/leitstand/plan_google_bewertungen.md`
 
 ---
 

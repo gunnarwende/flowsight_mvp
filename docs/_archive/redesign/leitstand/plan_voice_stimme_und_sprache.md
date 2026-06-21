@@ -2,7 +2,7 @@
 
 **Version:** 1.0 | **Datum:** 2026-03-21
 **Status:** Umsetzung
-**Pfad:** `docs/redesign/leitstand/plan_voice_stimme_und_sprache.md`
+**Pfad:** `docs/_archive/redesign/leitstand/plan_voice_stimme_und_sprache.md`
 
 ---
 

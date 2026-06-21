@@ -165,7 +165,7 @@ Keine.
 
 ## OFFEN — Kommunikations-Hygiene (Sofort-Sprint)
 
-> Aus Kommunikationsmatrix-Stresstest (3 ICP-Profile). Reduziert Notification-Noise/Churn. Alle 5 = kleiner Aufwand (S). (Quelle: docs/redesign/leitstand/kommunikationsmatrix_v2.md §7)
+> Aus Kommunikationsmatrix-Stresstest (3 ICP-Profile). Reduziert Notification-Noise/Churn. Alle 5 = kleiner Aufwand (S). (Quelle: docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md §7)
 
 | # | Titel | Beschreibung | Status |
 |---|-------|-------------|--------|

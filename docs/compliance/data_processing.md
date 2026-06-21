@@ -121,7 +121,7 @@ Provider: **eCall.ch** (CH-based, see Subprocessors). SMS is transactional only 
 | Volume | Low (**< 10/day**). |
 | Length | **≤ 160 chars** — at 161+ eCall bills 2 SMS (double cost). Sentry warns on >160. |
 
-(Quelle: docs/runbooks/twilio_a2p_registration.md, docs/redesign/leitstand/plan_Leitsystem.md)
+(Quelle: docs/runbooks/twilio_a2p_registration.md, docs/_archive/redesign/leitstand/plan_Leitsystem.md)
 
 ### Final SMS templates (all ≤ 160 chars)
 
@@ -132,7 +132,7 @@ Provider: **eCall.ch** (CH-based, see Subprocessors). SMS is transactional only 
 | Review | ~110 | `{Firma}: Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns: {URL}` |
 | 24h Reminder | ~100 | `{Firma}: Erinnerung — Ihr Termin morgen {Tag} {Datum}, {Zeit}–{Ende}. Bei Fragen: {Tel}.` |
 
-(Quelle: docs/redesign/leitstand/plan_Leitsystem.md)
+(Quelle: docs/_archive/redesign/leitstand/plan_Leitsystem.md)
 
 ## 5. References
 

@@ -314,4 +314,4 @@ PROCESS:
 - **Machine Manifest:** `docs/gtm/machine_manifest.md` (Pipeline-Kontext)
 - **Prospect Manifest:** `docs/architecture/contracts/prospect_manifest.md` (Daten-Schema)
 - **Video Template:** `docs/gtm/video_template.md` (aeltere 5-Szenen-Version, abgeloest)
-- **Plan S5:** `docs/redesign/plan.md` (§ S5.7, S5.8)
+- **Plan S5:** `docs/_archive/redesign/plan.md` (§ S5.7, S5.8)
