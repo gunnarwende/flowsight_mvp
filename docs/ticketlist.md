@@ -252,4 +252,4 @@ Alle D-Tickets (D1-D11), S-Tickets (S1-S3), L-Tickets (L1-L10) aus der Leitstand
 **Living docs:** `docs/gtm/` (operating_model, gtm_tracker, gold_contact, outreach_templates, einsatzlogik)
 **Redesign-Docs (03/2026):** Historie archiviert in `docs/_archive/redesign/`; kanonische Specs nach `docs/architecture/` gehoben (`contracts/identity_contract.md`, `references/wizard.md`·`review.md`·`voice.md`·`flowsight_ceo_app.md`).
 **Pipeline:** `docs/sales/pipeline.md`
-**Machine:** `docs/gtm/machine_manifest.md`
+**Machine:** `docs/_archive/gtm-legacy/machine_manifest.md`

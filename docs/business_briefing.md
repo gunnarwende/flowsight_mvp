@@ -390,7 +390,7 @@ Phase B-5: Delivery        → Nur bei Conversion (Vertrag, Portierung)
 ### Funnel-Erwartung
 20 Outreach/Tag → ~5 reagieren (25%) → ~3 wollen testen (60%) → ~1 converted (25-30%)
 
-**Operating Model:** `docs/gtm/operating_model.md`
+**Operating Model:** `docs/_archive/gtm-legacy/operating_model.md`
 **Pipeline:** `docs/sales/pipeline.md` + `docs/sales/pipeline.csv`
 
 ### Zwei Maschinen — die End-to-End-Skalierung

@@ -274,7 +274,7 @@ Bevor wir auf 20 Outreach/Tag hochfahren, muss sitzen:
 
 - **Prospect Card Contract:** `docs/architecture/contracts/prospect_card.md`
 - **Role Model:** `docs/architecture/contracts/role_model.md`
-- **Einsatzlogik:** `docs/gtm/einsatzlogik.md`
-- **Quality Gates:** `docs/gtm/quality_gates.md`
+- **Einsatzlogik:** `docs/_archive/gtm-legacy/einsatzlogik.md`
+- **Quality Gates:** `docs/_archive/gtm-legacy/quality_gates.md`
 - **Provisioning Runbook:** `docs/runbooks/provisioning_prospect.md`
 - **Architecture Detail:** `docs/gtm/architecture_detail.md`

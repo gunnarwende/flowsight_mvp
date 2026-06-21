@@ -397,7 +397,7 @@ A ist SELEKTIV (nur ICP ≥ 9, erfordert Founder-Aufnahme).
 | 6 | WARM | B-Full+D | Website, eigener Agent | ~30 Min |
 | <6 | COLD | SKIP | — | 0 |
 
-**Referenz:** `docs/gtm/einsatzlogik.md` (Entscheidungstabelle + Pseudocode)
+**Referenz:** `docs/_archive/gtm-legacy/einsatzlogik.md` (Entscheidungstabelle + Pseudocode)
 
 ### Leckerli-Abhängigkeiten
 
@@ -1097,7 +1097,7 @@ Entscheidungsregel:
 ```
 docs/STATUS.md              ← Was ist live? (Produkt-Überblick)
 docs/ticketlist.md           ← Was ist offen? (EINZIGER Task-Tracker)
-docs/gtm/gtm_tracker.md    ← GTM-spezifische Tasks + Weinberger-Status
+docs/_archive/gtm-legacy/gtm_tracker.md    ← GTM-spezifische Tasks + Weinberger-Status
 docs/gtm/architecture_detail.md ← Zielarchitektur (DIESES Dokument)
 docs/customers/<slug>/status.md ← Pro-Kunde Status
 MEMORY.md                   ← CC-Kontext über Sessions hinweg
@@ -1113,8 +1113,8 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | "Wie steht es um Weinberger?" | docs/customers/weinberger-ag/status.md |
 | "Wie soll die Architektur aussehen?" | **architecture_detail.md** (dieses Dok.) |
 | "Wie provisioniere ich einen Prospect?" | docs/runbooks/provisioning_prospect.md |
-| "Welche Quality Gates muss der Prospect passieren?" | docs/gtm/quality_gates.md |
-| "Welches Paket bekommt der Prospect?" | docs/gtm/einsatzlogik.md |
+| "Welche Quality Gates muss der Prospect passieren?" | docs/_archive/gtm-legacy/quality_gates.md |
+| "Welches Paket bekommt der Prospect?" | docs/_archive/gtm-legacy/einsatzlogik.md |
 
 ### Drift-Prävention
 
@@ -1260,10 +1260,10 @@ Nicht-geheime Binding-Werte (keine Secrets — die liegen in Vercel-Env, vgl. `d
 |----------|------|--------|
 | STATUS.md | docs/STATUS.md | Was ist live (17 Module, 7 Websites) |
 | Ticketlist.md | docs/ticketlist.md | Einziger Task-Tracker |
-| Operating Model | docs/gtm/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
-| GTM Tracker | docs/gtm/gtm_tracker.md | Execution-Status + Weinberger |
-| Einsatzlogik | docs/gtm/einsatzlogik.md | ICP → Paket → Assets |
-| Quality Gates | docs/gtm/quality_gates.md | 5 Gates mit Pass/Fail |
+| Operating Model | docs/_archive/gtm-legacy/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
+| GTM Tracker | docs/_archive/gtm-legacy/gtm_tracker.md | Execution-Status + Weinberger |
+| Einsatzlogik | docs/_archive/gtm-legacy/einsatzlogik.md | ICP → Paket → Assets |
+| Quality Gates | docs/_archive/gtm-legacy/quality_gates.md | 5 Gates mit Pass/Fail |
 | Provisioning Runbook | docs/runbooks/provisioning_prospect.md | <25 Min Provisioning |
 | Prospect Card Contract | docs/architecture/contracts/prospect_card.md | JSON Schema |
 | Case Contract | docs/architecture/contracts/case_contract.md | Case-Datenmodell |
