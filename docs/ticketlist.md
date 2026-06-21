@@ -20,7 +20,7 @@
 
 **Updated:** 2026-04-30 Day-30 Late-Night — **🎬 T2-PIPELINE UNIVERSELL GEFIXT.** Drei Architektur-Patches: §56 Universal CALL_END_TOTAL (`apply_loom_take2.mjs` dynamisch = `CALL_START + phoneExtended.duration` → "Anruf beendet"-Hold vollständig sichtbar in allen Tenants/Varianten), §57 Anruf-beendet Display synchron zu live-Timer (`take2_samsung.html` snap on `endCall()`), §58 T2 High-End QG (`scripts/_ops/quality_gate_take2.mjs` Phone-Region Color-SSIM gegen Dörfler-Gold). §59 Loom-Avatar-Hierarchy (per-tenant + shared + legacy fallback). 4 Master-Takes promoted: Dörfler T2 Notruf + Leins T2 Preis (mit neuem Founder-Loom aus mini_takes), Stark T2 Notruf + Wälti T2 Preis. T3-Loom-Source platziert (`_shared/loom_t3_final.mp4`), volle Re-Integration ist Pipeline-Plumbing-Folge-Schritt. **Review morgen früh:** alle 4 T2-Master-Files. Day-29-Recovery-Kontext:
 
-**Updated:** 2026-04-29 Day-29 Recovery — **🚨 PIPELINE-CRASH + RECOVERY.** Mausphase 29.04. nachts hat Apr-28-State zerstört, Apr-27-Backup hat Dörfler+Leins gerettet. Wiedereinstieg: lies `docs/gtm/pipeline/RESUME_HERE.md` ZUERST. Status: 5 Takes APPROVED + master_takes/ Backup (Dörfler T1+T4, Leins T1+T2-Preis+T4). 4 Takes PENDING Founder-Verifikation (Dörfler T2-Notruf+T3, Leins T3, Loom-during-call ist Known-Open). Stark+Wälti T1+T4 preserved Apr 28; T2+T3 müssen NEU gebaut. **Pipeline-Lessons:** TaskStop killt ffmpeg subprocess NICHT (Stop-Process nötig); FFmpeg-overlay-postproduction zu langsam (1h+ pro File auf 1440×900); Loom-Fix-Approach jetzt HTML-Layer in take2_samsung.html statt Re-Encode. **Founder-Schablone-Approach genehmigt:** Leins T2 Preis als Master für alle Preis-Tenants, swap nur 8 tenant-specific Differenzen. Day-25-Kontext (überholt):
+**Updated:** 2026-04-29 Day-29 Recovery — **🚨 PIPELINE-CRASH + RECOVERY.** Mausphase 29.04. nachts hat Apr-28-State zerstört, Apr-27-Backup hat Dörfler+Leins gerettet. Wiedereinstieg: lies `docs/_archive/pipeline-history/RESUME_HERE.md` ZUERST. Status: 5 Takes APPROVED + master_takes/ Backup (Dörfler T1+T4, Leins T1+T2-Preis+T4). 4 Takes PENDING Founder-Verifikation (Dörfler T2-Notruf+T3, Leins T3, Loom-during-call ist Known-Open). Stark+Wälti T1+T4 preserved Apr 28; T2+T3 müssen NEU gebaut. **Pipeline-Lessons:** TaskStop killt ffmpeg subprocess NICHT (Stop-Process nötig); FFmpeg-overlay-postproduction zu langsam (1h+ pro File auf 1440×900); Loom-Fix-Approach jetzt HTML-Layer in take2_samsung.html statt Re-Encode. **Founder-Schablone-Approach genehmigt:** Leins T2 Preis als Master für alle Preis-Tenants, swap nur 8 tenant-specific Differenzen. Day-25-Kontext (überholt):
 **Updated:** 2026-04-25 Day-25 Morning — **🔊 AUDIO-PIPELINE PHASE A DONE (autonom Nacht 24→25.04.).** Während Founder schlief autonom gebaut: 13 Scripts unter `scripts/_ops/audio/`, 36 cleaned Founder-Audios, 15 Lisa-TTS (9 generic + 2 variant + 4 tenant greetings), 8 assemblierte Calls, 20 Take-Audios (4 Tenants × 5 Takes), 20 Preview-Videos, HTML-QG-Report. **80/80 Gates PASS.** Review: `docs/gtm/pipeline/06_video_production/_generated/QUALITY_GATE_REPORT.html`. Bible §35 ergänzt. **Nächster Schritt (Phase B):** Screenflow-Retiming (Take 2 93s→340s, Take 3 61s→170s, Take 4 106s→152s) + Take 1 Screenflow für Leins/Stark/Wälti. — Kontext Tag 24:
 
 **Updated:** 2026-04-24 Day-24 Evening — **🔒 PRODUCTION-BASELINE FIXED.** Pipeline Screenflow Take 2+3+4 ist 10/10 für alle 4 Referenz-Betriebe (Dörfler, Leins, Stark, Wälti). Round-15 abgeschlossen (FB42-FB60 alle gefixt, direkte Review-Page-Pop-Animation, Viewport-Meta-Root-Cause, No-Regression-Lock in PIPELINE_BIBLE §34). **Pipeline bereit für Scale 10-30 Betriebe/Tag.** Nächster Schritt: Audio-Layer (Founder-Aufnahme Take 2-4 Master + Audio×Screenflow-Mapping). — Kontext Tag 23:
@@ -117,10 +117,16 @@ Keine.
 | GTM2 | **Loom-CTA Variante A Audio-Re-Recording** | `docs/gtm/loom_cta_v2.md` Variante A. Speakflow-Template aktualisieren + Audio-Take 4 Closing neu aufnehmen. | OFFEN |
 | GTM3 | **Premium-Pricing-Implementierung** | Pricing-Page + Outreach-Templates auf 1'500-2'500 CHF/Mo umstellen. Stripe-Side später. ~~Sales-Voice-Agent~~ → siehe GTM3b. | OFFEN (nur Pricing-Page + Outreach-Templates) |
 | GTM3b | **✅ Sales-Voice-Agent „Lisa" — Hochstufung DE+INTL** | (1) Cross-Tenant-Leak gefixt: peoplefone-Ziel +41445053019 zeigte auf „Walter Leuthold Intake" → re-gepointet auf Sales DE. (2) „ab 299"-Deflect raus → Wert-Anker, kein Preis am Telefon. (3) DSGVO→revDSG. (4) **Psychologie-Bogen** (zuhören → Frage zuerst → Demo-Aha → Rückruf-Brücke → auflegen) statt Quiz-Opener; beide Sprachen. (5) „belegt"-Bug gefixt (version-pinning). **Verifiziert 09.06.:** 3019→Sales-DE v20→Flow-v20 = Arc, kein Quiz, kein 299; INTL v15 = Arc, kein GDPR; DE-Swap→INTL korrekt. **Repo-Drift geschlossen 16.06.:** Die Quell-Exports `flowsight_sales_agent.json`+`_intl.json` (= was `retell_sync.mjs` liest) trugen noch „ab 299 / CHF 299" → der nächste Sync hätte den Preis wieder live gesetzt. Bereinigt (Wert-Anker, „bespricht Herr Wende persönlich") + re-published; via Retell-API verifiziert: DE Flow v21 + INTL v16 published, null Preis-Zahlen. | ✅ DONE — 09.06.; Repo nachgezogen 16.06. |
+| VC1 | **Voice-LLM auf GPT-4o-mini umstellen** | Entscheidung (`ceo_voice_decision.md` §8 korrigiert): Bei Retell bleiben, LLM in allen Agents von GPT-4.1 → GPT-4o-mini → −34% Voice-Kosten ($0.50→~$0.33/Call), kein Migrationsrisiko. OpenAI Realtime **NICHT** pilotieren (gpt-4o-realtime 3× teurer; Mini nur marginal günstiger, keine strukturierte Datenextraktion). | OFFEN |
+| VC2 | **eCall SMS-Preis + Grundgebühr klären** | eCall-Portal/Vertrag: exakter SMS-Preis (Annahme CHF 0.12 ±30%) + monatliche Grundgebühr (unbekannt). ±30% auf SMS-Kostenrechnung. | OFFEN — Founder |
+| VC3 | **Retell Enterprise-Pricing verhandeln** | Volume-Discount ab ~50k Min/Mo (sales@retellai.com) → Platform-Fee $0.07→$0.04-0.05. Hebel #2 nach LLM-Downgrade. | OFFEN — ab 5+ Betrieben |
 | RM2.1 | **support@flowsight.ch einrichten** | E-Mail in Outlook aktivieren (Founder-Task) | DONE — 26.03. |
 | RM2.2 | **Lisa auf Support-Tickets trainieren** | Voice Agent soll Support-Anfragen sauber verarbeiten | OFFEN |
 | KAL1 | **Outlook OAuth App anlegen** | Azure App Registration für Kalender-Integration (Phase 2). Anleitung: `docs/runbooks/founder_kalender_setup.md` | DONE — 26.03. |
 | KAL2 | **Google Calendar OAuth App anlegen** | Google Cloud Console für Kalender-Integration (Phase 2). Gleiche Anleitung. | DONE — 26.03. |
+| KAL3 | **Kalender Phase 3: Write-back Outlook** | Scope-Erweiterung `Calendars.ReadWrite` (Application Permission) + neuer Admin-Consent; Graph `POST/PATCH/DELETE /users/{email}/events`; Mapping `appointments.ics_uid` ↔ Outlook Event-ID. (Phase 1+2 LIVE, Free/Busy.) `plan_kalender_integration.md` §3 | OFFEN |
+| KAL4 | **Kalender Phase 4: Google Workspace** | Gleiche Architektur via Service-Account (Application Credentials), `calendar_provider=google`. Trigger: erster Kunde ohne M365. | OFFEN (trigger-basiert) |
+| REV1 | **Google Places API für Review-Abgleich (Phase 2)** | Founder: Google-Cloud-Projekt + Places API aktivieren + restricted API Key; Google Place ID pro Tenant in DB. Dann Cron liest Google-Reviews, heuristisches Matching (Name + Datum ±3d) → `google_review_rating` auf Case. Pre-Filter (≥4★→Google / ≤3★→intern) + Gold-Status sind LIVE. `plan_google_bewertungen.md` §6 | OFFEN — Founder-Action |
 
 ## ERLEDIGT — Feedback Session 19.03. (PRs #286-#290)
 
@@ -154,6 +160,20 @@ Keine.
 | # | Titel | Status |
 |---|-------|--------|
 | #80 | BigBen Pub — Pauls Fotos/Videos | Wartet auf Paul (Go-Live 30.04.) |
+
+---
+
+## OFFEN — Kommunikations-Hygiene (Sofort-Sprint)
+
+> Aus Kommunikationsmatrix-Stresstest (3 ICP-Profile). Reduziert Notification-Noise/Churn. Alle 5 = kleiner Aufwand (S). (Quelle: docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md §7)
+
+| # | Titel | Beschreibung | Status |
+|---|-------|-------------|--------|
+| I1 | Self-Assignment-Unterdrückung | Email+Push skippen wenn Zuweiser = Zugewiesener bei ≤3 Staff. ICS nur wenn Staff-Email ≠ eingeloggter User. `notify-assignees/route.ts` | OFFEN |
+| I2 | Notfall-Push nur an Inhaber/Büro | Neues Flag `is_office_role` auf staff-Tabelle; Notfall-Push filtert darauf statt Broadcast an alle Techniker. `sendOpsPush.ts` | OFFEN |
+| I3 | Review-Push gezielt statt Broadcast | Positive Review nur an zuständigen Techniker (`targetUserId`), nicht an alle registrierten Staff. `rate/route.ts` | OFFEN |
+| I4 | Negativ-Review Email-Alert | Rating ≤3★ erzeugt IMMER Email an notification_email (zusätzlich zum Push, da Push deaktivierbar). Eigenes Template „Negatives Kundenfeedback". `rate/route.ts`, `resend.ts` | OFFEN |
+| I5 | 24h-Erinnerung per Email | Fallback-Kaskade Email→SMS statt nur SMS (SMS-Budget-Schutz). `lifecycle/tick/route.ts` | OFFEN |
 
 ---
 
@@ -230,6 +250,6 @@ Alle D-Tickets (D1-D11), S-Tickets (S1-S3), L-Tickets (L1-L10) aus der Leitstand
 ## GTM Pipeline v2
 
 **Living docs:** `docs/gtm/` (operating_model, gtm_tracker, gold_contact, outreach_templates, einsatzlogik)
-**Redesign-Docs:** `docs/redesign/` (plan.md + scaling_access.md + plan_leitzentrale_v2.md + identity_contract.md)
+**Redesign-Docs (03/2026):** Historie archiviert in `docs/_archive/redesign/`; kanonische Specs nach `docs/architecture/` gehoben (`contracts/identity_contract.md`, `references/wizard.md`·`review.md`·`voice.md`·`flowsight_ceo_app.md`).
 **Pipeline:** `docs/sales/pipeline.md`
-**Machine:** `docs/gtm/machine_manifest.md`
+**Machine:** `docs/_archive/gtm-legacy/machine_manifest.md`

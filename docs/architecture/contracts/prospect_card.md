@@ -1,7 +1,7 @@
 # Prospect Card Contract (SSOT)
 
 **Erstellt:** 2026-03-09 | **Owner:** CC
-**Referenz:** `docs/gtm/operating_model.md`
+**Referenz:** `docs/_archive/gtm-legacy/operating_model.md`
 **Regel:** Jeder Prospect bekommt eine `prospect_card.json` in `docs/customers/<slug>/`.
 
 ---

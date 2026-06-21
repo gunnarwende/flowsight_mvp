@@ -3,7 +3,7 @@
 **Owner:** Founder
 **Aktualisiert:** 2026-03-11
 **Regel:** Jeder Prospect wird maximal 3× kontaktiert, dann ruhen lassen.
-**Operating Model:** `docs/gtm/operating_model.md` (6 Phasen, Trial Lifecycle)
+**Operating Model:** `docs/_archive/gtm-legacy/operating_model.md` (6 Phasen, Trial Lifecycle)
 
 ---
 
@@ -27,7 +27,7 @@ Phase 4: Decision  → Convert / Live-Dock / Offboard
 Phase 5: Delivery  → Nur bei Conversion (Vertrag, Portierung)
 ```
 
-**Vollständiges Modell:** `docs/gtm/operating_model.md`
+**Vollständiges Modell:** `docs/_archive/gtm-legacy/operating_model.md`
 
 ---
 
@@ -90,7 +90,7 @@ Siehe `docs/gtm/outreach_templates.md` — 3 Templates (nach ICP Tier) + Anruf-S
 
 ## Quality Gates
 
-Siehe `docs/gtm/quality_gates.md` — 5 Gates müssen PASS sein vor Outreach.
+Siehe `docs/_archive/gtm-legacy/quality_gates.md` — 5 Gates müssen PASS sein vor Outreach.
 
 ---
 

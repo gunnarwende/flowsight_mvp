@@ -2,7 +2,7 @@
 
 **Version:** 5.9 | **Datum:** 2026-06-18
 **Autor:** CC (Head Ops) + Founder-Input
-**Status:** v5.9 — **VIDEO-DELIVERY GEHÄRTET + RETELL-MIGRATION + ERSTE 3 SIMULATIONEN LIVE (18.06.):** Erster echter Kalt-Rep-Tag → 3 Treffer (Burkhardt, Schäfli + Dieterich, Serafini) komplett produziert + live an die Betriebe versandt (0 zahlend). Kanonischer Liefer-Weg `build_take*_final` (NICHT run_pipeline_multi); **`produce_videos.mjs`** = Ein-Kommando inkl. **Hochkant-Pflichtschritt** (`make_t2_portrait`+`proof_add_variants`); `send_outreach --live` schaltet Tracking automatisch scharf (S8); Retell-Deprecations gefixt (publish-agent-version mit {version}, inbound_agents[]). Siehe **D104**. ▸ v5.8 — **CUSTOMER JOURNEY BIBLE = ORCHESTRATOR; SCHWUNGKREIS STATT 3-SÄULEN (17.06.):** Neue `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` = oberstes Dokument; FlowSight wird als EINE Customer Journey / ein Schwungkreis geführt (8 Sterne 1 Kontakt→8 Begleitung, Schleife 8→1 via Referenz), nicht als „3 Säulen". Die drei Bibles = Handbücher für Abschnitte der Reise (Naming-Reframe; D102-Substanz — Ökonomie-Umkehr, ICP, Lead-Motor — bleibt gültig). Plus: Stern-5-Warmgespräch v1, OC8 Rückmelde/Wunschtermin (Lisa per-Tenant ohne falsche Terminversprechen). Siehe **D103**. ▸ v5.7 — **SALES ALS EIGENE SÄULE + LEAD-MOTOR + P12 (15.06.):** Sales ist jetzt eigene Säule (SSOT `docs/gtm/sales/SALES_BIBLE.md`, Abend-Ritual „Sales-Maschine go"); 3-Säulen-Modell **Sales → Pipeline → Onboarding** (Reihenfolge = Ökonomie-Umkehr, Sales qualifiziert → Pipeline baut für Ja-Sager → Onboarding liefert). ICP zweistufig (Leitsignal „Inhaber-am-Telefon"; Solo 900 / Premium 2000, Größe = Preis-Schalter). Lead-Motor `build_leads`/`todays_list`/`enrich_leads` (P12: robustes Link-Following behebt Leins-`/Ueber-uns.htm` + KI-/Vision-Entscheider). Bunny 14→30d. SSOT-Cleanup (ICP/Preis kanonisch in SALES_BIBLE). Siehe **D102**. ▸ v5.6 — **ERSTER MEHRFACH-LIVE-VERSAND + CRAWL-HÄRTUNG (11.06.):** Leins (→ Michael Leins, GL Sanitär & Heizung) + Wälti live raus; Tracking aller aktiven Beweis-Seiten vor Versand auf null (saubere First-View-Alerts). `crawl_extract.mjs` nachhaltig gehärtet (#608: TLS-tolerant, Über-uns-Mail-Scan, SPA-Shell-Skip). Neuer offener Architektur-Task **P12 Vision-Discovery** (Crawl via Screenshot+Vision → Entscheider-Kontakte **und** Gefühl für Unternehmensgrösse; Beleg `Feedback/FB9.png`). Entscheider-Regel: eine Person, GL des Kern-Bereichs, nie `info@`/CC (`lessons_learned.md` S6/S7). ▸ v5.5 — **ONBOARDING-COCKPIT-DESIGN KOMPLETT (06.06.):** Onboarding komplett neu als Self-Service-Cockpit spezifiziert (4 Phasen: Gespräch · Cockpit · Review/Go-live · Validierung), Premium-Pricing-Pivot (Aktivierung + Monat, kein Trial, zahlend am Go-live), Voice = 7 Dispositionen → 3 Körbe, Seam = `tenant_config.json`, alte Onboarding-Bible → v0 archiviert. Siehe **D101**. ▸ v5.4 — **PHASE 3 (E-MAIL/OUTREACH) IM AUFBAU (04.–05.06.):** automatisierter Versand (`send_outreach.mjs`, aus Founder-Adresse gunnar.wende@flowsight.ch, Test-Default=Founder, `--live`-gated), Beweis-Seite `/p/[token]` + Bunny Stream, **CANONICAL T1** (ein Founder-Intro für ALLE Betriebe, md5-bewiesen), B-Vorlage Kalt-Outreach + Haken-Archetyp-Matrix, Mail = Hell-Premium-Standard (siehe D97–D100). **VIDEO-PIPELINE (Phase 2) FUNKTIONAL + GESICHERT (~95%).** 7 Betriebe vollständig produziert + founder-abgenommen (Weinberger, Obrist, Wälti, Walter, Schaub, Marti, Stark). Quality-Gate-System live + scharf (`qg_video.mjs` G_* + Daten-Gate G_T3_KPI, fail-on-broken/pass-on-good). 3-Schichten-Architektur (per-Betrieb-Screenflow + universelles locked Audio + universelle Maus/Loom) mit `holdUntilMaster`-Ankern + deterministischen Overlays (canonical-stars, SMS-Thread-Detektion). **PIPELINE_BIBLE neugefasst** als autoritative, replikations-bereite Referenz (12 Abschnitte; Historie 1:1 in `docs/archive/PIPELINE_BIBLE_historie_bis_20260603.md`). Bekannter 5%-Rest: T4-Recording-Timing-Jitter (caseopen ±1s + Part-5/Erledigt unverankert). Nächste Phase: E-Mail-Verpackung + View-Tracking. Siehe Decision D96. v5.2 Kontext: **T3 LOOM-AFTER-BUILD ARCHITEKTUR LIVE.** PIPELINE_BIBLE §62 etabliert als Pipeline-Standard (FB14/FB15/FB16-Lehre): Loom kommt NACH Phase-Build, NIE in der 66s-Source. Reihenfolge: Audio → Screenflow → Loom → (Mouse-Layer als Layer 4 post-Reise). 4 Tenants × T3 mit NEW Loom (mini_takes/Take3/Take3_cut.mp4) + W=105.0 (Founder-Wahl: 0.5s später) via `apply_loom_to_t3_master.mjs` gebaut. Master-Backups gesichert in `master_takes/_backups/`. **Founder reist Philippinen ~25 Tage.** Carry-Forward post-Reise: T3+T4 Mouse-Layer-Recording, Founder-Sichtung Leins/Stark/Wälti T3, Onboarding-Maschine + 6-Wochen-Roadmap. v5.1 Kontext: T2-Pipeline universell gefixt. **PIPELINE_BIBLE §56-§59** ergänzt: §56 Universal CALL_END_TOTAL (dynamisch aus phone-extended-Dauer), §57 Anruf-beendet Display synchron zu live-Timer, §58 T2 High-End Quality Gate (Phone-Region Color-SSIM gegen Dörfler-Gold), §59 Loom-Avatar per-Tenant Hierarchy. 4 Master-Takes T2 promoted für Founder-Review. v5.0 Kontext (Pipeline-Crash-Recovery + Lessons Learned): **PIPELINE_BIBLE §53** dokumentiert Crash-Sequenz vom 29.04. + Recovery-Approach. Approved Pipeline-State (in `master_takes/`): T1 Dörfler+Leins, T2 Preis Leins (Schablone-Master für alle Preis-Tenants), T4 Dörfler+Leins. Pending: 4 Take-Anchors zur Founder-Verifikation. Stark+Wälti T2+T3 müssen neu. **Schablone-Architektur Founder-genehmigt:** Pipeline läuft mit gleichen Scripts/Phase-Library, swappt nur 8 tenant-specific Differenzen (Name, Brand-Color, Initial, Lisa-Greeting, Lisa-Turn-9-variant, Call-Dauer, Schedule-Shifts, Leitsystem-Daten). **Pipeline-Architektur-Patches §53:** (1) Source-Recordings vor Pipeline-Run nach `_old_<datum>.mp4` sichern; (2) Phase-Library-Override vor `auto_calibrate_phase_library_v2` als `.bak_<datum>` sichern; (3) ffmpeg subprocesses nach TaskStop manuell killen (Stop-Process); (4) Visual-Layer nicht in Recording-Scripts integrieren (Risk of Source-Recording-Loss bei Pipeline-Re-Run); (5) approved Takes SOFORT nach `master_takes/` kopieren; (6) FFmpeg-Re-Encode auf 1440×900 H.264 zu langsam — Loom-Layer als HTML-Element in Recording-Template. Wiedereinstieg-Doc: `docs/gtm/pipeline/RESUME_HERE.md`. v4.9 Kontext: Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG (Masterbetrieb 10/10). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet. Demo-Time-Architektur (`demo_time.mjs` + Werktag-Gate CH-Feiertage + compressed Timeline), DEMO_NO_DISPATCH env-Flag (keine echten SMS/Mails im Demo-Modus), Take 4 komplett (Termin → Reminder → D15 → Review Mobile → Closing Gold → Windows-Toast Navy+Gold), Samsung-Chrome + Phone-Platter-Backstop + Sidebar-Profile-Overlay. Morgen (24.04.): 3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation. Detail-Architektur: `docs/gtm/pipeline/PIPELINE_BIBLE.md` §15-§23.
+**Status:** v5.9 — **VIDEO-DELIVERY GEHÄRTET + RETELL-MIGRATION + ERSTE 3 SIMULATIONEN LIVE (18.06.):** Erster echter Kalt-Rep-Tag → 3 Treffer (Burkhardt, Schäfli + Dieterich, Serafini) komplett produziert + live an die Betriebe versandt (0 zahlend). Kanonischer Liefer-Weg `build_take*_final` (NICHT run_pipeline_multi); **`produce_videos.mjs`** = Ein-Kommando inkl. **Hochkant-Pflichtschritt** (`make_t2_portrait`+`proof_add_variants`); `send_outreach --live` schaltet Tracking automatisch scharf (S8); Retell-Deprecations gefixt (publish-agent-version mit {version}, inbound_agents[]). Siehe **D104**. ▸ v5.8 — **CUSTOMER JOURNEY BIBLE = ORCHESTRATOR; SCHWUNGKREIS STATT 3-SÄULEN (17.06.):** Neue `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` = oberstes Dokument; FlowSight wird als EINE Customer Journey / ein Schwungkreis geführt (8 Sterne 1 Kontakt→8 Begleitung, Schleife 8→1 via Referenz), nicht als „3 Säulen". Die drei Bibles = Handbücher für Abschnitte der Reise (Naming-Reframe; D102-Substanz — Ökonomie-Umkehr, ICP, Lead-Motor — bleibt gültig). Plus: Stern-5-Warmgespräch v1, OC8 Rückmelde/Wunschtermin (Lisa per-Tenant ohne falsche Terminversprechen). Siehe **D103**. ▸ v5.7 — **SALES ALS EIGENE SÄULE + LEAD-MOTOR + P12 (15.06.):** Sales ist jetzt eigene Säule (SSOT `docs/gtm/sales/SALES_BIBLE.md`, Abend-Ritual „Sales-Maschine go"); 3-Säulen-Modell **Sales → Pipeline → Onboarding** (Reihenfolge = Ökonomie-Umkehr, Sales qualifiziert → Pipeline baut für Ja-Sager → Onboarding liefert). ICP zweistufig (Leitsignal „Inhaber-am-Telefon"; Solo 900 / Premium 2000, Größe = Preis-Schalter). Lead-Motor `build_leads`/`todays_list`/`enrich_leads` (P12: robustes Link-Following behebt Leins-`/Ueber-uns.htm` + KI-/Vision-Entscheider). Bunny 14→30d. SSOT-Cleanup (ICP/Preis kanonisch in SALES_BIBLE). Siehe **D102**. ▸ v5.6 — **ERSTER MEHRFACH-LIVE-VERSAND + CRAWL-HÄRTUNG (11.06.):** Leins (→ Michael Leins, GL Sanitär & Heizung) + Wälti live raus; Tracking aller aktiven Beweis-Seiten vor Versand auf null (saubere First-View-Alerts). `crawl_extract.mjs` nachhaltig gehärtet (#608: TLS-tolerant, Über-uns-Mail-Scan, SPA-Shell-Skip). Neuer offener Architektur-Task **P12 Vision-Discovery** (Crawl via Screenshot+Vision → Entscheider-Kontakte **und** Gefühl für Unternehmensgrösse; Beleg `Feedback/FB9.png`). Entscheider-Regel: eine Person, GL des Kern-Bereichs, nie `info@`/CC (`lessons_learned.md` S6/S7). ▸ v5.5 — **ONBOARDING-COCKPIT-DESIGN KOMPLETT (06.06.):** Onboarding komplett neu als Self-Service-Cockpit spezifiziert (4 Phasen: Gespräch · Cockpit · Review/Go-live · Validierung), Premium-Pricing-Pivot (Aktivierung + Monat, kein Trial, zahlend am Go-live), Voice = 7 Dispositionen → 3 Körbe, Seam = `tenant_config.json`, alte Onboarding-Bible → v0 archiviert. Siehe **D101**. ▸ v5.4 — **PHASE 3 (E-MAIL/OUTREACH) IM AUFBAU (04.–05.06.):** automatisierter Versand (`send_outreach.mjs`, aus Founder-Adresse gunnar.wende@flowsight.ch, Test-Default=Founder, `--live`-gated), Beweis-Seite `/p/[token]` + Bunny Stream, **CANONICAL T1** (ein Founder-Intro für ALLE Betriebe, md5-bewiesen), B-Vorlage Kalt-Outreach + Haken-Archetyp-Matrix, Mail = Hell-Premium-Standard (siehe D97–D100). **VIDEO-PIPELINE (Phase 2) FUNKTIONAL + GESICHERT (~95%).** 7 Betriebe vollständig produziert + founder-abgenommen (Weinberger, Obrist, Wälti, Walter, Schaub, Marti, Stark). Quality-Gate-System live + scharf (`qg_video.mjs` G_* + Daten-Gate G_T3_KPI, fail-on-broken/pass-on-good). 3-Schichten-Architektur (per-Betrieb-Screenflow + universelles locked Audio + universelle Maus/Loom) mit `holdUntilMaster`-Ankern + deterministischen Overlays (canonical-stars, SMS-Thread-Detektion). **PIPELINE_BIBLE neugefasst** als autoritative, replikations-bereite Referenz (12 Abschnitte; Historie 1:1 in `docs/archive/PIPELINE_BIBLE_historie_bis_20260603.md`). Bekannter 5%-Rest: T4-Recording-Timing-Jitter (caseopen ±1s + Part-5/Erledigt unverankert). Nächste Phase: E-Mail-Verpackung + View-Tracking. Siehe Decision D96. v5.2 Kontext: **T3 LOOM-AFTER-BUILD ARCHITEKTUR LIVE.** PIPELINE_BIBLE §62 etabliert als Pipeline-Standard (FB14/FB15/FB16-Lehre): Loom kommt NACH Phase-Build, NIE in der 66s-Source. Reihenfolge: Audio → Screenflow → Loom → (Mouse-Layer als Layer 4 post-Reise). 4 Tenants × T3 mit NEW Loom (mini_takes/Take3/Take3_cut.mp4) + W=105.0 (Founder-Wahl: 0.5s später) via `apply_loom_to_t3_master.mjs` gebaut. Master-Backups gesichert in `master_takes/_backups/`. **Founder reist Philippinen ~25 Tage.** Carry-Forward post-Reise: T3+T4 Mouse-Layer-Recording, Founder-Sichtung Leins/Stark/Wälti T3, Onboarding-Maschine + 6-Wochen-Roadmap. v5.1 Kontext: T2-Pipeline universell gefixt. **PIPELINE_BIBLE §56-§59** ergänzt: §56 Universal CALL_END_TOTAL (dynamisch aus phone-extended-Dauer), §57 Anruf-beendet Display synchron zu live-Timer, §58 T2 High-End Quality Gate (Phone-Region Color-SSIM gegen Dörfler-Gold), §59 Loom-Avatar per-Tenant Hierarchy. 4 Master-Takes T2 promoted für Founder-Review. v5.0 Kontext (Pipeline-Crash-Recovery + Lessons Learned): **PIPELINE_BIBLE §53** dokumentiert Crash-Sequenz vom 29.04. + Recovery-Approach. Approved Pipeline-State (in `master_takes/`): T1 Dörfler+Leins, T2 Preis Leins (Schablone-Master für alle Preis-Tenants), T4 Dörfler+Leins. Pending: 4 Take-Anchors zur Founder-Verifikation. Stark+Wälti T2+T3 müssen neu. **Schablone-Architektur Founder-genehmigt:** Pipeline läuft mit gleichen Scripts/Phase-Library, swappt nur 8 tenant-specific Differenzen (Name, Brand-Color, Initial, Lisa-Greeting, Lisa-Turn-9-variant, Call-Dauer, Schedule-Shifts, Leitsystem-Daten). **Pipeline-Architektur-Patches §53:** (1) Source-Recordings vor Pipeline-Run nach `_old_<datum>.mp4` sichern; (2) Phase-Library-Override vor `auto_calibrate_phase_library_v2` als `.bak_<datum>` sichern; (3) ffmpeg subprocesses nach TaskStop manuell killen (Stop-Process); (4) Visual-Layer nicht in Recording-Scripts integrieren (Risk of Source-Recording-Loss bei Pipeline-Re-Run); (5) approved Takes SOFORT nach `master_takes/` kopieren; (6) FFmpeg-Re-Encode auf 1440×900 H.264 zu langsam — Loom-Layer als HTML-Element in Recording-Template. Wiedereinstieg-Doc: `docs/_archive/pipeline-history/RESUME_HERE.md`. v4.9 Kontext: Pipeline Screenflow Take 2+3+4 FINAL für Dörfler AG (Masterbetrieb 10/10). 57+ Feedback-Punkte (A1-A19, B1-B8, C1-C29) abgearbeitet. Demo-Time-Architektur (`demo_time.mjs` + Werktag-Gate CH-Feiertage + compressed Timeline), DEMO_NO_DISPATCH env-Flag (keine echten SMS/Mails im Demo-Modus), Take 4 komplett (Termin → Reminder → D15 → Review Mobile → Closing Gold → Windows-Toast Navy+Gold), Samsung-Chrome + Phone-Platter-Backstop + Sidebar-Profile-Overlay. Morgen (24.04.): 3-Betrieb-Dry-Run Lens+Wälti+Stark mit Quality-Gates-Automation. Detail-Architektur: `docs/gtm/pipeline/PIPELINE_BIBLE.md` §15-§23.
 **Regel:** Dieses Dokument beschreibt die **Zielarchitektur**. Aktueller Stand → `docs/STATUS.md`. Tasks → `docs/ticketlist.md`.
 **Pfad:** `docs/architecture/zielarchitektur.md` (umgezogen von `docs/gtm/architecture_detail.md`)
 
@@ -36,7 +36,7 @@
 | D22 | Rollen-Switch: Admin kann als Techniker testen (Cookie `fs_view_as_role`) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D23 | Support-System: "Hilfe"-Seite → GitHub Issue (+ Resend Fallback) | **ENTSCHIEDEN** ✅ | Founder + CC | scaling_access.md |
 | D24 | Benachrichtigungs-Kommunikationsmatrix: 25+ Trigger, 5 Kanäle, 5 Akteure | **ENTSCHIEDEN** ✅ | Founder + CC | Matrix_kommunikation.md |
-| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/redesign/flowsight_ceo_app.md` |
+| D25 | FlowSight CEO-App (Thema C): Eigene Betreiber-PWA für Monitoring, Dev/Prod-Übersicht | **ENTSCHIEDEN** ✅ | Founder + CC | `/ceo/*`, PRs #304-#314, `docs/architecture/references/flowsight_ceo_app.md` |
 | D29 | CEO-App als Route Group im bestehenden App (`/ceo/*`), nicht separates Projekt | **ENTSCHIEDEN** ✅ | Founder + CC | Gleiche Auth, gleicher Deploy, gleiche DB |
 | D30 | AI-Provider model-agnostisch: Anthropic + OpenAI austauschbar pro Feature, graceful degradation | **ENTSCHIEDEN** ✅ | Founder + CC | `src/lib/ai/`, Feature→Model Config |
 | D31 | Web Push Notifications für CEO via VAPID + Service Worker. Push bei Notfall, Trial-Expiry, Health RED | **ENTSCHIEDEN** ✅ | Founder + CC | `api/ceo/push/`, `sw.js`, VAPID Keys |
@@ -94,7 +94,7 @@
 | D80 | **Seed v3 Page-1-Shaping.** Exakt 1 Notfall (in_arbeit, NICHT Leck/Rohrbruch). Badsanierung + Heizungsersatz auf Seite 1 (Grossprojekte). Angebot auf Seite 1. Rohrbruch+Leck NICHT als "new" (Founder erstellt LIVE). Featured Rohrbruch = scheduled (für Video-Pipeline). Dynamisch pro Branche (Sanitär, Elektriker, Maler, etc.). | **ENTSCHIEDEN** ✅ | Founder + CC | `seed_demo_data_v2.mjs`, PRs #439+#441 |
 | D81 | **Generisches Speakflow-Template.** `docs/gtm/speakflow_template.md` — Take 1-4 mit {{Platzhaltern}}, 2 Master-Varianten (A: Einsatz bei mir, B: Kenne aus der Region), Mail 1+2 Templates. Take 2 = 1:1 Gold-Standard aus Dörfler. E2E-Pipeline pro Betrieb dokumentiert. | **ENTSCHIEDEN** ✅ | Founder + CC | PR #440 |
 | D82 | **Case-Header-Redesign.** 2-Zeilen-Layout: Row 1 (← Zurück + Print/Delete/ID), Row 2 (Kategorie volle Breite, bricht natürlich um). Redundante Kategorie in Beschreibung-Section entfernt. ScrollToTop bei Navigation. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #443-#444 |
-| D83 | **Website = KEIN Produktbestandteil.** Modul 2 ist Standard (100%). Website-Modul-1-Maschine (3 Systeme, Profile, Banana, CSS-Handschriften) nach 4 Iterationen + Kill-Test beendet. ICP-Analyse 42 Betriebe: 71% brauchen keine Website, 12% Grenzfall, 12% Fallback. Website nur als Basis-Fallback bei kaputten/fehlenden Sites (Legacy-Template, kein Profil-System). Bestehende 7 Sites bleiben als Legacy. Wizard-Einstieg fuer Modul-2-Betriebe: `/start/[slug]`. | **ENTSCHIEDEN** ✅ | Founder | ICP-Analyse `docs/gtm/website/icp_analyse_42_betriebe.md`, PRs #446-#450 |
+| D83 | **Website = KEIN Produktbestandteil.** Modul 2 ist Standard (100%). Website-Modul-1-Maschine (3 Systeme, Profile, Banana, CSS-Handschriften) nach 4 Iterationen + Kill-Test beendet. ICP-Analyse 42 Betriebe: 71% brauchen keine Website, 12% Grenzfall, 12% Fallback. Website nur als Basis-Fallback bei kaputten/fehlenden Sites (Legacy-Template, kein Profil-System). Bestehende 7 Sites bleiben als Legacy. Wizard-Einstieg fuer Modul-2-Betriebe: `/start/[slug]`. | **ENTSCHIEDEN** ✅ | Founder | ICP-Analyse `docs/_archive/gtm-website/icp_analyse_42_betriebe.md`, PRs #446-#450 |
 | D84 | **Kommunikationsregeln (7 Kanal-Regeln).** Ein Kanal pro Empfänger pro Ereignis. Push = Ergänzung (nicht Kopie). Self-Assignment unterdrücken (≤3 MA). SMS primär für zeitkritische Nachrichten. E-Mail primär für informative. Negativ-Review E-Mail-Alert (immer). SMS-Budget-Schutz via Email-Fallback. 4 Regeln LIVE (D1 Negative Review Alert, D2 Self-Notification Suppression, D4r Review SMS Primary, D5 24h Reminder Email Fallback). Stress-Test mit 3 ICP-Profilen bestanden. | **ENTSCHIEDEN** ✅ | Founder + CC | §12a, `kommunikationsmatrix_v2.md` (Referenz) |
 | D85 | **Pub/Gastro-Modul (eigene Domäne, nicht Cases/Tickets).** Events (`pub_events`), Reservierungen (`pub_reservations`), No-Show Tracking (Yellow Card 1x / Red Card 2+), Walk-in Quick-Add, 24h SMS Reminder, Confirmation SMS. Eigene DB-Tabellen, eigenes Dashboard (`/ops/pub-dashboard`), eigene Nav (Dashboard→Events→Reservations→Help). Nicht die cases-Tabelle missbrauchen — Gastro hat andere Entities als Sanitär. BigBen Pub = erster Kunde auf diesem Modul. | **ENTSCHIEDEN** ✅ | Founder + CC | PRs #457-#467, #479-#491, `docs/customers/bigben-pub/status.md` |
 | D87 | **Gold-Contact-Pipeline V2 — Phase 1 DONE.** 5 Scripts: crawl_extract.mjs (Playwright+Zefix+Google), derive_config.mjs, generate_voice_agent.mjs (23 Platzhalter aus Template), provision_from_config.mjs, pipeline_run.mjs (Orchestrator). 3 Betriebe getestet (Wälti, Stark, Leins). tenant_config.json als SSOT. Kein CLI-Args für Betriebsdaten — alles aus einem JSON. 3 Phasen: Phase 1 (Extract+Decide) DONE, Phase 2 (Video), Phase 3 (Outreach). | **PHASE 1 DONE** ✅ | Founder + CC | `pipeline_run.mjs`, `crawl_extract.mjs`, `derive_config.mjs`, `generate_voice_agent.mjs`, `provision_from_config.mjs` |
@@ -116,6 +116,7 @@
 | D102 | **Sales als eigene Säule — 3-Säulen-Architektur + zweistufiger ICP + Lead-Motor (15.06.2026).** Sales ist eigene Säule mit SSOT `docs/gtm/sales/SALES_BIBLE.md` (Abend-Ritual „Sales-Maschine go": CC legt abends pro Betrieb Vorbereitungsblatt + Tagesblatt für den Folgetag bereit; Vor-Ort/Telefon-Motoren; Region-Ringe). **Reihenfolge Sales → Pipeline → Onboarding** kodiert die Ökonomie-Umkehr: Sales qualifiziert (kalt) → Pipeline baut nur für Ja-Sager → Onboarding liefert; Schwungrad Kunde→Referenz→Sales. Pipeline-Versand (war „Phase 3 Outreach") ist Sales untergeordnet. **ICP zweistufig** (Leitsignal „Inhaber-am-Telefon?"; Solo 1–3 MA → CHF 900, Premium 4–12 → CHF 2'000; Größe = Preis-Schalter; schärft D101/ersetzt D35-Tiers für Akquise). **Eine-SSOT-pro-Fakt-Regel** (ICP/Preis kanonisch in SALES_BIBLE, andere Docs verlinken). **Lead-Motor** (Code): `build_leads.mjs` (scout_raw → `docs/sales/leads.csv` SSOT, Merge-by-place_id) + `todays_list.mjs` (Tagesblätter) + **P12 `enrich_leads.mjs`** (robustes Link-Following — behebt Leins-`/Ueber-uns.htm` — + mailto-Scan + KI-Entscheider S6 + Vision-Fallback → `leads_enriched.json`). Bunny-Beweis-Seiten 14→30 Tage. | **ENTSCHIEDEN** ✅ | Founder + CC | `docs/gtm/sales/`, `build_leads.mjs`, `enrich_leads.mjs`, Memory `project_sales_machine_phase0` |
 | D103 | **Customer Journey Bible = Orchestrator; Schwungkreis statt 3-Säulen-Framing (17.06.2026).** Neue `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` ist das **oberste Dokument**: FlowSight wird als **eine Customer Journey / ein Schwungkreis** geführt (8 Sterne: 1 Kontakt · 2 Cold Call · 3 Simulation · 4 Gesehen · 5 Verkaufsgespräch · 6 Aufbau · 7 Go-live & Vertrag · 8 Begleitung & Wert; Schleife 8→1 via Referenz). Das frühere „3-Säulen-Modell" (D102) wird im **Naming** abgelöst — die drei Bibles sind keine Säulen, sondern **Handbücher für Abschnitte der Reise**. **D102-Substanz bleibt gültig** (Ökonomie-Umkehr Sales→Pipeline→Onboarding, zweistufiger ICP, Lead-Motor). HTML `docs/gtm/customer_journey.html` = visuelles/operatives Tool (Stern-Details dort, keine Doppelpflege). Eine-SSOT-pro-Fakt (ICP/Preis kanonisch in SALES_BIBLE). Reconciled über STATUS/ticketlist/Business-Briefing + Sales/Pipeline/Onboarding-Bible-Header. Mit-gebaut 17.06.: Stern-5-Warmgespräch v1 + OC8 Rückmelde/Wunschtermin (Lisa per-Tenant ohne falsche Terminversprechen). | **ENTSCHIEDEN** ✅ | Founder + CC | `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md`, Memory `project_customer_journey_bible` |
 | D104 | **Video-Delivery gehärtet + Retell-API-Migration (18.06.2026).** Kanonischer Liefer-Weg = **`build_take2/3/4_final`** (→ `_generated/previews` + `master_takes/take3\|4/<slug>_with_mouse`), NICHT `run_pipeline_multi` (älter, falsches Ablage-Format). **`produce_videos.mjs`** (füllt Orchestrator-Schritt 5) kettet provision→seed→Takes→`collect_delivery`→Staging nach `07_stresstest/abgenommen/<slug>/`→`build_proof_page`→**Hochkant** (`make_t2_portrait`+`proof_add_variants`) in EINEM Kommando. **Hochkant-Variante (`t2_portrait`) ist PFLICHT** (Handy: Screen gross + EIN runder Loom; Fehlen = Mobile-Drift). `send_outreach --live` schaltet das Beweis-Seiten-Tracking automatisch scharf (S8). **Retell-Deprecations migriert:** Publish → `/publish-agent-version/{id}` mit `{version}`; Phone → `inbound_agents[]` statt `inbound_agent_id` (Fristen 07-20 / 03-31). Runbook: `docs/gtm/pipeline/NEUER_BETRIEB_VIDEO_RUNBOOK.md`. | **ENTSCHIEDEN** ✅ | Founder + CC | `produce_videos.mjs`, `make_t2_portrait.mjs`, `retell_sync.mjs`, Memory `project_video_pipeline_lineage` |
+| D105 | **Voice-Agent-Schablone-Master = Doerfler AG (KANONISCH, Founder 21.06.2026).** Die DE- und INTL-Schablone für ALLE Betriebe ist `doerfler_agent.json` + `doerfler_agent_intl.json` (Doerfler AG = Gold-Standard). Jeder neue Voice-Agent wird aus diesem Master abgeleitet (23 Platzhalter-Swap, vgl. D68), nicht aus einem anderen Tenant. Eine SSOT pro Fakt: bei „Voice-Schablone" zuerst Doerfler. `is_transfer_cf: true` auf BEIDEN Flows + Publish-Pflicht bleiben (vgl. CLAUDE.md Retell-Regel). | **ENTSCHIEDEN** ✅ | Founder | `retell/exports/doerfler_agent.json` + `_intl.json`, D68, `retell_sync.mjs` |
 
 ---
 
@@ -290,6 +291,14 @@ Ein einziger Tenant-Leak zerstört das Prospect-Erlebnis:
 
 **Entscheidung (D8): UMGESETZT.** RLS für Production + API-Layer (`resolveTenantScope.ts`) als zusätzliche Absicherung. Demo-Modus via Tenant-Flag `is_demo`.
 
+### Tenant-Switcher — Cookie-Mechanik (D17/D21)
+
+Mechanik: HttpOnly-Cookie `fs_active_tenant` überschreibt JWT `tenant_id` **nur für `role=admin`**. `resolveTenantScope.ts` ist der **einzige Choke-Point** — alle 10+ API-Routes + Dashboard-Seiten lesen davon, eine Änderung dort kaskadiert überall hin.
+
+Sicherheit: (1) Cookie nur gelesen wenn JWT `role=admin` → nicht spoofbar; (2) HttpOnly → kein XSS-Zugriff; (3) RLS als zweite Verteidigungslinie; (4) **E-Mail-Versand immer `case.tenant_id`** → Cookie irrelevant für Mails; (5) Techniker-Micro-Surface = HMAC, nicht betroffen; (6) Cookie per-Device. Impersonation = Amber-Banner („Ansicht: {Betrieb} — Nicht Ihr Betrieb"). Betriebe sehen keinen Switcher/Banner.
+
+(Quelle: `docs/_archive/redesign/scaling_access.md`.)
+
 ### Zentrale Tenant-Felder (modules JSONB)
 
 Bereits implementiert oder geplant:
@@ -308,6 +317,45 @@ Bereits implementiert oder geplant:
 | `notification_email` | string | Empfänger für Ops-Mails | ⚠️ Hardcoded in env |
 
 **Empfehlung:** `brand_color` und `notification_email` in `modules` JSONB migrieren. Dann ist **ein einziger DB-Eintrag** die Quelle für alle Tenant-Konfiguration.
+
+### Variablen-Referenz (welches Feld wohin fliesst)
+
+Kanonische Zuordnung aus dem Prospect Manifest. SSOT pro Betrieb = `tenant_config.json` (bzw. `prospect_manifest`); jede Oberfläche liest transitiv von dort.
+
+| Variable | Quelle | Konsument(en) |
+|----------|--------|---------------|
+| `{legal_name}` | company.legal_name | E-Mail, Video-Script, Voice-Agent, /start |
+| `{short_name}` | company.short_name | SMS-Sender, Leitstand-Tab, Telegram-Alert |
+| `{brand_color}` | company.brand_color | /start, /kunden, Wizard-Akzent, DB primary_color |
+| `{sms_sender}` | provisioning.sms_sender_name (≤11 Zeichen) | SMS + Video-Beweis |
+| `{region_ref}` | outreach.region_reference | E-Mail-Body, Video-Script |
+| `{video_hook}` | outreach.video_hook | Video Szene 1, Teleprompter |
+| `{prospect_email}` | outreach.prospect_email (Entscheider, nie info@) | E-Mail-Empfänger |
+| `{test_phone}` | provisioning.twilio_number_display | E-Mail, Video-CTA, /start |
+
+(Quelle: `docs/architecture/contracts/prospect_manifest.md` — vollständige Tabelle + JSON-Schema dort.)
+
+### Tenant Identity Contract (R1–R7 + E1–E6)
+
+Verbindliche Wahrheitstabelle für Tenant-Identität. Grundprinzip: **FlowSight ist unsichtbare Infrastruktur** — der Betrieb sieht sein System, nicht unsere Software (wie Stripe beim Shop).
+
+**7 Konsistenzregeln (testbar):**
+- **R1** Ein Name, eine Quelle: `display_name` == `tenants.name`; Registry `companyName` identisch.
+- **R2** Kategorien identisch über Website/Wizard/Voice (`services[]`/`categories[]` aus einer Quelle).
+- **R3** PLZ-Einzugsgebiet (`service_area_plz[]`) einheitlich über Voice/Wizard/Post-Call.
+- **R4** FlowSight unsichtbar im Betriebskontext — einzige Ausnahme: E-Mail-Absender + rechtliche Dokumente.
+- **R5** `short_name` NUR wo Platz fehlt (SMS ≤11 Zeichen, Browser-Tab, Telegram); sonst `display_name`.
+- **R6** Keine Halluzination von Tenant-Daten (Lisa/Wizard nur aus Config; vgl. voice.md Halluzinationsverbot).
+- **R7** `slug` = einziger systemweiter Identifier (Supabase, Registry, Agent-JSON-Prefix, URL, docs/customers/).
+
+**Kernentscheidungen:**
+- **E1/E2** `display_name` überall sichtbar; `short_name` (Rechtsform weg, ≤15 Zeichen) nur in SMS/Tab/Telegram; `legal_name` für Vertrag/Impressum/AVV.
+- **E3** Genau eine `brand_color` (Hex) pro Tenant.
+- **E4** E-Mail-Absender-Pattern = `{display_name} via FlowSight`; From = `noreply@send.flowsight.ch`; Reply-To = `{contact_email}`. „via FlowSight" ist die EINZIGE erlaubte Sichtbarkeit (Zustellbarkeit/verifizierte Domain).
+- **E5** Duale SSOT (Supabase Runtime + TS CustomerSite Registry Build-Time): bei jedem Update beide synchron; **bei Konflikt gewinnt Supabase**.
+- **E6** Voice-Greeting wird pro Tenant manuell formuliert (`greeting_text`), kein starrer Template-String.
+
+(Quelle: `docs/architecture/contracts/identity_contract.md` — Oberflächen-Matrix, Verstoss-Beispiele + Prüf-Checkliste dort.)
 
 ---
 
@@ -349,7 +397,7 @@ A ist SELEKTIV (nur ICP ≥ 9, erfordert Founder-Aufnahme).
 | 6 | WARM | B-Full+D | Website, eigener Agent | ~30 Min |
 | <6 | COLD | SKIP | — | 0 |
 
-**Referenz:** `docs/gtm/einsatzlogik.md` (Entscheidungstabelle + Pseudocode)
+**Referenz:** `docs/_archive/gtm-legacy/einsatzlogik.md` (Entscheidungstabelle + Pseudocode)
 
 ### Leckerli-Abhängigkeiten
 
@@ -543,6 +591,8 @@ TenantContext ist nicht "ein Feature" — es ist eine **Architekturachse**, die 
 3. **`notification_email`** in modules → statt Env-Var pro Tenant
 4. **`demo_sms_target`** in modules → SMS-Ziel für Demo-Calls (statt globaler DEMO_SIP_CALLER_ID)
 
+**Default-Tenant-Fallback:** Die Case-API nutzt `FALLBACK_TENANT_ID` (UUID des geseedeten Erst-Tenants `doerfler-ag`) als Default, wenn keine Tenant-Resolution greift. Gesetzt in Vercel-Env (alle Umgebungen) + `src/web/.env.local`; Seed via `supabase/seed/seed_default_tenant.sql`. (Quelle: `docs/runbooks/supabase_seed_tenant.md`.)
+
 ---
 
 ## 10. Touchpoint-Architektur
@@ -715,7 +765,7 @@ postCallSms.ts  →  sendSms()  →  sendSmsEcall()  →  eCall REST API
 
 ## 12a. Kommunikationsregeln (Entschieden 15.04.2026)
 
-Sieben verbindliche Kanal-Regeln für alle Benachrichtigungen im System. Abgeleitet aus Code-Audit (25+ Trigger, 5 Kanäle, 5 Akteurs-Typen) und Stress-Test mit 3 ICP-Profilen (2-MA, 15-MA, 25-MA Betrieb). Vollständige Analyse: `docs/redesign/leitstand/kommunikationsmatrix_v2.md`.
+Sieben verbindliche Kanal-Regeln für alle Benachrichtigungen im System. Abgeleitet aus Code-Audit (25+ Trigger, 5 Kanäle, 5 Akteurs-Typen) und Stress-Test mit 3 ICP-Profilen (2-MA, 15-MA, 25-MA Betrieb). Vollständige Analyse: `docs/_archive/redesign/leitstand/kommunikationsmatrix_v2.md`.
 
 ### KR-1: Ein Kanal pro Empfänger pro Ereignis
 Kein Empfänger bekommt die gleiche Information über zwei Kanäle gleichzeitig. Primär-Kanäle: Endkunde Voice = SMS, Endkunde Wizard = Email, Betrieb = Email, Techniker = Push, Founder = Telegram. Sekundär-Kanal nur als Fallback wenn Primär nicht verfügbar.
@@ -869,6 +919,18 @@ Nicht: "Das ist ein Tool, das ich benutze." Sondern: "Das ist die Schaltzentrale
 | KPI-Zahlen (nur eigene) | ❌ Offen | "So steht mein Betrieb" |
 | Benutzername | ✅ E-Mail im Header | Persönlich |
 
+### Leitstand-Produktvertrag (5 Bereiche + Rollen + Anti-Drift)
+
+Der Leitstand (OPS) = fallzentrierte Betriebssteuerung. Atom = **der Fall** (Lebenszyklus Eingang → Triage → Termin → Einsatz → Abschluss → Review). Ein Produkt, progressive Nutzungstiefe statt Produktsplitting.
+
+**Fünf Bereiche:** **Puls** (priorisierte Handlungsliste: Achtung/Heute/In Arbeit/Abschluss — keine KPI-Karten, Handlungsimpulse) · **Fall** (Tiefenansicht: Was/Wo/Dringlich/Wer/Wann + Termin-Block + Timeline) · **Einsatzplan** (Cross-Case-Liste nach Mitarbeiter, kein Kalender-Widget) · **Zahlen** (Wochen-/Monats-Trends, Anti-BI: max 8 Kennzahlen) · **Einstellungen** (Staff, Termin-Defaults, Branding). Plus **zwei Micro-Surfaces** ausserhalb OPS: Techniker (`/einsatz/[token]`) + Melder (`/meldung/[token]`), je HMAC-Token, kein Login.
+
+**Rollenmodell:** Disponentin = Primärrolle (ganztags) · Meister/Inhaber = Voll + Mobile · **Techniker = KEIN OPS-Login** (HMAC-SMS-Link, 2 Taps) · Prospect = reduziert (Status/Beschreibung/Timeline, keine PII/Notizen) · Founder/Admin = Superset, tenant-übergreifend · Melder = kein Login.
+
+**Anti-Drift:** OPS ist KEIN CRM/ERP/Helpdesk/vollständiger-Kalender/Chat/Native-App. Tests pro Feature: Fall-Lebenszyklus-Test · Paralleltool-Test (→ Integrationslayer ICS/SMS statt erweitern) · Komplexitäts-Test (braucht 5-Mann-Betrieb das täglich?). Sprache = Branche, nicht SaaS (Fall statt Ticket, Mitarbeiter statt Agent, Leitstand statt Dashboard).
+
+(Quelle: `docs/_archive/redesign/leitstand/leitstand.md`.)
+
 ### Demo-Dashboard (Prospect-Erlebnis)
 
 Wenn ein Prospect das Dashboard öffnet, muss er sehen:
@@ -887,6 +949,18 @@ Wenn ein Prospect das Dashboard öffnet, muss er sehen:
 | Neuinstallationen | 3 | Badezimmer-Umbau, neue Heizung, Boiler-Ersatz | normal |
 | Wartung | 2 | Heizungswartung, Entkalkung | low |
 | Anfragen / Kontakt | 2 | Offerte gewünscht, allgemeine Frage | low |
+
+### Kalender-Integration (Outlook) — technischer Stack
+
+Phase 1 LIVE (20.03.2026). Vertieft D32.
+
+- **Consent-Modell: Application Permissions (client_credentials)** — NICHT Delegated OAuth (Versuche 1+2 scheiterten: Microsoft erzwingt Admin-Redirect bei `Calendars.Read` in Multi-Tenant-Apps). App authentifiziert sich selbst; Admin erteilt einmalig App-Consent im Azure Portal. Permission = `Calendars.Read` (Application).
+- **Abruf:** `GET /users/{email}/calendarView` pro Mitarbeiter; Mapping `staff.email` = Outlook-Adresse (1:1). Nur Free/Busy (showAs ≠ free), keine Termindetails im UI.
+- **Exchange-Online-Pflicht:** `MailboxNotEnabledForRESTAPI` = User hat kein Exchange-Online-Postfach (auch bei M365-Lizenz möglich); Test = Login auf outlook.office.com.
+- **Token-Ablage:** `tenants.modules.calendar_ms_tenant_id` + `calendar_app_token` (**AES-256-GCM** App-Layer, kein Supabase Vault) + `calendar_app_token_expires_at` + `calendar_provider="microsoft"`. Key = `CALENDAR_ENCRYPTION_KEY` (Vercel Env, 64 hex/32 byte); Utility `tokenEncryption.ts`.
+- **Produktprinzip:** kein Zwei-Tool-Gefühl — Outlook ist Hintergrund-Infrastruktur. Phase 2 (offen) = Write-back FlowSight → Outlook.
+
+(Quelle: `docs/_archive/redesign/leitstand/kalender_integration_outlook_implementation_log.md`.)
 
 ---
 
@@ -931,6 +1005,12 @@ Seed-Script Logik:
 - Migration: `supabase/migrations/20260310000000_rls_tenant_isolation.sql`
 - Seed-Script: `scripts/_ops/seed_demo_data.mjs --tenant=<id> --gewerk=sanitaer`
 - Cleanup: `--clean` Flag löscht bestehende Demo-Cases vor Neuerstellung
+
+### Status `archived` — Testdaten-Hygiene
+
+`archived` ist ein eigener Case-Status (CHECK-Constraint: `new, contacted, scheduled, done, archived`). Partial Index: `idx_cases_status WHERE status NOT IN ('done','archived')`. Wirkung: archivierte Fälle sind in allen Default-/„Alle"-Views, in den Dashboard-Tiles und im Morning-Report aus ALLEN KPIs ausgeschlossen (nur via Filter „Archiviert" sichtbar); Fall-Erstellung (Wizard/Voice) startet immer als `new`. Genutzt für Dev/Test-Fälle, ohne sie physisch zu löschen (Audit bleibt).
+
+(Quelle: `docs/runbooks/archive_test_data.md`.)
 
 ---
 
@@ -1017,7 +1097,7 @@ Entscheidungsregel:
 ```
 docs/STATUS.md              ← Was ist live? (Produkt-Überblick)
 docs/ticketlist.md           ← Was ist offen? (EINZIGER Task-Tracker)
-docs/gtm/gtm_tracker.md    ← GTM-spezifische Tasks + Weinberger-Status
+docs/_archive/gtm-legacy/gtm_tracker.md    ← GTM-spezifische Tasks + Weinberger-Status
 docs/gtm/architecture_detail.md ← Zielarchitektur (DIESES Dokument)
 docs/customers/<slug>/status.md ← Pro-Kunde Status
 MEMORY.md                   ← CC-Kontext über Sessions hinweg
@@ -1033,8 +1113,8 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 | "Wie steht es um Weinberger?" | docs/customers/weinberger-ag/status.md |
 | "Wie soll die Architektur aussehen?" | **architecture_detail.md** (dieses Dok.) |
 | "Wie provisioniere ich einen Prospect?" | docs/runbooks/provisioning_prospect.md |
-| "Welche Quality Gates muss der Prospect passieren?" | docs/gtm/quality_gates.md |
-| "Welches Paket bekommt der Prospect?" | docs/gtm/einsatzlogik.md |
+| "Welche Quality Gates muss der Prospect passieren?" | docs/_archive/gtm-legacy/quality_gates.md |
+| "Welches Paket bekommt der Prospect?" | docs/_archive/gtm-legacy/einsatzlogik.md |
 
 ### Drift-Prävention
 
@@ -1160,16 +1240,30 @@ CLAUDE.md                   ← Repo-Guardrails (fix, kein Drift)
 
 ---
 
+## Runtime-Identifier (nicht-geheim)
+
+Nicht-geheime Binding-Werte (keine Secrets — die liegen in Vercel-Env, vgl. `docs/architecture/env_vars.md`):
+
+| System | Wert |
+|--------|------|
+| Supabase Project Ref | `oyouhwcwkdcblioecduo` (EU; Dashboard `https://supabase.com/dashboard/project/oyouhwcwkdcblioecduo`) |
+| Sentry | Org `flowsight-gmbh`, Project `flowsight-mvp` (EU, de.sentry.io); hardcoded in `next.config.ts` |
+| Vercel | Project `flowsight-mvp`, Root Directory `src/web`, Framework Next.js |
+
+(Quelle: `docs/archive/architecture/runtime_bindings.md`.)
+
+---
+
 ## Appendix: Referenz-Dokumente
 
 | Dokument | Pfad | Inhalt |
 |----------|------|--------|
 | STATUS.md | docs/STATUS.md | Was ist live (17 Module, 7 Websites) |
 | Ticketlist.md | docs/ticketlist.md | Einziger Task-Tracker |
-| Operating Model | docs/gtm/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
-| GTM Tracker | docs/gtm/gtm_tracker.md | Execution-Status + Weinberger |
-| Einsatzlogik | docs/gtm/einsatzlogik.md | ICP → Paket → Assets |
-| Quality Gates | docs/gtm/quality_gates.md | 5 Gates mit Pass/Fail |
+| Operating Model | docs/_archive/gtm-legacy/operating_model.md | 6 Phasen, Trial Lifecycle, Quality Gates |
+| GTM Tracker | docs/_archive/gtm-legacy/gtm_tracker.md | Execution-Status + Weinberger |
+| Einsatzlogik | docs/_archive/gtm-legacy/einsatzlogik.md | ICP → Paket → Assets |
+| Quality Gates | docs/_archive/gtm-legacy/quality_gates.md | 5 Gates mit Pass/Fail |
 | Provisioning Runbook | docs/runbooks/provisioning_prospect.md | <25 Min Provisioning |
 | Prospect Card Contract | docs/architecture/contracts/prospect_card.md | JSON Schema |
 | Case Contract | docs/architecture/contracts/case_contract.md | Case-Datenmodell |

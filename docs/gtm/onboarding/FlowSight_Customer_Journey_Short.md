@@ -1,6 +1,6 @@
 # FlowSight — Gesprächskarte (Live-Call)
 
-> **Für den Moment am Telefon.** Kurz: *wo bin ich · welche Frage jetzt · was kommt als Nächstes.* Vollversion: `FlowSight_Customer_Journey_SSOT.md`.
+> **Für den Moment am Telefon.** Kurz: *wo bin ich · welche Frage jetzt · was kommt als Nächstes.* Vollversion: `../sales/FlowSight_Customer_Journey_SSOT.md`.
 
 **Haltung:** Ich *untersuche*, ich verkaufe nicht. · **Story:** Leitsystem, kein Tool — „vom Reagieren zum Steuern". · Nach jeder Frage: **zuhören, schweigen.**
 

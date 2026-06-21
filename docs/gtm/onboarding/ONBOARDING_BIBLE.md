@@ -103,7 +103,7 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
   **DE-only** (Ela-Stimme, spricht nie eine Fremdsprache) ↔ **multilingual INTL** (Juniper, EN/FR/IT),
   verbunden über `swap_to_intl_agent`/`swap_to_de_agent`. Wird am Go-live mit den 23 Platzhaltern via
   `retell_sync.mjs` für jeden Betrieb **identisch** provisioniert (Dörfler = Referenz). Spec NICHT hier
-  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/redesign/voice.md`.
+  duplizieren → SSOT: `docs/runbooks/voice_multilingual_acceptance.md` + `docs/architecture/references/voice.md`.
 
 ### Phase 3 — Review & Go-live (Pay) *(Folge-Bau, migriert v0-Operatives)*
 - **Founder-Review** des Cockpit-Ergebnisses (G11 — keine halb-konfigurierte Lisa geht live).
@@ -114,6 +114,29 @@ Next-Steps raus. **Pfad:** Quick-Win (Brand-Farbe) → **Voice** (größter/sens
 - **Zwei Stufen live:** A = sofort testbar (bereitgestellte Nr.) · B = echte Anrufe erst nach
   Weiterleitung (die eine Kunden-Aktion). v0-Schritte (Swisscom/Sunrise/Salt, PWA-Install) hierher.
 - **AVV/DPA** wird hier akzeptiert (§7).
+
+**Go-live-Ops (aus v0 migriert — der eine Kunden-Handgriff: Telefon-Weiterleitung)**
+
+- **Pre-Flight vor dem Go-live (G1, alle gruen, sonst verschieben):** (1) Voice published (`is_published: true`), (2) Voice-Datum aktuell (Test-Anruf "What's today's date?"), (3) `notification_email` gesetzt, (4) Voice->DB-Pipeline laeuft (Test-Anruf landet in DB), (5) PWA installierbar (manifest.json + service-worker), (6) SMS-Provider funktioniert (eCall.ch/Twilio Account-Stand). (Quelle: playbook_6_phases.md Anhang A)
+- **Voice-Datum-Gate (G4) am Go-live verifizieren:** Cron laeuft 3x taeglich xx:13 (off-hour, senkt GH-Actions-Skip-Risiko), mit **Post-Publish-Verify als Hard-Gate** (Skript exitet !=0, wenn das Datum nicht im Live-Prompt steht) + Telegram bei Erfolg UND Fehler; `workflow_dispatch` = Notfall-Trigger. Datums-Format `"Tuesday, 28 Apr 2026"` (kein Leading-Zero, sonst liest TTS "zero three may"); Aussprache-Hint im Prompt EN+DE: 'say dates as "May 3rd" / "the 3rd of May"'. (Quelle: Onboarding_bible_v0.md §4.2/§4.5)
+- **Rufweiterleitung beim Provider [Live-Blocker, ~15 Min]:** Login ins Selfcare-Portal (Swisscom / Sunrise / Salt) mit Kunden-Credentials -> Festnetz -> Rufweiterleitung -> Ziel = Voice-Agent-Nr (z.B. +41 44 505 48 18) -> Typ "Sofort weiterleiten" (oder "besetzt + nicht beantwortet") -> Speichern (Bestaetigungs-SMS) -> **Sofort-Test**: Founder-Handy ruft Kunden-Nummer an, muss bei Lisa landen. Kein Selfcare-Login? Provider-Hotline mit Kunde + Stellvertretungs-Vollmacht. (Quelle: playbook_6_phases.md Phase 3)
+- **PWA-Install auf Kundengeraet:** **iPhone (Safari, zwingend** — Chrome auf iOS kann KEINE PWA installieren): URL `flowsight.ch/ops/app/<slug>` -> Teilen -> "Zum Home-Bildschirm" -> OTP-Login (E-Mail-Code). **Android (Chrome):** Drei-Punkte -> "App installieren". **Push-Permission JETZT in derselben Session erlauben**, sonst kommen nie Notifications. OTP-Login geht nur, wenn die Kunden-E-Mail vorab als `notification_email` in der Config steht. (Quelle: Onboarding_bible_v0.md §4.1 / playbook Phase 3)
+- **E2E-Testanruf-Choreografie (Vollkreis vor Kundenaugen):** Founder ruft die (jetzt weitergeleitete) Kunden-Nummer an -> Voice antwortet -> kompletter Anliegen-/Reservierungsdialog mit Testdaten -> auflegen -> erscheint im Leitsystem binnen ~30-60s -> **Kunde drueckt selbst Confirm/Termin** -> Test-Handy bekommt SMS -> Vollkreis geschlossen. Reihenfolge im Walkthrough immer: zeigen -> Kunde drueckt selber -> Effekt zeigen. (Quelle: customer_runbook_template.md §4)
+- **Run-Sheet pro Kunde:** Template `customer_runbook_template.md` -> kopieren nach `docs/customers/<slug>/onboarding_<slug>.md`, alle `<...>` ersetzen. Struktur: 5-Min-Pre-Flight -> "was Kunde mitbringt" -> "was schon steht" (Vertrauens-Anker) -> 60-Min-Block (Weiterleitung -> Install -> Walkthrough -> E2E-Anruf -> Uebergabe) -> 5 Pflicht-Fragen vor dem Gehen -> Hand-Over-Pack -> 60-Sek-Cheat -> Day-1-7 -> Painpoint-Antworten -> Notfall-Kontakte. **Druck: 2 S. Querformat oder Handy-Notes, beim Termin NICHT scrollen** (alle 60-Min-Schritte in einem Screen). (Quelle: customer_runbook_template.md)
+- **Painpoint-Antworten (kopierbereit im Run-Sheet §9):** Standard-Wortlaute fuer die vier Live-Fragen — "Was, wenn die KI was Falsches sagt?" (Anruf/WhatsApp, Fix meist 30 Min), "Was, wenn die App nicht geht?" (Browser-Link als Backup, App ist nur Huelle), "Wer hoert meine Anrufe ab?" (niemand, Recording OFF, KI transkribiert + loescht), "Wenn ich kuendigen will?" (sofort, Forwarding-Rueckdrehung 2 Min). (Quelle: customer_runbook_template.md §9)
+
+**60-Sekunden-Cheat (wenn live etwas bricht):**
+
+| Symptom | Erste Aktion | Falls das nicht hilft |
+|---|---|---|
+| Voice antwortet nicht | Retell-Dashboard: Agent published? | `gh workflow run "<Tenant> Voice Daily Refresh"` |
+| Voice sagt falsches Datum | Cron-Refresh ausloesen | `retell/exports/<slug>_agent.json` patchen + publish |
+| Fall/Reservation kommt nicht in App | "Refresh"-Button tappen | Retell-Dashboard: Call analysed? |
+| Push kommt nicht | iOS: Settings -> App -> Notifications | App neu installieren (Service-Worker-Reset) |
+| App laedt nicht / weisse Seite | Hard-Reload | Browser-Cache vollstaendig leeren |
+| SMS kommt beim Confirm nicht | Vercel-Logs greppen | SMS-Provider-Console pruefen |
+
+(Quelle: customer_runbook_template.md §7)
 
 ### Phase 4 — Validierung
 Tag 1–7 passiv beobachten + Tag-7-Call. **Der Wochen-Rapport ist die Churn-Versicherung** — er
@@ -159,6 +182,8 @@ Cockpit-Leitplanke** (der Kunde kann sie nicht wegkonfigurieren).
 | G10 | Lessons Learned nach jedem Kunden | bleibt (Per-Customer-Ritual §6) |
 | **G11** | **Voice macht NUR 100%-bestätigte Versprechen** | = die Compliance-Sandbox: das Cockpit lässt den Betrieb nur *innerhalb* der No-Gos konfigurieren |
 | **G12** | **Single Source of Truth pro Datenfeld** | das Cockpit IST die SoT-Erfassung (confirm-not-create aus `tenant_config`) |
+
+> **G12-Detail (operativ, aus v0):** Wo eine Website/GBP-Wissensbasis noetig ist (T3+), wird pro Kunde eine SoT-Map gefuehrt — welche Quelle (DB / GBP / Website / Static) pflegt welches Feld, mit welcher Cadence, plus Ziel-Tier (Standard T3 = 80% Antwort-Coverage, Premium T4 = 95%). Lisa-Qualitaet = Tier-Coverage x Frische der Quellen. Naive Pauschalisierung "Website ist immer SoT" traegt nicht (schwache Website + starkes GBP kommt vor). Detail: `docs/architecture/tenant_architecture.md` §3. (Quelle: Onboarding_bible_v0.md §1/G12)
 
 ---
 
@@ -236,7 +261,7 @@ mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit har
 
 ## §9 · Anker & Links
 
-- **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
+- **🧭 Customer Journey (kanonisch, ganze Strecke):** [`FlowSight_Customer_Journey_SSOT.md`](../sales/FlowSight_Customer_Journey_SSOT.md) — vom Outreach bis 30 Tage nach Go-live (Beweis-Seite → Discovery warm/kalt → Cockpit → Founder-Review → Premium-Preis → 2-stufiges Go-live). **Übergreifend; die Onboarding-Bible ist der Cockpit-Teil davon.**
 - **📇 Gesprächskarte (Live-Call, 3 S.):** [`FlowSight_Customer_Journey_Short.md`](FlowSight_Customer_Journey_Short.md) — auf einen Blick „wo bin ich / welche Frage jetzt", inkl. wörtlicher Discovery-Fragen.
 - **Phase-1-Live-Playbook:** [`phase1_gespraech_playbook.md`](../sales/phase1_gespraech_playbook.md) ← das „HOW" für Phase 1 (Read-Along; geht in der Journey-Gesprächskarte auf).
 - **Rückmelde-Versprechen & Wunschtermin (Voice-Erwartung):** [`phase2_rueckmelde_termin_logik.md`](phase2_rueckmelde_termin_logik.md) — schließt die „Wann?"-Lücke; Stufen 0–4, per-Tenant, Lisa setzt Erwartung + nimmt Wunschzeiten auf (kein fixer Termin).
@@ -245,3 +270,14 @@ mit progressivem Gesicht 1★→5★). **Website** = nummerierter Strang mit har
 - **Reife-/Feedback-Loop:** `operating_model.md` · **Lessons:** `lessons_learned.md`
 - **Archiv (v0):** `docs/archive/onboarding/Onboarding_bible_v0.md`
 - **Memory:** `project_onboarding_cockpit_design`
+
+---
+
+## §10 · Falls ein 2. Gastro-Tenant kommt (BigBen-Notiz)
+
+FlowSight ist auf Sanitaer/Heizung fokussiert; Gastro war der Erstkunden-Sonderfall (BigBen Pub, Paul, Oberrieden, Barter-Deal). Nicht neu erfinden, falls je ein zweiter Gastro-Tenant kommt — hier das Destillat:
+
+- **DB-Schema (tenant-scoped, RLS an):** `pub_events` (category sport/event, title, event_date/time, `recurring` weekly/biweekly/monthly + recurring_day, is_active) und `pub_reservations` (guest_name/phone/email, reservation_date/time, party_size, `status` pending/confirmed/declined/cancelled, confirmed_at). Beide `tenant_id`-scoped — **nie global** (L2). (Quelle: bigben-pub/onboarding_plan.md Phase 1)
+- **Aufwand:** ein Gastro-Tenant ist ~30-40h Bau ueber 4 Phasen (Infrastruktur -> Event-Pflege-App `/ops/events` -> Voice-Agent EN -> Website dynamisch + Reservierung E2E), weil Event-Management ein eigenes Produkt-Feature ist (das Sanitaer nicht hat). Pflege MUSS aufs Handy, **max 3 Taps** pro Event (Wirt ist faul, L3): [+] -> Titel -> Datum -> Speichern. Wiederkehrende Events (Quiz=Mi, Karaoke=Fr) einmal anlegen, dann laeuft es. (Quelle: bigben-pub/onboarding_plan.md)
+- **3-Kanal-Quality-Gate (vor Live, alle P0):** Reservierung muss ueber **K1 Voice** (Anruf->Lisa->DB->App->Gast-SMS), **K2 Website-Form** und **K3 Manual Walk-in** (Paul tippt, sofort confirmed) sauber durchlaufen; dazu F1 GuestWatch (Yellow/Red-Card No-Show), F2 Events/Sports CRUD, F3 24h-Reminder-SMS, F4 Confirm-SMS, F5 Push. Gate-Template + Pass-Kriterien: `docs/customers/bigben-pub/e2e_quality_gates.md`. Regel G6: App leer uebergeben (events + reservations = 0). (Quelle: bigben-pub/e2e_quality_gates.md)
+- **Lessons (BigBen):** L1 = Referenz-/Erstkunde kann Barter statt Cash sein (Freidrinks+Food ~CHF 300/Mo), funktioniert nur bei persoenlicher Beziehung. L2 = Gastro-Features (Events) immer **tenant-scoped, nie global** modellieren. L3 = Pflege gehoert aufs Handy mit minimaler Reibung (3 Taps). (Quelle: bigben-pub/onboarding_plan.md Lessons-Protokoll)

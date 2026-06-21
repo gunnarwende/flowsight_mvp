@@ -1,6 +1,6 @@
 # E-Mail-Schablone: "Nicht erreicht / keiner ist rangegangen"
 
-> Founder-freigegeben 19.06.2026 (an R. Gerber + Brühwiler abgenommen). **Für alle künftigen Betriebe, bei denen wir telefonisch NICHT durchkamen / niemand rangegangen ist, exakt diesen Textinhalt hernehmen.** Nur Anrede + Firmenname tauschen. Kein erfundenes Erlebnis (kein Team/Foto/Support — siehe crawl_feedback S13-Linie).
+> Founder-freigegeben 19.06.2026 (an R. Gerber + Brühwiler abgenommen). **Für alle künftigen Betriebe, bei denen wir telefonisch NICHT durchkamen / niemand rangegangen ist, exakt diesen Textinhalt hernehmen.** Nur Anrede + Firmenname tauschen. Kein erfundenes Erlebnis (kein Team/Foto/Support — siehe crawl_feedback S13-Linie). **Nur an wirklich nicht erreichte Betriebe (kein Anschluss trotz Öffnungszeit) — NICHT an Abgelehnte/Weggedrückte (S16).**
 
 Betreff: `Kurz versucht, Sie zu erreichen – {Firma}`
 
@@ -20,3 +20,4 @@ signature: `Freundliche Grüsse` · `Gunnar Wende` · `Oberrieden · +41 44 552 
 - „den Stand jederzeit im Blick, auch unterwegs" (Mobilität)
 - „geht im Tagesgeschäft **unter**" (NICHT „verloren")
 - NIE: Video-Dauer, „durchgespielt", erfundene Eindrücke
+- Ton ruhig: den Mechanismus zeigen, nicht zuspitzen („Sie verlieren Geld!") — der verpasste Anruf ist der Beweis von selbst

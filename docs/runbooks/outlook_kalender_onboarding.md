@@ -2,9 +2,9 @@
 
 > **Typ:** Runbook (operativ) | **Stand:** 2026-03-20 (Phase 1 LIVE)
 > **Verwandte Dokumente:**
-> - Technischer Plan + Phasen: [`plan_kalender_integration.md`](../redesign/leitstand/plan_kalender_integration.md)
-> - Architektur-Entscheidungen + Session-Log: [`kalender_integration_outlook_implementation_log.md`](../redesign/leitstand/kalender_integration_outlook_implementation_log.md)
-> - Terminführung Produktbild: [`leitstand.md §6`](../redesign/leitstand/leitstand.md)
+> - Technischer Plan + Phasen: [`plan_kalender_integration.md`](../_archive/redesign/leitstand/plan_kalender_integration.md)
+> - Architektur-Entscheidungen + Session-Log: [`kalender_integration_outlook_implementation_log.md`](../_archive/redesign/leitstand/kalender_integration_outlook_implementation_log.md)
+> - Terminführung Produktbild: [`leitstand.md §6`](../_archive/redesign/leitstand/leitstand.md)
 
 ## Zweck
 
@@ -31,7 +31,7 @@ FlowSight ist das führende Arbeitswerkzeug. Outlook ist angebundene Kalender-In
 
 ## Technische Kurzreferenz (für Onboarding)
 
-> Vollständige technische Details: [`kalender_integration_outlook_implementation_log.md`](../redesign/leitstand/kalender_integration_outlook_implementation_log.md)
+> Vollständige technische Details: [`kalender_integration_outlook_implementation_log.md`](../_archive/redesign/leitstand/kalender_integration_outlook_implementation_log.md)
 
 | Aspekt | Entscheidung |
 |--------|-------------|
