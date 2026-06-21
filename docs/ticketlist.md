@@ -152,6 +152,9 @@ Keine.
 | V3 | **Ortsnamen NICHT wiederholen** | mittel | READY TO TEST (PRs #198 + #202) |
 | V5 | **SMS kommt nicht an (eCall)** | hoch | READY TO TEST (PR #200 + #202) |
 | V6 | **Namens-Frage falsch formuliert** | mittel | READY TO TEST (PRs #198 + #202) |
+| V7 | **Dörfler DE v14 + INTL v74 unpublished → published (2026-06-21)** — `retell-inspect` zeigte beide Agent+Flow-Köpfe als Draft (`is_published=false`), live serviert v13/v73. Inhalt an Quell-Exports geprüft (reporter_name-Regel DE rein, kein Brunner, Preise DE=INTL = keine Preisnennung), Dry-Run grün → `retell-publish prefix=doerfler dry_run=false` scharf (Founder-Gate 2×) → Verify + Re-Inspect: **alle vier Köpfe `is_published=true`** (DE `v14*PUB`, INTL `v74*PUB`). Nummer `+41445057420` korrekt auf inbound=DE-Agent. | mittel | ✅ PUBLISHED — verifiziert |
+| V7b | **INTL reporter_name — bewusst entscheiden (Follow-up zu V7)** — `reporter_name` ist nur im DE-Agent ein eigenes Extraktionsfeld, nicht im INTL-Transfer-Ziel. Prüfen ob INTL den Namen explizit ziehen soll (englische Anrufer = Minderheit; Name steht ohnehin im Transcript). Bewusst als eigener, geprüfter Export-Edit — nicht ans DE-Publish gebolzt. | niedrig | OFFEN |
+| V7c | **`retell-publish` agent_ids.json-Auto-Commit — Branch-Protection-sauber machen (Infra)** — der workflow-interne Post-Publish-Push von `retell/agent_ids.json` nach `main` wird von Branch-Protection geblockt (`GH013`, korrekt) und nur als Warning abgefangen. Inhalt ist timestamp-only, IDs unverändert → kein Drift, kein aktueller Handlungsbedarf. Optionen für später: (a) Stempel via PR schreiben statt Direkt-Push, oder (b) Auto-Commit ganz weglassen (trägt eh nur Zeitstempel). | niedrig | OFFEN (nicht dringend) |
 
 ---
 
