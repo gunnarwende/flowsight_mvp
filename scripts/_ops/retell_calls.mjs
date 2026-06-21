@@ -44,10 +44,19 @@ async function main() {
     console.log(`  description: ${JSON.stringify(cad.description ?? "")}`);
   }
 
-  // full transcript of the latest call
+  // full transcript of the latest call — the list endpoint strips it, so fetch
+  // the call detail (get-call) which carries transcript + full analysis.
   if (calls[0]) {
     console.log(`\n─────────── transcript (latest call) ───────────`);
-    console.log(calls[0].transcript ?? "(no transcript)");
+    let transcript = calls[0].transcript;
+    if (!transcript) {
+      const dr = await fetch(`${RETELL}/v2/get-call/${calls[0].call_id}`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      const det = await dr.json().catch(() => null);
+      transcript = det?.transcript;
+    }
+    console.log(transcript ?? "(no transcript)");
   }
 
   // ── Supabase: where did it land? ────────────────────────────────────────

@@ -227,10 +227,50 @@ async function ensureEditableDraft(agentId, label) {
 /** Update an existing flow's prompt, or create one for a brand-new tenant. */
 async function upsertFlow(existingFlowId, flowParams, label) {
   if (existingFlowId) {
+    // Always update the global_prompt. Additionally overlay each node's TEXT
+    // from the export onto the LIVE nodes — preserving live structure, edges
+    // and already-linked agent_swap tools (we only change instruction.text).
+    // This closes the long-standing drift where node prompts (e.g. a tenant
+    // copied from a template) were never refreshed. Best-effort: if Retell
+    // rejects the nodes payload we still land the global_prompt so a publish
+    // never half-fails.
+    let nodes = null;
+    let overlaid = 0;
+    try {
+      const live = await retellGet(`/get-conversation-flow/${existingFlowId}`);
+      const byId = new Map((flowParams.nodes || []).map((n) => [n.id, n]));
+      const byName = new Map((flowParams.nodes || []).map((n) => [n.name, n]));
+      nodes = (live.nodes || []).map((ln) => {
+        const en = byId.get(ln.id) || byName.get(ln.name);
+        const t = en?.instruction?.text;
+        if (
+          t != null && ln.instruction && typeof ln.instruction === "object" &&
+          "text" in ln.instruction && ln.instruction.text !== t
+        ) {
+          overlaid++;
+          return { ...ln, instruction: { ...ln.instruction, text: t } };
+        }
+        return ln;
+      });
+    } catch (e) {
+      console.log(`  ⚠ ${label} could not read live nodes (${e.message}) — global_prompt only`);
+    }
+    if (nodes && overlaid > 0) {
+      try {
+        await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
+          global_prompt: flowParams.global_prompt,
+          nodes,
+        });
+        console.log(`  ✓ ${label} flow updated:   ${existingFlowId} (global_prompt + ${overlaid} node text(s))`);
+        return { flowId: existingFlowId, created: false };
+      } catch (e) {
+        console.log(`  ⚠ ${label} node overlay rejected (${e.message}) — retrying global_prompt only`);
+      }
+    }
     await retellPatch(`/update-conversation-flow/${existingFlowId}`, {
       global_prompt: flowParams.global_prompt,
     });
-    console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}`);
+    console.log(`  ✓ ${label} flow prompt updated:   ${existingFlowId}${overlaid ? " (node text NOT updated)" : ""}`);
     return { flowId: existingFlowId, created: false };
   }
   const body = { ...flowParams, nodes: stripSwapTools(flowParams.nodes) };
