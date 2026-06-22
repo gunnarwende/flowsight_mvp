@@ -2,12 +2,13 @@ import "server-only";
 
 // ── Adress-Validierung (Swiss Post Address Web Services REST) ─────────────────
 // Wahrheit = „existiert diese Adresse?" (BuildingVerification), NICHT „ist sie korrekt".
-// Ampel-Vertrag (Founder 2026-06-22): nur ROT ist sichtbar, OK bleibt neutral.
-//   confirmed   → Adresse existiert vollständig            → KEIN Flag (neutral)
-//   unconfirmed → Teil-/kein Treffer (Strasse/Hausnr)      → rotes Flag + Klartext-Grund
-//   error       → Prüfung nicht möglich (nicht konfig./API) → rotes Flag (nie still bestätigen)
+// Ampel-Vertrag (Founder 2026-06-22): nur ROT ist sichtbar, alles andere neutral.
+//   unconfirmed → Teil-/kein Treffer (Strasse/Hausnr)  → rotes Flag + Klartext-Grund
+//   confirmed   → Adresse existiert vollständig         → neutral (kein Flag)
+//   skipped     → Swiss Post nicht konfiguriert         → neutral (wir behaupten nichts)
+//   error       → Prüfung versucht, API nicht erreichbar → neutral (kein Fehlalarm pro Fall)
 
-export type AddressStatus = "confirmed" | "unconfirmed" | "error";
+export type AddressStatus = "confirmed" | "unconfirmed" | "error" | "skipped";
 
 export interface AddressInput {
   plz: string;
@@ -40,7 +41,8 @@ export async function validateAddress(input: AddressInput): Promise<AddressValid
     return { status: "unconfirmed", reason: "Adresse unvollständig" };
   }
   if (!swissPostConfigured()) {
-    return { status: "error", reason: "Adressprüfung noch nicht aktiv" };
+    // Noch keine Swiss-Post-Credentials → wir behaupten nichts (neutral, kein Flag).
+    return { status: "skipped" };
   }
   try {
     return await callSwissPost(input);
