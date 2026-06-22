@@ -1,11 +1,10 @@
 name: Morning Report
 
 on:
-  schedule:
-    # 05:30 UTC ≈ 07:30 CEST (Sommer) / 06:30 CET (Winter). Ziel: Founder hat ihn ~07:45.
-    # GitHub-Action-Crons sind "best effort" und können verspäten — der frühe Slot gibt
-    # Puffer. Garantiert-pünktlich nur via Vercel Cron (Folge-Ticket, falls nötig).
-    - cron: "30 5 * * *"
+  # GitHub-SCHEDULE entfernt (MR4, 22.06.): lief hier chronisch 3–5 h zu spät.
+  # Getriggert wird der Report jetzt PÜNKTLICH von aussen via workflow_dispatch —
+  # durch /api/cron/morning-report (Vercel Cron bzw. externer Cron). dispatch
+  # startet in Sekunden, daher minutengenau. Manuell weiterhin auslösbar.
   workflow_dispatch: {}
 
 jobs:
