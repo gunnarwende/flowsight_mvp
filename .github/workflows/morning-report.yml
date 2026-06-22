@@ -33,6 +33,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           APP_URL: ${{ secrets.APP_URL }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.APP_URL }}
+          # RESEND_API_KEY für den internen Health-Selbstcheck (resendOk). Ohne ihn
+          # meldete der Report fälschlich "System: bitte prüfen — E-Mail (Resend)",
+          # obwohl der Versand unten sauber lief (Resend 200). 21.06.-Fehlalarm-Fix.
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
           # Schreibt /tmp/morning_report.{subject,txt,html} + loggt den Report.
           node scripts/_ops/morning_report.mjs || true
