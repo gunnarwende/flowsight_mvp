@@ -24,7 +24,7 @@ Ergebnis kommt server-seitig zurück (Telegram-Alert / Action-Log / ggf. PR-Komm
 | **Voice-Agent publishen/syncen** | `retell-publish.yml` | `prefix`, `dry_run` | erst `dry_run=true` testen! Dörfler = `doerfler` |
 | Retell-Calls abfragen | `retell-calls.yml` | `to_number`, `limit` | |
 | **DB-Operation** (gated, nur Daten) | `supabase-fix.yml` | `table`, `operation`, `filter`, `patch` | mächtig — genau prüfen, was du schreibst; PostgREST, kein DDL |
-| **DB-Migration anwenden** (gated, DDL) | `db-migrate.yml` | `dry_run` | Schema-Migrationen aus `supabase/migrations/` via `supabase db push`. **Erst `dry_run=true`!** Braucht Repo-Secret `SUPABASE_DB_URL` (im GitHub-Web hinterlegen, nie über Agent). Flow: Migrations-Datei per PR → merge → hier triggern |
+| **DB-Migration anwenden** (gated, DDL) | `db-migrate.yml` | `file`, `dry_run` | Wendet EINE benannte Datei aus `supabase/migrations/` gezielt + idempotent an (Management-API, kein blindes `db push`). **Erst `dry_run=true`!** Secret `SUPABASE_ACCESS_TOKEN` ist hinterlegt. Flow: Migrations-Datei (mit `IF NOT EXISTS`) per PR → merge → hier mit `file=<name>` triggern |
 | Google-Reviews crawlen | `google-review-crawl.yml` | — | |
 | Outreach-Reminder | `outreach-reminder.yml` | — | |
 | BigBen Voice-Health | `bigben-check.yml` | `to_number`, `fetch_limit` | |
