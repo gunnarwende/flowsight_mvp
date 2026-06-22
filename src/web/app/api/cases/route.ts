@@ -365,6 +365,7 @@ export async function POST(request: NextRequest) {
     // Adress-Validierung (V9, Swiss Post) — best-effort, blockiert NIE die Fall-Erstellung.
     // Bis Credentials gesetzt: status "skipped" (neutral). Migration noch nicht angewendet →
     // Update-Fehler wird nur geloggt, der Fall bleibt unberührt.
+    let addressStatus: string | null = null;
     try {
       const av = await validateAddress({
         plz: data.plz,
@@ -372,6 +373,7 @@ export async function POST(request: NextRequest) {
         street: data.street ?? undefined,
         houseNumber: data.house_number ?? undefined,
       });
+      addressStatus = av.status;
       const { error: addrErr } = await supabase
         .from("cases")
         .update({ address_status: av.status, address_reason: av.reason ?? null })
@@ -398,6 +400,7 @@ export async function POST(request: NextRequest) {
           street: data.street,
           houseNumber: data.house_number,
           reporterName: data.reporter_name,
+          addressStatus,
         });
         if (smsResult.sent) {
           await supabase.from("case_events").insert({
