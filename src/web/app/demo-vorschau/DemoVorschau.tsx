@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Constellation, LisaAvatar, type ConstellationStar } from "./Constellation";
 
 // ── Design-Vorschau der neuen Demo-Architektur (Stern 3–4) ───────────────────
-// 3 Schichten: (1) Lead-Haken · (2) interaktive Karte 3 Kanäle → Leitsystem ·
+// 3 Schichten: (1) Lead-Haken · (2) interaktive Karte 3 Eingänge → Leitsystem ·
 // (3) Modul-Tiefe pro Knoten. Visuelle Sprache aus dem Cockpit (M2). Beispieldaten;
 // später config-/tenant-getrieben (M5). Beide Ansichten high-end: Handy + Monitor.
+// Sprache: 1–3-Mann-Sanitär — klar, konkret, kein Marketing-Sprech.
 
 const GOLD = "#d4a843";
 
@@ -19,10 +20,38 @@ const DEMO = {
 };
 
 type NodeKey = "lisa" | "website" | "vorort" | "leitsystem";
+type IconKey = "phone" | "web" | "clipboard";
+
+// Eigene Linien-Icons statt Emoji — konsistent in Gold, high-end auf beiden Geräten.
+function ChannelIcon({ name, size = 30 }: { name: IconKey; size?: number }) {
+  if (name === "phone") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M6.8 3.5c.9 0 1.7.6 1.9 1.5l.6 2.4c.1.6-.1 1.2-.5 1.6L7.5 10.2a12.5 12.5 0 0 0 6.3 6.3l1.2-1.3c.4-.4 1-.6 1.6-.5l2.4.6c.9.2 1.5 1 1.5 1.9v2.1c0 1.1-.9 2-2 1.9A16.5 16.5 0 0 1 4.8 4.6c-.1-1.1.8-2 1.9-2z" />
+      </svg>
+    );
+  }
+  if (name === "web") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M3.6 12h16.8" />
+        <path d="M12 3.5c2.4 2.3 2.4 14.7 0 17M12 3.5c-2.4 2.3-2.4 14.7 0 17" />
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="6" y="4" width="12" height="17" rx="2" />
+      <path d="M9.5 4.2V3.6A1.6 1.6 0 0 1 11 2h2a1.6 1.6 0 0 1 1.5 1.6v.6" />
+      <path d="M9 10.5h6M9 14h6" />
+    </svg>
+  );
+}
 
 const CHANNELS: {
   key: Exclude<NodeKey, "leitsystem">;
-  icon: string;
+  icon: IconKey;
   titel: string;
   unter: string;
   steuern: string;
@@ -30,33 +59,33 @@ const CHANNELS: {
 }[] = [
   {
     key: "lisa",
-    icon: "📞",
+    icon: "phone",
     titel: "Lisa",
-    unter: "Ihre Telefon-Assistentin",
+    unter: "Geht ans Telefon, wenn Sie nicht können",
     steuern: "Sie entscheiden, wie Lisa bei jedem Anliegen reagiert — neuer Auftrag, Frage, Notfall.",
-    clip: "Lisa nimmt den Anruf in Ihrem Namen an, nimmt sauber auf und sagt einen Rückruf zur Wunschzeit zu.",
+    clip: "Lisa geht in Ihrem Namen ans Telefon, hält das Anliegen sauber fest und sagt einen Rückruf zur Wunschzeit zu.",
   },
   {
     key: "website",
-    icon: "🌐",
+    icon: "web",
     titel: "Website",
-    unter: "Online-Meldungen, rund um die Uhr",
+    unter: "Anfragen über Ihre Website — rund um die Uhr",
     steuern: "Sie legen fest, welche Angaben das Formular abfragt.",
-    clip: "Eine Anfrage über das Formular landet direkt strukturiert in Ihrem Leitsystem.",
+    clip: "Eine Anfrage über das Formular landet direkt ordentlich aufgelistet in Ihrem Leitsystem.",
   },
   {
     key: "vorort",
-    icon: "🚪",
+    icon: "clipboard",
     titel: "Vor Ort",
-    unter: "Fälle, die Sie selbst aufnehmen",
-    steuern: "Mit einem Tipp halten Sie einen Fall fest — kein Zettel geht mehr verloren.",
-    clip: "Sie nehmen einen Auftrag direkt vor Ort auf — sofort sichtbar im Leitsystem.",
+    unter: "Aufträge, die Sie unterwegs aufnehmen",
+    steuern: "Mit einem Tipp halten Sie einen Auftrag fest — kein Zettel geht mehr verloren.",
+    clip: "Sie nehmen einen Auftrag direkt vor Ort auf — sofort sichtbar in Ihrem Leitsystem.",
   },
 ];
 
 const LEITSYSTEM_NODE = {
   steuern: "Ihr Überblick: was offen ist, was läuft, was erledigt ist — auf Handy und Computer.",
-  clip: "Jede Anfrage läuft hier sichtbar weiter, bis zum Abschluss — plus Wochen-Rapport, der den Wert zeigt.",
+  clip: "Jede Anfrage läuft hier sichtbar weiter, bis sie erledigt ist — plus ein Wochen-Rückblick: was reinkam und was Sie geschafft haben.",
 };
 
 // Lisas 5 Sterne — Reihenfolge + Labels 1:1 aus dem Cockpit (M2). Hier read-only
@@ -65,8 +94,8 @@ const LISA_STARS: ConstellationStar[] = [
   { key: "begruessung", label: "So meldet sich Lisa", note: "Meldet sich mit Ihrem Firmennamen — freundlich, in Ihrem Namen." },
   { key: "wissen", label: "Das soll Lisa wissen", note: "Kennt Öffnungszeiten, Einzugsgebiet und Leistungen — beantwortet einfache Fragen direkt." },
   { key: "anruflogik", label: "So soll Lisa reagieren", note: "Folgt Ihren Regeln: Preisfragen, Stammkunden, Dringlichkeit — Sie geben den Takt vor." },
-  { key: "notfall", label: "Wann Lisa erreichbar ist", note: "Erkennt Notfälle und alarmiert Sie sofort — stellt nicht blind durch, sondern hält den Fall fest." },
-  { key: "telefonie", label: "So kommt der Anruf zu Lisa", note: "Springt erst ein, wenn Sie nicht drangehen — nach Ihrer Wunsch-Zeit." },
+  { key: "notfall", label: "Wann Lisa erreichbar ist", note: "Erkennt Notfälle und alarmiert Sie sofort — stellt nicht blind durch, sondern hält die Anfrage fest." },
+  { key: "telefonie", label: "So kommt der Anruf zu Lisa", note: "Springt erst ein, wenn Sie nicht drangehen — erst nach der Zeit, die Sie festlegen." },
 ];
 
 function LeitsystemIcon({ size = 64, glow = false }: { size?: number; glow?: boolean }) {
@@ -89,10 +118,10 @@ function LeitsystemIcon({ size = 64, glow = false }: { size?: number; glow?: boo
 function SteuerBadge() {
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium"
       style={{ background: `${GOLD}1a`, color: GOLD }}
     >
-      ✋ Sie steuern das
+      Sie steuern das
     </span>
   );
 }
@@ -122,9 +151,9 @@ export default function DemoVorschau() {
   const node = openNode === "leitsystem" ? null : CHANNELS.find((c) => c.key === openNode) ?? null;
   const detail =
     openNode === "leitsystem"
-      ? { titel: "Ihr Leitsystem", icon: null, ...LEITSYSTEM_NODE }
+      ? { titel: "Ihr Leitsystem", icon: null as IconKey | null, ...LEITSYSTEM_NODE }
       : node
-        ? { titel: node.titel, icon: node.icon, steuern: node.steuern, clip: node.clip }
+        ? { titel: node.titel, icon: node.icon as IconKey | null, steuern: node.steuern, clip: node.clip }
         : null;
 
   return (
@@ -139,23 +168,23 @@ export default function DemoVorschau() {
             {greeting} — bei Ihnen geht kein Auftrag mehr verloren.
           </h1>
           <p className="text-[15px] leading-relaxed text-slate-300 sm:text-base">
-            Auch wenn Sie gerade nicht ans Telefon kommen — jede Anfrage wird sauber aufgenommen und läuft
-            sichtbar bei Ihnen weiter. In 90 Sekunden sehen Sie, wie das für {DEMO.companyName} aussieht.
+            Auch wenn Sie gerade nicht ans Telefon kommen — jede Anfrage wird sauber festgehalten, und Sie
+            sehen jederzeit, was noch offen ist. In 90 Sekunden sehen Sie, wie das für {DEMO.companyName} aussieht.
           </p>
         </header>
 
         <div className="mt-6">
-          <ClipPlaceholder caption={`${DEMO.companyName} — eine Kundenanfrage, sauber aufgenommen`} />
+          <ClipPlaceholder caption={`${DEMO.companyName} — eine Kundenanfrage, sauber festgehalten`} />
         </div>
 
         {/* ── Schicht 2: Die interaktive Karte ── */}
         <section className="mt-14">
           <p className="text-center text-[11px] uppercase tracking-[0.18em] text-slate-500">
-            So funktioniert Ihr System — tippen Sie für Details
+            So funktioniert Ihr System — öffnen Sie jeden Eingang
           </p>
           <h2 className="mt-2 text-center text-xl font-bold sm:text-2xl">Drei Eingänge, ein Überblick</h2>
 
-          {/* 3 Kanäle — Handy: gestapelt · Monitor: 3 Spalten */}
+          {/* 3 Eingänge — Handy: gestapelt · Monitor: 3 Spalten */}
           <div className="mt-6 grid gap-4 sm:grid-cols-3 sm:gap-5">
             {CHANNELS.map((c) => (
               <button
@@ -164,8 +193,8 @@ export default function DemoVorschau() {
                 onClick={() => setOpenNode(c.key)}
                 className="group flex flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left transition hover:border-white/25 hover:bg-white/[0.07]"
               >
-                <span className="text-2xl">{c.icon}</span>
-                <span className="mt-2 text-base font-semibold text-white">{c.titel}</span>
+                <ChannelIcon name={c.icon} />
+                <span className="mt-3 text-base font-semibold text-white">{c.titel}</span>
                 <span className="mt-0.5 text-sm text-slate-400">{c.unter}</span>
                 <span className="mt-3"><SteuerBadge /></span>
                 <span className="mt-3 text-sm font-medium" style={{ color: GOLD }}>
@@ -200,9 +229,10 @@ export default function DemoVorschau() {
         {/* ── Schluss-Beat: Eigentum ── */}
         <section className="mt-14 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
           <p className="text-[15px] leading-relaxed text-slate-200">
-            Und das Beste: Sie bestimmen selbst, wie Ihre Kanäle ins <strong className="text-white">Leitsystem</strong>{" "}
-            laufen — welche Anfrage wie aufgenommen wird und was damit passiert. Eingerichtet ist es schnell, und Sie
-            können dabei nichts falsch machen. Es bleibt <strong className="text-white">Ihr</strong> System, nach Ihren Regeln.
+            Und das Beste: Sie bestimmen selbst, wie Ihre Eingänge ins <strong className="text-white">Leitsystem</strong>{" "}
+            laufen — welche Anfrage wie festgehalten wird und was damit passiert. Eingerichtet ist es schnell —
+            kein IT-Projekt, alles läuft auf Ihrem Handy. Falsch machen können Sie dabei nichts. Es bleibt{" "}
+            <strong className="text-white">Ihr</strong> System, nach Ihren Regeln.
           </p>
           <p className="mt-3 text-sm font-semibold text-white">— Gunnar Wende, Oberrieden</p>
         </section>
@@ -224,7 +254,7 @@ export default function DemoVorschau() {
           >
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                {detail.icon ? <span>{detail.icon}</span> : <LeitsystemIcon size={28} />}
+                {detail.icon ? <ChannelIcon name={detail.icon} size={26} /> : <LeitsystemIcon size={28} />}
                 {detail.titel}
               </h3>
               <button
@@ -242,8 +272,8 @@ export default function DemoVorschau() {
               // dass sie kontrolliert reagiert. Entschärft Einwände vorab (M3).
               <>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  Lisa ist kein starrer Anrufbeantworter. Sie reagiert auf fünf Feldern — alle nach
-                  Ihren Vorgaben. So sieht der Start-Zustand aus:
+                  Lisa ist kein starrer Anrufbeantworter. Sie reagiert in fünf Situationen — alle nach
+                  Ihren Vorgaben. So ist sie von Anfang an eingestellt:
                 </p>
                 <div className="mt-5">
                   <Constellation center={<LisaAvatar stars={5} />} centerLabel="Lisa" stars={LISA_STARS} />
