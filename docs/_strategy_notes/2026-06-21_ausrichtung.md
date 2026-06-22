@@ -77,3 +77,45 @@ Geh dahin, wo **ein geretteter Auftrag den Monatspreis schlägt.**
 - North-Star-Wording final: führt „kein Auftrag geht verloren" — bestätigt der Founder das als DEN Funnel-Spine?
 - Traversal: erst Sanitär tief (Solo+Team), oder Zeile 1 quer durch Branchen? (Daten entscheiden — Notiz, kein Beschluss.)
 - Demo: ist 90 Sek die richtige Lead-Länge, oder 60? (MR2-Daten klären das.)
+
+---
+
+# Nachtrag 2026-06-22 — Demo-Grundstruktur 1–3 Mann (festgezurrt, DRAFT)
+
+> **Die Demo ist das Herz — alle 8 Customer-Journey-Sterne beziehen sich auf sie.** Diese Grundstruktur
+> ist die Zelle 1 (Sanitär × Solo 1–3). Founder-Calls vom 22.06. eingearbeitet.
+
+## Lisa = Selbst-trainierbar (Verständnis-Basis)
+Lisa ist kein fixes Skript — der Betrieb konfiguriert sie **selbst im Cockpit, Strang für Strang**
+(Reife-Modell-Spitze: „der Kunde führt es selbst aus" = Verantwortung zum Kunden).
+- **3 Stränge:** Voice (Lisa) · Website/Wizard · Leitsystem.
+- **Lisa = 7 Dispositionen:** neuer Auftrag · Info · Rückruf · Nachfrage best. Auftrag · Reklamation · privat/Spam · **Live-Transfer [geplant, noch nicht gebaut]**.
+- **G11 = Compliance-Sandbox:** der Betrieb kann Lisa **gar nicht in einen Verstoß konfigurieren** (keine Preise/Diagnosen/Garantien/Fixtermine) → Verkaufsargument + Schutz.
+- **Live-Transfer** (Notfall ans Pikett durchstellen) ist als 7. Disposition **vorgesehen** → „Retell kann das technisch" = Aktivieren, kein Umbau. **Roadmap-Lock Sanitär-Zelle; nur in der Demo zeigen, wenn auch gebaut.**
+
+## Was für 1–3 Mann zählt
+Er **ist** das Geschäft, auf der Baustelle/am Kunden. Lisa = seine **„rechte Hand am Telefon"**.
+Es zählt **nicht** das Notfall-Drama, sondern: *„Verpasse ich nie wieder einen Auftrag, egal was reinkommt — und wirkt mein Betrieb professionell?"*
+
+## Lead-Clip (60–90 Sek) — EINE Disposition führt
+**Lead-Fall = `Neuer Auftrag / Offert-Anfrage`** (stärkster „kein Auftrag geht verloren"-Beweis; Founder-Veto Richtung Info-Frage offen).
+1. Schmerz: Telefon klingelt, er ist mitten in der Arbeit.
+2. Lisa nimmt **in seinem Firmennamen** ab (der „wie eine Mitarbeiterin"-Moment).
+3. Nimmt sauber auf, fragt das Richtige, **Rückruf zur Wunschzeit** (kein Fixtermin — G11).
+4. Landet **sichtbar im Leitsystem**, auf seinem Handy.
+5. Abschluss: „Das ist [Betrieb] — Ihre rechte Hand am Telefon. Kein Auftrag geht verloren."
+
+## Volle Strecke (optional, darunter) — Breite + Eigentum
+- **T2 voll:** mehrere Dispositionen → Lead-Fall **+ Info-Frage** (sofort beantwortet) **+ Rückruf** **+ Notfall/Live-Transfer** *(nur `notruf`-Variante = Betrieb mit Notdienst; sonst `preis`-Variante mit Preis-Frage)*.
+- **T3 Wizard / T4 Bewertung** wie gehabt.
+- **Schluss-Beat (Eigentum, Founder-bestätigt):** „Das ist *Ihre* Lisa — Sie trainieren sie selbst, Strang für Strang, und können sie gar nicht falsch einstellen."
+
+## Mechanik & Leitplanken
+- **Tenant-Weiche** = bestehende `deriveCallProofVariante`-Logik (notruf/preis) — kein Neubau, nur neu gerahmt.
+- **Guard:** high-end JA, aber **innerhalb G11** — Souveränität überspitzen, NIE in falsche Versprechen (sonst Demo-Realitäts-Lücke → Churn).
+- **Erste-Hilfe-Hinweis** (z. B. „Haupthahn zudrehen") + **faktische Q&A** (Gewerk/Gebiet/erreichbar) als Differenzierer prüfen (BigBen-Info-Fähigkeit existiert schon im Code).
+
+## Offen / nächste Schritte
+- Lead-Fall final: Neuer Auftrag/Offerte (Default) vs. Info-Frage — Founder-Entscheid.
+- Wortlaut des Lead-Clips (Schmerz-Opener + Lisa-Dialog) — Wort für Wort, nach dem Rückgrat-Fix.
+- Live-Transfer-Disposition bauen (Voraussetzung, um ihn ehrlich zu zeigen).
