@@ -23,7 +23,8 @@ Ergebnis kommt server-seitig zurück (Telegram-Alert / Action-Log / ggf. PR-Komm
 | **Voice-Agent inspizieren** (read-only) | `retell-inspect.yml` | `prefixes` (z. B. `doerfler`) | sicher, nur lesen |
 | **Voice-Agent publishen/syncen** | `retell-publish.yml` | `prefix`, `dry_run` | erst `dry_run=true` testen! Dörfler = `doerfler` |
 | Retell-Calls abfragen | `retell-calls.yml` | `to_number`, `limit` | |
-| **DB-Operation** (gated) | `supabase-fix.yml` | `table`, `operation`, `filter`, `patch` | mächtig — genau prüfen, was du schreibst |
+| **DB-Operation** (gated, nur Daten) | `supabase-fix.yml` | `table`, `operation`, `filter`, `patch` | mächtig — genau prüfen, was du schreibst; PostgREST, kein DDL |
+| **DB-Migration anwenden** (gated, DDL) | `db-migrate.yml` | `dry_run` | Schema-Migrationen aus `supabase/migrations/` via `supabase db push`. **Erst `dry_run=true`!** Braucht Repo-Secret `SUPABASE_DB_URL` (im GitHub-Web hinterlegen, nie über Agent). Flow: Migrations-Datei per PR → merge → hier triggern |
 | Google-Reviews crawlen | `google-review-crawl.yml` | — | |
 | Outreach-Reminder | `outreach-reminder.yml` | — | |
 | BigBen Voice-Health | `bigben-check.yml` | `to_number`, `fetch_limit` | |
