@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Constellation, LisaAvatar, type ConstellationStar } from "./Constellation";
 
 // ── Design-Vorschau der neuen Demo-Architektur (Stern 3–4) ───────────────────
 // 3 Schichten: (1) Lead-Haken · (2) interaktive Karte 3 Kanäle → Leitsystem ·
@@ -58,12 +59,30 @@ const LEITSYSTEM_NODE = {
   clip: "Jede Anfrage läuft hier sichtbar weiter, bis zum Abschluss — plus Wochen-Rapport, der den Wert zeigt.",
 };
 
-function LeitsystemIcon({ size = 64 }: { size?: number }) {
-  return (
+// Lisas 5 Sterne — Reihenfolge + Labels 1:1 aus dem Cockpit (M2). Hier read-only
+// als Default-Vorschau: „so reagiert Lisa", bevor der Betrieb selbst nachjustiert.
+const LISA_STARS: ConstellationStar[] = [
+  { key: "begruessung", label: "So meldet sich Lisa", note: "Meldet sich mit Ihrem Firmennamen — freundlich, in Ihrem Namen." },
+  { key: "wissen", label: "Das soll Lisa wissen", note: "Kennt Öffnungszeiten, Einzugsgebiet und Leistungen — beantwortet einfache Fragen direkt." },
+  { key: "anruflogik", label: "So soll Lisa reagieren", note: "Folgt Ihren Regeln: Preisfragen, Stammkunden, Dringlichkeit — Sie geben den Takt vor." },
+  { key: "notfall", label: "Wann Lisa erreichbar ist", note: "Erkennt Notfälle und alarmiert Sie sofort — stellt nicht blind durch, sondern hält den Fall fest." },
+  { key: "telefonie", label: "So kommt der Anruf zu Lisa", note: "Springt erst ein, wenn Sie nicht drangehen — nach Ihrer Wunsch-Zeit." },
+];
+
+function LeitsystemIcon({ size = 64, glow = false }: { size?: number; glow?: boolean }) {
+  const svg = (
     <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true">
       <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#1a2744" stroke={GOLD} strokeWidth="1.5" />
       <circle cx="26" cy="26" r="6.5" fill={GOLD} />
     </svg>
+  );
+  if (!glow) return svg;
+  // Pulsierendes Gold-Glow — identisch zum Cockpit-App-Icon (high-end Touch).
+  return (
+    <span className="fs-iconglow inline-block leading-none">
+      <style>{`@keyframes fsglow{0%,100%{filter:drop-shadow(0 0 12px rgba(212,168,67,.55)) drop-shadow(0 0 30px rgba(212,168,67,.28))}50%{filter:drop-shadow(0 0 22px rgba(212,168,67,.9)) drop-shadow(0 0 48px rgba(212,168,67,.5))}}.fs-iconglow svg{animation:fsglow 4.5s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.fs-iconglow svg{animation:none;filter:drop-shadow(0 0 16px rgba(212,168,67,.75))}}`}</style>
+      {svg}
+    </span>
   );
 }
 
@@ -171,7 +190,7 @@ export default function DemoVorschau() {
             className="mx-auto flex w-full max-w-[420px] flex-col items-center rounded-2xl border p-6 text-center transition hover:bg-white/[0.04]"
             style={{ borderColor: `${GOLD}55` }}
           >
-            <LeitsystemIcon />
+            <LeitsystemIcon glow />
             <span className="mt-3 text-lg font-bold text-white">Ihr Leitsystem</span>
             <span className="mt-1 text-sm text-slate-400">auf Handy und Computer — alles sichtbar an einem Ort</span>
             <span className="mt-3"><SteuerBadge /></span>
@@ -197,7 +216,7 @@ export default function DemoVorschau() {
           role="presentation"
         >
           <div
-            className="w-full max-w-[560px] rounded-t-2xl bg-[#0f172a] p-6 ring-1 ring-white/10 sm:rounded-2xl"
+            className="max-h-[90vh] w-full max-w-[560px] overflow-y-auto rounded-t-2xl bg-[#0f172a] p-6 ring-1 ring-white/10 sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -218,11 +237,25 @@ export default function DemoVorschau() {
               </button>
             </div>
 
-            <div className="mt-4">
-              <ClipPlaceholder caption={detail.clip} />
-            </div>
+            {openNode === "lisa" ? (
+              // Lisa-Tiefe: ihre 5 Sterne (read-only Default-Vorschau) — der Beweis,
+              // dass sie kontrolliert reagiert. Entschärft Einwände vorab (M3).
+              <>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  Lisa ist kein starrer Anrufbeantworter. Sie reagiert auf fünf Feldern — alle nach
+                  Ihren Vorgaben. So sieht der Start-Zustand aus:
+                </p>
+                <div className="mt-5">
+                  <Constellation center={<LisaAvatar stars={5} />} centerLabel="Lisa" stars={LISA_STARS} />
+                </div>
+              </>
+            ) : (
+              <div className="mt-4">
+                <ClipPlaceholder caption={detail.clip} />
+              </div>
+            )}
 
-            <div className="mt-4 rounded-xl p-4" style={{ background: `${GOLD}12` }}>
+            <div className="mt-5 rounded-xl p-4" style={{ background: `${GOLD}12` }}>
               <p className="text-sm font-semibold" style={{ color: GOLD }}>So steuern Sie das</p>
               <p className="mt-1 text-sm text-slate-200">{detail.steuern}</p>
             </div>
