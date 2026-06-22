@@ -4,6 +4,13 @@
 > ausser auf ausdrückliche Anweisung des Founders. Quelle: 3h Founder + ChatGPT (`Chat gpt.txt`),
 > plus vier Founder-Edits (Opener §2, Kanal-Frage §5/§10, „Kein Interesse" §7) + §4 30-Sekunden-Reframe & wertigere Videoseite (18.06.).
 >
+> **Rückgrat-Fix 2026-06-22 (Founder-Anweisung):** Der Funnel führt jetzt mit dem **Schmerz „kein Auftrag
+> geht verloren"** (Sichtbarkeit/Leitsystem = das *Wie*, nicht der Aufmacher). Das **30-Sekunden-Erlaubnis-Gate
+> ist raus** — es signalisierte sofort „Verkauf", und der Handwerker auf der Baustelle hat keine 30 Sekunden.
+> Betroffen: §1 (Gatekeeper), §2 (Opener), §3 (keine Zeit), §4 (umgewidmet zu „nachhakt"), §11 (Identität).
+> §2 endet bewusst druckfrei (No-orientierter Ausweg statt Mikro-Close). Einwand-Blöcke §7–§10 behalten
+> „Sichtbarkeit" — dort ist sie die richtige Antwort.
+>
 > **Betriebs-Regel (schützt die Ehrlichkeit von „ich habe vorbereitet"):** Jeder Anruf, bei dem du
 > „ich habe etwas für Ihren Betrieb vorbereitet" sagst, muss **am selben Tag** in einer wirklich
 > gebauten + gesendeten Simulation enden. Pipeline ~10–12 Min + manuelle Prüfung → Mail ~35 Min
@@ -19,7 +26,7 @@ Grüezi, Gunnar Wende hier. Ich hätte eine kurze Frage an Herrn [Name] — es g
 
 ### Wenn Gatekeeper fragt: „Worum geht es genau?“
 
-Es geht um ein Leitsystem: Neue Kundenanfragen über Telefon, Website oder direkt aus einem Gespräch heraus laufen an einem Ort zusammen. So sieht Herr [Name], was eingegangen ist, was offen ist und was weiterlaufen muss. Ich würde ihn dazu gerne kurz persönlich fragen, ob das für [Betrieb] überhaupt ein Thema ist.
+Es geht darum, dass bei [Betrieb] keine Kundenanfrage verloren geht — auch dann nicht, wenn gerade niemand ans Telefon kann. Ich habe dazu etwas Konkretes für Herrn [Name] vorbereitet und würde ihn kurz persönlich fragen, ob das für [Betrieb] ein Thema ist.
 
 ### Wenn Gatekeeper sagt: „Schicken Sie es an info@…“
 
@@ -39,9 +46,9 @@ Wäre es sinnvoll, wenn ich morgen oder übermorgen nochmals kurz nachfasse, ob 
 
 Grüezi Herr [Name], Gunnar Wende aus Oberrieden.
 
-Ich mache es kurz, weil Sie wahrscheinlich mitten im Tagesgeschäft sind: Ich habe mir [Betrieb] angeschaut und etwas Konkretes zu Ihren Kundenanfragen vorbereitet.
+Ich mach's ganz kurz, weil Sie sicher unterwegs sind. Ich hab mir [Betrieb] angeschaut und Ihnen etwas vorbereitet — eine kurze Seite, auf der Sie sehen, wie bei Ihnen keine Kundenanfrage mehr untergeht, auch wenn Sie gerade nicht ans Telefon kommen.
 
-Darf ich Ihnen in 30 Sekunden sagen, warum ich konkret Sie anrufe?
+Ich schick's Ihnen einfach zu, Sie schauen's in einer ruhigen Minute an — und wenn's nichts für Sie ist, sagen Sie mir das ehrlich, das ist überhaupt kein Problem.
 
 ---
 
@@ -49,25 +56,23 @@ Darf ich Ihnen in 30 Sekunden sagen, warum ich konkret Sie anrufe?
 
 Verstehe ich, dann will ich Sie nicht aufhalten.
 
-Dann nur ganz kurz: Ich habe etwas Konkretes für Ihren Betrieb vorbereitet — eine kurze Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.
+Dann nur ganz kurz: Ich habe für [Betrieb] eine kurze Videoseite vorbereitet — Sie sehen darauf, wie bei Ihnen keine Anfrage mehr verloren geht, auch wenn Sie gerade nicht ans Telefon können.
 
-Darf ich Ihnen den Link per Mail schicken und mich danach einmal kurz melden?
+Darf ich Ihnen den Link einfach zuschicken? Wenn's nichts für Sie ist, müssen Sie gar nichts machen.
 
 ---
 
-## 4. Wenn er 30 Sekunden gibt
+## 4. Wenn er nachhakt / mehr wissen will
 
 Danke.
 
-Der Punkt ist einfach: Bei einem Betrieb wie Ihrem kommen neue Kundenanfragen heute über verschiedene Wege rein — Telefon, Website, E-Mail oder direkt aus einem Gespräch heraus.
+Der Punkt ist einfach: Bei einem Betrieb wie Ihrem kommen Anfragen über verschiedene Wege rein — Telefon, Website oder direkt aus einem Gespräch. Und wenn man mitten in der Arbeit ist, geht ab und zu eine unter, ohne dass man's überhaupt merkt.
 
 *(Im Live-Tool wird „einem Betrieb wie Ihrem" dynamisch um die 2–3 Kern-Gewerke ergänzt, z. B. „…mit Heizung und Sanitär" — aus Leistungen/Firmenname.)*
 
-Und wenn im Tagesgeschäft viel gleichzeitig läuft, ist genau die Frage: Bleibt am Ende wirklich alles sichtbar — was reingekommen ist, was offen ist und was weiterlaufen muss?
+Auf der Seite sehen Sie, wie bei Ihnen keine Anfrage mehr untergeht — sauber aufgenommen und sichtbar bei Ihnen weitergeführt, bis zum Abschluss.
 
-Genau dafür habe ich etwas Konkretes für Ihren Betrieb vorbereitet: eine kurze, für Ihren Betrieb vorbereitete Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.
-
-Darf ich Ihnen den Link per Mail schicken und mich morgen oder übermorgen nochmals kurz melden?
+Darf ich Ihnen den Link einfach zuschicken? Schauen Sie in Ruhe rein — und wenn's nichts für Sie ist, sagen Sie's mir.
 
 ---
 
@@ -161,7 +166,7 @@ Was ist für Sie besser — per Mail oder direkt aufs Handy?
 
 Gerne.
 
-Mein Name ist Gunnar Wende, ich bin aus Oberrieden. Ich baue ein Leitsystem für Sanitärbetriebe, damit neue Kundenanfragen aus Telefon, Website, E-Mail und direkten Gesprächen an einem Ort sichtbar weiterlaufen.
+Mein Name ist Gunnar Wende, ich bin aus Oberrieden. Ich helfe Sanitärbetrieben, dass keine Kundenanfrage mehr verloren geht — auch dann nicht, wenn gerade niemand ans Telefon kann. Dafür baue ich ein Leitsystem, in dem jede Anfrage sichtbar weiterläuft.
 
 Ich habe mir [Betrieb] angeschaut und deshalb etwas Konkretes für Ihren Betrieb vorbereitet.
 
@@ -171,7 +176,7 @@ Darf ich Ihnen den Link zur kurzen Videoseite schicken?
 
 Ich baue das unter dem Namen FlowSight auf — aber der Name ist hier gar nicht der wichtige Punkt.
 
-Wichtiger ist: Ich habe für [Betrieb] konkret vorbereitet, wie neue Kundenanfragen sichtbarer aufgenommen und weitergeführt werden können.
+Wichtiger ist: Ich habe für [Betrieb] konkret vorbereitet, wie bei Ihnen keine Anfrage mehr verloren geht.
 
 Darf ich Ihnen den Link zur kurzen Videoseite schicken?
 
