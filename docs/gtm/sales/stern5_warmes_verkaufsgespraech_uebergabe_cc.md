@@ -2,6 +2,7 @@
 
 Version: 1 (2026-06-17)  
 Status: Challenge-Punkte 1–8 eingearbeitet — einsatzbereit für Stern 5  
+Rückgrat-Fix 2026-06-22 (Founder): V6 Beat 1 (§3.1) führt jetzt mit dem Schmerz „kein Auftrag rutscht durch" statt „sichtbar bleibt" — konsistent mit Cold Call + Preis-Moment (5.1). Discovery (2.2/2.3) trug das Rückgrat bereits.  
 Sprache: Schweizer Hochdeutsch, Sie-Form  
 Stil: nüchtern, ehrlich, „echter Typ, kein Drücker“
 
@@ -177,7 +178,7 @@ Fallback = V5, wenn sein Erfolgsbild weich bleibt.
 Beat 1: kurz erden und Bestätigung holen.
 
 ```text
-Okay — kurz, so wie Sie es gesagt haben: Der Punkt ist nicht, ob bei Ihnen sauber gearbeitet wird, sondern ob später sichtbar bleibt, was offen ist und was weiterlaufen muss.
+Okay — kurz, so wie Sie es gesagt haben: Der Punkt ist nicht, ob bei Ihnen sauber gearbeitet wird, sondern dass Ihnen kein Auftrag mehr durchrutscht, nur weil im Tagesgeschäft mal etwas untergeht.
 
 Trifft das?
 ```
