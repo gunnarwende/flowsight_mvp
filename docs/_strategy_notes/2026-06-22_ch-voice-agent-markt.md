@@ -43,3 +43,22 @@ schon ~800/Mt → unser **flat-all-in 950** ist planbar und konkurrenzfähig, ni
 - **Premium-Preis verlangt Premium-Substanz** (Leitsystem + Voice-Qualität + done-for-you), sonst gewinnt der 85-€-Bot.
 
 Quellen: thinkiq.ch · cleverai.ch · noxo.ch · awoice.com · suisse-voice.ch (Preisvergleich) · fonio.ai (Anbietervergleich) · intochat.ai (CH-Preise 2026) · speechgen.io (CH-Deutsch-TTS).
+
+---
+
+## Angrenzend — Hero Software (Handwerker-ERP): was wir abkupfern (Founder-Bitte)
+**Was Hero ist:** „Das Betriebssystem fürs Handwerk" — Voll-ERP (Angebote/Rechnungen/Plantafel/Zeiterfassung/CRM/App),
+Testsieger (trusted), ~10k Betriebe. **Anderes Tier:** verwaltet Aufträge, die der Betrieb SCHON hat.
+
+**Abkupferbar (Inhalt/Idee, nicht Funktionsumfang):**
+1. **Kategorie-Claim besitzen** — „Das Betriebssystem fürs Handwerk" definiert die Kategorie. Wir haben Schmerz-Slogan, aber keinen Kategorie-Claim → Richtung „Das Leitsystem für jede Kundenanfrage".
+2. **Stolz/Würde** — „…das Niveau, das dein Handwerk verdient." Identität, nicht nur Effizienz. Beat E mit Stolz-Ton vertiefen.
+3. **Einfachheit als Testimonial** — Kundenstimme „so einfach, gar keine andere getestet". Ease = Conversion-Hebel; als Zitat einsammeln.
+4. **Trust-Gerüst früh** — Testsieger/Trustpilot/ProvenExpert/Capterra/Logos/Stories. Wir: 0 zahlend → ab Kunde 1 Stimmen + echte Gesichter sammeln.
+5. **Onboarding als sicheres Produkt** — begleitet, geringe Hürde/Risiko. Deckt Cockpit + „wir machen's mit Ihnen"; sichtbar risikolos machen.
+6. **Größen-Flex explizit** — „1-Mann bis 50+, zubuchbar". Validiert `tenant_config.groesse`; explizit aussprechen.
+7. **STRATEGISCH: wir liegen UPSTREAM.** Hero verwaltet erfasste Aufträge; FlowSight fängt die Anfrage ab, BEVOR sie ein Auftrag ist (verpasster Anruf). → **kein Konkurrent, sondern Zulieferer** („läuft neben Ihrer Handwerkersoftware"). Entschärft Cold-Call-§9 „wir haben schon ein System" architektonisch. Schützt Fokus: **NICHT zum ERP werden** (CLAUDE.md).
+
+**NICHT kopieren:** Funktionsumfang (Rechnungen/Plantafel/Zeiterfassung) = Heros Spiel, Scope-Tod für uns.
+
+Quellen: hero-software.de · trusted.de/hero · trustpilot/provenexpert/capterra (Hero) · starting-up.de.
