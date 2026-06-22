@@ -181,8 +181,9 @@ export default function DemoVorschau() {
         {/* ── Schluss-Beat: Eigentum ── */}
         <section className="mt-14 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
           <p className="text-[15px] leading-relaxed text-slate-200">
-            Und das Beste: Das ist <strong className="text-white">Ihr</strong> System. Sie richten jeden Teil
-            selbst ein — einfach, Schritt für Schritt, kein IT-Projekt. Und Sie können dabei nichts falsch machen.
+            Und das Beste: Sie bestimmen selbst, wie Ihre Kanäle ins <strong className="text-white">Leitsystem</strong>{" "}
+            laufen — welche Anfrage wie aufgenommen wird und was damit passiert. Eingerichtet ist es schnell, und Sie
+            können dabei nichts falsch machen. Es bleibt <strong className="text-white">Ihr</strong> System, nach Ihren Regeln.
           </p>
           <p className="mt-3 text-sm font-semibold text-white">— Gunnar Wende, Oberrieden</p>
         </section>
