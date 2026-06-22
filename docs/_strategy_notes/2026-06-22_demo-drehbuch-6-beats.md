@@ -30,14 +30,27 @@
 
 ## Beat E — der Wert (die Lücke, Detail)
 Heute beweist die Demo das **WIE** (Mechanik), nicht das **WARUM-zahlen**. Beat E ist das Zuhause der Wert-Story.
-Gereiht nach Handwerker-Wirkung:
-1. **Ruhe & Feierabend** (emotionaler Knockout) — nicht mehr Sklave des Telefons.
-2. **Der eine Auftrag** (ROI) — ein verpasster Auftrag zahlt FlowSight für Monate.
+
+**Lead-Reihenfolge (Founder-Entscheid 22.06.): GELD FÜHRT, RUHE SCHLIESST.** Der CH-Handwerker ist pragmatisch
+(„muss sich rechnen") → rational rein, emotional schließen. Konkret gereiht:
+1. **Kein verlorener Auftrag** (ROI, führt) — ein verpasster Auftrag zahlt FlowSight für Monate. + **unsichtbarer Verlust**: „die verpassten Anrufe sehen Sie nie — der Kunde ruft den Nächsten an."
+2. **Leerfahrt-Vermeidung** (Geld, konkret) — 24-h-SMS erinnert den Kunden automatisch → keine teure Fahrt zu „niemand da". (SMS, siehe unten.)
 3. **Billiger als Personal, 24/7** (Anker) — Bruchteil einer Bürohilfe, geht ran wenn Sie auf dem Dach sind.
-4. **Wirkt wie eine richtige Firma** (Stolz/Image).
-5. **Wächst mit** (Offerten-Nachfass, Bewertungen).
+4. **Mehr Bewertungen → mehr Sichtbarkeit → mehr Anfragen** (Bewertung, eigene Bühne — siehe unten).
+5. **Ruhe & Feierabend** (emotionaler Schluss-Kicker) — nicht mehr Sklave des Telefons.
 Anker-Satz: „Weniger als zwei verrechnete Stunden pro Woche — und verliert keinen Auftrag, während Sie arbeiten."
-**OFFEN (Founder):** Lead-Reihenfolge — **Ruhe/Feierabend** (mein Vorschlag: emotional rein) **oder** kein-verlorener-Auftrag (rational)?
+
+### SMS — mehrfacher Wert (prominent, nicht Fußnote)
+- **Bestätigungs-SMS → sofortige Bindung:** Kunde fühlt sich ernst genommen, sobald sein Anliegen sauber gelandet ist.
+- **24-h-Reminder → Leerfahrt-Vermeidung:** teure Fahrt zu „niemand zuhause" entfällt.
+- **Bonus:** dieselbe SMS = Adress-Korrektur-Schicht (V9).
+Quelle-Sprache vorhanden: alter T4-Speakflow (`docs/gtm/speakflow_template.md`, „24 Stunden vorher automatisch erinnert").
+
+### Bewertung — der letzte Punch (eigene Bühne)
+Universeller Handwerker-Pain (jeder hat Google, jeder weiß es zählt, jeder findet's mühsam). Founder geht hier tief.
+Sprache aus altem T4 übernehmen: *„gute Arbeit führt im Alltag nicht automatisch zu einer positiven Rückmeldung"* +
+*„man will nicht jedes Mal lästig nachfragen"* → Lösung: **im richtigen Moment, ohne Druck, direkt aufs Handy.**
+Verkaufswert: **mehr Sichtbarkeit = mehr Anfragen** (schließt den Kreis zum Funnel). → **eigenes Element hochziehen**, nicht in „wächst mit" vergraben.
 
 ## Beat A — Hero-Fall pro Gewerk (Matrix-Zeilen)
 „Dringender Alltagsfall", nicht exotischer Notfall, nicht langweilige Offerte. **Bei Notfall MUSS der Clip den Echtzeit-Alarm zeigen** (Lisa erkennt Dringlichkeit → Push/Anruf in Sekunden), nicht nur „Zettel abgelegt".

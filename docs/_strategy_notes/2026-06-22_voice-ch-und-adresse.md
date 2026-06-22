@@ -92,4 +92,18 @@ BuildingVerification, `developer.post.ch`; Billing-Beziehung nötig; Alt: `posit
 - **Fehlerfreiheit = ob die DATEN stimmen** → Capture + Validierung (V9). Unabhängig von der Stimme.
 - Ehrliches Versprechen: nicht „Lisa verhört sich nie" (ASR ≠ 100%), sondern **„ein Verhörer führt nie zu einer Fehlfahrt"** (Validierung + Inhaber-Augen + Rückrufnummer).
 
-Quellen: developer.post.ch (Address Web Services REST) · docs.retellai.com/build/add-pronunciation · retellai.com (TTS-Provider) · aicheck24.ch (CH-Test April 2026) · json2video.com (Heidi/Aleks).
+**Heidi/Aleks ohr-getestet (Founder 22.06.): beide grauenhaft → No-Go.** Community-CH-Stimmen sind raus.
+
+**Hochprofessioneller Weg (Founder will NUR High-End):** ElevenLabs **Professional Voice Clone (PVC)** — NICHT Instant-Clone.
+- Echte **Schweizer Profi-Sprecherin** (Schweizer Hochdeutsch, warmer „SRF/Réception"-Ton; kein Dialekt = TTS-untauglich).
+- **30 Min–3 h sauberes Studio-Audio**, Skript domänen-getunt: Phonetik-Breite + Sanitär-Vokabular + Ortsnamen der Region + „Grüezi"-Begrüssungen + Dispositions-Sätze.
+- **Verifizierte Einwilligung** der Sprecherin (PVC-Pflicht).
+- **Eine Premium-Stimme (oder kuratiert 2–3 m/w), amortisiert über ALLE Betriebe/Gewerke** → high-end UND effizient (einmal aufnehmen, alle profitieren).
+- **Identität pro Betrieb** ≠ eigene Stimme pro Betrieb (skaliert nie), sondern **dynamische Begrüssung** („Grüezi, do isch d'Lisa vo [Betrieb]") + hinterlegtes Wissen/Regeln. Stimme = FlowSight-Qualitätsstandard; Begrüssung+Inhalt = der konkrete Betrieb.
+- **Klon/Anhören läuft über Founder/Vercel** — Sandbox hat keinen Key + api.elevenlabs.io geblockt (geprüft). CC kann das **Aufnahme-Skript** liefern.
+
+**Adresse — Vertrauens-Ampel (Founder-Kern):** „Rückrufnummer liegt vor" ist NICHT die Antwort — 2–3 Fehlfahrten und das
+Vertrauen ist komplett weg, dann Bauchweh pro Ticket. Fix: jede Adresse **gegen Swiss Post validiert** → **grün=bestätigt**
+(verlässt sich ohne hinschauen) / **gelb=prüfen** (nur die wenigen). Anxiety weg, weil das System sagt, welche bombenfest sind.
+
+Quellen: developer.post.ch (Address Web Services REST) · docs.retellai.com/build/add-pronunciation · retellai.com (TTS-Provider) · aicheck24.ch (CH-Test April 2026) · json2video.com (Heidi/Aleks) · ElevenLabs Professional Voice Cloning.
