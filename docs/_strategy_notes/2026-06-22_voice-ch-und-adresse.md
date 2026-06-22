@@ -63,5 +63,33 @@ wird ein Feature (passt zu „kein blindes Durchstellen").
 ## Sequenzierung
 - Beide sind **Produkt-Themen vor der Demo.** Der **„Lisa hören"-Beweis** in der Demo darf einem Schweizer erst
   gezeigt werden, **wenn die Stimme nicht mehr deutsch klingt** (sonst nach hinten los).
-- **BigBen = Prüfstein** (echter Sani am Zürichsee): Ortsnamen-Aussprache + Adress-Capture genau dort validieren.
+- **Prüfstein = echter Sanitär-Tenant** (Dörfler / nächster zahlender Sani) — **NICHT BigBen** (ist ein Pub, nimmt gar keine Adressen auf → für V9 ungeeignet).
 - **Live-Agent nicht ohne Founder-Go** (Publish-Pflicht, zahlender Kunde).
+
+---
+
+## Update — Recherche & Korrekturen (22.06., Web)
+
+**ElevenLabs CH-Stimmen (vs. „die eine Katastrophe" vor 2 Mt):** Es gibt inzwischen MEHR — konkret *Heidi factual*
+(Schweizer Hochdeutsch = Standarddeutsch mit CH-Akzent) und *Aleks* (m, CH-Akzent). CH-Test (April 2026):
+„gut für Content, für hochprofessionell noch nicht perfekt → für Kundenkommunikation **Standarddeutsch-mit-CH-Akzent**
+statt Dialekt". ElevenLabs-**STT** erkennt CH-Akzent (hilft beim *Verstehen* der Anrufer). **Qualität = Founder-Ohr-Test**
+(ich habe keinen ElevenLabs-Zugang in der Sandbox; No-Go-Maßstab bleibt dein Ohr).
+
+**Retell-Realität (korrigiert meinen Plan):**
+- **Pronunciation-Dictionary ist English-only** (Turbo v2, nicht v2.5) → Ortsnamen-Dictionary für den DE-Agenten **geht nicht**. Hebel stattdessen: **CH-Stimme wählen/klonen** + Helvetismen/„Grüezi" im **Prompt-Text** + ggf. de-CH-Engine.
+- **Retell-TTS-Provider:** ElevenLabs (v3/Flash v2.5) · OpenAI · Cartesia · PlayHT · Minimax · Fish. **Azure de-CH (Leni/Jan) geht NICHT** in Retell.
+- **Stärkster Identitäts-Hebel:** eine echte CH-Sprecherin in Schweizer Hochdeutsch **klonen** (Voice-ID in Retell einsetzbar) → volle Kontrolle über Klang + Außenwirkung statt Community-Lotterie.
+
+**Adresse — Entkopplung (besser als „hängt an V8"):** Lisa muss den **Ortsnamen gar nicht aussprechen.**
+Read-back über **PLZ-Ziffern + Strasse + Hausnummer** (alles sagbar), **Ort wird aus der PLZ abgeleitet** (amtl. Verzeichnis),
+**Strasse gegen die echten Strassen dieser PLZ** geprüft via **Swiss-Post Address-Web-Services REST** (AutoComplete +
+BuildingVerification, `developer.post.ch`; Billing-Beziehung nötig; Alt: `positio.ch`). → Adresse (nahezu) fehlerfrei,
+**auch wenn die Stimme „Wädenswil" nicht perfekt sagt.** V9 hängt damit NICHT an V8.
+
+**Zwei Dimensionen (das End-to-End-Bild):**
+- **Außenwirkung = wie Lisa KLINGT** → Stimme (V8). Damit identifiziert sich der Betrieb.
+- **Fehlerfreiheit = ob die DATEN stimmen** → Capture + Validierung (V9). Unabhängig von der Stimme.
+- Ehrliches Versprechen: nicht „Lisa verhört sich nie" (ASR ≠ 100%), sondern **„ein Verhörer führt nie zu einer Fehlfahrt"** (Validierung + Inhaber-Augen + Rückrufnummer).
+
+Quellen: developer.post.ch (Address Web Services REST) · docs.retellai.com/build/add-pronunciation · retellai.com (TTS-Provider) · aicheck24.ch (CH-Test April 2026) · json2video.com (Heidi/Aleks).
