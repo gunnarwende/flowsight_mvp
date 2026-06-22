@@ -42,6 +42,8 @@ export interface CaseDetail {
   internal_notes: string | null;
   review_sent_at: string | null;
   review_rating: number | null;
+  address_status: string | null;
+  address_reason: string | null;
   is_deleted: boolean | null;
   deleted_at: string | null;
 }

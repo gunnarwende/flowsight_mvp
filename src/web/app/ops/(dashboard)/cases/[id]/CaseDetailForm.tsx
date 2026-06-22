@@ -1000,6 +1000,15 @@ export function CaseDetailForm({
                       </svg>
                     </a>
                   </div>
+                  {/* Adress-Ampel (Founder): nur ROT — nicht via Swiss Post bestätigt. Sonst neutral. */}
+                  {initialData.address_status === "unconfirmed" && (
+                    <div className="mt-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5">
+                      <p className="text-xs font-semibold text-red-700">Adresse prüfen</p>
+                      {initialData.address_reason && (
+                        <p className="mt-0.5 text-xs text-red-600">{initialData.address_reason}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
