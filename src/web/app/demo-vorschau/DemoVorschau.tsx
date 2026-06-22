@@ -98,6 +98,24 @@ const LISA_STARS: ConstellationStar[] = [
   { key: "telefonie", label: "So kommt der Anruf zu Lisa", note: "Springt erst ein, wenn Sie nicht drangehen — erst nach der Zeit, die Sie festlegen." },
 ];
 
+// Beat E — der Wert. Reihenfolge: Geld führt, Ruhe schließt (CH-pragmatisch).
+type ValueKey = "catch" | "sms" | "coin" | "star" | "sun";
+const VALUE: { key: ValueKey; titel: string; text: string }[] = [
+  { key: "catch", titel: "Kein Auftrag geht verloren", text: "Auch der Anruf, den Sie sonst nie bemerkt hätten — der Kunde ruft sonst einfach den Nächsten an." },
+  { key: "sms", titel: "Keine Leerfahrt mehr", text: "Eine SMS erinnert Ihren Kunden 24 Stunden vorher automatisch — niemand mehr vor verschlossener Tür." },
+  { key: "coin", titel: "Günstiger als eine Bürohilfe", text: "Ein Bruchteil davon — und Lisa geht auch dann ran, wenn Sie gerade auf dem Dach stehen." },
+  { key: "star", titel: "Mehr gute Bewertungen", text: "Im richtigen Moment um eine Google-Bewertung bitten — ohne Druck. Mehr Sichtbarkeit, mehr Anfragen." },
+];
+
+function ValueIcon({ name, size = 24 }: { name: ValueKey; size?: number }) {
+  const c = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: GOLD, strokeWidth: 1.7, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
+  if (name === "catch") return (<svg {...c}><path d="M12 3l7 2.6v5.1c0 4.4-3 7.4-7 8.9-4-1.5-7-4.5-7-8.9V5.6z" /><path d="M8.7 12l2.2 2.2 4.4-4.4" /></svg>);
+  if (name === "sms") return (<svg {...c}><path d="M4.5 6.2A1.7 1.7 0 0 1 6.2 4.5h11.6a1.7 1.7 0 0 1 1.7 1.7v7a1.7 1.7 0 0 1-1.7 1.7H9.2L5.5 18v-3.1h-.7a1.7 1.7 0 0 1 0-3.4z" /><path d="M8.5 9h7M8.5 12h4" /></svg>);
+  if (name === "coin") return (<svg {...c}><rect x="3" y="6.5" width="18" height="11" rx="2.2" /><circle cx="12" cy="12" r="2.6" /><path d="M6.2 9.4v5.2M17.8 9.4v5.2" /></svg>);
+  if (name === "sun") return (<svg {...c}><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7" /></svg>);
+  return (<svg {...c} fill={GOLD} stroke="none"><path d="M12 2.2l2.85 6.2 6.75.7-5 4.55 1.4 6.65L12 17.6 5.6 20.3 7 13.65l-5-4.55 6.75-.7z" /></svg>);
+}
+
 function LeitsystemIcon({ size = 64, glow = false }: { size?: number; glow?: boolean }) {
   const svg = (
     <svg width={size} height={size} viewBox="0 0 52 52" aria-hidden="true">
@@ -224,6 +242,40 @@ export default function DemoVorschau() {
             <span className="mt-1 text-sm text-slate-400">auf Handy und Computer — alles sichtbar an einem Ort</span>
             <span className="mt-3"><SteuerBadge /></span>
           </button>
+        </section>
+
+        {/* ── Beat E: Der Wert (Geld führt, Ruhe schließt) ── */}
+        <section className="mt-14">
+          <h2 className="text-center text-xl font-bold sm:text-2xl">Und was bringt Ihnen das?</h2>
+
+          {/* Geld/Nutzen führt — 4 Karten */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {VALUE.map((v) => (
+              <div key={v.key} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                <span className="mt-0.5 shrink-0"><ValueIcon name={v.key} size={26} /></span>
+                <span>
+                  <span className="block text-base font-semibold text-white">{v.titel}</span>
+                  <span className="mt-1 block text-sm text-slate-300">{v.text}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Ruhe schließt — emotionaler Schluss, gold getönt */}
+          <div className="mt-4 flex gap-3 rounded-2xl border p-5" style={{ borderColor: `${GOLD}55`, background: `${GOLD}12` }}>
+            <span className="mt-0.5 shrink-0"><ValueIcon name="sun" size={26} /></span>
+            <span>
+              <span className="block text-base font-semibold text-white">Und abends gehört Ihr Kopf wieder Ihnen</span>
+              <span className="mt-1 block text-sm text-slate-200">
+                Nicht mehr Sklave des Telefons. Lisa fängt alles auf, Notfälle kriegen Sie sofort — den Rest sehen Sie, wenn Sie Zeit haben.
+              </span>
+            </span>
+          </div>
+
+          {/* Anker-Satz */}
+          <p className="mx-auto mt-6 max-w-[640px] text-center text-base font-semibold leading-relaxed text-white sm:text-lg">
+            Weniger als zwei verrechnete Stunden pro Woche — und Ihnen geht kein Auftrag mehr verloren, während Sie arbeiten.
+          </p>
         </section>
 
         {/* ── Schluss-Beat: Eigentum ── */}
