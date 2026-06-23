@@ -1,0 +1,74 @@
+name: Stern 1 – Website-Crawl (on demand)
+
+# Mobil-Parität: Das Handy fasst keinen Key an — es löst nur diesen
+# workflow_dispatch aus. Der Crawl läuft in CI mit vollem Key-Zugriff
+# (GOOGLE_SCOUT_KEY aus den GitHub Secrets) und extrahiert die Stern-1-
+# Anreicherung (Inhaber, Größe, E-Mail, Leistungen, Notdienst, Bewertung)
+# via scripts/_ops/crawl_extract.mjs (Playwright, rendert auch JS-Sites).
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Website-URL des Betriebs (z. B. https://www.beispiel.ch)"
+        required: true
+        type: string
+      slug:
+        description: "Kunden-Slug (kebab-case). Leer lassen = aus der Domain abgeleitet."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dependencies installieren (src/web)
+        run: cd src/web && npm ci --ignore-scripts
+
+      - name: Playwright Chromium installieren
+        run: cd src/web && npx playwright install --with-deps chromium
+
+      # crawl_extract.mjs nutzt bare `import "playwright"`; es gibt kein
+      # Root-node_modules → an die Wurzel symlinken, damit die ESM-Auflösung
+      # die src/web-Dependency findet (cwd bleibt Repo-Wurzel für die
+      # docs/customers/<slug>/-Ausgabe).
+      - name: node_modules an Repo-Wurzel verlinken
+        run: ln -s src/web/node_modules node_modules
+
+      - name: Slug bestimmen
+        id: vars
+        env:
+          URL: ${{ inputs.url }}
+          SLUG_IN: ${{ inputs.slug }}
+        run: |
+          SLUG="$SLUG_IN"
+          if [ -z "$SLUG" ]; then
+            SLUG=$(printf '%s' "$URL" \
+              | sed -E 's#^https?://##; s#^www\.##; s#/.*$##; s#\.[a-zA-Z]+$##; s#[^a-zA-Z0-9]+#-#g' \
+              | tr '[:upper:]' '[:lower:]')
+          fi
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "Slug: $SLUG"
+
+      - name: Crawl + Stern-1-Anreicherung
+        env:
+          URL: ${{ inputs.url }}
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+        run: node scripts/_ops/crawl_extract.mjs --url "$URL" --slug "${{ steps.vars.outputs.slug }}"
+
+      - name: Ergebnis als Artifact hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawl-${{ steps.vars.outputs.slug }}
+          path: docs/customers/${{ steps.vars.outputs.slug }}/crawl_extract.json
+          if-no-files-found: error

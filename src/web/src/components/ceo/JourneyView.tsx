@@ -96,7 +96,6 @@ export function JourneyView() {
   const [view, setView] = useState<View>({ name: "home" });
   const [biz, setBiz] = useState<Biz | null>(null);
   const [liveHist, setLiveHist] = useState<string[]>([]);
-  const [ringFilter, setRingFilter] = useState<"akut" | "alle">("akut");
   const [search, setSearch] = useState("");
 
   const load = useCallback(async () => {
@@ -228,22 +227,16 @@ export function JourneyView() {
   function KontaktView() {
     const q = search.trim().toLowerCase();
     let rows = data!.leads;
-    if (ringFilter === "akut") rows = rows.filter((l) => l.ring === "0" || l.ring === "1");
     if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
 
     return (
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
-        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`}
-          sub="Inhaber, Größe und E-Mail direkt eintragbar (DB-gespeichert). Cold Call setzt den Namen ins Gespräch. Nach dem Call: ∅ kein Anschluss · ↻ Rückruf · ✕ abgelehnt · ✓ Ja." />
+        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`} />
 
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          <div className="flex rounded-lg border border-navy-200 overflow-hidden text-xs">
-            <button onClick={() => setRingFilter("akut")} className={`px-3 py-1.5 font-semibold ${ringFilter === "akut" ? "bg-navy-900 text-white" : "bg-white text-navy-500"}`}>Ring 0+1</button>
-            <button onClick={() => setRingFilter("alle")} className={`px-3 py-1.5 font-semibold ${ringFilter === "alle" ? "bg-navy-900 text-white" : "bg-white text-navy-500"}`}>Alle</button>
-          </div>
+        <div className="mb-3">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Suchen…"
-            className="px-3 py-1.5 rounded-lg border border-navy-200 text-sm flex-1 min-w-[140px] max-w-xs" />
+            className="px-3 py-2 rounded-lg border border-navy-200 text-sm w-full" />
         </div>
 
         {/* Desktop: Tabelle */}
@@ -304,10 +297,16 @@ export function JourneyView() {
                 <div className="min-w-0">
                   <div className="font-semibold text-navy-900 truncate">{l.firma}</div>
                   <div className="text-[11px] text-navy-400">{l.ort} · {l.tariff || "TBD"} · {l.rating ?? "—"}★/{l.reviews ?? "—"}</div>
-                  {l.website && <a href={l.website.startsWith("http") ? l.website : `https://${l.website}`} target="_blank" rel="noreferrer" className="text-[11px] text-gold-600 hover:underline">Website ↗</a>}
                 </div>
                 <StatusPill status={l.status} />
               </div>
+
+              {l.website && (
+                <a href={l.website.startsWith("http") ? l.website : `https://${l.website}`} target="_blank" rel="noreferrer"
+                  className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-gold-300 bg-gold-50 px-3 py-2.5 text-[15px] font-semibold text-gold-700 active:bg-gold-100">
+                  Website öffnen ↗
+                </a>
+              )}
 
               <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3">
                 <label className="block">
@@ -574,7 +573,7 @@ function CockpitList({ rows, title, empty, fmtDate }: { rows: Cockpit[]; title: 
 }
 
 // ── Kleine UI-Bausteine ───────────────────────────────────────────────────
-function PageHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub: string }) {
+function PageHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
   return (
     <div className="mb-5">
       <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold-600">{eyebrow}</div>
