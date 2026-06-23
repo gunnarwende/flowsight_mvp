@@ -9,14 +9,14 @@ on:
   workflow_dispatch:
     inputs:
       gemeinde:
-        description: "Ort/Gemeinde, z. B. Sirnach"
-        required: true
-        type: string
-      kanton:
-        description: "Kanton (voll, z. B. Thurgau) — schärft die Places-Suche"
+        description: "Ort, z. B. Sirnach — LEER = ganzer Kanton (Sweep)"
         required: false
         type: string
         default: ""
+      kanton:
+        description: "Kanton (voll, z. B. Thurgau)"
+        required: true
+        type: string
       count:
         description: "Anzahl Betriebe"
         required: true
@@ -45,7 +45,9 @@ jobs:
       - name: Dependencies installieren (src/web)
         run: cd src/web && npm ci --ignore-scripts
 
-      - name: Betriebe suchen (Google Places)
+      # ── Einzel-Ort (gemeinde gesetzt): bewährter Pfad, unverändert ──
+      - name: Einzel-Ort suchen (Google Places)
+        if: ${{ inputs.gemeinde != '' }}
         env:
           GEMEINDE: ${{ inputs.gemeinde }}
           KANTON: ${{ inputs.kanton }}
@@ -54,10 +56,22 @@ jobs:
         # DB-Zuordnung zählt unten die saubere Gemeinde.
         run: node scripts/_ops/scout.mjs --gemeinde "$(echo "$GEMEINDE $KANTON" | sed 's/[[:space:]]*$//')"
 
-      - name: Top-N additiv in die Kontaktliste
+      - name: "Einzel-Ort: Top-N additiv in die Kontaktliste"
+        if: ${{ inputs.gemeinde != '' }}
         env:
           GEMEINDE: ${{ inputs.gemeinde }}
           COUNT: ${{ inputs.count }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/_ops/discover_to_leads.mjs --gemeinde "$GEMEINDE" --count "$COUNT" --execute
+
+      # ── Kanton-Sweep (gemeinde leer): noch nicht erfasste Orte der Reihe nach ──
+      - name: Kanton-Sweep (ganzer Kanton)
+        if: ${{ inputs.gemeinde == '' }}
+        env:
+          KANTON: ${{ inputs.kanton }}
+          COUNT: ${{ inputs.count }}
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/discover_sweep.mjs --kanton "$KANTON" --count "$COUNT" --execute
