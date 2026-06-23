@@ -19,7 +19,7 @@ Die Maschine, die Code sicher in Produktion bringt: Deploy, CI, Datenbank-Migrat
 
 ## Dateibereich (Parallel-Konflikt-Regel)
 - **Besitzt:** `.github/workflows/`, `supabase/migrations/`, `scripts/_ops/`, `docs/architecture/env_vars.md`, Deploy-Config.
-- **Kollidiert mit:** Leitzentrale (App-Code wird hier nur ausgeliefert, nicht editiert) — getrennt halten.
+- **Kollidiert mit:** Betrieb (App-Code wird hier nur ausgeliefert, nicht editiert) — getrennt halten.
 
 ## Offen / nächster Schritt
 - ticketlist **V7c** (retell-publish Auto-Commit branch-protection-sauber) · **OPS1** (Deploy-Mail-Lärm) — beide niedrige Prio.

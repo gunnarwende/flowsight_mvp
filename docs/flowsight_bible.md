@@ -49,7 +49,7 @@ Datei-Bereich** → parallel bearbeitbar, ohne zu kollidieren.
 | Modul | Zweck (1 Zeile) | Karte |
 |---|---|---|
 | **Customer Journey** | Der Kundenweg von Kontakt bis Referenz (8 Sterne) | [→](modules/customer_journey/_index.md) |
-| **Leitzentrale** | Das Produkt im Betrieb: Lisa · Cockpit · Mail · Leitsystem | [→](modules/leitzentrale.md) |
+| **Betrieb** | Das Produkt im laufenden Betrieb: Lisa · Leitzentrale · Mail · Leitsystem | [→](modules/betrieb.md) |
 | **Finanzen** | Einnahmen · Ausgaben · Pricing · Marge · Runway | [→](modules/finanzen.md) |
 | **Infrastruktur** | Bauen & Ausliefern: Vercel · CI · Migrations · Secrets | [→](modules/infrastruktur.md) |
 | **Compliance** | DSG · PII · Recording-OFF · Daten-Verarbeitung | [→](modules/compliance.md) |

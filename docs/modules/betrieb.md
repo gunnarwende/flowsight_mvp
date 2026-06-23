@@ -1,8 +1,9 @@
-# Modul: Leitzentrale (das Produkt im Betrieb)
+# Modul: Betrieb (das Produkt im laufenden Betrieb)
 
 > Teil der [FlowSight Bible](../flowsight_bible.md). Das laufende Produkt: **Lisa**
 > (Telefon-Intake) · **Leitzentrale** (Ops-Cockpit) · **Mail-Dispatch**. Berührt die
 > Sterne 6–8, gehört aber keinem einzelnen — es ist das Herz, das immer läuft.
+> *(„Leitzentrale" bleibt der Produkt-/UI-Name; das Modul heißt „Betrieb".)*
 
 ## Zweck
 Eingehende Anfragen (Telefon/Web/Mail) laufen an einem Ort zusammen und werden sichtbar weitergeführt. Lisa nimmt auf (intake-only, max 7 Fragen, nie Preis, Recording OFF), die Leitzentrale zeigt Fälle, Mail geht an den Kunden.
