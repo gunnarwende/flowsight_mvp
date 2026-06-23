@@ -31,8 +31,8 @@ All vendors process data on behalf of FlowSight GmbH. No vendor receives data be
 
 | Data type | Where stored | Current retention | Policy (TBD) |
 |-----------|-------------|-------------------|---------------|
-| Cases (all fields) | Supabase `cases` table | Indefinite (no auto-delete) | TBD (Founder) |
-| Case attachments | Supabase Storage `case-attachments` bucket | Indefinite (no auto-delete) | TBD (Founder) |
+| Cases (all fields) | Supabase `cases` table | Indefinite (no auto-delete) | **24 Monate ab Abschluss** → löschen/anonymisieren (Founder-Entscheid 2026-06-23) |
+| Case attachments | Supabase Storage `case-attachments` bucket | Indefinite (no auto-delete) | **12 Monate** (Founder-Entscheid 2026-06-23) |
 | Tenant records | Supabase `tenants` table | Indefinite | Permanent (config data, not PII) |
 | Phone number mappings | Supabase `tenant_numbers` table | Indefinite | Permanent (config data) |
 | Voice call transcripts | NOT stored (Retell processes live, webhook receives extracted fields only) | N/A | N/A |
@@ -41,12 +41,12 @@ All vendors process data on behalf of FlowSight GmbH. No vendor receives data be
 | Vercel function logs | Vercel | 1 hour (Hobby plan) | Automatic, no action needed |
 | Sentry error events | Sentry | 90 days (default) | Configurable in Sentry → Settings → Data Retention |
 
-### Founder decisions needed
+### Founder-Entscheid 2026-06-23 (Arbeits-Default — mit Schweizer Datenschutz-Anwalt vor Produktiv-Skalierung bestätigen)
 
-- **Case retention period**: How long to keep completed cases? (e.g., 2 years, 5 years, indefinite)
-- **Attachment retention**: Same as cases, or shorter?
-- **Archived cases**: Keep indefinitely as audit trail, or delete after X months?
-- **Resend DPA**: Review and accept Resend's Data Processing Agreement.
+- **Abgeschlossene Fälle:** 24 Monate ab Abschluss → löschen/anonymisieren.
+- **Anhänge (Fotos):** 12 Monate.
+- **Archivierte Fälle (Audit-Spur):** nach 24 Monaten **anonymisieren** (statt hart löschen).
+- **Noch offen (→ §6):** Resend-DPA + übrige AVV/Adäquanz. **Auto-Löschjob noch nicht gebaut** — heute manuell (§3).
 
 ## 3. Deletion Procedure (manual)
 
@@ -140,3 +140,25 @@ Provider: **eCall.ch** (CH-based, see Subprocessors). SMS is transactional only 
 - Incident triage: docs/runbooks/90-incident-triage.md
 - Device loss (credential rotation): docs/runbooks/98-device-loss.md
 - Retell privacy config: docs/runbooks/retell_agent_config.md (privacy defaults section)
+
+## 6. Offene Compliance-Aufgaben (Founder / Recht) — Stand 2026-06-23
+
+### 6.1 AVV/DPA je Subprozessor (einsammeln + ablegen)
+
+| Vendor | AVV/DPA abgelegt? | US-Transfer / Adäquanz |
+|--------|------------------|------------------------|
+| Supabase (eu-central-1) | ⬜ | EU — ok |
+| Vercel (eu-central-1) | ⬜ | EU — ok |
+| Retell | ⬜ | **US → SCC/DPF nötig** |
+| Twilio | ⬜ | US+EU → SCC |
+| Peoplefone | ⬜ | CH — ok |
+| Resend | ⬜ (Review offen) | **US → SCC/DPF nötig** |
+| eCall.ch | ⬜ | CH — ok |
+| Sentry | ⬜ | **US → SCC/DPF nötig** |
+
+### 6.2 Weitere (vor Produktiv-Roll-out, mit Anwalt)
+- **Kunden-Datenschutzerklärung** (Endkunden des Betriebs) — Entwurf + Modul [Recht](../recht.md).
+- **Bearbeitungsverzeichnis + TOMs + Betroffenenrechte** — Entwurf: [`revdsg_entwuerfe.md`](revdsg_entwuerfe.md).
+
+### 6.3 As-built-Gegencheck Löschverfahren (§3)
+§3 deckt `cases` / `case_attachments` / `tenant_numbers` / `tenants`. **Inzwischen gibt es weitere tenant-/PII-bezogene Tabellen, die beim Löschen mit müssen:** `proof_pages`, `tenant_callbacks`, `cockpit_sessions` und für Gastro-Tenants `pub_events` / `pub_reservations` / `pub_callback_requests`. → §3 erweitern, bevor eine echte Löschung läuft.

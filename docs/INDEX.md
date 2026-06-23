@@ -22,6 +22,7 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 
 ## Einstieg (zuerst lesen)
 
+- [flowsight_bible.md](flowsight_bible.md) — **das Dach über allem**: Module + Nordstern + Parallel-Arbeit (woran arbeite ich, wie hängt alles zusammen). INDEX bleibt die Datei-Ebene darunter.
 - [business_briefing.md](business_briefing.md) — Executive-/Investor-One-Pager (Business in 5 Minuten)
 - [STATUS.md](STATUS.md) — Firmen-Log + was ist live (chronologisch)
 
@@ -47,9 +48,9 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 - **`gtm/onboarding/`** — `lessons_learned`, `cockpit_*`, `phase2_*`, `playbook_6_phases`, `customer_runbook_template`, `OC6_HANDOFF`.
 - **`gtm/pipeline/`** — `NEUER_BETRIEB_VIDEO_RUNBOOK`, `quality_gates`, `02_crawl_extract`, `03_derive_config`, `feedback/versand_timing_analyse`, `master_takes/_delivery/*`.
 - **`gtm/icp/`** — `stresstest_*`, `market/`.
-- **`brand/`** — `brand_system`, `style_dna`, `speech_clone/`, `gbp/`, `LinkedIn/`.
+- **`modules/marke/`** — `brand_system`, `style_dna`, `gbp/`, `LinkedIn/`, `OPS/`, `assets/` (speech_clone → `_archive/`).
 - **`runbooks/`** — Ops-/Setup-Runbooks (Voice, Kalender, SMS, Provisioning, Incident …). **Arbeitsweise:** [`session_ritual.md`](runbooks/session_ritual.md) (Tagesabschluss + Handy-Tipps) · [`mobile_ops.md`](runbooks/mobile_ops.md) (Live-Ops vom Handy).
-- **`compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
+- **`modules/compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
 - **`sales/`** — `leads.csv` (+ `leads.md`), `crawl_feedback`, `pipeline`, `discovery_questions`.
 
 ## Kunden (dünn — Live-Stand liegt im System)

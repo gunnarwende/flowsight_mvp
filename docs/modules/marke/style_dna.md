@@ -1,6 +1,6 @@
 # Style DNA — Binding Design Policy
 
-**Superseded by:** `docs/brand/brand_system.md` for colors, typography, and logo.
+**Superseded by:** `docs/modules/marke/brand_system.md` for colors, typography, and logo.
 **This file:** Component patterns, image style, copy tone, no-go list.
 
 ## Positioning
