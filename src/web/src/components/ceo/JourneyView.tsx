@@ -90,6 +90,13 @@ const STAR_INFO: Record<number, string> = {
   8: "Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz und speist Stern 1.",
 };
 
+// Thurgau-Gemeinden fürs „Go" (noch offene zuerst, dann bereits gescoutete).
+const TG_GEMEINDEN = [
+  "Sirnach", "Münchwilen", "Bischofszell", "Sulgen", "Eschlikon", "Wängi",
+  "Steckborn", "Diessenhofen", "Erlen", "Frauenfeld", "Weinfelden",
+  "Kreuzlingen", "Arbon", "Amriswil", "Romanshorn", "Aadorf",
+];
+
 export function JourneyView() {
   const [data, setData] = useState<JourneyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,6 +106,8 @@ export function JourneyView() {
   const [liveHist, setLiveHist] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [opsMsg, setOpsMsg] = useState<string | null>(null);
+  const [goCount, setGoCount] = useState(20);
+  const [goGemeinde, setGoGemeinde] = useState(TG_GEMEINDEN[0]);
 
   const load = useCallback(async () => {
     try {
@@ -191,11 +200,37 @@ export function JourneyView() {
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
           sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
 
-        <div className="flex justify-end mb-3">
-          <button onClick={() => go({ name: "ops" })}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-900 border border-navy-200 rounded-lg px-3 py-1.5 bg-white">
-            ⚙ Werkstatt
+        {/* Go — Schwungrad in Gang setzen */}
+        <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <div className="text-lg font-extrabold text-navy-900">Go</div>
+              <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, reichere an und baue die Kontaktliste.</p>
+            </div>
+            <button onClick={() => go({ name: "ops" })}
+              className="shrink-0 text-xs font-semibold text-navy-500 hover:text-navy-800 border border-navy-200 rounded-lg px-2.5 py-1.5">⚙ Werkstatt</button>
+          </div>
+
+          <div className="flex gap-2 mt-3">
+            {[10, 20, 30, 40].map((n) => (
+              <button key={n} type="button" onClick={() => setGoCount(n)}
+                className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold border ${goCount === n ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{n}</button>
+            ))}
+          </div>
+
+          <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
+            className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
+            {TG_GEMEINDEN.map((g) => <option key={g} value={g}>{g}</option>)}
+          </select>
+
+          <button type="button"
+            onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, count: String(goCount) })}
+            className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400">
+            ▶ Go — {goCount} Betriebe in {goGemeinde}
           </button>
+
+          {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
+          <p className="text-[11px] text-navy-300 mt-2">Läuft ~1–2 Min in der Cloud, dann erscheinen die Betriebe in der Kontaktliste (Stern 1).</p>
         </div>
 
         {/* Stern-Navigation */}
