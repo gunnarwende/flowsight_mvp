@@ -1,0 +1,43 @@
+name: Leads bereinigen (425 Alt-Crawl)
+
+# Mobil-Parität: aus dem Cockpit (/ceo/journey → Werkstatt) oder dem Actions-Tab
+# auslösbar. Default = Vorschau (Dry-Run, löscht nichts). Erst mit execute=true
+# wird wirklich gelöscht — und auch dann nur unbearbeiteter Alt-Crawl
+# (aktive Pipeline / gepflegte Leads bleiben, siehe purge_stale_leads.mjs).
+
+on:
+  workflow_dispatch:
+    inputs:
+      execute:
+        description: "Wirklich löschen? Aus = nur Vorschau (Dry-Run)."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dependencies installieren (src/web)
+        run: cd src/web && npm ci --ignore-scripts
+
+      - name: Bereinigen (Vorschau oder Löschen)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ "${{ inputs.execute }}" = "true" ]; then
+            node scripts/_ops/purge_stale_leads.mjs --execute
+          else
+            node scripts/_ops/purge_stale_leads.mjs
+          fi

@@ -81,7 +81,7 @@ jobs:
       # Optional: additiv in die leads-DB (matcht per place_id, sonst website;
       # überschreibt nie Founder-Felder). Ein Dispatch = Crawl + DB → /ceo/journey.
       - name: In leads-DB schreiben (optional)
-        if: ${{ inputs.to_db }}
+        if: ${{ inputs.to_db == true || inputs.to_db == 'true' }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
