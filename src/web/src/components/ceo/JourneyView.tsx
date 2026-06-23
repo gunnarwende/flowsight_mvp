@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   COLD, DRILL, injectColdText, gewerkPhrase, type ColdNode,
 } from "./journey/coldCallScript";
@@ -94,6 +94,16 @@ const STAR_INFO: Record<number, string> = {
   8: "Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz und speist Stern 1.",
 };
 
+// Größen-Tier aus ma_proxy (Mitarbeiter-Proxy): Solo 1–3 / Premium 4–15 / >15 DQ.
+function sizeTier(maProxy: string | null): "solo" | "premium" | "dq" | "offen" {
+  const m = String(maProxy ?? "").match(/\d+/);
+  if (!m) return "offen";
+  const n = parseInt(m[0], 10);
+  if (n <= 3) return "solo";
+  if (n <= 15) return "premium";
+  return "dq";
+}
+
 export function JourneyView() {
   const [data, setData] = useState<JourneyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -105,7 +115,17 @@ export function JourneyView() {
   const [opsMsg, setOpsMsg] = useState<string | null>(null);
   const [goCount, setGoCount] = useState(20);
   const [goKanton, setGoKanton] = useState("Thurgau");
-  const [goGemeinde, setGoGemeinde] = useState(CH_GEMEINDEN["Thurgau"][0]);
+  const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "offen">("alle");
+
+  // Schon erfasste Orte (haben Leads) → ✓ + Anzahl im Dropdown
+  const ortCount = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const l of data?.leads ?? []) {
+      if (l.ort) { const k = l.ort.trim().toLowerCase(); m.set(k, (m.get(k) ?? 0) + 1); }
+    }
+    return m;
+  }, [data]);
 
   const load = useCallback(async () => {
     try {
@@ -210,20 +230,24 @@ export function JourneyView() {
           </div>
 
           <select value={goKanton}
-            onChange={(e) => { const k = e.target.value; setGoKanton(k); setGoGemeinde(CH_GEMEINDEN[k][0]); }}
+            onChange={(e) => { setGoKanton(e.target.value); setGoGemeinde(""); }}
             className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
             {KANTONE.map((k) => <option key={k} value={k}>{k}</option>)}
           </select>
 
           <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
             className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
-            {CH_GEMEINDEN[goKanton].map((g) => <option key={g} value={g}>{g}</option>)}
+            <option value="">Ganzer Kanton (Sweep)</option>
+            {CH_GEMEINDEN[goKanton].map((g) => {
+              const c = ortCount.get(g.toLowerCase());
+              return <option key={g} value={g}>{c ? `${g} ✓ (${c})` : g}</option>;
+            })}
           </select>
 
           <button type="button"
             onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount) })}
             className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400">
-            ▶ Go — {goCount} Betriebe in {goGemeinde}
+            {goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — ${goCount} neue im ${goKanton}`}
           </button>
 
           {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
@@ -291,11 +315,24 @@ export function JourneyView() {
     const q = search.trim().toLowerCase();
     let rows = data!.leads;
     if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
+    if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
+
+    const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
+      { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
+      { k: "premium", label: "4–15" }, { k: "offen", label: "Größe?" },
+    ];
 
     return (
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
         <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`} />
+
+        <div className="flex gap-2 mb-2">
+          {SIZE_TABS.map((t) => (
+            <button key={t.k} type="button" onClick={() => setSizeFilter(t.k)}
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
+          ))}
+        </div>
 
         <div className="mb-3">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Suchen…"
