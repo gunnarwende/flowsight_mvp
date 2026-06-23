@@ -55,10 +55,15 @@ als ein ehrliches `?`):
 
 | Feld | startet | gehärtet in … | wodurch |
 |---|---|---|---|
-| **E-Mail** | `?` (Crawl unsicher) | **Stern 2** | Inhaber nennt sie beim „Ja" → verifizierte Empfänger-Wahrheit |
-| **Größe/MA** (= Preis-Schalter) | `?` | **Stern 5** | Discovery bestätigt Solo/Premium → setzt den Preis |
-| **Inhaber-Name** | `?` | Stern 2 | „Grüezi Herr X" nur wenn sicher, sonst neutral |
-| **Pain/Schmerz** | Hypothese (Haken) | Stern 5 | selbst-entdeckt im Discovery |
+| **Inhaber-Name** | `?` | **Stern 1** | Founder prüft die Liste gegen + klärt vor dem ersten Call — Pflicht |
+| **Größe/MA** (= Preis-Schalter) | `?` | **Stern 1** | muss *immer* rausgefunden werden (Founder-Gegenprüfung) — Pflicht |
+| **E-Mail** | `?` | **Stern 2** | Inhaber nennt sie im Cold Call → verifizierte Empfänger-Wahrheit |
+| **Pain/Schmerz** | Hypothese (Haken) | **Stern 5** | selbst-entdeckt im Discovery (nie präsentiert) |
+
+**Stern 1 härtet sich vorne, durch Founder-Input — nicht durch Rückkopplung aus späteren
+Sternen.** Inhaber + Größe werden am Anfang *immer* persönlich gegengeprüft und die `?`
+geklärt; so wird die Liste von Mal zu Mal besser. Einzig die E-Mail darf bis zum „Ja"
+(Stern 2) offen bleiben. Der Mensch klärt vorne — die Maschine rät nie.
 
 ## Was von Stern zu Stern wandert
 
@@ -67,7 +72,7 @@ als ein ehrliches `?`):
 | **1 → 2** | Firma + **Inhaber-Name** (→ `[Name]`) + **Gewerk** (→ `[Gewerk]`, via `gewerkPhrase()`) + Tarif-Hypothese + **Haken** (A/B/C/D). Tech: `BIZ={firma,name,gewerk}` ins Skript injiziert. |
 | **2 → 3** | das **„Ja"** (Trigger) + **verifizierte Mail** + Kanal. Erst dieses Ja zündet die teure Pipeline (Ökonomie-Umkehr). Tech: Lead-Record → `tenant_config`-Seed. |
 | **3 → 4** | der **`/p/[token]`-Link** + scharfes Tracking (view=0). Tech: `proof_pages`-Row, Bunny-GUIDs, Resend-Versand. |
-| **4 → 5** | das **Gesehen-Signal + Watch-Tiefe** = *wie warm* → priorisiert den warmen Rückruf. |
+| **4 → 5** | das **Gesehen-Signal + Watch-Tiefe** = *wie warm* → priorisiert den warmen Rückruf. Bleibt **intern** — nie als Prüf-Frage an den Prospect („angeschaut?/gefallen?" = Kontrollfreak, S10). |
 | **5 → 6** | die **Zusage** + Discovery (Pain, Größe→Preis, Wunschtermin/Rückmelde OC8). Tech: füllt `tenant_config` ~70 % vor. |
 | **6 → 7** | die **review-fertige Config** (Lisa, Dispositionen, Leitsystem gebaut). Tech: Cockpit-Session → DB. |
 | **7 → 8** | der **zahlende Kunde** + live `tenant_id` + scharfe Config (Retell published). |
