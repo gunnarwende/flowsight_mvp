@@ -5,6 +5,11 @@ import {
   COLD, DRILL, injectColdText, gewerkPhrase, type ColdNode,
 } from "./journey/coldCallScript";
 import { WARM_PHASES, WARM_DRILL } from "./journey/warmCallScript";
+import CH_GEMEINDEN_RAW from "@/src/data/ch_gemeinden_de.json";
+
+// Deutschschweizer Kantone → Orte (alphabetisch generiert aus swiss-cities, language=de).
+const CH_GEMEINDEN = CH_GEMEINDEN_RAW as Record<string, string[]>;
+const KANTONE = Object.keys(CH_GEMEINDEN);
 
 // ── Typen ─────────────────────────────────────────────────────────────────
 interface Lead {
@@ -89,13 +94,6 @@ const STAR_INFO: Record<number, string> = {
   8: "Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz und speist Stern 1.",
 };
 
-// Thurgau-Gemeinden fürs „Go" (noch offene zuerst, dann bereits gescoutete).
-const TG_GEMEINDEN = [
-  "Sirnach", "Münchwilen", "Bischofszell", "Sulgen", "Eschlikon", "Wängi",
-  "Steckborn", "Diessenhofen", "Erlen", "Frauenfeld", "Weinfelden",
-  "Kreuzlingen", "Arbon", "Amriswil", "Romanshorn", "Aadorf",
-];
-
 export function JourneyView() {
   const [data, setData] = useState<JourneyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -106,7 +104,8 @@ export function JourneyView() {
   const [search, setSearch] = useState("");
   const [opsMsg, setOpsMsg] = useState<string | null>(null);
   const [goCount, setGoCount] = useState(20);
-  const [goGemeinde, setGoGemeinde] = useState(TG_GEMEINDEN[0]);
+  const [goKanton, setGoKanton] = useState("Thurgau");
+  const [goGemeinde, setGoGemeinde] = useState(CH_GEMEINDEN["Thurgau"][0]);
 
   const load = useCallback(async () => {
     try {
@@ -210,13 +209,19 @@ export function JourneyView() {
             ))}
           </div>
 
+          <select value={goKanton}
+            onChange={(e) => { const k = e.target.value; setGoKanton(k); setGoGemeinde(CH_GEMEINDEN[k][0]); }}
+            className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
+            {KANTONE.map((k) => <option key={k} value={k}>{k}</option>)}
+          </select>
+
           <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
             className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
-            {TG_GEMEINDEN.map((g) => <option key={g} value={g}>{g}</option>)}
+            {CH_GEMEINDEN[goKanton].map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
 
           <button type="button"
-            onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, count: String(goCount) })}
+            onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount) })}
             className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400">
             ▶ Go — {goCount} Betriebe in {goGemeinde}
           </button>
