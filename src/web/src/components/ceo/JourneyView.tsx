@@ -247,7 +247,8 @@ export function JourneyView() {
             className="px-3 py-1.5 rounded-lg border border-navy-200 text-sm flex-1 min-w-[140px] max-w-xs" />
         </div>
 
-        <div className="overflow-x-auto bg-white rounded-xl border border-navy-200">
+        {/* Desktop: Tabelle */}
+        <div className="hidden sm:block overflow-x-auto bg-white rounded-xl border border-navy-200">
           <table className="w-full text-[13px] border-collapse">
             <thead>
               <tr className="text-left text-navy-400 text-[10px] uppercase tracking-wide">
@@ -274,7 +275,9 @@ export function JourneyView() {
                   <td className="px-3 py-2.5 border-b border-navy-50 w-16">
                     <Edit value={l.ma_proxy} placeholder="?" onSave={(v) => patchLead(l.id, { ma_proxy: v })} small />
                   </td>
-                  <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap text-navy-600">{l.telefon || "—"}</td>
+                  <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap text-navy-600">
+                    {l.telefon ? <a href={`tel:${l.telefon}`} className="text-navy-700 hover:underline">{l.telefon}</a> : "—"}
+                  </td>
                   <td className="px-3 py-2.5 border-b border-navy-50">
                     <Edit value={l.mail} placeholder="E-Mail…" onSave={(v) => patchLead(l.id, { mail: v })} />
                   </td>
@@ -292,6 +295,51 @@ export function JourneyView() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Handy: Karten (kein horizontales Scrollen) */}
+        <div className="sm:hidden space-y-2.5">
+          {rows.map((l) => (
+            <div key={l.id} className="bg-white rounded-xl border border-navy-200 p-3.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-semibold text-navy-900 truncate">{l.firma}</div>
+                  <div className="text-[11px] text-navy-400">{l.ort} · {l.tariff || "TBD"} · {l.rating ?? "—"}★/{l.reviews ?? "—"}</div>
+                  {l.website && <a href={l.website.startsWith("http") ? l.website : `https://${l.website}`} target="_blank" rel="noreferrer" className="text-[11px] text-gold-600 hover:underline">Website ↗</a>}
+                </div>
+                <StatusPill status={l.status} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3">
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-wide text-navy-400">Inhaber</span>
+                  <Edit value={l.entscheider} placeholder="Inhaber…" onSave={(v) => patchLead(l.id, { entscheider: v })} />
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-wide text-navy-400">Größe</span>
+                  <Edit value={l.ma_proxy} placeholder="?" onSave={(v) => patchLead(l.id, { ma_proxy: v })} small />
+                </label>
+                <label className="block col-span-2">
+                  <span className="block text-[10px] uppercase tracking-wide text-navy-400">E-Mail</span>
+                  <Edit value={l.mail} placeholder="E-Mail…" onSave={(v) => patchLead(l.id, { mail: v })} />
+                </label>
+                <div className="col-span-2">
+                  <span className="block text-[10px] uppercase tracking-wide text-navy-400">Telefon</span>
+                  {l.telefon ? <a href={`tel:${l.telefon}`} className="text-[15px] font-semibold text-navy-800">{l.telefon}</a> : <span className="text-navy-400">—</span>}
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-3 py-2 text-[13px] font-bold hover:bg-gold-400">▶ Cold Call</button>
+                <div className="flex gap-1.5">
+                  <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
+                  <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
+                  <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
+                  <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

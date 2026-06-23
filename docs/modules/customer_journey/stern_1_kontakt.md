@@ -28,7 +28,7 @@ mit dem Crawlen der Betriebe**:
 1. **Scope laden** (ICP · Region · Reihenfolge — unten).
 2. **Crawlen:** pro Betrieb die 10 Spalten füllen. **Was nicht sicher ist, bleibt `?` — nie
    geraten.** Eine falsche Nummer/Mail/MA-Zahl ist schlimmer als ein ehrliches `?`.
-3. **Kontaktliste ausgeben** (Monitor *und* Handy bedienbar).
+3. **Upsert in die `leads`-DB** → erscheint live in `/ceo/journey` (Monitor *und* Handy).
 4. **Founder-Gegenprüfung:** **Inhaber + Größe** klären (Pflicht), `?` auflösen. So wird die
    Liste von Mal zu Mal besser — der Mensch härtet vorne.
 5. **Bereit für Cold Call** (Stern 2).
@@ -41,11 +41,11 @@ mit dem Crawlen der Betriebe**:
 - **Reihenfolge:** **Gemeinde für Gemeinde** — eine PLZ/Ort komplett crawlen + abarbeiten,
   dann die nächste benachbarte (geografische Welle).
 
-### Die 10 Spalten (Kontaktliste — exakt, `customer_journey.html`)
+### Die 10 Spalten (Kontaktliste — Spec; Implementierung: `/ceo/journey`)
 
 `# · Firma · Inhaber · Größe · Leistungen · Website prüfen · Telefon · E-Mail · Status · Aktion`
 
-- **Editierbar** (lokal, später server): Inhaber, Größe, E-Mail, Leistungen.
+- **Editierbar** (DB-gespeichert via `/api/ceo/journey/lead`): Inhaber, Größe, E-Mail, Leistungen.
 - **Aktion:** `▶ Cold Call` + Dispositionen `∅ kein Anschluss · ↻ Rückruf · ✕ abgelehnt
   (2 Mt gesperrt) · ✓ Ja`. Status + Funnel füllen sich aus den geloggten Calls.
 - **`?`-Disziplin** im Code verankert (Inhaber/Größe/Mail/Leistungen: „nie raten — leer = offen").
@@ -71,16 +71,16 @@ Wert/Haken führt; lokale Nähe kommt mit Ring 0 zurück.
 ## Kanonische Quelle (SSOT)
 
 - [SALES_BIBLE](../../gtm/sales/SALES_BIBLE.md) — ICP (§3), Region (§4), Abend-Ritual (§1).
-- Operatives Tool: [`gtm/customer_journey.html`](../../gtm/customer_journey.html) — Stern-1-Kontaktliste (`LEADS_TG`, Thurgau) + Schwungrad, Monitor + Handy.
+- Operatives Tool (SSOT): **`/ceo/journey`** (`src/web/src/components/ceo/JourneyView.tsx`) — DB-gestützte Stern-1-Kontaktliste + Schwungrad + Cold-Call, auth-geschützte PWA (Handy + Desktop). *Die frühere `customer_journey.html` (Prototyp, localStorage) wurde abgelöst und entfernt.*
 - Lead-Motor: `build_leads.mjs` → `docs/sales/leads.csv`, `todays_list.mjs`, `enrich_leads.mjs`.
 - Existenz-Validierung: [lessons_learned_sales](../../gtm/sales/lessons_learned_sales.md) („Google-Maps ≠ Existenzbeweis").
 
 ## Dateibereich (Parallel-Konflikt-Regel)
 
-- **Besitzt:** diese Karte + die Stern-1-Fläche in `gtm/customer_journey.html` + `docs/sales/` (leads, crawl) + Lead-Motor-Scripts.
+- **Besitzt:** diese Karte + die Stern-1-Fläche in `JourneyView` (`/ceo/journey`) + `docs/sales/` (leads, crawl) + Lead-Motor-Scripts.
 - **Kollidiert mit:** Stern 2 + 5 (teilen sich `SALES_BIBLE.md`) → nicht gleichzeitig in der SALES_BIBLE schreiben.
 
 ## Offen / nächster Schritt
 
 - **Nordstern-Takt:** täglich 20 Betriebe kontaktierbar — Lead-Nachschub Thurgau, Gemeinde für Gemeinde.
-- Ziel-Architektur (s. `_index.md`): ein Durchtrage-Record statt localStorage; Crawl-Stand landet bei CC.
+- DB-Fundament steht (`leads`-Tabelle = SSOT, `/api/ceo/journey`). Nächster Schritt: go-Crawl schreibt **nur neue `place_id`** dazu, ohne Tool-Edits zu überschreiben (s. `sync_leads_to_db.mjs`).

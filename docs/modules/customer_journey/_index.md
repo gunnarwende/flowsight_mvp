@@ -30,8 +30,8 @@ Stern 5**; dazwischen (3 + 4) arbeitet die Pipeline still im Hintergrund.
 ## Region (führend) & Steuerung
 
 - **Führende Region: Thurgau** (letzter Stand). Die Stern-1-Kontaktliste lebt operativ
-  in [`gtm/customer_journey.html`](../../gtm/customer_journey.html) (`LEADS_TG`, 21 Betriebe).
-  `docs/sales/leads.csv` (Zürichsee) ist **nicht** die SSOT der heutigen Liste.
+  in **`/ceo/journey`** (`JourneyView`, DB-gestützt = SSOT). `docs/sales/leads.csv` (Zürichsee)
+  ist **nicht** die SSOT der heutigen Liste — die `leads`-DB-Tabelle ist es.
 - **Von Monitor UND Handy steuerbar.** Schwungkreis + alle 8 Sterne sind
   **Handymodus-fähig** (responsive). Regel für jede neue Stern-Fläche: am Handy bedienbar
   bleiben (Kontaktliste → Karten, fingerfreundliche Dispositions-Tipps).
