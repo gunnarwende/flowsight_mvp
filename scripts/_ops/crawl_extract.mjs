@@ -87,7 +87,7 @@ const result = {
   email: { value: "", source: "", verified: false },
   oeffnungszeiten: { value: null, source: "not_found", verified: false, action: "founder_confirm" },
   notdienst: { value: null, source: "not_found", verified: false, action: "skip" },
-  google: { rating: null, review_count: null, source: "google_api", verified: false },
+  google: { place_id: null, rating: null, review_count: null, source: "google_api", verified: false },
   gruendung: { value: null, source: "not_found", verified: false },
   team_groesse: { value: null, source: "not_found", verified: false, note: "NIEMALS aus Fotos herleiten" },
   leistungen: { value: {}, source: "", verified: false },
@@ -1017,7 +1017,7 @@ async function fetchGooglePlaces(companyName, address) {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": GOOGLE_API_KEY,
-        "X-Goog-FieldMask": "places.rating,places.userRatingCount,places.displayName",
+        "X-Goog-FieldMask": "places.id,places.rating,places.userRatingCount,places.displayName",
       },
       body: JSON.stringify({
         textQuery: query,
@@ -1036,6 +1036,7 @@ async function fetchGooglePlaces(companyName, address) {
       const place = data.places[0];
       console.log(`  [Google] Found: ${place.displayName?.text} — ${place.rating} (${place.userRatingCount} reviews)`);
       return {
+        place_id: place.id || null,
         rating: place.rating || null,
         review_count: place.userRatingCount || null,
       };
@@ -1269,6 +1270,7 @@ async function main() {
   const companyName = result.firma.value || slug;
   const address = result.adresse.value || "";
   const googleResult = await fetchGooglePlaces(companyName, address);
+  result.google.place_id = googleResult.place_id ?? null;
   result.google.rating = googleResult.rating;
   result.google.review_count = googleResult.review_count;
   if (googleResult.rating) {
