@@ -50,7 +50,7 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 - **`gtm/icp/`** — `stresstest_*`, `market/`.
 - **`brand/`** — `brand_system`, `style_dna`, `speech_clone/`, `gbp/`, `LinkedIn/`.
 - **`runbooks/`** — Ops-/Setup-Runbooks (Voice, Kalender, SMS, Provisioning, Incident …). **Arbeitsweise:** [`session_ritual.md`](runbooks/session_ritual.md) (Tagesabschluss + Handy-Tipps) · [`mobile_ops.md`](runbooks/mobile_ops.md) (Live-Ops vom Handy).
-- **`compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
+- **`modules/compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
 - **`sales/`** — `leads.csv` (+ `leads.md`), `crawl_feedback`, `pipeline`, `discovery_questions`.
 
 ## Kunden (dünn — Live-Stand liegt im System)
