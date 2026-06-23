@@ -57,8 +57,7 @@ type View =
   | { name: "warm" }
   | { name: "warmlive"; i: number }
   | { name: "warmdrill"; i: number; show: boolean }
-  | { name: "step"; star: number }
-  | { name: "ops" };
+  | { name: "step"; star: number };
 
 // Stern → Säule → Farbe
 const PILLAR: Record<number, { name: string; dot: string; bar: string }> = {
@@ -189,7 +188,6 @@ export function JourneyView() {
   if (view.name === "warmlive") return <WarmLive i={view.i} />;
   if (view.name === "warmdrill") return <WarmDrill i={view.i} show={view.show} />;
   if (view.name === "step") return <StepInfo star={view.star} />;
-  if (view.name === "ops") return <Werkstatt />;
   return <Home />;
 
   // ── Home: Funnel + Stern-Navigation ────────────────────────────────────
@@ -202,14 +200,8 @@ export function JourneyView() {
 
         {/* Go — Schwungrad in Gang setzen */}
         <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <div className="text-lg font-extrabold text-navy-900">Go</div>
-              <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, reichere an und baue die Kontaktliste.</p>
-            </div>
-            <button onClick={() => go({ name: "ops" })}
-              className="shrink-0 text-xs font-semibold text-navy-500 hover:text-navy-800 border border-navy-200 rounded-lg px-2.5 py-1.5">⚙ Werkstatt</button>
-          </div>
+          <div className="text-lg font-extrabold text-navy-900">Go</div>
+          <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, reichere an und baue die Kontaktliste.</p>
 
           <div className="flex gap-2 mt-3">
             {[10, 20, 30, 40].map((n) => (
@@ -285,62 +277,6 @@ export function JourneyView() {
           </div>
         </div>
         <p className="text-[10px] text-navy-300 mt-4">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (eingefroren). Stand: {new Date(data!.snapshot_at).toLocaleString("de-CH")}</p>
-      </div>
-    );
-  }
-
-  // ── Werkstatt: Ops vom Handy auslösen (Mobil-Parität) ───────────────────
-  function Werkstatt() {
-    const inputCls = "w-full px-3 py-2 rounded-lg border border-navy-200 text-sm mb-2";
-    return (
-      <div>
-        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
-        <PageHead eyebrow="Ops · nur für mich" title="Werkstatt"
-          sub="Operationen vom Handy auslösen — läuft in der Cloud mit allen Keys, du fasst keinen an." />
-
-        {opsMsg && (
-          <div className="mb-4 rounded-lg border border-navy-200 bg-white px-4 py-3 text-sm text-navy-700">{opsMsg}</div>
-        )}
-
-        {/* Crawl */}
-        <form className="bg-white rounded-xl border border-navy-200 p-4 mb-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const f = new FormData(e.currentTarget);
-            const url = String(f.get("url") || "").trim();
-            if (!url) { setOpsMsg("URL fehlt."); return; }
-            dispatchWorkflow("crawl.yml", {
-              url,
-              slug: String(f.get("slug") || "").trim(),
-              to_db: f.get("to_db") ? "true" : "false",
-            });
-          }}>
-          <div className="font-bold text-navy-900">Crawl — Betrieb anreichern</div>
-          <p className="text-[12px] text-navy-400 mb-3">Website crawlen → Stern-1-Daten (Inhaber, Größe, Mail, Leistungen, Bewertung). Mit der DB-Option landet er direkt in der Kontaktliste.</p>
-          <input name="url" placeholder="https://www.betrieb.ch" inputMode="url" className={inputCls} />
-          <input name="slug" placeholder="Slug (optional — sonst aus Domain)" className={inputCls} />
-          <label className="flex items-center gap-2 text-sm text-navy-700 mb-3">
-            <input type="checkbox" name="to_db" className="w-4 h-4" /> direkt in die DB / Kontaktliste schreiben
-          </label>
-          <button type="submit" className="w-full bg-gold-500 text-navy-950 rounded-lg px-4 py-2.5 text-sm font-bold hover:bg-gold-400">▶ Crawl auslösen</button>
-        </form>
-
-        {/* Purge */}
-        <div className="bg-white rounded-xl border border-navy-200 p-4">
-          <div className="font-bold text-navy-900">Alt-Leads bereinigen (die 425)</div>
-          <p className="text-[12px] text-navy-400 mb-3">Vorschau zeigt im Lauf-Log, was bleibt und was gelöscht würde. Löschen entfernt nur unbearbeiteten Alt-Crawl — aktive Pipeline &amp; gepflegte Leads bleiben.</p>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => dispatchWorkflow("purge.yml", { execute: "false" })}
-              className="flex-1 bg-navy-900 text-white rounded-lg px-3 py-2.5 text-sm font-bold hover:bg-navy-800">Vorschau</button>
-            <button type="button"
-              onClick={() => { if (confirm("Wirklich löschen? Unbearbeiteter Alt-Crawl wird entfernt (aktive Pipeline bleibt).")) dispatchWorkflow("purge.yml", { execute: "true" }); }}
-              className="flex-1 border border-navy-300 text-navy-700 rounded-lg px-3 py-2.5 text-sm font-bold hover:bg-navy-50">Wirklich löschen</button>
-          </div>
-        </div>
-
-        <p className="text-[11px] text-navy-400 mt-3">
-          Ergebnis im jeweiligen Lauf — <a href="https://github.com/gunnarwende/flowsight_mvp/actions" target="_blank" rel="noreferrer" className="text-gold-600 hover:underline">Actions öffnen ↗</a>. Crawl→DB erscheint zudem direkt in der Kontaktliste.
-        </p>
       </div>
     );
   }
