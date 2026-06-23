@@ -142,10 +142,10 @@ und der genannten Bible.
 
 ## 4. ICP & Preis (kanonisch in SALES_BIBLE — hier der Anker)
 
-- **Leitsignal:** „Inhaber am Telefon?" Inhabergeführt, klein bis mittel, Sanitär/Heizung, echte Website, 1–12 Mitarbeiter.
-- **Zweistufig (Größe = Preis-Schalter):**
-  - Solo 1–3 MA → rund **CHF 950 / Monat**
-  - Premium 4–12 MA → rund **CHF 2'000 / Monat**
+- **Leitsignal:** „Inhaber am Telefon?" Inhabergeführt, klein bis mittel, Sanitär/Heizung, echte Website, 1–15 Mitarbeiter.
+- **Zweistufig (Größe = Preis- *und* Positionierungs-Schalter — Painpoint je Stufe):**
+  - Solo 1–3 MA → rund **CHF 950 / Monat** (Erreichbarkeits-Pain)
+  - Premium 4–15 MA → rund **CHF 2'000 / Monat** (Steuerbarkeit/Komplexität)
 - **Aktivierung:** einmalig rund **CHF 2'500** (geführter Aufbau).
 - **Handelsregeln:** monatlich kündbar (Risiko-Umkehr), **kein Trial**, **zahlend erst am Go-live**, nie rabattieren (Knappheit ~10/Monat).
 
