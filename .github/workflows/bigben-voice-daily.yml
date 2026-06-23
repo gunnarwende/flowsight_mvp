@@ -1,15 +1,20 @@
 name: BigBen Voice Daily Refresh
 
-# CRITICAL: Lisa MUST always speak with today's correct date.
-# We run 3× per day at non-top-of-hour times so a single skipped GitHub
-# Actions run never leaves the voice on yesterday's date.
+# LIVE-CUSTOMER-KRITISCH. Big Ben Pub (Paul, Oberrieden) ist FlowSights ERSTER
+# zahlender Live-Kunde (converted 14.04.2026, Barter-Deal). Voice EN+DE produktiv
+# unter +41 44 505 48 18. Kundenakte: docs/customers/bigben-pub/status.md.
+#
+# Dieser Workflow hält Lisa aktuell: heutiges/morgiges Datum + Events-Liste, und
+# published zu Retell. Lisa MUSS immer das korrekte Datum sprechen. Ein Fehlschlag
+# trifft einen echten Kunden — NICHT ignorieren, zeitnah fixen.
+#
+# 3× pro Tag (off-the-hour), damit ein einzelner ausgelassener GitHub-Actions-Run
+# die Datums-Garantie nicht bricht.
 on:
   schedule:
-    # Off-the-hour timing (xx:13) reduces skip risk vs. top-of-hour scheduling.
-    # Three windows daily so one skip does not break the date guarantee:
-    - cron: "13 5 * * *"   # 05:13 UTC = 06:13 CET / 07:13 CEST  (before pub opens)
-    - cron: "13 11 * * *"  # 11:13 UTC = 12:13 CET / 13:13 CEST  (mid-day catch-up)
-    - cron: "13 17 * * *"  # 17:13 UTC = 18:13 CET / 19:13 CEST  (early-evening catch-up)
+    - cron: "13 5 * * *"   # 05:13 UTC = 06:13 CET / 07:13 CEST  (vor Pub-Öffnung)
+    - cron: "13 11 * * *"  # 11:13 UTC = 12:13 CET / 13:13 CEST  (Mittags-Catch-up)
+    - cron: "13 17 * * *"  # 17:13 UTC = 18:13 CET / 19:13 CEST  (früher-Abend-Catch-up)
   workflow_dispatch: {}
 
 jobs:
@@ -29,55 +34,24 @@ jobs:
         run: cd src/web && npm ci
 
       - name: Run BigBen voice daily refresh
-        id: refresh
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RETELL_API_KEY: ${{ secrets.RETELL_API_KEY }}
         run: |
-          set -o pipefail
-          OUTPUT=$(node scripts/_ops/bigben_voice_daily_refresh.mjs 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-
-          # Capture last 30 lines for Telegram notification
-          TAIL=$(echo "$OUTPUT" | tail -30)
-          {
-            echo "report<<REPORT_EOF"
-            echo "$TAIL"
-            echo "REPORT_EOF"
-          } >> "$GITHUB_OUTPUT"
-
-          # Capture verified date for Telegram (publishes "Today is X.")
-          DATE_LINE=$(echo "$OUTPUT" | grep -oE 'today: [^,]+, [0-9]{1,2} [A-Z][a-z]{2} [0-9]{4}' | head -1)
-          echo "date_line=${DATE_LINE}" >> "$GITHUB_OUTPUT"
-
+          # set +e + tee: Das Skript-Ergebnis wird ausgewertet, OHNE den Step bei
+          # node!=0 sofort abzubrechen. Der alte Aufbau (`OUTPUT=$(node …)` unter dem
+          # GitHub-Default `bash -e`) brach beim ersten Fehler ab, BEVOR die Ausgabe
+          # geloggt wurde → "failed" ganz ohne Grund. tee schreibt die echte
+          # Fehlermeldung live ins Actions-Log.
+          set +e
+          node scripts/_ops/bigben_voice_daily_refresh.mjs 2>&1 | tee /tmp/bigben_refresh.log
+          STATUS=${PIPESTATUS[0]}
+          if [ "$STATUS" -ne 0 ]; then
+            echo "::error::BigBen voice daily refresh failed (exit $STATUS) — echte Ursache siehe Log oben."
+          fi
           exit $STATUS
 
-      - name: Notify Telegram on success
-        if: success()
-        env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          DATE_LINE: ${{ steps.refresh.outputs.date_line }}
-        run: |
-          BODY="✓ BigBen voice refreshed%0A${DATE_LINE}%0A%0AEN+DE flows published & verified."
-          curl -sS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d text="${BODY}" \
-            -d disable_web_page_preview=true \
-            -o /dev/null
-
-      - name: Notify Telegram on failure
-        if: failure()
-        env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          REPORT: ${{ steps.refresh.outputs.report }}
-        run: |
-          BODY="🔴 BigBen Voice Daily Refresh FAILED%0A%0A${REPORT}%0A%0AManual fix: gh workflow run \"BigBen Voice Daily Refresh\""
-          curl -sS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d text="${BODY}" \
-            -d disable_web_page_preview=true \
-            -o /dev/null
+      # Telegram-Benachrichtigungen entfernt 21.06. (Founder nutzt Telegram nicht mehr).
+      # Status/Fehler sind im Actions-Log sichtbar (oben) + GitHub schickt bei Fehlschlag
+      # ohnehin eine E-Mail an den Repo-Owner.

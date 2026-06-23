@@ -16,6 +16,8 @@ export interface PostCallSmsPayload {
   street?: string;
   houseNumber?: string;
   reporterName?: string;
+  /** Swiss-Post-Adressstatus (V9). Nur "unconfirmed" verschärft die SMS (gezielter Prüf-Satz). */
+  addressStatus?: string | null;
 }
 
 /**
@@ -33,11 +35,14 @@ export async function sendPostCallSms(
   const caseRef = `${p.caseIdPrefix}-${p.seqNumber}`;
   const correctionUrl = `${baseUrl}/v/${caseRef}?t=${shortToken}`;
 
-  // ≤ 160 chars: natural, service-oriented tone. Avoids spam triggers:
-  // - No "Bitte prüfen" (sounds like phishing)
-  // - URL on flowsight.ch (branded domain, not vercel.app)
-  // - Short, factual, helpful
-  const body = `${p.smsSenderName}: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen:\n${correctionUrl}`;
+  // Ampel-gesteuerter Ton (V9, Founder): NUR wenn die Adresse nicht bestätigt werden
+  // konnte ("unconfirmed") kommt der gezielte Prüf-Satz — service-gerahmt ("damit der
+  // Techniker Sie sicher findet"), nicht als pauschaler Phishing-Alarm. Sonst neutral.
+  // URL auf flowsight.ch (Branded-Domain), kurz, hilfreich.
+  const addressFlagged = p.addressStatus === "unconfirmed";
+  const body = addressFlagged
+    ? `${p.smsSenderName}: Ihre Meldung wurde aufgenommen. Bitte prüfen Sie unbedingt Ihre Adresse, damit der Techniker Sie sicher findet:\n${correctionUrl}`
+    : `${p.smsSenderName}: Ihre Meldung wurde aufgenommen. Hier können Sie Angaben ergänzen oder Fotos anfügen:\n${correctionUrl}`;
 
   return sendSms(p.callerPhone, body, p.smsSenderName);
 }

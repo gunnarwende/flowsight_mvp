@@ -7,6 +7,7 @@ import { hasModule } from "@/src/lib/tenants/hasModule";
 import { getTenantSmsConfig } from "@/src/lib/tenants/getTenantSmsConfig";
 import { sendPostCallSms } from "@/src/lib/sms/postCallSms";
 import { generateShortVerifyToken } from "@/src/lib/sms/verifySmsToken";
+import { validateAddress } from "@/src/lib/address/validateAddress";
 import { APP_BASE_URL } from "@/src/lib/config/appUrl";
 import { resolveTenantScope } from "@/src/lib/supabase/resolveTenantScope";
 
@@ -361,6 +362,27 @@ export async function POST(request: NextRequest) {
       }).then(({ error: evErr }) => { if (evErr) Sentry.captureException(evErr); });
     }
 
+    // Adress-Validierung (V9, Swiss Post) — best-effort, blockiert NIE die Fall-Erstellung.
+    // Bis Credentials gesetzt: status "skipped" (neutral). Migration noch nicht angewendet →
+    // Update-Fehler wird nur geloggt, der Fall bleibt unberührt.
+    let addressStatus: string | null = null;
+    try {
+      const av = await validateAddress({
+        plz: data.plz,
+        city: data.city,
+        street: data.street ?? undefined,
+        houseNumber: data.house_number ?? undefined,
+      });
+      addressStatus = av.status;
+      const { error: addrErr } = await supabase
+        .from("cases")
+        .update({ address_status: av.status, address_reason: av.reason ?? null })
+        .eq("id", row.id);
+      if (addrErr) Sentry.captureException(addrErr, { tags: { _tag: "cases_api", area: "address_validation" } });
+    } catch (addrEx) {
+      Sentry.captureException(addrEx, { tags: { _tag: "cases_api", area: "address_validation" } });
+    }
+
     // SMS confirmation to reporter (wizard + voice share the same SMS logic)
     if (data.contact_phone) {
       const smsConfig = await getTenantSmsConfig(tenantId);
@@ -378,6 +400,7 @@ export async function POST(request: NextRequest) {
           street: data.street,
           houseNumber: data.house_number,
           reporterName: data.reporter_name,
+          addressStatus,
         });
         if (smsResult.sent) {
           await supabase.from("case_events").insert({

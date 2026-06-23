@@ -90,10 +90,23 @@ async function main() {
     console.log("✓ Agent angelegt:", agentId);
   }
 
-  // 3) Publishen (Draft → live nutzbar für Web-Calls)
+  // 3) Publishen — NEUE API (Retell-Deprecation 2026-07-20): NICHT client.agent.publish()
+  //    aus retell-sdk@5.2.0 verwenden — das trifft den deprecateten `POST /publish-agent/`.
+  //    Stattdessen `/publish-agent-version/{agent_id}` mit konkreter Version (wie
+  //    retell_sync.mjs / bigben_publish.mjs). Reiner fetch mit demselben API-Key.
   try {
-    await client.agent.publish(agentId);
-    console.log("✓ Agent published");
+    const agRes = await fetch(`https://api.retellai.com/get-agent/${agentId}`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    const ag = await agRes.json();
+    const version = ag.version ?? ag.agent_version;
+    const pubRes = await fetch(`https://api.retellai.com/publish-agent-version/${agentId}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ version }),
+    });
+    if (!pubRes.ok) throw new Error(`publish-agent-version HTTP ${pubRes.status}: ${(await pubRes.text()).slice(0, 200)}`);
+    console.log(`✓ Agent published (v${version})`);
   } catch (e) {
     console.log("⚠ publish-Schritt:", e?.message ?? e, "(ggf. bereits published — prüfen)");
   }

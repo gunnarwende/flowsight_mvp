@@ -51,12 +51,12 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
   const supabase = getServiceClient();
 
   // Resolve case: UUID direct lookup or prefix-seq lookup
-  let caseRow: { id: string; created_at: string; reporter_name: string | null; plz: string | null; city: string | null; street: string | null; house_number: string | null } | null = null;
+  let caseRow: { id: string; created_at: string; reporter_name: string | null; plz: string | null; city: string | null; street: string | null; house_number: string | null; address_status: string | null; address_reason: string | null } | null = null;
 
   if (isUuid(caseParam)) {
     const { data } = await supabase
       .from("cases")
-      .select("id, created_at, reporter_name, plz, city, street, house_number")
+      .select("id, created_at, reporter_name, plz, city, street, house_number, address_status, address_reason")
       .eq("id", caseParam)
       .single();
     caseRow = data;
@@ -72,7 +72,7 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
         const tenantIds = tenants.map((t: { id: string }) => t.id);
         const { data } = await supabase
           .from("cases")
-          .select("id, created_at, reporter_name, plz, city, street, house_number")
+          .select("id, created_at, reporter_name, plz, city, street, house_number, address_status, address_reason")
           .in("tenant_id", tenantIds)
           .eq("seq_number", ref.seq)
           .single();
@@ -114,6 +114,10 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
   // Pass the token the CorrectionForm needs for the API call (short or full)
   const tokenForApi = fullToken || shortToken;
 
+  // Ampel (Founder): nur ROT sichtbar. Adresse konnte nicht bestaetigt werden →
+  // gezielter Hinweis; sonst (confirmed/skipped/error/null) neutral, kein Banner.
+  const addressFlagged = caseRow.address_status === "unconfirmed";
+
   return shell(
     <div className="space-y-6">
       <div>
@@ -124,6 +128,19 @@ export default async function ShortVerifyPage({ params, searchParams }: PageProp
           Bitte pruefen Sie Ihren Namen und Ihre Adresse und laden Sie bei Bedarf Fotos vom Schaden hoch.
         </p>
       </div>
+
+      {addressFlagged && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-semibold text-red-800">
+            Bitte pruefen Sie Ihre Adresse
+          </p>
+          <p className="mt-1 text-sm text-red-700">
+            {caseRow.address_reason
+              ? `Wir konnten Ihre Adresse nicht eindeutig bestaetigen (${caseRow.address_reason}). Bitte korrigieren Sie sie unten, damit der Techniker Sie sicher findet.`
+              : "Wir konnten Ihre Adresse nicht eindeutig bestaetigen. Bitte korrigieren Sie sie unten, damit der Techniker Sie sicher findet."}
+          </p>
+        </div>
+      )}
 
       <div className="rounded-xl border border-gray-200 bg-white p-5">
         <CorrectionForm

@@ -13,8 +13,9 @@
  * No PII in output — only counts, ages, and IDs (truncated).
  */
 
+import { writeFileSync } from "node:fs";
 import { createClient } from "../../src/web/node_modules/@supabase/supabase-js/dist/index.mjs";
-import { bunnyEnv, getVideo, getStatistics, sumChart } from "./_lib/bunny.mjs";
+import { classifyLead, render } from "./_lib/morning_report_render.mjs";
 
 // ---------------------------------------------------------------------------
 // Supabase client
@@ -344,9 +345,9 @@ try {
 // Severity
 // ---------------------------------------------------------------------------
 
-const isRed = (stuck48h ?? 0) > 0 || !healthOk || !resendOk || expiring24h.length > 0 || staleCount > 0 || agentHangupCount > 0 || pubPendingStale > 0;
-const isYellow = (backlogNew ?? 0) > 5 || notfallCount > 0 || followUpDueCount > 0 || pubPendingTotal > 0;
-const severity = isRed ? "🔴" : isYellow ? "🟡" : "🟢";
+// Severity (🟢/🟡/🔴) + nachvollziehbarer Grund werden in
+// morning_report_render.render() aus dem Modell unten berechnet.
+// pubPendingStale (BigBen) ist KEIN Rot-Trigger mehr → FYI im Betrieb-Block.
 
 // ---------------------------------------------------------------------------
 // Format
@@ -358,105 +359,82 @@ const dateStr = now.toLocaleDateString("de-CH", {
   timeZone: "Europe/Zurich",
 });
 
-// ── Outreach / Watch-Signal: Bunny-Watch-Statistik × proof_pages ──
-// Pro aktive Beweis-Seite: geöffnet? welche Takes wie tief? Gerät? + ausgeschriebene
-// Handlung (anrufen / Reminder). Guarded: fehlt IRGENDEIN Bunny-Env (API-Key, Library-ID
-// oder CDN-Hostname), wird die Watch-Sektion still übersprungen — der Tagesüberblick darf
-// NIE an einer optionalen Integration crashen (bunnyEnv() wirft sonst weiter unten).
-async function buildWatchSignalLines() {
-  if (
-    !process.env.BUNNY_STREAM_API_KEY ||
-    !process.env.BUNNY_STREAM_LIBRARY_ID ||
-    !process.env.BUNNY_STREAM_CDN_HOSTNAME
-  ) {
-    return [];
-  }
-  let pages = [];
+// ── Beweis-Seiten: kanonische Kadenz (Tag 0/3/6-7, max 3 Touches, Tag 14 Ablauf) ──
+// Verlässliches Signal: opened? (view_count), Alter seit Versand (created_at), Aktualität
+// (last_viewed_at). Watch-Tiefe (per-Take-%) bewusst weggelassen bis MR2 (sauberes Tracking):
+// T1 ist EIN geteiltes canonical Video → %-Wert wertlos; Rest verrauscht durch eigene Views.
+let leads = [];
+try {
+  const { data: leadPages } = await supabase
+    .from("proof_pages")
+    .select("token, tenant_slug, company_name, created_at, view_count, last_viewed_at")
+    .eq("status", "active");
+
+  // MR2: ehrliche T2-Watch-Tiefe je Seite — eigene Founder-Views (is_preview) ausgeschlossen.
+  // Tabelle fehlt evtl. noch (Migration nicht angewandt) → guarded, Report läuft ohne Tiefe.
+  const t2ByToken = {};
   try {
-    const { data } = await supabase
-      .from("proof_pages")
-      .select("company_name,videos,view_count")
-      .eq("status", "active");
-    pages = data || [];
-  } catch {
-    return [];
-  }
-  if (!pages.length) return [];
-  const env = bunnyEnv();
-  const now = new Date();
-  const from = new Date(now.getTime() - 14 * 864e5);
-  const d10 = (d) => d.toISOString().slice(0, 10);
-  const TAKES = [["t1", "T1"], ["t2", "T2"], ["t2_portrait", "T2📱"], ["t3", "T3"], ["t4", "T4"]];
-  const rows = [];
-  for (const p of pages) {
-    let signal = 0, mobile = 0, desktop = 0;
-    const parts = [];
-    for (const [k, lbl] of TAKES) {
-      const guid = p.videos?.[k];
-      if (!guid) continue;
-      try {
-        const len = (await getVideo(env, guid)).length || 0;
-        const s = await getStatistics(env, { guid, dateFrom: d10(from), dateTo: d10(now) });
-        const views = sumChart(s.viewsChart);
-        const watch = sumChart(s.watchTimeChart);
-        if (views > 0 && len > 0) parts.push(`${lbl} ${Math.min(100, Math.round((watch / views / len) * 100))}%`);
-        signal += watch;
-        if (k === "t2_portrait") mobile += watch;
-        if (k === "t2") desktop += watch;
-      } catch { /* noop */ }
+    const { data: watch, error: eWatch } = await supabase
+      .from("proof_watch")
+      .select("token, take, max_pct, is_preview")
+      .in("take", ["t2", "t2_portrait"])
+      .eq("is_preview", false);
+    if (eWatch) console.error("Query proof_watch:", eWatch.message);
+    for (const w of watch || []) {
+      if ((w.max_pct ?? 0) > (t2ByToken[w.token] ?? 0)) t2ByToken[w.token] = w.max_pct;
     }
-    const dev = mobile > desktop ? "📱" : desktop > 0 ? "💻" : "·";
-    const opened = p.view_count ?? 0;
-    const actionShort = opened === 0 ? "Reminder senden (Link)"
-      : signal < 60 ? "Reminder: erster Eindruck?"
-      : "anrufen (warm)";
-    rows.push({ name: p.company_name, dev, parts, signal, opened, actionShort });
+  } catch (e) {
+    console.error("Query proof_watch (skipped):", e.message);
   }
-  rows.sort((a, b) => b.signal - a.signal);
-  if (rows.every((r) => r.signal === 0 && r.opened === 0)) {
-    return ["Noch keine Aufrufe — wird aktiv, sobald du versendest."];
-  }
-  return rows.map((r) => `${r.name} — ${r.dev} ${r.opened}× geöffnet · ${r.parts.join(" ")}  →  ${r.actionShort}`);
+
+  leads = (leadPages || []).map((p) =>
+    classifyLead({ ...p, t2_pct: t2ByToken[p.token] ?? null }, now.getTime()),
+  );
+} catch (e) {
+  console.error("Query proof_pages (leads):", e.message);
 }
-const watchRows = await buildWatchSignalLines();
 
-// ── Founder-tauglicher Tagesüberblick: Status-Symbol (🟢/🟡/🔴) + Klartext,
-//    Handlung zuerst, KEINE technischen Codes. 1-Minuten-Überblick.
-const aktionen = [];
-if (notfallCount > 0) aktionen.push(`🚨 ${notfallCount} Notfall-Meldung (letzte 24h)`);
-if (agentHangupCount > 0) aktionen.push(`⚠ Telefon-Assistentin hat aufgelegt (${agentHangupCount}×) — bitte prüfen`);
-if ((stuck48h ?? 0) > 0) aktionen.push(`${stuck48h} Fall/Fälle hängen seit über 48h`);
-if (expiring24h.length > 0) aktionen.push(`${expiring24h.length} Test-Zugang läuft in unter 24h aus`);
-if (followUpDueCount > 0) aktionen.push(`${followUpDueCount}× Trial-Follow-up fällig${followUpNames ? ` (${followUpNames})` : ""}`);
-if (pubPendingStale > 0) aktionen.push(`${pubPendingStale} BigBen-Reservierung(en) offen seit über 6h`);
+// ── Modell bauen + rendern (Severity + Kadenz + Mobil-HTML in morning_report_render) ──
+const sysProblems = [];
+if (!healthOk) sysProblems.push("API/Health");
+if (healthDb && healthDb !== "ok" && healthDb !== "?") sysProblems.push("Datenbank");
+if (!resendOk) sysProblems.push("E-Mail (Resend)");
+if (staleCount > 0) sysProblems.push("Lifecycle-Tick");
 
-const sysProblem = !healthOk || !resendOk || (healthDb && healthDb !== "ok");
-const aktN = aktionen.length;
-const fazit = aktN > 0 ? `${aktN} ${aktN === 1 ? "Punkt" : "Punkte"} für dich` : "alles in Ordnung";
-const subjectLine = `${severity} FlowSight · ${dateStr} · ${fazit}`;
+const model = {
+  dateStr,
+  appUrl: process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch",
+  leads,
+  overview: {
+    cases24h,
+    backlogNew: backlogNew ?? 0,
+    done7d: done7d ?? 0,
+    activeTrials: activeTrialCount,
+    followUpDue: followUpDueCount,
+  },
+  customerHealth: { bigbenPendingStale: pubPendingStale },
+  system: { ok: sysProblems.length === 0, problems: sysProblems },
+  alerts: {
+    notfall: notfallCount,
+    agentHangup: agentHangupCount,
+    stuck48h: stuck48h ?? 0,
+    expiring24h: expiring24h.length,
+  },
+};
 
-const report = [
-  `${severity}  FlowSight · Tagesüberblick · ${dateStr}`,
-  ``,
-  `🔔 HEUTE FÜR DICH`,
-  ...(aktN ? aktionen.map((a) => `   • ${a}`) : [`   • Nichts Dringendes — alles ruhig.`]),
-  ``,
-  `📊 DEINE BEWEIS-SEITEN  (wer hat geschaut?)`,
-  ...watchRows.map((r) => `   ${r}`),
-  ``,
-  `📥 ÜBERBLICK`,
-  `   Neue Anfragen (24h): ${cases24h}    ·    Offen: ${backlogNew ?? 0}    ·    Erledigt (7 Tage): ${done7d ?? 0}`,
-  `   Test-Zugänge aktiv: ${activeTrialCount}    ·    Follow-up fällig: ${followUpDueCount}`,
-  ``,
-  sysProblem ? `⚠ System: bitte prüfen (E-Mail / Datenbank / API)` : `System läuft · alles ok ✓`,
-].join("\n");
+const { subject: subjectLine, text: reportText, html: reportHtml } = render(model);
+const fullReport = reportText;
 
-const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://flowsight.ch";
-const fullReport = `${report}\n\n→ Zum Leitsystem: ${baseUrl}/ops`;
+// Artefakte für den Workflow: der E-Mail-Step liest Subject/HTML/Text aus diesen Dateien.
+try {
+  writeFileSync("/tmp/morning_report.subject", subjectLine);
+  writeFileSync("/tmp/morning_report.txt", reportText);
+  writeFileSync("/tmp/morning_report.html", reportHtml);
+} catch (e) {
+  console.error("write report artifacts:", e.message);
+}
 
-// Marker-Zeile: der Workflow zieht daraus den E-Mail-Betreff (und entfernt sie aus dem Body).
-console.log("__SUBJECT__:" + subjectLine);
-console.log("\n" + fullReport + "\n");
+console.log(`\n${subjectLine}\n\n${reportText}\n`);
 
 // ---------------------------------------------------------------------------
 // Optional: send via WhatsApp

@@ -1,0 +1,78 @@
+name: DB Migrate
+
+# Wendet EINE benannte Migrations-Datei aus supabase/migrations/ an — gezielt und
+# idempotent (Migrationen mit IF NOT EXISTS), via Supabase Management API.
+# KEIN blindes "db push" (kein Baseline-Risiko bei manuell migrierter Prod-DB).
+# Vom Handy per workflow_dispatch ausloesbar.
+# GATED: environment "production" = Required-Reviewer (dein Ein-Tap).
+# Secret SUPABASE_ACCESS_TOKEN bleibt im Runner, nie in der Sandbox.
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Migrations-Dateiname unter supabase/migrations/ (z. B. 20260622000000_case_address_validation.sql)"
+        required: true
+        type: string
+      dry_run:
+        description: "true = nur die SQL anzeigen (kein DB-Zugriff). false = anwenden."
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: db-migrate
+  cancel-in-progress: false
+
+env:
+  PROJECT_REF: oyouhwcwkdcblioecduo
+
+jobs:
+  migrate:
+    name: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Datei pruefen + SQL anzeigen
+        run: |
+          F="supabase/migrations/${{ inputs.file }}"
+          case "${{ inputs.file }}" in */*|*..*) echo "::error::Ungueltiger Dateiname"; exit 1;; esac
+          [ -f "$F" ] || { echo "::error::Datei nicht gefunden: $F"; exit 1; }
+          echo "── $F ──"; cat "$F"; echo "──────────"
+
+      - name: Dry-run (kein DB-Zugriff)
+        if: ${{ inputs.dry_run }}
+        run: echo "[DRY-RUN] Obige SQL wuerde via Management-API angewandt. Kein DB-Zugriff erfolgt."
+
+      - name: Anwenden (Management-API)
+        if: ${{ !inputs.dry_run }}
+        env:
+          TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          [ -n "${TOKEN:-}" ] || { echo "::error::SUPABASE_ACCESS_TOKEN nicht gesetzt."; exit 1; }
+          F="supabase/migrations/${{ inputs.file }}"
+          BODY=$(jq -Rs '{query: .}' < "$F")
+          CODE=$(curl -sS -o /tmp/resp.json -w "%{http_code}" -X POST \
+            "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+            -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
+            --data "$BODY")
+          echo "HTTP ${CODE}"; cat /tmp/resp.json || true; echo
+          case "$CODE" in 2*) echo "✅ angewandt";; *) echo "::error::Apply fehlgeschlagen (HTTP $CODE)"; exit 1;; esac
+
+      - name: Telegram-Notiz
+        if: ${{ always() }}
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ job.status }}
+          DRY: ${{ inputs.dry_run }}
+          FILE: ${{ inputs.file }}
+        run: |
+          [ -n "${BOT_TOKEN:-}" ] && [ -n "${CHAT_ID:-}" ] || { echo "(kein Telegram-Secret — skip)"; exit 0; }
+          MODE=$([ "$DRY" = "true" ] && echo "DRY-RUN" || echo "APPLY")
+          ICON=$([ "$RESULT" = "success" ] && echo "🗄️✅" || echo "🗄️❌")
+          curl -sS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" -d text="${ICON} DB Migrate (${MODE}) ${FILE}: ${RESULT}" \
+            -d disable_web_page_preview=true >/dev/null || true
