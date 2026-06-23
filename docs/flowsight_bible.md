@@ -87,3 +87,13 @@ Bereich, kanonische Quelle und nächsten Schritt.
 **SSOT-Disziplin:** Solange eine Karte auf eine bestehende Bible zeigt, lebt die
 Wahrheit dort — die Karte dupliziert nicht. Erst in Phase 2 wandert Inhalt um, und
 dann verschwindet er an der Quelle.
+
+## 5. Strategischer Thread: CEO-App spiegelt die Bible
+
+Es gibt eine **vollständig gebaute CEO-App** (`/ceo/*`), deren Sektionen die Module
+schon ~spiegeln (Pulse · Betriebe · Finanzen · Monitoring · Journey · …) — sie wird
+aber kaum genutzt. **Vision:** die CEO-App-Navigation = diese Modulstruktur, damit der
+Founder sein Business in Docs *und* App nach **derselben Karte** steuert (die
+tägliche-Flow-Oberfläche des Nordsterns). Einordnung + Diagnose: [Modul Monitoring](modules/monitoring.md)
+(„Strategischer Thread"). Umsetzung = eigene fokussierte Session (Brocken: Ausrichten +
+brauchbar-machen, kein Neubau).
