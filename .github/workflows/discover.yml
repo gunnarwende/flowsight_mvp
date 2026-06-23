@@ -1,0 +1,55 @@
+name: Go – Betriebe finden (Discovery)
+
+# Das "Go" auf dem Schwungrad: findet <count> Sanitär-Betriebe in <gemeinde>
+# (Google Places, scout.mjs) und schreibt die besten additiv in die leads-DB
+# (discover_to_leads.mjs — nur neue place_id, bestehende Zeilen unangetastet).
+# Läuft in CI mit vollem Key-Zugriff; das Handy löst nur aus.
+
+on:
+  workflow_dispatch:
+    inputs:
+      gemeinde:
+        description: "Gemeinde (Thurgau), z. B. Sirnach"
+        required: true
+        type: string
+      count:
+        description: "Anzahl Betriebe"
+        required: true
+        type: choice
+        default: "20"
+        options:
+          - "10"
+          - "20"
+          - "30"
+          - "40"
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dependencies installieren (src/web)
+        run: cd src/web && npm ci --ignore-scripts
+
+      - name: Betriebe suchen (Google Places)
+        env:
+          GEMEINDE: ${{ inputs.gemeinde }}
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+        run: node scripts/_ops/scout.mjs --gemeinde "$GEMEINDE"
+
+      - name: Top-N additiv in die Kontaktliste
+        env:
+          GEMEINDE: ${{ inputs.gemeinde }}
+          COUNT: ${{ inputs.count }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/discover_to_leads.mjs --gemeinde "$GEMEINDE" --count "$COUNT" --execute
