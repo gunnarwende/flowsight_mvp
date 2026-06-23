@@ -57,7 +57,8 @@ type View =
   | { name: "warm" }
   | { name: "warmlive"; i: number }
   | { name: "warmdrill"; i: number; show: boolean }
-  | { name: "step"; star: number };
+  | { name: "step"; star: number }
+  | { name: "ops" };
 
 // Stern → Säule → Farbe
 const PILLAR: Record<number, { name: string; dot: string; bar: string }> = {
@@ -97,6 +98,7 @@ export function JourneyView() {
   const [biz, setBiz] = useState<Biz | null>(null);
   const [liveHist, setLiveHist] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [opsMsg, setOpsMsg] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -135,6 +137,27 @@ export function JourneyView() {
     load();
   }
 
+  async function dispatchWorkflow(workflow: string, inputs: Record<string, string>) {
+    setOpsMsg("Wird ausgelöst …");
+    try {
+      const res = await fetch("/api/ceo/ops/dispatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workflow, inputs }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok && j.ok) {
+        setOpsMsg(`✓ Ausgelöst: ${workflow}. Läuft jetzt in Actions (~1–2 Min).`);
+      } else if (j.error === "GH_DISPATCH_TOKEN not configured") {
+        setOpsMsg("GH_DISPATCH_TOKEN fehlt — fine-grained PAT (Actions read+write) in Vercel setzen.");
+      } else {
+        setOpsMsg(`Fehler: ${j.error || j.status || res.status}`);
+      }
+    } catch {
+      setOpsMsg("Netzwerkfehler beim Auslösen.");
+    }
+  }
+
   function startCall(lead: Lead) {
     const nm = (lead.entscheider || "").split(",")[0].replace(/^\s*(Herr|Frau)\s+/i, "").trim();
     const ok = nm && nm.length >= 3 && !/\bAG\b|\bGmbH\b|Unternehmen|\?/.test(nm);
@@ -157,6 +180,7 @@ export function JourneyView() {
   if (view.name === "warmlive") return <WarmLive i={view.i} />;
   if (view.name === "warmdrill") return <WarmDrill i={view.i} show={view.show} />;
   if (view.name === "step") return <StepInfo star={view.star} />;
+  if (view.name === "ops") return <Werkstatt />;
   return <Home />;
 
   // ── Home: Funnel + Stern-Navigation ────────────────────────────────────
@@ -166,6 +190,13 @@ export function JourneyView() {
       <div>
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
           sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
+
+        <div className="flex justify-end mb-3">
+          <button onClick={() => go({ name: "ops" })}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-900 border border-navy-200 rounded-lg px-3 py-1.5 bg-white">
+            ⚙ Werkstatt
+          </button>
+        </div>
 
         {/* Stern-Navigation */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
@@ -219,6 +250,62 @@ export function JourneyView() {
           </div>
         </div>
         <p className="text-[10px] text-navy-300 mt-4">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (eingefroren). Stand: {new Date(data!.snapshot_at).toLocaleString("de-CH")}</p>
+      </div>
+    );
+  }
+
+  // ── Werkstatt: Ops vom Handy auslösen (Mobil-Parität) ───────────────────
+  function Werkstatt() {
+    const inputCls = "w-full px-3 py-2 rounded-lg border border-navy-200 text-sm mb-2";
+    return (
+      <div>
+        <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
+        <PageHead eyebrow="Ops · nur für mich" title="Werkstatt"
+          sub="Operationen vom Handy auslösen — läuft in der Cloud mit allen Keys, du fasst keinen an." />
+
+        {opsMsg && (
+          <div className="mb-4 rounded-lg border border-navy-200 bg-white px-4 py-3 text-sm text-navy-700">{opsMsg}</div>
+        )}
+
+        {/* Crawl */}
+        <form className="bg-white rounded-xl border border-navy-200 p-4 mb-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const f = new FormData(e.currentTarget);
+            const url = String(f.get("url") || "").trim();
+            if (!url) { setOpsMsg("URL fehlt."); return; }
+            dispatchWorkflow("crawl.yml", {
+              url,
+              slug: String(f.get("slug") || "").trim(),
+              to_db: f.get("to_db") ? "true" : "false",
+            });
+          }}>
+          <div className="font-bold text-navy-900">Crawl — Betrieb anreichern</div>
+          <p className="text-[12px] text-navy-400 mb-3">Website crawlen → Stern-1-Daten (Inhaber, Größe, Mail, Leistungen, Bewertung). Mit der DB-Option landet er direkt in der Kontaktliste.</p>
+          <input name="url" placeholder="https://www.betrieb.ch" inputMode="url" className={inputCls} />
+          <input name="slug" placeholder="Slug (optional — sonst aus Domain)" className={inputCls} />
+          <label className="flex items-center gap-2 text-sm text-navy-700 mb-3">
+            <input type="checkbox" name="to_db" className="w-4 h-4" /> direkt in die DB / Kontaktliste schreiben
+          </label>
+          <button type="submit" className="w-full bg-gold-500 text-navy-950 rounded-lg px-4 py-2.5 text-sm font-bold hover:bg-gold-400">▶ Crawl auslösen</button>
+        </form>
+
+        {/* Purge */}
+        <div className="bg-white rounded-xl border border-navy-200 p-4">
+          <div className="font-bold text-navy-900">Alt-Leads bereinigen (die 425)</div>
+          <p className="text-[12px] text-navy-400 mb-3">Vorschau zeigt im Lauf-Log, was bleibt und was gelöscht würde. Löschen entfernt nur unbearbeiteten Alt-Crawl — aktive Pipeline &amp; gepflegte Leads bleiben.</p>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => dispatchWorkflow("purge.yml", { execute: "false" })}
+              className="flex-1 bg-navy-900 text-white rounded-lg px-3 py-2.5 text-sm font-bold hover:bg-navy-800">Vorschau</button>
+            <button type="button"
+              onClick={() => { if (confirm("Wirklich löschen? Unbearbeiteter Alt-Crawl wird entfernt (aktive Pipeline bleibt).")) dispatchWorkflow("purge.yml", { execute: "true" }); }}
+              className="flex-1 border border-navy-300 text-navy-700 rounded-lg px-3 py-2.5 text-sm font-bold hover:bg-navy-50">Wirklich löschen</button>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-navy-400 mt-3">
+          Ergebnis im jeweiligen Lauf — <a href="https://github.com/gunnarwende/flowsight_mvp/actions" target="_blank" rel="noreferrer" className="text-gold-600 hover:underline">Actions öffnen ↗</a>. Crawl→DB erscheint zudem direkt in der Kontaktliste.
+        </p>
       </div>
     );
   }

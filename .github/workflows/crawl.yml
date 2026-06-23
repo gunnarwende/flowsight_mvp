@@ -58,18 +58,21 @@ jobs:
         run: |
           SLUG="$SLUG_IN"
           if [ -z "$SLUG" ]; then
-            SLUG=$(printf '%s' "$URL" \
-              | sed -E 's#^https?://##; s#^www\.##; s#/.*$##; s#\.[a-zA-Z]+$##; s#[^a-zA-Z0-9]+#-#g' \
-              | tr '[:upper:]' '[:lower:]')
+            SLUG=$(printf '%s' "$URL" | sed -E 's#^https?://##; s#^www\.##; s#/.*$##; s#\.[a-zA-Z]+$##')
           fi
+          # Härten: ausschliesslich [a-z0-9-] — schliesst Script-Injection in
+          # nachfolgenden run:/with:-Interpolationen aus (egal ob Slug-Input oder URL).
+          SLUG=$(printf '%s' "$SLUG" | tr '[:upper:]' '[:lower:]' | sed -E 's#[^a-z0-9]+#-#g; s#^-+##; s#-+$##')
+          [ -z "$SLUG" ] && SLUG="betrieb"
           echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
           echo "Slug: $SLUG"
 
       - name: Crawl + Stern-1-Anreicherung
         env:
           URL: ${{ inputs.url }}
+          SLUG: ${{ steps.vars.outputs.slug }}
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
-        run: node scripts/_ops/crawl_extract.mjs --url "$URL" --slug "${{ steps.vars.outputs.slug }}"
+        run: node scripts/_ops/crawl_extract.mjs --url "$URL" --slug "$SLUG"
 
       - name: Ergebnis als Artifact hochladen
         uses: actions/upload-artifact@v4
@@ -81,8 +84,9 @@ jobs:
       # Optional: additiv in die leads-DB (matcht per place_id, sonst website;
       # überschreibt nie Founder-Felder). Ein Dispatch = Crawl + DB → /ceo/journey.
       - name: In leads-DB schreiben (optional)
-        if: ${{ inputs.to_db }}
+        if: ${{ inputs.to_db == true || inputs.to_db == 'true' }}
         env:
+          SLUG: ${{ steps.vars.outputs.slug }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/_ops/crawl_to_leads.mjs --slug "${{ steps.vars.outputs.slug }}" --execute
+        run: node scripts/_ops/crawl_to_leads.mjs --slug "$SLUG" --execute
