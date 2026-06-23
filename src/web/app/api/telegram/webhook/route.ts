@@ -9,7 +9,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 // the message, creates a GitHub Issue, and ACKs back to Telegram.
 //
 // Env vars: TELEGRAM_BOT_TOKEN, TELEGRAM_SHARED_SECRET,
-//           TELEGRAM_ALLOWED_USER_ID, GITHUB_ISSUES_TOKEN,
+//           TELEGRAM_ALLOWED_USER_ID, GH_ISSUES_TOKEN,
 //           OPENAI_API_KEY (optional — required for voice transcription)
 // ---------------------------------------------------------------------------
 
@@ -534,7 +534,7 @@ export async function POST(req: Request) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const sharedSecret = process.env.TELEGRAM_SHARED_SECRET;
   const allowedUserId = process.env.TELEGRAM_ALLOWED_USER_ID;
-  const githubToken = process.env.GITHUB_ISSUES_TOKEN;
+  const githubToken = process.env.GH_ISSUES_TOKEN;
 
   const envPresent = {
     botToken: !!botToken,
@@ -637,7 +637,7 @@ export async function POST(req: Request) {
     }
 
     if (!githubToken) {
-      await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured.");
+      await sendTelegramMessage(botToken, replyTo, "GH_ISSUES_TOKEN not configured.");
       return new NextResponse("ok", { status: 200 });
     }
 
@@ -761,7 +761,7 @@ export async function POST(req: Request) {
       }
 
       if (!githubToken) {
-        await sendTelegramMessage(botToken, replyTo, "attachment_failed: no GITHUB_ISSUES_TOKEN");
+        await sendTelegramMessage(botToken, replyTo, "attachment_failed: no GH_ISSUES_TOKEN");
         return new NextResponse("ok", { status: 200 });
       }
 
@@ -858,7 +858,7 @@ export async function POST(req: Request) {
     return new NextResponse("ok", { status: 200 });
   }
 
-  // ── /status command (works even without GITHUB_ISSUES_TOKEN) ──────
+  // ── /status command (works even without GH_ISSUES_TOKEN) ──────
   if (text.startsWith("/status")) {
     try {
       const status = await fetchGitHubStatus(githubToken);
@@ -882,7 +882,7 @@ export async function POST(req: Request) {
   // ── /ticket command — create issue + open attachment window ────────
   if (text.startsWith("/ticket")) {
     if (!githubToken) {
-      await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured.");
+      await sendTelegramMessage(botToken, replyTo, "GH_ISSUES_TOKEN not configured.");
       return new NextResponse("ok", { status: 200 });
     }
 
@@ -942,9 +942,9 @@ export async function POST(req: Request) {
     }
   }
 
-  // ── Issue creation requires GITHUB_ISSUES_TOKEN ───────────────────
+  // ── Issue creation requires GH_ISSUES_TOKEN ───────────────────
   if (!githubToken) {
-    const result = await sendTelegramMessage(botToken, replyTo, "GITHUB_ISSUES_TOKEN not configured — cannot create issues.");
+    const result = await sendTelegramMessage(botToken, replyTo, "GH_ISSUES_TOKEN not configured — cannot create issues.");
     log({ step: "issue_create", decision: "no_github_token", ack_ok: result.ok });
     return new NextResponse("ok", { status: 200 });
   }
