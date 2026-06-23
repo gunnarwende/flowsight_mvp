@@ -99,30 +99,31 @@ const txt = (s) => { const v = String(s ?? "").trim(); return v === "" ? null : 
     });
   }
   candidates.sort((a, b) => b.score - a.score);
-  const top = candidates.filter((c) => c.firma).slice(0, count);
+  const named = candidates.filter((c) => c.firma);
 
-  if (!top.length) {
+  if (!named.length) {
     console.log(`\nKeine Betriebe für „${gemeinde}" in scout_raw.csv gefunden (scout.mjs --gemeinde ${gemeinde} gelaufen?).\n`);
     return;
   }
 
-  // Welche place_ids gibt es schon? (nur die fehlen werden eingefügt)
-  const ids = top.map((c) => c.place_id);
+  // Dedup gegen die DB ZUERST (über ALLE Kandidaten), dann die Top-N der NEUEN
+  // nehmen → "Anzahl" = N neue pro Lauf (ein zweites Go liefert N weitere).
+  const ids = named.map((c) => c.place_id);
   const existing = new Set();
   for (let i = 0; i < ids.length; i += 100) {
     const { data, error } = await sb.from("leads").select("place_id").in("place_id", ids.slice(i, i + 100));
     if (error) { console.error("DB-Lesefehler:", error.message); process.exit(1); }
     (data || []).forEach((r) => existing.add(r.place_id));
   }
-  const fresh = top.filter((c) => !existing.has(c.place_id));
+  const fresh = named.filter((c) => !existing.has(c.place_id)).slice(0, count);
 
   console.log(`\n── Go: Discovery → leads (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) ──`);
   console.log(`Gemeinde:   ${gemeinde}`);
-  console.log(`Kandidaten: ${candidates.length} · Top ${count} · schon in DB: ${existing.size} · NEU: ${fresh.length}`);
+  console.log(`Kandidaten: ${named.length} · schon in DB: ${existing.size} · NEU (Top ${count}): ${fresh.length}`);
   fresh.slice(0, 12).forEach((c) => console.log(`  + ${c.firma} · ${c.rating ?? "—"}★/${c.reviews ?? "—"} · ${c.tier ?? "?"}`));
 
   if (!EXECUTE) { console.log(`\nDRY-RUN — nichts geschrieben. Mit --execute schreiben.\n`); return; }
-  if (!fresh.length) { console.log(`\nAlle Top-${count} schon in der DB — nichts Neues.\n`); return; }
+  if (!fresh.length) { console.log(`\nKeine neuen Betriebe (alle Kandidaten schon in der DB).\n`); return; }
 
   const now = new Date().toISOString();
   const payload = fresh.map((c) => {
