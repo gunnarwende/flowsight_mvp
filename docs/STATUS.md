@@ -268,7 +268,7 @@ Architecture Wave → Quality Wave → Web-Engine → Voice v4 → GTM Foundatio
 | `docs/gtm/videos/[slug]/production_brief.md` | Video-Drehbuch pro Prospect (Szene-für-Szene) |
 | `docs/customers/lessons-learned.md` | Intake-Prozess, Template-Learnings, Kunden-Learnings |
 | `docs/architecture/contracts/` | Case-Datenmodell, Env Vars |
-| `docs/compliance/` | Datenschutz, Subprocessors |
+| `docs/modules/compliance/` | Datenschutz, Subprocessors |
 | `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` | **OBERSTES ORCHESTRATOR-DOK.** FlowSight als EINE Customer Journey / Schwungkreis (8 Sterne). „Wo liegt was"-Karte + Modell. **Bei Business-Überblick / „Customer Journey Bible" zuerst lesen.** Visuell/operativ: `docs/gtm/customer_journey.html`. |
 | `docs/gtm/sales/SALES_BIBLE.md` | **SSOT der Verkaufs-Sterne der Customer Journey (1·2·4·5·8).** Abend-Ritual „Sales-Maschine go", ICP (kanonisch), Region, Preis (kanonisch), 2 Motoren, Lead-Motor, Vorbereitungsblatt-Template. **Hier die tägliche Sales-Arbeit.** |
 | `docs/gtm/sales/lessons_learned_sales.md` | Sales-Lessons (S-Regeln) — **Founder-1:1-Feedback nach jedem Gespräch landet hier** |

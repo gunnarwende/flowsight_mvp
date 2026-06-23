@@ -52,7 +52,7 @@ Datei-Bereich** → parallel bearbeitbar, ohne zu kollidieren.
 | **Betrieb** | Das Produkt im laufenden Betrieb: Lisa · Leitzentrale · Mail · Leitsystem | [→](modules/betrieb.md) |
 | **Finanzen** | Einnahmen · Ausgaben · Pricing · Marge · Runway | [→](modules/finanzen.md) |
 | **Infrastruktur** | Bauen & Ausliefern: Vercel · CI · Migrations · Secrets | [→](modules/infrastruktur.md) |
-| **Compliance** | DSG · PII · Recording-OFF · Daten-Verarbeitung | [→](modules/compliance.md) |
+| **Compliance** | DSG · PII · Recording-OFF · Daten-Verarbeitung | [→](modules/compliance/_index.md) |
 | **Recht** | Verträge · AGB · Haftung | [→](modules/recht.md) |
 | **Monitoring** | Der Puls: morning-report · Sentry · Kennzahlen | [→](modules/monitoring.md) |
 | **Marke** | Positionierung · Kategorie-Claim · Ton · Sprache | [→](modules/marke.md) |

@@ -17,7 +17,7 @@
 - Customer files: docs/customers/<slug>/status.md
 - Contracts: docs/architecture/contracts/
 - Runbooks: docs/runbooks/
-- Compliance: docs/compliance/
+- Compliance: docs/modules/compliance/
 - Env var registry: docs/architecture/env_vars.md
 - Archive (wave log, north star v1): docs/archive/
 

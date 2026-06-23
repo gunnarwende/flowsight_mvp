@@ -205,7 +205,7 @@ Schweizer Recht = **revDSG/nDSG** (seit 1.9.2023); DSGVO nur bei EU-Bezug. *Kein
 Produktiv-Roll-out Schweizer Datenschutz-Anwalt.*
 - **(A) Datenschutz:** Datenminimierung + **Recording OFF** ✓; Transparenz/**KI-Hinweis** (Cockpit-
   Element, Betrieb wählt Wortlaut, wir geben den Mindesthinweis daneben); **keine fremde PII**;
-  US-Subprozessoren (Retell/OpenAI/Twilio) = offener Adäquanz-Punkt → `docs/compliance/`.
+  US-Subprozessoren (Retell/OpenAI/Twilio) = offener Adäquanz-Punkt → `docs/modules/compliance/`.
 - **(B) Haftung/Repräsentation:** keine Preise/Garantien/Diagnose/Termin-Zusagen (= die No-Gos).
 - **Beides = gesperrte Cockpit-Leitplanken** → Verkaufsargument: „Sie können Lisa gar nicht in einen
   Verstoß konfigurieren." **AVV/DPA** = Commitment-Artefakt (Phase 3).
