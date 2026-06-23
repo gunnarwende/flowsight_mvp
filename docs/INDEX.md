@@ -22,6 +22,7 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 
 ## Einstieg (zuerst lesen)
 
+- [flowsight_bible.md](flowsight_bible.md) — **das Dach über allem**: Module + Nordstern + Parallel-Arbeit (woran arbeite ich, wie hängt alles zusammen). INDEX bleibt die Datei-Ebene darunter.
 - [business_briefing.md](business_briefing.md) — Executive-/Investor-One-Pager (Business in 5 Minuten)
 - [STATUS.md](STATUS.md) — Firmen-Log + was ist live (chronologisch)
 

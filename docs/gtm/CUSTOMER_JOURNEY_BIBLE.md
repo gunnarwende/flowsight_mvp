@@ -70,7 +70,7 @@ Stern 1.
        ▲                                               │
    7 Go-live & Vertrag                            2 Cold Call
        ▲                                               │
-   6 Aufbau (Cockpit)                             3 Simulation
+   6 Cockpit                                      3 Simulation
        ▲                                               │
    5 Verkaufsgespräch ◄──────────────────────── 4 Gesehen
 ```
@@ -120,7 +120,7 @@ und der genannten Bible.
 - **Owner:** `stern5_warmes_verkaufsgespraech_uebergabe_cc.md` (Version 1) + SALES_BIBLE.
 - **Kennzahl:** Warmes Gespräch → Zusage.
 
-### Stern 6 — Aufbau (Cockpit)  (Abschnitt: Onboarding)
+### Stern 6 — Cockpit  (Abschnitt: Onboarding)
 - **Zweck:** Der Kunde baut sein Leitsystem geführt selbst im Cockpit (Self-Service, confirm-not-create, ~70 % aus `tenant_config` vorbefüllt). Inkl. Rückmelde-Versprechen + Wunschtermin (OC8).
 - **Konversions-Ereignis:** Cockpit durchlaufen → Founder-Review-bereit.
 - **Owner:** ONBOARDING_BIBLE + Cockpit `/aufbau/[token]` (Konstellation + progressives Lisa-Gesicht, origin/main #603) + `phase2_rueckmelde_termin_logik.md`.
