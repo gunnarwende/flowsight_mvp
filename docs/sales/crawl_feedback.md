@@ -25,7 +25,7 @@
 - **Inhaber:** nur wenn die KI selbst sicher ist (confidence „hoch/mittel"). Confidence „niedrig" → „?". **Kein Regex-Raten** als eigenständige Antwort (war der „musa → Albert Wagner statt Rico Musa"-Fehler; Regex nur als Hinweis an die KI).
 - **Größe:** **nur aus expliziter Textangabe** der Website („10 Mitarbeiter", „Team von 12"). **Foto-Köpfe-Zählen per Vision ist unzuverlässig** (Schäfli 4 statt 10; Eugster >35 als null; MB/Strässle >20 als null) → sonst „?", der Founder zählt (Sekunden, genau). Viele Reviews (>40) + Größe unbekannt = „Größe prüfen"-Flag.
 - **Liste nicht auf eine runde Zahl auffüllen** mit „?"-Inhaber-Betrieben (war der Strässle-Fehler). Ohne Inhaber = nicht auf die Liste.
-- Werkzeug: `scripts/_ops/thurgau_list.mjs` (Crawl+Anreicherung) + `assemble_thurgau.mjs` (20er bauen, patcht `customer_journey.html` LEADS_TG). Fixes oben sind eingebaut.
+- Werkzeug: `scripts/_ops/scout.mjs` (Places-Discovery) + `thurgau_list.mjs` (Crawl+Anreicherung) → `leads.csv` → `sync_leads_to_db.mjs` (Upsert in die `leads`-DB). Cockpit `/ceo/journey` liest die DB live. Fixes oben sind eingebaut. *(`assemble_thurgau.mjs` + die Prototyp-`customer_journey.html` wurden abgelöst/entfernt — DB ist SSOT.)*
 
 ## Konkrete Betriebe — Thurgau-Liste (17.06.)
 - **Pierre Sanitär Design GmbH** (Frauenfeld): Website „Die Seite wird in den nächsten Wochen aktualisiert." → **kein Kontakt jetzt**; nächste Woche erneut prüfen, ob die Website geladen ist.

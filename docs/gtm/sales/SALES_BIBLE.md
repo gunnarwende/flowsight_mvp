@@ -128,12 +128,14 @@ Baustelle — oder fängt es ein echtes Büro zuverlässig ab?* „Ja, Inhaber a
 | Stufe | Größe | Profil | Preis (§5) |
 |---|---|---|---|
 | **Solo-Leitsystem** | **1–3 MA** | Inhaber = alles, Telefon/Mobil einziger Kanal, Erreichbarkeits-Pain max | **CHF 950/Mo** |
-| **Premium-Leitsystem** | **4–12 MA** (Bullseye **4–8**) | inhabergeführt, noch operativ, Budget da | **CHF 2'000/Mo** |
+| **Premium-Leitsystem** | **4–15 MA** (Bullseye **4–8**) | inhabergeführt, noch operativ, Budget da | **CHF 2'000/Mo** |
 
 **Qualifizierende Signale:** inhabergeführt · Telefon/Mobil Hauptkontakt · kein Online-Formular/Booking ·
 4.3–5.0★ aber **<30 Bewertungen** · moderne/brauchbare Website · linkes Zürichsee-Ufer.
-**Disqualifikatoren:** 15+ MA mit Disposition/CRM · kaputte/keine Website (Sonderfall) · >50 Rev + ≥4.8★.
-**Größe = Preis-Schalter** → der Lead-Motor (§14) muss verlässlichen MA-Proxy liefern (Crawl/Vision).
+**Disqualifikatoren:** >15 MA mit Disposition/CRM · kaputte/keine Website (Sonderfall) · >50 Rev + ≥4.8★.
+**Größe = Preis- *und* Positionierungs-Schalter** → der Lead-Motor (§14) muss verlässlichen MA-Proxy
+liefern (Crawl/Vision). Gleiches Produkt, **größen-differenzierter Painpoint**: Solo 1–3 = Erreichbarkeit
+(Inhaber ist der Kanal), Premium 4–15 = Steuerbarkeit/operative Komplexität — Darstellung je Stufe (Haken §11).
 
 ## §3a · Segment-Lehre (Website-Stärke als Lead-Qualitätssignal)
 
@@ -160,7 +162,7 @@ Ring 0 jetzt Hauptfokus; Ring 1 parallel klein (Telefon-Bewegung lernen); Ring 2
 ## §4a · Markt & Sweetspot (Kontext)
 
 - **Adressierbarer Markt** (Sanitär/Heizung 3–30 MA): **~970 Kanton Zürich · ~5'700 Deutschschweiz · ~15'000 CH**. Markt gross genug — nicht jeden nehmen.
-- **Sweetspot = 5–15 MA** (optimal 8–15): hier entsteht die operative Komplexität (Termine, Zuweisung, Koordination), die das Leitsystem unverzichtbar macht. ~450 in Zürich. **1–2 MA** sind NICHT Kern — sie brauchen einen Anrufbeantworter, kein Leitsystem („mitnehmen wenn sie kommen, nicht jagen").
+- **Premium-Sweetspot = 5–15 MA** (optimal 8–15): hier entsteht die operative Komplexität (Termine, Zuweisung, Koordination), die das Leitsystem unverzichtbar macht. ~450 in Zürich. **Solo 1–3 MA = bewusste eigene Stufe** (Solo-Leitsystem, Erreichbarkeits-Pain max — der Inhaber IST der Kanal); nicht als Nicht-Kern abgetan, sondern größen-differenziert positioniert (§11). *(Founder-Entscheid 2026-06-23: ICP dauerhaft zweistufig 1–3 + 4–15.)*
 - **Kategorie:** FlowSight ist ein **vertikales Field-Service-/Leitsystem** (Vergleich: ServiceTitan, Jobber, Housecall Pro — keines mit Voice-AI/CH-Dialekt), kein „AI-Telefonassistent". Diese Abgrenzung schützt den Preis.
 - **Kostentreiber:** **SMS dominiert (57–84 % der variablen Kosten)**, nicht Voice. Jeder SMS→E-Mail-Shift verbessert direkt die Marge. *(Quelle: redesign/leitstand/pricing_und_marge.md §5–§6)*
 
