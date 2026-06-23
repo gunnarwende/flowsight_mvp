@@ -201,13 +201,12 @@ export function JourneyView() {
               {data!.funnel.map((f) => {
                 const pct = Math.max(4, Math.round((f.value / max) * 100));
                 return (
-                  <div key={f.key} className="flex items-center gap-3">
-                    <div className="w-36 text-xs text-navy-500 text-right shrink-0">{f.label}</div>
+                  <div key={f.key} className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-28 sm:w-36 text-xs text-navy-500 text-right shrink-0 leading-tight">{f.label}</div>
                     <div className="flex-1 h-7 rounded-md bg-navy-50 overflow-hidden">
-                      <div className={`h-full ${PILLAR[f.star].bar} flex items-center pl-2.5 text-[12px] font-bold text-white rounded-md transition-all`} style={{ width: `${pct}%` }}>
-                        {f.value}
-                      </div>
+                      <div className={`h-full ${PILLAR[f.star].bar} rounded-md transition-all`} style={{ width: `${pct}%` }} />
                     </div>
+                    <div className="w-7 shrink-0 text-right text-sm font-bold text-navy-900 tabular-nums">{f.value}</div>
                   </div>
                 );
               })}
