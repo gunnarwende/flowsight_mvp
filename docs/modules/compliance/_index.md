@@ -13,22 +13,24 @@ Sicherstellen, dass FlowSight schweizer Datenschutz (revDSG) einhält und keine 
 - **Sentry:** keine PII in Tags (nur IDs/Entscheidungs-Tags) — by design.
 
 ## Kanonische Quelle (SSOT)
-- [data_processing.md](data_processing.md) — Subprozessoren, Aufbewahrung, Löschung, CH-SMS (in diesem Modul-Ordner).
+- [data_processing.md](data_processing.md) — Subprozessoren, Aufbewahrung, Löschung, CH-SMS, offene Aufgaben (§6).
+- [revdsg_entwuerfe.md](revdsg_entwuerfe.md) — Bearbeitungsverzeichnis · TOMs · Betroffenenrechte (**Entwurf**).
 - PII-Leitplanken auch in `CLAUDE.md` (No-Drift) verankert.
 
 ## Dateibereich (Parallel-Konflikt-Regel)
 - **Besitzt:** `docs/modules/compliance/` (diese Karte + `data_processing.md`).
 - **Kollidiert mit:** Betrieb (setzt die Regeln um) — Regeln hier, Umsetzung dort.
 
-## Lücke zum Nordstern (was FEHLT für „100 % verlässlich")
-Damit ein Founder der Compliance *blind vertrauen* kann, fehlt heute:
+## Lücke zum Nordstern — Stand nach Runde 1 (2026-06-23)
 
-1. **Aufbewahrungsfristen entscheiden** — Fälle / Anhänge / archivierte Fälle stehen in `data_processing.md` als **TBD (Founder)**. Solange offen = keine Löschautomatik, unklare Pflicht. → Founder-Entscheid.
-2. **AVV je Subprozessor abgelegt** — Vendors sind gelistet, aber kein AVV/DPA als *unterzeichnet/abgelegt* geführt (Resend-DPA explizit „review offen"). → AVV-Status-Tabelle (signiert ja/nein/Link).
-3. **US-Subprozessoren-Angemessenheit (revDSG)** — Retell/Resend/Sentry (+ Twilio US) = offener Adäquanz-Punkt (auch in ONBOARDING_BIBLE geflaggt). → SCC/DPF-Grundlage je Vendor dokumentieren.
-4. **Bearbeitungsverzeichnis + TOMs** — revDSG-Bausteine (Verzeichnis der Bearbeitungstätigkeiten + technisch-organisatorische Massnahmen) existieren noch nicht als Doc.
-5. **Endkunden-Betroffenenrechte** — Löschverfahren deckt *Tenant*-Löschung; Auskunft/Löschung für die *Endkunden des Betriebs* (deren PII in `cases`) fehlt als Verfahren.
-6. **Kunden-Datenschutzerklärung** — fehlt (Grenze zu [Recht](../recht.md): Vertrag/AGB = Recht, Datenschutzhinweis = hier).
-7. **Aktualität prüfen** — `data_processing.md` Stand **2026-02-25**; gegen heutigen As-built gegenchecken (z. B. neues `address_status`-Feld; Löschen-SQL noch vollständig?).
+**Geschlossen / adressiert:**
+1. ✅ **Aufbewahrungsfristen entschieden** — 24 Mt Fälle / 12 Mt Anhänge / 24 Mt Anonymisierung archivierter Fälle (`data_processing.md` §2). *Arbeits-Default, Anwalt vor Skalierung.*
+4. ✅ **Bearbeitungsverzeichnis + TOMs** — Entwurf in `revdsg_entwuerfe.md`.
+5. ✅ **Endkunden-Betroffenenrechte** — Verfahren-Entwurf in `revdsg_entwuerfe.md`.
+7. ✅ **As-built-Gegencheck** — Löschverfahren unvollständig: `proof_pages`/`tenant_callbacks`/`cockpit_sessions`/Gastro-`pub_*` fehlen (notiert `data_processing.md` §6.3).
 
-**Priorität für den Nordstern:** 1 + 3 zuerst (blockieren echtes Vertrauen), 2/4/5/6 als Founder/Recht-Paket, 7 als kurzer Verify-Lauf.
+**Noch offen (Founder / Recht / Bau):**
+2. **AVV je Subprozessor ablegen** — Checkliste steht (`data_processing.md` §6.1), Einsammeln = Founder.
+3. **US-Adäquanz (Retell/Resend/Sentry)** — SCC/DPF-Grundlage dokumentieren (§6.1).
+6. **Kunden-Datenschutzerklärung** — Entwurf + [Recht](../recht.md), vor Roll-out mit Anwalt.
+8. **Auto-Löschjob bauen** (Aufbewahrung durchsetzen) + §3-Löschverfahren um die neuen Tabellen erweitern → Modul [Betrieb](../betrieb.md)/[Infrastruktur](../infrastruktur.md).
