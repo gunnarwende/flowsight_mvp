@@ -9,7 +9,7 @@
 - status.md mentions "Links zur alten Website" and "Notrufnummer: vorhanden" but neither URL nor number is present in-repo.
 - No external website content has been analyzed — external access NOT confirmed.
 - We have zero brand assets (logo, colors, photos, copy) in the repo.
-- The website playbook (docs/architecture/website_playbook.md) and style DNA (docs/brand/style_dna.md) provide a complete structural and design framework — we can build the full IA skeleton once inputs arrive.
+- The website playbook (docs/architecture/website_playbook.md) and style DNA (docs/modules/marke/style_dna.md) provide a complete structural and design framework — we can build the full IA skeleton once inputs arrive.
 - A concrete input request checklist has been created (INPUTS_REQUIRED.md) to unblock delivery.
 - **Blocker:** Cannot begin any visual or copy work until minimum inputs are provided.
 
@@ -30,7 +30,7 @@
 | Company description | Not found | NO | No about/team text |
 | Email routing config | Not found | NO | No recipient address or routing rules |
 | Website playbook | docs/architecture/website_playbook.md | YES | Complete IA standard for Sanitär/Heizung |
-| Style DNA | docs/brand/style_dna.md | YES | Complete design policy |
+| Style DNA | docs/modules/marke/style_dna.md | YES | Complete design policy |
 | QA gates | docs/qa/high_end_gates.md | YES | 5 gate checklists ready |
 | Case contract | docs/architecture/contracts/case_contract.md | YES | Field spec for wizard output |
 

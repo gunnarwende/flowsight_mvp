@@ -55,7 +55,7 @@ Datei-Bereich** → parallel bearbeitbar, ohne zu kollidieren.
 | **Compliance** | DSG · PII · Recording-OFF · Daten-Verarbeitung | [→](modules/compliance/_index.md) |
 | **Recht** | Verträge · AGB · Haftung | [→](modules/recht.md) |
 | **Monitoring** | Der Puls: morning-report · Sentry · Kennzahlen | [→](modules/monitoring.md) |
-| **Marke** | Positionierung · Kategorie-Claim · Ton · Sprache | [→](modules/marke.md) |
+| **Marke** | Positionierung · Kategorie-Claim · Ton · Sprache | [→](modules/marke/_index.md) |
 
 ---
 
