@@ -54,6 +54,9 @@ async function main() {
     const takes = [];
     let signal = 0, mobile = 0, desktop = 0;
     for (const t of TAKES) {
+      // T1 = geteiltes canonical Video (für ALLE Betriebe identisch) → kein Per-Prospect-
+      // Signal. Im Report ignoriert, sonst dominiert das ~1197s-Rauschen die Lead-Sortierung.
+      if (t.key === "t1") continue;
       const guid = r.videos?.[t.key];
       if (!guid) continue;
       let len = 0, views = 0, watch = 0, eng = 0;
