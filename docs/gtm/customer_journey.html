@@ -156,6 +156,51 @@
   .treesay{font-size:12.5px;color:var(--ink);line-height:1.5;white-space:pre-wrap;margin:6px 0 9px;border-left:2px solid var(--gold-line);padding-left:9px}
   .treelive{margin-top:4px;font-size:11px;font-weight:700;color:var(--gold);background:transparent;border:1px solid var(--gold-line);border-radius:8px;padding:5px 10px;cursor:pointer}
   .treelive:hover{background:var(--gold-soft)}
+
+  /* ── Handymodus (Journey von Monitor UND Handy steuerbar) ── */
+  @media (max-width: 760px){
+    .wrap{padding:18px 15px 56px}
+    h1{font-size:23px}
+    .sub{font-size:13px}
+    /* Schwungrad: kleinere Knoten + mehr Höhe, damit nichts überlappt */
+    .wheelwrap{height:min(74vh,560px);margin-top:2px}
+    .node{width:92px}
+    .node .star{width:44px;height:44px}
+    .node .num{font-size:13px}
+    .node .nm{font-size:10.5px;margin-top:6px}
+    .node .badge{font-size:8px;padding:1px 5px}
+    .hub .ring{width:82px;height:82px}
+    .hub .ico{font-size:21px}
+    .hub .lbl{font-size:10px}
+    .arrowlbl{display:none}
+    /* Dashboard, Buttons, Baum: eine Spalte */
+    .dash{grid-template-columns:1fr;gap:14px}
+    .bigbtns{grid-template-columns:1fr}
+    .branchgrid{grid-template-columns:1fr}
+    .converge{flex-direction:column}
+    .fname{width:92px;font-size:11px}
+    .panel{padding:16px}
+    .say{font-size:16px;padding:15px}
+    .choice{font-size:14px;min-height:48px}
+    .tabs,.narrow,.infopanel{max-width:100%}
+    /* Kontaktliste: Tabelle → Karten (10 Spalten passen nie aufs Handy) */
+    .fullbleed{position:static;width:100%;left:auto;right:auto;margin:0;padding:0}
+    .leadtbl thead{display:none}
+    .leadtbl,.leadtbl tbody,.leadtbl tr,.leadtbl td{display:block;width:100%}
+    .leadtbl tr{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 14px;margin-bottom:14px}
+    .leadtbl td{border:none;padding:7px 0;display:flex;gap:10px;align-items:flex-start}
+    .leadtbl td+td{border-top:1px solid rgba(255,255,255,.06)}
+    .leadtbl td::before{content:attr(data-label);flex:0 0 84px;color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding-top:7px}
+    .leadtbl td[data-label="#"]{display:none}
+    .leadtbl td.c-firma{display:block;padding-top:0;border-top:none}
+    .leadtbl td.c-firma::before{display:none}
+    .leadtbl td.c-firma b{font-size:16px}
+    .inhinput,.inhinput.sm,.inhinput.lg{width:100%;max-width:none;text-align:left}
+    .svcbox{width:100%;min-width:0}
+    .lout button{width:38px;height:36px;font-size:15px}
+    .lcall{padding:10px 14px;font-size:13px}
+    .notesbox{font-size:13px}
+  }
 </style>
 </head>
 <body>
@@ -283,7 +328,7 @@ function renderKontakt(){
     const groesse=`<input class="inhinput sm" value="${esc(getGroesse(l.id))}" placeholder="Größe?" onchange="saveGroesse('${l.id}',this.value)" />`;
     const mail=`<input class="inhinput" type="email" value="${esc(getMail(l.id))}" placeholder="E-Mail eintragen…" onchange="saveMail('${l.id}',this.value)" />`;
     const services=`<textarea class="svcbox" placeholder="Leistungen…" oninput="autoSize(this)" onchange="saveServices('${l.id}',this.value)">${esc(getServices(l.id))}</textarea>`;
-    return `<tr><td>${i+1}</td><td><b>${esc(l.firma)}</b><div style="color:var(--muted2);font-size:11px">${esc(l.ort)} · ${esc(l.tarif)}</div></td><td>${inh}</td><td>${groesse}</td><td>${services}</td><td><a href="https://${esc(l.web)}" target="_blank" style="color:var(--gold)">${esc(l.web)}</a></td><td style="white-space:nowrap">${esc(l.tel)}<div style="color:var(--muted2);font-size:11px">${l.rating||"-"}★/${l.reviews||"-"}</div></td><td>${mail}</td><td><span class="lstatus ${st.cls}">${st.txt}</span></td><td><button class="lcall" onclick="startCall('${l.id}')">▶ Cold Call</button><div class="lout"><button onclick="setOutcome('${l.id}','kein-anschluss')" title="kein Anschluss → morgen wieder">∅</button><button onclick="setOutcome('${l.id}','rueckruf')" title="Rückruf vereinbart">↻</button><button onclick="setOutcome('${l.id}','abgelehnt')" title="abgelehnt → 2 Monate gesperrt">✕</button><button class="ja" onclick="setOutcome('${l.id}','ja')" title="Ja → Simulation senden">✓</button></div></td></tr>`;}).join("");
+    return `<tr><td data-label="#">${i+1}</td><td class="c-firma" data-label="Firma"><b>${esc(l.firma)}</b><div style="color:var(--muted2);font-size:11px">${esc(l.ort)} · ${esc(l.tarif)}</div></td><td data-label="Inhaber">${inh}</td><td data-label="Größe">${groesse}</td><td data-label="Leistungen">${services}</td><td data-label="Website"><a href="https://${esc(l.web)}" target="_blank" style="color:var(--gold)">${esc(l.web)}</a></td><td data-label="Telefon" style="white-space:nowrap">${esc(l.tel)}<div style="color:var(--muted2);font-size:11px">${l.rating||"-"}★/${l.reviews||"-"}</div></td><td data-label="E-Mail">${mail}</td><td data-label="Status"><span class="lstatus ${st.cls}">${st.txt}</span></td><td data-label="Aktion"><button class="lcall" onclick="startCall('${l.id}')">▶ Cold Call</button><div class="lout"><button onclick="setOutcome('${l.id}','kein-anschluss')" title="kein Anschluss → morgen wieder">∅</button><button onclick="setOutcome('${l.id}','rueckruf')" title="Rückruf vereinbart">↻</button><button onclick="setOutcome('${l.id}','abgelehnt')" title="abgelehnt → 2 Monate gesperrt">✕</button><button class="ja" onclick="setOutcome('${l.id}','ja')" title="Ja → Simulation senden">✓</button></div></td></tr>`;}).join("");
   app.innerHTML=`<button class="back" onclick="set({name:'home'})">&larr; Schwungrad</button>
     <div class="eyebrow">Stern 1 · Sales · Region ${esc(REGION_NAME)}</div>
     <h1>Kontaktliste <span style="font-size:14px;color:var(--muted);font-weight:600">(${LEADS_TG.length} Betriebe)</span></h1>
