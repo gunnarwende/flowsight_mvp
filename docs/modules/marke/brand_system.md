@@ -9,6 +9,7 @@
 **Positioning:** Werkzeug-Premium. FlowSight is a serious tool for serious businesses.
 **Register:** Think Hilti, not Apple. Think Festool, not Figma.
 **Tone:** Swiss craftsmanship language, not SaaS jargon.
+**Category claim (locked 2026-06-23):** „Das Leitsystem für Handwerksbetriebe — vom Reagieren zum Steuern." Verbal SSOT (Claim, Ton, Begriffe): [`wording_glossar.md`](wording_glossar.md).
 
 ## Logo: The Signal Dot
 
@@ -131,6 +132,22 @@ Gold dot + text. Not badge spam. Max 3-4 per section.
 ```
 ● 24/7 erreichbar   ● 4 Sprachen   ● Keine Aufnahmen
 ```
+
+## Grid Discipline
+*(eingearbeitet aus `style_dna.md` → Archiv)*
+
+- Content max-width: ~1200px (`max-w-6xl`), zentriert.
+- Konsistentes horizontales Padding (16–24px mobil, 32–64px Desktop).
+- Elemente an sichtbarem Rhythmus ausrichten — keine zufälligen Offsets.
+- Großzügiger Weißraum; min. 64px vertikales Section-Padding.
+
+## Image Style
+*(eingearbeitet aus `style_dna.md` → Archiv)*
+
+- Echte Produkt-Screenshots (redacted), echtes Team, echte Werkzeuge. Warmes Licht.
+- Keine Stock-Klischees (keine Handshakes, keine Fake-Smiles, keine Anzüge).
+- Icons: schlichter, konsistenter Line-Style.
+- Keine generischen Hero-Bilder (Skylines, abstrakte Formen).
 
 ## Asset Locations
 
