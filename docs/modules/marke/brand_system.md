@@ -136,10 +136,10 @@ Gold dot + text. Not badge spam. Max 3-4 per section.
 
 | Asset | Path |
 |-------|------|
-| Logo (dark bg) | `docs/brand/assets/logo-on-dark.svg` |
-| Logo (light bg) | `docs/brand/assets/logo-on-light.svg` |
+| Logo (dark bg) | `docs/modules/marke/assets/logo-on-dark.svg` |
+| Logo (light bg) | `docs/modules/marke/assets/logo-on-light.svg` |
 | Favicon | `src/web/public/favicon.svg` |
-| Logo v1 (archived) | `docs/brand/assets/logo_variants_v1.pdf` |
+| Logo v1 (archived) | `docs/modules/marke/assets/logo_variants_v1.pdf` |
 | Logo component | `src/web/src/components/Logo.tsx` |
 | CSS tokens | `src/web/app/globals.css` (`:root` + `@theme`) |
 
