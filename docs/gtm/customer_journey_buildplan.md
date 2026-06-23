@@ -141,10 +141,10 @@ Code läuft auf einem eigenen Feature-Branch, Merge via PR (Founder-Review).
 
 - `/ceo/pipeline` wirft HTTP 500 und wird vom Founder nicht genutzt — beim
   Absorbieren prüfen/entfernen (Phase 2).
-- Lead-Daten heute dreifach (leads.csv · HTML-Hardcode `LEADS_TG` · localStorage)
-  — wird durch das DB-Fundament aufgelöst.
-- `customer_journey.html`: tote Konstanten (`FUNNEL`/`GOALS` werden nie gerendert);
-  Funnel-Stufen unter „Ja" hart auf 0; Inhaber/Größe/Mail/Services nur localStorage.
+- ~~Lead-Daten dreifach (leads.csv · HTML-Hardcode `LEADS_TG` · localStorage)~~
+  **ERLEDIGT 2026-06-23:** `leads`-DB ist SSOT; Prototyp-`customer_journey.html` + `assemble_thurgau.mjs` entfernt. Bleibt: `leads.csv` als Lead-Motor-Arbeitsdatei → `sync_leads_to_db.mjs` (Upsert).
+- ~~`customer_journey.html`: tote Konstanten, Funnel hart auf 0, nur localStorage~~
+  **ERLEDIGT 2026-06-23:** Prototyp-HTML entfernt; operatives Cockpit = `/ceo/journey` (`JourneyView`, DB-gestützt, Kontaktliste mobil als Karten).
 - Stage-Konstanten in `ceo/pipeline/route.ts` lokal dupliziert — bei Bedarf in
   ein gemeinsames Modul ziehen statt erneut kopieren.
 - 265 untracked Log-Artefakte im Repo-Root (Hygiene, unabhängig vom Projekt).

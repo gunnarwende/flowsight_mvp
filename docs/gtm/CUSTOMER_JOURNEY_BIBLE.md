@@ -87,7 +87,7 @@ Pipeline still im Hintergrund; der Kunde sieht nur das Ergebnis.
 
 ## 3. Die 8 Sterne
 
-Kompakt. Detail/operativ jeweils in der HTML (`docs/gtm/customer_journey.html`)
+Kompakt. Detail/operativ jeweils im Cockpit `/ceo/journey` (`JourneyView`)
 und der genannten Bible.
 
 ### Stern 1 — Kontakt  (Abschnitt: Sales)
@@ -142,10 +142,10 @@ und der genannten Bible.
 
 ## 4. ICP & Preis (kanonisch in SALES_BIBLE — hier der Anker)
 
-- **Leitsignal:** „Inhaber am Telefon?" Inhabergeführt, klein bis mittel, Sanitär/Heizung, echte Website, 1–12 Mitarbeiter.
-- **Zweistufig (Größe = Preis-Schalter):**
-  - Solo 1–3 MA → rund **CHF 950 / Monat**
-  - Premium 4–12 MA → rund **CHF 2'000 / Monat**
+- **Leitsignal:** „Inhaber am Telefon?" Inhabergeführt, klein bis mittel, Sanitär/Heizung, echte Website, 1–15 Mitarbeiter.
+- **Zweistufig (Größe = Preis- *und* Positionierungs-Schalter — Painpoint je Stufe):**
+  - Solo 1–3 MA → rund **CHF 950 / Monat** (Erreichbarkeits-Pain)
+  - Premium 4–15 MA → rund **CHF 2'000 / Monat** (Steuerbarkeit/Komplexität)
 - **Aktivierung:** einmalig rund **CHF 2'500** (geführter Aufbau).
 - **Handelsregeln:** monatlich kündbar (Risiko-Umkehr), **kein Trial**, **zahlend erst am Go-live**, nie rabattieren (Knappheit ~10/Monat).
 
@@ -178,7 +178,7 @@ Dies ist der Doc-Satz, der FlowSight 1:1 abbildet. Für die Arbeit mit ChatGPT
 | **Zielarchitektur** | `docs/architecture/zielarchitektur.md` | Zielbild Business + Produkt + GTM; Decision Map (D1–D102). |
 | **Business-Briefing** | `docs/business_briefing.md` | Geschäftliche Einordnung. |
 | **Customer Journey Bible** | `docs/gtm/CUSTOMER_JOURNEY_BIBLE.md` | **Dieses Dokument — der Orchestrator über allem.** |
-| **Customer Journey (visuell)** | `docs/gtm/customer_journey.html` | Das Schwungrad zum Draufschauen + operatives Tool (Kontaktliste, Cold-Call-Baum, Funnel). Stern-Details werden hier gepflegt. |
+| **Customer Journey (operativ)** | `/ceo/journey` (`src/web/src/components/ceo/JourneyView.tsx`) | Das Schwungrad + operatives Tool (DB-gestützte Kontaktliste, Cold-Call-Baum, Funnel), auth-geschützte PWA (Handy + Desktop). **Das eine Cockpit** — die frühere `customer_journey.html` (Prototyp) wurde abgelöst. |
 | **Customer Journey — Bauplan** | `docs/gtm/customer_journey_buildplan.md` | Bau-/Architekturdetail für die Journey als Software (DB-SSOT, Schema, Phasen, Fund-Protokoll). Kein Orchestrator — trägt nur das Bau-Detail. |
 | **Sales-Bible** | `docs/gtm/sales/SALES_BIBLE.md` | Sterne 1, 2, 4, 5, 8 — kalt + warm verkaufen. ICP/Preis kanonisch. |
 | **Pipeline-Bible** | `docs/gtm/pipeline/PIPELINE_BIBLE.md` | Stern 3 — die Simulation/Video-Fabrik. |
@@ -227,4 +227,4 @@ detailreich. Regeln:
   neues Bible-Dokument) hier nachziehen — denn das ist die Karte, die alles verbindet.
 - Verwandte Dokumente immer **verlinken**, nicht kopieren.
 
-Verlinkt: [[project_sales_machine_phase0]] · SALES_BIBLE · ONBOARDING_BIBLE · PIPELINE_BIBLE · Zielarchitektur · `customer_journey.html`
+Verlinkt: [[project_sales_machine_phase0]] · SALES_BIBLE · ONBOARDING_BIBLE · PIPELINE_BIBLE · Zielarchitektur · `/ceo/journey` (`JourneyView`)
