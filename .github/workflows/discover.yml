@@ -9,9 +9,14 @@ on:
   workflow_dispatch:
     inputs:
       gemeinde:
-        description: "Gemeinde (Thurgau), z. B. Sirnach"
+        description: "Ort/Gemeinde, z. B. Sirnach"
         required: true
         type: string
+      kanton:
+        description: "Kanton (voll, z. B. Thurgau) — schärft die Places-Suche"
+        required: false
+        type: string
+        default: ""
       count:
         description: "Anzahl Betriebe"
         required: true
@@ -43,8 +48,11 @@ jobs:
       - name: Betriebe suchen (Google Places)
         env:
           GEMEINDE: ${{ inputs.gemeinde }}
+          KANTON: ${{ inputs.kanton }}
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
-        run: node scripts/_ops/scout.mjs --gemeinde "$GEMEINDE"
+        # Kanton in die Suchquery (disambiguiert gleichnamige Orte); für die
+        # DB-Zuordnung zählt unten die saubere Gemeinde.
+        run: node scripts/_ops/scout.mjs --gemeinde "$(echo "$GEMEINDE $KANTON" | sed 's/[[:space:]]*$//')"
 
       - name: Top-N additiv in die Kontaktliste
         env:
