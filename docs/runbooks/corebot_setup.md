@@ -27,7 +27,7 @@ Vercel Dashboard → flowsight-mvp → Settings → Environment Variables:
 
 | Variable | Value | Environments |
 |----------|-------|-------------|
-| `GITHUB_ISSUES_TOKEN` | [the PAT from Step 1] | Production, Preview |
+| `GH_ISSUES_TOKEN` | [the PAT from Step 1] | Production, Preview |
 | `TELEGRAM_ALLOWED_USER_ID` | `8658747389` | Production, Preview |
 | `TELEGRAM_SHARED_SECRET` | [same value as GitHub Secret] | Production, Preview |
 
@@ -53,7 +53,7 @@ Expected response: `{"ok":true,"result":true,"description":"Webhook was set"}`
 
 ### GitHub PAT
 1. Create new PAT (Step 1)
-2. Update `GITHUB_ISSUES_TOKEN` in Vercel Env
+2. Update `GH_ISSUES_TOKEN` in Vercel Env
 3. Redeploy (or wait for next deploy)
 4. Revoke old PAT in GitHub
 

@@ -8,7 +8,7 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 /**
  * POST /api/ops/support — Create support ticket from Leitsystem.
  *
- * Primary: GitHub Issue (if GITHUB_ISSUES_TOKEN set)
+ * Primary: GitHub Issue (if GH_ISSUES_TOKEN set)
  * ALWAYS: Notification email to Founder (not just fallback)
  *
  * Body: { subject: string, message: string, attachments?: string[] }
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   let issueNumber: number | undefined;
 
   // Primary: GitHub Issue
-  const ghToken = process.env.GITHUB_ISSUES_TOKEN;
+  const ghToken = process.env.GH_ISSUES_TOKEN;
   if (ghToken) {
     try {
       const res = await fetch("https://api.github.com/repos/gunnarwende/flowsight_mvp/issues", {
