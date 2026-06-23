@@ -17,7 +17,7 @@ Sicherstellen, dass FlowSight schweizer Datenschutz (DSG) einhält und keine PII
 
 ## Dateibereich (Parallel-Konflikt-Regel)
 - **Besitzt:** `docs/compliance/`.
-- **Kollidiert mit:** Leitzentrale (setzt die Regeln um) — Regeln hier, Umsetzung dort.
+- **Kollidiert mit:** Betrieb (setzt die Regeln um) — Regeln hier, Umsetzung dort.
 
 ## Offen / nächster Schritt — Phase 2
 - AVV/Datenfluss-Übersicht (welche Daten wo: Supabase/Retell/Resend/eCall) sauber dokumentieren.
