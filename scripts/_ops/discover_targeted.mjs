@@ -117,8 +117,10 @@ function looksSolo(j, reviews) {
 // --single-kanton schaltet das ab (nur der gewählte Kanton).
 const allKantone = Object.keys(byKanton);
 const startKi = allKantone.indexOf(kanton);
-const SINGLE = process.argv.includes("--single-kanton");
-const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi);
+// Region-Sicherung: standardmäßig NUR der gewählte Kanton. Cross-Kanton-Roll nur
+// mit ausdrücklichem --roll-kantone (falsche Region wäre verheerend).
+const ROLL = process.argv.includes("--roll-kantone");
+const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton];
 
 (async () => {
   // Bereits erfasste place_ids (nie doppelt crawlen) + erfasste Orte (für Resume)
@@ -181,10 +183,11 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
       for (const r of rows) {
         const placeId = txt(r[idx.place_id]);
         const o = (r[idx.ort] || "").toLowerCase();
-        const query = (idx.query != null ? r[idx.query] || "" : "").toLowerCase();
         const website = txt(r[idx.website]);
         if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
-        if (!o.includes(G) && !query.includes(G)) continue;
+        // Region-Sicherung: nur Ergebnisse, die Google WIRKLICH in die gesuchte
+        // Gemeinde legt (kein query-Schlupf, der Nachbarkanton-Treffer durchließ).
+        if (!o.includes(G)) continue;
         if (!txt(r[idx.firma]) || !usableWebsite(website)) continue; // Website Pflicht
         seen.add(placeId);
         cands.push({
@@ -221,18 +224,25 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
         console.log(`\n>>> [${ort}] ${c.firma}  (${wurl})  · ${c.reviews ?? 0} Reviews`);
         crawled++;
         let size = null, jData = null;
-        try {
-          // Harte Obergrenze pro Firma: kein einzelner (langsamer) Crawl darf den
-          // Lauf blockieren. Nach 75s wird der Prozess (inkl. Chrome) hart beendet,
-          // der catch zählt ihn als Fehler und es geht weiter zur nächsten Firma.
-          execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env, timeout: 75000, killSignal: "SIGKILL" });
-          execFileSync("node", [TOLEADS, "--slug", slug, "--place-id", c.place_id, "--execute"], { stdio: "inherit", env });
-          const jsonPath = path.resolve(__dirname, "../../docs/customers", slug, "crawl_extract.json");
-          if (fs.existsSync(jsonPath)) {
-            jData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-            size = jData.team_groesse && jData.team_groesse.value != null ? jData.team_groesse.value : null;
+        // Bis zu 2 Versuche: ein transienter Crawl-Fehler (Netz/Render) soll den
+        // Betrieb nicht ungesized lassen. Harte 75s-Obergrenze je Versuch; kein
+        // zweiter Versuch, wenn das Zeitbudget schon aufgebraucht ist.
+        for (let attempt = 1; attempt <= 2; attempt++) {
+          if (attempt === 2 && !timeLeft()) break;
+          try {
+            execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env, timeout: 75000, killSignal: "SIGKILL" });
+            execFileSync("node", [TOLEADS, "--slug", slug, "--place-id", c.place_id, "--execute"], { stdio: "inherit", env });
+            const jsonPath = path.resolve(__dirname, "../../docs/customers", slug, "crawl_extract.json");
+            if (fs.existsSync(jsonPath)) {
+              jData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+              size = jData.team_groesse && jData.team_groesse.value != null ? jData.team_groesse.value : null;
+            }
+            break; // Erfolg
+          } catch (e) {
+            if (attempt === 2) { failed++; console.log(`  Crawl-Fehler bei ${c.firma} (2 Versuche): ${e.message} — geparkt, Größe offen.`); }
+            else console.log(`  Crawl-Fehler bei ${c.firma}: ${e.message} — 1 Wiederholung …`);
           }
-        } catch (e) { failed++; console.log(`  Crawl-Fehler bei ${c.firma}: ${e.message} — weiter.`); }
+        }
 
         const tier = sizeTier(size);
         if (tier === "solo") { smallFound++; console.log(`  → 1–3 ✓ (Ziel ${smallFound}/${target})`); }

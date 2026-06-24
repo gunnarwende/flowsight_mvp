@@ -51,8 +51,15 @@ jobs:
       - name: Dependencies installieren (src/web)
         run: cd src/web && npm ci --ignore-scripts
 
-      # Playwright früh installieren — der Sweep crawlt jetzt INLINE (Größe pro Firma),
-      # nicht erst der Anreicherungs-Step danach.
+      # Playwright-Browser cachen → Setup von ~10 auf ~2 Min, kein Timeout-Race mehr.
+      - name: Playwright-Browser cachen
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      # Playwright früh installieren — der Sweep crawlt INLINE (Größe pro Firma).
+      # Bei Cache-Hit nur noch OS-Deps, kein 150-MB-Download.
       - name: Playwright Chromium installieren
         continue-on-error: true
         run: cd src/web && npx playwright install --with-deps chromium
@@ -81,10 +88,9 @@ jobs:
 
       # ── Kanton-Sweep (gemeinde leer): OUTPUT-basiert — sammelt <count> NEUE
       #    1–3-Betriebe (kleine Firmen zuerst, Früh-Abbruch bei >15), crawlt inline.
-      #    Nahtloser Resume (Frontier) + rollt bei Bedarf in den nächsten Kanton.
-      #    Eigentlicher Stop = Ziel (<count> 1–3) erreicht; die Zeit ist nur ein
-      #    Sicherheitsnetz. Skript-Budget 50 Min; Job-Timeout 60 (Setup ~5 Min +
-      #    Puffer). GitHub-Hartlimit pro Job = 6 h. ──
+      #    Nahtloser Resume (Frontier). BLEIBT STRIKT IM GEWÄHLTEN KANTON (kein
+      #    Cross-Kanton-Roll — falsche Region wäre verheerend). Stop = Ziel erreicht;
+      #    Zeit nur Sicherheitsnetz. Skript-Budget 45 Min; Job-Timeout 60. ──
       - name: "Kanton-Sweep: bis N kleine Betriebe (1–3)"
         if: ${{ inputs.gemeinde == '' }}
         env:
@@ -93,11 +99,12 @@ jobs:
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/_ops/discover_targeted.mjs --kanton "$KANTON" --target "$COUNT" --minutes 50 --execute
+        run: node scripts/_ops/discover_targeted.mjs --kanton "$KANTON" --target "$COUNT" --minutes 45 --execute
 
-      # ── Anreicherung (Best-Effort): füllt noch leere Leads nach (v.a. Einzel-Ort-
-      #    Pfad; beim Sweep meist schon inline erledigt). Nie rot machen. ──
+      # ── Anreicherung (Best-Effort): NUR Einzel-Ort-Pfad. Der Sweep crawlt schon
+      #    inline → kein zweiter, redundanter Crawl-Durchlauf (spart ~15 Min). ──
       - name: Neue Leads anreichern (Inhaber / E-Mail / Größe)
+        if: ${{ inputs.gemeinde != '' }}
         continue-on-error: true
         env:
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
