@@ -126,11 +126,11 @@ function cleanText(text) {
 }
 
 // ── Page crawling ────────────────────────────────────────────────────────
-async function crawlPage(page, url, pageKey) {
+async function crawlPage(page, url, pageKey, timeoutMs = 8000) {
   try {
     const response = await page.goto(url, {
       waitUntil: "domcontentloaded",
-      timeout: 15000,
+      timeout: timeoutMs,
     });
 
     // Check if the page actually loaded (not 404/5xx)
@@ -1236,7 +1236,9 @@ async function main() {
       const url = baseUrl + path;
       console.log(`  [${pageKey}] Trying: ${url}`);
 
-      const crawlResult = await crawlPage(page, url, pageKey);
+      // Startseite bekommt etwas mehr Zeit (make-or-break); Unterseiten schnell
+      // abklopfen — fehlende Muster dürfen nicht je 15s kosten (×40 = Lauf-Killer).
+      const crawlResult = await crawlPage(page, url, pageKey, pageKey === "home" ? 12000 : 7000);
       if (crawlResult && crawlResult.text.trim().length > 50) {
         if (!best || crawlResult.text.length > best.text.length) best = { ...crawlResult, url };
         // Speed: ABBRECHEN, sobald eine ECHTE Seite gefunden ist — sonst werden alle
@@ -1278,6 +1280,13 @@ async function main() {
     if (!found) {
       console.log(`  [${pageKey}] Not found (tried ${patterns.length} patterns)`);
       pagesFailed++;
+      // Startseite nicht erreichbar → Site tot/zu langsam. Die übrigen ~40 Unterseiten-
+      // Muster würden je in den Timeout laufen (das hat einen 20-Min-Lauf gefressen) —
+      // also abbrechen. Ohne Startseite ist ohnehin keine sinnvolle Extraktion möglich.
+      if (pageKey === "home") {
+        console.log("  [abbruch] Startseite nicht erreichbar — restliche Unterseiten übersprungen.");
+        break;
+      }
     }
   }
 
