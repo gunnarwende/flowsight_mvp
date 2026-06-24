@@ -234,6 +234,8 @@ export function JourneyView() {
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
           sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
 
+        <RunStatusBadge />
+
         {/* Go — Schwungrad in Gang setzen */}
         <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
           <div className="text-lg font-extrabold text-navy-900">Go</div>
@@ -371,6 +373,7 @@ export function JourneyView() {
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
         <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length} · ${offenCount} offen)`} />
+        <RunStatusBadge />
 
         <div className="flex gap-2 mb-2">
           {SIZE_TABS.map((t) => (
@@ -740,6 +743,49 @@ function Gauge({ name, cur, target }: { name: string; cur: number; target: numbe
     </div>
   );
 }
+// Kleine Lauf-Anzeige oben: ⏳ während der „Go"-Lauf (Discovery + Anreicherung)
+// arbeitet, grünes ✓ kurz nachdem er fertig ist. Pollt den GitHub-Run-Status.
+function RunStatusBadge() {
+  // „running" = Lauf arbeitet · „doneRecent" = vor kurzem (≤45 Min) erfolgreich fertig.
+  // Recency wird im Tick berechnet (Date.now() gehört nicht in den Render — Purity-Regel).
+  const [badge, setBadge] = useState<{ running: boolean; doneRecent: boolean }>({ running: false, doneRecent: false });
+  useEffect(() => {
+    let alive = true;
+    const tick = async () => {
+      try {
+        const r = await fetch("/api/ceo/ops/run-status", { cache: "no-store" });
+        const j = await r.json();
+        if (!alive || !j?.ok) return;
+        const running = j.state === "queued" || j.state === "in_progress";
+        const startedMs = j.started_at ? new Date(j.started_at).getTime() : 0;
+        const doneRecent = j.state === "completed" && j.conclusion === "success"
+          && startedMs > 0 && Date.now() - startedMs < 45 * 60 * 1000;
+        setBadge({ running, doneRecent });
+      } catch { /* still — nächster Tick versucht es erneut */ }
+    };
+    tick();
+    const id = setInterval(tick, 15000);
+    return () => { alive = false; clearInterval(id); };
+  }, []);
+
+  if (badge.running) {
+    return (
+      <div className="mb-3 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-[13px] font-semibold text-amber-800">
+        <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+        Anreicherung läuft… (Inhaber / Mail / Größe werden gerade gefüllt)
+      </div>
+    );
+  }
+  if (badge.doneRecent) {
+    return (
+      <div className="mb-3 flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-[13px] font-semibold text-emerald-700">
+        <span aria-hidden>✓</span> Anreicherung fertig
+      </div>
+    );
+  }
+  return null;
+}
+
 function StatusPill({ status }: { status: string | null }) {
   const map: Record<string, { txt: string; cls: string }> = {
     ja: { txt: "JA · Simulation", cls: "bg-gold-500 text-navy-950" },

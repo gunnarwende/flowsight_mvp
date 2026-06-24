@@ -360,38 +360,56 @@ function extractFirma() {
 }
 
 function extractInhaber() {
-  for (const key of ["team", "impressum", "home"]) {
+  // Rollen breit (Inhaber/GF/Geschäftsleitung/Gründer/Mitinhaber/Patron …).
+  const ROLE = "(?:Inhaber(?:in)?|Mitinhaber(?:in)?|Firmeninhaber(?:in)?|Gesch[aä]ftsf[uü]hr(?:er|erin|ung)|"
+    + "Gesch[aä]ftsleitung|Gesch[aä]ftsleiter(?:in)?|Eigent[uü]mer(?:in)?|Gr[uü]nder(?:in)?|"
+    + "Mitgr[uü]nder(?:in)?|CEO|Patron|Betriebsleiter(?:in)?|Managing\\s+Director)";
+  const NAME = "[A-ZÄÖÜ][a-zäöüéèêàçï]+(?:[ -][A-ZÄÖÜ][a-zäöüéèêàçï]+){1,2}";
+  // Wörter, die KEIN Personenname sind (Rechtsform/Gewerk/Navigation).
+  const BLOCK = /\b(AG|GmbH|Sàrl|SA|KlG|Haustechnik|Geb[aä]udetechnik|Sanit[aä]r|Heizung|Spenglerei|Spengler|Service|Sohn|S[oö]hne|Team|Kontakt|Impressum|Startseite|Willkommen|Dienstleistungen|Leistungen|Notdienst|Kundendienst|Unternehmen|Ueber|Über)\b/i;
+
+  const clean = (raw) => {
+    const out = [];
+    for (const w of raw.trim().split(/\s+/)) {
+      if (BLOCK.test(w) || !/^[A-ZÄÖÜ][a-zäöüéèêàçï'’-]+$/.test(w)) break;
+      out.push(w);
+    }
+    return out.slice(0, 3).join(" ");
+  };
+  const valid = (n) => n && n.split(" ").length >= 2 && !BLOCK.test(n);
+
+  const owners = [];
+  const seen = new Set();
+  let src = null;
+  const add = (n, key) => { const k = n.toLowerCase(); if (n && !seen.has(k)) { seen.add(k); owners.push(n); if (!src) src = sourceTag(key); } };
+
+  for (const key of ["team", "impressum", "home", "kontakt"]) {
     const text = pageTexts[key];
     if (!text) continue;
-
-    // Look for explicit owner/manager patterns
-    // Pattern: "Title: Firstname Lastname" — name is 2-4 words starting with uppercase
-    const patterns = [
-      /(?:Gesch[aä]ftsf[uü]hr(?:er|ung)|Inhaber(?:in)?|CEO|Direktor(?:in)?|Geschäftsleitung|Managing\s+Director|Eigent[uü]mer)[\s:.,–-]+([A-ZÄÖÜ][a-zäöüéèê]+\s+[A-ZÄÖÜ][a-zäöüéèê]+(?:\s+[A-ZÄÖÜ][a-zäöüéèê]+)?)/g,
-      /([A-ZÄÖÜ][a-zäöüéèê]+\s+[A-ZÄÖÜ][a-zäöüéèê]+(?:\s+[A-ZÄÖÜ][a-zäöüéèê]+)?)[\s,–-]+(?:Gesch[aä]ftsf[uü]hr(?:er|ung)|Inhaber(?:in)?|CEO|Geschäftsleitung)/g,
-    ];
-
-    for (const re of patterns) {
-      const matches = [...text.matchAll(re)];
-      if (matches.length > 0) {
-        const names = matches.map((m) => {
-          // Clean: take only first 2-3 capitalized words (firstname + lastname)
-          const raw = m[1].trim();
-          const words = raw.split(/\s+/).filter((w) => /^[A-ZÄÖÜ]/.test(w));
-          // Stop at first non-name word (e.g. "Haustechnik", "GmbH")
-          const nameWords = [];
-          for (const w of words) {
-            if (/^(Haustechnik|Sanitär|AG|GmbH|Heizung|Service|und|Sohn|Söhne)$/i.test(w)) break;
-            nameWords.push(w);
-          }
-          return nameWords.slice(0, 3).join(" ");
-        }).filter((n) => n.split(" ").length >= 2); // Must have at least first+last name
-        if (names.length > 0) {
-          return { value: unique(names).join(", "), source: sourceTag(key), verified: true };
-        }
-      }
+    // „Rolle: Vorname Nachname [und/&/, Vorname Nachname]" — fängt 2 Geschäftspartner.
+    const reA = new RegExp(`${ROLE}[\\s:.,–-]+(${NAME}(?:\\s*(?:und|&|,|sowie|/)\\s*${NAME}){0,2})`, "g");
+    for (const m of text.matchAll(reA)) {
+      for (const part of m[1].split(/\s*(?:und|&|,|sowie|\/)\s*/)) { const n = clean(part); if (valid(n)) add(n, key); }
     }
+    // „Vorname Nachname, Rolle" oder „Vorname Nachname (Inhaber)".
+    const reB = new RegExp(`(${NAME})\\s*[,–-]?\\s*[(]?\\s*(?:${ROLE})`, "g");
+    for (const m of text.matchAll(reB)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
+    if (owners.length) break; // erste Seite mit klaren Treffern reicht (Team/Impressum zuerst)
   }
+
+  if (owners.length) {
+    return { value: owners.slice(0, 3).join(", "), source: src || "website_team", verified: true };
+  }
+
+  // Sekundär (Impressum): „vertreten durch / verantwortlich" — oft der Inhaber, aber
+  // weniger sicher → mit „?" markieren, damit der Founder kurz gegenprüft.
+  for (const key of ["impressum", "kontakt"]) {
+    const text = pageTexts[key];
+    if (!text) continue;
+    const m = text.match(new RegExp(`(?:vertreten\\s+durch|verantwortlich(?:\\s+f[uü]r\\s+den\\s+Inhalt)?)[\\s:.,–-]+(${NAME})`, "i"));
+    if (m) { const n = clean(m[1]); if (valid(n)) return { value: `${n} ?`, source: sourceTag(key), verified: false }; }
+  }
+
   return { value: null, source: "not_found", verified: false };
 }
 
