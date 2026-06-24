@@ -123,7 +123,9 @@ export function JourneyView() {
   const [goCount, setGoCount] = useState(20);
   const [goKanton, setGoKanton] = useState("Thurgau");
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
-  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "offen">("alle");
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq">("alle"); // Größe (Einfachauswahl)
+  // Feld-Lücken (Mehrfachauswahl) — zum gezielten Nacharbeiten: Größe?/Inhaber/Mail leer.
+  const [gaps, setGaps] = useState<{ groesse: boolean; inhaber: boolean; mail: boolean }>({ groesse: false, inhaber: false, mail: false });
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
   // „Go"-Lauf-Status (Discovery + Anreicherung) — sperrt den Go-Knopf, zeigt ⏳/✓ + Stopp.
   const [run, setRun] = useState<{ active: boolean; doneRecent: boolean; id: number | null }>({ active: false, doneRecent: false, id: null });
@@ -394,9 +396,15 @@ export function JourneyView() {
   // ── Stern 1: Kontaktliste (DB-gestützt) ─────────────────────────────────
   function KontaktView() {
     const q = search.trim().toLowerCase();
+    const blank = (v: string | null) => !(v && String(v).trim());
     let rows = data!.leads;
     if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
+    // Ebene 1 — Größe (Einfachauswahl)
     if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
+    // Ebene 2 — Feld-Lücken (Mehrfachauswahl, jede grenzt weiter ein)
+    if (gaps.groesse) rows = rows.filter((l) => sizeTier(l.ma_proxy) === "offen");
+    if (gaps.inhaber) rows = rows.filter((l) => blank(l.entscheider));
+    if (gaps.mail) rows = rows.filter((l) => blank(l.mail));
     const offenCount = rows.filter((l) => !isContacted(l.status)).length;
     if (nurOffen) rows = rows.filter((l) => !isContacted(l.status));
     // Offene zuerst, kontaktierte (markiert) darunter.
@@ -404,7 +412,10 @@ export function JourneyView() {
 
     const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
       { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
-      { k: "premium", label: "4–15" }, { k: "offen", label: "Größe?" },
+      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" },
+    ];
+    const GAP_TABS: { k: keyof typeof gaps; label: string }[] = [
+      { k: "groesse", label: "Größe?" }, { k: "inhaber", label: "Inhaber leer" }, { k: "mail", label: "Mail leer" },
     ];
 
     return (
@@ -413,10 +424,19 @@ export function JourneyView() {
         <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length} · ${offenCount} offen)`} />
         <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
 
-        <div className="flex gap-2 mb-2">
+        {/* Ebene 1: Größe (Einfachauswahl) */}
+        <div className="flex gap-2 mb-1.5">
           {SIZE_TABS.map((t) => (
             <button key={t.k} type="button" onClick={() => setSizeFilter(t.k)}
               className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Ebene 2: Feld-Lücken (Mehrfachauswahl) — gold = aktiv */}
+        <div className="flex gap-2 mb-2">
+          {GAP_TABS.map((t) => (
+            <button key={t.k} type="button" onClick={() => setGaps((g) => ({ ...g, [t.k]: !g[t.k] }))}
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[12px] font-semibold border ${gaps[t.k] ? "bg-gold-500 text-navy-950 border-gold-500" : "bg-white text-navy-500 border-navy-200"}`}>{t.label}</button>
           ))}
         </div>
 
