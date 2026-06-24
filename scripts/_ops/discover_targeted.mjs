@@ -32,6 +32,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getArg(f) { const i = process.argv.indexOf(f); return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : null; }
 const kanton = (getArg("--kanton") || "").trim();
+const startGemeinde = (getArg("--start") || "").trim(); // optionaler Start-Ort; sonst Resume ab Frontier
 const target = Math.max(1, parseInt(getArg("--target") || "10", 10) || 10);
 const MINUTES = Math.max(2, parseInt(getArg("--minutes") || "20", 10) || 20);
 const EXECUTE = process.argv.includes("--execute");
@@ -98,12 +99,24 @@ function sizeTier(v) {
 }
 
 (async () => {
-  // Bereits erfasste place_ids (nie doppelt crawlen)
+  // Bereits erfasste place_ids (nie doppelt crawlen) + erfasste Orte (für Resume)
   const existing = new Set();
+  const coveredOrte = new Set();
   {
-    const { data, error } = await sb.from("leads").select("place_id");
+    const { data, error } = await sb.from("leads").select("place_id, ort");
     if (error) { console.error("DB-Lesefehler:", error.message); process.exit(1); }
-    (data || []).forEach((r) => r.place_id && existing.add(r.place_id));
+    (data || []).forEach((r) => { if (r.place_id) existing.add(r.place_id); if (r.ort) coveredOrte.add(String(r.ort).trim().toLowerCase()); });
+  }
+
+  // Resume nahtlos: zusammenhängendes erfasstes Präfix (A…) überspringen, am
+  // Frontier weitermachen. Der Grenz-Ort wird nochmal gescoutet (falls letzter
+  // Lauf mittendrin stoppte). Optionaler --start springt gezielt an einen Ort.
+  let prefixEnd = 0;
+  while (prefixEnd < orte.length && coveredOrte.has(orte[prefixEnd].toLowerCase())) prefixEnd++;
+  let startIdx = Math.max(0, prefixEnd - 1);
+  if (startGemeinde) {
+    const gi = orte.findIndex((o) => o.toLowerCase() === startGemeinde.toLowerCase());
+    if (gi >= 0) startIdx = gi;
   }
 
   const startedAt = Date.now();
@@ -113,10 +126,14 @@ function sizeTier(v) {
   const env = { ...process.env };
   const timeLeft = () => Date.now() < deadline;
 
-  console.log(`\n── Targeted Go ${kanton} (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──\n`);
+  console.log(`\n── Targeted Go ${kanton} (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──`);
+  console.log(`   Start ab "${orte[startIdx]}" (Index ${startIdx}/${orte.length}, erfasstes Präfix bis ${prefixEnd})\n`);
 
-  for (const ort of orte) {
+  for (let i = startIdx; i < orte.length; i++) {
+    const ort = orte[i];
     if (!timeLeft() || smallFound >= target) break;
+    // Voll erfasste Orte überspringen (außer dem Grenz-Ort, den wir fertig machen).
+    if (coveredOrte.has(ort.toLowerCase()) && i !== prefixEnd - 1) continue;
     try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kanton}`], { stdio: "inherit", env }); }
     catch (e) { console.log(`  scout-Fehler bei ${ort}: ${e.message} — weiter.`); continue; }
     scoutedOrte.push(ort);
