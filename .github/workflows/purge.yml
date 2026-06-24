@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "stale = unberührter Alt-Crawl · worked = Altlasten raus (verschickte/geöffnete) · all = kompletter Reset"
+        description: "stale = unberührter Alt-Crawl · worked = Altlasten raus · all = Reset · region = Falsch-Region raus (braucht kanton)"
         required: true
         type: choice
         default: "stale"
@@ -18,6 +18,12 @@ on:
           - "stale"
           - "worked"
           - "all"
+          - "region"
+      kanton:
+        description: "Nur für mode=region: Kanton, dessen Gemeinden BEHALTEN werden (z. B. Thurgau). Alles außerhalb wird gelöscht."
+        required: false
+        type: string
+        default: ""
       execute:
         description: "Wirklich löschen? Aus = nur Vorschau (Dry-Run)."
         required: false
@@ -46,9 +52,10 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           MODE: ${{ inputs.mode }}
+          KANTON: ${{ inputs.kanton }}
         run: |
           if [ "${{ inputs.execute }}" = "true" ]; then
-            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE" --execute
+            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE" --kanton "$KANTON" --execute
           else
-            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE"
+            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE" --kanton "$KANTON"
           fi
