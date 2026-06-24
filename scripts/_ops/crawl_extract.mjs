@@ -383,10 +383,13 @@ function extractInhaber() {
   let src = null;
   const add = (n, key) => { const k = n.toLowerCase(); if (n && !seen.has(k)) { seen.add(k); owners.push(n); if (!src) src = sourceTag(key); } };
 
-  for (const key of ["team", "impressum", "home", "kontakt"]) {
+  // Team UND Impressum IMMER beide lesen — die Geschäftsleitung steht oft nur im
+  // Impressum, auch wenn die Team-Seite schon einen Namen nennt (sonst fehlt der
+  // zweite gleichwertige Geschäftsführer). home/kontakt nur als Notnagel, wenn beide leer.
+  const scanPage = (key) => {
     const text = pageTexts[key];
-    if (!text) continue;
-    // „Rolle: Vorname Nachname [und/&/, Vorname Nachname]" — fängt 2 Geschäftspartner.
+    if (!text) return;
+    // „Rolle: Vorname Nachname [und/&/, Vorname Nachname]" — fängt 2–3 Geschäftspartner.
     const reA = new RegExp(`${ROLE}[\\s:.,–-]+(${NAME}(?:\\s*(?:und|&|,|sowie|/)\\s*${NAME}){0,2})`, "g");
     for (const m of text.matchAll(reA)) {
       for (const part of m[1].split(/\s*(?:und|&|,|sowie|\/)\s*/)) { const n = clean(part); if (valid(n)) add(n, key); }
@@ -394,8 +397,10 @@ function extractInhaber() {
     // „Vorname Nachname, Rolle" oder „Vorname Nachname (Inhaber)".
     const reB = new RegExp(`(${NAME})\\s*[,–-]?\\s*[(]?\\s*(?:${ROLE})`, "g");
     for (const m of text.matchAll(reB)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
-    if (owners.length) break; // erste Seite mit klaren Treffern reicht (Team/Impressum zuerst)
-  }
+  };
+  scanPage("team");
+  scanPage("impressum");
+  if (!owners.length) { scanPage("home"); scanPage("kontakt"); }
 
   if (owners.length) {
     return { value: owners.slice(0, 3).join(", "), source: src || "website_team", verified: true };
