@@ -1227,6 +1227,7 @@ async function main() {
   // ── Discover and crawl pages ──
   let pagesFound = 0;
   let pagesFailed = 0;
+  let earlyBig = false; // Früh-Abbruch: Betrieb klar >15 MA → Tief-Crawl sparen
 
   for (const [pageKey, patterns] of Object.entries(PAGE_PATTERNS)) {
     let found = false;
@@ -1257,6 +1258,22 @@ async function main() {
       pagesFound++;
       found = true;
       console.log(`  [${pageKey}] OK — ${best.text.length} chars @ ${best.url}${best.title ? ` (title: "${best.title.slice(0, 60)}")` : ""}`);
+
+      // Früh-Abbruch: sobald home/team klar >15 zeigen (explizite Zahl ODER ≥16 Namen
+      // schon im Roh-Text), den restlichen Tief-Crawl überspringen — der Betrieb ist
+      // ohnehin geparkt (>15). Konservativ: nur bei KLAREM Signal abbrechen.
+      if (pageKey === "home" || pageKey === "team") {
+        const numM = best.text.match(/(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Mitarbeitende|Fachleute|Spezialisten)/i);
+        const bigNum = numM && parseInt(numM[1], 10) > 15 && parseInt(numM[1], 10) <= 500;
+        const bigNames = teamNamesFromText(best.text).length > 15;
+        if (bigNum || bigNames) {
+          earlyBig = true;
+          result.team_groesse = { value: bigNum ? parseInt(numM[1], 10) : 16, source: `website_${pageKey}`,
+            verified: true, basis: "early_big", note: ">15 früh erkannt — Tief-Crawl abgebrochen" };
+          console.log(`  [früh-abbruch] >15 erkannt (${bigNum ? numM[1] + " MA" : "≥16 Namen"}) — Crawl gestoppt, Betrieb wird geparkt.`);
+          break;
+        }
+      }
     }
     if (!found) {
       console.log(`  [${pageKey}] Not found (tried ${patterns.length} patterns)`);
@@ -1264,11 +1281,11 @@ async function main() {
     }
   }
 
-  console.log(`\nPages found: ${pagesFound}, not found: ${pagesFailed}\n`);
+  console.log(`\nPages found: ${pagesFound}, not found: ${pagesFailed}${earlyBig ? " (Früh-Abbruch >15)" : ""}\n`);
 
-  // ── Extract brand color from home page ──
-  console.log("  [brand_color] Extracting...");
-  if (pageSources.home) {
+  // ── Extract brand color from home page (bei Früh-Abbruch übersprungen) ──
+  if (!earlyBig && pageSources.home) {
+    console.log("  [brand_color] Extracting...");
     await page.goto(pageSources.home, { waitUntil: "domcontentloaded", timeout: 15000 });
     await page.waitForTimeout(1500);
     const color = await extractBrandColor(page);
@@ -1282,7 +1299,8 @@ async function main() {
 
   // ── Team-Analyse: Mitarbeiterzahl aus der Team-Seite ableiten ──
   // (Namen + Porträt-Fotos zählen; klappt „mehr anzeigen"/Tabs vorher auf.)
-  if (pageSources.team) {
+  // Bei Früh-Abbruch (>15) übersprungen — Größe steht bereits fest.
+  if (!earlyBig && pageSources.team) {
     await analyzeTeam(page, pageSources.team);
   }
 
@@ -1323,9 +1341,9 @@ async function main() {
   result.gruendung = gruendungResult;
   console.log(`  gruendung: ${gruendungResult.value || "(not found)"} [${gruendungResult.source}]`);
 
-  const teamResult = extractTeamGroesse();
-  result.team_groesse = teamResult;
-  console.log(`  team_groesse: ${teamResult.value || "(not found)"} [${teamResult.source}]`);
+  // Bei Früh-Abbruch ist team_groesse bereits gesetzt (>15) — nicht überschreiben.
+  if (!earlyBig) result.team_groesse = extractTeamGroesse();
+  console.log(`  team_groesse: ${result.team_groesse.value || "(not found)"} [${result.team_groesse.source}]`);
 
   const leistungenResult = extractLeistungen();
   result.leistungen = leistungenResult;

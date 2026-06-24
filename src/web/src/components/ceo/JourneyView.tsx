@@ -267,6 +267,7 @@ export function JourneyView() {
   // ── Home: Funnel + Stern-Navigation ────────────────────────────────────
   function Home() {
     const max = Math.max(...data!.funnel.map((f) => f.value), 1);
+    const soloCount = data!.leads.filter((l) => sizeTier(l.ma_proxy) === "solo").length;
     return (
       <div>
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
@@ -306,11 +307,16 @@ export function JourneyView() {
             className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400 disabled:bg-navy-100 disabled:text-navy-400 disabled:cursor-not-allowed">
             {run.active
               ? "läuft… — bitte warten"
-              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — ${goCount} neue im ${goKanton}`}
+              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — bis ${goCount} kleine Betriebe (1–3) im ${goKanton}`}
           </button>
+          {!goGemeinde && (
+            <p className="text-[11px] text-navy-400 mt-2">
+              Sammelt {goCount} neue <b>1–3-Betriebe</b> (kleine Firmen zuerst) · 4–15 wird gesammelt, &gt;15 geparkt · aktuell 1–3 in Liste: <b>{soloCount}</b>
+            </p>
+          )}
 
           {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
-          <p className="text-[11px] text-navy-300 mt-2">Läuft ~1–2 Min in der Cloud, dann erscheinen die Betriebe in der Kontaktliste (Stern 1).</p>
+          <p className="text-[11px] text-navy-300 mt-2">Läuft in der Cloud (Sweep bis ~20 Min) — oben das ⏳/✓ zeigt den Stand, die Betriebe erscheinen laufend in der Kontaktliste.</p>
         </div>
 
         {/* Stern-Navigation */}
