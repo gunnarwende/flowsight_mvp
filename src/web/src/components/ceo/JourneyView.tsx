@@ -186,7 +186,16 @@ export function JourneyView() {
       } else if (j.error === "GH_DISPATCH_TOKEN not configured") {
         setOpsMsg("GH_DISPATCH_TOKEN fehlt — fine-grained PAT (Actions read+write) in Vercel setzen.");
       } else {
-        setOpsMsg(`Fehler: ${j.error || j.status || res.status}`);
+        // Genaue Ursache sichtbar machen: bei GitHub-Ablehnung reicht die Route
+        // GitHubs echten Text als j.body durch ("Bad credentials" = Tokenwert,
+        // "Resource not accessible by personal access token" = Recht,
+        // "secondary rate limit" = gedrosselt). Leerer body bei 403 = es war
+        // nicht GitHub, sondern eine Schicht davor (Vercel-Edge/Login).
+        const detail = String(j.body || j.error || "").replace(/\s+/g, " ").trim();
+        setOpsMsg(
+          `Fehler ${j.status || res.status}` +
+            (detail ? `: ${detail.slice(0, 240)}` : " — keine GitHub-Antwort (eher Vercel-Edge/Login, nicht der Token)")
+        );
       }
     } catch {
       setOpsMsg("Netzwerkfehler beim Auslösen.");
