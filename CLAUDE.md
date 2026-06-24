@@ -1,6 +1,7 @@
 # CLAUDE.md — Repo Guardrails
 
 ## No Drift (Fixed Decisions)
+- ICP-Filter (HART): Nur Betriebe mit EIGENER, prüfbarer Website sind ICP. KEIN ICP — nie erfassen/parken/crawlen: Betriebe ohne Website ODER nur mit Verzeichnis-/Branchenbuch-Link (yellow.ch, local.ch, search.ch, Facebook, Instagram, LinkedIn, business.site, wixsite/jimdo-free etc.). Durchgesetzt via usableWebsite()/DIRECTORY_HOSTS in discover_targeted.mjs + scout.mjs.
 - MVP-critical: Website + Wizard + Voice Agent (Retell)
 - Output: E-Mail only (customers). WhatsApp: Founder-only Ops Alerts (no customer-facing, no PII).
 - Mail Provider: Resend (no 365 Graph in MVP)
