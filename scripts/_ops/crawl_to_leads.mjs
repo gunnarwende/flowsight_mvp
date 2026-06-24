@@ -37,6 +37,7 @@ function getArg(flag) {
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : null;
 }
 const slug = getArg("--slug");
+const forcePlaceId = getArg("--place-id"); // bekannte Lead-Zeile (Anreicherung) → nur Update, nie Insert
 const EXECUTE = process.argv.includes("--execute");
 if (!slug) { console.error("ERROR: --slug <slug> fehlt."); process.exit(1); }
 
@@ -113,6 +114,13 @@ const reviews = c.google && c.google.review_count != null ? c.google.review_coun
 
 // ── Match-Zeile finden ─────────────────────────────────────────────────────
 async function findLead() {
+  // Anreicherung einer bekannten Zeile: hart auf deren place_id matchen → nie Insert.
+  if (forcePlaceId) {
+    const { data, error } = await sb.from("leads").select("*").eq("place_id", forcePlaceId).limit(1);
+    if (error) throw new Error(error.message);
+    if (data && data[0]) return { row: data[0], via: "place_id (forced)" };
+    return { row: null, via: "place_id (forced) nicht gefunden" };
+  }
   if (placeId) {
     const { data, error } = await sb.from("leads").select("*").eq("place_id", placeId).limit(1);
     if (error) throw new Error(error.message);
