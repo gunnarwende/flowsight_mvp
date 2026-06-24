@@ -123,7 +123,7 @@ export function JourneyView() {
   const [goCount, setGoCount] = useState(20);
   const [goKanton, setGoKanton] = useState("Thurgau");
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
-  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "offen">("alle");
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq" | "offen">("alle");
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
   // „Go"-Lauf-Status (Discovery + Anreicherung) — sperrt den Go-Knopf, zeigt ⏳/✓ + Stopp.
   const [run, setRun] = useState<{ active: boolean; doneRecent: boolean; id: number | null }>({ active: false, doneRecent: false, id: null });
@@ -404,7 +404,7 @@ export function JourneyView() {
 
     const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
       { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
-      { k: "premium", label: "4–15" }, { k: "offen", label: "Größe?" },
+      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" }, { k: "offen", label: "Größe?" },
     ];
 
     return (
