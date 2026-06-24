@@ -144,17 +144,45 @@ async function findLead() {
   console.log(`place_id: ${placeId ?? "(keiner — Google fand nichts)"}`);
   console.log(`Match: ${match.via}${match.row ? ` → ${match.row.firma} (status=${match.row.status})` : ""}`);
 
+  // Fremd-Website-Schutz: gehört die gecrawlte Domain offensichtlich zu einer
+  // ANDEREN Firma (Parkseite „Web Server's Default Page" oder fremde Domain wie
+  // jge.ch→Populaer AG), dann NICHT die Kontaktdaten/Größe dieser fremden Firma
+  // an unseren Lead hängen. Vergleich über distinktive Firmen-Tokens.
+  if (forcePlaceId && match.row && enrich.firma) {
+    const GENERIC = new Set(["gmbh", "sàrl", "sarl", "genossenschaft", "gebäudetechnik",
+      "gebaeudetechnik", "haustechnik", "energietechnik", "heizung", "heizungen", "sanitär",
+      "sanitaer", "spenglerei", "technik", "service", "default", "server", "page", "welcome",
+      "willkommen", "startseite", "home", "index"]);
+    const toks = (s) => new Set(String(s || "").toLowerCase().replace(/[^a-zäöü0-9 ]/g, " ")
+      .split(/\s+/).filter((w) => w.length >= 4 && !GENERIC.has(w)));
+    const a = toks(match.row.firma), b = toks(enrich.firma);
+    const overlap = [...a].some((t) => b.has(t));
+    if (a.size && b.size && !overlap) {
+      console.log(`\nÜBERSPRUNGEN: Website-Firma "${enrich.firma}" passt nicht zum Lead "${match.row.firma}" `
+        + `(fremde Domain/Parkseite) — keine Anreicherung, Identität bleibt sauber.\n`);
+      return;
+    }
+  }
+
   const payload = {};
-  if (rating != null) payload.rating = rating;
-  if (reviews != null) payload.reviews = reviews;
+  // Bei Anreicherung (forcePlaceId) NIE Bewertung/Reviews überschreiben — Google
+  // (Discovery) ist die Identitäts-/Bewertungsquelle; ein Website-Relookup kann
+  // zu einer ANDEREN Firma gehören (Parkseite / fremde Domain).
+  if (!forcePlaceId) {
+    if (rating != null) payload.rating = rating;
+    if (reviews != null) payload.reviews = reviews;
+  }
 
   let mode;
   if (match.row) {
-    const worked = WORKED(match.row.status);
-    mode = worked ? "additiv (WORKED → nur leere Felder)" : "update (unbearbeitet → Crawl-Werte)";
+    // Anreicherung schützt die Identität wie ein bearbeiteter Lead: es werden nur
+    // LEERE Zielfelder gefüllt (Inhaber/Mail/Größe), Firma/Ort/Telefon von Google
+    // bleiben unangetastet — verhindert "Web Server's Default Page" / falsche Firma.
+    const additiv = WORKED(match.row.status) || !!forcePlaceId;
+    mode = additiv ? "additiv (nur leere Felder — Identität geschützt)" : "update (unbearbeitet → Crawl-Werte)";
     for (const [col, val] of Object.entries(enrich)) {
       if (val == null) continue;
-      if (worked && !isEmpty(match.row[col])) continue; // Bestands-/Founder-Wert schützen
+      if (additiv && !isEmpty(match.row[col])) continue; // Bestands-/Founder-Wert schützen
       payload[col] = val;
     }
   } else if (match.newPlaceId) {
