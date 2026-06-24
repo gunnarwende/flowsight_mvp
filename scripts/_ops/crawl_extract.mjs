@@ -138,22 +138,22 @@ async function crawlPage(page, url, pageKey) {
       return null;
     }
 
-    // Wait for JS rendering (Wix, React, etc.)
-    await page.waitForTimeout(3000);
+    // Wait for JS rendering (Wix, React, etc.) — knapp gehalten (Speed: läuft ×40+ pro Betrieb)
+    await page.waitForTimeout(1800);
 
     // Scroll to trigger lazy-loaded content
     await page.evaluate(async () => {
-      const distance = 400;
+      const distance = 600;
       let total = 0;
       while (total < document.body.scrollHeight) {
         window.scrollBy(0, distance);
         total += distance;
-        await new Promise((r) => setTimeout(r, 150));
+        await new Promise((r) => setTimeout(r, 90));
       }
       window.scrollTo(0, 0);
     });
 
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const data = await page.evaluate(() => ({
       text: document.body.innerText || "",
@@ -649,22 +649,22 @@ async function analyzeTeam(page, url) {
   try {
     const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
     if (!resp || resp.status() >= 400) return;
-    await page.waitForTimeout(2500);
+    await page.waitForTimeout(1500);
 
     const scrollAll = async () => {
       await page.evaluate(async () => {
-        const step = 500;
+        const step = 700;
         for (let y = 0; y < document.body.scrollHeight; y += step) {
           window.scrollTo(0, y);
-          await new Promise((r) => setTimeout(r, 120));
+          await new Promise((r) => setTimeout(r, 70));
         }
         window.scrollTo(0, 0);
       });
     };
 
-    // „Mehr/weitere/alle anzeigen", „Load more", Team-Tabs aufklappen (mehrere Runden).
+    // „Mehr/weitere/alle anzeigen", „Load more", Team-Tabs aufklappen (max. 4 Runden).
     let expanded = false;
-    for (let round = 0; round < 6; round++) {
+    for (let round = 0; round < 4; round++) {
       await scrollAll();
       const clicked = await page.evaluate(() => {
         const rx = /(mehr\s*(an)?zeigen|weitere|alle\s+(an)?zeigen|gesamtes\s+team|ganzes\s+team|load\s*more|show\s*more|mehr\s+laden|weitere\s+mitarbeiter)/i;
@@ -676,11 +676,11 @@ async function analyzeTeam(page, url) {
         }
         return did;
       });
-      await page.waitForTimeout(1200);
+      await page.waitForTimeout(700);
       if (clicked) expanded = true; else break;
     }
     await scrollAll();
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(300);
 
     // Portrait-Fotos zählen (gerendert sichtbar, plausibles Seitenverhältnis, kein Logo/Icon).
     const photoCount = await page.evaluate(() => {
@@ -1201,13 +1201,14 @@ async function main() {
       const crawlResult = await crawlPage(page, url, pageKey);
       if (crawlResult && crawlResult.text.trim().length > 50) {
         if (!best || crawlResult.text.length > best.text.length) best = { ...crawlResult, url };
-        // SPA-Shell-Schutz (11.06.): manche Sites liefern für viele Routen denselben
-        // inhalts-armen Shell (≈ Home-Länge) — z.B. leins.ch /team = 1487-Zeichen-Shell,
-        // der echte Über-uns-Inhalt mit den Entscheider-Mails liegt erst auf /ueber-uns.
-        // Daher NICHT beim ersten Treffer abbrechen, sondern nur, wenn die Seite klar
-        // mehr Inhalt hat als der Shell-Baseline; sonst nächsten Kandidaten probieren.
-        const shellLen = (pageTexts.home && pageTexts.home.length) || 1500;
-        if (crawlResult.text.length > shellLen + 300) break;
+        // Speed: ABBRECHEN, sobald eine ECHTE Seite gefunden ist — sonst werden alle
+        // ~18 URL-Muster je ~4-5s durchprobiert (das frass die ganze Lauf-Zeit).
+        // SPA-Shell-Schutz: eine Seite mit ~Home-Länge ist meist nur der Shell
+        // derselben Route (kein echter Unterinhalt) → überspringen und weiter suchen;
+        // der bisher längste Treffer bleibt als best erhalten.
+        const homeLen = (pageTexts.home && pageTexts.home.length) || 0;
+        const isShell = pageKey !== "home" && homeLen > 0 && Math.abs(crawlResult.text.length - homeLen) < 200;
+        if (crawlResult.text.length > 400 && !isShell) break;
       }
     }
     if (best) {
@@ -1232,7 +1233,7 @@ async function main() {
   console.log("  [brand_color] Extracting...");
   if (pageSources.home) {
     await page.goto(pageSources.home, { waitUntil: "domcontentloaded", timeout: 15000 });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1500);
     const color = await extractBrandColor(page);
     if (color) {
       result.brand_color = { value: color, source: "website_home", verified: true };

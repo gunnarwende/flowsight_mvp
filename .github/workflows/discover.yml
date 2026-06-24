@@ -92,4 +92,4 @@ jobs:
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/_ops/enrich_new_leads.mjs --limit 12
+        run: node scripts/_ops/enrich_new_leads.mjs --limit 20
