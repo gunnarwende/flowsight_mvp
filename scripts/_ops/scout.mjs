@@ -186,45 +186,55 @@ function parseCSVLine(line) {
 // ── Google Places Text Search ───────────────────────────────────────
 async function searchPlaces(textQuery) {
   const url = "https://places.googleapis.com/v1/places:searchText";
+  const fieldMask = [
+    "places.id",
+    "places.displayName",
+    "places.formattedAddress",
+    "places.websiteUri",
+    "places.rating",
+    "places.userRatingCount",
+    "places.nationalPhoneNumber",
+    "places.internationalPhoneNumber",
+    "places.googleMapsUri",
+    "places.businessStatus",
+    "places.types",
+    "places.regularOpeningHours",
+    "nextPageToken",
+  ].join(",");
 
-  const body = {
-    textQuery,
-    languageCode: "de",
-    regionCode: "CH",
-    maxResultCount: 20,
-  };
+  // ALLE Treffer holen, nicht nur die ersten 20 — Google Places liefert per
+  // Text-Suche bis zu 60 (3 Seiten à 20) via nextPageToken. So wird eine Gemeinde
+  // wirklich vollständig abgegrast, nicht auf 20 gedeckelt.
+  const out = [];
+  let pageToken = null;
+  for (let page = 0; page < 3; page++) {
+    const body = { textQuery, languageCode: "de", regionCode: "CH", maxResultCount: 20 };
+    if (pageToken) body.pageToken = pageToken;
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": apiKey,
-      "X-Goog-FieldMask": [
-        "places.id",
-        "places.displayName",
-        "places.formattedAddress",
-        "places.websiteUri",
-        "places.rating",
-        "places.userRatingCount",
-        "places.nationalPhoneNumber",
-        "places.internationalPhoneNumber",
-        "places.googleMapsUri",
-        "places.businessStatus",
-        "places.types",
-        "places.regularOpeningHours",
-      ].join(","),
-    },
-    body: JSON.stringify(body),
-  });
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": apiKey,
+        "X-Goog-FieldMask": fieldMask,
+      },
+      body: JSON.stringify(body),
+    });
 
-  if (!res.ok) {
-    const err = await res.text();
-    console.error(`  API error (${res.status}) for "${textQuery}":`, err.slice(0, 200));
-    return [];
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(`  API error (${res.status}) for "${textQuery}" (Seite ${page + 1}):`, err.slice(0, 200));
+      break;
+    }
+
+    const data = await res.json();
+    out.push(...(data.places || []));
+    pageToken = data.nextPageToken;
+    if (!pageToken) break;
+    // nextPageToken wird erst nach kurzer Verzögerung gültig.
+    await new Promise((r) => setTimeout(r, 2000));
   }
-
-  const data = await res.json();
-  return data.places || [];
+  return out;
 }
 
 // ── Scoring ─────────────────────────────────────────────────────────
