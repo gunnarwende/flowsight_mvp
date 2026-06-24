@@ -214,7 +214,10 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
         console.log(`\n>>> [${ort}] ${c.firma}  (${wurl})  · ${c.reviews ?? 0} Reviews`);
         let size = null, jData = null;
         try {
-          execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env });
+          // Harte Obergrenze pro Firma: kein einzelner (langsamer) Crawl darf den
+          // Lauf blockieren. Nach 75s wird der Prozess (inkl. Chrome) hart beendet,
+          // der catch zählt ihn als Fehler und es geht weiter zur nächsten Firma.
+          execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env, timeout: 75000, killSignal: "SIGKILL" });
           execFileSync("node", [TOLEADS, "--slug", slug, "--place-id", c.place_id, "--execute"], { stdio: "inherit", env });
           const jsonPath = path.resolve(__dirname, "../../docs/customers", slug, "crawl_extract.json");
           if (fs.existsSync(jsonPath)) {
