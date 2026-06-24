@@ -132,7 +132,7 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
 
   const startedAt = Date.now();
   const deadline = startedAt + MINUTES * 60 * 1000;
-  let smallFound = 0, estSolo = 0, crawled = 0, p415 = 0, p15 = 0, failed = 0;
+  let smallFound = 0, estSolo = 0, crawled = 0, p415 = 0, p15 = 0, failed = 0, parked = 0;
   const scoutedOrte = [];
   const kantoneTouched = [];
   const env = { ...process.env };
@@ -170,7 +170,8 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
       if (!EXECUTE) continue;
       if (!fs.existsSync(RAW)) continue;
 
-      // Kandidaten der Gemeinde: eigene Website, NEU, dedupe — KLEINE FIRMEN ZUERST (wenige Reviews)
+      // Kandidaten der Gemeinde: eigene, prüfbare Website ist PFLICHT (Betriebe ohne
+      // Website werden nie berücksichtigt), NEU, dedupe — KLEINE FIRMEN ZUERST.
       const rows = parseCsv(fs.readFileSync(RAW, "utf-8"));
       const header = rows.shift(); if (!header) continue;
       const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
@@ -184,7 +185,7 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
         const website = txt(r[idx.website]);
         if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
         if (!o.includes(G) && !query.includes(G)) continue;
-        if (!txt(r[idx.firma]) || !usableWebsite(website)) continue;
+        if (!txt(r[idx.firma]) || !usableWebsite(website)) continue; // Website Pflicht
         seen.add(placeId);
         cands.push({
           place_id: placeId, firma: txt(r[idx.firma]), website, ort: txt(r[idx.ort]), adresse: txt(r[idx.adresse]),
@@ -195,23 +196,30 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
       // wenige Reviews zuerst (eher 1–3); null Reviews ganz vorne
       cands.sort((a, b) => (a.reviews ?? 0) - (b.reviews ?? 0));
 
+      // ── PARKEN: JEDER (website-führende) Sani-Betrieb kommt ZUERST in die
+      //    Kontaktliste — keiner rutscht durch, auch wenn Ziel/Zeit den Crawl danach
+      //    kappt. Nur DB-Insert, kein Crawl. ──
       for (const c of cands) {
-        if (!timeLeft() || smallFound >= target) break;
         existing.add(c.place_id);
         const m = c.adresse ? c.adresse.match(/\b(\d{4})\b/) : null;
-        const now = new Date().toISOString();
-        const base = {
+        const ins = await sb.from("leads").insert({
           place_id: c.place_id, firma: c.firma, ort, plz: m ? m[1] : null, telefon: c.telefon, website: c.website,
           rating: c.rating, reviews: c.reviews, tier: c.tier, signale: c.signale, icp_score: c.icp_score,
-          status: "neu", updated_at: now,
-        };
-        const ins = await sb.from("leads").insert(base);
+          status: "neu", updated_at: new Date().toISOString(),
+        });
         if (ins.error) { console.log(`  insert übersprungen (${c.firma}): ${ins.error.message}`); continue; }
-        crawled++;
+        parked++;
+      }
 
+      // ── CRAWLEN & EINSTUFEN: kleine zuerst. Eine angefangene Gemeinde wird KOMPLETT
+      //    gecrawlt (vollständige Einteilung); nur die Zeit ist der harte Stop. Das
+      //    Ziel steuert, ob ein NEUER Ort startet. ──
+      for (const c of cands) {
+        if (!timeLeft()) break;
         const wurl = c.website.startsWith("http") ? c.website : `https://${c.website}`;
         const slug = slugFromUrl(wurl);
         console.log(`\n>>> [${ort}] ${c.firma}  (${wurl})  · ${c.reviews ?? 0} Reviews`);
+        crawled++;
         let size = null, jData = null;
         try {
           // Harte Obergrenze pro Firma: kein einzelner (langsamer) Crawl darf den
@@ -242,6 +250,6 @@ const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi
 
   const mins = Math.round((Date.now() - startedAt) / 60000);
   console.log(`\n✓ Targeted Go: ${smallFound} neue 1–3-Betriebe (Ziel ${target}, davon ${estSolo} geschätzt „1–3 ?") in ~${mins} Min.`);
-  console.log(`   Kantone [${kantoneTouched.join(", ")}] · Gecrawlt ${crawled} · 4–15 gesammelt ${p415} · >15 geparkt ${p15} · Fehler ${failed} · Orte ${scoutedOrte.length}`);
+  console.log(`   Geparkt gesamt ${parked} · Gecrawlt ${crawled} · 4–15 ${p415} · >15 ${p15} · Fehler ${failed} · Kantone [${kantoneTouched.join(", ")}] · Orte ${scoutedOrte.length}`);
   console.log(`   ${smallFound >= target ? "Ziel erreicht." : "Budget/Orte aufgebraucht — nächstes Go macht nahtlos weiter."} Erscheint in /ceo/journey.\n`);
 })().catch((e) => { console.error("FEHLER:", e.message); process.exit(1); });
