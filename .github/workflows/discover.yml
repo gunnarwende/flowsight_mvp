@@ -31,6 +31,12 @@ on:
 permissions:
   contents: read
 
+# Sicherheitsnetz gegen Doppel-Go: ein zweiter Lauf wartet, bis der erste fertig
+# ist (kill den laufenden NICHT — die Anreicherung soll durchlaufen).
+concurrency:
+  group: discover-go
+  cancel-in-progress: false
+
 jobs:
   discover:
     runs-on: ubuntu-latest
