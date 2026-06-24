@@ -173,6 +173,15 @@ export function JourneyView() {
     return m;
   }, [data]);
 
+  // Frontier: erster noch nicht erfasster Ort (zusammenhängendes A…-Präfix) —
+  // genau dort macht der Sweep nahtlos weiter. null = ganzer Kanton durch.
+  const frontier = useMemo(() => {
+    for (const g of CH_GEMEINDEN[goKanton] ?? []) {
+      if (!ortCount.get(g.trim().toLowerCase())) return g;
+    }
+    return null;
+  }, [goKanton, ortCount]);
+
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/ceo/journey");
@@ -295,7 +304,7 @@ export function JourneyView() {
 
           <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
             className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
-            <option value="">Ganzer Kanton (Sweep)</option>
+            <option value="">{frontier ? `Ganzer Kanton — macht weiter ab ${frontier}` : "Ganzer Kanton (Sweep)"}</option>
             {CH_GEMEINDEN[goKanton].map((g) => {
               const c = ortCount.get(g.toLowerCase());
               return <option key={g} value={g}>{c ? `${g} ✓ (${c})` : g}</option>;
@@ -307,7 +316,7 @@ export function JourneyView() {
             className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400 disabled:bg-navy-100 disabled:text-navy-400 disabled:cursor-not-allowed">
             {run.active
               ? "läuft… — bitte warten"
-              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — bis ${goCount} kleine Betriebe (1–3) im ${goKanton}`}
+              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — bis ${goCount} kleine Betriebe (1–3) im ${goKanton}${frontier ? `, ab ${frontier}` : ""}`}
           </button>
           {!goGemeinde && (
             <p className="text-[11px] text-navy-400 mt-2">
