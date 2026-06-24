@@ -98,6 +98,28 @@ function sizeTier(v) {
   return n <= 3 ? "solo" : n <= 15 ? "premium" : "dq";
 }
 
+// „1–3 ?"-Heuristik: Größe blieb offen (keine explizite Zahl, keine Team-Seite),
+// ABER die Signale deuten klar auf einen Kleinstbetrieb — Seite wurde geladen,
+// kein Team-Verzeichnis (≤2 Namen, ≤1 Personen-Mail) und wenige Google-Reviews.
+// Große Firmen haben reichhaltige Team-Seiten + viele Reviews. So landen echte
+// 1–3 in der Arbeitsliste (mit „?"), statt in „Größe?" liegen zu bleiben.
+function looksSolo(j, reviews) {
+  const ev = (j && j.team_groesse && j.team_groesse.evidence) || {};
+  const pages = (j && j._meta && j._meta.pages_crawled) || [];
+  if (!pages.length) return false;                    // Seite nicht geladen → nichts wissen
+  if ((ev.namen ?? 0) > 2 || (ev.mails ?? 0) > 1) return false; // Hinweis auf Team
+  if (reviews != null && reviews > 25) return false;  // etablierter, größerer Player
+  return true;
+}
+
+// Cross-Kanton-Flow: ab dem gewählten Kanton in JSON-Reihenfolge weiterrollen,
+// wenn ein Kanton leer wird, bevor das Ziel erreicht ist (echter Dauer-Flow).
+// --single-kanton schaltet das ab (nur der gewählte Kanton).
+const allKantone = Object.keys(byKanton);
+const startKi = allKantone.indexOf(kanton);
+const SINGLE = process.argv.includes("--single-kanton");
+const kantonsToRun = SINGLE || startKi < 0 ? [kanton] : allKantone.slice(startKi);
+
 (async () => {
   // Bereits erfasste place_ids (nie doppelt crawlen) + erfasste Orte (für Resume)
   const existing = new Set();
@@ -108,101 +130,115 @@ function sizeTier(v) {
     (data || []).forEach((r) => { if (r.place_id) existing.add(r.place_id); if (r.ort) coveredOrte.add(String(r.ort).trim().toLowerCase()); });
   }
 
-  // Resume nahtlos: zusammenhängendes erfasstes Präfix (A…) überspringen, am
-  // Frontier weitermachen. Der Grenz-Ort wird nochmal gescoutet (falls letzter
-  // Lauf mittendrin stoppte). Optionaler --start springt gezielt an einen Ort.
-  let prefixEnd = 0;
-  while (prefixEnd < orte.length && coveredOrte.has(orte[prefixEnd].toLowerCase())) prefixEnd++;
-  let startIdx = Math.max(0, prefixEnd - 1);
-  if (startGemeinde) {
-    const gi = orte.findIndex((o) => o.toLowerCase() === startGemeinde.toLowerCase());
-    if (gi >= 0) startIdx = gi;
-  }
-
   const startedAt = Date.now();
   const deadline = startedAt + MINUTES * 60 * 1000;
-  let smallFound = 0, crawled = 0, p415 = 0, p15 = 0, failed = 0;
+  let smallFound = 0, estSolo = 0, crawled = 0, p415 = 0, p15 = 0, failed = 0;
   const scoutedOrte = [];
+  const kantoneTouched = [];
   const env = { ...process.env };
   const timeLeft = () => Date.now() < deadline;
 
-  console.log(`\n── Targeted Go ${kanton} (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──`);
-  console.log(`   Start ab "${orte[startIdx]}" (Index ${startIdx}/${orte.length}, erfasstes Präfix bis ${prefixEnd})\n`);
+  console.log(`\n── Targeted Go (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──`);
+  console.log(`   Kantone: ${kantonsToRun.join(" → ")}${SINGLE ? " (nur dieser)" : " (rollt weiter bei Bedarf)"}\n`);
 
-  for (let i = startIdx; i < orte.length; i++) {
-    const ort = orte[i];
+  for (const kt of kantonsToRun) {
     if (!timeLeft() || smallFound >= target) break;
-    // Voll erfasste Orte überspringen (außer dem Grenz-Ort, den wir fertig machen).
-    if (coveredOrte.has(ort.toLowerCase()) && i !== prefixEnd - 1) continue;
-    try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kanton}`], { stdio: "inherit", env }); }
-    catch (e) { console.log(`  scout-Fehler bei ${ort}: ${e.message} — weiter.`); continue; }
-    scoutedOrte.push(ort);
-    if (!EXECUTE) continue;
-    if (!fs.existsSync(RAW)) continue;
+    const orte = byKanton[kt];
+    if (!orte || !orte.length) continue;
 
-    // Kandidaten der Gemeinde: eigene Website, NEU, dedupe — KLEINE FIRMEN ZUERST (wenige Reviews)
-    const rows = parseCsv(fs.readFileSync(RAW, "utf-8"));
-    const header = rows.shift(); if (!header) continue;
-    const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
-    const G = ort.toLowerCase();
-    const seen = new Set();
-    const cands = [];
-    for (const r of rows) {
-      const placeId = txt(r[idx.place_id]);
-      const o = (r[idx.ort] || "").toLowerCase();
-      const query = (idx.query != null ? r[idx.query] || "" : "").toLowerCase();
-      const website = txt(r[idx.website]);
-      if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
-      if (!o.includes(G) && !query.includes(G)) continue;
-      if (!txt(r[idx.firma]) || !usableWebsite(website)) continue;
-      seen.add(placeId);
-      cands.push({
-        place_id: placeId, firma: txt(r[idx.firma]), website, ort: txt(r[idx.ort]), adresse: txt(r[idx.adresse]),
-        telefon: txt(r[idx.telefon]), rating: numOrNull(r[idx.google_rating]), reviews: intOrNull(r[idx.google_reviews]),
-        tier: txt(r[idx.tier]), signale: txt(r[idx.reasons]), icp_score: intOrNull(r[idx.score]),
-      });
+    // Resume nahtlos: zusammenhängendes erfasstes Präfix (A…) überspringen, am
+    // Frontier weitermachen. Der Grenz-Ort wird nochmal gescoutet (falls letzter
+    // Lauf mittendrin stoppte). --start gilt nur für den gewählten Erst-Kanton.
+    let prefixEnd = 0;
+    while (prefixEnd < orte.length && coveredOrte.has(orte[prefixEnd].toLowerCase())) prefixEnd++;
+    let startIdx = Math.max(0, prefixEnd - 1);
+    if (startGemeinde && kt === kanton) {
+      const gi = orte.findIndex((o) => o.toLowerCase() === startGemeinde.toLowerCase());
+      if (gi >= 0) startIdx = gi;
     }
-    // wenige Reviews zuerst (eher 1–3); null Reviews ganz vorne
-    cands.sort((a, b) => (a.reviews ?? 0) - (b.reviews ?? 0));
+    kantoneTouched.push(kt);
+    console.log(`\n══ ${kt}: Start ab "${orte[startIdx]}" (Index ${startIdx}/${orte.length}, erfasstes Präfix bis ${prefixEnd}) ══`);
 
-    for (const c of cands) {
+    for (let i = startIdx; i < orte.length; i++) {
+      const ort = orte[i];
       if (!timeLeft() || smallFound >= target) break;
-      existing.add(c.place_id);
-      const m = c.adresse ? c.adresse.match(/\b(\d{4})\b/) : null;
-      const now = new Date().toISOString();
-      const base = {
-        place_id: c.place_id, firma: c.firma, ort, plz: m ? m[1] : null, telefon: c.telefon, website: c.website,
-        rating: c.rating, reviews: c.reviews, tier: c.tier, signale: c.signale, icp_score: c.icp_score,
-        status: "neu", updated_at: now,
-      };
-      const ins = await sb.from("leads").insert(base);
-      if (ins.error) { console.log(`  insert übersprungen (${c.firma}): ${ins.error.message}`); continue; }
-      crawled++;
+      // Voll erfasste Orte überspringen (außer dem Grenz-Ort, den wir fertig machen).
+      if (coveredOrte.has(ort.toLowerCase()) && i !== prefixEnd - 1) continue;
+      try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kt}`], { stdio: "inherit", env }); }
+      catch (e) { console.log(`  scout-Fehler bei ${ort}: ${e.message} — weiter.`); continue; }
+      scoutedOrte.push(ort);
+      if (!EXECUTE) continue;
+      if (!fs.existsSync(RAW)) continue;
 
-      const wurl = c.website.startsWith("http") ? c.website : `https://${c.website}`;
-      const slug = slugFromUrl(wurl);
-      console.log(`\n>>> [${ort}] ${c.firma}  (${wurl})  · ${c.reviews ?? 0} Reviews`);
-      let size = null;
-      try {
-        execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env });
-        execFileSync("node", [TOLEADS, "--slug", slug, "--place-id", c.place_id, "--execute"], { stdio: "inherit", env });
-        const jsonPath = path.resolve(__dirname, "../../docs/customers", slug, "crawl_extract.json");
-        if (fs.existsSync(jsonPath)) {
-          const j = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-          size = j.team_groesse && j.team_groesse.value != null ? j.team_groesse.value : null;
-        }
-      } catch (e) { failed++; console.log(`  Crawl-Fehler bei ${c.firma}: ${e.message} — weiter.`); }
+      // Kandidaten der Gemeinde: eigene Website, NEU, dedupe — KLEINE FIRMEN ZUERST (wenige Reviews)
+      const rows = parseCsv(fs.readFileSync(RAW, "utf-8"));
+      const header = rows.shift(); if (!header) continue;
+      const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
+      const G = ort.toLowerCase();
+      const seen = new Set();
+      const cands = [];
+      for (const r of rows) {
+        const placeId = txt(r[idx.place_id]);
+        const o = (r[idx.ort] || "").toLowerCase();
+        const query = (idx.query != null ? r[idx.query] || "" : "").toLowerCase();
+        const website = txt(r[idx.website]);
+        if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
+        if (!o.includes(G) && !query.includes(G)) continue;
+        if (!txt(r[idx.firma]) || !usableWebsite(website)) continue;
+        seen.add(placeId);
+        cands.push({
+          place_id: placeId, firma: txt(r[idx.firma]), website, ort: txt(r[idx.ort]), adresse: txt(r[idx.adresse]),
+          telefon: txt(r[idx.telefon]), rating: numOrNull(r[idx.google_rating]), reviews: intOrNull(r[idx.google_reviews]),
+          tier: txt(r[idx.tier]), signale: txt(r[idx.reasons]), icp_score: intOrNull(r[idx.score]),
+        });
+      }
+      // wenige Reviews zuerst (eher 1–3); null Reviews ganz vorne
+      cands.sort((a, b) => (a.reviews ?? 0) - (b.reviews ?? 0));
 
-      const tier = sizeTier(size);
-      if (tier === "solo") { smallFound++; console.log(`  → 1–3 ✓ (Ziel ${smallFound}/${target})`); }
-      else if (tier === "premium") { p415++; console.log(`  → 4–15 (gesammelt)`); }
-      else if (tier === "dq") { p15++; console.log(`  → >15 (geparkt)`); }
-      else { console.log(`  → Größe offen`); }
+      for (const c of cands) {
+        if (!timeLeft() || smallFound >= target) break;
+        existing.add(c.place_id);
+        const m = c.adresse ? c.adresse.match(/\b(\d{4})\b/) : null;
+        const now = new Date().toISOString();
+        const base = {
+          place_id: c.place_id, firma: c.firma, ort, plz: m ? m[1] : null, telefon: c.telefon, website: c.website,
+          rating: c.rating, reviews: c.reviews, tier: c.tier, signale: c.signale, icp_score: c.icp_score,
+          status: "neu", updated_at: now,
+        };
+        const ins = await sb.from("leads").insert(base);
+        if (ins.error) { console.log(`  insert übersprungen (${c.firma}): ${ins.error.message}`); continue; }
+        crawled++;
+
+        const wurl = c.website.startsWith("http") ? c.website : `https://${c.website}`;
+        const slug = slugFromUrl(wurl);
+        console.log(`\n>>> [${ort}] ${c.firma}  (${wurl})  · ${c.reviews ?? 0} Reviews`);
+        let size = null, jData = null;
+        try {
+          execFileSync("node", [EXTRACT, "--url", wurl, "--slug", slug], { stdio: "inherit", env });
+          execFileSync("node", [TOLEADS, "--slug", slug, "--place-id", c.place_id, "--execute"], { stdio: "inherit", env });
+          const jsonPath = path.resolve(__dirname, "../../docs/customers", slug, "crawl_extract.json");
+          if (fs.existsSync(jsonPath)) {
+            jData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+            size = jData.team_groesse && jData.team_groesse.value != null ? jData.team_groesse.value : null;
+          }
+        } catch (e) { failed++; console.log(`  Crawl-Fehler bei ${c.firma}: ${e.message} — weiter.`); }
+
+        const tier = sizeTier(size);
+        if (tier === "solo") { smallFound++; console.log(`  → 1–3 ✓ (Ziel ${smallFound}/${target})`); }
+        else if (tier === "premium") { p415++; console.log(`  → 4–15 (gesammelt)`); }
+        else if (tier === "dq") { p15++; console.log(`  → >15 (geparkt)`); }
+        else if (looksSolo(jData, c.reviews)) {
+          // Größe blieb offen, aber Signale = Kleinstbetrieb → als „1–3 ?" in die Liste.
+          await sb.from("leads").update({ ma_proxy: "1–3 ?" }).eq("place_id", c.place_id);
+          smallFound++; estSolo++;
+          console.log(`  → 1–3 ? (geschätzt: keine Team-Seite, wenige Reviews) (Ziel ${smallFound}/${target})`);
+        } else { console.log(`  → Größe offen`); }
+      }
     }
   }
 
   const mins = Math.round((Date.now() - startedAt) / 60000);
-  console.log(`\n✓ Targeted Go ${kanton}: ${smallFound} neue 1–3-Betriebe (Ziel ${target}) in ~${mins} Min.`);
-  console.log(`   Gecrawlt ${crawled} · 4–15 gesammelt ${p415} · >15 geparkt ${p15} · Fehler ${failed} · Orte ${scoutedOrte.length} [${scoutedOrte.join(", ")}]`);
-  console.log(`   ${smallFound >= target ? "Ziel erreicht." : "Budget/Orte aufgebraucht — nächstes Go macht weiter."} Erscheint in /ceo/journey.\n`);
+  console.log(`\n✓ Targeted Go: ${smallFound} neue 1–3-Betriebe (Ziel ${target}, davon ${estSolo} geschätzt „1–3 ?") in ~${mins} Min.`);
+  console.log(`   Kantone [${kantoneTouched.join(", ")}] · Gecrawlt ${crawled} · 4–15 gesammelt ${p415} · >15 geparkt ${p15} · Fehler ${failed} · Orte ${scoutedOrte.length}`);
+  console.log(`   ${smallFound >= target ? "Ziel erreicht." : "Budget/Orte aufgebraucht — nächstes Go macht nahtlos weiter."} Erscheint in /ceo/journey.\n`);
 })().catch((e) => { console.error("FEHLER:", e.message); process.exit(1); });

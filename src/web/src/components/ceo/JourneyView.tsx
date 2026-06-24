@@ -311,7 +311,7 @@ export function JourneyView() {
           </button>
           {!goGemeinde && (
             <p className="text-[11px] text-navy-400 mt-2">
-              Sammelt {goCount} neue <b>1–3-Betriebe</b> (kleine Firmen zuerst) · 4–15 wird gesammelt, &gt;15 geparkt · aktuell 1–3 in Liste: <b>{soloCount}</b>
+              Sammelt {goCount} neue <b>1–3-Betriebe</b> (kleine Firmen zuerst, läuft alphabetisch weiter &amp; rollt bei Bedarf in Nachbarkantone) · 4–15 gesammelt, &gt;15 geparkt · „1–3 ?“ = geschätzt · aktuell 1–3 in Liste: <b>{soloCount}</b>
             </p>
           )}
 
