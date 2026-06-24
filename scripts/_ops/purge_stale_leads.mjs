@@ -16,6 +16,9 @@
  *                      Frische, unbearbeitete Discovery (status="neu",
  *                      unreferenziert) BLEIBT — die Redesign-Leads sind sicher.
  *   all             — vollständiger Reset: löscht ALLE Leads (frischer Start).
+ *   region          — Falsch-Region raus: löscht Leads, deren Ort NICHT im Kanton
+ *                      --kanton liegt (Gemeindeliste). Behält den Rest. Leerer Ort
+ *                      = behalten (nicht eindeutig).
  *
  * Beim Löschen referenzierter Zeilen: journey_events hängen per FK CASCADE dran
  * (verschwinden mit → Tagesüberblick wird sauber); proof_pages/cockpit_sessions
@@ -29,17 +32,31 @@
  *   node … purge_stale_leads.mjs --mode worked --execute
  *   node … purge_stale_leads.mjs --mode all --execute  # kompletter Reset
  */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getArg(flag) { const i = process.argv.indexOf(flag); return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : null; }
 const EXECUTE = process.argv.includes("--execute");
 const MODE = (getArg("--mode") || "stale").trim().toLowerCase();
-if (!["stale", "worked", "all"].includes(MODE)) {
-  console.error(`ERROR: --mode "${MODE}" unbekannt (erlaubt: stale | worked | all).`);
+const KANTON = (getArg("--kanton") || "").trim();
+if (!["stale", "worked", "all", "region"].includes(MODE)) {
+  console.error(`ERROR: --mode "${MODE}" unbekannt (erlaubt: stale | worked | all | region).`);
   process.exit(1);
+}
+// region-Modus: Gemeinde-Set des Kantons laden — behalten, was drin liegt, der Rest raus.
+let regionSet = null;
+if (MODE === "region") {
+  if (!KANTON) { console.error("ERROR: --mode region braucht --kanton <Kanton>."); process.exit(1); }
+  const JSON_PATH = path.resolve(__dirname, "../../src/web/src/data/ch_gemeinden_de.json");
+  const orte = JSON.parse(fs.readFileSync(JSON_PATH, "utf-8"))[KANTON];
+  if (!orte) { console.error(`ERROR: Kanton "${KANTON}" nicht in der Gemeindeliste.`); process.exit(1); }
+  regionSet = new Set(orte.map((o) => o.trim().toLowerCase()));
 }
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -73,6 +90,10 @@ async function refIds(table) {
     const active = referenced.has(l.id) || WORKED(l.status);
     let remove;
     if (MODE === "all") remove = true;                 // alles
+    else if (MODE === "region") {                      // Falsch-Region raus (Ort nicht im Kanton)
+      const o = (l.ort || "").trim().toLowerCase();
+      remove = o !== "" && !regionSet.has(o);          // leerer Ort = behalten (nicht eindeutig)
+    }
     else if (MODE === "worked") remove = active;       // Altlasten (bearbeitet/referenziert) raus
     else remove = !active;                             // stale: nur unberührter Alt-Crawl raus
     (remove ? del : keep).push(l);
