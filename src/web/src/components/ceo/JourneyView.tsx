@@ -125,6 +125,42 @@ export function JourneyView() {
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
   const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "offen">("alle");
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
+  // „Go"-Lauf-Status (Discovery + Anreicherung) — sperrt den Go-Knopf, zeigt ⏳/✓ + Stopp.
+  const [run, setRun] = useState<{ active: boolean; doneRecent: boolean; id: number | null }>({ active: false, doneRecent: false, id: null });
+  const [stopping, setStopping] = useState(false);
+
+  // Lauf-Status alle 15s pollen (GitHub-Run hinter „Go").
+  useEffect(() => {
+    let alive = true;
+    const tick = async () => {
+      try {
+        const r = await fetch("/api/ceo/ops/run-status", { cache: "no-store" });
+        const j = await r.json();
+        if (!alive || !j?.ok) return;
+        const active = j.state === "queued" || j.state === "in_progress";
+        const startedMs = j.started_at ? new Date(j.started_at).getTime() : 0;
+        const doneRecent = j.state === "completed" && j.conclusion === "success"
+          && startedMs > 0 && Date.now() - startedMs < 45 * 60 * 1000;
+        setRun({ active, doneRecent, id: j.id ?? null });
+        if (!active) setStopping(false);
+      } catch { /* still — nächster Tick */ }
+    };
+    tick();
+    const id = setInterval(tick, 15000);
+    return () => { alive = false; clearInterval(id); };
+  }, []);
+
+  async function cancelRun() {
+    if (!run.id || stopping) return;
+    setStopping(true);
+    try {
+      await fetch("/api/ceo/ops/run-status", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ run_id: run.id }),
+      });
+      setRun((r) => ({ ...r, active: false }));
+    } catch { setStopping(false); }
+  }
 
   // Schon erfasste Orte (haben Leads) → ✓ + Anzahl im Dropdown
   const ortCount = useMemo(() => {
@@ -234,7 +270,7 @@ export function JourneyView() {
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
           sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
 
-        <RunStatusBadge />
+        <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
 
         {/* Go — Schwungrad in Gang setzen */}
         <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
@@ -263,10 +299,12 @@ export function JourneyView() {
             })}
           </select>
 
-          <button type="button"
+          <button type="button" disabled={run.active}
             onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount) })}
-            className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400">
-            {goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — ${goCount} neue im ${goKanton}`}
+            className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400 disabled:bg-navy-100 disabled:text-navy-400 disabled:cursor-not-allowed">
+            {run.active
+              ? "läuft… — bitte warten"
+              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — ${goCount} neue im ${goKanton}`}
           </button>
 
           {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
@@ -373,7 +411,7 @@ export function JourneyView() {
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
         <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length} · ${offenCount} offen)`} />
-        <RunStatusBadge />
+        <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
 
         <div className="flex gap-2 mb-2">
           {SIZE_TABS.map((t) => (
@@ -743,40 +781,25 @@ function Gauge({ name, cur, target }: { name: string; cur: number; target: numbe
     </div>
   );
 }
-// Kleine Lauf-Anzeige oben: ⏳ während der „Go"-Lauf (Discovery + Anreicherung)
-// arbeitet, grünes ✓ kurz nachdem er fertig ist. Pollt den GitHub-Run-Status.
-function RunStatusBadge() {
-  // „running" = Lauf arbeitet · „doneRecent" = vor kurzem (≤45 Min) erfolgreich fertig.
-  // Recency wird im Tick berechnet (Date.now() gehört nicht in den Render — Purity-Regel).
-  const [badge, setBadge] = useState<{ running: boolean; doneRecent: boolean }>({ running: false, doneRecent: false });
-  useEffect(() => {
-    let alive = true;
-    const tick = async () => {
-      try {
-        const r = await fetch("/api/ceo/ops/run-status", { cache: "no-store" });
-        const j = await r.json();
-        if (!alive || !j?.ok) return;
-        const running = j.state === "queued" || j.state === "in_progress";
-        const startedMs = j.started_at ? new Date(j.started_at).getTime() : 0;
-        const doneRecent = j.state === "completed" && j.conclusion === "success"
-          && startedMs > 0 && Date.now() - startedMs < 45 * 60 * 1000;
-        setBadge({ running, doneRecent });
-      } catch { /* still — nächster Tick versucht es erneut */ }
-    };
-    tick();
-    const id = setInterval(tick, 15000);
-    return () => { alive = false; clearInterval(id); };
-  }, []);
-
-  if (badge.running) {
+// Lauf-Anzeige oben: ⏳ während der „Go"-Lauf (Discovery + Anreicherung) arbeitet,
+// mit Stopp-Symbol zum Abbrechen; grünes ✓ kurz nach erfolgreichem Abschluss.
+function RunStatusBadge({ active, doneRecent, onStop, stopping }: {
+  active: boolean; doneRecent: boolean; onStop: () => void; stopping: boolean;
+}) {
+  if (active) {
     return (
       <div className="mb-3 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-[13px] font-semibold text-amber-800">
         <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-        Anreicherung läuft… (Inhaber / Mail / Größe werden gerade gefüllt)
+        <span className="flex-1">Anreicherung läuft…</span>
+        <button type="button" onClick={onStop} disabled={stopping} title="Lauf stoppen"
+          aria-label="Lauf stoppen"
+          className="flex h-6 w-6 items-center justify-center rounded-md border border-amber-400 text-amber-700 hover:bg-amber-100 disabled:opacity-40">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-amber-600" />
+        </button>
       </div>
     );
   }
-  if (badge.doneRecent) {
+  if (doneRecent) {
     return (
       <div className="mb-3 flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-[13px] font-semibold text-emerald-700">
         <span aria-hidden>✓</span> Anreicherung fertig
