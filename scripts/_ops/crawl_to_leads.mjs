@@ -144,22 +144,16 @@ async function findLead() {
   console.log(`place_id: ${placeId ?? "(keiner — Google fand nichts)"}`);
   console.log(`Match: ${match.via}${match.row ? ` → ${match.row.firma} (status=${match.row.status})` : ""}`);
 
-  // Fremd-Website-Schutz: gehört die gecrawlte Domain offensichtlich zu einer
-  // ANDEREN Firma (Parkseite „Web Server's Default Page" oder fremde Domain wie
-  // jge.ch→Populaer AG), dann NICHT die Kontaktdaten/Größe dieser fremden Firma
-  // an unseren Lead hängen. Vergleich über distinktive Firmen-Tokens.
-  if (forcePlaceId && match.row && enrich.firma) {
-    const GENERIC = new Set(["gmbh", "sàrl", "sarl", "genossenschaft", "gebäudetechnik",
-      "gebaeudetechnik", "haustechnik", "energietechnik", "heizung", "heizungen", "sanitär",
-      "sanitaer", "spenglerei", "technik", "service", "default", "server", "page", "welcome",
-      "willkommen", "startseite", "home", "index"]);
-    const toks = (s) => new Set(String(s || "").toLowerCase().replace(/[^a-zäöü0-9 ]/g, " ")
-      .split(/\s+/).filter((w) => w.length >= 4 && !GENERIC.has(w)));
-    const a = toks(match.row.firma), b = toks(enrich.firma);
-    const overlap = [...a].some((t) => b.has(t));
-    if (a.size && b.size && !overlap) {
-      console.log(`\nÜBERSPRUNGEN: Website-Firma "${enrich.firma}" passt nicht zum Lead "${match.row.firma}" `
-        + `(fremde Domain/Parkseite) — keine Anreicherung, Identität bleibt sauber.\n`);
+  // Parkseiten-/Platzhalter-Schutz: NUR klar leere Default-/Fehlerseiten überspringen
+  // (z.B. "Web Server's Default Page", "Welcome to nginx"). Reine NAMENS-Abweichung
+  // (Markenname ≠ Google-Eintrag, fusionierte Betriebe wie Bötschi/Angele, "M&M")
+  // wird NICHT mehr verworfen — der frühere Token-Vergleich hat echte Treffer
+  // gefressen. Die Identität schützt ohnehin der additive Modus (Firma/Ort bleiben
+  // von Google, nur leere Felder werden gefüllt).
+  if (forcePlaceId && enrich.firma) {
+    const PARK = /(web\s*server'?s?\s*default|default\s*web\s*page|apache2?\s*(ubuntu\s*)?default|welcome\s*to\s*(nginx|apache)|^index\s*of\s*\/|test\s*page|account\s*suspended|domain\s*(parked|for\s*sale|expired)|under\s*construction|coming\s*soon|page\s*not\s*found)/i;
+    if (PARK.test(enrich.firma)) {
+      console.log(`\nÜBERSPRUNGEN: Parkseite/Platzhalter ("${enrich.firma}") — keine Anreicherung.\n`);
       return;
     }
   }
