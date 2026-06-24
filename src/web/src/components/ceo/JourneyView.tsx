@@ -104,6 +104,13 @@ function sizeTier(maProxy: string | null): "solo" | "premium" | "dq" | "offen" {
   return "dq";
 }
 
+// „Schon angefasst" = Status gepflegt (≠ neu/leer). abgelehnt (Nein) und ja sind
+// abgeschlossen → der Anfangsschritt (Cold Call) wird unterdrückt, nicht wiederholt.
+function isContacted(status: string | null): boolean {
+  const s = (status ?? "").trim();
+  return s !== "" && s !== "neu";
+}
+
 export function JourneyView() {
   const [data, setData] = useState<JourneyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -117,6 +124,7 @@ export function JourneyView() {
   const [goKanton, setGoKanton] = useState("Thurgau");
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
   const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "offen">("alle");
+  const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
 
   // Schon erfasste Orte (haben Leads) → ✓ + Anzahl im Dropdown
   const ortCount = useMemo(() => {
@@ -310,12 +318,40 @@ export function JourneyView() {
     );
   }
 
+  // Aktions-Spalte mit Kontakt-Historie-Schutz: schon kontaktierte Betriebe
+  // bekommen NICHT erneut den Anfangsschritt. abgelehnt (Nein) und ja sind dicht.
+  function ContactActions({ l }: { l: Lead }) {
+    const s = (l.status ?? "neu").trim();
+    if (s === "abgelehnt")
+      return <div className="text-[11px] font-semibold text-red-600">✕ abgelehnt — nicht erneut ansprechen</div>;
+    if (s === "ja")
+      return <div className="text-[11px] font-semibold text-gold-700">✓ Ja — läuft in Simulation, kein Anfangsschritt</div>;
+    const reCall = s === "rueckruf" || s === "kein-anschluss";
+    return (
+      <>
+        <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-2.5 py-1.5 text-[12px] font-bold hover:bg-gold-400">
+          {reCall ? (s === "rueckruf" ? "▶ Rückruf" : "▶ erneut") : "▶ Cold Call"}
+        </button>
+        <div className="flex gap-1 mt-1.5">
+          <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
+          <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
+          <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
+          <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
+        </div>
+      </>
+    );
+  }
+
   // ── Stern 1: Kontaktliste (DB-gestützt) ─────────────────────────────────
   function KontaktView() {
     const q = search.trim().toLowerCase();
     let rows = data!.leads;
     if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
     if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
+    const offenCount = rows.filter((l) => !isContacted(l.status)).length;
+    if (nurOffen) rows = rows.filter((l) => !isContacted(l.status));
+    // Offene zuerst, kontaktierte (markiert) darunter.
+    rows = [...rows].sort((a, b) => Number(isContacted(a.status)) - Number(isContacted(b.status)));
 
     const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
       { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
@@ -325,7 +361,7 @@ export function JourneyView() {
     return (
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
-        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`} />
+        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length} · ${offenCount} offen)`} />
 
         <div className="flex gap-2 mb-2">
           {SIZE_TABS.map((t) => (
@@ -333,6 +369,11 @@ export function JourneyView() {
               className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
           ))}
         </div>
+
+        <button type="button" onClick={() => setNurOffen((v) => !v)}
+          className={`mb-2 w-full rounded-lg px-3 py-1.5 text-[13px] font-semibold border ${nurOffen ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>
+          {nurOffen ? "✓ Nur offene Betriebe" : "Nur offene Betriebe zeigen"}
+        </button>
 
         <div className="mb-3">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Suchen…"
@@ -375,13 +416,7 @@ export function JourneyView() {
                   </td>
                   <td className="px-3 py-2.5 border-b border-navy-50"><StatusPill status={l.status} /></td>
                   <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap">
-                    <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-2.5 py-1.5 text-[12px] font-bold hover:bg-gold-400">▶ Cold Call</button>
-                    <div className="flex gap-1 mt-1.5">
-                      <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
-                      <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
-                      <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
-                      <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
-                    </div>
+                    <ContactActions l={l} />
                   </td>
                 </tr>
               ))}
@@ -428,13 +463,7 @@ export function JourneyView() {
               </div>
 
               <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-3 py-2 text-[13px] font-bold hover:bg-gold-400">▶ Cold Call</button>
-                <div className="flex gap-1.5">
-                  <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
-                  <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
-                  <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
-                  <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
-                </div>
+                <ContactActions l={l} />
               </div>
             </div>
           ))}
