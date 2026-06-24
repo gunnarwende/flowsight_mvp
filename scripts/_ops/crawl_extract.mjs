@@ -1242,25 +1242,10 @@ async function main() {
     }
   }
 
-  // ── Screenshots + Team-Analyse (zum Nachprüfen der Grösse) ──
-  const shotDir = join("docs", "customers", slug);
-  if (!existsSync(shotDir)) await mkdir(shotDir, { recursive: true });
-  result._meta.screenshots = {};
-  if (pageSources.home) {
-    // Seite steht nach brand_color noch auf Home.
-    try {
-      await page.screenshot({ path: join(shotDir, "home.png"), fullPage: true });
-      result._meta.screenshots.home = "home.png";
-      console.log("  [screenshot] home.png");
-    } catch (e) { console.log(`  [screenshot] home übersprungen: ${e.message}`); }
-  }
+  // ── Team-Analyse: Mitarbeiterzahl aus der Team-Seite ableiten ──
+  // (Namen + Porträt-Fotos zählen; klappt „mehr anzeigen"/Tabs vorher auf.)
   if (pageSources.team) {
-    await analyzeTeam(page, pageSources.team);   // klappt auf, scrollt, zählt Personen
-    try {
-      await page.screenshot({ path: join(shotDir, "team.png"), fullPage: true });
-      result._meta.screenshots.team = "team.png";
-      console.log("  [screenshot] team.png");
-    } catch (e) { console.log(`  [screenshot] team übersprungen: ${e.message}`); }
+    await analyzeTeam(page, pageSources.team);
   }
 
   await browser.close();
