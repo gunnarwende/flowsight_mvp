@@ -141,7 +141,7 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
   const timeLeft = () => Date.now() < deadline;
 
   console.log(`\n── Targeted Go (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──`);
-  console.log(`   Kantone: ${kantonsToRun.join(" → ")}${SINGLE ? " (nur dieser)" : " (rollt weiter bei Bedarf)"}\n`);
+  console.log(`   Kantone: ${kantonsToRun.join(" → ")}${ROLL ? " (rollt weiter bei Bedarf)" : " (nur dieser)"}\n`);
 
   for (const kt of kantonsToRun) {
     if (!timeLeft() || smallFound >= target) break;
