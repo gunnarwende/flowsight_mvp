@@ -789,18 +789,37 @@ function extractTeamGroesse() {
   const nNames = names.length;
   const nPhotos = teamSignals.photoCount || 0;
 
+  // 3) Personen-Mails als Größen-Hinweis (vorname.nachname@…) — greift, wenn es
+  //    keine Team-Seite/Fotos gibt, die Belegschaft aber im Mail-Verzeichnis steht.
+  const personMails = new Set();
+  const ROLE_LP = /^(info|kontakt|contact|admin|office|mail|service|sekretariat|buchhaltung|verkauf|team|support|hello|empfang|reception|noreply|no-reply|werkstatt|lehrling|job|karriere|presse|marketing|finanzen|disposition|planung|montage|shop)\b/;
+  for (const key of ["team", "kontakt", "impressum", "home"]) {
+    const t = pageTexts[key];
+    if (!t) continue;
+    for (const m of (t.match(EMAIL_RE) || [])) {
+      const lp = m.toLowerCase().split("@")[0];
+      if (lp.includes(".") && lp.length >= 5 && !ROLE_LP.test(lp)) personMails.add(lp); // vorname.nachname
+    }
+  }
+  const nMails = personMails.size;
+
   let value = null, basis = null;
   if (nNames >= 2 && nPhotos >= 2) { value = Math.max(nNames, nPhotos); basis = "namen+fotos"; }
   else if (nNames >= 3) { value = nNames; basis = "namen"; }
   else if (nPhotos >= 2 && nNames >= 1) { value = Math.max(nPhotos, nNames); basis = "fotos"; }
+  // Fallback: Personen-Mails, wenn Namen/Fotos nichts ergaben (oder als Untergrenze).
+  if (nMails >= 2 && (value == null || nMails > value)) {
+    value = nMails;
+    basis = basis ? `${basis}+mails` : "personen_mails";
+  }
 
   if (value != null) {
-    const verified = basis === "namen+fotos";   // beidseitig bestätigt = belastbar
+    const verified = basis === "namen+fotos" || (basis || "").includes("+mails");
     return { value, source: "website_team", verified,
-      basis, evidence: { namen: nNames, fotos: nPhotos, beispiele: names.slice(0, 25) },
-      note: verified ? "Personen gezählt (Namen + Fotos bestätigt)" : "Schätzung — bitte prüfen" };
+      basis, evidence: { namen: nNames, fotos: nPhotos, mails: nMails, beispiele: names.slice(0, 25) },
+      note: verified ? "Personen gezählt (mehrfach bestätigt)" : "Schätzung — bitte prüfen" };
   }
-  return { value: null, source: "not_found", verified: false, evidence: { namen: nNames, fotos: nPhotos } };
+  return { value: null, source: "not_found", verified: false, evidence: { namen: nNames, fotos: nPhotos, mails: nMails } };
 }
 
 function extractLeistungen() {
