@@ -34,7 +34,7 @@ permissions:
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -75,3 +75,21 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/_ops/discover_sweep.mjs --kanton "$KANTON" --count "$COUNT" --execute
+
+      # ── Anreicherung (Best-Effort): Websites der neuen Leads crawlen →
+      #    Inhaber/Mail/Größe. Darf den Go-Lauf nie rot machen (Discovery zählt). ──
+      - name: Playwright Chromium installieren
+        continue-on-error: true
+        run: cd src/web && npx playwright install --with-deps chromium
+
+      - name: node_modules an Repo-Wurzel verlinken (bare playwright-import)
+        continue-on-error: true
+        run: ln -s src/web/node_modules node_modules
+
+      - name: Neue Leads anreichern (Inhaber / E-Mail / Größe)
+        continue-on-error: true
+        env:
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/enrich_new_leads.mjs --limit 12
