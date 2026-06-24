@@ -64,6 +64,26 @@ const numOrNull = (s) => { const n = parseFloat(String(s ?? "").replace(",", "."
 const intOrNull = (s) => { const n = parseInt(String(s ?? ""), 10); return Number.isFinite(n) ? n : null; };
 const txt = (s) => { const v = String(s ?? "").trim(); return v === "" ? null : v; };
 
+// Website-Qualität (Founder-Regel 24.06.): nur Betriebe mit EIGENER, überprüfbarer
+// Website kommen in die Kontaktliste. KEINE Website + KEINE Verzeichnis-/Social-Seite
+// (yellow.ch & Co. — da lässt sich nichts manuell prüfen, keine Leistungen erkennbar).
+const DIRECTORY_HOSTS = [
+  "yellow.ch", "local.ch", "search.ch", "telsearch.ch", "tel.search.ch",
+  "gelbeseiten", "moneyhouse.ch", "monetas.ch", "zefix.ch", "firmenwissen",
+  "facebook.com", "instagram.com", "linkedin.com", "twitter.com", "x.com",
+  "linktr.ee", "google.com", "g.page", "goo.gl", "business.site", "wixsite.com",
+  "jimdofree.com", "jimdosite.com", "wordpress.com", "blogspot.", "sites.google.com",
+];
+function usableWebsite(rawUrl) {
+  const u = txt(rawUrl);
+  if (!u) return false;
+  let host;
+  try { host = new URL(u.startsWith("http") ? u : `https://${u}`).hostname.replace(/^www\./, "").toLowerCase(); }
+  catch { return false; }
+  if (!host || !host.includes(".")) return false;
+  return !DIRECTORY_HOSTS.some((d) => host === d || host.endsWith(`.${d}`) || host.includes(d));
+}
+
 (async () => {
   if (!fs.existsSync(RAW)) { console.error(`ERROR: ${RAW} fehlt — erst scout.mjs laufen lassen.`); process.exit(1); }
   const rows = parseCsv(fs.readFileSync(RAW, "utf-8"));
@@ -99,10 +119,14 @@ const txt = (s) => { const v = String(s ?? "").trim(); return v === "" ? null : 
     });
   }
   candidates.sort((a, b) => b.score - a.score);
-  const named = candidates.filter((c) => c.firma);
+  const withName = candidates.filter((c) => c.firma);
+  // Website-Gate: ohne eigene, prüfbare Website (oder nur yellow.ch & Co.) → raus.
+  const named = withName.filter((c) => usableWebsite(c.website));
+  const droppedNoWeb = withName.length - named.length;
 
   if (!named.length) {
-    console.log(`\nKeine Betriebe für „${gemeinde}" in scout_raw.csv gefunden (scout.mjs --gemeinde ${gemeinde} gelaufen?).\n`);
+    console.log(`\nKeine Betriebe MIT prüfbarer Website für „${gemeinde}" gefunden`
+      + (droppedNoWeb ? ` (${droppedNoWeb} ohne/nur Verzeichnis-Website verworfen).` : ".") + "\n");
     return;
   }
 
@@ -119,7 +143,7 @@ const txt = (s) => { const v = String(s ?? "").trim(); return v === "" ? null : 
 
   console.log(`\n── Go: Discovery → leads (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) ──`);
   console.log(`Gemeinde:   ${gemeinde}`);
-  console.log(`Kandidaten: ${named.length} · schon in DB: ${existing.size} · NEU (Top ${count}): ${fresh.length}`);
+  console.log(`Kandidaten (mit Website): ${named.length} · ohne/nur-Verzeichnis verworfen: ${droppedNoWeb} · schon in DB: ${existing.size} · NEU (Top ${count}): ${fresh.length}`);
   fresh.slice(0, 12).forEach((c) => console.log(`  + ${c.firma} · ${c.rating ?? "—"}★/${c.reviews ?? "—"} · ${c.tier ?? "?"}`));
 
   if (!EXECUTE) { console.log(`\nDRY-RUN — nichts geschrieben. Mit --execute schreiben.\n`); return; }

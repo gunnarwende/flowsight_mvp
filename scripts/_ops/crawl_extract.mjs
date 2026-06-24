@@ -49,7 +49,8 @@ const domain = new URL(baseUrl).hostname;
 // For each logical page, try multiple URL patterns
 const PAGE_PATTERNS = {
   home: ["/"],
-  team: ["/team", "/ueber-uns", "/about", "/about-us", "/uber-uns", "/unser-team", "/firma", "/portrait", "/unternehmen"],
+  team: ["/team", "/ueber-uns", "/about", "/about-us", "/uber-uns", "/unser-team", "/firma", "/portrait", "/unternehmen",
+    "/mitarbeiter", "/mitarbeitende", "/das-team", "/ihr-team", "/personen", "/belegschaft", "/ueber", "/wir-ueber-uns", "/team-1"],
   services: ["/dienstleistungen", "/services", "/leistungen", "/dienstleistungen-service", "/angebot", "/leistung", "/kompetenzen", "/sortiment"],
   kontakt: ["/kontakt", "/contact", "/kontakt-1", "/kontakt-2"],
   karriere: ["/karriere", "/jobs", "/stellen", "/offene-stellen", "/lehrstellen", "/career"],
@@ -71,6 +72,7 @@ const pageTexts = {};      // pageKey → text
 const pageMeta = {};       // pageKey → { title, ogSiteName, ogTitle }
 const pageSources = {};    // pageKey → url that worked
 const allTexts = [];       // all text concatenated
+let teamSignals = { photoCount: 0, expanded: false };  // gefüllt von analyzeTeam()
 
 // ── Result template ──────────────────────────────────────────────────────
 const result = {
@@ -640,30 +642,147 @@ function extractGruendung() {
   return { value: null, source: "not_found", verified: false };
 }
 
+// ── Team-Seite: „Mehr anzeigen" aufklappen, voll scrollen, dann Personen zählen ──
+// Behebt den Bug „16 Mitarbeiter, aber nur 4 gezählt": viele Team-Seiten laden
+// per Lazy-Load / „weitere anzeigen" / Tabs nach. Erst alles aufklappen → zählen.
+async function analyzeTeam(page, url) {
+  try {
+    const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
+    if (!resp || resp.status() >= 400) return;
+    await page.waitForTimeout(2500);
+
+    const scrollAll = async () => {
+      await page.evaluate(async () => {
+        const step = 500;
+        for (let y = 0; y < document.body.scrollHeight; y += step) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 120));
+        }
+        window.scrollTo(0, 0);
+      });
+    };
+
+    // „Mehr/weitere/alle anzeigen", „Load more", Team-Tabs aufklappen (mehrere Runden).
+    let expanded = false;
+    for (let round = 0; round < 6; round++) {
+      await scrollAll();
+      const clicked = await page.evaluate(() => {
+        const rx = /(mehr\s*(an)?zeigen|weitere|alle\s+(an)?zeigen|gesamtes\s+team|ganzes\s+team|load\s*more|show\s*more|mehr\s+laden|weitere\s+mitarbeiter)/i;
+        const els = Array.from(document.querySelectorAll("button, a, [role='button'], .more, .load-more, .btn"));
+        let did = false;
+        for (const el of els) {
+          const t = (el.innerText || el.textContent || "").trim();
+          if (t && t.length < 45 && rx.test(t)) { try { el.click(); did = true; } catch { /* ignore */ } }
+        }
+        return did;
+      });
+      await page.waitForTimeout(1200);
+      if (clicked) expanded = true; else break;
+    }
+    await scrollAll();
+    await page.waitForTimeout(600);
+
+    // Portrait-Fotos zählen (gerendert sichtbar, plausibles Seitenverhältnis, kein Logo/Icon).
+    const photoCount = await page.evaluate(() => {
+      let n = 0;
+      for (const img of Array.from(document.querySelectorAll("img"))) {
+        const r = img.getBoundingClientRect();
+        if (r.width < 60 || r.height < 60) continue;
+        const ar = r.width / r.height;
+        if (ar < 0.5 || ar > 1.7) continue;                 // Porträt/quadratisch, keine Banner
+        if (img.closest("header, nav, footer")) continue;   // keine Logos/Marken
+        const src = (img.currentSrc || img.src || "").toLowerCase();
+        if (/logo|icon|sprite|placeholder|favicon|\.svg(\?|$)/.test(src)) continue;
+        n++;
+      }
+      return n;
+    });
+
+    // Voll-gerenderten Team-Text übernehmen (enthält jetzt ALLE Namen, nicht nur die ersten).
+    const text = await page.evaluate(() => document.body.innerText || "");
+    if (text && text.length > (pageTexts.team?.length || 0)) pageTexts.team = text;
+
+    teamSignals = { photoCount, expanded };
+    console.log(`  [team] aufgeklappt=${expanded} · Porträt-Fotos≈${photoCount}`);
+  } catch (err) {
+    console.log(`  [team] Analyse übersprungen: ${err.message}`);
+  }
+}
+
+// Personen-Namen aus dem Team-Text: eigenständige Zeilen „Vorname Nachname" (2–3 Wörter,
+// alle gross beginnend, keine Zahlen/Satzzeichen/Mail). Deutsche Substantiv-Grossschreibung
+// fängt eine Blockliste ab, damit „Unsere Dienstleistungen" o.ä. nicht als Person zählt.
+function teamNamesFromText(text) {
+  if (!text) return [];
+  const BLOCK = new Set([
+    "unser", "unsere", "unseren", "unserem", "das", "die", "der", "den", "dem", "wir", "ihr", "ihre", "sie",
+    "team", "teams", "mitarbeiter", "mitarbeiterin", "mitarbeiterinnen", "mitarbeitende", "mitarbeitenden",
+    "sanitär", "sanitaer", "heizung", "heizungen", "spenglerei", "spengler", "haustechnik", "gebäudetechnik",
+    "gebaeudetechnik", "lüftung", "lueftung", "service", "kundendienst", "notdienst", "kontakt", "impressum",
+    "über", "ueber", "uns", "willkommen", "startseite", "home", "leistungen", "dienstleistungen", "angebot",
+    "geschäftsführer", "geschäftsführung", "geschaeftsfuehrer", "inhaber", "inhaberin", "meister", "lernende",
+    "lernender", "lehrling", "lehrlinge", "jobs", "karriere", "offene", "stellen", "aktuelles", "news",
+    "referenzen", "projekte", "partner", "qualität", "qualitaet", "tradition", "kompetenz", "beratung",
+    "planung", "montage", "reparatur", "wartung", "badezimmer", "badumbau", "umbau", "sanierung", "neubau",
+    "moderne", "modernes", "ihre", "ihren", "herzlich", "willkommen", "telefon", "email", "adresse", "öffnungszeiten",
+    "geberit", "grohe", "viessmann", "vaillant", "hoval", "buderus", "hansgrohe", "duravit", "laufen",
+  ]);
+  const out = new Map();
+  for (let line of text.split("\n")) {
+    line = line.trim();
+    if (line.length < 4 || line.length > 32) continue;
+    if (/[0-9.:;,@/()]/.test(line)) continue;                 // Namen tragen keine Zahlen/Satzzeichen/Mail
+    const words = line.split(/\s+/);
+    if (words.length < 2 || words.length > 3) continue;
+    if (!words.every((w) => /^[A-ZÄÖÜ][a-zäöüéèêàçïA-ZÄÖÜ'’-]{1,19}$/.test(w))) continue;
+    if (words.some((w) => BLOCK.has(w.toLowerCase()))) continue;
+    out.set(line.toLowerCase(), line);
+  }
+  return [...out.values()];
+}
+
+// Team-Grösse: explizite Zahl (höchste Sicherheit) → sonst Personen aus Namen + Fotos.
+// Ziel ist die richtige KLASSE (1–3 / 4–15 / >15), die der Founder anfangs prüft.
 function extractTeamGroesse() {
+  // 1) Explizite Aussage „X Mitarbeiter" — am verlässlichsten.
   for (const key of ["team", "home"]) {
     const text = pageTexts[key];
     if (!text) continue;
-
-    // Look for explicit team size mentions — require number >= 2 (1 person is not a "team size" statement)
     const patterns = [
       /(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Fachleute|Profis|Spezialisten|Mitarbeitende|Teammitglieder)/i,
       /(?:Team|Belegschaft|Mannschaft)\s+(?:von\s+)?(\d{1,3})\b/i,
       /(?:rund|ca\.?|über|mehr\s+als|circa)\s+(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Fachleute)/i,
     ];
-
     for (const re of patterns) {
       const match = text.match(re);
       if (match) {
         const num = parseInt(match[1], 10);
-        // Sanity check: must be 2-500 to be a team size, not a page number or year fragment
         if (num >= 2 && num <= 500) {
-          return { value: num, source: sourceTag(key), verified: true };
+          return { value: num, source: sourceTag(key), verified: true,
+            basis: "text_explicit", evidence: { explicit: num } };
         }
       }
     }
   }
-  return { value: null, source: "not_found", verified: false, note: "NIEMALS aus Fotos herleiten" };
+
+  // 2) Personen zählen: Namen (eigenständige Zeilen) + Porträt-Fotos. Bei beidseitiger
+  //    Bestätigung der HÖHERE Wert (behebt den Lazy-Bug „16 da, nur 4 geladen").
+  const names = teamNamesFromText(pageTexts.team);
+  const nNames = names.length;
+  const nPhotos = teamSignals.photoCount || 0;
+
+  let value = null, basis = null;
+  if (nNames >= 2 && nPhotos >= 2) { value = Math.max(nNames, nPhotos); basis = "namen+fotos"; }
+  else if (nNames >= 3) { value = nNames; basis = "namen"; }
+  else if (nPhotos >= 2 && nNames >= 1) { value = Math.max(nPhotos, nNames); basis = "fotos"; }
+
+  if (value != null) {
+    const verified = basis === "namen+fotos";   // beidseitig bestätigt = belastbar
+    return { value, source: "website_team", verified,
+      basis, evidence: { namen: nNames, fotos: nPhotos, beispiele: names.slice(0, 25) },
+      note: verified ? "Personen gezählt (Namen + Fotos bestätigt)" : "Schätzung — bitte prüfen" };
+  }
+  return { value: null, source: "not_found", verified: false, evidence: { namen: nNames, fotos: nPhotos } };
 }
 
 function extractLeistungen() {
@@ -1121,6 +1240,27 @@ async function main() {
     } else {
       console.log("  [brand_color] Not found");
     }
+  }
+
+  // ── Screenshots + Team-Analyse (zum Nachprüfen der Grösse) ──
+  const shotDir = join("docs", "customers", slug);
+  if (!existsSync(shotDir)) await mkdir(shotDir, { recursive: true });
+  result._meta.screenshots = {};
+  if (pageSources.home) {
+    // Seite steht nach brand_color noch auf Home.
+    try {
+      await page.screenshot({ path: join(shotDir, "home.png"), fullPage: true });
+      result._meta.screenshots.home = "home.png";
+      console.log("  [screenshot] home.png");
+    } catch (e) { console.log(`  [screenshot] home übersprungen: ${e.message}`); }
+  }
+  if (pageSources.team) {
+    await analyzeTeam(page, pageSources.team);   // klappt auf, scrollt, zählt Personen
+    try {
+      await page.screenshot({ path: join(shotDir, "team.png"), fullPage: true });
+      result._meta.screenshots.team = "team.png";
+      console.log("  [screenshot] team.png");
+    } catch (e) { console.log(`  [screenshot] team übersprungen: ${e.message}`); }
   }
 
   await browser.close();

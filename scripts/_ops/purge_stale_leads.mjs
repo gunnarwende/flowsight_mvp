@@ -1,29 +1,46 @@
 #!/usr/bin/env node
 /**
- * purge_stale_leads.mjs — entfernt die Alt-Crawl-Leads aus der DB.
+ * purge_stale_leads.mjs — entfernt Alt-Crawl-Leads aus der DB („Klarheit").
  *
  * Hintergrund: Stern 1 zeigte 425 Leads = alter Zürichsee-Bulk-Crawl (altes
  * Niveau). Die go-Crawl baut Thurgau frisch auf dem neuen Standard auf.
  *
- * SICHERHEITS-REGEL — was BLEIBT (wird NIE gelöscht):
- *   - Lead ist referenziert von proof_pages / cockpit_sessions / journey_events
- *     (= aktive Pipeline: Simulationen, Aufbau, geloggte Calls), ODER
- *   - Lead-Status ist gepflegt (≠ "neu"/leer) — du hast ihn angefasst.
- * GELÖSCHT wird nur: Status "neu"/leer UND nirgends referenziert
- *   = reiner, nie bearbeiteter Alt-Crawl.
+ * MODI (--mode):
+ *   stale  (Default) — löscht NUR reine, nie bearbeitete Alt-Crawls:
+ *                      Status "neu"/leer UND nirgends referenziert.
+ *                      Aktive Pipeline (Simulationen/Calls) BLEIBT.
+ *   worked          — „Klarheit, Altlasten heraus": löscht die BEARBEITETEN
+ *                      Alt-Leads (Status ≠ "neu" ODER referenziert von
+ *                      proof_pages/cockpit_sessions/journey_events — auch die,
+ *                      die wir schon verschickt haben + 1–2× geöffnet wurden).
+ *                      Frische, unbearbeitete Discovery (status="neu",
+ *                      unreferenziert) BLEIBT — die Redesign-Leads sind sicher.
+ *   all             — vollständiger Reset: löscht ALLE Leads (frischer Start).
+ *
+ * Beim Löschen referenzierter Zeilen: journey_events hängen per FK CASCADE dran
+ * (verschwinden mit → Tagesüberblick wird sauber); proof_pages/cockpit_sessions
+ * werden per SET NULL entkoppelt (bleiben als Verlauf, ohne Lead-Bezug).
  *
  * Default = DRY-RUN (zeigt nur, was gelöscht würde). Erst --execute löscht.
  *
  * Lauf:
- *   node --env-file=src/web/.env.local scripts/_ops/purge_stale_leads.mjs            # Vorschau
- *   node --env-file=src/web/.env.local scripts/_ops/purge_stale_leads.mjs --execute  # löschen
+ *   node … purge_stale_leads.mjs                       # Vorschau (stale)
+ *   node … purge_stale_leads.mjs --mode worked         # Vorschau Altlasten-raus
+ *   node … purge_stale_leads.mjs --mode worked --execute
+ *   node … purge_stale_leads.mjs --mode all --execute  # kompletter Reset
  */
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
 
+function getArg(flag) { const i = process.argv.indexOf(flag); return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : null; }
 const EXECUTE = process.argv.includes("--execute");
+const MODE = (getArg("--mode") || "stale").trim().toLowerCase();
+if (!["stale", "worked", "all"].includes(MODE)) {
+  console.error(`ERROR: --mode "${MODE}" unbekannt (erlaubt: stale | worked | all).`);
+  process.exit(1);
+}
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!url || !key) {
@@ -53,11 +70,15 @@ async function refIds(table) {
 
   const keep = [], del = [];
   for (const l of all) {
-    if (referenced.has(l.id) || WORKED(l.status)) keep.push(l);
-    else del.push(l);
+    const active = referenced.has(l.id) || WORKED(l.status);
+    let remove;
+    if (MODE === "all") remove = true;                 // alles
+    else if (MODE === "worked") remove = active;       // Altlasten (bearbeitet/referenziert) raus
+    else remove = !active;                             // stale: nur unberührter Alt-Crawl raus
+    (remove ? del : keep).push(l);
   }
 
-  console.log(`\n── Lead-Bereinigung (${EXECUTE ? "LÖSCHEN" : "DRY-RUN"}) ──`);
+  console.log(`\n── Lead-Bereinigung · Modus ${MODE} (${EXECUTE ? "LÖSCHEN" : "DRY-RUN"}) ──`);
   console.log(`Gesamt:        ${all.length}`);
   console.log(`Referenziert:  ${referenced.size} (proof/cockpit/events)`);
   console.log(`BLEIBT:        ${keep.length}`);

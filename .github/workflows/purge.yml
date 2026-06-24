@@ -2,12 +2,22 @@ name: Leads bereinigen (425 Alt-Crawl)
 
 # Mobil-Parität: aus dem Cockpit (/ceo/journey → Werkstatt) oder dem Actions-Tab
 # auslösbar. Default = Vorschau (Dry-Run, löscht nichts). Erst mit execute=true
-# wird wirklich gelöscht — und auch dann nur unbearbeiteter Alt-Crawl
-# (aktive Pipeline / gepflegte Leads bleiben, siehe purge_stale_leads.mjs).
+# wird wirklich gelöscht. Was gelöscht wird, steuert mode (siehe
+# purge_stale_leads.mjs): stale = nur unberührter Alt-Crawl · worked = Altlasten
+# raus (auch verschickte/geöffnete) · all = kompletter Reset.
 
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "stale = unberührter Alt-Crawl · worked = Altlasten raus (verschickte/geöffnete) · all = kompletter Reset"
+        required: true
+        type: choice
+        default: "stale"
+        options:
+          - "stale"
+          - "worked"
+          - "all"
       execute:
         description: "Wirklich löschen? Aus = nur Vorschau (Dry-Run)."
         required: false
@@ -35,9 +45,10 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          MODE: ${{ inputs.mode }}
         run: |
           if [ "${{ inputs.execute }}" = "true" ]; then
-            node scripts/_ops/purge_stale_leads.mjs --execute
+            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE" --execute
           else
-            node scripts/_ops/purge_stale_leads.mjs
+            node scripts/_ops/purge_stale_leads.mjs --mode "$MODE"
           fi
