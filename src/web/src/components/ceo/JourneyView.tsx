@@ -139,7 +139,11 @@ export function JourneyView() {
         const r = await fetch("/api/ceo/ops/run-status", { cache: "no-store" });
         const j = await r.json();
         if (!alive || !j?.ok) return;
-        const active = j.state === "queued" || j.state === "in_progress";
+        // Jeder nicht abgeschlossene Lauf zählt als „aktiv" — inkl. „pending"
+        // (wartet via Concurrency-Sperre) und „waiting"/„requested". Nur
+        // "completed"/"none" = nicht aktiv. (Vorher fehlte „pending" → der Knopf
+        // blieb fälschlich klickbar, obwohl ein Lauf in der Warteschlange stand.)
+        const active = j.state !== "completed" && j.state !== "none";
         const startedMs = j.started_at ? new Date(j.started_at).getTime() : 0;
         const doneRecent = j.state === "completed" && j.conclusion === "success"
           && startedMs > 0 && Date.now() - startedMs < 45 * 60 * 1000;
@@ -230,6 +234,9 @@ export function JourneyView() {
       const j = await res.json().catch(() => ({}));
       if (res.ok && j.ok) {
         setOpsMsg(`✓ Ausgelöst: ${workflow}. Läuft jetzt in Actions (~1–2 Min).`);
+        // Knopf SOFORT sperren (nicht erst beim nächsten 15s-Poll) — sonst klickt
+        // man in der Lücke versehentlich doppelt. Der Poll bestätigt gleich.
+        if (workflow === "discover.yml") setRun((r) => ({ ...r, active: true, doneRecent: false }));
       } else if (j.error === "GH_DISPATCH_TOKEN not configured") {
         setOpsMsg("GH_DISPATCH_TOKEN fehlt — fine-grained PAT (Actions read+write) in Vercel setzen.");
       } else {
