@@ -145,13 +145,18 @@ function loadExistingPlaceIds() {
   for (const csvPath of [RAW_CSV, PIPELINE_CSV]) {
     if (!fs.existsSync(csvPath)) continue;
     const csv = stripBOM(fs.readFileSync(csvPath, "utf-8"));
-    for (const line of csv.split("\n").slice(1)) {
+    const lines = csv.split("\n");
+    // place_id-Spalte aus dem Header bestimmen — robust gegen Spalten-Änderungen
+    // (früher war hier ein fixer Index 17, der nach „discovered" statt „place_id"
+    //  zeigte; mit der neuen kanton-Spalte wäre das doppelt falsch gewesen).
+    const headerCols = parseCSVLine(lines[0] || "");
+    const pidIdx = headerCols.indexOf("place_id");
+    for (const line of lines.slice(1)) {
       if (!line.trim()) continue;
       const fields = parseCSVLine(line);
       if (csvPath === RAW_CSV) {
-        // Layout: firma=0, place_id=17
         const name = fields[0]?.trim();
-        const id = fields[17]?.trim();
+        const id = pidIdx >= 0 ? fields[pidIdx]?.trim() : undefined;
         if (id) ids.add(id);
         if (name) names.add(normalizeName(name));
       } else {
@@ -190,6 +195,7 @@ async function searchPlaces(textQuery) {
     "places.id",
     "places.displayName",
     "places.formattedAddress",
+    "places.addressComponents",
     "places.websiteUri",
     "places.rating",
     "places.userRatingCount",
@@ -430,7 +436,7 @@ function stripBOM(text) {
   return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
 }
 
-const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;adresse;telefon;maps_url;query;discovered;place_id";
+const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;kanton;adresse;telefon;maps_url;query;discovered;place_id";
 
 function ensureRawCSV() {
   if (!fs.existsSync(RAW_CSV)) {
@@ -447,6 +453,20 @@ function extractOrt(address) {
     const plzOrt = parts[parts.length - 2];
     // Remove PLZ (4 digits)
     return plzOrt.replace(/^\d{4}\s*/, "").trim();
+  }
+  return "";
+}
+
+// AUTORITATIVER Kanton aus Google addressComponents (administrative_area_level_1).
+// Löst Homonym-Orte (Wetzikon TG vs ZH) sauber auf — der Ortsname allein kann das
+// nicht, weil derselbe Name in mehreren Kantonen existiert. longText = "Thurgau".
+function extractKanton(place) {
+  const comps = (place && place.addressComponents) || [];
+  for (const c of comps) {
+    const types = c.types || [];
+    if (types.includes("administrative_area_level_1")) {
+      return (c.longText || c.shortText || "").trim();
+    }
   }
   return "";
 }
@@ -747,6 +767,7 @@ async function main() {
 
         const address = p.formattedAddress || "";
         const ort = extractOrt(address);
+        const kanton = extractKanton(p);
         const phone = p.nationalPhoneNumber || p.internationalPhoneNumber || "";
         const { score, tier, localTrust, digitalGap, voiceFit, contactable, penalty, reasons } = scorePlace(p);
 
@@ -754,6 +775,7 @@ async function main() {
           placeId,
           name,
           ort,
+          kanton,
           address,
           phone,
           website: p.websiteUri || "",
@@ -853,6 +875,7 @@ async function main() {
       csvEscape(r.reasons.join("; ")),
       r.score,
       csvEscape(r.ort),
+      csvEscape(r.kanton || ""),
       csvEscape(r.address),
       csvEscape(r.phone),
       csvEscape(r.mapsUrl),
