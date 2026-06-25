@@ -123,7 +123,7 @@ export function JourneyView() {
   const [goCount, setGoCount] = useState(20);
   const [goKanton, setGoKanton] = useState("Thurgau");
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
-  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq">("alle"); // Größe (Einfachauswahl)
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq" | "offen">("alle"); // Größe (Einfachauswahl)
   // Feld-Lücken (Mehrfachauswahl) — zum gezielten Nacharbeiten: Größe?/Inhaber/Mail leer.
   const [gaps, setGaps] = useState<{ groesse: boolean; inhaber: boolean; mail: boolean }>({ groesse: false, inhaber: false, mail: false });
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
@@ -419,9 +419,12 @@ export function JourneyView() {
   function KontaktView() {
     const q = search.trim().toLowerCase();
     const blank = (v: string | null) => !(v && String(v).trim());
-    let rows = data!.leads;
-    if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
-    // Ebene 1 — Größe (Einfachauswahl)
+    // Such-gefilterte Basis — die Größen-Zähler partitionieren GENAU diese Menge,
+    // sodass 1–3 + 4–15 + >15 + ? immer auf „Alle" aufgehen (kein unsichtbares Delta).
+    const searched = q ? data!.leads.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q)) : data!.leads;
+    const sizeCount = (k: typeof sizeFilter) => (k === "alle" ? searched.length : searched.filter((l) => sizeTier(l.ma_proxy) === k).length);
+    let rows = searched;
+    // Ebene 1 — Größe (Einfachauswahl); „offen" = Größe noch nicht gecrawlt
     if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
     // Ebene 2 — Feld-Lücken (Mehrfachauswahl, jede grenzt weiter ein)
     if (gaps.groesse) rows = rows.filter((l) => sizeTier(l.ma_proxy) === "offen");
@@ -434,7 +437,7 @@ export function JourneyView() {
 
     const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
       { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
-      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" },
+      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" }, { k: "offen", label: "?" },
     ];
     const GAP_TABS: { k: keyof typeof gaps; label: string }[] = [
       { k: "groesse", label: "Größe?" }, { k: "inhaber", label: "Inhaber leer" }, { k: "mail", label: "Mail leer" },
@@ -450,7 +453,7 @@ export function JourneyView() {
         <div className="flex gap-2 mb-1.5">
           {SIZE_TABS.map((t) => (
             <button key={t.k} type="button" onClick={() => setSizeFilter(t.k)}
-              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label} <span className={sizeFilter === t.k ? "opacity-70" : "text-navy-400"}>{sizeCount(t.k)}</span></button>
           ))}
         </div>
 
