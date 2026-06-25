@@ -43,8 +43,8 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 
 ## Domänen-Docs (Tiefe)
 
-- **`architecture/`** — `contracts/` (case_contract, role_model, **identity_contract**, prospect_*), `references/` (wizard · review · voice · flowsight_ceo_app = Design-Referenzen 03/2026 mit Stand-Hinweis), `tenant_architecture`, `env_vars`, `flowsight_ceo_app`.
-- **`gtm/sales/`** — `lessons_learned_sales` (S1–S19), `cold_call_script`, `gespraechskarte`, `FlowSight_Customer_Journey_SSOT`, `CTA`, `phase1_gespraech_playbook`, `stern5_…`, `templates/email_nicht_erreicht`.
+- **`architecture/`** — `contracts/` (case_contract, **leads_contract**, role_model, **identity_contract**, prospect_*), `references/` (wizard · review · voice · flowsight_ceo_app = Design-Referenzen 03/2026 mit Stand-Hinweis), `tenant_architecture`, `env_vars`, `flowsight_ceo_app`.
+- **`gtm/sales/`** — `SALES_BIBLE`, **`STERN_1_RUNBOOK`** (Lead-Motor: Go/Vollerfassung/Anreichern), `lessons_learned_sales` (S1–S19), `cold_call_script`, `gespraechskarte`, `FlowSight_Customer_Journey_SSOT`, `CTA`, `phase1_gespraech_playbook`, `stern5_…`, `templates/email_nicht_erreicht`.
 - **`gtm/onboarding/`** — `lessons_learned`, `cockpit_*`, `phase2_*`, `playbook_6_phases`, `customer_runbook_template`, `OC6_HANDOFF`.
 - **`gtm/pipeline/`** — `NEUER_BETRIEB_VIDEO_RUNBOOK`, `quality_gates`, `02_crawl_extract`, `03_derive_config`, `feedback/versand_timing_analyse`, `master_takes/_delivery/*`.
 - **`gtm/icp/`** — `stresstest_*`, `market/`.
