@@ -21,6 +21,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { reformatEntscheider } from "./_anrede.mjs";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
@@ -54,11 +55,13 @@ function slugFromUrl(u) {
     .from("leads")
     .select("id, place_id, firma, ort, website, entscheider, mail, ma_proxy, icp_score")
     .not("website", "is", null)
-    .or("entscheider.is.null,mail.is.null,ma_proxy.is.null")
     .order("icp_score", { ascending: false })
     .limit(LIMIT);
   if (error) { console.error("DB-Lesefehler:", error.message); process.exit(1); }
-  const todo = (leads || []).filter((l) => l.website && l.place_id);
+  // Unvollständig = Inhaber ODER Mail ODER Größe fehlt. In JS filtern, weil leere
+  // Felder als "" (nicht NULL) gespeichert sind — eine .or(...is.null)-Query verfehlt die.
+  const incomplete = (l) => !l.entscheider || !l.mail || !l.ma_proxy;
+  const todo = (leads || []).filter((l) => l.website && l.place_id && incomplete(l));
 
   console.log(`\n── Anreicherung: ${todo.length} unvollständige Lead(s), Budget ${MINUTES} Min ──`);
   if (!todo.length) { console.log("Nichts anzureichern — alle Karten vollständig.\n"); }
@@ -80,15 +83,26 @@ function slugFromUrl(u) {
   }
   console.log(`\n✓ Anreicherung fertig: ${ok} ok, ${fail} mit Fehler.`);
 
+  // ── Umformat-Pass: ALLE Inhaber-Felder auf „Herr/Frau Nachname" bringen + Müll
+  //    (z.B. „Unsere Niederlassungen") rausputzen. Auch bestehende Werte (die der
+  //    additive Crawl-Schutz nie anfasst) — darum hier zentral, nicht beim Crawl. ──
+  const { data: withOwner } = await sb.from("leads").select("place_id, entscheider").not("entscheider", "is", null);
+  let reformatted = 0;
+  for (const l of (withOwner || [])) {
+    const nv = reformatEntscheider(l.entscheider);
+    if (nv !== (l.entscheider || "").trim()) { await sb.from("leads").update({ entscheider: nv || null }).eq("place_id", l.place_id); reformatted++; }
+  }
+  console.log(`✓ Anrede umformatiert: ${reformatted} Inhaber-Felder bereinigt/auf „Herr/Frau Nachname" gebracht.`);
+
   // ── Founder-Gegenprüfung: Inhaber auch nach Crawl nicht auffindbar (online nicht
-  //    vorhanden). Die Maschine rät nie — diese klärt der Mensch vor dem ersten Call. ──
+  //    vorhanden). Die Maschine rät nie — diese klärt der Mensch vor dem ersten Call.
+  //    null ODER leer ("") zählt als Lücke — in JS filtern (Empty-String-Fix). ──
   const { data: rest } = await sb
     .from("leads")
-    .select("firma, ort, website")
+    .select("firma, ort, website, entscheider, icp_score")
     .not("website", "is", null)
-    .is("entscheider", null)
     .order("icp_score", { ascending: false });
-  const list = rest || [];
+  const list = (rest || []).filter((l) => !l.entscheider);
   console.log(`\n──────── FOUNDER-GEGENPRÜFUNG: ${list.length} ohne auffindbaren Inhaber ────────`);
   if (!list.length) console.log("  (keine — alle haben einen Inhaber-Namen)");
   list.slice(0, 60).forEach((l) => console.log(`  • ${l.firma} — ${l.ort || "?"} — ${l.website}`));
