@@ -145,13 +145,18 @@ function loadExistingPlaceIds() {
   for (const csvPath of [RAW_CSV, PIPELINE_CSV]) {
     if (!fs.existsSync(csvPath)) continue;
     const csv = stripBOM(fs.readFileSync(csvPath, "utf-8"));
-    for (const line of csv.split("\n").slice(1)) {
+    const lines = csv.split("\n");
+    // place_id-Spalte aus dem Header bestimmen — robust gegen Spalten-Änderungen
+    // (früher war hier ein fixer Index 17, der nach „discovered" statt „place_id"
+    //  zeigte; mit der neuen kanton-Spalte wäre das doppelt falsch gewesen).
+    const headerCols = parseCSVLine(lines[0] || "");
+    const pidIdx = headerCols.indexOf("place_id");
+    for (const line of lines.slice(1)) {
       if (!line.trim()) continue;
       const fields = parseCSVLine(line);
       if (csvPath === RAW_CSV) {
-        // Layout: firma=0, place_id=17
         const name = fields[0]?.trim();
-        const id = fields[17]?.trim();
+        const id = pidIdx >= 0 ? fields[pidIdx]?.trim() : undefined;
         if (id) ids.add(id);
         if (name) names.add(normalizeName(name));
       } else {
@@ -186,45 +191,65 @@ function parseCSVLine(line) {
 // ── Google Places Text Search ───────────────────────────────────────
 async function searchPlaces(textQuery) {
   const url = "https://places.googleapis.com/v1/places:searchText";
+  const fieldMask = [
+    "places.id",
+    "places.displayName",
+    "places.formattedAddress",
+    "places.addressComponents",
+    "places.websiteUri",
+    "places.rating",
+    "places.userRatingCount",
+    "places.nationalPhoneNumber",
+    "places.internationalPhoneNumber",
+    "places.googleMapsUri",
+    "places.businessStatus",
+    "places.types",
+    "places.regularOpeningHours",
+    "nextPageToken",
+  ].join(",");
 
-  const body = {
-    textQuery,
-    languageCode: "de",
-    regionCode: "CH",
-    maxResultCount: 20,
-  };
+  // ALLE Treffer holen, nicht nur die ersten 20 — Google Places liefert per
+  // Text-Suche bis zu 60 (3 Seiten à 20) via nextPageToken. So wird eine Gemeinde
+  // wirklich vollständig abgegrast, nicht auf 20 gedeckelt.
+  const out = [];
+  let pageToken = null;
+  for (let page = 0; page < 3; page++) {
+    const body = { textQuery, languageCode: "de", regionCode: "CH", maxResultCount: 20 };
+    if (pageToken) body.pageToken = pageToken;
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": apiKey,
-      "X-Goog-FieldMask": [
-        "places.id",
-        "places.displayName",
-        "places.formattedAddress",
-        "places.websiteUri",
-        "places.rating",
-        "places.userRatingCount",
-        "places.nationalPhoneNumber",
-        "places.internationalPhoneNumber",
-        "places.googleMapsUri",
-        "places.businessStatus",
-        "places.types",
-        "places.regularOpeningHours",
-      ].join(","),
-    },
-    body: JSON.stringify(body),
-  });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": fieldMask,
+        },
+        body: JSON.stringify(body),
+        // Harte 20s-Grenze je Request — ein hängender Endpoint darf den ganzen
+        // Sweep-Job nicht blockieren (sonst läuft er bis zum 6h-GitHub-Default).
+        signal: AbortSignal.timeout(20000),
+      });
+    } catch (e) {
+      console.error(`  Netzwerk/Timeout für "${textQuery}" (Seite ${page + 1}): ${e.message}`);
+      break;
+    }
 
-  if (!res.ok) {
-    const err = await res.text();
-    console.error(`  API error (${res.status}) for "${textQuery}":`, err.slice(0, 200));
-    return [];
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(`  API error (${res.status}) for "${textQuery}" (Seite ${page + 1}):`, err.slice(0, 200));
+      break;
+    }
+
+    const data = await res.json();
+    out.push(...(data.places || []));
+    pageToken = data.nextPageToken;
+    if (!pageToken) break;
+    // nextPageToken wird erst nach kurzer Verzögerung gültig.
+    await new Promise((r) => setTimeout(r, 2000));
   }
-
-  const data = await res.json();
-  return data.places || [];
+  return out;
 }
 
 // ── Scoring ─────────────────────────────────────────────────────────
@@ -420,12 +445,21 @@ function stripBOM(text) {
   return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
 }
 
-const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;adresse;telefon;maps_url;query;discovered;place_id";
+const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;kanton;adresse;telefon;maps_url;query;discovered;place_id";
 
 function ensureRawCSV() {
-  if (!fs.existsSync(RAW_CSV)) {
-    fs.writeFileSync(RAW_CSV, BOM + RAW_HEADER + "\n", "utf-8");
+  // Header IMMER gegen den aktuellen RAW_HEADER abgleichen. Früher wurde er nur
+  // bei FEHLENDER Datei geschrieben — eine eingecheckte CSV mit altem Header (ohne
+  // kanton-Spalte) + alten Zeilen hebelte so den Kanton-Filter aus (idx.kanton
+  // undefined → Fallback auf namensbasiert → Homonym-Bleed wie Wetzikon ZH).
+  // Bei Header-Mismatch (oder fehlender Datei) frisch schreiben — verwirft veraltete
+  // Zeilen (gewollt: pro Run sammelt der Scout seine eigenen Treffer wieder auf).
+  let needFresh = true;
+  if (fs.existsSync(RAW_CSV)) {
+    const firstLine = (stripBOM(fs.readFileSync(RAW_CSV, "utf-8")).split("\n", 1)[0] || "").trim();
+    needFresh = firstLine !== RAW_HEADER;
   }
+  if (needFresh) fs.writeFileSync(RAW_CSV, BOM + RAW_HEADER + "\n", "utf-8");
 }
 
 // ── Extract municipality from address ───────────────────────────────
@@ -437,6 +471,20 @@ function extractOrt(address) {
     const plzOrt = parts[parts.length - 2];
     // Remove PLZ (4 digits)
     return plzOrt.replace(/^\d{4}\s*/, "").trim();
+  }
+  return "";
+}
+
+// AUTORITATIVER Kanton aus Google addressComponents (administrative_area_level_1).
+// Löst Homonym-Orte (Wetzikon TG vs ZH) sauber auf — der Ortsname allein kann das
+// nicht, weil derselbe Name in mehreren Kantonen existiert. longText = "Thurgau".
+function extractKanton(place) {
+  const comps = (place && place.addressComponents) || [];
+  for (const c of comps) {
+    const types = c.types || [];
+    if (types.includes("administrative_area_level_1")) {
+      return (c.longText || c.shortText || "").trim();
+    }
   }
   return "";
 }
@@ -737,6 +785,7 @@ async function main() {
 
         const address = p.formattedAddress || "";
         const ort = extractOrt(address);
+        const kanton = extractKanton(p);
         const phone = p.nationalPhoneNumber || p.internationalPhoneNumber || "";
         const { score, tier, localTrust, digitalGap, voiceFit, contactable, penalty, reasons } = scorePlace(p);
 
@@ -744,6 +793,7 @@ async function main() {
           placeId,
           name,
           ort,
+          kanton,
           address,
           phone,
           website: p.websiteUri || "",
@@ -843,6 +893,7 @@ async function main() {
       csvEscape(r.reasons.join("; ")),
       r.score,
       csvEscape(r.ort),
+      csvEscape(r.kanton || ""),
       csvEscape(r.address),
       csvEscape(r.phone),
       csvEscape(r.mapsUrl),
