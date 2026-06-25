@@ -19,6 +19,14 @@ on:
           - "30"
           - "45"
           - "55"
+      mode:
+        description: "full = Crawl + Umformat · reformat-only = nur Anrede umformatieren (schnell)"
+        required: true
+        type: choice
+        default: "full"
+        options:
+          - "full"
+          - "reformat-only"
 
 permissions:
   contents: read
@@ -61,4 +69,4 @@ jobs:
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/_ops/enrich_new_leads.mjs --minutes "${{ inputs.minutes }}"
+        run: node scripts/_ops/enrich_new_leads.mjs --minutes "${{ inputs.minutes }}" ${{ inputs.mode == 'reformat-only' && '--skip-crawl' || '' }}
