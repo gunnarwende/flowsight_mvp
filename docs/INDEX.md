@@ -51,7 +51,7 @@ wo finde ich was, und wo liegt die verbindliche Wahrheit.
 - **`modules/marke/`** — `brand_system`, `wording_glossar`, `gbp/`, `LinkedIn/`, `OPS/`, `assets/` (style_dna + feedback + speech_clone → `_archive/`).
 - **`runbooks/`** — Ops-/Setup-Runbooks (Voice, Kalender, SMS, Provisioning, Incident …). **Arbeitsweise:** [`session_ritual.md`](runbooks/session_ritual.md) (Tagesabschluss + Handy-Tipps) · [`mobile_ops.md`](runbooks/mobile_ops.md) (Live-Ops vom Handy).
 - **`modules/compliance/`** — `data_processing` (inkl. CH-SMS / eCall).
-- **`sales/`** — `leads.csv` (+ `leads.md`), `crawl_feedback`, `pipeline`, `discovery_questions`.
+- **`sales/`** — `leads.csv` (+ `leads.md`) *(Legacy CSV-Ära — SSOT ist jetzt die `leads`-DB / `/ceo/journey`)*, `crawl_feedback`, `pipeline`, `discovery_questions`.
 
 ## Kunden (dünn — Live-Stand liegt im System)
 

@@ -59,7 +59,7 @@ Der Betrieb testet nicht zweimal. Jeder Punkt = verbrannte Chance.
 Tagesmunition — fertig zum Abarbeiten am nächsten Morgen.** Lean, sauber, founder-tauglich.
 
 **Was CC bei „Sales-Maschine go" tut (in dieser Reihenfolge):**
-1. **Stand lesen:** `../../sales/leads.csv` (offene Leads, Status, fällige Follow-ups), `lessons_learned_sales.md`
+1. **Stand lesen:** `/ceo/journey` (die `leads`-DB = SSOT: offene Leads, Status, fällige Follow-ups; *Legacy: `../../sales/leads.csv`*), `lessons_learned_sales.md`
    (was zuletzt zündete), Tagesmodus (§10 Lernen/Push), welcher Motor morgen dran ist (Vor-Ort-Tag vs. Telefon-Tag).
 2. **Tagesprogramm festlegen:** Motor (A Vor-Ort Ring 0 / B Telefon Ring 1) + die N Betriebe für **genau diesen
    einen Tag** — Reihenfolge: **fällige Follow-ups zuerst, dann warm (bekannter Entscheider) → ICP-Score.**
@@ -73,7 +73,7 @@ Tagesmunition — fertig zum Abarbeiten am nächsten Morgen.** Lean, sauber, fou
 Abend: "Sales-Maschine go" → CC legt morgen bereit (Laufblatt + Vorbereitungsblätter)
 Morgen: Founder arbeitet ab (Vor-Ort/Telefon)
 Nach JEDEM Gespräch: Founder gibt CC 1:1-Feedback (Inhalt, Emotion, Aufbau, Ergebnis)
-  → CC pflegt lessons_learned_sales.md + leads.csv-Status → re-priorisiert für den nächsten Abend
+  → CC pflegt lessons_learned_sales.md + Lead-Status in `/ceo/journey` (DB) → re-priorisiert für den nächsten Abend
 ```
 
 ---
@@ -370,9 +370,17 @@ Bewertung: **10/10** raus · **8–9/10** raus, Rest nachziehen (kein Kill-Punkt
 
 ---
 
-## §14 · Lead-Motor (Code in `scripts/_ops/`, Daten in `docs/sales/`)
+## §14 · Lead-Motor (Code in `scripts/_ops/`)
 
-- **`build_leads.mjs`** → `docs/sales/leads.csv` (SSOT) + `leads.md`. Ring + Tarif + Entscheider, **Merge-by-place_id,
+> **STAND 2026-06-25 — Lead-Motor ist DB-gestützt.** SSOT ist die Supabase-`leads`-Tabelle
+> ([Leads-Contract](../../architecture/contracts/leads_contract.md)), operativ in `/ceo/journey`.
+> Bedienung: [STERN_1_RUNBOOK](STERN_1_RUNBOOK.md) — Go (jagen/Vollerfassung via `discover_targeted`),
+> Anreichern (`enrich_new_leads`), additiver Merge (`crawl_to_leads`). **Der CSV-Motor unten
+> (`build_leads`/`leads.csv`/`todays_list`/`enrich_leads`) ist Legacy aus der CSV-Ära** — Logik
+> (place_id-Merge, Founder-Status geschützt, Anreicherungs-Stack, S6-Entscheider) gilt weiter,
+> die Datenhaltung ist aber DB, nicht CSV.
+
+- *(Legacy)* **`build_leads.mjs`** → `docs/sales/leads.csv` + `leads.md`. Ring + Tarif + Entscheider, **Merge-by-place_id,
   Founder-Status-Spalten unangetastet.** Quelle: `scout.mjs` (Discovery + ICP-Score) → `scout_raw.csv`.
 - **`todays_list.mjs`** → Vor-Ort- + Telefon-Tagesblatt (`docs/sales/todays_list.md`).
 - **`enrich_leads.mjs` (P12, GEBAUT 15.06.) — speist die Vorbereitungsblätter (§11):** robustes Link-Following
