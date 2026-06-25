@@ -1,0 +1,272 @@
+{
+  "$schema": "take4_master_spec/v2",
+  "source_video": "docs/gtm/pipeline/06_video_production/master_takes/_REFERENCE_doerfler-ag_approved_2026-04-30/T4_doerfler-ag_with_mouse.mp4",
+  "source_total_duration_s": 176.90,
+  "source_fps": 30,
+  "source_resolution": "1440x900",
+  "extracted_by": "scripts/_ops/extract_take4_master_spec.mjs",
+  "extracted_at": "2026-05-30",
+  "precision": {
+    "phase_boundaries_s": 0.1,
+    "animations_s": 0.05,
+    "mouse_position_px": 5
+  },
+  "tenant": "doerfler-ag",
+  "industry": "sanitaer",
+  "comment": "Apr-30 approved Founder-Gold T4 Schablone. Zehntelsekunden-genau dokumentiert. Phasen (Monitor + Phone-PiP + Loom) + Animations-Kurven + Pixel-Anchors. Für JEDEN anderen Tenant identisch nachbaubar — nur Tenant-Data wird ausgetauscht, Timing+Animation+Layout invariant.",
+  "monitor_phases": [
+    { "id": "M01_dashboard_intro",          "start_s":  0.0,  "end_s":  10.1, "dur_s": 10.1, "content": "Dashboard 'Guten Morgen, Dörfler'. KPI 3|6|21|4.7. Case-Liste 12 Cases. Loom klein bottom-left.", "audio_cue": "Zum Schluss möchte ich..." },
+    { "id": "M02_case_open",                "start_s": 10.1,  "end_s":  13.9, "dur_s":  3.8, "content": "Case-Detail Leck DA-0050 offen. Status pill Neu (gelb). Verlauf: Fall erstellt + Bestätigungs-SMS. Loom GROSS top-left.", "audio_cue": "in den eben erstellten Fall..." },
+    { "id": "M03_status_dropdown_1",        "start_s": 13.9,  "end_s":  17.2, "dur_s":  3.3, "content": "Edit-mode + Status-Dropdown OPEN. Optionen: Neu|Geplant|In Arbeit|Warten|Erledigt. Mouse hover: Neu→Geplant→In Arbeit (16.0s).", "audio_cue": "ihn auf in Arbeit setzen" },
+    { "id": "M04_status_inarbeit",          "start_s": 17.2,  "end_s":  19.4, "dur_s":  2.2, "content": "Dropdown CLOSED. Status pill In Arbeit (gelb). Edit-mode + Speichern+Abbrechen. Mouse→Termin field.", "audio_cue": "(pause)" },
+    { "id": "M05_termin_picker",            "start_s": 19.4,  "end_s":  23.3, "dur_s":  3.9, "content": "Termin-Picker OPEN. April 2026, Di 28 selected. VON 08:00 + BIS 09:00→10:00 (19.8s). Footer Di. 28.04 · 08:00-10:00. Übernehmen-Btn.", "audio_cue": "terminieren den Einsatz" },
+    { "id": "M06_termin_set",               "start_s": 23.3,  "end_s":  23.8, "dur_s":  0.5, "content": "Picker CLOSED. Termin Di 28.04 08:00-10:00 set. '▶ Termin versenden' CTA-Button (dark navy + Untertitel 'Kunde wird per E-Mail+SMS benachrichtigt').", "audio_cue": "Dadurch wird der Kunde..." },
+    { "id": "M07_termin_versenden_active",  "start_s": 23.8,  "end_s":  25.9, "dur_s":  2.1, "content": "'⟲ Wird versendet...' button (greyed loading). Speichern auch greyed.", "audio_cue": "(sending)" },
+    { "id": "M08_speichern_normal",         "start_s": 25.9,  "end_s":  27.7, "dur_s":  1.8, "content": "Wird-versendet gone. Speichern+Abbrechen normal. Verlauf: +2 weitere + 'Priorität, Zuständig, Termin... aktualisiert'.", "audio_cue": "(brief)" },
+    { "id": "M09_termin_versendet_confirm", "start_s": 27.7,  "end_s":  29.0, "dur_s":  1.3, "content": "✓ 'Termin versendet' grüner Checkmark. Verlauf: 'Termin versendet (Mitarbeiter+Kunde)'.", "audio_cue": "Stunden vorher automatisch erinnert" },
+    { "id": "M10_inarbeit_view_during_p1",  "start_s": 29.0,  "end_s":  35.5, "dur_s":  6.5, "content": "Form-Edit-mode visible LINKS unter Phone-PiP-Overlay (P01).", "audio_cue": "Risiko dass ein Termin vergessen wird" },
+    { "id": "M11_inarbeit_view_post_phone", "start_s": 35.5,  "end_s":  37.5, "dur_s":  2.0, "content": "Phone weg. Form-CLOSED view. Status In Arbeit. Verlauf updated. Mouse zum Edit-Icon top-right.", "audio_cue": "Wenn der Auftrag sauber..." },
+    { "id": "M12_edit_mode_reopen",         "start_s": 37.5,  "end_s":  39.4, "dur_s":  1.9, "content": "Edit-mode OPEN #2. Status In Arbeit pill. Mouse→Status field.", "audio_cue": "(pause)" },
+    { "id": "M13_status_dropdown_2",        "start_s": 39.4,  "end_s":  42.9, "dur_s":  3.5, "content": "Dropdown #2 OPEN. Mouse: In Arbeit→Erledigt (40.5s hover blau-grau).", "audio_cue": "Status hier auf erledigt..." },
+    { "id": "M14_status_erledigt_set",      "start_s": 42.9,  "end_s":  44.4, "dur_s":  1.5, "content": "Dropdown CLOSED. Status pill Erledigt (grün). Edit-mode + Speichern dark/active.", "audio_cue": "kurz gespeichert" },
+    { "id": "M15_form_close_bewertung_visible","start_s": 44.4,"end_s":  50.2, "dur_s":  5.8, "content": "Form CLOSED. Status Erledigt + 'Gespeichert' light text. Footer: 'Bewertung anfragen' grüner Btn + 'Nicht anfragen' + 5 leere Sterne.", "audio_cue": "Und genau hier kann ... angestoßen werden" },
+    { "id": "M16_bewertung_click",          "start_s": 50.2,  "end_s":  51.5, "dur_s":  1.3, "content": "'Sende...' button (Bewertung anfragen loading state, greyed).", "audio_cue": "Der entscheidende Klick" },
+    { "id": "M17_bewertung_angefragt",      "start_s": 51.5,  "end_s":  67.0, "dur_s": 15.5, "content": "Form CLOSED. Verlauf 'Bewertungsanfrage gesendet'. 5 gelbe Sterne + 'Bewertung angefragt' Label + 'Gesendet' Tag (grün). Anhänge briefly 'Laden...' (~56-58s).", "audio_cue": "Sie fragen nicht jeden ... bekommt automatisch ..." },
+    { "id": "M18_case_during_phone_day2",   "start_s": 67.0,  "end_s":  85.0, "dur_s": 18.0, "content": "Case-Detail visible LINKS unter Phone-PiP-Overlay (P02). Inhalt unverändert.", "audio_cue": "(phone-driven)" },
+    { "id": "M19_review_done_view",         "start_s": 85.0,  "end_s":  89.2, "dur_s":  4.2, "content": "Phone weg. Case-Detail Full-View. Verlauf: +9 weitere + 'Bewertungsseite geöffnet'. 5 gelbe Sterne + 'Bewertet' grün.", "audio_cue": "Und wenn einmal etwas..." },
+    { "id": "M20_dashboard_final",          "start_s": 89.2,  "end_s":  96.9, "dur_s":  7.7, "content": "Dashboard zurück. KPI **2|6|22|4.7** (Offen -1, Erledigt +1). Loom klein bottom-left. Toast @93.5s bottom-right ★★★★★.", "audio_cue": "Feedback nicht direkt auf..." },
+    { "id": "M21_loom_iris_transition",     "start_s": 96.9,  "end_s":  99.0, "dur_s":  2.1, "content": "Iris-Open: Loom expandiert vom klein bottom-left auf Fullscreen. Dashboard wird durchsichtig.", "audio_cue": "(transition gap)" },
+    { "id": "M22_loom_fullscreen_outro",    "start_s": 99.0,  "end_s": 176.9, "dur_s": 77.9, "content": "Fullscreen Loom Founder-Face auf dunklem navy. ~78s Outro-Monolog. Verschiedene Expressions inkl. Lächeln am Ende.", "audio_cue": "Founder-Outro-Monolog" }
+  ],
+  "phone_pip_overlays": [
+    {
+      "id": "P01_phone_day1_reminder",
+      "appears_s": 29.0,
+      "disappears_s": 35.5,
+      "dur_s": 6.5,
+      "slide_in": { "start_s": 28.50, "end_s": 29.00, "dur_s": 0.50, "easing": "ease-out", "direction": "from-right" },
+      "slide_out": { "start_s": 34.40, "end_s": 34.60, "dur_s": 0.20, "easing": "cut/instant", "direction": "fade-up" },
+      "bezel": {
+        "screen_position_px": { "x": 380, "y": 30, "width": 330, "height": 440 },
+        "bezel_border_px": 6,
+        "corner_radius_px": 30,
+        "inner_screen_px": { "x": 386, "y": 36, "width": 318, "height": 428 },
+        "top_status_bar_h_px": 22,
+        "bottom_nav_bar_h_px": 36,
+        "nav_buttons": "Android 3-button: ▭ menu | ◯ home | ◁ back"
+      },
+      "content_sequence": [
+        { "t_s": 29.0, "state": "Lockscreen — Mountain wallpaper, Time 09:02 large, Date 27.04 small, Leitsystem-Tag top, App-Icon-Row above nav" },
+        { "t_s": 29.1, "state": "SMS-Notification banner appears top (slide-down)" },
+        { "t_s": 30.5, "state": "**SMS Thread OPENED** — Header 'Dörfler AG', Thread (1) Mo 27.04 - 08:56 'Ihre Meldung wurde aufgenommen. Hier können Sie die Daten prüfen und Fotos ergänzen: flowsight.ch/v/DA-00500088 + 08:56 ✓✓' (2) Mo 27.04 - 09:02 'Erinnerung — Ihr Termin ist morgen um 08:00 Uhr. Bahnhofstrasse 15. Bei Fragen: +41 44 505 74 21.' + 09:02 ✓✓" },
+        { "t_s": 32.0, "state": "Same thread, mouse on Phone number 044 505 74 21 (link blue)" },
+        { "t_s": 34.4, "state": "Mouse moves up — slide-out triggered" }
+      ],
+      "audio_cue": "automatisch erinnert"
+    },
+    {
+      "id": "P02_phone_day2_rating",
+      "appears_s": 67.0,
+      "disappears_s": 85.0,
+      "dur_s": 18.0,
+      "slide_in": { "start_s": 66.5, "end_s": 67.0, "dur_s": 0.50, "easing": "ease-out", "direction": "from-right" },
+      "slide_out": { "start_s": 84.75, "end_s": 85.00, "dur_s": 0.25, "easing": "cut/instant", "direction": "fade-up" },
+      "bezel": {
+        "screen_position_px": { "x": 380, "y": 30, "width": 330, "height": 440 },
+        "bezel_border_px": 6,
+        "corner_radius_px": 30,
+        "inner_screen_px": { "x": 386, "y": 36, "width": 318, "height": 428 },
+        "top_status_bar_h_px": 22,
+        "bottom_nav_bar_h_px": 36
+      },
+      "content_sequence": [
+        { "t_s": 67.0, "state": "**SMS Thread #2** — Header Dörfler AG, alle 3 Messages visible: (1) Mo 27.04 08:56 Meldung-aufgenommen + (2) Mo 27.04 09:02 Erinnerung + (3) **Mi 27.04 12:04 'Vielen Dank für Ihr Vertrauen. Über eine kurze Bewertung freuen wir uns: https://flowsight.ch/r/DA-0050r1Rate46c...'**" },
+        { "t_s": 68.5, "state": "Mouse on rating link" },
+        { "t_s": 72.0, "state": "**Phone shows Bewertungs-Page** — Header 'Dörfler AG / Wie war unser Service?', Auftrag Leck, Ort 8942 Oberrieden, Datum 27.04.2026, 'Wie zufrieden waren Sie?' + 5 LEERE Sterne (Tippen Sie auf die Sterne — dauert nur 30 Sekunden)" },
+        { "t_s": 76.0, "state": "**5 GELBE Sterne** + 'Vielen Dank für Ihre tolle Bewertung!' + 4 Tag-Chips (Schnell & zuverlässig, Saubere Arbeit, Kompetente Beratung, Jederzeit wieder) + 'Bewertung abschliessen' button (blau)" },
+        { "t_s": 79.5, "state": "Mouse on 'Saubere Arbeit' tag (selected blue)" },
+        { "t_s": 81.5, "state": "Mouse on 'Bewertung abschliessen' button (greyed click)" },
+        { "t_s": 83.0, "state": "**Confirmation Page** — Checkmark circle + 'Vielen Dank für Ihre Bewertung!' + 'Ihre Meinung hilft uns und anderen Kunden.'" },
+        { "t_s": 84.75, "state": "Slide-out (mouse moves up)" }
+      ],
+      "audio_cue": "kann ruhig und verständlich ... ohne unnötige Reibung ... in einem Moment"
+    }
+  ],
+  "loom_states": [
+    { "id": "L01_small_dashboard",         "start_s":  0.0, "end_s":  10.1, "position_px": { "x":   8, "y": 718, "diameter": 110 }, "content": "Founder face small circle" },
+    { "id": "L02_big_case_detail",         "start_s": 10.1, "end_s":  89.2, "position_px": { "x":   8, "y": 138, "diameter": 195 }, "content": "Founder face big circle (case-detail mode)" },
+    { "id": "L03_small_dashboard_return",  "start_s": 89.2, "end_s":  96.9, "position_px": { "x":   8, "y": 718, "diameter": 110 }, "content": "Back to small circle on dashboard return" },
+    { "id": "L04_iris_open",               "start_s": 97.5, "end_s":  98.7, "transition": "xfade circleopen", "dur_s": 1.2, "content": "Expanding circle: small bottom-left → fullscreen centered" },
+    { "id": "L05_fullscreen_outro",        "start_s": 98.7, "end_s": 176.9, "position_px": { "x": 360, "y":  90, "diameter": 720 }, "content": "Fullscreen circle on dark navy bg, Founder outro" }
+  ],
+  "toast_notifications": [
+    {
+      "id": "TOAST_review_received",
+      "appears_s": 93.0,
+      "disappears_s": 99.0,
+      "slide_in": { "start_s": 92.7, "end_s": 93.0, "dur_s": 0.3, "easing": "ease-out", "direction": "from-right" },
+      "position_px": { "x": 980, "y": 750, "width": 460, "height": 80 },
+      "content": "Bewertung erhalten ★★★★★ — Gunnar Wende: Schnell & zuverlässig, Saubere Arbeit.",
+      "style": "white card with shadow, bottom-right, slide-in from right"
+    }
+  ],
+  "key_transitions": [
+    { "master_s":  10.1, "type": "monitor", "from": "M01", "to": "M02", "trigger": "case row click (mouse-layer)" },
+    { "master_s":  13.9, "type": "monitor", "from": "M02", "to": "M03", "trigger": "edit + status dropdown" },
+    { "master_s":  17.2, "type": "monitor", "from": "M03", "to": "M04", "trigger": "In Arbeit select" },
+    { "master_s":  19.4, "type": "monitor", "from": "M04", "to": "M05", "trigger": "Termin picker open" },
+    { "master_s":  23.3, "type": "monitor", "from": "M05", "to": "M06", "trigger": "Übernehmen → picker close" },
+    { "master_s":  23.8, "type": "monitor", "from": "M06", "to": "M07", "trigger": "Termin-versenden click" },
+    { "master_s":  25.9, "type": "monitor", "from": "M07", "to": "M08", "trigger": "Sending complete" },
+    { "master_s":  27.7, "type": "monitor", "from": "M08", "to": "M09", "trigger": "Confirmation appears" },
+    { "master_s":  28.5, "type": "phone_slide_in_start", "id": "P01" },
+    { "master_s":  29.0, "type": "phone_slide_in_end",   "id": "P01" },
+    { "master_s":  34.4, "type": "phone_slide_out_start","id": "P01" },
+    { "master_s":  34.6, "type": "phone_slide_out_end",  "id": "P01" },
+    { "master_s":  37.5, "type": "monitor", "from": "M11", "to": "M12", "trigger": "Bearbeiten click" },
+    { "master_s":  39.4, "type": "monitor", "from": "M12", "to": "M13", "trigger": "Status dropdown" },
+    { "master_s":  42.9, "type": "monitor", "from": "M13", "to": "M14", "trigger": "Erledigt select" },
+    { "master_s":  44.4, "type": "monitor", "from": "M14", "to": "M15", "trigger": "Speichern click → form close" },
+    { "master_s":  50.2, "type": "monitor", "from": "M15", "to": "M16", "trigger": "Bewertung anfragen click → Sende..." },
+    { "master_s":  51.5, "type": "monitor", "from": "M16", "to": "M17", "trigger": "Sending complete" },
+    { "master_s":  66.5, "type": "phone_slide_in_start", "id": "P02" },
+    { "master_s":  67.0, "type": "phone_slide_in_end",   "id": "P02" },
+    { "master_s":  84.75,"type": "phone_slide_out_start","id": "P02" },
+    { "master_s":  85.0, "type": "phone_slide_out_end",  "id": "P02" },
+    { "master_s":  89.2, "type": "monitor", "from": "M19", "to": "M20", "trigger": "Zoom to dashboard" },
+    { "master_s":  92.7, "type": "toast_slide_in_start", "id": "TOAST_review_received" },
+    { "master_s":  93.0, "type": "toast_slide_in_end",   "id": "TOAST_review_received" },
+    { "master_s":  97.5, "type": "loom_iris_start" },
+    { "master_s":  98.7, "type": "loom_iris_end" }
+  ],
+  "animation_solutions": {
+    "phone_slide_in": {
+      "description": "Phone-PiP slidet von rechts ein (außerhalb Frame → Endposition x=380,y=30)",
+      "duration_s": 0.5,
+      "easing": "ease-out (fast start, slow stop)",
+      "implementation_ffmpeg": "overlay='x=if(lt(t,T_start),1440,if(gt(t,T_end),380,1440-(t-T_start)/0.5*1060))':y=30",
+      "alternative": "xfade=transition=slideleft:duration=0.5:offset=T_start — wenn pre-rendered bezel video",
+      "scaling_invariant": true,
+      "comment": "Position 380,30 ist fix, slide-Pfad ist linear vom Frame-rechtsrand zur Endposition mit ease-out cubic curve"
+    },
+    "phone_slide_out": {
+      "description": "Phone verschwindet quasi instant (Fade-up oder Cut)",
+      "duration_s": 0.2,
+      "easing": "cut / fast linear",
+      "implementation_ffmpeg": "overlay='enable=between(t,T_start,T_end)' — enable-flag toggle. Alternativ overlay='y=if(gt(t,T_start),30-((t-T_start)/0.2)*470,30)' für fade-up.",
+      "alternative": "fade out alpha von 1→0 in 0.2s",
+      "scaling_invariant": true
+    },
+    "loom_iris_open": {
+      "description": "Loom-Circle wächst vom klein bottom-left auf Fullscreen mit circleopen mask",
+      "duration_s": 1.2,
+      "implementation_ffmpeg": "xfade=transition=circleopen:duration=1.2:offset=97.5",
+      "implementation_alternative_2chain": "Chunk A: anchor mit kleinem Loom bis 97.5s | Chunk C: navy bg + großer Loom ab 97.5s | xfade A→C with circleopen",
+      "scaling_invariant": true,
+      "existing_script": "scripts/_ops/apply_loom_take4_grow.mjs implementiert das bereits"
+    },
+    "loom_position_swap_at_10_1": {
+      "description": "Loom wechselt von klein bottom-left auf groß top-left bei 10.1s (case-open)",
+      "duration_s": 0.1,
+      "easing": "cut / instant",
+      "implementation": "Zwei Loom-Streams parallel mit enable-flag: stream A (klein bottom-left) enabled 0-10.1s, stream B (groß top-left) enabled 10.1-89.2s",
+      "scaling_invariant": true
+    },
+    "toast_slide_in": {
+      "description": "Toast slidet von rechts ein bei 93.5s, bleibt bis ~99.0s sichtbar (oder bis Iris überdeckt)",
+      "duration_s": 0.3,
+      "easing": "ease-out",
+      "implementation_ffmpeg": "overlay='x=if(lt(t,93.5),1440,if(gt(t,93.8),980,1440-(t-93.5)/0.3*460))':y=750:enable=between(t,93.5,99.0)",
+      "scaling_invariant_data": false,
+      "comment": "Toast text MUSS pro Tenant generiert werden (Gunnar Wende → Tenant-Demo-Kundenname + Bewertungs-Tags)"
+    },
+    "status_pill_color_transition": {
+      "description": "Status pill ändert Farbe beim Status-Wechsel: Neu (gelb #F59E0B) → In Arbeit (gelb-orange) → Erledigt (grün #10B981)",
+      "duration_s": 0.0,
+      "easing": "instant (CSS state change)",
+      "implementation": "Native UI re-render im Leitsystem-Recording — NICHT durch Pipeline-Animation",
+      "comment": "Wird vom Tenant-Leitsystem-Recording natürlich erzeugt"
+    },
+    "dropdown_open_close": {
+      "description": "Status-Dropdown öffnet/schließt instant (CSS state)",
+      "duration_s": 0.0,
+      "implementation": "Native UI im Recording",
+      "comment": "Bereits durch Playwright Recording erfasst"
+    }
+  },
+  "phone_bezel_spec": {
+    "description": "Phone-Bezel Spec für alle Phone-PiP-Overlays. Position invariant, Inhalt variabel.",
+    "container_size_px": { "width": 330, "height": 440 },
+    "container_position_px": { "x": 380, "y": 30 },
+    "bezel_color": "#0a0a0a (very dark navy/black)",
+    "bezel_thickness_px": { "top": 22, "right": 6, "bottom": 36, "left": 6 },
+    "corner_radius_px": 30,
+    "inner_screen_px": { "x": 386, "y": 52, "width": 318, "height": 396 },
+    "status_bar": {
+      "height_px": 22,
+      "content": "Time left (e.g. '09:02' or '09:04'), Notification dots center, Signal/Wifi/Battery right",
+      "text_color": "#1a1a1a"
+    },
+    "navigation_bar": {
+      "height_px": 36,
+      "buttons": [
+        { "type": "menu", "icon": "▭", "x_rel": 0.25 },
+        { "type": "home", "icon": "◯", "x_rel": 0.50 },
+        { "type": "back", "icon": "◁", "x_rel": 0.75 }
+      ],
+      "bg_color": "#0a0a0a",
+      "icon_color": "#FFFFFF"
+    },
+    "implementation_existing": "scripts/_ops/_lib/renderPhoneBezel.mjs (existiert bereits) — Verifikation: muss exakt diese Dimensionen produzieren. Bei Abweichung: Library anpassen.",
+    "verification_script_needed": true
+  },
+  "loom_face_spec": {
+    "description": "Loom-Face-Circle universell für alle Tenants",
+    "source_video": "screenflows/_shared/loom_t4_part1_synced.mp4 (small/big states) + loom_t4_part2.mp4 (fullscreen outro)",
+    "circle_mask": "perfekter Kreis, kein bezel, transparenter Hintergrund",
+    "small_state_diameter_px": 110,
+    "big_state_diameter_px": 195,
+    "fullscreen_state_diameter_px": 720,
+    "small_position_px": { "x": 8, "y": 718 },
+    "big_position_px": { "x": 8, "y": 138 },
+    "fullscreen_position_px": { "x": 360, "y": 90 },
+    "implementation_existing": "scripts/_ops/apply_loom_take4_grow.mjs — Verifikation: Position+Diameter müssen exakt diese Werte sein."
+  },
+  "mouse_layer_spec": {
+    "description": "Mouse-Cursor universell aus Dörfler take4.json — wird auf JEDEN Tenant 1:1 angewendet",
+    "source": "_generated/mouse_recordings/doerfler-ag/take4.json",
+    "scaling_invariant": true,
+    "comment": "Mouse positions sind universell (mouse zeigt nur auf Layout-Anchor-Punkte die in allen Tenants identisch sind, weil Layout invariant ist)"
+  },
+  "tenant_scaling_notes": {
+    "data_substitution": {
+      "M01_dashboard_intro": ["Tenant-Logo (DA), Tenant-Name (Dörfler AG), Greeting-Name, KPI numbers (tenant-DB-derived), Case-List rows (tenant-Cases)"],
+      "M02_case_open": ["Case-ID-Prefix (DA-0050), Customer-Name (Gunnar Wende), Customer-Phone, Customer-Email, Address (Bahnhofstrasse 15, 8942 Oberrieden), Tenant-Logo top-left big"],
+      "M05_termin_picker": ["Termin date relative-to-today (im Original Di 28.04. = Tag+1, also IMMER 'morgen' relativ zu Recording-Tag)"],
+      "M20_dashboard_final": ["KPI numbers updated (Offen -1, Erledigt +1), Toast tenant-name + tenant review tags"],
+      "P01_phone_day1_reminder": ["Tenant-Name in SMS-Header, Phone-Nummer in Reminder-SMS, Address in Reminder-SMS, Tenant-Code in Bestätigungs-Link"],
+      "P02_phone_day2_rating": ["Tenant-Name, Auftrag-Title (Leck), Ort (Oberrieden), Rating-Link Tenant-Code"],
+      "TOAST_review_received": ["Customer-Name (per Tenant Demo), Review-Tags (Tenant-Demo-Tags)"]
+    },
+    "invariant_across_tenants": [
+      "ALLE phase-timings zehntelsekunden-genau (22 monitor + 2 phone + 5 loom + 1 toast)",
+      "ALLE animation-curves (slide-in 0.5s ease-out, slide-out 0.2s cut, iris 1.2s circleopen)",
+      "Phone-Bezel-Dimensionen (330x440 @ x=380,y=30, corner=30px)",
+      "Loom positions (small bottom-left @ 8,718 d110 | big top-left @ 8,138 d195 | full center @ 360,90 d720)",
+      "Mouse-Layer JSON (Dörfler universal)",
+      "Audio (Founder voice, 176.90s)",
+      "UI-Struktur (Form fields, Dropdown options, Button labels, Verlauf labels — alles identisch weil Code-shared)"
+    ]
+  },
+  "pipeline_implications": [
+    "1. Recording: Playwright-Skript MUSS Events bei den Spec-Zeiten feuern. Aktuell record_take4.mjs hat manuelle Wait-Times → muss durch SCHEDULE-DRIVEN Approach ersetzt werden (wait-until-master-t statt wait-relative).",
+    "2. Phone-PiP rendering: muss als SEPARATE LAYER über Leitsystem-Recording gemischt werden, NICHT in das Recording eingebaut. Animations-Schedule pro Phone (slide-in @ T_in, slide-out @ T_out).",
+    "3. Loom rendering: existiert bereits in apply_loom_take4_grow.mjs. Verifizieren ob Iris bei 97.5s startet (nicht 96.9s wie aktuell).",
+    "4. Audio is locked 176.90s — INVARIANT, kein Re-Render nötig.",
+    "5. Mouse-Layer universell, kein Re-Render pro Tenant.",
+    "6. Toast-Notification: muss als SEPARATE LAYER mit slide-in animation. Vorher nicht eingebaut → neue Component nötig.",
+    "7. compose_take4_v3 mit fixen SCHEDULE_DUR-Slots ist FALSCH — muss durch Phase-Schedule-driven Retiming ersetzt werden, das pro Phase die Recording-Slice auf die Spec-Master-Time zieht.",
+    "8. Total duration MUSS 176.90s sein (nicht 177.10s). Audio + tpad-Logic entsprechend anpassen.",
+    "9. QG-Skript: validiert für jeden key_transition timestamp: ist die NEW master video bei master_s == spec_master_s ± 0.1s im richtigen visuellen State?"
+  ]
+}

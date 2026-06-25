@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "weinberger-ag",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-02T07:39:09.556Z",
+  "leit_start_in_take2_complete": 33.65,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        43.23,
+        55.33
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        55.38,
+        55.48
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        55.43,
+        56.76
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        56.76,
+        59.78
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        59.78,
+        62.98
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        63.68,
+        66
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        66.7,
+        68.53
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        69.23,
+        71.86
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        72.56,
+        110.29
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        110.49,
+        111.35
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        111.65,
+        114.87
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        117.82,
+        125.76
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        125.96,
+        131.63
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        131.63,
+        142.96
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        146.52,
+        157.03
+      ]
+    }
+  ]
+}

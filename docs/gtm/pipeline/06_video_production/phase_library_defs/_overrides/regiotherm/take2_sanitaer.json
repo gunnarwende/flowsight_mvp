@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "regiotherm",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-19T10:22:21.202Z",
+  "leit_start_in_take2_complete": 33.99,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        43.49,
+        55.6
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        55.65,
+        55.75
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        55.7,
+        57.04
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        57.04,
+        60.04
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        60.04,
+        63.21
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        63.91,
+        66.24
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        66.94,
+        68.78
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        69.48,
+        72.1
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        72.8,
+        110.54
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        110.74,
+        111.6
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        111.92,
+        115.13
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        117.82,
+        125.75
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        125.95,
+        131.69
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        131.69,
+        142.97
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        146.51,
+        157.03
+      ]
+    }
+  ]
+}

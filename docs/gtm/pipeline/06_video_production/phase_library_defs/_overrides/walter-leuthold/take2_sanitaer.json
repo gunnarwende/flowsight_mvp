@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "walter-leuthold",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-09T14:32:56.608Z",
+  "leit_start_in_take2_complete": 34.03,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        47.09,
+        59.19
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        59.24,
+        59.34
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        59.29,
+        60.66
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        60.66,
+        63.67
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        63.67,
+        66.88
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        67.58,
+        69.92
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        70.62,
+        72.45
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        73.15,
+        75.79
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        76.49,
+        114.23
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        114.43,
+        115.31
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        115.62,
+        118.83
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        124.29,
+        132.23
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        132.43,
+        138.12
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        138.12,
+        149.42
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        152.97,
+        163.48
+      ]
+    }
+  ]
+}

@@ -1,0 +1,286 @@
+{
+  "_meta": {
+    "version": "v3.0",
+    "approach": "Event-Anchored Per-Tenant Recording + Schablone-Aligned Retime",
+    "schablone": "docs/gtm/pipeline/06_video_production/_locked/schablonen/take4_schablone.mp4",
+    "schablone_duration_s": 177.10,
+    "schablone_resolution": "1440x900",
+    "ground_truth_source": "docs/gtm/pipeline/06_video_production/timelines/t4_phases_diagnosis.md (Founder-confirmed master-times)",
+    "_old_source_REJECTED": "phase_library_defs/take4_sanitaer.json had source-recording-times (0-105.5s), NOT target-master-times (0-177.1s)",
+    "created": "2026-05-29"
+  },
+
+  "phases": [
+    {
+      "n": 1,
+      "id": "dashboard_intro",
+      "master_start": 0.0,
+      "master_end": 4.9,
+      "duration": 4.9,
+      "expected_event_end": "dashboard_dwell_end",
+      "audio_cue": "Zum Schluss möchte ich",
+      "ui_state": "dashboard_with_caselist_kpi_greeting"
+    },
+    {
+      "n": 2,
+      "id": "dashboard_kpi_overview",
+      "master_start": 4.9,
+      "master_end": 9.6,
+      "duration": 4.7,
+      "expected_event_end": "dashboard_dwell_end",
+      "audio_cue": "der für Ihren Alltag",
+      "ui_state": "dashboard_kpi_focus"
+    },
+    {
+      "n": 3,
+      "id": "dashboard_to_case",
+      "master_start": 9.6,
+      "master_end": 12.5,
+      "duration": 2.9,
+      "expected_event_end": "case_initial_neu_visible",
+      "audio_cue": "in den eben erstellten",
+      "ui_state": "transition_click_into_case"
+    },
+    {
+      "n": 4,
+      "id": "case_initial_neu",
+      "master_start": 12.5,
+      "master_end": 14.0,
+      "duration": 1.5,
+      "expected_event_end": "bearbeiten_click",
+      "audio_cue": "setzen",
+      "ui_state": "case_detail_status_neu"
+    },
+    {
+      "n": 5,
+      "id": "case_status_dropdown",
+      "master_start": 14.0,
+      "master_end": 15.7,
+      "duration": 1.7,
+      "expected_event_end": "status_inarbeit_set",
+      "audio_cue": "ihn auf in Arbeit",
+      "ui_state": "status_dropdown_open"
+    },
+    {
+      "n": 6,
+      "id": "case_status_inarbeit",
+      "master_start": 15.7,
+      "master_end": 17.2,
+      "duration": 1.5,
+      "expected_event_end": "termin_picker_open",
+      "audio_cue": "und",
+      "ui_state": "status_inarbeit_visible"
+    },
+    {
+      "n": 7,
+      "id": "case_termin_picker",
+      "master_start": 17.2,
+      "master_end": 19.2,
+      "duration": 2.0,
+      "expected_event_end": "uebernehmen_click",
+      "audio_cue": "terminieren den Einsatz",
+      "ui_state": "termin_picker_open_with_calendar"
+    },
+    {
+      "n": 8,
+      "id": "case_termin_set",
+      "master_start": 19.2,
+      "master_end": 23.0,
+      "duration": 3.8,
+      "expected_event_end": "termin_versenden_btn_visible",
+      "audio_cue": "Dadurch wird der Kunde",
+      "ui_state": "termin_set_send_button_visible"
+    },
+    {
+      "n": 9,
+      "id": "case_inarbeit_view",
+      "master_start": 23.0,
+      "master_end": 28.7,
+      "duration": 5.7,
+      "expected_event_end": "inarbeit_view_visible",
+      "audio_cue": "Stunden vorher automatisch erinnert",
+      "ui_state": "termin_versendet_view"
+    },
+    {
+      "n": 10,
+      "id": "phone_reminder_pip",
+      "master_start": 28.7,
+      "master_end": 33.5,
+      "duration": 4.8,
+      "expected_event_end": "phone_reminder_done",
+      "audio_cue": "Risiko dass ein Termin",
+      "ui_state": "phone_pip_with_reminder_sms"
+    },
+    {
+      "n": 11,
+      "id": "case_inarbeit_view_post",
+      "master_start": 33.5,
+      "master_end": 39.0,
+      "duration": 5.5,
+      "expected_event_end": "erledigt_hover_about_to_open",
+      "audio_cue": "Wenn der Auftrag sauber",
+      "ui_state": "case_inarbeit_dwell"
+    },
+    {
+      "n": 12,
+      "id": "case_status_erledigt_hover",
+      "master_start": 39.0,
+      "master_end": 43.0,
+      "duration": 4.0,
+      "expected_event_end": "status_erledigt_set",
+      "audio_cue": "Status hier auf erledigt",
+      "ui_state": "status_dropdown_hover_erledigt"
+    },
+    {
+      "n": 13,
+      "id": "case_status_erledigt",
+      "master_start": 43.0,
+      "master_end": 44.8,
+      "duration": 1.8,
+      "expected_event_end": "save_click",
+      "audio_cue": "kurz gespeichert",
+      "ui_state": "status_erledigt_save"
+    },
+    {
+      "n": 14,
+      "id": "case_bewertung_pre",
+      "master_start": 44.8,
+      "master_end": 49.8,
+      "duration": 5.0,
+      "expected_event_end": "bewertung_button_visible",
+      "audio_cue": "Und genau hier kann",
+      "ui_state": "bewertung_button_dwell"
+    },
+    {
+      "n": 15,
+      "id": "case_bewertung_pending",
+      "master_start": 49.8,
+      "master_end": 52.3,
+      "duration": 2.5,
+      "expected_event_end": "bewertung_click",
+      "audio_cue": "angestoßen werden Der entscheidende",
+      "ui_state": "bewertung_click_transition"
+    },
+    {
+      "n": 16,
+      "id": "case_bewertung_button",
+      "master_start": 52.3,
+      "master_end": 67.0,
+      "duration": 14.7,
+      "expected_event_end": "phone_review_about_to_appear",
+      "audio_cue": "Sie fragen nicht jeden",
+      "ui_state": "bewertung_gesendet_dwell"
+    },
+    {
+      "n": 17,
+      "id": "phone_sms_appears",
+      "master_start": 67.0,
+      "master_end": 70.5,
+      "duration": 3.5,
+      "expected_event_end": "phone_sms_thread_visible",
+      "audio_cue": "Und der Kunde bekommt",
+      "ui_state": "phone_pip_slide_in"
+    },
+    {
+      "n": 18,
+      "id": "phone_sms_thread",
+      "master_start": 70.5,
+      "master_end": 75.5,
+      "duration": 5.0,
+      "expected_event_end": "phone_rating_page_open",
+      "audio_cue": "direkt aufs Handy Und",
+      "ui_state": "phone_sms_thread_visible"
+    },
+    {
+      "n": 19,
+      "id": "phone_rating_intro",
+      "master_start": 75.5,
+      "master_end": 79.0,
+      "duration": 3.5,
+      "expected_event_end": "phone_stars_selected",
+      "audio_cue": "sondern ruhig und verständlich",
+      "ui_state": "phone_rating_5stars_empty"
+    },
+    {
+      "n": 20,
+      "id": "phone_rating_stars",
+      "master_start": 79.0,
+      "master_end": 82.0,
+      "duration": 3.0,
+      "expected_event_end": "phone_submit_click",
+      "audio_cue": "Ohne unnötige Reibung und",
+      "ui_state": "phone_rating_stars_filled_keywords"
+    },
+    {
+      "n": 21,
+      "id": "phone_rating_submit",
+      "master_start": 82.0,
+      "master_end": 85.0,
+      "duration": 3.0,
+      "expected_event_end": "phone_dismissed",
+      "audio_cue": "in einem Moment in",
+      "ui_state": "phone_thanks_screen"
+    },
+    {
+      "n": 22,
+      "id": "case_review_done",
+      "master_start": 85.0,
+      "master_end": 89.5,
+      "duration": 4.5,
+      "expected_event_end": "dashboard_return",
+      "audio_cue": "Und wenn einmal etwas",
+      "ui_state": "case_verlauf_bewertet"
+    },
+    {
+      "n": 23,
+      "id": "dashboard_final",
+      "master_start": 89.5,
+      "master_end": 177.1,
+      "duration": 87.6,
+      "expected_event_end": "recording_end",
+      "audio_cue": "Feedback nicht direkt auf + 3s Outro-Stille",
+      "ui_state": "dashboard_final_freeze",
+      "_note": "Long freeze-extend phase. Recording may only have a few seconds; tpad clones last frame."
+    }
+  ],
+
+  "verify_strategy": {
+    "anchors_per_phase": 2,
+    "anchor_start_offset": 0.1,
+    "anchor_end_offset": -0.1,
+    "ssim_threshold_strict": 0.95,
+    "ssim_threshold_relaxed": 0.85,
+    "ignore_regions": [
+      {
+        "_note": "Case-list data area (rows differ per tenant) — IGNORE in SSIM",
+        "x": 168, "y": 240, "w": 1255, "h": 645,
+        "active_in_phases": ["dashboard_intro", "dashboard_kpi_overview", "dashboard_final"]
+      },
+      {
+        "_note": "KONTAKT panel (Gunnar Wende → tenant-specific) — IGNORE",
+        "x": 870, "y": 340, "w": 495, "h": 145,
+        "active_in_phases": ["case_initial_neu", "case_status_dropdown", "case_status_inarbeit", "case_termin_picker", "case_termin_set", "case_inarbeit_view", "case_inarbeit_view_post", "case_status_erledigt_hover", "case_status_erledigt", "case_bewertung_pre", "case_bewertung_pending", "case_bewertung_button", "case_review_done"]
+      },
+      {
+        "_note": "Greeting text (contains tenant short-name) — IGNORE",
+        "x": 178, "y": 46, "w": 420, "h": 44,
+        "active_in_phases": ["dashboard_intro", "dashboard_kpi_overview", "dashboard_final"]
+      },
+      {
+        "_note": "Case-Pill prefix (DA/LN/SH/WS-0050) — IGNORE",
+        "x": 1314, "y": 38, "w": 112, "h": 42,
+        "active_in_phases": ["case_initial_neu", "case_status_dropdown", "case_status_inarbeit", "case_termin_picker", "case_termin_set", "case_inarbeit_view", "case_inarbeit_view_post", "case_status_erledigt_hover", "case_status_erledigt", "case_bewertung_pre", "case_bewertung_pending", "case_bewertung_button", "case_review_done"]
+      },
+      {
+        "_note": "Sidebar logo (DA / LN / etc.) — IGNORE",
+        "x": 6, "y": 12, "w": 156, "h": 64,
+        "active_in_phases": ["__ALL_UI_PHASES__"]
+      },
+      {
+        "_note": "Phone screen content (case-data, tenant-name) — IGNORE during phone-phases",
+        "x": 780, "y": 30, "w": 320, "h": 850,
+        "active_in_phases": ["phone_reminder_pip", "phone_sms_appears", "phone_sms_thread", "phone_rating_intro", "phone_rating_stars", "phone_rating_submit"]
+      }
+    ]
+  }
+}

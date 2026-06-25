@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "leins-ag",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-11T07:18:30.048Z",
+  "leit_start_in_take2_complete": 34.11,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        45.54,
+        57.65
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        57.7,
+        57.8
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        57.75,
+        59.1
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        59.1,
+        62.12
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        62.12,
+        65.36
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        66.06,
+        68.37
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        69.07,
+        70.9
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        71.6,
+        74.23
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        74.93,
+        112.67
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        112.87,
+        113.77
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        114.09,
+        117.34
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        121.34,
+        129.3
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        129.5,
+        135.23
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        135.23,
+        146.56
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        150.09,
+        160.6
+      ]
+    }
+  ]
+}

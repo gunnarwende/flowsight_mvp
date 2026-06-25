@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "wattinger-schwendener",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-19T09:59:14.449Z",
+  "leit_start_in_take2_complete": 33.83,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        43.58,
+        55.69
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        55.74,
+        55.84
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        55.79,
+        57.12
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        57.12,
+        60.13
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        60.13,
+        63.33
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        64.03,
+        66.35
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        67.05,
+        68.88
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        69.58,
+        72.21
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        72.91,
+        110.64
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        110.84,
+        111.69
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        111.99,
+        115.22
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        118.19,
+        126.13
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        126.33,
+        132.02
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        132.02,
+        143.32
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        146.86,
+        157.38
+      ]
+    }
+  ]
+}

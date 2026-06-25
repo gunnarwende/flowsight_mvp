@@ -1,0 +1,255 @@
+{
+  "slug": "doerfler-ag",
+  "recorder": "take4_event_logged_v2_offsets",
+  "generated_at": "2026-05-31T18:39:46.643Z",
+  "part_webm_offsets": {
+    "1": 8.415999999999999,
+    "3": 0.193,
+    "4": 1.423,
+    "5": 0.125,
+    "6": 0,
+    "7": 4.680000000000001
+  },
+  "events": [
+    {
+      "part": 1,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 1,
+      "name": "recording_start",
+      "recording_t": 0.001
+    },
+    {
+      "part": 1,
+      "name": "dashboard_visible",
+      "recording_t": 8.716
+    },
+    {
+      "part": 1,
+      "name": "case_click",
+      "recording_t": 18.025
+    },
+    {
+      "part": 1,
+      "name": "case_initial_neu_visible",
+      "recording_t": 20.509
+    },
+    {
+      "part": 1,
+      "name": "bearbeiten_click",
+      "recording_t": 21.97
+    },
+    {
+      "part": 1,
+      "name": "status_dropdown_open",
+      "recording_t": 22.076
+    },
+    {
+      "part": 1,
+      "name": "status_inarbeit_set",
+      "recording_t": 25.407
+    },
+    {
+      "part": 1,
+      "name": "termin_picker_open",
+      "recording_t": 27.612
+    },
+    {
+      "part": 1,
+      "name": "termin_slots_set",
+      "recording_t": 30.577
+    },
+    {
+      "part": 1,
+      "name": "uebernehmen_click",
+      "recording_t": 32.426
+    },
+    {
+      "part": 1,
+      "name": "termin_versenden_btn_visible",
+      "recording_t": 32.94
+    },
+    {
+      "part": 1,
+      "name": "termin_versenden_click",
+      "recording_t": 32.979
+    },
+    {
+      "part": 1,
+      "name": "inarbeit_view_visible",
+      "recording_t": 40.543
+    },
+    {
+      "part": 2,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 2,
+      "name": "cut_start",
+      "recording_t": 0
+    },
+    {
+      "part": 2,
+      "name": "cut_end",
+      "recording_t": 1.437
+    },
+    {
+      "part": 3,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 3,
+      "name": "phone_day1_start",
+      "recording_t": 0
+    },
+    {
+      "part": 3,
+      "name": "phone_homescreen_visible",
+      "recording_t": 0.493
+    },
+    {
+      "part": 3,
+      "name": "sms_notif_visible",
+      "recording_t": 2.702
+    },
+    {
+      "part": 3,
+      "name": "sms_thread_opened",
+      "recording_t": 3.519
+    },
+    {
+      "part": 3,
+      "name": "phone_day1_end",
+      "recording_t": 6.733
+    },
+    {
+      "part": 4,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 4,
+      "name": "recording_start",
+      "recording_t": 0
+    },
+    {
+      "part": 4,
+      "name": "inarbeit_view_post_visible",
+      "recording_t": 1.723
+    },
+    {
+      "part": 4,
+      "name": "bearbeiten2_click",
+      "recording_t": 6.302
+    },
+    {
+      "part": 4,
+      "name": "status_dropdown2_open",
+      "recording_t": 7.306
+    },
+    {
+      "part": 4,
+      "name": "status_erledigt_set",
+      "recording_t": 9.738
+    },
+    {
+      "part": 4,
+      "name": "erledigt_speichern_click",
+      "recording_t": 10.171
+    },
+    {
+      "part": 4,
+      "name": "bewertung_pre_visible",
+      "recording_t": 12.222
+    },
+    {
+      "part": 4,
+      "name": "bewertung_anfragen_click",
+      "recording_t": 14.752
+    },
+    {
+      "part": 4,
+      "name": "akt2_end",
+      "recording_t": 29.493
+    },
+    {
+      "part": 5,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 5,
+      "name": "phone_day2_start",
+      "recording_t": 0
+    },
+    {
+      "part": 5,
+      "name": "phone_sms_thread_visible",
+      "recording_t": 0.425
+    },
+    {
+      "part": 5,
+      "name": "phone_day2_end",
+      "recording_t": 5.428
+    },
+    {
+      "part": 6,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 6,
+      "name": "review_start",
+      "recording_t": 0
+    },
+    {
+      "part": 6,
+      "name": "rating_intro_visible",
+      "recording_t": 2.552
+    },
+    {
+      "part": 6,
+      "name": "rating_stars_clicked",
+      "recording_t": 3.448
+    },
+    {
+      "part": 6,
+      "name": "rating_submit_click",
+      "recording_t": 9.341
+    },
+    {
+      "part": 6,
+      "name": "review_done_visible",
+      "recording_t": 13.046
+    },
+    {
+      "part": 7,
+      "name": "part_start",
+      "recording_t": 0
+    },
+    {
+      "part": 7,
+      "name": "closing_start",
+      "recording_t": 0
+    },
+    {
+      "part": 7,
+      "name": "case_review_done_visible",
+      "recording_t": 4.98
+    },
+    {
+      "part": 7,
+      "name": "dashboard_final_visible",
+      "recording_t": 9.951
+    },
+    {
+      "part": 7,
+      "name": "closing_end",
+      "recording_t": 16.96
+    }
+  ]
+}

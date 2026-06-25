@@ -1,0 +1,148 @@
+{
+  "take": 4,
+  "industry": "sanitaer",
+  "version": 1,
+  "description": "Auto-Cal v2 KEY_EVENTS-Spec für Take 4 (30.05.2026). Closes the architectural gap: T4 phase_library ranges came from a specific Apr 30 recording — every new recording had natural timing variance → drift accumulates. Calibration anchors identify visual scene-cuts at each phase boundary, allowing per-tenant tenant_t↔master_t mapping.",
+  "video": {
+    "expected_resolution": [1440, 900],
+    "fps": 30
+  },
+  "anchors": [
+    {
+      "id": "case_detail_opens",
+      "master_t": 12.5,
+      "scan": [10, 17],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Click 'Leck DA-0050' → Case-Detail view opens (dashboard→case-detail scene cut)"
+    },
+    {
+      "id": "status_dropdown_opens",
+      "master_t": 14.0,
+      "scan": [12.5, 16.5],
+      "detect": { "type": "scene_cut", "min_score": 0.02 },
+      "critical": true,
+      "_phase_hint": "Click Status field → dropdown menu opens (NEU/Geplant/In Arbeit/Warten/Erledigt visible)"
+    },
+    {
+      "id": "status_set_inarbeit",
+      "master_t": 15.7,
+      "scan": [14, 18],
+      "detect": { "type": "scene_cut", "min_score": 0.02 },
+      "critical": true,
+      "_phase_hint": "Click 'In Arbeit' → dropdown closes, status changes to In Arbeit"
+    },
+    {
+      "id": "termin_picker_opens",
+      "master_t": 17.2,
+      "scan": [15.5, 19.5],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Click TERMIN field → calendar + time-slot picker opens"
+    },
+    {
+      "id": "termin_set",
+      "master_t": 19.2,
+      "scan": [17.5, 22],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "_phase_hint": "Slots selected + Übernehmen click → picker closes, Termin field shows date+time"
+    },
+    {
+      "id": "termin_versenden_btn",
+      "master_t": 23.0,
+      "scan": [20, 26],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Termin saved → 'Termin versenden' button appears (case_inarbeit_view start)"
+    },
+    {
+      "id": "phone_reminder_appears",
+      "master_t": 28.7,
+      "scan": [25, 31],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Phone PiP slides in from right with reminder SMS"
+    },
+    {
+      "id": "phone_reminder_done",
+      "master_t": 33.5,
+      "scan": [31, 36],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Phone PiP slides out → back to case-detail view"
+    },
+    {
+      "id": "second_dropdown_opens",
+      "master_t": 39.0,
+      "scan": [36, 41],
+      "detect": { "type": "scene_cut", "min_score": 0.02 },
+      "_phase_hint": "Second status dropdown opens (Erledigt hover)"
+    },
+    {
+      "id": "status_set_erledigt",
+      "master_t": 43.0,
+      "scan": [40, 46],
+      "detect": { "type": "scene_cut", "min_score": 0.02 },
+      "critical": true,
+      "_phase_hint": "Click 'Erledigt' → status changes, Speichern visible"
+    },
+    {
+      "id": "bewertung_button_appears",
+      "master_t": 49.8,
+      "scan": [45, 52],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "_phase_hint": "Save complete → 'Bewertung anfragen' button visible"
+    },
+    {
+      "id": "bewertung_sent",
+      "master_t": 52.3,
+      "scan": [50, 55],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Click Bewertung anfragen → 'Bewertungsanfrage gesendet' state + 5 stars"
+    },
+    {
+      "id": "phone_sms_slides_in",
+      "master_t": 67.0,
+      "scan": [63, 70],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Phone PiP slides in from right with SMS thread"
+    },
+    {
+      "id": "rating_page_opens",
+      "master_t": 75.5,
+      "scan": [73, 78],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Rating page opens on phone (5 empty stars)"
+    },
+    {
+      "id": "stars_filled",
+      "master_t": 79.0,
+      "scan": [77, 82],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "_phase_hint": "All 5 stars selected → 'Vielen Dank' message + chips appear"
+    },
+    {
+      "id": "rating_submitted",
+      "master_t": 82.0,
+      "scan": [80, 85],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Submit clicked → 'Vielen Dank für Ihre Bewertung' confirmation"
+    },
+    {
+      "id": "dashboard_final_returns",
+      "master_t": 89.5,
+      "scan": [86, 94],
+      "detect": { "type": "scene_cut", "min_score": 0.025 },
+      "critical": true,
+      "_phase_hint": "Back to dashboard with case marked 'Erledigt' (gold). Phase dashboard_final start."
+    }
+  ],
+  "self_test": {
+    "tolerance_seconds": 0.30,
+    "_note": "Self-test on master recording: each detected anchor must be within ±0.30s of spec'd master_t."
+  }
+}

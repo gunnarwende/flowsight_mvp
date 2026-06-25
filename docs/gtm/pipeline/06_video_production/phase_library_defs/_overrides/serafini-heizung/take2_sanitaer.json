@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "serafini-heizung",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-18T17:31:37.740Z",
+  "leit_start_in_take2_complete": 34.03,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        44.24,
+        56.35
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        56.4,
+        56.5
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        56.45,
+        57.82
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        57.82,
+        60.83
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        60.83,
+        64.04
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        64.74,
+        67.07
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        67.77,
+        69.6
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        70.3,
+        72.93
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        73.63,
+        111.37
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        111.57,
+        112.47
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        112.77,
+        115.94
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        121.72,
+        129.69
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        129.89,
+        135.57
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        135.57,
+        146.9
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        150.45,
+        160.98
+      ]
+    }
+  ]
+}

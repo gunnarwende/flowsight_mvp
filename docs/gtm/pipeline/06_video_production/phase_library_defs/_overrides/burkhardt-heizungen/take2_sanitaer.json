@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "burkhardt-heizungen",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-18T15:58:57.150Z",
+  "leit_start_in_take2_complete": 33.79,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        44.53,
+        56.64
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        56.69,
+        56.79
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        56.74,
+        58.09
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        58.09,
+        61.1
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        61.1,
+        64.29
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        64.99,
+        67.31
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        68.01,
+        69.85
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        70.55,
+        73.18
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        73.88,
+        111.61
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        111.81,
+        112.66
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        112.98,
+        116.23
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        119.28,
+        127.23
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        127.43,
+        133.12
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        133.12,
+        144.41
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        147.96,
+        158.47
+      ]
+    }
+  ]
+}
