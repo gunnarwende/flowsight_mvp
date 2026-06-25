@@ -18,6 +18,7 @@ import { chromium } from "playwright";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { anredeName } from "./_anrede.mjs";
 
 // ── CLI args ─────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -49,7 +50,8 @@ const domain = new URL(baseUrl).hostname;
 // For each logical page, try multiple URL patterns
 const PAGE_PATTERNS = {
   home: ["/"],
-  team: ["/team", "/ueber-uns", "/about", "/about-us", "/uber-uns", "/unser-team", "/firma", "/portrait", "/unternehmen"],
+  team: ["/team", "/ueber-uns", "/about", "/about-us", "/uber-uns", "/unser-team", "/firma", "/portrait", "/unternehmen",
+    "/mitarbeiter", "/mitarbeitende", "/das-team", "/ihr-team", "/personen", "/belegschaft", "/ueber", "/wir-ueber-uns", "/team-1"],
   services: ["/dienstleistungen", "/services", "/leistungen", "/dienstleistungen-service", "/angebot", "/leistung", "/kompetenzen", "/sortiment"],
   kontakt: ["/kontakt", "/contact", "/kontakt-1", "/kontakt-2"],
   karriere: ["/karriere", "/jobs", "/stellen", "/offene-stellen", "/lehrstellen", "/career"],
@@ -71,6 +73,7 @@ const pageTexts = {};      // pageKey → text
 const pageMeta = {};       // pageKey → { title, ogSiteName, ogTitle }
 const pageSources = {};    // pageKey → url that worked
 const allTexts = [];       // all text concatenated
+let teamSignals = { photoCount: 0, expanded: false };  // gefüllt von analyzeTeam()
 
 // ── Result template ──────────────────────────────────────────────────────
 const result = {
@@ -87,7 +90,7 @@ const result = {
   email: { value: "", source: "", verified: false },
   oeffnungszeiten: { value: null, source: "not_found", verified: false, action: "founder_confirm" },
   notdienst: { value: null, source: "not_found", verified: false, action: "skip" },
-  google: { rating: null, review_count: null, source: "google_api", verified: false },
+  google: { place_id: null, rating: null, review_count: null, source: "google_api", verified: false },
   gruendung: { value: null, source: "not_found", verified: false },
   team_groesse: { value: null, source: "not_found", verified: false, note: "NIEMALS aus Fotos herleiten" },
   leistungen: { value: {}, source: "", verified: false },
@@ -124,11 +127,11 @@ function cleanText(text) {
 }
 
 // ── Page crawling ────────────────────────────────────────────────────────
-async function crawlPage(page, url, pageKey) {
+async function crawlPage(page, url, pageKey, timeoutMs = 8000) {
   try {
     const response = await page.goto(url, {
       waitUntil: "domcontentloaded",
-      timeout: 15000,
+      timeout: timeoutMs,
     });
 
     // Check if the page actually loaded (not 404/5xx)
@@ -136,22 +139,22 @@ async function crawlPage(page, url, pageKey) {
       return null;
     }
 
-    // Wait for JS rendering (Wix, React, etc.)
-    await page.waitForTimeout(3000);
+    // Wait for JS rendering (Wix, React, etc.) — knapp gehalten (Speed: läuft ×40+ pro Betrieb)
+    await page.waitForTimeout(1800);
 
     // Scroll to trigger lazy-loaded content
     await page.evaluate(async () => {
-      const distance = 400;
+      const distance = 600;
       let total = 0;
       while (total < document.body.scrollHeight) {
         window.scrollBy(0, distance);
         total += distance;
-        await new Promise((r) => setTimeout(r, 150));
+        await new Promise((r) => setTimeout(r, 90));
       }
       window.scrollTo(0, 0);
     });
 
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const data = await page.evaluate(() => ({
       text: document.body.innerText || "",
@@ -358,38 +361,68 @@ function extractFirma() {
 }
 
 function extractInhaber() {
-  for (const key of ["team", "impressum", "home"]) {
+  // Rollen breit (Inhaber/GF/Geschäftsleitung/Gründer/Mitinhaber/Patron …).
+  const ROLE = "(?:Inhaber(?:in)?|Mitinhaber(?:in)?|Firmeninhaber(?:in)?|Gesch[aä]ftsf[uü]hr(?:er|erin|ung)|"
+    + "Gesch[aä]ftsleitung|Gesch[aä]ftsleiter(?:in)?|Eigent[uü]mer(?:in)?|Gr[uü]nder(?:in)?|"
+    + "Mitgr[uü]nder(?:in)?|CEO|Patron|Betriebsleiter(?:in)?|Managing\\s+Director)";
+  const NAME = "[A-ZÄÖÜ][a-zäöüéèêàçï]+(?:[ -][A-ZÄÖÜ][a-zäöüéèêàçï]+){1,2}";
+  // Wörter, die KEIN Personenname sind (Rechtsform/Gewerk/Navigation).
+  const BLOCK = /\b(AG|GmbH|Sàrl|SA|KlG|Haustechnik|Geb[aä]udetechnik|Sanit[aä]r|Heizung|Spenglerei|Spengler|Service|Sohn|S[oö]hne|Team|Kontakt|Impressum|Startseite|Willkommen|Dienstleistungen|Leistungen|Notdienst|Kundendienst|Unternehmen|Ueber|Über)\b/i;
+
+  const clean = (raw) => {
+    const out = [];
+    for (const w of raw.trim().split(/\s+/)) {
+      if (BLOCK.test(w) || !/^[A-ZÄÖÜ][a-zäöüéèêàçï'’-]+$/.test(w)) break;
+      out.push(w);
+    }
+    return out.slice(0, 3).join(" ");
+  };
+  const valid = (n) => n && n.split(" ").length >= 2 && !BLOCK.test(n);
+
+  const owners = [];
+  const seen = new Set();
+  let src = null;
+  const add = (n, key) => { const k = n.toLowerCase(); if (n && !seen.has(k)) { seen.add(k); owners.push(n); if (!src) src = sourceTag(key); } };
+  // Seiten-Text für die explizite „Herr/Frau Nachname"-Erkennung in anredeName().
+  const blob = ["team", "impressum", "home", "kontakt"].map((k) => pageTexts[k] || "").join("  ");
+
+  // Team UND Impressum IMMER beide lesen — die Geschäftsleitung steht oft nur im
+  // Impressum, auch wenn die Team-Seite schon einen Namen nennt (sonst fehlt der
+  // zweite gleichwertige Geschäftsführer). home/kontakt nur als Notnagel, wenn beide leer.
+  const scanPage = (key) => {
+    const text = pageTexts[key];
+    if (!text) return;
+    // „Rolle: Vorname Nachname [und/&/, Vorname Nachname]" — fängt 2–3 Geschäftspartner.
+    const reA = new RegExp(`${ROLE}[\\s:.,–-]+(${NAME}(?:\\s*(?:und|&|,|sowie|/)\\s*${NAME}){0,2})`, "g");
+    for (const m of text.matchAll(reA)) {
+      for (const part of m[1].split(/\s*(?:und|&|,|sowie|\/)\s*/)) { const n = clean(part); if (valid(n)) add(n, key); }
+    }
+    // „Vorname Nachname, Rolle" oder „Vorname Nachname (Inhaber)".
+    const reB = new RegExp(`(${NAME})\\s*[,–-]?\\s*[(]?\\s*(?:${ROLE})`, "g");
+    for (const m of text.matchAll(reB)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
+    // „Vorname Nachname ALS/IST Rolle" — Fließtext-Stellung (z.B. „… übernimmt Roger
+    // Burkhardt als Eigentümer und Geschäftsführer das Unternehmen"). reB fängt das
+    // nicht, weil zwischen Name und Rolle ein Verbindungswort („als") steht.
+    const reC = new RegExp(`(${NAME})\\s+(?:als|ist|fungiert\\s+als|amtet\\s+als|wirkt\\s+als)\\s+(?:(?:der|die|unser|unsere)\\s+)?(?:${ROLE})`, "g");
+    for (const m of text.matchAll(reC)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
+  };
+  scanPage("team");
+  scanPage("impressum");
+  if (!owners.length) { scanPage("home"); scanPage("kontakt"); }
+
+  if (owners.length) {
+    return { value: owners.slice(0, 3).map((o) => anredeName(o, blob)).join(", "), source: src || "website_team", verified: true };
+  }
+
+  // Sekundär (Impressum): „vertreten durch / verantwortlich" — oft der Inhaber, aber
+  // weniger sicher → mit „?" markieren, damit der Founder kurz gegenprüft.
+  for (const key of ["impressum", "kontakt"]) {
     const text = pageTexts[key];
     if (!text) continue;
-
-    // Look for explicit owner/manager patterns
-    // Pattern: "Title: Firstname Lastname" — name is 2-4 words starting with uppercase
-    const patterns = [
-      /(?:Gesch[aä]ftsf[uü]hr(?:er|ung)|Inhaber(?:in)?|CEO|Direktor(?:in)?|Geschäftsleitung|Managing\s+Director|Eigent[uü]mer)[\s:.,–-]+([A-ZÄÖÜ][a-zäöüéèê]+\s+[A-ZÄÖÜ][a-zäöüéèê]+(?:\s+[A-ZÄÖÜ][a-zäöüéèê]+)?)/g,
-      /([A-ZÄÖÜ][a-zäöüéèê]+\s+[A-ZÄÖÜ][a-zäöüéèê]+(?:\s+[A-ZÄÖÜ][a-zäöüéèê]+)?)[\s,–-]+(?:Gesch[aä]ftsf[uü]hr(?:er|ung)|Inhaber(?:in)?|CEO|Geschäftsleitung)/g,
-    ];
-
-    for (const re of patterns) {
-      const matches = [...text.matchAll(re)];
-      if (matches.length > 0) {
-        const names = matches.map((m) => {
-          // Clean: take only first 2-3 capitalized words (firstname + lastname)
-          const raw = m[1].trim();
-          const words = raw.split(/\s+/).filter((w) => /^[A-ZÄÖÜ]/.test(w));
-          // Stop at first non-name word (e.g. "Haustechnik", "GmbH")
-          const nameWords = [];
-          for (const w of words) {
-            if (/^(Haustechnik|Sanitär|AG|GmbH|Heizung|Service|und|Sohn|Söhne)$/i.test(w)) break;
-            nameWords.push(w);
-          }
-          return nameWords.slice(0, 3).join(" ");
-        }).filter((n) => n.split(" ").length >= 2); // Must have at least first+last name
-        if (names.length > 0) {
-          return { value: unique(names).join(", "), source: sourceTag(key), verified: true };
-        }
-      }
-    }
+    const m = text.match(new RegExp(`(?:vertreten\\s+durch|verantwortlich(?:\\s+f[uü]r\\s+den\\s+Inhalt)?)[\\s:.,–-]+(${NAME})`, "i"));
+    if (m) { const n = clean(m[1]); if (valid(n)) return { value: anredeName(`${n} ?`, blob), source: sourceTag(key), verified: false }; }
   }
+
   return { value: null, source: "not_found", verified: false };
 }
 
@@ -640,30 +673,166 @@ function extractGruendung() {
   return { value: null, source: "not_found", verified: false };
 }
 
+// ── Team-Seite: „Mehr anzeigen" aufklappen, voll scrollen, dann Personen zählen ──
+// Behebt den Bug „16 Mitarbeiter, aber nur 4 gezählt": viele Team-Seiten laden
+// per Lazy-Load / „weitere anzeigen" / Tabs nach. Erst alles aufklappen → zählen.
+async function analyzeTeam(page, url) {
+  try {
+    const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
+    if (!resp || resp.status() >= 400) return;
+    await page.waitForTimeout(1500);
+
+    const scrollAll = async () => {
+      await page.evaluate(async () => {
+        const step = 700;
+        for (let y = 0; y < document.body.scrollHeight; y += step) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 70));
+        }
+        window.scrollTo(0, 0);
+      });
+    };
+
+    // „Mehr/weitere/alle anzeigen", „Load more", Team-Tabs aufklappen (max. 4 Runden).
+    let expanded = false;
+    for (let round = 0; round < 4; round++) {
+      await scrollAll();
+      const clicked = await page.evaluate(() => {
+        const rx = /(mehr\s*(an)?zeigen|weitere|alle\s+(an)?zeigen|gesamtes\s+team|ganzes\s+team|load\s*more|show\s*more|mehr\s+laden|weitere\s+mitarbeiter)/i;
+        const els = Array.from(document.querySelectorAll("button, a, [role='button'], .more, .load-more, .btn"));
+        let did = false;
+        for (const el of els) {
+          const t = (el.innerText || el.textContent || "").trim();
+          if (t && t.length < 45 && rx.test(t)) { try { el.click(); did = true; } catch { /* ignore */ } }
+        }
+        return did;
+      });
+      await page.waitForTimeout(700);
+      if (clicked) expanded = true; else break;
+    }
+    await scrollAll();
+    await page.waitForTimeout(300);
+
+    // Portrait-Fotos zählen (gerendert sichtbar, plausibles Seitenverhältnis, kein Logo/Icon).
+    const photoCount = await page.evaluate(() => {
+      let n = 0;
+      for (const img of Array.from(document.querySelectorAll("img"))) {
+        const r = img.getBoundingClientRect();
+        if (r.width < 60 || r.height < 60) continue;
+        const ar = r.width / r.height;
+        if (ar < 0.5 || ar > 1.7) continue;                 // Porträt/quadratisch, keine Banner
+        if (img.closest("header, nav, footer")) continue;   // keine Logos/Marken
+        const src = (img.currentSrc || img.src || "").toLowerCase();
+        if (/logo|icon|sprite|placeholder|favicon|\.svg(\?|$)/.test(src)) continue;
+        n++;
+      }
+      return n;
+    });
+
+    // Voll-gerenderten Team-Text übernehmen (enthält jetzt ALLE Namen, nicht nur die ersten).
+    const text = await page.evaluate(() => document.body.innerText || "");
+    if (text && text.length > (pageTexts.team?.length || 0)) pageTexts.team = text;
+
+    teamSignals = { photoCount, expanded };
+    console.log(`  [team] aufgeklappt=${expanded} · Porträt-Fotos≈${photoCount}`);
+  } catch (err) {
+    console.log(`  [team] Analyse übersprungen: ${err.message}`);
+  }
+}
+
+// Personen-Namen aus dem Team-Text: eigenständige Zeilen „Vorname Nachname" (2–3 Wörter,
+// alle gross beginnend, keine Zahlen/Satzzeichen/Mail). Deutsche Substantiv-Grossschreibung
+// fängt eine Blockliste ab, damit „Unsere Dienstleistungen" o.ä. nicht als Person zählt.
+function teamNamesFromText(text) {
+  if (!text) return [];
+  const BLOCK = new Set([
+    "unser", "unsere", "unseren", "unserem", "das", "die", "der", "den", "dem", "wir", "ihr", "ihre", "sie",
+    "team", "teams", "mitarbeiter", "mitarbeiterin", "mitarbeiterinnen", "mitarbeitende", "mitarbeitenden",
+    "sanitär", "sanitaer", "heizung", "heizungen", "spenglerei", "spengler", "haustechnik", "gebäudetechnik",
+    "gebaeudetechnik", "lüftung", "lueftung", "service", "kundendienst", "notdienst", "kontakt", "impressum",
+    "über", "ueber", "uns", "willkommen", "startseite", "home", "leistungen", "dienstleistungen", "angebot",
+    "geschäftsführer", "geschäftsführung", "geschaeftsfuehrer", "inhaber", "inhaberin", "meister", "lernende",
+    "lernender", "lehrling", "lehrlinge", "jobs", "karriere", "offene", "stellen", "aktuelles", "news",
+    "referenzen", "projekte", "partner", "qualität", "qualitaet", "tradition", "kompetenz", "beratung",
+    "planung", "montage", "reparatur", "wartung", "badezimmer", "badumbau", "umbau", "sanierung", "neubau",
+    "moderne", "modernes", "ihre", "ihren", "herzlich", "willkommen", "telefon", "email", "adresse", "öffnungszeiten",
+    "geberit", "grohe", "viessmann", "vaillant", "hoval", "buderus", "hansgrohe", "duravit", "laufen",
+  ]);
+  const out = new Map();
+  for (let line of text.split("\n")) {
+    line = line.trim();
+    if (line.length < 4 || line.length > 32) continue;
+    if (/[0-9.:;,@/()]/.test(line)) continue;                 // Namen tragen keine Zahlen/Satzzeichen/Mail
+    const words = line.split(/\s+/);
+    if (words.length < 2 || words.length > 3) continue;
+    if (!words.every((w) => /^[A-ZÄÖÜ][a-zäöüéèêàçïA-ZÄÖÜ'’-]{1,19}$/.test(w))) continue;
+    if (words.some((w) => BLOCK.has(w.toLowerCase()))) continue;
+    out.set(line.toLowerCase(), line);
+  }
+  return [...out.values()];
+}
+
+// Team-Grösse: explizite Zahl (höchste Sicherheit) → sonst Personen aus Namen + Fotos.
+// Ziel ist die richtige KLASSE (1–3 / 4–15 / >15), die der Founder anfangs prüft.
 function extractTeamGroesse() {
+  // 1) Explizite Aussage „X Mitarbeiter" — am verlässlichsten.
   for (const key of ["team", "home"]) {
     const text = pageTexts[key];
     if (!text) continue;
-
-    // Look for explicit team size mentions — require number >= 2 (1 person is not a "team size" statement)
     const patterns = [
       /(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Fachleute|Profis|Spezialisten|Mitarbeitende|Teammitglieder)/i,
       /(?:Team|Belegschaft|Mannschaft)\s+(?:von\s+)?(\d{1,3})\b/i,
       /(?:rund|ca\.?|über|mehr\s+als|circa)\s+(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Fachleute)/i,
     ];
-
     for (const re of patterns) {
       const match = text.match(re);
       if (match) {
         const num = parseInt(match[1], 10);
-        // Sanity check: must be 2-500 to be a team size, not a page number or year fragment
         if (num >= 2 && num <= 500) {
-          return { value: num, source: sourceTag(key), verified: true };
+          return { value: num, source: sourceTag(key), verified: true,
+            basis: "text_explicit", evidence: { explicit: num } };
         }
       }
     }
   }
-  return { value: null, source: "not_found", verified: false, note: "NIEMALS aus Fotos herleiten" };
+
+  // 2) Personen zählen: Namen (eigenständige Zeilen) + Porträt-Fotos. Bei beidseitiger
+  //    Bestätigung der HÖHERE Wert (behebt den Lazy-Bug „16 da, nur 4 geladen").
+  const names = teamNamesFromText(pageTexts.team);
+  const nNames = names.length;
+  const nPhotos = teamSignals.photoCount || 0;
+
+  // 3) Personen-Mails als Größen-Hinweis (vorname.nachname@…) — greift, wenn es
+  //    keine Team-Seite/Fotos gibt, die Belegschaft aber im Mail-Verzeichnis steht.
+  const personMails = new Set();
+  const ROLE_LP = /^(info|kontakt|contact|admin|office|mail|service|sekretariat|buchhaltung|verkauf|team|support|hello|empfang|reception|noreply|no-reply|werkstatt|lehrling|job|karriere|presse|marketing|finanzen|disposition|planung|montage|shop)\b/;
+  for (const key of ["team", "kontakt", "impressum", "home"]) {
+    const t = pageTexts[key];
+    if (!t) continue;
+    for (const m of (t.match(EMAIL_RE) || [])) {
+      const lp = m.toLowerCase().split("@")[0];
+      if (lp.includes(".") && lp.length >= 5 && !ROLE_LP.test(lp)) personMails.add(lp); // vorname.nachname
+    }
+  }
+  const nMails = personMails.size;
+
+  let value = null, basis = null;
+  if (nNames >= 2 && nPhotos >= 2) { value = Math.max(nNames, nPhotos); basis = "namen+fotos"; }
+  else if (nNames >= 3) { value = nNames; basis = "namen"; }
+  else if (nPhotos >= 2 && nNames >= 1) { value = Math.max(nPhotos, nNames); basis = "fotos"; }
+  // Fallback: Personen-Mails, wenn Namen/Fotos nichts ergaben (oder als Untergrenze).
+  if (nMails >= 2 && (value == null || nMails > value)) {
+    value = nMails;
+    basis = basis ? `${basis}+mails` : "personen_mails";
+  }
+
+  if (value != null) {
+    const verified = basis === "namen+fotos" || (basis || "").includes("+mails");
+    return { value, source: "website_team", verified,
+      basis, evidence: { namen: nNames, fotos: nPhotos, mails: nMails, beispiele: names.slice(0, 25) },
+      note: verified ? "Personen gezählt (mehrfach bestätigt)" : "Schätzung — bitte prüfen" };
+  }
+  return { value: null, source: "not_found", verified: false, evidence: { namen: nNames, fotos: nPhotos, mails: nMails } };
 }
 
 function extractLeistungen() {
@@ -1017,7 +1186,7 @@ async function fetchGooglePlaces(companyName, address) {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": GOOGLE_API_KEY,
-        "X-Goog-FieldMask": "places.rating,places.userRatingCount,places.displayName",
+        "X-Goog-FieldMask": "places.id,places.rating,places.userRatingCount,places.displayName",
       },
       body: JSON.stringify({
         textQuery: query,
@@ -1036,6 +1205,7 @@ async function fetchGooglePlaces(companyName, address) {
       const place = data.places[0];
       console.log(`  [Google] Found: ${place.displayName?.text} — ${place.rating} (${place.userRatingCount} reviews)`);
       return {
+        place_id: place.id || null,
         rating: place.rating || null,
         review_count: place.userRatingCount || null,
       };
@@ -1070,6 +1240,7 @@ async function main() {
   // ── Discover and crawl pages ──
   let pagesFound = 0;
   let pagesFailed = 0;
+  let earlyBig = false; // Früh-Abbruch: Betrieb klar >15 MA → Tief-Crawl sparen
 
   for (const [pageKey, patterns] of Object.entries(PAGE_PATTERNS)) {
     let found = false;
@@ -1078,16 +1249,19 @@ async function main() {
       const url = baseUrl + path;
       console.log(`  [${pageKey}] Trying: ${url}`);
 
-      const crawlResult = await crawlPage(page, url, pageKey);
+      // Startseite bekommt etwas mehr Zeit (make-or-break); Unterseiten schnell
+      // abklopfen — fehlende Muster dürfen nicht je 15s kosten (×40 = Lauf-Killer).
+      const crawlResult = await crawlPage(page, url, pageKey, pageKey === "home" ? 12000 : 7000);
       if (crawlResult && crawlResult.text.trim().length > 50) {
         if (!best || crawlResult.text.length > best.text.length) best = { ...crawlResult, url };
-        // SPA-Shell-Schutz (11.06.): manche Sites liefern für viele Routen denselben
-        // inhalts-armen Shell (≈ Home-Länge) — z.B. leins.ch /team = 1487-Zeichen-Shell,
-        // der echte Über-uns-Inhalt mit den Entscheider-Mails liegt erst auf /ueber-uns.
-        // Daher NICHT beim ersten Treffer abbrechen, sondern nur, wenn die Seite klar
-        // mehr Inhalt hat als der Shell-Baseline; sonst nächsten Kandidaten probieren.
-        const shellLen = (pageTexts.home && pageTexts.home.length) || 1500;
-        if (crawlResult.text.length > shellLen + 300) break;
+        // Speed: ABBRECHEN, sobald eine ECHTE Seite gefunden ist — sonst werden alle
+        // ~18 URL-Muster je ~4-5s durchprobiert (das frass die ganze Lauf-Zeit).
+        // SPA-Shell-Schutz: eine Seite mit ~Home-Länge ist meist nur der Shell
+        // derselben Route (kein echter Unterinhalt) → überspringen und weiter suchen;
+        // der bisher längste Treffer bleibt als best erhalten.
+        const homeLen = (pageTexts.home && pageTexts.home.length) || 0;
+        const isShell = pageKey !== "home" && homeLen > 0 && Math.abs(crawlResult.text.length - homeLen) < 200;
+        if (crawlResult.text.length > 400 && !isShell) break;
       }
     }
     if (best) {
@@ -1099,20 +1273,43 @@ async function main() {
       pagesFound++;
       found = true;
       console.log(`  [${pageKey}] OK — ${best.text.length} chars @ ${best.url}${best.title ? ` (title: "${best.title.slice(0, 60)}")` : ""}`);
+
+      // Früh-Abbruch: sobald home/team klar >15 zeigen (explizite Zahl ODER ≥16 Namen
+      // schon im Roh-Text), den restlichen Tief-Crawl überspringen — der Betrieb ist
+      // ohnehin geparkt (>15). Konservativ: nur bei KLAREM Signal abbrechen.
+      if (pageKey === "home" || pageKey === "team") {
+        const numM = best.text.match(/(\d{1,3})\s*(?:Mitarbeiter(?:innen)?|Angestellte|Mitarbeitende|Fachleute|Spezialisten)/i);
+        const bigNum = numM && parseInt(numM[1], 10) > 15 && parseInt(numM[1], 10) <= 500;
+        const bigNames = teamNamesFromText(best.text).length > 15;
+        if (bigNum || bigNames) {
+          earlyBig = true;
+          result.team_groesse = { value: bigNum ? parseInt(numM[1], 10) : 16, source: `website_${pageKey}`,
+            verified: true, basis: "early_big", note: ">15 früh erkannt — Tief-Crawl abgebrochen" };
+          console.log(`  [früh-abbruch] >15 erkannt (${bigNum ? numM[1] + " MA" : "≥16 Namen"}) — Crawl gestoppt, Betrieb wird geparkt.`);
+          break;
+        }
+      }
     }
     if (!found) {
       console.log(`  [${pageKey}] Not found (tried ${patterns.length} patterns)`);
       pagesFailed++;
+      // Startseite nicht erreichbar → Site tot/zu langsam. Die übrigen ~40 Unterseiten-
+      // Muster würden je in den Timeout laufen (das hat einen 20-Min-Lauf gefressen) —
+      // also abbrechen. Ohne Startseite ist ohnehin keine sinnvolle Extraktion möglich.
+      if (pageKey === "home") {
+        console.log("  [abbruch] Startseite nicht erreichbar — restliche Unterseiten übersprungen.");
+        break;
+      }
     }
   }
 
-  console.log(`\nPages found: ${pagesFound}, not found: ${pagesFailed}\n`);
+  console.log(`\nPages found: ${pagesFound}, not found: ${pagesFailed}${earlyBig ? " (Früh-Abbruch >15)" : ""}\n`);
 
-  // ── Extract brand color from home page ──
-  console.log("  [brand_color] Extracting...");
-  if (pageSources.home) {
+  // ── Extract brand color from home page (bei Früh-Abbruch übersprungen) ──
+  if (!earlyBig && pageSources.home) {
+    console.log("  [brand_color] Extracting...");
     await page.goto(pageSources.home, { waitUntil: "domcontentloaded", timeout: 15000 });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1500);
     const color = await extractBrandColor(page);
     if (color) {
       result.brand_color = { value: color, source: "website_home", verified: true };
@@ -1120,6 +1317,13 @@ async function main() {
     } else {
       console.log("  [brand_color] Not found");
     }
+  }
+
+  // ── Team-Analyse: Mitarbeiterzahl aus der Team-Seite ableiten ──
+  // (Namen + Porträt-Fotos zählen; klappt „mehr anzeigen"/Tabs vorher auf.)
+  // Bei Früh-Abbruch (>15) übersprungen — Größe steht bereits fest.
+  if (!earlyBig && pageSources.team) {
+    await analyzeTeam(page, pageSources.team);
   }
 
   await browser.close();
@@ -1159,9 +1363,9 @@ async function main() {
   result.gruendung = gruendungResult;
   console.log(`  gruendung: ${gruendungResult.value || "(not found)"} [${gruendungResult.source}]`);
 
-  const teamResult = extractTeamGroesse();
-  result.team_groesse = teamResult;
-  console.log(`  team_groesse: ${teamResult.value || "(not found)"} [${teamResult.source}]`);
+  // Bei Früh-Abbruch ist team_groesse bereits gesetzt (>15) — nicht überschreiben.
+  if (!earlyBig) result.team_groesse = extractTeamGroesse();
+  console.log(`  team_groesse: ${result.team_groesse.value || "(not found)"} [${result.team_groesse.source}]`);
 
   const leistungenResult = extractLeistungen();
   result.leistungen = leistungenResult;
@@ -1269,6 +1473,7 @@ async function main() {
   const companyName = result.firma.value || slug;
   const address = result.adresse.value || "";
   const googleResult = await fetchGooglePlaces(companyName, address);
+  result.google.place_id = googleResult.place_id ?? null;
   result.google.rating = googleResult.rating;
   result.google.review_count = googleResult.review_count;
   if (googleResult.rating) {
