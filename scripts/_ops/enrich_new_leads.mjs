@@ -33,6 +33,7 @@ const LIMIT = Math.max(1, parseInt(getArg("--limit") || "1000", 10) || 1000);
 const MINUTES = Math.max(1, parseInt(getArg("--minutes") || "45", 10) || 45);
 const deadline = Date.now() + MINUTES * 60 * 1000;
 const timeLeft = () => Date.now() < deadline;
+const SKIP_CRAWL = process.argv.includes("--skip-crawl");   // nur Umformat + Gegenprüfung (schnell)
 
 const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!url || !key) { console.error("ERROR: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY fehlen."); process.exit(1); }
@@ -64,11 +65,12 @@ function slugFromUrl(u) {
   const todo = (leads || []).filter((l) => l.website && l.place_id && incomplete(l));
 
   console.log(`\n── Anreicherung: ${todo.length} unvollständige Lead(s), Budget ${MINUTES} Min ──`);
-  if (!todo.length) { console.log("Nichts anzureichern — alle Karten vollständig.\n"); }
+  if (SKIP_CRAWL) console.log("⏭  --skip-crawl: kein Crawl, nur Umformat + Gegenprüfung.");
+  else if (!todo.length) { console.log("Nichts anzureichern — alle Karten vollständig.\n"); }
 
   const env = { ...process.env };
   let ok = 0, fail = 0, done = 0;
-  for (const l of todo) {
+  for (const l of (SKIP_CRAWL ? [] : todo)) {
     if (!timeLeft()) { console.log(`\n⏱ Zeitbudget (${MINUTES} Min) aufgebraucht — ${todo.length - done} bleiben für den nächsten Lauf.`); break; }
     done++;
     const wurl = l.website.startsWith("http") ? l.website : `https://${l.website}`;
@@ -86,13 +88,21 @@ function slugFromUrl(u) {
   // ── Umformat-Pass: ALLE Inhaber-Felder auf „Herr/Frau Nachname" bringen + Müll
   //    (z.B. „Unsere Niederlassungen") rausputzen. Auch bestehende Werte (die der
   //    additive Crawl-Schutz nie anfasst) — darum hier zentral, nicht beim Crawl. ──
-  const { data: withOwner } = await sb.from("leads").select("place_id, entscheider").not("entscheider", "is", null);
-  let reformatted = 0;
-  for (const l of (withOwner || [])) {
-    const nv = reformatEntscheider(l.entscheider);
-    if (nv !== (l.entscheider || "").trim()) { await sb.from("leads").update({ entscheider: nv || null }).eq("place_id", l.place_id); reformatted++; }
+  // ALLE Leads holen + in JS filtern (die .not(entscheider,is,null)-Query lieferte
+  // in dieser supabase-js-Version leer → 0 Updates). Schreibfehler werden geloggt.
+  const { data: allLeads, error: rfErr } = await sb.from("leads").select("place_id, entscheider");
+  if (rfErr) console.log(`  Umformat-Lesefehler: ${rfErr.message}`);
+  let reformatted = 0, rfFail = 0;
+  for (const l of (allLeads || [])) {
+    const cur = (l.entscheider || "").trim();
+    if (!cur) continue;
+    const nv = reformatEntscheider(cur);
+    if (nv === cur) continue;
+    const { error: uErr } = await sb.from("leads").update({ entscheider: nv || null }).eq("place_id", l.place_id);
+    if (uErr) { rfFail++; console.log(`  Umformat-Schreibfehler (${l.place_id}): ${uErr.message}`); continue; }
+    reformatted++;
   }
-  console.log(`✓ Anrede umformatiert: ${reformatted} Inhaber-Felder bereinigt/auf „Herr/Frau Nachname" gebracht.`);
+  console.log(`✓ Anrede umformatiert: ${reformatted} bereinigt/auf „Herr/Frau Nachname" gebracht — ${(allLeads || []).length} geprüft${rfFail ? `, ${rfFail} Schreibfehler` : ""}.`);
 
   // ── Founder-Gegenprüfung: Inhaber auch nach Crawl nicht auffindbar (online nicht
   //    vorhanden). Die Maschine rät nie — diese klärt der Mensch vor dem ersten Call.
