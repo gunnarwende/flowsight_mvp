@@ -359,6 +359,41 @@ function extractFirma() {
   return { value: "", source: "not_found", verified: false };
 }
 
+// Häufige weibliche Vornamen (DE/CH) — klar weiblich, mehrdeutige (Andrea, Simone,
+// Nicola, Sascha, Kim, Toni, Dominique …) bewusst WEGGELASSEN, um keinen Mann
+// fälschlich als „Frau" anzusprechen. Mehrdeutige fängt die explizite „Frau X"-Suche
+// auf der Seite, sonst Founder-Gegenprüfung.
+const FEMALE_VORNAMEN = new Set([
+  "anna","maria","sandra","claudia","nicole","barbara","petra","monika","susanne","ursula",
+  "ruth","esther","rita","brigitte","daniela","sabine","karin","christine","christina","manuela",
+  "franziska","jasmin","jessica","laura","lara","sarah","sara","julia","lena","lea","mia","emma",
+  "sofia","sophie","sophia","fabienne","melanie","michaela","martina","marina","tanja","vanessa",
+  "corinne","regula","beatrice","cornelia","doris","edith","eva","gabriela","heidi","ingrid",
+  "irene","isabelle","katrin","kathrin","katharina","lisa","madeleine","margrit","nadja","nathalie",
+  "natalie","patricia","pia","rahel","rebecca","renate","silvia","sonja","stephanie","stefanie",
+  "therese","theresa","verena","vreni","yvonne","carmen","chiara","deborah","elena","elisabeth",
+  "fiona","hanna","johanna","katja","leonie","livia","marisa","mirjam","miriam","nora","olivia",
+  "ramona","selina","tamara","valentina","victoria","alina","anja","antonia","bettina","carla",
+  "caroline","denise","elisa","evelyne","gisela","janine","judith","klara","clara","liliane",
+  "magdalena","marianne","nelly","priska","rosa","rosmarie","sibylle","valeria",
+]);
+function escapeRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+// „Roger Burkhardt" → „Herr Burkhardt". Geschlecht: explizites „Herr/Frau Nachname"
+// auf der Seite schlägt Vornamen-Liste; sonst Default „Herr" (Sanitär stark männlich).
+// Nur der NACHNAME wird ausgegeben (kein Vorname). Ein evtl. „?" bleibt erhalten.
+function anredeName(fullName) {
+  const q = /\?\s*$/.test(fullName) ? " ?" : "";
+  const parts = String(fullName).replace(/\s*\?\s*$/, "").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return fullName;
+  const nachname = parts[parts.length - 1];
+  const vorname = (parts[0] || "").toLowerCase().split("-")[0];
+  const blob = ["team", "impressum", "home", "kontakt"].map((k) => pageTexts[k] || "").join("  ");
+  const nn = escapeRe(nachname);
+  if (new RegExp(`\\bFrau\\s+(?:[A-ZÄÖÜ][\\wäöü.\\-]+\\s+){0,2}${nn}\\b`).test(blob)) return `Frau ${nachname}${q}`;
+  if (new RegExp(`\\bHerr\\s+(?:[A-ZÄÖÜ][\\wäöü.\\-]+\\s+){0,2}${nn}\\b`).test(blob)) return `Herr ${nachname}${q}`;
+  return `${FEMALE_VORNAMEN.has(vorname) ? "Frau" : "Herr"} ${nachname}${q}`;
+}
+
 function extractInhaber() {
   // Rollen breit (Inhaber/GF/Geschäftsleitung/Gründer/Mitinhaber/Patron …).
   const ROLE = "(?:Inhaber(?:in)?|Mitinhaber(?:in)?|Firmeninhaber(?:in)?|Gesch[aä]ftsf[uü]hr(?:er|erin|ung)|"
@@ -397,13 +432,18 @@ function extractInhaber() {
     // „Vorname Nachname, Rolle" oder „Vorname Nachname (Inhaber)".
     const reB = new RegExp(`(${NAME})\\s*[,–-]?\\s*[(]?\\s*(?:${ROLE})`, "g");
     for (const m of text.matchAll(reB)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
+    // „Vorname Nachname ALS/IST Rolle" — Fließtext-Stellung (z.B. „… übernimmt Roger
+    // Burkhardt als Eigentümer und Geschäftsführer das Unternehmen"). reB fängt das
+    // nicht, weil zwischen Name und Rolle ein Verbindungswort („als") steht.
+    const reC = new RegExp(`(${NAME})\\s+(?:als|ist|fungiert\\s+als|amtet\\s+als|wirkt\\s+als)\\s+(?:(?:der|die|unser|unsere)\\s+)?(?:${ROLE})`, "g");
+    for (const m of text.matchAll(reC)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
   };
   scanPage("team");
   scanPage("impressum");
   if (!owners.length) { scanPage("home"); scanPage("kontakt"); }
 
   if (owners.length) {
-    return { value: owners.slice(0, 3).join(", "), source: src || "website_team", verified: true };
+    return { value: owners.slice(0, 3).map(anredeName).join(", "), source: src || "website_team", verified: true };
   }
 
   // Sekundär (Impressum): „vertreten durch / verantwortlich" — oft der Inhaber, aber
@@ -412,7 +452,7 @@ function extractInhaber() {
     const text = pageTexts[key];
     if (!text) continue;
     const m = text.match(new RegExp(`(?:vertreten\\s+durch|verantwortlich(?:\\s+f[uü]r\\s+den\\s+Inhalt)?)[\\s:.,–-]+(${NAME})`, "i"));
-    if (m) { const n = clean(m[1]); if (valid(n)) return { value: `${n} ?`, source: sourceTag(key), verified: false }; }
+    if (m) { const n = clean(m[1]); if (valid(n)) return { value: anredeName(`${n} ?`), source: sourceTag(key), verified: false }; }
   }
 
   return { value: null, source: "not_found", verified: false };
