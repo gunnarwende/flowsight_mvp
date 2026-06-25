@@ -25,7 +25,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
-import { extractPlzOrt, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget, kantoneOfOrt } from "./_geo_icp.mjs";
+import { canonKanton, extractPlzOrt, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget, kantoneOfOrt } from "./_geo_icp.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -220,6 +220,7 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
         seen.add(placeId);
         cands.push({
           place_id: placeId, firma, website, ort: realOrt, plz: realPlz, adresse,
+          kanton: (gKanton && canonKanton(gKanton)) || null,   // autoritativ aus Google, persistiert
           telefon: txt(r[idx.telefon]), rating: numOrNull(r[idx.google_rating]), reviews: intOrNull(r[idx.google_reviews]),
           tier: txt(r[idx.tier]), signale: txt(r[idx.reasons]), icp_score: intOrNull(r[idx.score]),
         });
@@ -233,7 +234,7 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
       for (const c of cands) {
         existing.add(c.place_id);
         const ins = await sb.from("leads").insert({
-          place_id: c.place_id, firma: c.firma, ort: c.ort, plz: c.plz, telefon: c.telefon, website: c.website,
+          place_id: c.place_id, firma: c.firma, ort: c.ort, plz: c.plz, kanton: c.kanton, telefon: c.telefon, website: c.website,
           rating: c.rating, reviews: c.reviews, tier: c.tier, signale: c.signale, icp_score: c.icp_score,
           status: "neu", updated_at: new Date().toISOString(),
         });

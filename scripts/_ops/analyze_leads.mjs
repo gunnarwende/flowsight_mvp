@@ -47,7 +47,7 @@ const DIRECTORY_HOSTS = ["yellow.ch","local.ch","search.ch","telsearch.ch","tel.
 function host(u){ try { return new URL(String(u).startsWith("http")?u:`https://${u}`).hostname.replace(/^www\./,"").toLowerCase(); } catch { return null; } }
 function usableWebsite(u){ const h=host(u); if(!h||!h.includes("."))return false; return !DIRECTORY_HOSTS.some(d=>h===d||h.endsWith(`.${d}`)||h.includes(d)); }
 
-const SANI_RE = /sanit|installat|heiz|spengl|bad|haustechnik|gwh|gas[\s-]?wasser|klempn|plumb/i;
+const SANI_RE = /sanit|installat|heiz|spengl|bad|haustechnik|geb(ä|ae)udetechnik|w(ä|ae)rmetechnik|energietechnik|klima|l(ü|ue)ftung|k(ä|ae)lte|entw(ä|ae)sser|solar|gwh|gas[\s-]?wasser|klempn|plumb/i;
 function looksSanitaer(l){ const blob=[l.firma,l.website,l.notiz,l.signale,l.branche].filter(Boolean).join(" "); return SANI_RE.test(blob); }
 
 function sizeBucket(v){ const m=String(v??"").match(/\d+/); if(!m) return "offen"; const n=parseInt(m[0],10); return n<=3?"1–3":n<=15?"4–15":">15"; }
@@ -69,8 +69,11 @@ const pct=(n,d)=>d?Math.round(n*100/d):0;
   const show = (title,m,lim=15) => { console.log(title); Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,lim).forEach(([k,v])=>console.log(`   ${String(v).padStart(4)}  ${k}`)); console.log(""); };
 
   show("STATUS:", tally(l=>l.status));
-  const kantonOfLead = (l) => ortToKanton.get(String(l.ort||"").trim().toLowerCase()) || "❓ unbekannter Ort";
-  show("KANTON (aus Ort abgeleitet):", tally(kantonOfLead));
+  // Autoritativen Kanton (persistiert, aus Google) bevorzugen; sonst aus Ort ableiten
+  // (last-wins bei Homonymen → nur Näherung, daher Fallback).
+  const hasKantonCol = cols.includes("kanton");
+  const kantonOfLead = (l) => (hasKantonCol && l.kanton && String(l.kanton).trim()) || ortToKanton.get(String(l.ort||"").trim().toLowerCase()) || "❓ unbekannter Ort";
+  show(`KANTON (${hasKantonCol ? "persistiert, sonst aus Ort" : "aus Ort abgeleitet"}):`, tally(kantonOfLead));
   show("ORT (Top 15):", tally(l=>l.ort));
   show("GRÖSSE-BUCKET (ma_proxy):", tally(l=>sizeBucket(l.ma_proxy)));
 
@@ -82,8 +85,10 @@ const pct=(n,d)=>d?Math.round(n*100/d):0;
 
   for (const l of leads) {
     const ortK = ortToKanton.get(String(l.ort||"").trim().toLowerCase());
-    if (!ortK) unknownOrt++;
-    else if (expectKanton && ortK !== expectKanton) { wrongKanton++; if(flaggedWrong.length<12) flaggedWrong.push(`${l.firma} — ${l.ort} → ${ortK}`); }
+    const authK = hasKantonCol && l.kanton && String(l.kanton).trim();   // autoritativ schlägt Namens-Ableitung
+    const effK = authK || ortK;
+    if (!effK) unknownOrt++;
+    else if (expectKanton && effK !== expectKanton) { wrongKanton++; if(flaggedWrong.length<12) flaggedWrong.push(`${l.firma} — ${l.ort} → ${effK}`); }
     if (NON_DE_ORTE.has(String(l.ort||"").trim().toLowerCase())) { nonDE++; if(flaggedNonDE.length<12) flaggedNonDE.push(`${l.firma} — ${l.ort}`); }
 
     if (!l.website) { noWebsite++; if(flaggedWeb.length<12) flaggedWeb.push(`${l.firma} — (keine Website)`); }
@@ -120,7 +125,7 @@ const pct=(n,d)=>d?Math.round(n*100/d):0;
   const step=Math.max(1,Math.floor(N/SAMPLE));
   console.log(`──────────── STICHPROBE (${Math.min(SAMPLE,N)} verteilt, jeder ${step}.) ────────────\n`);
   for (let i=0,c=0;i<N&&c<SAMPLE;i+=step,c++){
-    const l=leads[i]; const ortK=ortToKanton.get(String(l.ort||"").trim().toLowerCase())||"❓";
+    const l=leads[i]; const ortK=kantonOfLead(l);
     console.log(`#${i} ${l.firma||"(o.Firma)"}`);
     console.log(`   Ort: ${l.ort||"—"} (${ortK}) · PLZ ${l.plz||"—"} · Status ${l.status||"—"} · Größe ${l.ma_proxy||"—"}→${sizeBucket(l.ma_proxy)}`);
     console.log(`   Web: ${l.website||"—"} ${l.website?(usableWebsite(l.website)?"✓":"⚠️ Verzeichnis"):""} · Sani:${looksSanitaer(l)?"✓":"⚠️"}`);
