@@ -127,9 +127,14 @@ const BLOCK_TYPES = new Set([
 ]);
 const BLOCK_NAME_RE = /\b(hotel|gasthof|restaurant|schloss|museum|tourismus|verkehrsverein|bildung|beratung|landwirtschaft|gartenwelt|kirche|pfarr|gemeindeverwaltung|stadtverwaltung|verband|suissetec|genossenschaft\b)/i;
 // Positive Sanitär-Signale (Name) — überschreibt schwache Block-Treffer.
-const SANI_NAME_RE = /sanit|installat|haustechnik|geb(ä|ae)udetechnik|heiz|spengl|gwh|gas[\s-]?wasser|klempn|bad(\s|umbau|sanierung)/i;
+const SANI_NAME_RE = /sanit|installat|haustechnik|geb(ä|ae)udetechnik|w(ä|ae)rmetechnik|energietechnik|heiz|spengl|gwh|gas[\s-]?wasser|klempn|bad(\s|umbau|sanierung)/i;
 // Sanitär-nahe Google-Typen.
 const SANI_TYPES = new Set(["plumber","general_contractor","contractor","home_goods_store","hardware_store","roofing_contractor","electrician"]);
+// KLAR fremde Branchen (Name) — verwerfen, auch wenn Google einen generischen
+// Typ wie general_contractor liefert (sonst rutscht z.B. eine Schreinerei durch).
+// Ein echtes Sani-Namenssignal (SANI_NAME_RE) sticht das aber noch aus.
+// Stämme ohne hintere Wortgrenze (sonst matcht "schreiner" nicht in "Schreinerei").
+const HARD_NONSANI_RE = /\b(schreiner|zimmerei|zimmermann|gipser|maler|gartenbau|g(ä|ae)rtner|bodenleg|parkett|dachdeck|bedachung|elektr|metzg|b(ä|ae)cker|coiffure|carrosserie|autogarage)/i;
 
 /**
  * Verwerfen, wenn klar Nicht-ICP. Name-Sanitärsignal sticht (verhindert
@@ -140,9 +145,14 @@ const SANI_TYPES = new Set(["plumber","general_contractor","contractor","home_go
 export function isLikelyNonICP(r) {
   const name = String(r?.name ?? "");
   const types = Array.isArray(r?.types) ? r.types : [];
-  const saniName = SANI_NAME_RE.test(name);
-  const saniType = types.some((t) => SANI_TYPES.has(t));
-  if (saniName || saniType) return { blocked: false, reason: "" };
+  // 1) Echtes Sani-Namenssignal sticht alles — nie fälschlich ausschließen.
+  if (SANI_NAME_RE.test(name)) return { blocked: false, reason: "" };
+  // 2) Klar fremde Branche im Namen → verwerfen, BEVOR ein generischer
+  //    Google-Typ (general_contractor) sie durchwinkt.
+  const hard = name.match(HARD_NONSANI_RE);
+  if (hard) return { blocked: true, reason: `Branche:${hard[0]}` };
+  // 3) Sonst: sanitär-naher Typ akzeptiert; harte Block-Typen/-Namen verwerfen.
+  if (types.some((t) => SANI_TYPES.has(t))) return { blocked: false, reason: "" };
   const blockType = types.find((t) => BLOCK_TYPES.has(t));
   if (blockType) return { blocked: true, reason: `Typ:${blockType}` };
   const nameHit = name.match(BLOCK_NAME_RE);
