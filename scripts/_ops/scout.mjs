@@ -217,15 +217,24 @@ async function searchPlaces(textQuery) {
     const body = { textQuery, languageCode: "de", regionCode: "CH", maxResultCount: 20 };
     if (pageToken) body.pageToken = pageToken;
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": apiKey,
-        "X-Goog-FieldMask": fieldMask,
-      },
-      body: JSON.stringify(body),
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": fieldMask,
+        },
+        body: JSON.stringify(body),
+        // Harte 20s-Grenze je Request — ein hängender Endpoint darf den ganzen
+        // Sweep-Job nicht blockieren (sonst läuft er bis zum 6h-GitHub-Default).
+        signal: AbortSignal.timeout(20000),
+      });
+    } catch (e) {
+      console.error(`  Netzwerk/Timeout für "${textQuery}" (Seite ${page + 1}): ${e.message}`);
+      break;
+    }
 
     if (!res.ok) {
       const err = await res.text();
@@ -439,9 +448,18 @@ function stripBOM(text) {
 const RAW_HEADER = "firma;website;notiz;manual_review;tier;trust;gap;voice_fit;google_rating;google_reviews;reasons;score;ort;kanton;adresse;telefon;maps_url;query;discovered;place_id";
 
 function ensureRawCSV() {
-  if (!fs.existsSync(RAW_CSV)) {
-    fs.writeFileSync(RAW_CSV, BOM + RAW_HEADER + "\n", "utf-8");
+  // Header IMMER gegen den aktuellen RAW_HEADER abgleichen. Früher wurde er nur
+  // bei FEHLENDER Datei geschrieben — eine eingecheckte CSV mit altem Header (ohne
+  // kanton-Spalte) + alten Zeilen hebelte so den Kanton-Filter aus (idx.kanton
+  // undefined → Fallback auf namensbasiert → Homonym-Bleed wie Wetzikon ZH).
+  // Bei Header-Mismatch (oder fehlender Datei) frisch schreiben — verwirft veraltete
+  // Zeilen (gewollt: pro Run sammelt der Scout seine eigenen Treffer wieder auf).
+  let needFresh = true;
+  if (fs.existsSync(RAW_CSV)) {
+    const firstLine = (stripBOM(fs.readFileSync(RAW_CSV, "utf-8")).split("\n", 1)[0] || "").trim();
+    needFresh = firstLine !== RAW_HEADER;
   }
+  if (needFresh) fs.writeFileSync(RAW_CSV, BOM + RAW_HEADER + "\n", "utf-8");
 }
 
 // ── Extract municipality from address ───────────────────────────────

@@ -25,7 +25,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
-import { extractPlzOrt, inKanton, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget } from "./_geo_icp.mjs";
+import { extractPlzOrt, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget, kantoneOfOrt } from "./_geo_icp.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -171,8 +171,10 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
       if (!timeLeft() || smallFound >= target) break;
       // Voll erfasste Orte überspringen (außer dem Grenz-Ort, den wir fertig machen).
       if (coveredOrte.has(ort.toLowerCase()) && i !== prefixEnd - 1) continue;
-      try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kt}`], { stdio: "inherit", env }); }
-      catch (e) { console.log(`  scout-Fehler bei ${ort}: ${e.message} — weiter.`); continue; }
+      // Harte 3-Min-Grenze je Scout (sonst kann ein hängender Google-Fetch den
+      // ganzen Job blockieren — der Crawl unten hat längst ein Timeout, der Scout fehlte).
+      try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kt}`], { stdio: "inherit", env, timeout: 180000, killSignal: "SIGKILL" }); }
+      catch (e) { console.log(`  scout-Fehler/Timeout bei ${ort}: ${e.message} — weiter.`); continue; }
       scoutedOrte.push(ort);
       if (!EXECUTE) continue;
       if (!fs.existsSync(RAW)) continue;
@@ -198,9 +200,18 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
         // exakte Ort→Kanton-Mitgliedschaft. Locate prüft gegen die ganze DE-Schweiz.
         const { plz: realPlz, ort: realOrt } = extractPlzOrt(adresse);
         const gKanton = txt(r[idx.kanton]);
-        const regionOk = LOCATE
-          ? isDeutschschweiz(realOrt)
-          : (gKanton ? kantonMatchesTarget(gKanton, kt) : inKanton(realOrt, kt));
+        let regionOk;
+        if (LOCATE) {
+          regionOk = isDeutschschweiz(realOrt);
+        } else if (gKanton) {
+          regionOk = kantonMatchesTarget(gKanton, kt);     // autoritativ — löst Homonyme
+        } else {
+          // Kein autoritativer Kanton (z.B. alte Zeile ohne kanton-Spalte): nur
+          // akzeptieren, wenn der Ort EINDEUTIG im Zielkanton liegt. Homonyme
+          // (Wetzikon TG/ZH) werden verworfen statt permissiv durchgewunken.
+          const ks = kantoneOfOrt(realOrt);
+          regionOk = ks.length === 1 && ks[0] === kt;
+        }
         if (!realOrt || !regionOk) { regionRejected++; continue; }
         // Branchen-Filter: offensichtliche Nicht-Sanitär-Treffer (Hotel/Museum/
         // Schule/Verband …), die Google bei Ortssuchen reinmischt, verwerfen.
