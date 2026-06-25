@@ -1,0 +1,172 @@
+{
+  "take": 4,
+  "industry": "sanitaer",
+  "tenant": "doerfler-ag",
+  "description": "V4 auto-generated from event_log (record_take4 instrumentation). Replaces phase_library defaults with per-tenant ranges. NO scene-cut detection — uses logged Playwright events.",
+  "generated_at": "2026-05-30T09:47:12.074Z",
+  "source_dur": 106.9,
+  "events_used": 39,
+  "phases": [
+    {
+      "name": "dashboard_intro",
+      "range": [
+        0,
+        7.503
+      ]
+    },
+    {
+      "name": "dashboard_kpi_overview",
+      "range": [
+        6.003,
+        9.465
+      ]
+    },
+    {
+      "name": "dashboard_to_case",
+      "range": [
+        10.965,
+        15.992
+      ]
+    },
+    {
+      "name": "case_initial_neu",
+      "range": [
+        15.992,
+        17.537
+      ]
+    },
+    {
+      "name": "case_status_dropdown",
+      "range": [
+        17.537,
+        21.066
+      ]
+    },
+    {
+      "name": "case_status_inarbeit",
+      "range": [
+        21.066,
+        23.932
+      ]
+    },
+    {
+      "name": "case_termin_picker",
+      "range": [
+        23.932,
+        30.047
+      ]
+    },
+    {
+      "name": "case_termin_set",
+      "range": [
+        30.047,
+        32.897
+      ]
+    },
+    {
+      "name": "case_inarbeit_view",
+      "range": [
+        32.897,
+        36.894
+      ]
+    },
+    {
+      "name": "phone_reminder_pip",
+      "range": [
+        37.8,
+        43.591
+      ]
+    },
+    {
+      "name": "case_inarbeit_view_post",
+      "range": [
+        48.115,
+        49.178
+      ]
+    },
+    {
+      "name": "case_status_erledigt_hover",
+      "range": [
+        48.178,
+        54.514
+      ]
+    },
+    {
+      "name": "case_status_erledigt",
+      "range": [
+        54.514,
+        57.364
+      ]
+    },
+    {
+      "name": "case_bewertung_pre",
+      "range": [
+        57.364,
+        66.016
+      ]
+    },
+    {
+      "name": "case_bewertung_pending",
+      "range": [
+        65.516,
+        68.016
+      ]
+    },
+    {
+      "name": "case_bewertung_button",
+      "range": [
+        65.516,
+        75.439
+      ]
+    },
+    {
+      "name": "phone_sms_appears",
+      "range": [
+        75.34,
+        76.238
+      ]
+    },
+    {
+      "name": "phone_sms_thread",
+      "range": [
+        75.738,
+        79.747
+      ]
+    },
+    {
+      "name": "phone_rating_intro",
+      "range": [
+        80.66,
+        85.553
+      ]
+    },
+    {
+      "name": "phone_rating_stars",
+      "range": [
+        84.553,
+        87.46
+      ]
+    },
+    {
+      "name": "phone_rating_submit",
+      "range": [
+        85.46,
+        91.355
+      ]
+    },
+    {
+      "name": "case_review_done",
+      "range": [
+        91.355,
+        99.437
+      ]
+    },
+    {
+      "name": "dashboard_final",
+      "range": [
+        98.437,
+        106.9
+      ]
+    }
+  ]
+}

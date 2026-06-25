@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "doerfler-ag",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-09T07:26:30.531Z",
+  "leit_start_in_take2_complete": 33.99,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        45.85,
+        57.96
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        58.01,
+        58.11
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        58.06,
+        59.42
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        59.42,
+        62.43
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        62.43,
+        65.64
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        66.34,
+        68.66
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        69.36,
+        71.18
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        71.88,
+        74.52
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        75.22,
+        112.95
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        113.15,
+        114.02
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        114.33,
+        117.55
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        121.39,
+        129.33
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        129.53,
+        135.26
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        135.26,
+        146.54
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        150.08,
+        160.59
+      ]
+    }
+  ]
+}

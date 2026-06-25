@@ -1,0 +1,180 @@
+{
+  "take": 4,
+  "industry": "sanitaer",
+  "tenant": "leins-ag",
+  "description": "V2j FULL auto-generated from take4_event_log.json. ALL 23 schedule phases covered. Source compose 99.866667s.",
+  "generated_at": "2026-05-29T16:38:17.411Z",
+  "source_compose_duration": 99.866667,
+  "part_boundaries": {
+    "P1": 33.68327791077379,
+    "P2": 35.67987177156609,
+    "P3": 40.70833038393188,
+    "P4": 69.62196740503518,
+    "P5": 74.46555621547576,
+    "P6": 85.29892660829323,
+    "P7": 99.866667
+  },
+  "phases": [
+    {
+      "name": "dashboard_intro",
+      "range": [
+        0,
+        4
+      ]
+    },
+    {
+      "name": "dashboard_kpi_overview",
+      "range": [
+        8.79,
+        9.29
+      ]
+    },
+    {
+      "name": "dashboard_to_case",
+      "range": [
+        8.91,
+        11.56
+      ]
+    },
+    {
+      "name": "case_initial_neu",
+      "range": [
+        11.56,
+        12.99
+      ]
+    },
+    {
+      "name": "case_status_dropdown",
+      "range": [
+        12.99,
+        14.44
+      ]
+    },
+    {
+      "name": "case_status_inarbeit",
+      "range": [
+        14.44,
+        15.88
+      ]
+    },
+    {
+      "name": "case_termin_picker",
+      "range": [
+        15.88,
+        33
+      ]
+    },
+    {
+      "name": "case_termin_set",
+      "range": [
+        33,
+        33.5
+      ]
+    },
+    {
+      "name": "case_inarbeit_view",
+      "range": [
+        25.22,
+        33.58
+      ]
+    },
+    {
+      "name": "phone_reminder_pip",
+      "range": [
+        35.98,
+        40.81
+      ]
+    },
+    {
+      "name": "case_inarbeit_view_post",
+      "range": [
+        44.43,
+        47.08
+      ]
+    },
+    {
+      "name": "case_status_erledigt_hover",
+      "range": [
+        47.08,
+        50.34
+      ]
+    },
+    {
+      "name": "case_status_erledigt",
+      "range": [
+        50.34,
+        60.52
+      ]
+    },
+    {
+      "name": "case_bewertung_pre",
+      "range": [
+        60.52,
+        61.02
+      ]
+    },
+    {
+      "name": "case_bewertung_pending",
+      "range": [
+        60.56,
+        62.06
+      ]
+    },
+    {
+      "name": "case_bewertung_button",
+      "range": [
+        62.06,
+        68.84
+      ]
+    },
+    {
+      "name": "phone_sms_appears",
+      "range": [
+        69.9,
+        71.4
+      ]
+    },
+    {
+      "name": "phone_sms_thread",
+      "range": [
+        69.91,
+        74.54
+      ]
+    },
+    {
+      "name": "phone_rating_intro",
+      "range": [
+        76.33,
+        77.18
+      ]
+    },
+    {
+      "name": "phone_rating_stars",
+      "range": [
+        77.18,
+        82.65
+      ]
+    },
+    {
+      "name": "phone_rating_submit",
+      "range": [
+        82.65,
+        85.43
+      ]
+    },
+    {
+      "name": "case_review_done",
+      "range": [
+        89.01,
+        92.25
+      ]
+    },
+    {
+      "name": "dashboard_final",
+      "range": [
+        96.43,
+        98.75
+      ]
+    }
+  ]
+}

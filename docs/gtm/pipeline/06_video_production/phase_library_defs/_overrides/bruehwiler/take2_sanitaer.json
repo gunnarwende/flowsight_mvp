@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "bruehwiler",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-19T11:34:19.915Z",
+  "leit_start_in_take2_complete": 33.79,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        43.63,
+        55.73
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        55.78,
+        55.88
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        55.83,
+        57.21
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        57.21,
+        60.22
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        60.22,
+        63.41
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        64.11,
+        66.47
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        67.17,
+        69.03
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        69.73,
+        72.35
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        73.05,
+        110.8
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        111,
+        111.85
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        112.16,
+        115.4
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        120.27,
+        128.22
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        128.42,
+        134.15
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        134.15,
+        145.45
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        149.01,
+        159.53
+      ]
+    }
+  ]
+}
