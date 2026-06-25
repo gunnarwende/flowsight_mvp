@@ -82,6 +82,41 @@ export function isDeutschschweiz(ort) {
   return ORT_TO_KANTONE.has(n);
 }
 
+// ── AUTORITATIVER Kanton (aus Google addressComponents) ──
+// Der Ortsname allein kann Homonyme (Wetzikon TG vs ZH) NICHT auflösen — derselbe
+// Name liegt in mehreren Kantonen. Google liefert den Kanton direkt; den nehmen wir.
+const DE_KANTONE = new Set(Object.keys(BY_KANTON));
+// Schreibvarianten / Codes → kanonischer Schlüssel (= BY_KANTON-Keys).
+const KANTON_ALIAS = new Map([
+  ["sankt gallen", "St. Gallen"], ["st. gallen", "St. Gallen"], ["st.gallen", "St. Gallen"], ["sg", "St. Gallen"],
+  ["zh", "Zürich"], ["zuerich", "Zürich"], ["zurich", "Zürich"],
+  ["tg", "Thurgau"], ["be", "Bern"], ["berne", "Bern"],
+  ["gr", "Graubünden"], ["grisons", "Graubünden"], ["graubuenden", "Graubünden"],
+  ["vs", "Wallis"], ["valais", "Wallis"], ["fr", "Freiburg"], ["fribourg", "Freiburg"],
+  ["ag", "Aargau"], ["lu", "Luzern"], ["so", "Solothurn"], ["sh", "Schaffhausen"], ["zg", "Zug"],
+  ["sz", "Schwyz"], ["ur", "Uri"], ["gl", "Glarus"], ["ow", "Obwalden"], ["nw", "Nidwalden"],
+  ["ai", "Appenzell Innerrhoden"], ["ar", "Appenzell Ausserrhoden"],
+  ["bl", "Basel-Landschaft"], ["bs", "Basel-Stadt"],
+]);
+export function canonKanton(k) {
+  const s = String(k ?? "").trim().replace(/^kanton\s+/i, "").replace(/\s+/g, " ");
+  if (!s) return "";
+  if (DE_KANTONE.has(s)) return s;                       // exakter Treffer
+  const aliased = KANTON_ALIAS.get(s.toLowerCase());
+  if (aliased) return aliased;
+  const stFix = s.replace(/^sankt\s+/i, "St. ");          // "Sankt Gallen" → "St. Gallen"
+  if (DE_KANTONE.has(stFix)) return stFix;
+  return s;  // unbekannt (z.B. nicht-DE-Kanton wie "Genf"/"Tessin") → kein DE-Match
+}
+// Liegt der (autoritative) Google-Kanton im Zielkanton?
+export function kantonMatchesTarget(googleKanton, targetKanton) {
+  return !!googleKanton && canonKanton(googleKanton) === targetKanton;
+}
+// Ist der Google-Kanton ein Deutschschweiz-Kanton?
+export function isDeutschschweizKanton(googleKanton) {
+  return DE_KANTONE.has(canonKanton(googleKanton));
+}
+
 // ── Branchen-/ICP-Filter (Ergebnis-Ebene) ──
 // Offensichtliche Nicht-Sanitär-Treffer, die Google bei Ortssuchen reinmischt.
 const BLOCK_TYPES = new Set([

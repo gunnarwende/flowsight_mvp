@@ -25,7 +25,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
-import { extractPlzOrt, inKanton, isDeutschschweiz, isLikelyNonICP } from "./_geo_icp.mjs";
+import { extractPlzOrt, inKanton, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget } from "./_geo_icp.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -191,13 +191,16 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
         const adresse = txt(r[idx.adresse]);
         if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
         if (!firma || !usableWebsite(website)) continue; // Website Pflicht
-        // Region-Sicherung auf ERGEBNIS-Ebene: echten Ort aus der Adresse parsen
-        // (NICHT die Such-Gemeinde) und per EXAKTER Kanton-Mitgliedschaft prüfen.
-        // Google liefert pro Ortssuche einen Umkreis — so fliegen Nachbarkanton-
-        // Treffer (z.B. Bülach/Seuzach ZH bei einer TG-Suche) zuverlässig raus.
-        // Locate-Modus prüft gegen die ganze Deutschschweiz (Sprachgrenze sicher).
+        // Region-Sicherung auf ERGEBNIS-Ebene. Google liefert pro Ortssuche einen
+        // Umkreis (auch Nachbarkanton-Treffer). Primär: AUTORITATIVER Kanton aus
+        // addressComponents — löst Homonyme (Wetzikon TG vs ZH), die der Ortsname
+        // allein NICHT trennen kann. Fallback (altes CSV ohne kanton-Spalte):
+        // exakte Ort→Kanton-Mitgliedschaft. Locate prüft gegen die ganze DE-Schweiz.
         const { plz: realPlz, ort: realOrt } = extractPlzOrt(adresse);
-        const regionOk = LOCATE ? isDeutschschweiz(realOrt) : inKanton(realOrt, kt);
+        const gKanton = txt(r[idx.kanton]);
+        const regionOk = LOCATE
+          ? isDeutschschweiz(realOrt)
+          : (gKanton ? kantonMatchesTarget(gKanton, kt) : inKanton(realOrt, kt));
         if (!realOrt || !regionOk) { regionRejected++; continue; }
         // Branchen-Filter: offensichtliche Nicht-Sanitär-Treffer (Hotel/Museum/
         // Schule/Verband …), die Google bei Ortssuchen reinmischt, verwerfen.
