@@ -93,7 +93,7 @@ und der genannten Bible.
 ### Stern 1 — Kontakt  (Abschnitt: Sales)
 - **Zweck:** Lead-Liste pflegen + kurze Recherche (Website gegenchecken), bevor gewählt wird. Der Funnel-Einstieg.
 - **Konversions-Ereignis:** Betrieb steht qualifiziert auf der Tagesliste → anrufen.
-- **Owner:** SALES_BIBLE + Lead-Motor (`build_leads.mjs` → `docs/sales/leads.csv`, `todays_list.mjs`, `enrich_leads.mjs`/P12). Operativ: HTML Stern 1 (Kontaktliste).
+- **Owner:** SALES_BIBLE (ICP/Region/Preis) + DB-Lead-Motor — Bedienung [STERN_1_RUNBOOK](sales/STERN_1_RUNBOOK.md), Datenform [Leads-Contract](../architecture/contracts/leads_contract.md). Operativ: `/ceo/journey` (`JourneyView`, SSOT = `leads`-Tabelle). *(CSV-Motor `build_leads`/`leads.csv` = Legacy.)*
 - **Kennzahl:** Wählversuche.
 
 ### Stern 2 — Cold Call  (Abschnitt: Sales)

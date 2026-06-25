@@ -37,9 +37,13 @@ mit dem Crawlen der Betriebe**:
 
 - **ICP:** Sanitär, zweistufig — **Solo 1–3 MA** / **Premium 4–15 MA** (kanonisch
   [SALES_BIBLE §3](../../gtm/sales/SALES_BIBLE.md)). **>15 MA = DQ.**
-- **Region:** **Thurgau** (Lernphase — s. „Warum Thurgau").
-- **Reihenfolge:** **Gemeinde für Gemeinde** — eine PLZ/Ort komplett crawlen + abarbeiten,
-  dann die nächste benachbarte (geografische Welle).
+- **Region:** **Thurgau** (Lernphase — s. „Warum Thurgau"). Kanton autoritativ am Lead
+  (`kanton` aus Google `addressComponents`) → keine Homonym-Verwechslung (Wetzikon TG/ZH).
+- **Reihenfolge (census-first):** **Vollerfassung** des Kantons zuerst — ALLE Sanitär-Betriebe
+  (alle Größen) parken, Größe bleibt `?`, kein Crawl. Dann segmentweise **Anreichern**
+  (Inhaber/Mail/Größe) + abarbeiten. So steht die komplette Landkarte, bevor man später
+  4–15-Mann hochfährt. (Gezielter Modus „1–3 jagen" findet+crawlt N kleine Betriebe sofort.)
+  Bedienung: [STERN_1_RUNBOOK](../../gtm/sales/STERN_1_RUNBOOK.md).
 
 ### Die 10 Spalten (Kontaktliste — Spec; Implementierung: `/ceo/journey`)
 
@@ -72,7 +76,8 @@ Wert/Haken führt; lokale Nähe kommt mit Ring 0 zurück.
 
 - [SALES_BIBLE](../../gtm/sales/SALES_BIBLE.md) — ICP (§3), Region (§4), Abend-Ritual (§1).
 - Operatives Tool (SSOT): **`/ceo/journey`** (`src/web/src/components/ceo/JourneyView.tsx`) — DB-gestützte Stern-1-Kontaktliste + Schwungrad + Cold-Call, auth-geschützte PWA (Handy + Desktop). *Die frühere `customer_journey.html` (Prototyp, localStorage) wurde abgelöst und entfernt.*
-- Lead-Motor: `build_leads.mjs` → `docs/sales/leads.csv`, `todays_list.mjs`, `enrich_leads.mjs`.
+- **Datenform (SSOT):** [Leads-Contract](../../architecture/contracts/leads_contract.md) — Schema der `leads`-Tabelle, Hoheits-Regel (Daten=Maschine / Status=Founder), `place_id`-Upsert, ICP-Gate, `kanton`.
+- **Lead-Motor (Bedienung):** [STERN_1_RUNBOOK](../../gtm/sales/STERN_1_RUNBOOK.md) — Go (jagen/Vollerfassung) · Anreichern · Gegenprüfung · Purge. Code: `discover_targeted.mjs`, `scout.mjs`+`discover_to_leads.mjs`, `crawl_to_leads.mjs` (additiver Merge), `enrich_new_leads.mjs`, `_geo_icp.mjs`/`_anrede.mjs`. *(`build_leads.mjs`/`leads.csv`/`todays_list.mjs`/`enrich_leads.mjs` = Legacy aus der CSV-Ära, abgelöst durch die DB-Pipeline.)*
 - Existenz-Validierung: [lessons_learned_sales](../../gtm/sales/lessons_learned_sales.md) („Google-Maps ≠ Existenzbeweis").
 
 ## Dateibereich (Parallel-Konflikt-Regel)
@@ -82,5 +87,9 @@ Wert/Haken führt; lokale Nähe kommt mit Ring 0 zurück.
 
 ## Offen / nächster Schritt
 
-- **Nordstern-Takt:** täglich 20 Betriebe kontaktierbar — Lead-Nachschub Thurgau, Gemeinde für Gemeinde.
-- DB-Fundament steht (`leads`-Tabelle = SSOT, `/api/ceo/journey`). Nächster Schritt: go-Crawl schreibt **nur neue `place_id`** dazu, ohne Tool-Edits zu überschreiben (s. `sync_leads_to_db.mjs`).
+- **Nordstern-Takt:** täglich 20 Betriebe kontaktierbar — Lead-Nachschub Thurgau (census-first).
+- **Erledigt:** DB-Fundament (`leads` = SSOT) · additiver Merge (nur neue `place_id`, Founder-Felder
+  geschützt — `crawl_to_leads`/`discover_to_leads`) · Größen-Tabs vollständig (`?`-Tab) ·
+  Vollerfassungs- + Anreichern-Knopf · `kanton` autoritativ am Lead.
+- **Offen:** Thurgau-Vollerfassung anreichern (Inhaber/Mail/Größe) → Gegenprüfung; **425 Alt-Crawl-Leads
+  bereinigen** (`purge.yml`, Dry-Run zuerst); Lauf-Status in der App statt Actions-Log (v2).
