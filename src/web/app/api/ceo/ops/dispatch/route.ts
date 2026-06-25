@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  * Braucht GH_DISPATCH_TOKEN (fine-grained PAT, Actions: read+write) im
  * Vercel-Runtime-Env.
  */
-const ALLOWED = new Set(["crawl.yml", "purge.yml", "discover.yml"]);
+const ALLOWED = new Set(["crawl.yml", "purge.yml", "discover.yml", "enrich.yml"]);
 
 export async function POST(req: Request) {
   const scope = await resolveTenantScope();
