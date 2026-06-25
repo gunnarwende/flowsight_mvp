@@ -25,19 +25,30 @@ export async function GET() {
   const supabase = getServiceClient();
 
   // ── Leads (die Wurzel) ──────────────────────────────────────────────
-  const { data: leads, error } = await supabase
-    .from("leads")
-    .select(
-      "id, place_id, firma, ort, plz, ring, ma_proxy, tariff, inhaber_am_telefon, entscheider, rolle, mail, telefon, website, rating, reviews, icp_score, tier, signale, status, letzter_kontakt, naechster_schritt, naechster_am, notiz, updated_at"
-    )
-    .order("ring", { ascending: true })
-    .order("icp_score", { ascending: false });
+  // WICHTIG: Supabase/PostgREST liefert pro Abfrage max. 1000 Zeilen. Bei der
+  // Vollerfassung stehen aber >1000 Betriebe in der DB → ohne Pagination würde
+  // die Kontaktliste stillschweigend bei 1000 abschneiden (Founder sah „genau
+  // 1000"). Darum in 1000er-Fenstern durchblättern, bis alles geladen ist.
+  // Stabiler Tiebreaker (id), damit sich die Fenster nicht überlappen/auslassen.
+  const PAGE = 1000;
+  const all: Record<string, unknown>[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data: page, error } = await supabase
+      .from("leads")
+      .select(
+        "id, place_id, firma, ort, plz, ring, ma_proxy, tariff, inhaber_am_telefon, entscheider, rolle, mail, telefon, website, rating, reviews, icp_score, tier, signale, status, letzter_kontakt, naechster_schritt, naechster_am, notiz, updated_at"
+      )
+      .order("ring", { ascending: true })
+      .order("icp_score", { ascending: false })
+      .order("id", { ascending: true })
+      .range(from, from + PAGE - 1);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    all.push(...(page ?? []));
+    if (!page || page.length < PAGE) break;
   }
-
-  const all = leads ?? [];
 
   // ── Events (Funnel-Verlauf) ─────────────────────────────────────────
   const { data: events } = await supabase
