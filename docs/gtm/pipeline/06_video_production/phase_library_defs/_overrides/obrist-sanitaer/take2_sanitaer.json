@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "obrist-sanitaer",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-03T09:20:06.035Z",
+  "leit_start_in_take2_complete": 33.83,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        48.69,
+        60.81
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        60.86,
+        60.96
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        60.91,
+        62.28
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        62.28,
+        65.28
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        65.28,
+        68.52
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        69.22,
+        71.55
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        72.25,
+        74.09
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        74.79,
+        77.42
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        78.12,
+        115.86
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        116.06,
+        116.97
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        117.28,
+        120.5
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        124.21,
+        132.17
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        132.38,
+        138.09
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        138.09,
+        149.37
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        153.02,
+        163.53
+      ]
+    }
+  ]
+}

@@ -123,7 +123,8 @@ export function JourneyView() {
   const [goCount, setGoCount] = useState(20);
   const [goKanton, setGoKanton] = useState("Thurgau");
   const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
-  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq">("alle"); // Größe (Einfachauswahl)
+  const [goMode, setGoMode] = useState<"jagen" | "vollerfassung">("vollerfassung"); // vollerfassung = ALLE parken (alle Größen, kein Crawl)
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq" | "offen">("alle"); // Größe (Einfachauswahl)
   // Feld-Lücken (Mehrfachauswahl) — zum gezielten Nacharbeiten: Größe?/Inhaber/Mail leer.
   const [gaps, setGaps] = useState<{ groesse: boolean; inhaber: boolean; mail: boolean }>({ groesse: false, inhaber: false, mail: false });
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
@@ -294,14 +295,25 @@ export function JourneyView() {
         {/* Go — Schwungrad in Gang setzen */}
         <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
           <div className="text-lg font-extrabold text-navy-900">Go</div>
-          <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, reichere an und baue die Kontaktliste.</p>
+          <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, parke und baue die Kontaktliste.</p>
 
+          {/* Modus: Vollerfassung (alle, kein Crawl) oder gezielt 1–3 jagen */}
           <div className="flex gap-2 mt-3">
-            {[10, 20, 30, 40].map((n) => (
-              <button key={n} type="button" onClick={() => setGoCount(n)}
-                className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold border ${goCount === n ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{n}</button>
-            ))}
+            <button type="button" onClick={() => setGoMode("vollerfassung")}
+              className={`flex-1 rounded-lg px-3 py-2 text-[13px] font-bold border ${goMode === "vollerfassung" ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>Vollerfassung (alle)</button>
+            <button type="button" onClick={() => setGoMode("jagen")}
+              className={`flex-1 rounded-lg px-3 py-2 text-[13px] font-bold border ${goMode === "jagen" ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>1–3 jagen</button>
           </div>
+
+          {/* Anzahl — nur im Jagen-Modus relevant (Vollerfassung holt alle) */}
+          {goMode === "jagen" && (
+            <div className="flex gap-2 mt-2">
+              {[10, 20, 30, 40].map((n) => (
+                <button key={n} type="button" onClick={() => setGoCount(n)}
+                  className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold border ${goCount === n ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{n}</button>
+              ))}
+            </div>
+          )}
 
           <select value={goKanton}
             onChange={(e) => { setGoKanton(e.target.value); setGoGemeinde(""); }}
@@ -309,30 +321,48 @@ export function JourneyView() {
             {KANTONE.map((k) => <option key={k} value={k}>{k}</option>)}
           </select>
 
-          <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
-            className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
-            <option value="">{frontier ? `Ganzer Kanton — macht weiter ab ${frontier}` : "Ganzer Kanton (Sweep)"}</option>
-            {CH_GEMEINDEN[goKanton].map((g) => {
-              const c = ortCount.get(g.toLowerCase());
-              return <option key={g} value={g}>{c ? `${g} ✓ (${c})` : g}</option>;
-            })}
-          </select>
+          {/* Gemeinde — nur im Jagen-Modus (Vollerfassung = ganzer Kanton) */}
+          {goMode === "jagen" && (
+            <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
+              className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
+              <option value="">{frontier ? `Ganzer Kanton — macht weiter ab ${frontier}` : "Ganzer Kanton (Sweep)"}</option>
+              {CH_GEMEINDEN[goKanton].map((g) => {
+                const c = ortCount.get(g.toLowerCase());
+                return <option key={g} value={g}>{c ? `${g} ✓ (${c})` : g}</option>;
+              })}
+            </select>
+          )}
 
           <button type="button" disabled={run.active}
-            onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount) })}
+            onClick={() => goMode === "vollerfassung"
+              ? dispatchWorkflow("discover.yml", { gemeinde: "", kanton: goKanton, count: String(goCount), mode: "vollerfassung" })
+              : dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount), mode: "jagen" })}
             className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400 disabled:bg-navy-100 disabled:text-navy-400 disabled:cursor-not-allowed">
             {run.active
               ? "läuft… — bitte warten"
+              : goMode === "vollerfassung" ? `▶ Vollerfassung — alle Sanitär-Betriebe im ${goKanton}${frontier ? `, ab ${frontier}` : ""}`
               : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — bis ${goCount} kleine Betriebe (1–3) im ${goKanton}${frontier ? `, ab ${frontier}` : ""}`}
           </button>
-          {!goGemeinde && (
+
+          {goMode === "vollerfassung" ? (
+            <p className="text-[11px] text-navy-400 mt-2">
+              Parkt <b>jeden</b> Sanitär-Betrieb des Kantons (<b>alle Größen</b>, kein Crawl → schnell). Größe bleibt „offen", bis du anreicherst. Läuft alphabetisch weiter (Frontier). Danach „Anreichern" für Inhaber/Mail/Größe.
+            </p>
+          ) : !goGemeinde && (
             <p className="text-[11px] text-navy-400 mt-2">
               Sammelt {goCount} neue <b>1–3-Betriebe</b> (kleine Firmen zuerst, läuft alphabetisch weiter — strikt im gewählten Kanton) · 4–15 gesammelt, &gt;15 geparkt · „1–3 ?“ = geschätzt · aktuell 1–3 in Liste: <b>{soloCount}</b>
             </p>
           )}
 
+          {/* Anreichern — Inhaber/Mail/Größe für die geparkten Betriebe füllen */}
+          <button type="button" disabled={run.active}
+            onClick={() => dispatchWorkflow("enrich.yml", { minutes: "45", mode: "full" })}
+            className="w-full mt-2 bg-white text-navy-700 border border-navy-300 rounded-lg px-4 py-2.5 text-sm font-bold hover:bg-navy-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            ✎ Anreichern — Inhaber / Mail / Größe füllen
+          </button>
+
           {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
-          <p className="text-[11px] text-navy-300 mt-2">Läuft in der Cloud (Sweep bis ~20 Min) — oben das ⏳/✓ zeigt den Stand, die Betriebe erscheinen laufend in der Kontaktliste.</p>
+          <p className="text-[11px] text-navy-300 mt-2">Läuft in der Cloud — oben das ⏳/✓ zeigt den Stand, die Betriebe erscheinen laufend in der Kontaktliste.</p>
         </div>
 
         {/* Stern-Navigation */}
@@ -419,9 +449,12 @@ export function JourneyView() {
   function KontaktView() {
     const q = search.trim().toLowerCase();
     const blank = (v: string | null) => !(v && String(v).trim());
-    let rows = data!.leads;
-    if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
-    // Ebene 1 — Größe (Einfachauswahl)
+    // Such-gefilterte Basis — die Größen-Zähler partitionieren GENAU diese Menge,
+    // sodass 1–3 + 4–15 + >15 + ? immer auf „Alle" aufgehen (kein unsichtbares Delta).
+    const searched = q ? data!.leads.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q)) : data!.leads;
+    const sizeCount = (k: typeof sizeFilter) => (k === "alle" ? searched.length : searched.filter((l) => sizeTier(l.ma_proxy) === k).length);
+    let rows = searched;
+    // Ebene 1 — Größe (Einfachauswahl); „offen" = Größe noch nicht gecrawlt
     if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
     // Ebene 2 — Feld-Lücken (Mehrfachauswahl, jede grenzt weiter ein)
     if (gaps.groesse) rows = rows.filter((l) => sizeTier(l.ma_proxy) === "offen");
@@ -434,7 +467,7 @@ export function JourneyView() {
 
     const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
       { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
-      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" },
+      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" }, { k: "offen", label: "?" },
     ];
     const GAP_TABS: { k: keyof typeof gaps; label: string }[] = [
       { k: "groesse", label: "Größe?" }, { k: "inhaber", label: "Inhaber leer" }, { k: "mail", label: "Mail leer" },
@@ -450,7 +483,7 @@ export function JourneyView() {
         <div className="flex gap-2 mb-1.5">
           {SIZE_TABS.map((t) => (
             <button key={t.k} type="button" onClick={() => setSizeFilter(t.k)}
-              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label} <span className={sizeFilter === t.k ? "opacity-70" : "text-navy-400"}>{sizeCount(t.k)}</span></button>
           ))}
         </div>
 

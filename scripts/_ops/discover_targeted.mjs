@@ -25,6 +25,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { canonKanton, extractPlzOrt, isDeutschschweiz, isLikelyNonICP, kantonMatchesTarget, kantoneOfOrt } from "./_geo_icp.mjs";
 
 const require = createRequire(import.meta.url);
 const { createClient } = require("../../src/web/node_modules/@supabase/supabase-js/dist/index.cjs");
@@ -36,6 +37,9 @@ const startGemeinde = (getArg("--start") || "").trim(); // optionaler Start-Ort;
 const target = Math.max(1, parseInt(getArg("--target") || "10", 10) || 10);
 const MINUTES = Math.max(2, parseInt(getArg("--minutes") || "20", 10) || 20);
 const EXECUTE = process.argv.includes("--execute");
+// Locate-Modus: nur lokalisieren + parken (Region-/Branchen-sauber), KEIN Crawl.
+// Für den DE-weiten Sweep — billig die ganze Landkarte einsammeln, später crawlen.
+const LOCATE = process.argv.includes("--locate-only");
 if (!kanton) { console.error("ERROR: --kanton <Kanton> fehlt."); process.exit(1); }
 
 const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -135,13 +139,14 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
   const startedAt = Date.now();
   const deadline = startedAt + MINUTES * 60 * 1000;
   let smallFound = 0, estSolo = 0, crawled = 0, p415 = 0, p15 = 0, failed = 0, parked = 0;
+  let regionRejected = 0, brancheRejected = 0;
   const scoutedOrte = [];
   const kantoneTouched = [];
   const env = { ...process.env };
   const timeLeft = () => Date.now() < deadline;
 
   console.log(`\n── Targeted Go (${EXECUTE ? "SCHREIBEN" : "DRY-RUN"}) — Ziel ${target} neue 1–3-Betriebe, Budget ${MINUTES} Min ──`);
-  console.log(`   Kantone: ${kantonsToRun.join(" → ")}${SINGLE ? " (nur dieser)" : " (rollt weiter bei Bedarf)"}\n`);
+  console.log(`   Kantone: ${kantonsToRun.join(" → ")}${ROLL ? " (rollt weiter bei Bedarf)" : " (nur dieser)"}\n`);
 
   for (const kt of kantonsToRun) {
     if (!timeLeft() || smallFound >= target) break;
@@ -166,8 +171,10 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
       if (!timeLeft() || smallFound >= target) break;
       // Voll erfasste Orte überspringen (außer dem Grenz-Ort, den wir fertig machen).
       if (coveredOrte.has(ort.toLowerCase()) && i !== prefixEnd - 1) continue;
-      try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kt}`], { stdio: "inherit", env }); }
-      catch (e) { console.log(`  scout-Fehler bei ${ort}: ${e.message} — weiter.`); continue; }
+      // Harte 3-Min-Grenze je Scout (sonst kann ein hängender Google-Fetch den
+      // ganzen Job blockieren — der Crawl unten hat längst ein Timeout, der Scout fehlte).
+      try { execFileSync("node", [SCOUT, "--gemeinde", `${ort} ${kt}`], { stdio: "inherit", env, timeout: 180000, killSignal: "SIGKILL" }); }
+      catch (e) { console.log(`  scout-Fehler/Timeout bei ${ort}: ${e.message} — weiter.`); continue; }
       scoutedOrte.push(ort);
       if (!EXECUTE) continue;
       if (!fs.existsSync(RAW)) continue;
@@ -177,21 +184,43 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
       const rows = parseCsv(fs.readFileSync(RAW, "utf-8"));
       const header = rows.shift(); if (!header) continue;
       const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
-      const G = ort.toLowerCase();
       const seen = new Set();
       const cands = [];
       for (const r of rows) {
         const placeId = txt(r[idx.place_id]);
-        const o = (r[idx.ort] || "").toLowerCase();
+        const firma = txt(r[idx.firma]);
         const website = txt(r[idx.website]);
+        const adresse = txt(r[idx.adresse]);
         if (!placeId || seen.has(placeId) || existing.has(placeId)) continue;
-        // Region-Sicherung: nur Ergebnisse, die Google WIRKLICH in die gesuchte
-        // Gemeinde legt (kein query-Schlupf, der Nachbarkanton-Treffer durchließ).
-        if (!o.includes(G)) continue;
-        if (!txt(r[idx.firma]) || !usableWebsite(website)) continue; // Website Pflicht
+        if (!firma || !usableWebsite(website)) continue; // Website Pflicht
+        // Region-Sicherung auf ERGEBNIS-Ebene. Google liefert pro Ortssuche einen
+        // Umkreis (auch Nachbarkanton-Treffer). Primär: AUTORITATIVER Kanton aus
+        // addressComponents — löst Homonyme (Wetzikon TG vs ZH), die der Ortsname
+        // allein NICHT trennen kann. Fallback (altes CSV ohne kanton-Spalte):
+        // exakte Ort→Kanton-Mitgliedschaft. Locate prüft gegen die ganze DE-Schweiz.
+        const { plz: realPlz, ort: realOrt } = extractPlzOrt(adresse);
+        const gKanton = txt(r[idx.kanton]);
+        let regionOk;
+        if (LOCATE) {
+          regionOk = isDeutschschweiz(realOrt);
+        } else if (gKanton) {
+          regionOk = kantonMatchesTarget(gKanton, kt);     // autoritativ — löst Homonyme
+        } else {
+          // Kein autoritativer Kanton (z.B. alte Zeile ohne kanton-Spalte): nur
+          // akzeptieren, wenn der Ort EINDEUTIG im Zielkanton liegt. Homonyme
+          // (Wetzikon TG/ZH) werden verworfen statt permissiv durchgewunken.
+          const ks = kantoneOfOrt(realOrt);
+          regionOk = ks.length === 1 && ks[0] === kt;
+        }
+        if (!realOrt || !regionOk) { regionRejected++; continue; }
+        // Branchen-Filter: offensichtliche Nicht-Sanitär-Treffer (Hotel/Museum/
+        // Schule/Verband …), die Google bei Ortssuchen reinmischt, verwerfen.
+        const icp = isLikelyNonICP({ name: firma });
+        if (icp.blocked) { brancheRejected++; console.log(`  ⤫ Branche (${icp.reason}): ${firma}`); continue; }
         seen.add(placeId);
         cands.push({
-          place_id: placeId, firma: txt(r[idx.firma]), website, ort: txt(r[idx.ort]), adresse: txt(r[idx.adresse]),
+          place_id: placeId, firma, website, ort: realOrt, plz: realPlz, adresse,
+          kanton: (gKanton && canonKanton(gKanton)) || null,   // autoritativ aus Google, persistiert
           telefon: txt(r[idx.telefon]), rating: numOrNull(r[idx.google_rating]), reviews: intOrNull(r[idx.google_reviews]),
           tier: txt(r[idx.tier]), signale: txt(r[idx.reasons]), icp_score: intOrNull(r[idx.score]),
         });
@@ -204,15 +233,17 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
       //    kappt. Nur DB-Insert, kein Crawl. ──
       for (const c of cands) {
         existing.add(c.place_id);
-        const m = c.adresse ? c.adresse.match(/\b(\d{4})\b/) : null;
         const ins = await sb.from("leads").insert({
-          place_id: c.place_id, firma: c.firma, ort, plz: m ? m[1] : null, telefon: c.telefon, website: c.website,
+          place_id: c.place_id, firma: c.firma, ort: c.ort, plz: c.plz, kanton: c.kanton, telefon: c.telefon, website: c.website,
           rating: c.rating, reviews: c.reviews, tier: c.tier, signale: c.signale, icp_score: c.icp_score,
           status: "neu", updated_at: new Date().toISOString(),
         });
         if (ins.error) { console.log(`  insert übersprungen (${c.firma}): ${ins.error.message}`); continue; }
         parked++;
       }
+
+      // Locate-Modus: nur lokalisieren + parken (Region/Branche sauber), kein Crawl.
+      if (LOCATE) continue;
 
       // ── CRAWLEN & EINSTUFEN: kleine zuerst. Eine angefangene Gemeinde wird KOMPLETT
       //    gecrawlt (vollständige Einteilung); nur die Zeit ist der harte Stop. Das
@@ -259,7 +290,8 @@ const kantonsToRun = ROLL && startKi >= 0 ? allKantone.slice(startKi) : [kanton]
   }
 
   const mins = Math.round((Date.now() - startedAt) / 60000);
-  console.log(`\n✓ Targeted Go: ${smallFound} neue 1–3-Betriebe (Ziel ${target}, davon ${estSolo} geschätzt „1–3 ?") in ~${mins} Min.`);
+  console.log(`\n✓ Targeted Go${LOCATE ? " (LOCATE)" : ""}: ${smallFound} neue 1–3-Betriebe (Ziel ${target}, davon ${estSolo} geschätzt „1–3 ?") in ~${mins} Min.`);
   console.log(`   Geparkt gesamt ${parked} · Gecrawlt ${crawled} · 4–15 ${p415} · >15 ${p15} · Fehler ${failed} · Kantone [${kantoneTouched.join(", ")}] · Orte ${scoutedOrte.length}`);
+  console.log(`   Region-Filter: ${regionRejected} außerhalb Kanton/DE verworfen · Branchen-Filter: ${brancheRejected} Nicht-Sanitär verworfen`);
   console.log(`   ${smallFound >= target ? "Ziel erreicht." : "Budget/Orte aufgebraucht — nächstes Go macht nahtlos weiter."} Erscheint in /ceo/journey.\n`);
 })().catch((e) => { console.error("FEHLER:", e.message); process.exit(1); });

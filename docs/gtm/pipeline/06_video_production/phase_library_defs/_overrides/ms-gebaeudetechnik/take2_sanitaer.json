@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "ms-gebaeudetechnik",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-19T09:17:09.276Z",
+  "leit_start_in_take2_complete": 33.79,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        43.75,
+        55.86
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        55.91,
+        56.01
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        55.96,
+        57.3
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        57.3,
+        60.31
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        60.31,
+        63.5
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        64.2,
+        66.52
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        67.22,
+        69.06
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        69.76,
+        72.4
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        73.1,
+        110.84
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        111.04,
+        111.9
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        112.2,
+        115.44
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        118.69,
+        126.63
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        126.83,
+        132.55
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        132.55,
+        143.84
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        147.38,
+        157.9
+      ]
+    }
+  ]
+}

@@ -102,6 +102,10 @@ docs/**/_tmp*/
 docs/**/concat*.txt
 scripts/_ops/today_sf_*.png
 scripts/_ops/QG_*.png
+
+# Stern-3 B1 (2026-06-25): QG-Frame-Scratch + historische Feedback-Screenshots (Wegwerf, reproduzierbar)
+docs/gtm/pipeline/06_video_production/master_takes/take4/_frame_analysis/
+docs/gtm/pipeline/06_video_production/master_takes/feedback/FB*.png
 scripts/_ops/APR_*.png
 scripts/_ops/PEV*.png
 

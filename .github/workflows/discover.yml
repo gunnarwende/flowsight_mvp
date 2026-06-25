@@ -18,7 +18,7 @@ on:
         required: true
         type: string
       count:
-        description: "Anzahl Betriebe"
+        description: "Anzahl Betriebe (nur im Modus 'jagen')"
         required: true
         type: choice
         default: "20"
@@ -27,6 +27,14 @@ on:
           - "20"
           - "30"
           - "40"
+      mode:
+        description: "jagen = N kleine (1–3) finden+crawlen · vollerfassung = ALLE Sanitär-Betriebe parken (alle Größen, kein Crawl)"
+        required: false
+        type: choice
+        default: "jagen"
+        options:
+          - "jagen"
+          - "vollerfassung"
 
 permissions:
   contents: read
@@ -70,7 +78,7 @@ jobs:
 
       # ── Einzel-Ort (gemeinde gesetzt): bewährter Pfad, unverändert ──
       - name: Einzel-Ort suchen (Google Places)
-        if: ${{ inputs.gemeinde != '' }}
+        if: ${{ inputs.gemeinde != '' && inputs.mode != 'vollerfassung' }}
         env:
           GEMEINDE: ${{ inputs.gemeinde }}
           KANTON: ${{ inputs.kanton }}
@@ -78,7 +86,7 @@ jobs:
         run: node scripts/_ops/scout.mjs --gemeinde "$(echo "$GEMEINDE $KANTON" | sed 's/[[:space:]]*$//')"
 
       - name: "Einzel-Ort: Top-N additiv in die Kontaktliste"
-        if: ${{ inputs.gemeinde != '' }}
+        if: ${{ inputs.gemeinde != '' && inputs.mode != 'vollerfassung' }}
         env:
           GEMEINDE: ${{ inputs.gemeinde }}
           COUNT: ${{ inputs.count }}
@@ -92,7 +100,7 @@ jobs:
       #    Cross-Kanton-Roll — falsche Region wäre verheerend). Stop = Ziel erreicht;
       #    Zeit nur Sicherheitsnetz. Skript-Budget 45 Min; Job-Timeout 60. ──
       - name: "Kanton-Sweep: bis N kleine Betriebe (1–3)"
-        if: ${{ inputs.gemeinde == '' }}
+        if: ${{ inputs.gemeinde == '' && inputs.mode != 'vollerfassung' }}
         env:
           KANTON: ${{ inputs.kanton }}
           COUNT: ${{ inputs.count }}
@@ -101,10 +109,23 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/_ops/discover_targeted.mjs --kanton "$KANTON" --target "$COUNT" --minutes 45 --execute
 
+      # ── VOLLERFASSUNG (locate-only): parkt JEDEN Sanitär-Betrieb des Kantons
+      #    (alle Größen), region-/branchen-sauber, OHNE Crawl → schnell, Größe bleibt
+      #    „offen". Kein 1–3-Ziel-Stop; läuft bis Zeitbudget, Frontier rückt vor.
+      #    So steht die komplette Landkarte, bevor man segmentweise anreichert. ──
+      - name: "Vollerfassung: alle Sanitär-Betriebe parken (kein Crawl)"
+        if: ${{ inputs.mode == 'vollerfassung' }}
+        env:
+          KANTON: ${{ inputs.kanton }}
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/discover_targeted.mjs --kanton "$KANTON" --locate-only --minutes 45 --execute
+
       # ── Anreicherung (Best-Effort): NUR Einzel-Ort-Pfad. Der Sweep crawlt schon
       #    inline → kein zweiter, redundanter Crawl-Durchlauf (spart ~15 Min). ──
       - name: Neue Leads anreichern (Inhaber / E-Mail / Größe)
-        if: ${{ inputs.gemeinde != '' }}
+        if: ${{ inputs.gemeinde != '' && inputs.mode != 'vollerfassung' }}
         continue-on-error: true
         env:
           GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}

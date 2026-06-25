@@ -1,0 +1,115 @@
+{
+  "take": 2,
+  "industry": "sanitaer",
+  "tenant": "schaub-haustechnik",
+  "description": "Auto-generated from take2_event_log.json (36 events). All source ranges derived from recorder event landmarks — no manual frame sampling needed.",
+  "generated_at": "2026-06-03T13:04:34.414Z",
+  "leit_start_in_take2_complete": 33.87,
+  "phases": [
+    {
+      "name": "leit_dashboard_initial",
+      "range": [
+        44.65,
+        56.76
+      ]
+    },
+    {
+      "name": "leit_dashboard_scroll",
+      "range": [
+        56.81,
+        56.91
+      ]
+    },
+    {
+      "name": "leit_list_scroll_down",
+      "range": [
+        56.86,
+        58.2
+      ]
+    },
+    {
+      "name": "leit_list_bottom",
+      "range": [
+        58.2,
+        61.21
+      ]
+    },
+    {
+      "name": "leit_list_scroll_up",
+      "range": [
+        61.21,
+        64.42
+      ]
+    },
+    {
+      "name": "leit_kpi_neu",
+      "range": [
+        65.12,
+        67.44
+      ]
+    },
+    {
+      "name": "leit_kpi_bei_uns",
+      "range": [
+        68.14,
+        69.98
+      ]
+    },
+    {
+      "name": "leit_kpi_erledigt",
+      "range": [
+        70.68,
+        73.31
+      ]
+    },
+    {
+      "name": "leit_kpi_bewertung",
+      "range": [
+        74.01,
+        111.74
+      ]
+    },
+    {
+      "name": "leit_filter_reset",
+      "range": [
+        111.94,
+        112.79
+      ]
+    },
+    {
+      "name": "leit_list_normal",
+      "range": [
+        113.1,
+        116.34
+      ]
+    },
+    {
+      "name": "leit_case_open_uebersicht",
+      "range": [
+        120.94,
+        128.89
+      ]
+    },
+    {
+      "name": "leit_case_scroll_verlauf",
+      "range": [
+        129.09,
+        134.78
+      ]
+    },
+    {
+      "name": "leit_case_scroll_top",
+      "range": [
+        134.79,
+        146.09
+      ]
+    },
+    {
+      "name": "leit_dashboard_back",
+      "range": [
+        149.63,
+        160.14
+      ]
+    }
+  ]
+}

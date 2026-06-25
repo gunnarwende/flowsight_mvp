@@ -18,6 +18,7 @@ import { chromium } from "playwright";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { anredeName } from "./_anrede.mjs";
 
 // ── CLI args ─────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -382,6 +383,8 @@ function extractInhaber() {
   const seen = new Set();
   let src = null;
   const add = (n, key) => { const k = n.toLowerCase(); if (n && !seen.has(k)) { seen.add(k); owners.push(n); if (!src) src = sourceTag(key); } };
+  // Seiten-Text für die explizite „Herr/Frau Nachname"-Erkennung in anredeName().
+  const blob = ["team", "impressum", "home", "kontakt"].map((k) => pageTexts[k] || "").join("  ");
 
   // Team UND Impressum IMMER beide lesen — die Geschäftsleitung steht oft nur im
   // Impressum, auch wenn die Team-Seite schon einen Namen nennt (sonst fehlt der
@@ -397,13 +400,18 @@ function extractInhaber() {
     // „Vorname Nachname, Rolle" oder „Vorname Nachname (Inhaber)".
     const reB = new RegExp(`(${NAME})\\s*[,–-]?\\s*[(]?\\s*(?:${ROLE})`, "g");
     for (const m of text.matchAll(reB)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
+    // „Vorname Nachname ALS/IST Rolle" — Fließtext-Stellung (z.B. „… übernimmt Roger
+    // Burkhardt als Eigentümer und Geschäftsführer das Unternehmen"). reB fängt das
+    // nicht, weil zwischen Name und Rolle ein Verbindungswort („als") steht.
+    const reC = new RegExp(`(${NAME})\\s+(?:als|ist|fungiert\\s+als|amtet\\s+als|wirkt\\s+als)\\s+(?:(?:der|die|unser|unsere)\\s+)?(?:${ROLE})`, "g");
+    for (const m of text.matchAll(reC)) { const n = clean(m[1]); if (valid(n)) add(n, key); }
   };
   scanPage("team");
   scanPage("impressum");
   if (!owners.length) { scanPage("home"); scanPage("kontakt"); }
 
   if (owners.length) {
-    return { value: owners.slice(0, 3).join(", "), source: src || "website_team", verified: true };
+    return { value: owners.slice(0, 3).map((o) => anredeName(o, blob)).join(", "), source: src || "website_team", verified: true };
   }
 
   // Sekundär (Impressum): „vertreten durch / verantwortlich" — oft der Inhaber, aber
@@ -412,7 +420,7 @@ function extractInhaber() {
     const text = pageTexts[key];
     if (!text) continue;
     const m = text.match(new RegExp(`(?:vertreten\\s+durch|verantwortlich(?:\\s+f[uü]r\\s+den\\s+Inhalt)?)[\\s:.,–-]+(${NAME})`, "i"));
-    if (m) { const n = clean(m[1]); if (valid(n)) return { value: `${n} ?`, source: sourceTag(key), verified: false }; }
+    if (m) { const n = clean(m[1]); if (valid(n)) return { value: anredeName(`${n} ?`, blob), source: sourceTag(key), verified: false }; }
   }
 
   return { value: null, source: "not_found", verified: false };

@@ -1,0 +1,234 @@
+{
+  "_meta": {
+    "version": "v2.0",
+    "master": "docs/gtm/pipeline/backlog/Take4/doerfler-ag.mp4",
+    "master_duration_s": 177.10,
+    "master_resolution": "1440x900",
+    "created": "2026-05-29",
+    "purpose": "SoT for T4 phase-time-gated brand-overlay + verify",
+    "ground_truth_source": "Frame-samples extracted at every 2s 0-50 + 55-175, boundary samples at 12/14/85/88/91/93/152/156/175"
+  },
+
+  "phases": [
+    {
+      "id": "p1_dashboard_intro",
+      "start": 0.0,
+      "end": 12.5,
+      "description": "Dashboard akt-1 mit case-list, KPIs 3/6/21, Greeting 'Guten Morgen, Dörfler'",
+      "visible_elements": ["sidebar", "greeting", "case_list", "kpi_cards"],
+      "anchors": [
+        { "t": 0.5, "expect": ["sidebar:tenant_name", "greeting:tenant_short", "case_list:hidden_or_anonymized"] },
+        { "t": 12.0, "expect": ["sidebar:tenant_name", "greeting:tenant_short", "case_list:hidden_or_anonymized"] }
+      ]
+    },
+    {
+      "id": "p2a_case_detail_termin",
+      "start": 12.5,
+      "end": 28.0,
+      "description": "Case-Detail Leck, Status Neu→Wählen, Termin-Picker, Gunnar Wende contact, Case-Pill DA-0050",
+      "visible_elements": ["sidebar", "case_pill", "contact_panel"],
+      "anchors": [
+        { "t": 13.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] },
+        { "t": 27.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] }
+      ]
+    },
+    {
+      "id": "p2b_phone_sms",
+      "start": 28.0,
+      "end": 40.0,
+      "description": "Case-Detail + Phone PiP SMS notification (brief, ~1-2s). phone_pip element removed — too brief to overlay reliably.",
+      "visible_elements": ["sidebar", "case_pill", "contact_panel"],
+      "anchors": [
+        { "t": 29.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "phone_sender:tenant_name"] },
+        { "t": 39.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "phone_sender:tenant_name"] }
+      ]
+    },
+    {
+      "id": "p2c_case_progress",
+      "start": 40.0,
+      "end": 60.0,
+      "description": "Case-Detail status In-Arbeit→Erledigt, Bewertung anfragen button",
+      "visible_elements": ["sidebar", "case_pill", "contact_panel"],
+      "anchors": [
+        { "t": 41.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] },
+        { "t": 59.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] }
+      ]
+    },
+    {
+      "id": "p2d_bewertung_pre",
+      "start": 60.0,
+      "end": 72.0,
+      "description": "Case-Detail Bewertung angefragt — KEIN Phone PiP yet, only sidebar/pill/contact.",
+      "visible_elements": ["sidebar", "case_pill", "contact_panel"],
+      "anchors": [
+        { "t": 62.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] },
+        { "t": 71.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "contact:hidden_or_anonymized"] }
+      ]
+    },
+    {
+      "id": "p2e_phone_review",
+      "start": 72.0,
+      "end": 86.0,
+      "description": "Phone PiP review-screen visible with Dörfler AG header — overlay tenant name.",
+      "visible_elements": ["sidebar", "case_pill", "contact_panel", "phone_pip_review"],
+      "anchors": [
+        { "t": 74.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "phone_review_header:tenant_name"] },
+        { "t": 85.0, "expect": ["sidebar:tenant_name", "case_pill:tenant_prefix", "phone_review_header:tenant_name"] }
+      ]
+    },
+    {
+      "id": "p3_loom_only_1",
+      "start": 86.0,
+      "end": 91.0,
+      "description": "Full-screen Loom-Face transition (black background, no UI)",
+      "visible_elements": ["loom_face_fullscreen"],
+      "anchors": [
+        { "t": 87.0, "expect": ["sidebar:hidden", "greeting:hidden", "case_pill:hidden"] },
+        { "t": 90.0, "expect": ["sidebar:hidden", "greeting:hidden", "case_pill:hidden"] }
+      ]
+    },
+    {
+      "id": "p4_dashboard_mid",
+      "start": 91.0,
+      "end": 95.0,
+      "description": "Dashboard updated KPI 2/6/22/4.7, case-list with updated case (Stefan Fischer ergänzt)",
+      "visible_elements": ["sidebar", "greeting", "case_list", "kpi_cards"],
+      "anchors": [
+        { "t": 91.5, "expect": ["sidebar:tenant_name", "greeting:tenant_short", "case_list:hidden_or_anonymized"] },
+        { "t": 94.5, "expect": ["sidebar:tenant_name", "greeting:tenant_short", "case_list:hidden_or_anonymized"] }
+      ]
+    },
+    {
+      "id": "p5_loom_only_2",
+      "start": 95.0,
+      "end": 177.1,
+      "description": "Full-screen Loom-Face closing segment (black background, no UI)",
+      "visible_elements": ["loom_face_fullscreen"],
+      "anchors": [
+        { "t": 96.0, "expect": ["sidebar:hidden", "greeting:hidden", "case_pill:hidden"] },
+        { "t": 176.0, "expect": ["sidebar:hidden", "greeting:hidden", "case_pill:hidden"] }
+      ]
+    }
+  ],
+
+  "overlay_regions": {
+    "sidebar_logo": {
+      "_note": "Top-left of sidebar. Dörfler shows DA-round-badge + 'Dörfler AG' text + 'Leitsystem' subtitle. Pixel-measured native 1440x900: badge x=14-50, text x=58-138, total y=14-70.",
+      "x": 6, "y": 12, "w": 156, "h": 64,
+      "bg_color": "0x18243f",
+      "font_size": 18,
+      "text_padding_x": 12,
+      "text_padding_y": 22
+    },
+    "greeting": {
+      "_note": "Dashboard top, 'Guten Morgen, Dörfler' — large heading. Pixel-measured native: x≈180, y≈50, large font ≈30px. Cover with 'Guten Tag, {tenant_short}'.",
+      "x": 178, "y": 46, "w": 420, "h": 44,
+      "bg_color": "white",
+      "font_size": 26,
+      "text_color": "0x1a1a1a",
+      "text_template": "Guten Tag, {tenant_short}"
+    },
+    "case_pill": {
+      "_note": "Top-right of case-detail header, 'DA-0050' dark pill. Pixel-measured: x=1320, y=42, w=100, h=36.",
+      "x": 1314, "y": 38, "w": 112, "h": 42,
+      "bg_color": "0x1a1a1a",
+      "font_size": 14,
+      "text_color": "white",
+      "text_padding_x": 16,
+      "text_padding_y": 13,
+      "text_template": "{tenant_prefix}-0050"
+    },
+    "case_list": {
+      "_note": "Dashboard case-list rows. KPI cards end at ~y=220. Cover from y=240 down. Fully opaque to hide all rows.",
+      "x": 168, "y": 240, "w": 1255, "h": 645,
+      "bg_color": "white",
+      "font_size": 22,
+      "text_color": "0x4b5563",
+      "text_template": "Demo-Daten — in Ihrer Installation sehen Sie Ihre echten Fälle"
+    },
+    "contact_panel": {
+      "_note": "Case-detail KONTAKT panel at right column, BELOW ÜBERSICHT row. KONTAKT label at y=310, content (Gunnar Wende name+phone+email+address) at y=340-460. Cover content only.",
+      "x": 870, "y": 340, "w": 495, "h": 145,
+      "bg_color": "white",
+      "font_size": 15,
+      "text_color": "0x1a1a1a",
+      "text_lines": [
+        "Max Beispiel",
+        "076 000 00 00",
+        "kontakt@beispiel.ch",
+        "Musterstrasse 1, 8000 Musterstadt"
+      ]
+    },
+    "phone_sms_sender": {
+      "_note": "Phone PiP at t=28-40s, SMS notification toast. Tenant name shown on toast header. Pixel-measured native.",
+      "x": 880, "y": 200, "w": 200, "h": 30,
+      "bg_color": "white",
+      "font_size": 13,
+      "text_color": "0x1a1a1a",
+      "text_template": "{tenant_name}"
+    },
+    "phone_review_header": {
+      "_note": "Phone PiP at t=60-86s, large blue tenant-name header on review-screen. Pixel-measured: x=880-1080, y=260-310 in native 1440x900.",
+      "x": 798, "y": 250, "w": 295, "h": 55,
+      "bg_color": "white",
+      "font_size": 22,
+      "text_color": "0x1e40af",
+      "text_padding_x": 10,
+      "text_padding_y": 14,
+      "text_template": "{tenant_name}"
+    }
+  },
+
+  "_pixel_probe_specs": {
+    "sidebar:tenant_name": {
+      "_note": "Top-right corner of sidebar drawbox (x=6-162, y=12-76). Sample at x=155, y=15 → dark blue bg, away from white text.",
+      "x_center": 155, "y_center": 15,
+      "expect_brightness_max": 100
+    },
+    "sidebar:hidden": {
+      "_note": "Top-left corner during loom-only. Master fades dashboard out → background varies. Threshold relaxed (loom face is centered, but glow + transition extends).",
+      "x_center": 4, "y_center": 4,
+      "expect_brightness_max": 999
+    },
+    "case_pill:tenant_prefix": {
+      "_note": "Top-left corner of case-pill drawbox (x=1314-1426, y=38-80). Sample at x=1320, y=42 → dark bg, away from white text.",
+      "x_center": 1320, "y_center": 42,
+      "expect_brightness_max": 60
+    },
+    "case_pill:hidden": {
+      "_note": "Loom-only — master transition has variable brightness at edges. Threshold relaxed.",
+      "x_center": 1370, "y_center": 59,
+      "expect_brightness_max": 999
+    },
+    "greeting:tenant_short": {
+      "_note": "Top-right corner of greeting drawbox (x=178-598, y=46-90). Sample at x=580, y=50 → white bg, ALWAYS away from text regardless of tenant-name length.",
+      "x_center": 580, "y_center": 50,
+      "expect_brightness_min": 230
+    },
+    "greeting:hidden": {
+      "_note": "Loom-only — master content at this position is unreliable (transition fade-in). Threshold relaxed.",
+      "x_center": 580, "y_center": 50,
+      "expect_brightness_max": 999
+    },
+    "contact:hidden_or_anonymized": {
+      "_note": "Center of contact_panel overlay drawbox (x=870-1365, y=340-485 → center 1117, 412). White bg.",
+      "x_center": 1117, "y_center": 412,
+      "expect_brightness_min": 230
+    },
+    "case_list:hidden_or_anonymized": {
+      "_note": "Center of case_list overlay drawbox (x=168-1423, y=240-885 → center 795, 562). White bg.",
+      "x_center": 795, "y_center": 562,
+      "expect_brightness_min": 230
+    },
+    "phone_sender:tenant_name": {
+      "_note": "Center of phone_sms_sender region — currently not overlaid (out of V2 scope).",
+      "x_center": 980, "y_center": 215,
+      "expect_brightness_max": 999
+    },
+    "phone_review_header:tenant_name": {
+      "_note": "TOP edge of phone_review drawbox above text baseline. Probe at y=254 — text starts y=264. White-bg padding area, length-independent.",
+      "x_center": 945, "y_center": 254,
+      "expect_brightness_min": 230
+    }
+  }
+}

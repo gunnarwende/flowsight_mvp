@@ -1,0 +1,35 @@
+name: Analyze – Lead-Audit (read-only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: "Anzahl Stichproben-Leads"
+        required: false
+        default: "20"
+      kanton:
+        description: "Erwarteter Kanton (für Region-Check, optional)"
+        required: false
+        default: ""
+
+jobs:
+  analyze:
+    name: analyze
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+      - name: Install dependencies
+        run: cd src/web && npm ci
+      - name: Run lead audit (read-only)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/analyze_leads.mjs --sample "${{ inputs.sample }}" --kanton "${{ inputs.kanton }}"

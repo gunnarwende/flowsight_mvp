@@ -1,0 +1,307 @@
+{
+  "take": 3,
+  "industry": "sanitaer",
+  "tenant": "walter-leuthold",
+  "description": "V2c auto-generated from event logs. Wizard recording=35.00s, splice -ss 2.0 → wizard portion 33.00s in source. Leit start in source @ 33.00s. Total source ~69.86s.",
+  "generated_at": "2026-06-09T16:40:31.753Z",
+  "splice_trim": 2,
+  "wizard_used_in_source": 33,
+  "leit_start_in_source": 33,
+  "max_source_time": 69.86,
+  "phases": [
+    {
+      "name": "wizard1_intro",
+      "range": [
+        3.58,
+        4.08
+      ]
+    },
+    {
+      "name": "wizard1_kategorie_leck",
+      "range": [
+        7.7,
+        8.15
+      ]
+    },
+    {
+      "name": "wizard1_prio_normal",
+      "range": [
+        8.34,
+        8.79
+      ]
+    },
+    {
+      "name": "wizard1_weiter_active",
+      "range": [
+        8.62,
+        8.87
+      ]
+    },
+    {
+      "name": "wizard1_to_2",
+      "range": [
+        8.97,
+        9.22
+      ]
+    },
+    {
+      "name": "wizard2_empty",
+      "range": [
+        9.42,
+        9.68
+      ]
+    },
+    {
+      "name": "wizard2_strasse_typing",
+      "range": [
+        9.73,
+        12.03
+      ]
+    },
+    {
+      "name": "wizard2_nr_typing",
+      "range": [
+        12.23,
+        12.73
+      ]
+    },
+    {
+      "name": "wizard2_plz_typing",
+      "range": [
+        12.93,
+        13.93
+      ]
+    },
+    {
+      "name": "wizard2_ort_typing",
+      "range": [
+        14.13,
+        16.34
+      ]
+    },
+    {
+      "name": "wizard2_complete",
+      "range": [
+        16.44,
+        17.04
+      ]
+    },
+    {
+      "name": "wizard2_to_3",
+      "range": [
+        17.04,
+        17.29
+      ]
+    },
+    {
+      "name": "wizard3_intro",
+      "range": [
+        17.49,
+        17.75
+      ]
+    },
+    {
+      "name": "wizard3_name_typing",
+      "range": [
+        17.8,
+        19.3
+      ]
+    },
+    {
+      "name": "wizard_break",
+      "range": [
+        19.3,
+        19.35
+      ]
+    },
+    {
+      "name": "wizard3_telefon_typing",
+      "range": [
+        19.5,
+        20.5
+      ]
+    },
+    {
+      "name": "wizard3_email_typing",
+      "range": [
+        20.7,
+        23.83
+      ]
+    },
+    {
+      "name": "wizard3_beschr_focus",
+      "range": [
+        23.53,
+        23.81
+      ]
+    },
+    {
+      "name": "wizard3_beschr_typing",
+      "range": [
+        23.83,
+        29.9
+      ]
+    },
+    {
+      "name": "wizard3_beschr_done",
+      "range": [
+        29.95,
+        30.82
+      ]
+    },
+    {
+      "name": "wizard3_submit",
+      "range": [
+        30.92,
+        32.14
+      ]
+    },
+    {
+      "name": "success_screen",
+      "range": [
+        32.24,
+        32.39
+      ]
+    },
+    {
+      "name": "success_to_leit",
+      "range": [
+        32.49,
+        33.49
+      ]
+    },
+    {
+      "name": "leit_face_hold",
+      "range": [
+        38.65,
+        38.85
+      ]
+    },
+    {
+      "name": "leit_dashboard_view",
+      "range": [
+        38.55,
+        42.63
+      ]
+    },
+    {
+      "name": "leit_dashboard_intro",
+      "range": [
+        38.55,
+        41.05
+      ]
+    },
+    {
+      "name": "leit_dashboard_kpi_neu",
+      "range": [
+        41.05,
+        42.55
+      ]
+    },
+    {
+      "name": "leit_dashboard_kpi_bewertung",
+      "range": [
+        42.55,
+        44.05
+      ]
+    },
+    {
+      "name": "leit_to_case",
+      "range": [
+        42.43,
+        43.43
+      ]
+    },
+    {
+      "name": "case_detail_intro",
+      "range": [
+        42.98,
+        44.43
+      ]
+    },
+    {
+      "name": "case_detail_uebersicht",
+      "range": [
+        44.43,
+        46.45
+      ]
+    },
+    {
+      "name": "case_detail_beschreibung",
+      "range": [
+        46.45,
+        48.45
+      ]
+    },
+    {
+      "name": "case_detail_kontakt",
+      "range": [
+        48.45,
+        49.46
+      ]
+    },
+    {
+      "name": "case_detail_verlauf",
+      "range": [
+        49.46,
+        52.47
+      ]
+    },
+    {
+      "name": "case_to_dashboard",
+      "range": [
+        52.47,
+        54.8
+      ]
+    },
+    {
+      "name": "case_back_full",
+      "range": [
+        55,
+        61.17
+      ]
+    },
+    {
+      "name": "dashboard_after_case",
+      "range": [
+        61.22,
+        61.25
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_open",
+      "range": [
+        61.4,
+        62.8
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_view",
+      "range": [
+        62.8,
+        64.56
+      ]
+    },
+    {
+      "name": "neuer_fall_modal",
+      "range": [
+        61.6,
+        64.86
+      ]
+    },
+    {
+      "name": "neuer_fall_modal_close",
+      "range": [
+        64.86,
+        65.36
+      ]
+    },
+    {
+      "name": "dashboard_final",
+      "range": [
+        65.36,
+        69.76
+      ]
+    }
+  ]
+}
