@@ -1,0 +1,64 @@
+name: Anreichern – Inhaber / E-Mail / Größe
+
+# Schließt die Karten-Lücken: geht ALLE unvollständigen Leads durch (Website
+# vorhanden, aber Inhaber/Mail/Größe leer), crawlt sie und füllt die Felder
+# (crawl_extract → crawl_to_leads). Entkoppelt vom 45-Min-Discovery-Budget, damit
+# auch die nach einem Sweep ungecrawlten Betriebe drankommen. Am Ende: eine
+# Founder-Gegenprüf-Liste (Inhaber online nicht auffindbar). Das Handy löst nur aus.
+
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Zeitbudget in Minuten"
+        required: true
+        type: choice
+        default: "45"
+        options:
+          - "15"
+          - "30"
+          - "45"
+          - "55"
+
+permissions:
+  contents: read
+
+# Kein paralleler Doppellauf (schreibt sonst dieselben Zeilen).
+concurrency:
+  group: enrich
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dependencies installieren (src/web)
+        run: cd src/web && npm ci --ignore-scripts
+
+      - name: Playwright-Browser cachen
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      - name: Playwright Chromium installieren
+        continue-on-error: true
+        run: cd src/web && npx playwright install --with-deps chromium
+
+      - name: node_modules an Repo-Wurzel verlinken (bare playwright-import)
+        continue-on-error: true
+        run: ln -s src/web/node_modules node_modules
+
+      - name: Leads anreichern (Inhaber / E-Mail / Größe) + Gegenprüf-Liste
+        env:
+          GOOGLE_SCOUT_KEY: ${{ secrets.GOOGLE_SCOUT_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/_ops/enrich_new_leads.mjs --minutes "${{ inputs.minutes }}"

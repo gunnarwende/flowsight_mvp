@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   COLD, DRILL, injectColdText, gewerkPhrase, type ColdNode,
 } from "./journey/coldCallScript";
 import { WARM_PHASES, WARM_DRILL } from "./journey/warmCallScript";
+import CH_GEMEINDEN_RAW from "@/src/data/ch_gemeinden_de.json";
+
+// Deutschschweizer Kantone → Orte (alphabetisch generiert aus swiss-cities, language=de).
+const CH_GEMEINDEN = CH_GEMEINDEN_RAW as Record<string, string[]>;
+const KANTONE = Object.keys(CH_GEMEINDEN);
 
 // ── Typen ─────────────────────────────────────────────────────────────────
 interface Lead {
@@ -89,6 +94,23 @@ const STAR_INFO: Record<number, string> = {
   8: "Die ersten Fälle gemeinsam anschauen — nicht verkaufen, anbieten. Plus Wochen-Rapport. Zufriedener Kunde wird zur Referenz und speist Stern 1.",
 };
 
+// Größen-Tier aus ma_proxy (Mitarbeiter-Proxy): Solo 1–3 / Premium 4–15 / >15 DQ.
+function sizeTier(maProxy: string | null): "solo" | "premium" | "dq" | "offen" {
+  const m = String(maProxy ?? "").match(/\d+/);
+  if (!m) return "offen";
+  const n = parseInt(m[0], 10);
+  if (n <= 3) return "solo";
+  if (n <= 15) return "premium";
+  return "dq";
+}
+
+// „Schon angefasst" = Status gepflegt (≠ neu/leer). abgelehnt (Nein) und ja sind
+// abgeschlossen → der Anfangsschritt (Cold Call) wird unterdrückt, nicht wiederholt.
+function isContacted(status: string | null): boolean {
+  const s = (status ?? "").trim();
+  return s !== "" && s !== "neu";
+}
+
 export function JourneyView() {
   const [data, setData] = useState<JourneyData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,6 +119,72 @@ export function JourneyView() {
   const [biz, setBiz] = useState<Biz | null>(null);
   const [liveHist, setLiveHist] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [opsMsg, setOpsMsg] = useState<string | null>(null);
+  const [goCount, setGoCount] = useState(20);
+  const [goKanton, setGoKanton] = useState("Thurgau");
+  const [goGemeinde, setGoGemeinde] = useState(""); // "" = ganzer Kanton (Sweep)
+  const [sizeFilter, setSizeFilter] = useState<"alle" | "solo" | "premium" | "dq">("alle"); // Größe (Einfachauswahl)
+  // Feld-Lücken (Mehrfachauswahl) — zum gezielten Nacharbeiten: Größe?/Inhaber/Mail leer.
+  const [gaps, setGaps] = useState<{ groesse: boolean; inhaber: boolean; mail: boolean }>({ groesse: false, inhaber: false, mail: false });
+  const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
+  // „Go"-Lauf-Status (Discovery + Anreicherung) — sperrt den Go-Knopf, zeigt ⏳/✓ + Stopp.
+  const [run, setRun] = useState<{ active: boolean; doneRecent: boolean; id: number | null }>({ active: false, doneRecent: false, id: null });
+  const [stopping, setStopping] = useState(false);
+
+  // Lauf-Status alle 15s pollen (GitHub-Run hinter „Go").
+  useEffect(() => {
+    let alive = true;
+    const tick = async () => {
+      try {
+        const r = await fetch("/api/ceo/ops/run-status", { cache: "no-store" });
+        const j = await r.json();
+        if (!alive || !j?.ok) return;
+        // Jeder nicht abgeschlossene Lauf zählt als „aktiv" — inkl. „pending"
+        // (wartet via Concurrency-Sperre) und „waiting"/„requested". Nur
+        // "completed"/"none" = nicht aktiv. (Vorher fehlte „pending" → der Knopf
+        // blieb fälschlich klickbar, obwohl ein Lauf in der Warteschlange stand.)
+        const active = j.state !== "completed" && j.state !== "none";
+        const startedMs = j.started_at ? new Date(j.started_at).getTime() : 0;
+        const doneRecent = j.state === "completed" && j.conclusion === "success"
+          && startedMs > 0 && Date.now() - startedMs < 45 * 60 * 1000;
+        setRun({ active, doneRecent, id: j.id ?? null });
+        if (!active) setStopping(false);
+      } catch { /* still — nächster Tick */ }
+    };
+    tick();
+    const id = setInterval(tick, 15000);
+    return () => { alive = false; clearInterval(id); };
+  }, []);
+
+  async function cancelRun() {
+    if (!run.id || stopping) return;
+    setStopping(true);
+    try {
+      await fetch("/api/ceo/ops/run-status", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ run_id: run.id }),
+      });
+      setRun((r) => ({ ...r, active: false }));
+    } catch { setStopping(false); }
+  }
+
+  // Schon erfasste Orte (haben Leads) → ✓ + Anzahl im Dropdown
+  const ortCount = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const l of data?.leads ?? []) {
+      if (l.ort) { const k = l.ort.trim().toLowerCase(); m.set(k, (m.get(k) ?? 0) + 1); }
+    }
+    return m;
+  }, [data]);
+
+  // Frontier: erster noch nicht erfasster Ort (zusammenhängendes A…-Präfix) —
+  // genau dort macht der Sweep nahtlos weiter. null = ganzer Kanton durch.
+  const frontier = useMemo(() => {
+    for (const g of CH_GEMEINDEN[goKanton] ?? []) {
+      if (!ortCount.get(g.trim().toLowerCase())) return g;
+    }
+    return null;
+  }, [goKanton, ortCount]);
 
   const load = useCallback(async () => {
     try {
@@ -135,6 +223,39 @@ export function JourneyView() {
     load();
   }
 
+  async function dispatchWorkflow(workflow: string, inputs: Record<string, string>) {
+    setOpsMsg("Wird ausgelöst …");
+    try {
+      const res = await fetch("/api/ceo/ops/dispatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workflow, inputs }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok && j.ok) {
+        setOpsMsg(`✓ Ausgelöst: ${workflow}. Läuft jetzt in Actions (~1–2 Min).`);
+        // Knopf SOFORT sperren (nicht erst beim nächsten 15s-Poll) — sonst klickt
+        // man in der Lücke versehentlich doppelt. Der Poll bestätigt gleich.
+        if (workflow === "discover.yml") setRun((r) => ({ ...r, active: true, doneRecent: false }));
+      } else if (j.error === "GH_DISPATCH_TOKEN not configured") {
+        setOpsMsg("GH_DISPATCH_TOKEN fehlt — fine-grained PAT (Actions read+write) in Vercel setzen.");
+      } else {
+        // Genaue Ursache sichtbar machen: bei GitHub-Ablehnung reicht die Route
+        // GitHubs echten Text als j.body durch ("Bad credentials" = Tokenwert,
+        // "Resource not accessible by personal access token" = Recht,
+        // "secondary rate limit" = gedrosselt). Leerer body bei 403 = es war
+        // nicht GitHub, sondern eine Schicht davor (Vercel-Edge/Login).
+        const detail = String(j.body || j.error || "").replace(/\s+/g, " ").trim();
+        setOpsMsg(
+          `Fehler ${j.status || res.status}` +
+            (detail ? `: ${detail.slice(0, 240)}` : " — keine GitHub-Antwort (eher Vercel-Edge/Login, nicht der Token)")
+        );
+      }
+    } catch {
+      setOpsMsg("Netzwerkfehler beim Auslösen.");
+    }
+  }
+
   function startCall(lead: Lead) {
     const nm = (lead.entscheider || "").split(",")[0].replace(/^\s*(Herr|Frau)\s+/i, "").trim();
     const ok = nm && nm.length >= 3 && !/\bAG\b|\bGmbH\b|Unternehmen|\?/.test(nm);
@@ -162,10 +283,57 @@ export function JourneyView() {
   // ── Home: Funnel + Stern-Navigation ────────────────────────────────────
   function Home() {
     const max = Math.max(...data!.funnel.map((f) => f.value), 1);
+    const soloCount = data!.leads.filter((l) => sizeTier(l.ma_proxy) === "solo").length;
     return (
       <div>
         <PageHead eyebrow="FlowSight — nur für mich" title="Customer Journey"
           sub="Unser Umsatzmotor — vom Erstkontakt bis zum Kunden, und der Schwung trägt zurück." />
+
+        <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
+
+        {/* Go — Schwungrad in Gang setzen */}
+        <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
+          <div className="text-lg font-extrabold text-navy-900">Go</div>
+          <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, reichere an und baue die Kontaktliste.</p>
+
+          <div className="flex gap-2 mt-3">
+            {[10, 20, 30, 40].map((n) => (
+              <button key={n} type="button" onClick={() => setGoCount(n)}
+                className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold border ${goCount === n ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{n}</button>
+            ))}
+          </div>
+
+          <select value={goKanton}
+            onChange={(e) => { setGoKanton(e.target.value); setGoGemeinde(""); }}
+            className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
+            {KANTONE.map((k) => <option key={k} value={k}>{k}</option>)}
+          </select>
+
+          <select value={goGemeinde} onChange={(e) => setGoGemeinde(e.target.value)}
+            className="w-full mt-2 px-3 py-2 rounded-lg border border-navy-200 text-sm bg-white">
+            <option value="">{frontier ? `Ganzer Kanton — macht weiter ab ${frontier}` : "Ganzer Kanton (Sweep)"}</option>
+            {CH_GEMEINDEN[goKanton].map((g) => {
+              const c = ortCount.get(g.toLowerCase());
+              return <option key={g} value={g}>{c ? `${g} ✓ (${c})` : g}</option>;
+            })}
+          </select>
+
+          <button type="button" disabled={run.active}
+            onClick={() => dispatchWorkflow("discover.yml", { gemeinde: goGemeinde, kanton: goKanton, count: String(goCount) })}
+            className="w-full mt-3 bg-gold-500 text-navy-950 rounded-lg px-4 py-3 text-base font-extrabold hover:bg-gold-400 disabled:bg-navy-100 disabled:text-navy-400 disabled:cursor-not-allowed">
+            {run.active
+              ? "läuft… — bitte warten"
+              : goGemeinde ? `▶ Go — ${goCount} Betriebe in ${goGemeinde}` : `▶ Go — bis ${goCount} kleine Betriebe (1–3) im ${goKanton}${frontier ? `, ab ${frontier}` : ""}`}
+          </button>
+          {!goGemeinde && (
+            <p className="text-[11px] text-navy-400 mt-2">
+              Sammelt {goCount} neue <b>1–3-Betriebe</b> (kleine Firmen zuerst, läuft alphabetisch weiter — strikt im gewählten Kanton) · 4–15 gesammelt, &gt;15 geparkt · „1–3 ?“ = geschätzt · aktuell 1–3 in Liste: <b>{soloCount}</b>
+            </p>
+          )}
+
+          {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
+          <p className="text-[11px] text-navy-300 mt-2">Läuft in der Cloud (Sweep bis ~20 Min) — oben das ⏳/✓ zeigt den Stand, die Betriebe erscheinen laufend in der Kontaktliste.</p>
+        </div>
 
         {/* Stern-Navigation */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
@@ -223,16 +391,81 @@ export function JourneyView() {
     );
   }
 
+  // Aktions-Spalte mit Kontakt-Historie-Schutz: schon kontaktierte Betriebe
+  // bekommen NICHT erneut den Anfangsschritt. abgelehnt (Nein) und ja sind dicht.
+  function ContactActions({ l }: { l: Lead }) {
+    const s = (l.status ?? "neu").trim();
+    if (s === "abgelehnt")
+      return <div className="text-[11px] font-semibold text-red-600">✕ abgelehnt — nicht erneut ansprechen</div>;
+    if (s === "ja")
+      return <div className="text-[11px] font-semibold text-gold-700">✓ Ja — läuft in Simulation, kein Anfangsschritt</div>;
+    const reCall = s === "rueckruf" || s === "kein-anschluss";
+    return (
+      <>
+        <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-2.5 py-1.5 text-[12px] font-bold hover:bg-gold-400">
+          {reCall ? (s === "rueckruf" ? "▶ Rückruf" : "▶ erneut") : "▶ Cold Call"}
+        </button>
+        <div className="flex gap-1 mt-1.5">
+          <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
+          <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
+          <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
+          <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
+        </div>
+      </>
+    );
+  }
+
   // ── Stern 1: Kontaktliste (DB-gestützt) ─────────────────────────────────
   function KontaktView() {
     const q = search.trim().toLowerCase();
+    const blank = (v: string | null) => !(v && String(v).trim());
     let rows = data!.leads;
     if (q) rows = rows.filter((l) => (l.firma + " " + (l.ort || "")).toLowerCase().includes(q));
+    // Ebene 1 — Größe (Einfachauswahl)
+    if (sizeFilter !== "alle") rows = rows.filter((l) => sizeTier(l.ma_proxy) === sizeFilter);
+    // Ebene 2 — Feld-Lücken (Mehrfachauswahl, jede grenzt weiter ein)
+    if (gaps.groesse) rows = rows.filter((l) => sizeTier(l.ma_proxy) === "offen");
+    if (gaps.inhaber) rows = rows.filter((l) => blank(l.entscheider));
+    if (gaps.mail) rows = rows.filter((l) => blank(l.mail));
+    const offenCount = rows.filter((l) => !isContacted(l.status)).length;
+    if (nurOffen) rows = rows.filter((l) => !isContacted(l.status));
+    // Offene zuerst, kontaktierte (markiert) darunter.
+    rows = [...rows].sort((a, b) => Number(isContacted(a.status)) - Number(isContacted(b.status)));
+
+    const SIZE_TABS: { k: typeof sizeFilter; label: string }[] = [
+      { k: "alle", label: "Alle" }, { k: "solo", label: "1–3" },
+      { k: "premium", label: "4–15" }, { k: "dq", label: ">15" },
+    ];
+    const GAP_TABS: { k: keyof typeof gaps; label: string }[] = [
+      { k: "groesse", label: "Größe?" }, { k: "inhaber", label: "Inhaber leer" }, { k: "mail", label: "Mail leer" },
+    ];
 
     return (
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
-        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length})`} />
+        <PageHead eyebrow="Stern 1 · Sales" title={`Kontaktliste (${rows.length} · ${offenCount} offen)`} />
+        <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
+
+        {/* Ebene 1: Größe (Einfachauswahl) */}
+        <div className="flex gap-2 mb-1.5">
+          {SIZE_TABS.map((t) => (
+            <button key={t.k} type="button" onClick={() => setSizeFilter(t.k)}
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[13px] font-semibold border ${sizeFilter === t.k ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Ebene 2: Feld-Lücken (Mehrfachauswahl) — gold = aktiv */}
+        <div className="flex gap-2 mb-2">
+          {GAP_TABS.map((t) => (
+            <button key={t.k} type="button" onClick={() => setGaps((g) => ({ ...g, [t.k]: !g[t.k] }))}
+              className={`flex-1 rounded-lg px-2 py-1.5 text-[12px] font-semibold border ${gaps[t.k] ? "bg-gold-500 text-navy-950 border-gold-500" : "bg-white text-navy-500 border-navy-200"}`}>{t.label}</button>
+          ))}
+        </div>
+
+        <button type="button" onClick={() => setNurOffen((v) => !v)}
+          className={`mb-2 w-full rounded-lg px-3 py-1.5 text-[13px] font-semibold border ${nurOffen ? "bg-navy-900 text-white border-navy-900" : "bg-white text-navy-600 border-navy-200"}`}>
+          {nurOffen ? "✓ Nur offene Betriebe" : "Nur offene Betriebe zeigen"}
+        </button>
 
         <div className="mb-3">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Suchen…"
@@ -275,13 +508,7 @@ export function JourneyView() {
                   </td>
                   <td className="px-3 py-2.5 border-b border-navy-50"><StatusPill status={l.status} /></td>
                   <td className="px-3 py-2.5 border-b border-navy-50 whitespace-nowrap">
-                    <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-2.5 py-1.5 text-[12px] font-bold hover:bg-gold-400">▶ Cold Call</button>
-                    <div className="flex gap-1 mt-1.5">
-                      <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
-                      <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
-                      <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
-                      <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
-                    </div>
+                    <ContactActions l={l} />
                   </td>
                 </tr>
               ))}
@@ -328,13 +555,7 @@ export function JourneyView() {
               </div>
 
               <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <button onClick={() => startCall(l)} className="bg-gold-500 text-navy-950 rounded-md px-3 py-2 text-[13px] font-bold hover:bg-gold-400">▶ Cold Call</button>
-                <div className="flex gap-1.5">
-                  <OutBtn title="kein Anschluss" onClick={() => logEvent(l, "call_no_answer", "kein-anschluss")}>∅</OutBtn>
-                  <OutBtn title="Rückruf vereinbart" onClick={() => logEvent(l, "call_reached", "rueckruf")}>↻</OutBtn>
-                  <OutBtn title="abgelehnt" onClick={() => logEvent(l, "call_reached", "abgelehnt")}>✕</OutBtn>
-                  <OutBtn title="Ja → Simulation" ja onClick={() => logEvent(l, "ja_to_sim", "ja")}>✓</OutBtn>
-                </div>
+                <ContactActions l={l} />
               </div>
             </div>
           ))}
@@ -602,6 +823,34 @@ function Gauge({ name, cur, target }: { name: string; cur: number; target: numbe
     </div>
   );
 }
+// Lauf-Anzeige oben: ⏳ während der „Go"-Lauf (Discovery + Anreicherung) arbeitet,
+// mit Stopp-Symbol zum Abbrechen; grünes ✓ kurz nach erfolgreichem Abschluss.
+function RunStatusBadge({ active, doneRecent, onStop, stopping }: {
+  active: boolean; doneRecent: boolean; onStop: () => void; stopping: boolean;
+}) {
+  if (active) {
+    return (
+      <div className="mb-3 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-[13px] font-semibold text-amber-800">
+        <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+        <span className="flex-1">Anreicherung läuft…</span>
+        <button type="button" onClick={onStop} disabled={stopping} title="Lauf stoppen"
+          aria-label="Lauf stoppen"
+          className="flex h-6 w-6 items-center justify-center rounded-md border border-amber-400 text-amber-700 hover:bg-amber-100 disabled:opacity-40">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-amber-600" />
+        </button>
+      </div>
+    );
+  }
+  if (doneRecent) {
+    return (
+      <div className="mb-3 flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-[13px] font-semibold text-emerald-700">
+        <span aria-hidden>✓</span> Anreicherung fertig
+      </div>
+    );
+  }
+  return null;
+}
+
 function StatusPill({ status }: { status: string | null }) {
   const map: Record<string, { txt: string; cls: string }> = {
     ja: { txt: "JA · Simulation", cls: "bg-gold-500 text-navy-950" },
