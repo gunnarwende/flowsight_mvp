@@ -82,6 +82,13 @@
   "max_call_duration_ms": 420000,
   "interruption_sensitivity": 1,
   "responsiveness": 0.9,
+  "boosted_keywords": [
+    "Oberrieden", "Thalwil", "Horgen", "Kilchberg", "Rüschlikon", "Adliswil",
+    "Langnau am Albis", "Wädenswil", "Richterswil", "Au ZH", "Hütten", "Schönenberg", "Zimmerberg",
+    "Rohrbruch", "Verstopfung", "Leck", "Wasserschaden", "Überschwemmung", "Boiler",
+    "Heizung", "Heizungsausfall", "Warmwasser", "Wärmepumpe", "Lavabo", "Armatur",
+    "Abfluss", "Spülkasten", "Sifon", "Dachrinne", "Spengler", "Entkalkung", "Notfall"
+  ],
   "reminder_trigger_ms": 10000,
   "reminder_max_count": 1,
   "allow_user_dtmf": true,

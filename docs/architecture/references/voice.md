@@ -152,6 +152,8 @@ Kein Intake. Kein Datensammeln. Kein Fall erstellen. Freundlicher Hinweis auf de
 
 **Dialekt-Grenzen (ehrlich):** Starke Dialekte (Walliserdeutsch, Berndeutsch) können ASR-Probleme verursachen. Retell/ElevenLabs transkribieren über `de-DE`, nicht `de-CH`. Das ist eine bekannte Limitation. Ziel: 90%+ Schweizerdeutsch wird korrekt verstanden. Die restlichen 10% werden über Rückfrage-Strategien aufgefangen ("Entschuldigung, das habe ich nicht ganz verstanden — könnten Sie den Ort noch einmal sagen?").
 
+**Mitigation (live in der Dörfler-Schablone, 2026-06-26):** `boosted_keywords` in `retell/exports/doerfler_agent.json` mit den Einzugsgebiet-Ortsnamen + Sanitär-Begriffen biast die de-DE-ASR auf genau die fehleranfälligen Wörter (Ortsnamen, „Rohrbruch" etc.). Verbessert das **Verstehen (Input)** — **nicht** den Klang, wenn Lisa Zahlen/Namen ausspricht (Output = TTS-Akzent, separater Hebel: CH-Stimme). Wirkung **live verifizieren** (Test-Anruf → Retell-Transcript-Review), nicht annehmen.
+
 ### 4.2 Mid-Call Language Switching
 
 **Grundregel:** Wenn ein Anrufer die Sprache wechselt, wechselt Lisa mit. Ohne Ankündigung, ohne Pause, ohne "I'll switch to English now."
