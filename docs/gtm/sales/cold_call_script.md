@@ -31,9 +31,24 @@
 
 ---
 
-## §1 · Gatekeeper — OFFEN (nächste Runde)
-> Muss leisten: an den Inhaber kommen, **ohne dem Büro zu pitchen**. Wortlaut noch nicht gelockt.
-> Rohentwurf zum Schärfen: „Grüezi, Gunnar Wende. Ich hab für den Chef was Konkretes für den Betrieb — wann erreiche ich ihn am besten?"
+## §1 · Gatekeeper — ENTWURF (2026-06-27, morgen prüfen)
+
+> **Noch nicht gelockt** (Founder hat ihn am EOD nicht final geprüft). Geist wie der Opener: souverän-assumptiv, kurz, warm.
+
+**Prinzip:** *Nie dem Büro pitchen.* Der Gatekeeper ist ein **Tor, kein Gegner** — warm, nie herablassend. Je *weniger* du erklärst, desto eher kommst du durch. Ziel: **an den Inhaber** — oder, wenn er nicht da ist, **eine konkrete Rückruf-Zeit.**
+
+**Lead (minimal, selbstsicher):**
+> „Grüezi, Gunnar Wende aus Oberrieden. Ist Herr [Name] grad zu sprechen?"
+
+Stellt er durch → direkt §2 Opener (nicht neu vorstellen). Schirmt er ab, die Branches:
+
+- **„Worum geht's genau?"** → „Klar — es geht um die Kundenanfragen bei [Betrieb], dass da keine untergeht, wenn grad keiner ans Telefon kann. Ich hab dazu *eine* kurze Frage an Herrn [Name] selber — zwei Minuten, dann weiß er, ob's für ihn ein Thema ist." *(Thema nennen, als Frage rahmen, kein Pitch.)*
+- **„Schicken Sie's an info@."** → „Könnt ich — aber ehrlich, es ist nur eine kurze Frage, die ich ihm lieber selber stell. Wann erreich ich ihn am besten — eher früh oder gegen Abend?" *(Frage-first: noch nichts zu schicken → auf Rückruf-Zeit umlenken, nicht ins Postfach versanden.)*
+- **„Er ist grad nicht da."** → „Kein Problem — wann erreich ich ihn am besten? Eher früh oder gegen Abend?" *(Fenster holen, nichts hinterlassen außer Name.)*
+- **Büro blockt / „brauchen nichts".** → „Versteh ich — drum will ich's gar nicht Ihnen aufdrücken. Es ist wirklich nur eine kurze Frage an Herrn [Name] selber. Wann passt's ihm am besten?" *(Nicht streiten, sanft auf „kurz, Chef-Sache" beharren; hält er dicht → freundlich raus, anderer Tag.)*
+- **Combox/niemand:** keine Nachricht (Cold = niedrige Rückrufquote) → zu besserer Zeit nochmal.
+
+> **⚠️ ICP-Kontext (Founder-Gedanke 2026-06-27, morgen einarbeiten):** Echter Journey-ICP = **Inhaber + 1–3 MA (Kleinstbetrieb)** → meist hebt der **Inhaber selbst oder die Partnerin** ab; ein formelles Backoffice ist die *Ausnahme*. Die Real-Daten (~20–30 Calls letzte Woche: nur **2× Inhaber direkt**, Rest meist Backoffice) stammen aus der Zeit **vor** der Segment-Trennung (Targeting umfasste größere Betriebe). → Die formellen Abschirm-Branches sind eher Rand/Übergang; §1 morgen **Kleinstbetrieb-getunt** schärfen (Gatekeeper = oft die Partnerin → warm, persönlich, nicht „Büro"). **4–15 MA = Mittelbetrieb = eigener Customer Journey** (separat, eigene Runde).
 
 ---
 
