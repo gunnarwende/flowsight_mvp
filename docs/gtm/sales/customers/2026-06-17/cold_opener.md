@@ -1,5 +1,9 @@
 # Kalt-Opener — Telefon, Ring 2 (kein Video) · 17.06.2026
 
+> **⚠️ ABGELÖST (2026-06-27).** Diente als Basis (frage-first) für den neuen, gelockten Cold-Call.
+> Verbindlicher SSOT-Wortlaut jetzt: [`../../cold_call_script.md`](../../cold_call_script.md)
+> (§2 Opener · §3 Discovery · §4 Übergang). Dieses Blatt bleibt als historische Quelle stehen.
+
 > Kalt heisst: kein Video geschickt, weit weg von zu Hause → **kein Nachbar-Effekt**.
 > Du lehnst dich auf: **Kürze + Dörfler-Referenz + EINE Frage + Ja-Tür**.
 > Ziel ist NICHT der Abschluss. Ziel: Reps + (Bestfall) das **Recht, das Video zu schicken** → das triggert die Pipeline.
