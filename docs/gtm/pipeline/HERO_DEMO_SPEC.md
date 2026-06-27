@@ -1,6 +1,7 @@
 # Hero-Demo — Produktions-Spec (Beweis-Seite neu, Stern 3)
 
-> **STATUS: IN DEFINITION (Stand 2026-06-26).** Das **WAS** der neuen Beweis-Seite — das exakte
+> **STATUS: COLD-Strang komplett gelockt (Stand 2026-06-27).** Hook→Versprechen 0–~85 + Knoten-Reveal
+> stehen. Offen: WARM-Opener · Knoten-Set · Seed-Fall. Das **WAS** der neuen Beweis-Seite — das exakte
 > Script + Screenflow, das die (neu zu bauende) Pipeline produzieren muss. Schwester-Doc:
 > das **WARUM** = [`_strategy_notes/2026-06-22_demo-architektur.md`](../../_strategy_notes/2026-06-22_demo-architektur.md)
 > (3 Schichten, M1–M5). Das **WIE** = [`PIPELINE_BIBLE.md`](PIPELINE_BIBLE.md) (wird darauf neu gebaut).
@@ -30,7 +31,7 @@ Dein **Gesicht groß** am **Hook (0–10)** und am **Schluss (~75–90, morgen)*
 
 ---
 
-## COLD-Strang · Transkript + Screenflow 0–49 (GELOCKT)
+## COLD-Strang · Transkript + Screenflow 0–~85 (GELOCKT)
 
 | Zeit | Bild | Sprecher | Wortlaut |
 |---|---|---|---|
@@ -51,6 +52,34 @@ Dein **Gesicht groß** am **Hook (0–10)** und am **Schluss (~75–90, morgen)*
 
 **Regie:** 15–37.5 = **Beweis-Fenster**, DU schweigst (der Anruf trägt). Kunde + Lisa klingen
 „durchs Handy" (komprimiert), dein VO warm & nah → nie verwechselbar.
+
+### Schluss 49–~85 (GELOCKT) — Gesicht zurück (Bookend)
+
+Ab 49 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drücker:
+
+| Zeit | Bild | Sprecher | Wortlaut |
+|---|---|---|---|
+| 49–58 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
+| 58–66 | DU | **DU** | „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie." |
+| 66–74 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken." |
+| 74–~82 | DU, Blick hält | **DU** | „Bei Ihnen geht ab jetzt nichts mehr verloren." |
+| ~82–85 | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
+
+**Regie Schluss:** Die vier Beats sind **eine Bewegung** — *echt+alle-Kanäle → einfach+risikofrei →
+das Warum (Wunde) → das Versprechen*. Beat 4 ist das **letzte gesprochene Wort**. **Kein gesprochenes
+CTA, kein „Gunnar" laut.** Name nur optional als **visuelle Unterzeile** (lower third), nicht vorgelesen.
+
+### Knoten-Reveal (~82s) — der CTA, der nicht gesprochen wird
+- **Was:** Genau wenn das Versprechen landet, **gleiten/faden die anklickbaren Knoten** unter den
+  Hero ins Bild. Das ist der „Reveal" — sie stehen nicht von Anfang an da.
+- **Peek-Regel (Pflicht):** Der **oberste Knoten lugt schon während des Heros** unten ins Bild
+  (Streifen am Rand). **Sichtbarkeit = Engagement** — wer vorher abspringt, soll wissen: da ist mehr.
+- **Label = Zweifel/Neugier, nicht Funktion:** Jeder Knoten trägt die **Frage des Inhabers**, nicht
+  einen Feature-Namen. Der Sog kommt aus seinem eigenen Einwand. Arbeitsstand (Set morgen final):
+  - „Wie redet Lisa mit *meinem* Kunden?"
+  - „Behalte ich wirklich den Überblick?"
+  - „Was kostet mich das — und wie komme ich da wieder raus?"
+- **Kein gesprochener Verweis** auf die Knoten — das Bild führt. Der Hero gibt die Führung bewusst ab.
 
 ### 🟢 `{Anliegen}` — fixer Slot 20–26 (6,0 s, beide darauf gepaddet)
 - **Sanitär:** „Hallo, hier ist Herr Brunner. Ich bräuchte jemanden für ein neues Bad, und es eilt ein bisschen."
@@ -78,12 +107,15 @@ echte System arbeiten.
 - **2 Anliegen-Varianten** (Sani „Bad" / Wärme-Cluster „Wärmepumpe"). **GT fällt in den Wärme-Cluster** — Daten-belegt (MS Gebäudetechnik + Regiotherm = beide Wärmepumpe-dominiert). Bei Kombi-Betrieb (Sani+Heizung): **Wärmepumpe führt** (größerer Verlust-Stich).
 - **„Karte danach" (Variante B)**, nicht Live-Fill — ehrlicher zum Produkt (Fall entsteht nach dem Anruf).
 - **„Auftrag" (nicht „Anfrage")** — spiegelt den Hook („Aufträge verloren" → „ein Auftrag, angenommen"). Bewusst, trotz leichter Unschärfe.
+- **Schluss = 4 Beats als eine Bewegung** (echt+alle-Kanäle → einfach+risikofrei → das Warum → das Versprechen). „Alle Kanäle" mitnehmen (er hat im Hero nur den Anruf gesehen → Website/E-Mail dazu). Risiko **gruppiert mit Einfachheit** (nicht als isolierte Insel). „Das Risiko trage ich, nicht Sie" = Risiko-Umkehr ohne formelle Garantie (Garantie/Preis = Knoten/warmes Gespräch).
+- **Kein gesprochenes CTA im Hero** — der CTA ist der **Klick auf einen Knoten**, ausgelöst durch den **Reveal**. Schriftlicher CTA sitzt vorgelagert in der E-Mail.
+- **Kein „Gunnar" laut** — vorgelesener Vorname wirkt wie eine laut vorgetragene Signatur. Name höchstens als visuelle Unterzeile.
+- **Letztes Wort = das Versprechen** („Bei Ihnen geht ab jetzt nichts mehr verloren."), dann Knoten-Reveal.
 
 ## Offen / nächste Schritte
-1. **Schluss ~49–90** (morgen): Steuern/Risikofreiheit · Gesicht zurück · CTA runter in die Knoten.
-2. **WARM-Opener** (Strang b) final.
-3. **Knoten-Set** (Anruf · Wizard · Leitzentrale · Bewertung + Notfall-Gewerk-Variante) + Inhalte.
-4. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
-5. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
-6. **Demo-Adresse pro Kanton** pflegen (Vermerk bei Kantonswechsel).
-7. *(optional)* Live-Agent Namen-Nutzung an die Demo angleichen.
+1. **WARM-Opener** (Strang b) final — nur Opener verzweigt, Körper + Schluss identisch.
+2. **Knoten-Set** (Anruf · Wizard · Leitzentrale · Bewertung + Notfall-Gewerk-Variante) → finale Auswahl + Zweifel-Labels + Clip-Inhalte.
+3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
+4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
+5. **Demo-Adresse pro Kanton** pflegen (Vermerk bei Kantonswechsel).
+6. *(optional)* Live-Agent Namen-Nutzung an die Demo angleichen.
