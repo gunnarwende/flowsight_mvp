@@ -171,6 +171,20 @@ echte System arbeiten.
 
 **Dynamik:** pro Betrieb neu vertont = **alle 3 Begrüßungen** (`[Betrieb]`) · Call-1B-Lisa · Call-2 Kunde-Z2 + Lisa-Z3+Z5 (`[Inhaber]`). Rest = einmal für alle. **Fallback** Inhaber „?": „Herr [Inhaber]" → „der Chef" (Universal-Aufnahme).
 
+### Knoten ② — „Behalt ich den Überblick?" (GELOCKT 2026-06-28)
+**Ziel:** Büro-/Mehraufwand-Angst auflösen — der Flip *weniger, nicht mehr*: eine Liste am Handy, füllt sich selbst, ersetzt Zettel + Im-Kopf-Behalten (kein Tool *mehr*). **Form:** Bildschirm-Aufnahme der Leitzentrale **am Handy** (echte App, kaum Post) + **DU im VO** — kein Anruf, kein Gesicht, der Screen führt. **Universell** (kein Swap, *eine* Aufnahme für alle).
+
+| Bild (echte App, Handy) | DU (VO) |
+|---|---|
+| App öffnet → *eine* Liste; **Brunner** oben unter NEU, Bei uns / Erledigt gefüllt | „Das hier ist alles. Eine Liste, auf Ihrem Handy." |
+| (nichts wird getippt — der Fall steht schon da) | „Was reinkommt, steht von selbst drin — Sie tippen nichts ab." |
+| Blick über **Neu · Bei uns · Erledigt** | „Ein Blick: was ist neu, was läuft, was ist erledigt." |
+| Tipp auf Brunner → Zuständig/Status setzen | „Antippen, wer's macht — fertig." |
+| zurück zur Liste, ruhig | „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. **Weniger, nicht mehr.**" |
+
+**Liste = sauber:** nur der **Brunner-Fall aus dem Hero** (Kontinuität — den sehen *alle*) + **neutrale „Bei uns/Erledigt"-Füllung** (etabliert, wie Hero-Dashboard NEU 1 / Bei uns 7 / Erledigt 23). **Die Knoten-①-Fälle (Notfall/Frust/Zusatzkosten-Anruf) bleiben DRAUSSEN** — Knoten sind opt-in & unabhängig, ② darf nur auf den Hero bauen, nicht auf ein gesehenes ①.
+**Abhängigkeit:** Seed-Demo-Fall (Brunner). *(Optional geparkt: Vorher/Nachher Zettelchaos → eine Liste — kostet ein gestelltes Set, v1 trägt's der VO.)*
+
 ## Gelockte Entscheidungen (Begründung kurz)
 - **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
@@ -186,7 +200,7 @@ echte System arbeiten.
 
 ## Offen / nächste Schritte
 1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
-2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① wortgenau gelockt.** Offen: ②/③/④ Scripts + Clip-Inhalte.
+2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① + ② wortgenau gelockt.** Offen: ③/④ Scripts + Clip-Inhalte.
    **⚠️ MUST bei Umsetzung:** Hero-Greeting auf Volle-Zeile-Render umstellen (kein fester Slot — Hood-AG-Leerlauf).
 3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
