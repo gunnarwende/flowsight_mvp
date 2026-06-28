@@ -1,7 +1,7 @@
 # Hero-Demo — Produktions-Spec (Beweis-Seite neu, Stern 3)
 
-> **STATUS: COLD-Strang komplett gelockt (Stand 2026-06-27).** Hook→Versprechen 0–~85 + Knoten-Reveal
-> stehen. Offen: WARM-Opener · Knoten-Set · Seed-Fall. Das **WAS** der neuen Beweis-Seite — das exakte
+> **STATUS: BEIDE OPENER GELOCKT (Stand 2026-06-28).** COLD 0–~85 (Hook→Versprechen + Knoten-Reveal)
+> + WARM-Opener 0–13. Offen: Knoten-Set · Seed-Fall. Das **WAS** der neuen Beweis-Seite — das exakte
 > Script + Screenflow, das die (neu zu bauende) Pipeline produzieren muss. Schwester-Doc:
 > das **WARUM** = [`_strategy_notes/2026-06-22_demo-architektur.md`](../../_strategy_notes/2026-06-22_demo-architektur.md)
 > (3 Schichten, M1–M5). Das **WIE** = [`PIPELINE_BIBLE.md`](PIPELINE_BIBLE.md) (wird darauf neu gebaut).
@@ -27,7 +27,7 @@ Dein **Gesicht groß** am **Hook (0–10)** und am **Schluss (~75–90, morgen)*
 
 ## Zwei Stränge (nur der Opener verzweigt)
 - **(a) COLD** — telefonisch nicht erreicht. **Hier vollständig definiert (0–49).**
-- **(b) WARM** — erreicht, bat um die Mail. **Opener offen (morgen).** Körper + Schluss identisch.
+- **(b) WARM** — erreicht, bat um die Mail. **Opener 0–13 GELOCKT** (s. u.). Körper + Schluss identisch.
 
 ---
 
@@ -99,6 +99,27 @@ echte System arbeiten.
 
 ---
 
+## WARM-Strang · Opener 0–13 (GELOCKT 2026-06-27)
+
+> Für den Fall **erreicht + bat um die Mail** (Cold Call §4-Folge-Anruf). Nur diese ~13 s ersetzen den
+> COLD-Hook; **ab „Ein neuer Kunde ruft an." (13) ist alles identisch** (Körper + Schluss). Er hat am
+> Telefon schon Ja gesagt → **kein Hook, keine Wunde, kein Re-Pitch.** Warm reinholen, das
+> §4-Versprechen einlösen — der Körper macht die Gefühlsarbeit.
+
+| Zeit | Bild | Sprecher | Wortlaut |
+|---|---|---|---|
+| 0–5 | DU, bildfüllend | **DU** | „Schön, dass wir telefoniert haben. Wie besprochen." |
+| 5–10 | DU | **DU** | „Schauen Sie in Ruhe, ob's für Ihren Betrieb passt." |
+| 10–13 | Handy erscheint, DU (VO) | **DU (VO)** | „Fangen wir an." |
+| → 13 | **[GETEILTER KÖRPER]** Anruf klingelt | **DU (VO)** | „Ein neuer Kunde ruft an." |
+
+- **„Wie besprochen"** löst das §4-Versprechen ein („ich schick's Ihnen rüber"); **„Schauen Sie in Ruhe, ob's für Ihren Betrieb passt"** = *wörtlich* die §4-Sprache (druckfrei).
+- **„hier ist sie" bewusst gestrichen** — „sie" hätte am Videostart keinen Bezug (Mini-Reibung). „Wie besprochen." allein ist souveräner.
+- **Universell** (kein [Betrieb]/[Name]) → *eine* Aufnahme für alle, wie der COLD-Opener.
+- **Naht:** WARM besitzt **0–13** (endet: Handy im Bild). „Genau das hört jetzt auf." bleibt **COLD-only**.
+
+---
+
 ## Gelockte Entscheidungen (Begründung kurz)
 - **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
@@ -113,7 +134,7 @@ echte System arbeiten.
 - **Letztes Wort = das Versprechen** („Bei Ihnen geht ab jetzt nichts mehr verloren."), dann Knoten-Reveal.
 
 ## Offen / nächste Schritte
-1. **WARM-Opener** (Strang b) final — nur Opener verzweigt, Körper + Schluss identisch.
+1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
 2. **Knoten-Set** (Anruf · Wizard · Leitzentrale · Bewertung + Notfall-Gewerk-Variante) → finale Auswahl + Zweifel-Labels + Clip-Inhalte.
 3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
