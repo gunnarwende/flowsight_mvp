@@ -1,7 +1,8 @@
 # Hero-Demo — Produktions-Spec (Beweis-Seite neu, Stern 3)
 
-> **STATUS: BEIDE OPENER GELOCKT (Stand 2026-06-28).** COLD 0–~85 (Hook→Versprechen + Knoten-Reveal)
-> + WARM-Opener 0–13. Offen: Knoten-Set · Seed-Fall. Das **WAS** der neuen Beweis-Seite — das exakte
+> **STATUS: BEIDE OPENER + KNOTEN-SET ①–④ GELOCKT (Stand 2026-06-28).** COLD 0–~85 (Hook→Versprechen
+> + Knoten-Reveal) + WARM-Opener 0–13 + alle 4 Knoten wortgenau. Offen: Seed-Fall · Volle-Zeile-Render.
+> Das **WAS** der neuen Beweis-Seite — das exakte
 > Script + Screenflow, das die (neu zu bauende) Pipeline produzieren muss. Schwester-Doc:
 > das **WARUM** = [`_strategy_notes/2026-06-22_demo-architektur.md`](../../_strategy_notes/2026-06-22_demo-architektur.md)
 > (3 Schichten, M1–M5). Das **WIE** = [`PIPELINE_BIBLE.md`](PIPELINE_BIBLE.md) (wird darauf neu gebaut).
@@ -203,6 +204,25 @@ echte System arbeiten.
 - **Beat 5: kein harter CTA, keine Pre-Apology** („wenn nicht, okay" raus) — souverän, lässt ihm die Kontrolle.
 - **80/20-Zahl bewusst NICHT genannt** — falsche Präzision untergräbt im Ehrlichkeits-Moment das Vertrauen; Konzept ja, Zahl nein.
 
+### Knoten ④ — „Was kostet das — und wie komm ich wieder raus?" (GELOCKT 2026-06-28)
+**Ziel:** Preis-/Lock-in-Angst auflösen, **ohne eine Zahl zu nennen** — Erstwert vor Preis (Hormozi: Preis zuletzt, im Gespräch), volle Risiko-Umkehr, sauberer Ausstieg. Der **unterste** Knoten = bewusste **Brücke zu Stern 5** (warmes Verkaufsgespräch): er profiliert den Geld-Zweifel und reicht ihn ans Gespräch weiter. **Form:** **DU, Gesicht, direkt in die Kamera**, ruhig/geradeheraus (wie ③). **Universell** (eine Aufnahme, kein Swap).
+
+| Beat | DU (Gesicht) | Rolle |
+|---|---|---|
+| 1 | „Sie haben jetzt gesehen, worum's geht. Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen. Genau das schauen wir uns gemeinsam an." | Wert vor Preis → Preis ins Gespräch verlegt (kein Ausweichen) |
+| 2 | „Was jetzt schon gilt: monatlich kündbar. Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten. Und bezahlt wird erst, wenn's bei Ihnen läuft." | Ausstieg + Nummer-Angst + Zahl-erst-bei-Lauf (konkrete Sicherheiten) |
+| 3 | „Das Risiko trage ich. Nicht Sie." | Risiko-Umkehr (echo Hero-Schluss, bewusst) |
+| 4 | „Alles Weitere kommt offen auf den Tisch. Es muss für uns beide passen." | Tür zum Gespräch + **gegenseitige** Passung (kein einseitiges Werben) |
+
+**Gelockte Begründungen:**
+- **Keine Zahl** — Erstwert dann Preis (Alex/Hormozi: Preis zuletzt, mündlich im warmen Gespräch). „Eine Zahl werd ich definitiv nicht nennen."
+- **„hängt von Ihrer Größe ab" RAUS** — Altlast aus dem alten Zwei-Stufen-Modell (950/2000). Diese Journey = ICP 1–3 Mann ≈ fixer Preis; der Aufschub-Grund ist *Wert-vor-Preis / im Gespräch*, nicht Größe.
+- **Beat 1 würdigt die Reise** („Sie haben jetzt gesehen, worum's geht") — er ist schon ~60 % durch (Telefonat + Hero + Knoten). **Nicht** „bringt Ihnen nichts" (abwertend) / nicht „was es kann" (overclaim).
+- **De-dramatisiert** — kein „das ist mir zu wichtig für einen Clip" (überhöht den Preis → er fixiert sich auf Preis statt Wert in Stern 5).
+- **Beat 2 positiv statt Negation** — „Sie wissen immer, woran Sie sind" statt „kein Kleingedrucktes/kein Vorab-Honorar" (Negation ruft den Begriff auf; „kein Vorab" zudem redundant zu „bezahlt erst wenn's läuft").
+- **Beat 4 = gegenseitige Passung** („für uns beide"), nicht einseitiges „ich will Sie nur dabei, wenn's für Sie aufgeht" — souverän, kein Werben; „aufgeht" als Schlusswort vermieden.
+- **Brücke zu Stern 5:** ④ verkauft nicht zu Ende — es macht den Preis *besprechbar* und übergibt den profilierten Geld-Zweifel ans warme Gespräch.
+
 ## Gelockte Entscheidungen (Begründung kurz)
 - **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
@@ -218,7 +238,7 @@ echte System arbeiten.
 
 ## Offen / nächste Schritte
 1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
-2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① + ② + ③ wortgenau gelockt.** Offen: nur noch **④ (Kosten & Ausstieg)** Script.
+2. **Knoten-Set:** ✅ **alle 4 wortgenau gelockt** (① + ② + ③ + ④, s. „Knoten"-Abschnitt). Set komplett.
    **⚠️ MUST bei Umsetzung:** Hero-Greeting auf Volle-Zeile-Render umstellen (kein fester Slot — Hood-AG-Leerlauf).
 3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
