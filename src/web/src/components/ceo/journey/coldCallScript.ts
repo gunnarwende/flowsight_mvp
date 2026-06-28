@@ -1,6 +1,6 @@
-// Cold-Call-Wortlaut — 1:1 aus docs/gtm/sales/cold_call_script.md (EINGEFROREN).
-// Stern 2 der Customer Journey. Ziel: das Ja, die Simulation schicken zu dürfen.
-// Kein Preis, keine Discovery. Quelle für Übersicht (Baum), Live, Drill.
+// Cold-Call-Wortlaut — 1:1 aus docs/gtm/sales/cold_call_script.md (frage-first, GELOCKT 2026-06-27).
+// Stern 2. Ziel: das Ja, die kurze Seite schicken zu dürfen. Ehrlich, kein Druck, ein Nein sofort ehren.
+// Quelle für Übersicht (Baum), Live, Drill.
 
 export interface ColdChoice {
   label: string;
@@ -16,184 +16,202 @@ export interface ColdNode {
 }
 
 export const COLD: Record<string, ColdNode> = {
+  // ── §1 · Wer abhebt ───────────────────────────────────────────────
   start: {
     title: "Wer hebt ab?",
     say: "",
     choices: [
       { label: "Inhaber direkt", go: "opener" },
-      { label: "Mitarbeiter / Büro", go: "gatekeeper" },
+      { label: "Partnerin / jemand anderes", go: "gatekeeper" },
     ],
   },
   gatekeeper: {
-    cue: "Gatekeeper",
-    say: "Grüezi, Gunnar Wende hier. Ich hätte eine kurze Frage an Herrn [Name] — es geht um neue Kundenanfragen bei [Betrieb] und einen konkreten Vorschlag dazu. Ist er gerade kurz erreichbar?",
+    cue: "§1 · Wer abhebt — Lead (warm, kurz)",
+    say: "Grüezi, Gunnar Wende aus Oberrieden. Ist Herr [Name] grad zu sprechen?",
     choices: [
-      { label: "„Worum geht es genau?“", go: "gk_worum" },
-      { label: "„Schicken Sie an info@…“", go: "gk_info" },
       { label: "Verbindet zum Inhaber", go: "opener" },
+      { label: "„Worum geht's denn?“", go: "gk_worum" },
+      { label: "„Er ist grad nicht da“", go: "gk_nichtda" },
+      { label: "„Wir brauchen nichts“ (Nein)", go: "exit_nein" },
+      { label: "„Schicken Sie an info@“", go: "gk_info" },
     ],
   },
   gk_worum: {
-    cue: "Worum geht es?",
-    say: "Es geht um ein Leitsystem: Neue Kundenanfragen über Telefon, Website oder direkt aus einem Gespräch heraus laufen an einem Ort zusammen. So sieht Herr [Name], was eingegangen ist, was offen ist und was weiterlaufen muss. Ich würde ihn dazu gerne kurz persönlich fragen, ob das für [Betrieb] überhaupt ein Thema ist.",
+    cue: "„Worum geht's denn?“ (Gatekeeper / Partnerin)",
+    say: "Ganz kurz — ich hab was für Sanitärbetriebe gebaut, das auffängt, was im Tagesstress untergeht: eine Anfrage über Telefon, Website, egal wie. Wenn Sie die Anrufe machen, hält Ihnen das den Rücken frei. Ich hätt dazu eine kurze Frage an Herrn [Name] — wann erreich ich ihn?",
     choices: [
-      { label: "Verbindet zum Inhaber", go: "opener" },
-      { label: "„An info@ schicken“", go: "gk_info" },
+      { label: "Verbindet / „rufen Sie an“", go: "opener" },
+      { label: "„Er ist grad nicht da“", go: "gk_nichtda" },
+      { label: "„Nein, kein Bedarf“", go: "exit_nein" },
     ],
+  },
+  gk_nichtda: {
+    cue: "„Er ist grad nicht da“ (Logistik, kein Nein)",
+    say: "Kein Problem — wann erreich ich ihn am besten, früh oder gegen Abend?",
+    choices: [{ label: "Zeit notiert", go: "callback" }],
   },
   gk_info: {
-    cue: "„An info@ schicken“",
-    say: "Gerne, das kann ich machen.\n\nNur damit es nicht irgendwo untergeht: Es ist bewusst für Herrn [Name] vorbereitet. Gibt es eine direkte Mailadresse von ihm — oder soll ich es an info@ schicken und an Herrn [Name] adressieren?\n\nWenn nur info@ möglich ist:\nAlles klar, dann schicke ich es an info@ und adressiere es direkt an Herrn [Name].\n\nWäre es sinnvoll, wenn ich morgen oder übermorgen nochmals kurz nachfasse, ob es bei ihm angekommen ist?",
-    choices: [{ label: "Notiert — Ende", go: "end" }],
+    cue: "„Schicken Sie an info@“",
+    say: "Könnt ich — aber ehrlich, es ist nur eine kurze Frage, die ich ihm lieber selber stell. Wann erreich ich ihn am besten?",
+    choices: [
+      { label: "Zeit notiert", go: "callback" },
+      { label: "Verbindet doch", go: "opener" },
+    ],
   },
+
+  // ── §2 · Opener ───────────────────────────────────────────────────
   opener: {
-    cue: "Opener Inhaber",
-    say: "Grüezi Herr [Name], Gunnar Wende aus Oberrieden.\n\nIch mache es kurz, weil Sie wahrscheinlich mitten im Tagesgeschäft sind: Ich habe mir [Betrieb] angeschaut und etwas Konkretes zu Ihren Kundenanfragen vorbereitet.\n\nDarf ich Ihnen in 30 Sekunden sagen, warum ich konkret Sie anrufe?",
+    cue: "§2 · Opener (~22–25 Sek, dann STOPP)",
+    say: "Grüezi Herr [Name], Gunnar Wende aus Oberrieden.\n\nIch mach's ganz kurz — Sie stecken sicher mitten in der Arbeit.\n\nBei [Betrieb] machen Sie das meiste selber — und sind oft selber unterwegs. Das schätz ich.\n\nNur — genau dann klingelt's. Und wer Sie grad nicht erreicht, wartet nicht. Der ruft den Nächsten an.\n\nDarf ich Ihnen eine Frage aus Ihrem Alltag stellen?",
     choices: [
-      { label: "„Ja“ (30 Sekunden)", go: "s30" },
-      { label: "„Keine Zeit“", go: "keineZeit" },
-      { label: "„Was kostet das?“", go: "preis" },
-      { label: "„Kein Interesse“", go: "keinInteresse" },
-      { label: "„Wir haben genug Anfragen“", go: "genug" },
-      { label: "„Wir haben schon ein System“", go: "system" },
-      { label: "„Schicken Sie Unterlagen“", go: "unterlagen" },
-      { label: "„Wer sind Sie?“", go: "werSind" },
+      { label: "„Ja“ (Frage erlaubt)", go: "s3_aufsetzer" },
+      { label: "„Keine Zeit“", go: "ex_keineZeit" },
+      { label: "„Wer sind Sie / ist das Werbung?“", go: "ex_werSind" },
+      { label: "„Was kostet das?“", go: "ex_preis" },
+      { label: "„Läuft schon / haben ein System“", go: "ex_laeuftSchon" },
+      { label: "„Kein Interesse“ (Nein)", go: "exit_nein" },
     ],
   },
-  s30: {
-    cue: "Er gibt 30 Sekunden",
-    say: "Danke.\n\nDer Punkt ist einfach: Bei [Gewerk] kommen neue Kundenanfragen heute über verschiedene Wege rein — Telefon, Website, E-Mail oder direkt aus einem Gespräch heraus.\n\nUnd wenn im Tagesgeschäft viel gleichzeitig läuft, ist genau die Frage: Bleibt am Ende wirklich alles sichtbar — was reingekommen ist, was offen ist und was weiterlaufen muss?\n\nGenau dafür habe ich etwas Konkretes für Ihren Betrieb vorbereitet: eine kurze, für Ihren Betrieb vorbereitete Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.\n\nDarf ich Ihnen den Link per Mail schicken und mich morgen oder übermorgen nochmals kurz melden?",
+
+  // ── §3 · Discovery — Aufsetzer → 4 Auffahrten → Killer ────────────
+  s3_aufsetzer: {
+    cue: "§3 · Aufsetzer — dann ZUHÖREN, schweigen",
+    say: "Wenn Sie grad auf dem Einsatz sind und's klingelt — was passiert dann mit dem Anruf?",
     choices: [
-      { label: "„Ja, schicken Sie es mir“", go: "ja" },
-      { label: "„Was kostet das?“", go: "preis" },
-      { label: "„Kein Interesse“", go: "keinInteresse" },
-      { label: "„Schauen, aber nicht nachrufen“", go: "nichtNachrufen" },
+      { label: "„Geht auf die Combox“", go: "s3_combox" },
+      { label: "„Meine Frau / das Büro“", go: "s3_buero" },
+      { label: "„Ich ruf zurück / seh die Nummer“", go: "s3_rueckruf" },
+      { label: "„Geht halt verloren“", go: "s3_verloren" },
+      { label: "Abwehr: „bei mir klappt das“", go: "s3_abwehr" },
     ],
   },
-  keineZeit: {
-    cue: "„Keine Zeit“",
-    say: "Verstehe ich, dann will ich Sie nicht aufhalten.\n\nDann nur ganz kurz: Ich habe etwas Konkretes für Ihren Betrieb vorbereitet — eine kurze Videoseite, auf der Sie direkt sehen, wie neue Kundenanfragen bei Ihnen nicht mehr verloren gehen, sondern sichtbar aufgenommen, weitergeführt und sauber abgeschlossen werden.\n\nDarf ich Ihnen den Link per Mail schicken und mich danach einmal kurz melden?",
+  s3_combox: {
+    cue: "Auffahrt Combox → Killer (dann SCHWEIGEN)",
+    say: "Und die, die nichts draufsprechen — und das sind die meisten — die kriegen Sie mit? Oder sind die einfach weg?",
     choices: [
-      { label: "„Ja, schicken Sie“", go: "ja" },
-      { label: "„Nein“", go: "nein" },
+      { label: "„…eigentlich nicht“ (Wunde sitzt)", go: "s4" },
+      { label: "Abwehr „klappt schon“", go: "s3_abwehr" },
     ],
   },
-  preis: {
+  s3_buero: {
+    cue: "Auffahrt Frau/Büro → Killer",
+    say: "Macht sie sicher top. Und wenn sie grad selber unterwegs ist — Mittag, Samstag? Kriegen Sie das dann mit, oder sind die einfach weg?",
+    choices: [
+      { label: "„…eigentlich nicht“", go: "s4" },
+      { label: "Abwehr „klappt schon“", go: "s3_abwehr" },
+    ],
+  },
+  s3_rueckruf: {
+    cue: "Auffahrt Rückruf / sieht Nummer → Killer",
+    say: "Und die, die zwischendurch schon wen anders angerufen haben — kriegen Sie die mit? Oder sind die einfach weg?",
+    choices: [
+      { label: "„…eigentlich nicht“", go: "s4" },
+      { label: "Abwehr „klappt schon“", go: "s3_abwehr" },
+    ],
+  },
+  s3_verloren: {
+    cue: "„Geht verloren“ — er sagt den Killer selbst",
+    say: "Und wissen Sie, wie viele das im Monat sind?",
+    choices: [{ label: "„…keine Ahnung“ → weiter", go: "s4" }],
+  },
+  s3_abwehr: {
+    cue: "Sonderfall Abwehr — nicht streiten",
+    say: "Glaub ich Ihnen. Und wenn doch mal zwei Sachen gleichzeitig reinkommen und einer rutscht durch — würden Sie das überhaupt merken?",
+    choices: [
+      { label: "„…eigentlich nicht“", go: "s4" },
+      { label: "Festes Nein", go: "exit_nein" },
+    ],
+  },
+
+  // ── §4 · Übergang zum Video / CTA ─────────────────────────────────
+  s4: {
+    cue: "§4 · Brücke „Das ist der Punkt.“ (Pause) + CTA",
+    say: "Das ist der Punkt.\n\nUnd dafür hab ich was gebaut. Ich nehm bewusst nur ein paar Betriebe — jeder kriegt seine eigene Seite und meine volle Aufmerksamkeit.\n\nIn 90 Sekunden sehen Sie, wie bei Ihnen keine Anfrage mehr verloren geht — auch wenn Sie grad nicht dazukommen.\n\nSchauen Sie's in Ruhe an — Sie sehen sofort, ob's für Ihren Betrieb passt.\n\n[Beat — er reagiert, meist „ja, schicken Sie“]\n\nIch schick's Ihnen rüber, dann haben Sie's — auf welche Mail?\n\nIch meld mich in ein, zwei Tagen, dann schauen wir kurz, ob's für Sie passt.",
+    choices: [
+      { label: "„Ja, auf welche Mail“", go: "mail" },
+      { label: "„Was kostet das?“", go: "ex_preis" },
+      { label: "„Schicken Sie Unterlagen“", go: "ex_unterlagen" },
+      { label: "„Schauen, aber nicht nachrufen“", go: "ex_nichtNachrufen" },
+      { label: "„Kein Interesse“ (Nein)", go: "exit_nein" },
+    ],
+  },
+  mail: {
+    cue: "Mail sichern (souverän-assumptiv)",
+    say: "[Mail notieren.] Ich wiederhole kurz: [Mailadresse].\n\nPasst — ich schick's Ihnen gleich rüber. Bis in ein, zwei Tagen.",
+    choices: [{ label: "Bestätigt — Ja zur Seite", go: "win" }],
+  },
+
+  // ── §5 · Exits (Nein ehren / Frage ehrlich beantworten) ───────────
+  ex_keineZeit: {
+    cue: "„Keine Zeit“ (Logistik, kein Nein)",
+    say: "Klar, ich halt Sie nicht auf — wann erreich ich Sie besser, Mittag oder Abend?",
+    choices: [
+      { label: "Zeit notiert", go: "callback" },
+      { label: "„Nein“", go: "exit_nein" },
+    ],
+  },
+  ex_preis: {
     cue: "„Was kostet das?“",
-    say: "Verstehe ich, die Frage ist völlig berechtigt.\n\nIch würde Ihnen jetzt am Telefon aber ungern eine Zahl nennen, bevor Sie gesehen haben, was ich für Ihren Betrieb vorbereitet habe. Schauen Sie sich zuerst die kurze Videoseite in Ruhe an.\n\nWenn Sie danach sagen, das bringt Ihnen keinen konkreten Nutzen, dann ist das Thema erledigt. Wenn Sie sagen, das trifft einen Punkt, dann sprechen wir sauber über Aufwand und Kosten.\n\nDarf ich Ihnen den Link schicken?",
+    say: "Berechtigte Frage. Ehrlich — eine Zahl nenn ich ungern, bevor Sie's gesehen haben; sonst reden wir über Geld für was, das Sie noch gar nicht kennen.\n\nSchauen Sie die kurze Seite an, danach sehen Sie selbst, ob's den Aufwand wert ist — und dann reden wir konkret.",
     choices: [
-      { label: "„Ja, schicken Sie“", go: "ja" },
-      { label: "„Kein Interesse“", go: "keinInteresse" },
+      { label: "„Okay, schicken Sie“", go: "s4" },
+      { label: "„Nein“", go: "exit_nein" },
     ],
   },
-  keinInteresse: {
-    cue: "„Kein Interesse“",
-    say: "Verstehe ich, das ist völlig in Ordnung.\n\nNur damit ich Sie richtig einordne: Ist das Thema bei Ihnen bereits sauber gelöst — oder möchten Sie sich gerade grundsätzlich nicht damit beschäftigen?",
+  ex_werSind: {
+    cue: "„Wer sind Sie? Ist das Werbung?“",
+    say: "Gunnar Wende, aus Oberrieden. Ich bau ein System für Sanitärbetriebe, damit im Tagesstress keine Anfrage untergeht — und fang grad mit den ersten in der Region an, drum ruf ich selber an.",
     choices: [
-      { label: "„Bei uns läuft das schon“", go: "laeuftSchon" },
-      { label: "„Möchte mich nicht beschäftigen“", go: "nichtBeschaeftigen" },
+      { label: "„Okay, worum geht's“ → Frage", go: "s3_aufsetzer" },
+      { label: "„Kein Interesse“", go: "exit_nein" },
     ],
   },
-  laeuftSchon: {
-    cue: "„Bei uns läuft das schon“",
-    say: "Das ist gut.\n\nGenau deshalb will ich es Ihnen auch nicht am Telefon erklären. Ich habe es bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",
-    choices: [
-      { label: "„Ja, schicken Sie“", go: "ja" },
-      { label: "„Nein“", go: "nein" },
-    ],
-  },
-  nichtBeschaeftigen: {
-    cue: "„Möchte mich nicht beschäftigen“",
-    say: "Verstehe ich. Dann respektiere ich das und will Ihnen nichts aufdrängen.\n\nDanke für die klare Rückmeldung, Herr [Name]. Ich wünsche Ihnen einen guten Tag.",
-    choices: [{ label: "Ende", go: "end" }],
-  },
-  genug: {
-    cue: "„Wir haben genug Anfragen“",
-    say: "Das ist gut — und genau da setzt es eigentlich an.\n\nMir geht es nicht darum, Ihnen noch mehr Anfragen zu bringen. Der Punkt ist eher: Wenn viele Anfragen reinkommen, wird es umso wichtiger, dass sichtbar bleibt, was eingegangen ist, was offen ist und was weiterlaufen muss.\n\nIch habe das bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",
-    choices: [
-      { label: "„Ja, schicken Sie“", go: "ja" },
-      { label: "„Nein“", go: "nein" },
-    ],
-  },
-  system: {
-    cue: "„Wir haben schon ein System“",
-    say: "Das ist gut — dann haben Sie bereits eine Grundlage.\n\nMir geht es auch nicht darum, am Telefon zu behaupten, dass Sie etwas ersetzen müssen. Der Punkt ist eher, ob neue Kundenanfragen aus Telefon, Website, E-Mail und direkten Gesprächen wirklich an einem Ort sichtbar weiterlaufen.\n\nIch habe das bewusst konkret für Ihren Betrieb vorbereitet. Schauen Sie sich die kurze Videoseite einfach als Vergleich an. Wenn Sie darin keinen zusätzlichen Nutzen sehen, ist das Thema für mich erledigt.\n\nDarf ich Ihnen den Link schicken?",
-    choices: [
-      { label: "„Ja, schicken Sie“", go: "ja" },
-      { label: "„Nein“", go: "nein" },
-    ],
-  },
-  unterlagen: {
+  ex_unterlagen: {
     cue: "„Schicken Sie Unterlagen“",
-    say: "Gerne.\n\nIch schicke Ihnen aber keine allgemeinen Unterlagen, sondern den Link zur kurzen Videoseite, die ich bewusst konkret für Ihren Betrieb vorbereitet habe.\n\nDort sehen Sie deutlich schneller, ob darin ein konkreter Nutzen für [Betrieb] steckt.\n\nWas ist für Sie besser — per Mail oder direkt aufs Handy?",
-    choices: [{ label: "Kanal nennt er → bestätigen", go: "bestaetigen" }],
+    say: "Gern — keine Standard-Unterlagen, sondern eine kurze Seite, die ich für [Betrieb] mache. Auf welche Mail?",
+    choices: [{ label: "Mail nennt er", go: "mail" }],
   },
-  werSind: {
-    cue: "„Wer sind Sie genau?“",
-    say: "Gerne.\n\nMein Name ist Gunnar Wende, ich bin aus Oberrieden. Ich baue ein Leitsystem für Sanitärbetriebe, damit neue Kundenanfragen aus Telefon, Website, E-Mail und direkten Gesprächen an einem Ort sichtbar weiterlaufen.\n\nIch habe mir [Betrieb] angeschaut und deshalb etwas Konkretes für Ihren Betrieb vorbereitet.\n\nDarf ich Ihnen den Link zur kurzen Videoseite schicken?",
+  ex_laeuftSchon: {
+    cue: "„Läuft schon / wir haben ein System“",
+    say: "Das ist gut. Trotzdem eine ehrliche Frage: Kriegen Sie auch die mit, die im Tagesstress mal untergehen — oder fallen die einfach unter den Tisch?",
     choices: [
-      { label: "„Welche Firma?“", go: "welcheFirma" },
-      { label: "„Ja, schicken Sie“", go: "ja" },
+      { label: "Beißt an → weiter", go: "s4" },
+      { label: "Zuckt mit den Schultern → ehren", go: "exit_nein" },
     ],
   },
-  welcheFirma: {
-    cue: "„Welche Firma?“",
-    say: "Ich baue das unter dem Namen FlowSight auf — aber der Name ist hier gar nicht der wichtige Punkt.\n\nWichtiger ist: Ich habe für [Betrieb] konkret vorbereitet, wie neue Kundenanfragen sichtbarer aufgenommen und weitergeführt werden können.\n\nDarf ich Ihnen den Link zur kurzen Videoseite schicken?",
-    choices: [{ label: "„Ja, schicken Sie“", go: "ja" }],
+  ex_nichtNachrufen: {
+    cue: "„Schauen — aber rufen Sie nicht nach“",
+    say: "Natürlich. Ich schick's Ihnen, Sie schauen in Ruhe — wenn's Sie überzeugt, melden Sie sich einfach.",
+    choices: [{ label: "Mail nennt er", go: "mail" }],
   },
-  nichtNachrufen: {
-    cue: "„Schauen, aber nicht nachrufen“",
-    say: "Natürlich, das respektiere ich.\n\nDann schicke ich Ihnen den Link einfach zu. Schauen Sie es sich in Ruhe an — ich habe es bewusst konkret für Ihren Betrieb vorbereitet.\n\nWenn Sie darin einen konkreten Nutzen für [Betrieb] sehen, können Sie mir direkt auf die Mail antworten. Wenn nicht, müssen Sie nichts machen.",
-    choices: [{ label: "Kanal abfragen → bestätigen", go: "bestaetigen" }],
+
+  // ── Ausgänge ──────────────────────────────────────────────────────
+  exit_nein: {
+    cue: "„Kein Interesse / brauchen nichts“",
+    say: "Alles gut — danke, dass Sie's direkt sagen. Schönen Tag.",
+    choices: [{ label: "Auflegen, nächster", go: "end" }],
   },
-  ja: {
-    cue: "„Ja, schicken Sie es mir“",
-    say: "Sehr gerne.\n\nWas ist für Sie besser — per Mail oder direkt aufs Handy?\n\n[Pause. Adresse notieren.]\n\nPerfekt, danke. Dann schicke ich Ihnen den Link zur kurzen Videoseite. Ich habe es bewusst konkret für Ihren Betrieb vorbereitet — schauen Sie es sich einfach in Ruhe an.\n\nIch melde mich morgen oder übermorgen nochmals kurz und frage nur, ob Sie darin einen konkreten Nutzen für Ihren Betrieb sehen.\n\nPasst das so?",
-    choices: [
-      { label: "Adresse bestätigen", go: "bestaetigen" },
-      { label: "Lieber Rückruf statt Mail", go: "rueckruf" },
-    ],
-  },
-  bestaetigen: {
-    cue: "Mailadresse bestätigen",
-    say: "Perfekt, danke.\n\nIch wiederhole kurz: [Mailadresse wiederholen].\n\nStimmt das so?\n\nWenn schwierig:\nDanke. Damit ich es sauber notiere: Können Sie mir die Adresse kurz buchstabieren?\n\n[Adresse wiederholen.]\n\nPerfekt, stimmt das so?",
-    choices: [{ label: "Bestätigt → Abschluss", go: "abschlussPositiv" }],
-  },
-  abschlussPositiv: {
-    cue: "Abschluss positiv",
-    say: "Perfekt, danke. Dann schicke ich Ihnen den Link gleich per Mail.\n\nSchauen Sie es sich einfach in Ruhe an — ich habe es bewusst konkret für Ihren Betrieb vorbereitet.\n\nIch melde mich morgen oder übermorgen nochmals kurz und frage nur, ob Sie darin einen konkreten Nutzen für [Betrieb] sehen.\n\nPasst das so?",
-    choices: [{ label: "Geschafft", go: "win" }],
-  },
-  rueckruf: {
-    cue: "Rückruf statt Mail",
-    say: "Alles klar, dann rufe ich Sie lieber nochmals an.\n\nWann erwische ich Sie besser — eher über Mittag oder gegen Abend?",
-    choices: [{ label: "Termin notiert", go: "win" }],
-  },
-  nein: {
-    cue: "Klares Nein",
-    say: "Verstehe ich. Dann respektiere ich das und will Ihnen nichts aufdrängen.\n\nDanke für die klare Rückmeldung, Herr [Name]. Ich wünsche Ihnen einen guten Tag.",
-    choices: [{ label: "Ende", go: "end" }],
+  callback: {
+    result: "rep",
+    title: "Rückruf-Zeit notiert.",
+    note: "Kein Nein — nur „nicht jetzt“. Zeit eintragen, später nochmal. Nächster Call.",
   },
   win: {
     result: "win",
-    title: "Volltreffer — Ja zur Simulation.",
-    note: "Heute noch: Simulation bauen + senden (~35 Min). Folge-Anruf steht. Das triggert die Pipeline.",
+    title: "Volltreffer — Ja zur Seite.",
+    note: "Heute noch: personalisierte Seite bauen + senden (~35 Min). Folge-Anruf in 1–2 Tagen steht. Das triggert die Pipeline.",
   },
   end: {
     result: "rep",
-    title: "Rep gesammelt.",
-    note: "Jeder Nein bringt dich näher zum Ja. Kurz in die Lessons, nächster Call.",
+    title: "Sauberes Nein — Rep gesammelt.",
+    note: "Ein ehrlich respektiertes Nein schützt Ruf + Energie. Kein Drehen. Kurz in die Lessons, nächster Call.",
   },
 };
 
-export const JA = new Set(["ja", "bestaetigen", "abschlussPositiv", "win", "rueckruf", "unterlagen", "welcheFirma"]);
-export const EXIT = new Set(["nein", "end", "nichtBeschaeftigen", "gk_info"]);
-export const dcls = (id: string): "ja" | "exit" | "mid" => (JA.has(id) ? "ja" : EXIT.has(id) ? "exit" : "mid");
-
-// Drill: Einwand → Antwort aktiv abrufen.
-export const DRILL_IDS = [
-  "preis", "keineZeit", "keinInteresse", "laeuftSchon", "genug", "system",
-  "unterlagen", "werSind", "welcheFirma", "nichtNachrufen", "gk_worum", "gk_info",
+// Drill: Einwand → Antwort aktiv abrufen (§5 + Gatekeeper-Kernstrang).
+const DRILL_IDS = [
+  "ex_preis", "ex_laeuftSchon", "ex_werSind", "ex_keineZeit",
+  "ex_unterlagen", "ex_nichtNachrufen", "gk_worum", "exit_nein",
 ];
 export const DRILL = DRILL_IDS.map((id) => ({ cue: COLD[id].cue ?? "", answer: COLD[id].say ?? "" }));
 
