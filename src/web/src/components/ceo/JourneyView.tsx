@@ -426,7 +426,7 @@ export function JourneyView() {
             <p className="text-[11px] text-navy-400 mt-3">Der Funnel füllt sich automatisch aus den geloggten Calls — du pflegst hier nichts von Hand.</p>
           </div>
         </div>
-        <p className="text-[10px] text-navy-300 mt-4">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (eingefroren). Stand: {new Date(data!.snapshot_at).toLocaleString("de-CH")}</p>
+        <p className="text-[10px] text-navy-300 mt-4">Cold-Call-Wortlaut 1:1 aus cold_call_script.md (frage-first, gelockt). Stand: {new Date(data!.snapshot_at).toLocaleString("de-CH")}</p>
       </div>
     );
   }
@@ -613,7 +613,7 @@ export function JourneyView() {
       <div>
         <BackBtn onClick={() => go({ name: "home" })} label="Schwungrad" />
         <PageHead eyebrow="Stern 2 · Sales" title="Cold Call"
-          sub="Ziel: das Ja, die Simulation schicken zu dürfen. Kein Preis, keine Discovery." />
+          sub="Ziel: das Ja, die kurze Seite schicken zu dürfen. Ehrlich, kein Druck — ein Nein sofort ehren." />
         <div className="grid sm:grid-cols-3 gap-3">
           <HubCard title="Übersicht" desc="Der Gesprächsbaum auf einen Blick" onClick={() => go({ name: "live", node: "opener" })} />
           <HubCard title="Live" desc="Beim Telefonieren durchklicken" onClick={() => { setLiveHist([]); go({ name: "live", node: "start" }); }} />
