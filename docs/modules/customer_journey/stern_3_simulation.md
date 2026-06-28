@@ -22,4 +22,4 @@ Die laufende Pipeline (heute 4 Videos T1–T4) bleibt **unangetastet**, bis der 
 ## Offen / nächster Schritt — der „Brocken" (eigener Phase-2-Strom)
 Pipeline + Demo komplett neu: **Audio · Script · Text · Loom-Video · Screenflow**. Bewusst terminieren, nicht nebenbei. Erst dann die alte 13-Minuten-Variante ablösen.
 
-**Definition läuft (2026-06-27):** Hero-Cold-Strang **0–~85 komplett gelockt** — Hook→Versprechen + Knoten-Reveal (s. [HERO_DEMO_SPEC](../../gtm/pipeline/HERO_DEMO_SPEC.md)). Offen: WARM-Opener, Knoten-Set, Seed-Fall umstellen, Text-im-Fall (Pipeline-Bible-Neubau).
+**Definition (2026-06-28):** Hero **beide Stränge-Opener + Knoten-Set ①–④ gelockt** — COLD 0–~85 (Hook→Versprechen + Knoten-Reveal) **+ WARM-Opener 0–13 + alle 4 Knoten** wortgenau (① Gesicht/Lisa · ② Kontrolle/Überblick · ③ Vertrauen/Haken · ④ Geld/Ausstieg → Brücke zu Stern 5) (s. [HERO_DEMO_SPEC](../../gtm/pipeline/HERO_DEMO_SPEC.md)). Offen: Seed-Fall umstellen, Hero-Greeting Volle-Zeile-Render, Text-im-Fall (Pipeline-Bible-Neubau).
