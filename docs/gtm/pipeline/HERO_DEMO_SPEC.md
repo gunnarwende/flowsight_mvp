@@ -185,6 +185,24 @@ echte System arbeiten.
 **Liste = sauber:** nur der **Brunner-Fall aus dem Hero** (Kontinuität — den sehen *alle*) + **neutrale „Bei uns/Erledigt"-Füllung** (etabliert, wie Hero-Dashboard NEU 1 / Bei uns 7 / Erledigt 23). **Die Knoten-①-Fälle (Notfall/Frust/Zusatzkosten-Anruf) bleiben DRAUSSEN** — Knoten sind opt-in & unabhängig, ② darf nur auf den Hero bauen, nicht auf ein gesehenes ①.
 **Abhängigkeit:** Seed-Demo-Fall (Brunner). *(Optional geparkt: Vorher/Nachher Zettelchaos → eine Liste — kostet ein gestelltes Set, v1 trägt's der VO.)*
 
+### Knoten ③ — „Ehrlich — wo ist der Haken?" (GELOCKT 2026-06-28)
+**Ziel:** Misstrauen/„wo ist die Falle?" mit **radikaler, souveräner Ehrlichkeit** auflösen — den Haken selbst nennen und zur **Stärke** (Eigentum + Selektivität) kippen. **Form:** **DU, Gesicht, direkt in die Kamera**, ruhig/ehrlich — der eine Knoten, wo der Mensch zurückkommt (Variety zu ① Anrufe / ② Screen). **Universell** (eine Aufnahme, kein Swap).
+
+| Beat | DU (Gesicht) | Rolle |
+|---|---|---|
+| 1 | „Den Haken sag ich Ihnen lieber selbst." | ehrlicher Auftakt (deine Haltung, **keine** Unterstellung) |
+| 2 | „Lisa weiß von allein nicht, wie *Ihr* Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist. Das stellen *Sie* ein. Ihr Betrieb, Ihre Regeln." | der Haken → Eigentum |
+| 3 | „Und das machen Sie nicht allein. Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram. Am Ende schau ich selbst drüber, dass es passt." | Zusammenarbeit (entschärft) |
+| 4 | „Und ja — Sie wären unter den Ersten. Genau darum bin *ich* persönlich dabei und nehm nur eine Handvoll Betriebe. Nicht viele — dafür jeden richtig." | der Flip (Frühphase → persönliche Aufmerksamkeit/Selektivität) |
+| 5 | „Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck." | Tür zum Gespräch (kein CTA, keine Pre-Apology) |
+
+**Gelockte Begründungen:**
+- **Beat 2 ohne „wie sie redet"** — das gehört Knoten ① (ihre *Art*). ③ = nur *Betriebs-Spezifika* (Wissen/Regeln/Erreichbarkeit), sonst Widerspruch zu ① („war der Anruf gestellt?").
+- **Geerdet im echten Cockpit** (`CockpitApp.tsx`): Lisa-Wissen/Dispositionen/Erreichbarkeit + geführter Aufbau (~1 h, self-service) + Founder-Freigabe. **„Cockpit"** als Wort raus (Jargon) → „geführter Aufbau".
+- **Kein „gehen wir live"** — greift den Kauf vor (er hatte noch kein warmes Gespräch). Beat 3 endet auf Founder-Sorgfalt, nicht Commitment.
+- **Beat 5: kein harter CTA, keine Pre-Apology** („wenn nicht, okay" raus) — souverän, lässt ihm die Kontrolle.
+- **80/20-Zahl bewusst NICHT genannt** — falsche Präzision untergräbt im Ehrlichkeits-Moment das Vertrauen; Konzept ja, Zahl nein.
+
 ## Gelockte Entscheidungen (Begründung kurz)
 - **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
@@ -200,7 +218,7 @@ echte System arbeiten.
 
 ## Offen / nächste Schritte
 1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
-2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① + ② wortgenau gelockt.** Offen: ③/④ Scripts + Clip-Inhalte.
+2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① + ② + ③ wortgenau gelockt.** Offen: nur noch **④ (Kosten & Ausstieg)** Script.
    **⚠️ MUST bei Umsetzung:** Hero-Greeting auf Volle-Zeile-Render umstellen (kein fester Slot — Hood-AG-Leerlauf).
 3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
