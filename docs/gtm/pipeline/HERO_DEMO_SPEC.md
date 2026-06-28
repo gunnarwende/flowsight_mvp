@@ -86,7 +86,7 @@ CTA, kein „Gunnar" laut.** Name nur optional als **visuelle Unterzeile** (lowe
 - **Heizung / Gebäudetechnik (Wärme-Cluster):** „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein."
 
 ### Swap-Inventar (driftfrei)
-- 🔵 **Swap A — Greeting [Betrieb]** (15–20, fix 5,0 s): Firmenname pro Tenant, in den Slot gepaddet (wie heute `swap_tenant_greeting`).
+- 🔵 **Swap A — Greeting [Betrieb]** (15–20): Firmenname pro Tenant. **⚠️ Volle Zeile vertonen, NICHT in festen Slot padden** (s. „Namen & Betrieb"-Regel im Knoten-Abschnitt — Hood-AG-Leerlauf vermeiden). Heutiges `swap_tenant_greeting` (fix 5 s) entsprechend umstellen.
 - 🟢 **Swap B — {Anliegen}** (20–26, fix 6,0 s): pro Gewerk, exakt auf Slot-Länge geschnitten/gepaddet.
 - **Demo-Adresse „Bahnhofstrasse 14, 8500 Frauenfeld"** = **kanton-gebunden** (Thurgau, gut sprechbar). **Bei Kantonswechsel neue Demo-Stadt setzen!**
 - Demo-Kunde „Herr Brunner" + alle Lisa-Zeilen = **universell** (einmal aufgenommen).
@@ -120,6 +120,57 @@ echte System arbeiten.
 
 ---
 
+## Knoten — Set + Inhalte
+
+> **Set (4, gelockt):** ① „Und bei *meinen* Kunden?" (Peek) · ② „Behalt ich den Überblick?" · ③ „Ehrlich — wo ist der Haken?" · ④ „Was kostet das — und wie komm ich wieder raus?" → Reihenfolge = **Gesicht · Kontrolle · Vertrauen · Geld** (③ vor ④: Vertrauen vor Geld; ④ unten = Brücke zu Stern 5). Bewertung = **kein Knoten** (Stern-5-Trumpfkarte).
+> **Knoten-Definition (Maßstab):** *ein* Zweifel → *Beweis* (zeigen, nicht pitchen) → *Tür zum Gespräch*. **Nicht:** Feature-Katalog · zweiter Pitch · Preis verraten · Sackgasse.
+> **Stern-4-Mechanik:** *welchen* Knoten er klickt = sein profilierter Zweifel → Munition fürs warme Gespräch (Stern 5).
+
+### ⚠️ SOFORT / WICHTIG — Namen & Betrieb: volle Zeile vertonen, NIE fester Slot
+**Gilt für Hero-Greeting UND alle Knoten.** Variable Namenslänge in einen *festen* Zeit-Slot schneiden + mit Stille padden → **toter Leerlauf bei kurzen Namen** („Hood AG"-Lehre aus dem alten 13-Min-Video: 2 s Name + 5 s Stille = unrealistisch). **Fix:** Name/Betrieb in den *Text* füllen → die **komplette Zeile** per ElevenLabs vertonen (natürliches Tempo um den Namen) → Schnipsel **fließend aneinanderhängen**. Kein Slot, kein Padding, jede Länge sauber.
+→ **Hero-Greeting (15–20) von „fix 5 s, gepaddet" auf Volle-Zeile-Render umstellen — nicht vergessen!**
+→ **Assembly:** ~90 % **fest** (einmal vertont, von allen geteilt) + nur die `[Betrieb]`/`[Inhaber]`-Zeilen **pro Betrieb** vertont → zusammengesetzt. Keine Komplett-Datei, nicht alles live.
+
+### Knoten ① — „Und bei *meinen* Kunden?" (GELOCKT 2026-06-28)
+**Ziel:** Roboter-/Reputations-Angst auflösen — Lisa = warm, ruhig, ehrlich, nie daneben, über echte Kundentypen. **Peek-Knoten** (lugt während des Heros rein). **Form:** Kunde ↔ Lisa, je *eigene* Kundenstimme (Variety = Beweis); DU nur im VO-Schluss. Namen immer **Nominativ** (kein Herr/Herrn-Fall).
+
+**CALL 1 · 🟢 SWAP nach Notdienst-Flag**
+
+*A — Notfall* (mit Notdienst) · Kunde männlich, **hektisch**:
+| Sprecher | Wortlaut |
+|---|---|
+| LISA | „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?" |
+| KUNDE | „Bei mir steht das Wasser im Keller, ich brauch sofort jemanden!" |
+| LISA | „Verstanden — das hat Vorrang. Ich nehm das gleich auf und geb's sofort als Notfall an den Techniker weiter, jemand meldet sich umgehend bei Ihnen." |
+| KUNDE | „Oh, super — danke!" |
+| LISA | „Sehr gern. Bis gleich, auf Wiederhören." |
+
+*B — frustrierter Bestandskunde* (ohne Notdienst) · Kunde männlich, **genervt**:
+| Sprecher | Wortlaut |
+|---|---|
+| LISA | „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?" |
+| KUNDE | „Ja, ich wart jetzt seit über einer Woche auf eine Rückmeldung zu meiner Offerte — langsam wird's mühsam." |
+| LISA | „Das tut mir leid, das versteh ich. Ich sorg dafür, dass sich **Herr [Inhaber]** wegen Ihrer Offerte mit Vorrang bei Ihnen meldet — das nehm ich gleich so auf." |
+| KUNDE | „Gut, danke." |
+| LISA | „Sehr gern, ich kümmer mich drum. Auf Wiederhören." |
+*(kein Nummern-Erfragen — Bestandskunde, Nummer liegt vor / kommt über den Anruf.)*
+
+**CALL 2 · „Der Chef ist nicht da" (universell)** · Kunde männlich, **ruhig** (andere Stimme):
+| Sprecher | Wortlaut |
+|---|---|
+| LISA | „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?" |
+| KUNDE | „Guten Tag — ist **Herr [Inhaber]** grad zu sprechen?" |
+| LISA | „**Herr [Inhaber]** ist grad auf einem Einsatz unterwegs — aber ich helf Ihnen gern weiter. Worum geht's denn?" |
+| KUNDE | „Es geht um meine Offerte — ich wollt wissen, ob da noch Zusatzkosten auf mich zukommen." |
+| LISA | „Das klärt er am besten direkt mit Ihnen, damit Sie eine verlässliche Antwort kriegen. Ich notier Ihre Frage und geb's ihm weiter — er meldet sich bei Ihnen." |
+| KUNDE | „Alles klar, danke." |
+| LISA | „Sehr gern. Auf Wiederhören." |
+
+**VO-Schluss · DU (Stimme über Screen):**
+> „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
+
+**Dynamik:** pro Betrieb neu vertont = **alle 3 Begrüßungen** (`[Betrieb]`) · Call-1B-Lisa · Call-2 Kunde-Z2 + Lisa-Z3+Z5 (`[Inhaber]`). Rest = einmal für alle. **Fallback** Inhaber „?": „Herr [Inhaber]" → „der Chef" (Universal-Aufnahme).
+
 ## Gelockte Entscheidungen (Begründung kurz)
 - **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
@@ -135,7 +186,8 @@ echte System arbeiten.
 
 ## Offen / nächste Schritte
 1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
-2. **Knoten-Set** (Anruf · Wizard · Leitzentrale · Bewertung + Notfall-Gewerk-Variante) → finale Auswahl + Zweifel-Labels + Clip-Inhalte.
+2. **Knoten-Set:** 4 gelockt (s. „Knoten"-Abschnitt). **Knoten ① wortgenau gelockt.** Offen: ②/③/④ Scripts + Clip-Inhalte.
+   **⚠️ MUST bei Umsetzung:** Hero-Greeting auf Volle-Zeile-Render umstellen (kein fester Slot — Hood-AG-Leerlauf).
 3. **Seed-Demo-Fall umstellen:** heute noch alt (Rohrbruch · Wende · Seestrasse 14 Oberrieden) → neu: neues Bad / Wärmepumpe · Herr Brunner · Bahnhofstrasse 14, 8500 Frauenfeld.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
 5. **Demo-Adresse pro Kanton** pflegen (Vermerk bei Kantonswechsel).
