@@ -15,5 +15,10 @@
 - **Besitzt:** diese Karte + `docs/gtm/sales/cold_call_script.md` + `gespraechskarte.md`.
 - **Kollidiert mit:** Stern 1 + 5 (teilen sich `SALES_BIBLE.md`).
 
+## Stand (2026-06-27)
+- **Cold Call auf frage-first neu gebaut, KOMPLETT gelockt:** §1 Wer abhebt · §2 Opener · §3 Discovery (Aufsetzer → 4 Auffahrten → Killer) · §4 Übergang/CTA · §5 Exits — wort-genau in [`cold_call_script.md`](../../gtm/sales/cold_call_script.md). Ersetzt die alte send-first/13-Min-Fassung.
+- **Haltung gelockt:** Ehrlichkeit statt Technik (Hormozi); ein Nein sofort ehren (kein Drehen); zeigen-statt-sagen (keine „ich verkauf nichts"-Negation).
+
 ## Offen / nächster Schritt
 - Cold-Call-Wortlaut gegen reale Calls schärfen (Mitschrift-Funde in `gtm/sales/lessons_learned_sales.md`).
+- **4–15 MA = Mittelbetrieb = eigener Customer Journey** (separater Cold Call, eigene Runde).

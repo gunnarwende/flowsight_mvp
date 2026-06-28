@@ -128,6 +128,7 @@ export function JourneyView() {
   // Feld-Lücken (Mehrfachauswahl) — zum gezielten Nacharbeiten: Größe?/Inhaber/Mail leer.
   const [gaps, setGaps] = useState<{ groesse: boolean; inhaber: boolean; mail: boolean }>({ groesse: false, inhaber: false, mail: false });
   const [nurOffen, setNurOffen] = useState(false); // nur noch nicht kontaktierte zeigen
+  const [goOpen, setGoOpen] = useState(false); // Go-Maske eingeklappt (schmaler Balken) → Klick öffnet die Felder
   // „Go"-Lauf-Status (Discovery + Anreicherung) — sperrt den Go-Knopf, zeigt ⏳/✓ + Stopp.
   const [run, setRun] = useState<{ active: boolean; doneRecent: boolean; id: number | null }>({ active: false, doneRecent: false, id: null });
   const [stopping, setStopping] = useState(false);
@@ -292,10 +293,18 @@ export function JourneyView() {
 
         <RunStatusBadge active={run.active} doneRecent={run.doneRecent} onStop={cancelRun} stopping={stopping} />
 
-        {/* Go — Schwungrad in Gang setzen */}
+        {/* Go — eingeklappt als schmaler Balken; Klick öffnet die Erfassungs-Maske */}
+        <button type="button" onClick={() => setGoOpen((o) => !o)}
+          className="w-full flex items-center gap-3 bg-white rounded-2xl border border-gold-300 px-4 py-3 mb-2 hover:bg-gold-50/40 transition">
+          <span className="text-lg font-extrabold text-navy-900">Go</span>
+          <span className="text-[12px] text-navy-400 flex-1 text-left truncate">Neue Betriebe holen</span>
+          {run.active && <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" aria-label="läuft" />}
+          <span className={`text-navy-400 text-xs transition-transform ${goOpen ? "rotate-180" : ""}`} aria-hidden>▾</span>
+        </button>
+
+        {goOpen && (
         <div className="bg-white rounded-2xl border border-gold-300 p-4 mb-4">
-          <div className="text-lg font-extrabold text-navy-900">Go</div>
-          <p className="text-[12px] text-navy-400">Neue Betriebe holen — ich suche, parke und baue die Kontaktliste.</p>
+          <p className="text-[12px] text-navy-400">Ich suche, parke und baue die Kontaktliste.</p>
 
           {/* Modus: Vollerfassung (alle, kein Crawl) oder gezielt 1–3 jagen */}
           <div className="flex gap-2 mt-3">
@@ -346,7 +355,7 @@ export function JourneyView() {
 
           {goMode === "vollerfassung" ? (
             <p className="text-[11px] text-navy-400 mt-2">
-              Parkt <b>jeden</b> Sanitär-Betrieb des Kantons (<b>alle Größen</b>, kein Crawl → schnell). Größe bleibt „offen", bis du anreicherst. Läuft alphabetisch weiter (Frontier). Danach „Anreichern" für Inhaber/Mail/Größe.
+              Parkt <b>jeden</b> Sanitär-Betrieb des Kantons (<b>alle Größen</b>, kein Crawl → schnell). Größe bleibt „offen“, bis du anreicherst. Läuft alphabetisch weiter (Frontier). Danach „Anreichern“ für Inhaber/Mail/Größe.
             </p>
           ) : !goGemeinde && (
             <p className="text-[11px] text-navy-400 mt-2">
@@ -364,6 +373,7 @@ export function JourneyView() {
           {opsMsg && <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 px-3 py-2 text-[13px] text-navy-700">{opsMsg}</div>}
           <p className="text-[11px] text-navy-300 mt-2">Läuft in der Cloud — oben das ⏳/✓ zeigt den Stand, die Betriebe erscheinen laufend in der Kontaktliste.</p>
         </div>
+        )}
 
         {/* Stern-Navigation */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
