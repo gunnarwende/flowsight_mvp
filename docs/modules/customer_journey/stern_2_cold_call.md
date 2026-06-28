@@ -18,6 +18,7 @@
 ## Stand (2026-06-27)
 - **Cold Call auf frage-first neu gebaut, KOMPLETT gelockt:** §1 Wer abhebt · §2 Opener · §3 Discovery (Aufsetzer → 4 Auffahrten → Killer) · §4 Übergang/CTA · §5 Exits — wort-genau in [`cold_call_script.md`](../../gtm/sales/cold_call_script.md). Ersetzt die alte send-first/13-Min-Fassung.
 - **Haltung gelockt:** Ehrlichkeit statt Technik (Hormozi); ein Nein sofort ehren (kein Drehen); zeigen-statt-sagen (keine „ich verkauf nichts"-Negation).
+- **✅ Im Tool LIVE (2026-06-28):** CEO-App Stern-2-Gesprächsbaum (`coldCallScript.ts`) auf den frage-first-Stand umgebaut, gemerged (`#743`/`c85e40a`), Vercel deployt. 24 Knoten, 0 tote Links. **Stern 2 = abgeschlossen** (Doku gelockt + live + getrackt).
 
 ## Offen / nächster Schritt
 - Cold-Call-Wortlaut gegen reale Calls schärfen (Mitschrift-Funde in `gtm/sales/lessons_learned_sales.md`).
