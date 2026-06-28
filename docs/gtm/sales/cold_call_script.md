@@ -1,7 +1,7 @@
 # FlowSight Cold Call — Mini-Call-Tree (frage-first)
 
-> **STATUS: KERN GELOCKT 2026-06-27.** §2 Opener · §3 Discovery · §4 Übergang stehen wort-genau.
-> **§1 Gatekeeper + §5 Exits: OFFEN — nächste Runde.**
+> **STATUS: KOMPLETT GELOCKT 2026-06-27.** §1 Wer abhebt · §2 Opener · §3 Discovery · §4 Übergang · §5 Exits stehen wort-genau.
+> Offen nur noch: gegen reale Calls schärfen + WARM-Strang (Folge-Anruf-Video).
 >
 > Diese Fassung **ersetzt** die alte „send-first"-Version (13-Min-Video-Ära, eingefroren 2026-06-17,
 > „ich hab schon was vorbereitet"). Grund: Der Beweis ist jetzt ein **90-Sek-Hero + Knoten**, nicht mehr
@@ -142,6 +142,21 @@ Hebt der Inhaber selbst ab → direkt **§2 Opener.** Sonst, je nach dem was kom
 
 ---
 
-## §5 · Exits — OFFEN (nächste Runde)
-> Noch frage-first zu schärfen: „keine Zeit" · „kein Interesse" · „was kostet das?" · „wer sind Sie / ist das Werbung?" · „schicken Sie Unterlagen" · „rufen Sie nicht nach".
-> Rohmaterial: alte send-first-Exits in der Git-Historie + [`phase1_gespraech_playbook.md`](phase1_gespraech_playbook.md) §4 (Einwand-Lookup).
+## §5 · Exits (GELOCKT 2026-06-27)
+
+> **Haltung wie §1:** Unterscheide **Nein** (ehren, raus) von **Frage/Bedenken** (ehrlich, kurz, zeigen-statt-sagen). **Nie drücken, kein „ich verkauf nichts".** Durch das Nein-sofort-ehren ist §5 *kürzer* als die alte Einwand-Schlacht (das halbe alte Skript war „Nein drehen" → raus).
+
+**Eimer 1 — Echtes Nein → ehren + raus (kein Drehen):**
+„Kein Interesse" · „brauchen nichts" · „will mich nicht damit beschäftigen"
+> „Alles gut — danke, dass Sie's direkt sagen. Schönen Tag." → **auflegen, nächster.**
+
+**Eimer 2 — Frage/Bedenken (kein Nein) → ehrlich beantworten:**
+
+- **„Keine Zeit"** *(Logistik):* „Klar, ich halt Sie nicht auf — wann erreich ich Sie besser, Mittag oder Abend?"
+- **„Was kostet das?"** *(zu früh):* „Berechtigte Frage. Ehrlich — eine Zahl nenn ich ungern, bevor Sie's gesehen haben; sonst reden wir über Geld für was, das Sie noch gar nicht kennen. Schauen Sie die kurze Seite an, danach sehen Sie selbst, ob's den Aufwand wert ist — und dann reden wir konkret." *(Kein Pre-Apology „wenn's nichts ist" — souverän bleiben.)*
+- **„Wer sind Sie / ist das Werbung?"** *(zeigen-statt-sagen):* „Gunnar Wende, aus Oberrieden. Ich bau ein System für Sanitärbetriebe, damit im Tagesstress keine Anfrage untergeht — und fang grad mit den ersten in der Region an, drum ruf ich selber an." *(Spezifik + „ruf selber an" beweist „kein Massen-Werbe-Call" — ohne das Wort.)*
+- **„Schicken Sie Unterlagen"** *(weicher Türöffner → §4):* „Gern — keine Standard-Unterlagen, sondern eine kurze Seite, die ich für [Betrieb] mache. Auf welche Mail?"
+- **„Läuft schon / haben ein System / genug Anfragen"** *(kein Nein — EINE Wedge, dann respektieren):* „Das ist gut. Trotzdem eine ehrliche Frage: Kriegen Sie auch *die* mit, die im Tagesstress mal untergehen — oder fallen die einfach unter den Tisch?" → beißt er an → §3-Killer-Land → §4; zuckt er → **ehren, raus.** *Eine* Wedge, kein Kampf.
+- **„Schauen Sie's an, aber rufen Sie nicht nach"** *(Respekt, Tür offen):* „Natürlich. Ich schick's Ihnen, Sie schauen in Ruhe — wenn's Sie überzeugt, melden Sie sich einfach." *(Überstimmt den §4-Folge-Anruf — sagt er „nicht nachrufen", dann nicht.)*
+
+> Häufig + müssen sitzen: **„Was kostet das" · „Läuft schon" · „Wer sind Sie".** Der Rest ist selten/situativ.
