@@ -31,24 +31,40 @@
 
 ---
 
-## §1 · Gatekeeper — ENTWURF (2026-06-27, morgen prüfen)
+## §1 · Wer abhebt (GELOCKT 2026-06-27) — meist Inhaber selbst oder die Partnerin
 
-> **Noch nicht gelockt** (Founder hat ihn am EOD nicht final geprüft). Geist wie der Opener: souverän-assumptiv, kurz, warm.
+> **Kein Konzern-Vorzimmer — Familie.** Hebt nicht der Inhaber ab, ist es meist die **Partnerin**, die das Büro + die Anrufe macht. Sie ist **keine Hürde, sondern Mit-Entscheiderin** (sie sagt abends „ein netter Typ" oder „so ein Verkäufer"). Dieselbe Wärme wie beim Inhaber — **nie pitchen, nie von oben herab, nie verbrennen.**
 
-**Prinzip:** *Nie dem Büro pitchen.* Der Gatekeeper ist ein **Tor, kein Gegner** — warm, nie herablassend. Je *weniger* du erklärst, desto eher kommst du durch. Ziel: **an den Inhaber** — oder, wenn er nicht da ist, **eine konkrete Rückruf-Zeit.**
+**Haltung (das Rückgrat):**
+1. **Ehrlichkeit statt Technik (Hormozi).** Du hast was für Betriebe *wie diesen* gebaut — das glaubst du. Also kurz + wahr, keine Tricks zum „Durchkommen". Passt's, passt's; passt's nicht, ehrlich nicht.
+2. **Ein Nein ist ein Nein — sofort.** Gerade am Anfang **drehst du nichts.** „Brauchen nichts" → „alles gut, danke, schönen Tag." Auflegen, nächster. (Schützt deinen Ruf in der Region *und* dein Selbstvertrauen.)
+3. **„Nicht jetzt" ≠ „nein".** „Er ist auf der Baustelle" = *Logistik* → nach einer Zeit fragen ist legitim, nicht aufdringlich.
+4. **Zeigen statt sagen.** **Nie** „ich will nichts verkaufen / keine Werbung" — die Verneinung ruft genau den Verdacht auf (rosa Elefant) und klingt defensiv. Beweise „kein Verkäufer" durch *Verhalten*: kurz, über *sie*, eine Frage statt Pitch.
 
-**Lead (minimal, selbstsicher):**
+**Lead (minimal, warm):**
 > „Grüezi, Gunnar Wende aus Oberrieden. Ist Herr [Name] grad zu sprechen?"
 
-Stellt er durch → direkt §2 Opener (nicht neu vorstellen). Schirmt er ab, die Branches:
+Hebt der Inhaber selbst ab → direkt **§2 Opener.** Sonst, je nach dem was kommt:
 
-- **„Worum geht's genau?"** → „Klar — es geht um die Kundenanfragen bei [Betrieb], dass da keine untergeht, wenn grad keiner ans Telefon kann. Ich hab dazu *eine* kurze Frage an Herrn [Name] selber — zwei Minuten, dann weiß er, ob's für ihn ein Thema ist." *(Thema nennen, als Frage rahmen, kein Pitch.)*
-- **„Schicken Sie's an info@."** → „Könnt ich — aber ehrlich, es ist nur eine kurze Frage, die ich ihm lieber selber stell. Wann erreich ich ihn am besten — eher früh oder gegen Abend?" *(Frage-first: noch nichts zu schicken → auf Rückruf-Zeit umlenken, nicht ins Postfach versanden.)*
-- **„Er ist grad nicht da."** → „Kein Problem — wann erreich ich ihn am besten? Eher früh oder gegen Abend?" *(Fenster holen, nichts hinterlassen außer Name.)*
-- **Büro blockt / „brauchen nichts".** → „Versteh ich — drum will ich's gar nicht Ihnen aufdrücken. Es ist wirklich nur eine kurze Frage an Herrn [Name] selber. Wann passt's ihm am besten?" *(Nicht streiten, sanft auf „kurz, Chef-Sache" beharren; hält er dicht → freundlich raus, anderer Tag.)*
-- **Combox/niemand:** keine Nachricht (Cold = niedrige Rückrufquote) → zu besserer Zeit nochmal.
+| Was passiert | Deine Reaktion |
+|---|---|
+| **Inhaber ist da** | „Darf ich ihn kurz sprechen?" → §2 |
+| **Inhaber nicht da** (Logistik) | „Kein Problem — wann erreich ich ihn am besten, früh oder Abend?" |
+| **Nein** („brauchen nichts / kein Interesse") | „Alles gut — danke, dass Sie's direkt sagen. Schönen Tag." **Auflegen. Nächster.** |
+| **Combox / niemand** | keine Nachricht → später nochmal |
 
-> **⚠️ ICP-Kontext (Founder-Gedanke 2026-06-27, morgen einarbeiten):** Echter Journey-ICP = **Inhaber + 1–3 MA (Kleinstbetrieb)** → meist hebt der **Inhaber selbst oder die Partnerin** ab; ein formelles Backoffice ist die *Ausnahme*. Die Real-Daten (~20–30 Calls letzte Woche: nur **2× Inhaber direkt**, Rest meist Backoffice) stammen aus der Zeit **vor** der Segment-Trennung (Targeting umfasste größere Betriebe). → Die formellen Abschirm-Branches sind eher Rand/Übergang; §1 morgen **Kleinstbetrieb-getunt** schärfen (Gatekeeper = oft die Partnerin → warm, persönlich, nicht „Büro"). **4–15 MA = Mittelbetrieb = eigener Customer Journey** (separat, eigene Runde).
+**Der allgegenwärtige Strang — „Worum geht's denn?"** *(fragt fast immer die Partnerin, die die Anrufe macht — also muss es bei IHR landen: als Entlastung, nie als Vorwurf):*
+> „Ganz kurz — ich hab was für Sanitärbetriebe gebaut, das auffängt, was im Tagesstress untergeht: eine Anfrage über Telefon, Website, egal wie. **Wenn Sie die Anrufe machen, hält Ihnen das den Rücken frei.** Ich hätt dazu *eine* kurze Frage an Herrn [Name] — wann erreich ich ihn?"
+
+- **„im Tagesstress" statt „wenn keiner ans Telefon kann"** = multi-kanal *und* vorwurfsfrei (Überlastung, kein Versäumnis → kein Angriff auf sie).
+- **„Wenn Sie die Anrufe machen, hält Ihnen das den Rücken frei"** = bedingt (feuert nur, wenn's stimmt) + Entlastung für *sie* → sie wird Verbündete, nicht Hürde.
+- **„Ganz kurz … eine kurze Frage an Herrn [Name]"** beweist „kein Verkäufer" durch Verhalten (zeigen statt sagen).
+- Routet warm zum Inhaber (Discovery/Killer/Abschluss brauchen *ihn*).
+
+> *(Variante kühler/sicherer, falls „Rücken frei" zu nah: „…das auffängt, was im Tagesstress untergeht — Telefon, Website, egal. Damit dem Betrieb nichts durchrutscht, auch wenn's mal drunter und drüber geht.")*
+
+> **ICP-Kontext:** Echter Journey-ICP = **Inhaber + 1–3 MA (Kleinstbetrieb)** → meist Inhaber oder Partnerin am Telefon, kein echtes Backoffice. Die „meist-Backoffice"-Erfahrung (~20–30 Calls letzte Woche, nur 2× Inhaber direkt) war **vor** der Segment-Trennung. **4–15 MA = Mittelbetrieb = eigener Customer Journey** (separat, eigene Runde).
+> *(Spätere Option, bewusst NICHT jetzt: EINE sanfte Rückfrage vor dem Nein-Akzeptieren — „darf ich in zwanzig Sekunden sagen, worum's geht?" — erst wenn Sales-Selbstvertrauen steht. Das Skript darf mit dem Founder wachsen.)*
 
 ---
 
