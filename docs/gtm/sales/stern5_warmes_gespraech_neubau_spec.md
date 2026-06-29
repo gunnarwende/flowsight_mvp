@@ -115,6 +115,29 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 **Cold-Strang — keine Vorab-Discovery → hier frisch (Mom Test):**
 > (2a) „…wenn eine Anfrage reinkommt und Sie grad auf dem Bau sind: Wer geht ran? Und wenn niemand kann?" + **Disqualify-Sonde** „Kommt genug rein, dass das ein Thema ist — oder läuft's rund?" *(ehrliches Nein → ehren/parken)* → dann 2b/2c wie oben.
 
+### Block 3 — Konsequenz & Wert schärfen (GELOCKT 2026-06-29)
+
+> **Leichter als der Altbestand:** dort musste der Wert den ganzen Preis tragen (kein Test). Jetzt **beweist der Gratis-Test den Wert live** → Block 3 muss nur die **Einsätze in *seinen* Franken** greifbar machen (damit die Zahl in Block 5 klein wirkt) + Lust wecken, nicht wasserdicht schließen.
+
+**(3a) Reframe, der seinen Stolz ehrt** *(§3.1-Gold, optionaler Auftakt):*
+> „Der Punkt ist ja nicht, *ob* bei Ihnen sauber gearbeitet wird — sondern dass kein Auftrag mehr durchrutscht, nur weil im Tagesstress mal was untergeht."
+
+**(3b) Den Wert *ihn* beziffern lassen** *(§2.4 — er sagt die Zahl):*
+> „Mal ehrlich gerechnet — so ein Bad oder eine Wärmepumpe, was ist so ein Auftrag bei Ihnen wert, wenn er reinkommt?"
+
+**(3c) Konsequenz an *seine* Zahl koppeln** *(er rechnet selbst):*
+> „Und wenn davon im Monat auch nur *einer* hängenbleibt, weil grad keiner rangehen konnte — dann reden wir nicht über ein bisschen Komfort, sondern über [seine Zahl], die zum Nächsten geht."
+
+**(3d) Erfolgsbild** *(§2.5, nur wenn nötig — Eager-Buyer überspringen):*
+> „Wenn das ab jetzt nicht mehr passiert — woran würden Sie im Alltag merken, dass sich's gelohnt hat?"
+
+→ Brücke zu **Block 4:** „Und es bleibt nicht beim Auffangen — da geht sogar noch was nach oben."
+
+**Gelockte Begründungen:**
+- **Er sagt die Zahl** (3b) → überzeugender als Behauptung + sein Commitment (Mom Test). **Konsequenz an seine Zahl** (3c) → Preis wirkt in Block 5 winzig.
+- **Leichter dank Test** — „Sie sehen's gleich selbst" übergibt den Beweis an den Live-Test (kein Überzeugen-bis-Anschlag, weniger verkäuferisch).
+- **Reframe ehrt den Stolz** (nie „bei Ihnen läuft's schlecht"). **3d optional.**
+
 **Beispiel-Durchlauf (Sanitär Steiner · Combox-Leck · Knoten ① · Samstag-Slot):** Block 1 „was ist hängengeblieben?" → ER nennt ① selbst („wie redet die Computerstimme mit meinen Kunden") → 2c ① direkt, Notdienst klärt sich nebenbei → ER: „klingt vernünftig" → Block 3.
 
 **Gelockte Begründungen:**
@@ -185,7 +208,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ Block 0 + 1 + 2 gelockt → **als Nächstes Block 3** (Konsequenz & Wert), dann 4–6.
+1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–3 gelockt → **als Nächstes Block 4** (Bewertungs-Trumpf), dann 5–6.
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
