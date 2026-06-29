@@ -172,6 +172,28 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - **§7.19-Psychologie** („happy = still, angry = laut") = sofort gefühlter Schmerz. **Zeigen statt sagen + Test.**
 - **Kurz halten** — rein, rauf, weiter zum Close.
 
+### Block 5 — Preis-Moment + Gratis-Test (GELOCKT 2026-06-29) — das Herzstück
+
+**Bewegung I — Preis-Moment (Zahl geradeheraus, wert-verankert):**
+> „Gut. Dann ganz geradeheraus, weil Sie's wissen sollen: Sie haben selbst gesagt, *ein* verpasster Auftrag sind schnell [*seine Block-3-Zahl*]. FlowSight liegt bei **[Monatspreis] im Monat.**"
+
+- Wert-Anker = *seine* Block-3-Zahl → Monatszahl wirkt winzig. **In Stern 5 NICHT mehr vertagen** (anders als Cold Call — er *hat* gesehen, ④ versprach „geradeheraus"). **Nicht nervös runterreden** — Zahl, kurzer Blick, dann Bewegung II.
+
+**Bewegung II — Test-Hülle (Risiko-Umkehr):**
+> „[Preis-Einwand? *nicht* verteidigen →] Versteh ich. Drum das Beste daran: Sie zahlen davon **keinen Franken, bis Sie's nicht selbst haben wirken sehen.** Lassen Sie's uns ein paar Tage gratis live schalten.
+> Und keine Sorge: **wir stellen nicht Ihre Leitung um.** Sie heben normal weiter ab. Lisa fängt nur, was Sie *verpassen* — wenn's 4–5× klingelt und grad keiner kann. Genau das, was sonst zum Nächsten gegangen wär.
+> Ich richt's Ihnen selbst ein und bin die Tage dabei. Danach schauen wir gemeinsam: hat's was gebracht, fühlt sich's richtig an? **Dann** reden wir über den Preis — vorher zahlen Sie nichts."
+
+→ **dann schweigen** → **Block 6.**
+
+**Walk-through (Steiner):** „…950 im Monat." → ER „ist auch nicht nichts." → DU [nicht verteidigen] Test-Hülle → ER „okay, das ist fair." → Block 6.
+
+**Gelockte Begründungen:**
+- **Zahl genannt** → qualifiziert *vor* dem halben-Tag-Aufbau + honoriert ④. **Wert-verankert** → fühlt sich klein an. **Eine Zahl, keine Größenstufe, keine Aktivierung.**
+- **Silence-Disziplin ans *Ende*** (nach Zahl+Test): Zahl ist nicht das Ende — der Test ist die Erlösung, muss raus, *bevor* er sich verhärtet. Preis-Einwand → nicht verteidigen → Test ist die Antwort.
+- **Sicherheitsnetz-Konfig** (nur Verpasstes, 4–5× klingeln) = null Downside, exakt das Hero-Versprechen. **„Zahlung nach Test"** = stärkste ehrliche Risiko-Umkehr. **Selbstsicherheit, kein Discount.**
+- **[Monatspreis] = Variable** (~500 Early-Bird ↔ ~950 ICP-fix). Founder liest Interesse im Gespräch und setzt; bleibt bewusst offen.
+
 ## Gelockte Entscheidungen (Begründung kurz)
 
 - **Gratis-Live-Test statt „Aufbau-dann-zahlen":** tötet die drei echten Inhaber-Ängste (Team-Akzeptanz /
@@ -232,7 +254,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–4 gelockt → **als Nächstes Block 5** (Preis + Gratis-Test, Herzstück), dann 6.
+1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–5 gelockt → **als Nächstes Block 6** (Abschluss zum Live-Test, letzter Block).
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
