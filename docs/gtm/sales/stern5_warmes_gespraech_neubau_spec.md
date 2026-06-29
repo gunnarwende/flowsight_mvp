@@ -95,6 +95,36 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - Slot **konkret** nennen, wenn Variable da ("den Samstagvormittag"); sonst „diesen Moment".
 - **Opener gibt *ihm* den Boden** (kein Pitch) — beim Skeptiker das stärkste Signal: hören, nicht verkaufen.
 
+### Block 2 — Den profilierten Zweifel bedienen (GELOCKT 2026-06-29)
+
+**Warm-Strang — Discovery ist in Stern 2 schon gelaufen → aufgreifen, NICHT wiederholen:**
+
+**(2a) Anknüpfen statt neu fragen:**
+> „Sie hatten am Telefon ja gesagt, dass [*seine Methode/Leck aus dem Cold Call, z. B. 'die Anrufe auf die Combox laufen, wenn Sie unterwegs sind'*]. Und genau das haben Sie jetzt in der Demo gesehen — wie so ein Anruf trotzdem sauber gefangen wird."
+
+**(2b) Den Zweifel — Block 1 holt ihn meist schon; falls nicht, OFFENE Frage:**
+> „Was müsste für Sie stimmen, damit Sie sagen: das passt für meinen Betrieb?"
+*(„Treff ich's?"/nackter Ja-Nein-Tie-down gestrichen — „wer fragt, führt": er soll den Inhalt liefern, nicht nur bestätigen. Weiche Label-mit-Korrektur als Fallback erlaubt.)*
+
+**(2c) Auflösen — eine Spur nach geklicktem Knoten (Sanitär-konkret):**
+- **① „Wie redet die mit *meinen* Kunden?"** → „Lisa wimmelt niemanden ab und spielt keinen Fachmann. Sagt von sich aus, dass sie die digitale Assistentin ist. Nimmt sauber auf, fragt das Wichtigste, gibt strukturiert weiter — **keine Preise, keine Diagnosen, keine fixen Termine, keine Versprechen**, alles Fachliche bleibt bei Ihnen. *Wie* sie sich meldet, wann erreichbar — das stellen *Sie* ein. Ihr Betrieb, Ihre Regeln." *(+ Notdienst-Logik, wenn er nach 'dringend' fragt)*
+- **② Kontrolle:** „Eine Liste auf Ihrem Handy, die sich selbst füllt — kein Programm zum Pflegen. *Weniger, nicht mehr.*"
+- **③ Vertrauen/Haken:** Knoten-③-Substanz — Haken selbst nennen → Eigentum → Selektivität.
+- **④ Geld:** ⚠️ NICHT hier auflösen (Eskalationskarte Block 5) → Brücke: „Den Preis schauen wir gleich ehrlich an, und Sie zahlen erst, wenn's läuft — aber vorher: was bringt's Ihnen überhaupt?" → **Block 3**.
+
+**Cold-Strang — keine Vorab-Discovery → hier frisch (Mom Test):**
+> (2a) „…wenn eine Anfrage reinkommt und Sie grad auf dem Bau sind: Wer geht ran? Und wenn niemand kann?" + **Disqualify-Sonde** „Kommt genug rein, dass das ein Thema ist — oder läuft's rund?" *(ehrliches Nein → ehren/parken)* → dann 2b/2c wie oben.
+
+**Beispiel-Durchlauf (Sanitär Steiner · Combox-Leck · Knoten ① · Samstag-Slot):** Block 1 „was ist hängengeblieben?" → ER nennt ① selbst („wie redet die Computerstimme mit meinen Kunden") → 2c ① direkt, Notdienst klärt sich nebenbei → ER: „klingt vernünftig" → Block 3.
+
+**Gelockte Begründungen:**
+- **2a warm ≈ Cold-Call-§3-Aufsetzer** → im Warm-Strang **nicht wiederholen** (Rapport-Schaden: „das hab ich Ihnen doch grad erzählt"), nur aufgreifen. Frische Discovery gehört in den **Cold-Strang**.
+- **„Wer fragt, führt":** offene Frage statt Statement-zum-Bestätigen.
+- **Knoten = stiller Kompass** (Vorbereitung), nie ausgesprochen (B-Regel).
+- **④ nicht hier** (Eskalationskarte Block 5). **Config (Notdienst)** klärt sich nebenbei / im Aufbau — kein Nachjagen.
+- **Disqualify-Sonde nur Cold-Strang** (Warm hat sich durch Buchen + Cold-Call-Discovery qualifiziert).
+- **Abhängigkeit (Backlog):** Block 2a warm braucht die Cold-Call-Notiz (seine Methode/Leck) → später Feld im Lead-/Case-Record (vorerst handschriftlich).
+
 ## Gelockte Entscheidungen (Begründung kurz)
 
 - **Gratis-Live-Test statt „Aufbau-dann-zahlen":** tötet die drei echten Inhaber-Ängste (Team-Akzeptanz /
@@ -155,7 +185,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ Block 0 + 1 gelockt → **als Nächstes Block 2** (profilierter Zweifel, Mom-Test-Discovery), dann 3–6.
+1. **Warm-Strang Wortlaut weiter:** ✅ Block 0 + 1 + 2 gelockt → **als Nächstes Block 3** (Konsequenz & Wert), dann 4–6.
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
