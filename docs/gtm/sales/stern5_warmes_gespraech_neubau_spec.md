@@ -182,7 +182,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 **Bewegung II — Test-Hülle (Risiko-Umkehr):**
 > „[Preis-Einwand? *nicht* verteidigen →] Versteh ich. Drum das Beste daran: Sie zahlen davon **keinen Franken, bis Sie's nicht selbst haben wirken sehen.** Lassen Sie's uns ein paar Tage gratis live schalten.
 > Und keine Sorge: **wir stellen nicht Ihre Leitung um.** Sie heben normal weiter ab. Lisa fängt nur, was Sie *verpassen* — wenn's 4–5× klingelt und grad keiner kann. Genau das, was sonst zum Nächsten gegangen wär.
-> Ich richt's Ihnen selbst ein und bin die Tage dabei. Danach schauen wir gemeinsam: hat's was gebracht, fühlt sich's richtig an? **Dann** reden wir über den Preis — vorher zahlen Sie nichts."
+> Sie gehen das einmal **geführt durch** — ein Link, Schritt für Schritt, das Meiste ist schon vorbereitet, Sie ergänzen nur, was nur Sie wissen. Keine Stunde, kein Technik-Kram. Am Ende **schau ich selbst nochmal drüber — dann gehen wir gemeinsam live.** Danach schauen wir: hat's was gebracht, fühlt sich's richtig an? **Dann** reden wir über den Preis — vorher zahlen Sie nichts."
 
 → **dann schweigen** → **Block 6.**
 
@@ -193,6 +193,27 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - **Silence-Disziplin ans *Ende*** (nach Zahl+Test): Zahl ist nicht das Ende — der Test ist die Erlösung, muss raus, *bevor* er sich verhärtet. Preis-Einwand → nicht verteidigen → Test ist die Antwort.
 - **Sicherheitsnetz-Konfig** (nur Verpasstes, 4–5× klingeln) = null Downside, exakt das Hero-Versprechen. **„Zahlung nach Test"** = stärkste ehrliche Risiko-Umkehr. **Selbstsicherheit, kein Discount.**
 - **[Monatspreis] = Variable** (~500 Early-Bird ↔ ~950 ICP-fix). Founder liest Interesse im Gespräch und setzt; bleibt bewusst offen.
+- **Aufbau-Framing korrigiert** (s. Block 6): *„geführt durch, ich schau drüber, gemeinsam live"* — **nicht** „ich richt's ein".
+
+### Block 6 — Abschluss zum Live-Test (GELOCKT 2026-06-29) — letzter Block, = Konversion
+
+> **Stern-6-Realität (aus `CockpitApp.tsx`):** *Er* kriegt einen Link → Aufbau-Cockpit → geht **Schritt für Schritt** durch (Lisa „zur Kollegin"). Das Meiste ist aus seiner Website vorbereitet, **er ergänzt nur, was nur er weiß** (die „20%" — *nicht laut sagen*). „Nichts ist live, bis Sie freigeben." Letzter Schritt „Zugang & Freigabe" → **„An Gunnar zum Freischalten senden"** → Gunnar prüft → **gemeinsam live** (revDSG, Frankfurt, keine Aufnahmen). **Also: er baut, ich prüfe, gemeinsam live — nie „ich richt's ein".**
+
+**(6a) Close + Crown:**
+> „Und ehrlich, Herr [Name]: **es muss für uns beide passen.** Bringt's Ihnen nichts, sagen Sie's mir — dann lassen wir's. **Sollen wir's so machen?**"
+
+**(6b) Nach dem Ja — Momentum sichern:**
+> „Super. Dann schick ich Ihnen gleich den Link — Sie gehen's in Ruhe durch, ich bin erreichbar, und bevor irgendwas scharf wird, geh ich's mit Ihnen durch. Dann gehen wir gemeinsam live."
+
+→ **Konversion erreicht** (Zusage zum Test) → Übergang **Stern 6 (Aufbau)**.
+
+**Walk-through (Steiner):** „…es muss für uns beide passen. Sollen wir's so machen?" → ER „Ja, machen wir." → DU „Super, ich schick Ihnen gleich den Link…" → Stern 6.
+
+**Gelockte Begründungen:**
+- **Close = winziger, sicherer Schritt** (Test, kein „Kauf") → leichtes Ja. **Crown „für uns beide passen"** (④) = gegenseitig, kein Gefangensein.
+- **Kein Preis-Gate** (Test hat's entschärft — anders als Alt-§6). **Aufbau nicht neu erklären** — nur committen.
+- **Sofort konkreter nächster Schritt nach dem Ja** → Momentum, kein Versanden.
+- **„Er baut, ich prüfe, gemeinsam live"** = echter Cockpit-Vorgang + stützt Eigentum (③); „das Meiste vorbereitet" statt „80%".
 
 ## Gelockte Entscheidungen (Begründung kurz)
 
@@ -254,7 +275,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–5 gelockt → **als Nächstes Block 6** (Abschluss zum Live-Test, letzter Block).
+1. **Warm-Strang Wortlaut weiter:** ✅ **Warm-Strang Block 0–6 KOMPLETT gelockt** → offen: Einwand-Querschnitt (Q, aus §7 bergen) + Cold-Strang.
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
