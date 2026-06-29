@@ -4,6 +4,12 @@
 > **vor** der Demo liegen (Produkt selbst). Founder hat die Adress-Schichten **2/3/4 explizit bestätigt**.
 > Tickets: V8 (Stimme) + V9 (Adresse) in `docs/ticketlist.md`. **Live-Agent (BigBen) NICHT ohne Founder-Go anfassen.**
 
+> ### 🔖 STAND 2026-06-29 — Swiss-Post-Zugang (wenn Antwort kommt, hier weiter)
+> **Wo wir stehen:** V9-Adress-Lib ist gebaut + fail-safe (`src/web/src/lib/address/validateAddress.ts`); offen ist NUR die Stub-Funktion `callSwissPost()`. Ohne Credentials → `skipped` (neutral, kein Flag). Code braucht exakt **BuildingVerification** („existiert die Adresse?", Hauptbedarf Voice-Intake) **+ AutoComplete** (Strasse-Fuzz, Online-Wizard).
+> **Mail-Wechsel mit Swiss Post (Milena Burgener, adresspflege@post.ch):** Sie bot 3 Services an → **1 Adressassistent (kostenlos) = exakt unser Use Case** (AutoComplete + BuildingVerification). 2 Adressprüfung (Person/Firma) + 3 Adresspflege (Umzug/Inaktivität) = kostenpflichtig + **nicht** unser Fall.
+> **Antwort-Mail (2026-06-29 raus):** Option 1 gewählt + 3 Rückfragen: (a) server-seitig per REST/API nutzbar? (b) Zugang/Auth (API-Key vs OAuth2) + wie Credentials? (c) BuildingVerification inklusive (nicht nur AutoComplete)?
+> **➡️ Wenn Swiss-Post-Antwort da ist:** `callSwissPost()` verdrahten (BuildingVerification primär, AutoComplete für Wizard) → Credentials als `SWISSPOST_API_KEY` **oder** `SWISSPOST_CLIENT_ID` in Vercel-Env (die Lib gated genau darauf, `swissPostConfigured()`). Use-Case-Bestätigung Founder: nur „existiert/auffindbar", **nicht** „wohnt Person dort".
+
 ## Ground Truth (im Code geprüft, deutscher Strang)
 Quellen: `retell/templates/global_prompt_de.txt`, `retell/templates/agent_template_de.json`, `retell/exports/doerfler_agent.json`.
 - **Engine-Sprache = `de-DE`** (Deutschland) — obwohl der Prompt „AUSSCHLIESSLICH Schweizer Hochdeutsch (de-CH)" sagt. Mismatch: Text schweizerisch, Engine deutsch.

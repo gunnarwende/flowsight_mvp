@@ -219,6 +219,15 @@ async function main() {
 
   for (const tenant of tenants) {
     const modules = tenant.modules || {};
+
+    // Opt-out: Tenant will keinen Wochenrapport (z.B. Gastro-Pilot BigBen — der
+    // cases-basierte Sani-Report passt nicht; Inhaber spricht nur EN). Default =
+    // senden (rückwärtskompatibel); nur explizites `false` schaltet ab.
+    if (modules.weekly_report === false) {
+      console.log(`${tenant.name}: weekly_report opt-out — skipping.`);
+      continue;
+    }
+
     const email = modules.notification_email || tenant.prospect_email;
 
     if (!email) {
