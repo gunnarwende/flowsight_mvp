@@ -292,9 +292,14 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ **Warm- + Cold-Strang KOMPLETT gelockt** → offen nur noch: Einwand-Querschnitt (Q, aus §7 bergen).
-2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
-3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
-4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
-5. **§7.9-Check:** „Server Frankfurt / AVV" technisch noch aktuell? (vor Verbatim-Übernahme verifizieren).
-6. Überlebende Altbestand-Zeilen (Ersatzteillager o.) beim jeweiligen Block bergen.
+1. ✅ **Warm- + Cold-Strang KOMPLETT gelockt** → offen nur noch: **Einwand-Querschnitt Q** (aus §7 bergen, frischer Durchgang).
+2. **E-Mail (warm + cold):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen — der große Vorlauf (Block 0 hängt am CTA).
+3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
+4. **Cold-Call-Notizfeld** (Backlog): füttert Block 2a-warm. Erfasst Methode/Leck (§3-Auffahrt) · Notdienst j/n · Gewerk/Anliegen · Zweifel-Signal. **Jetzt handschriftlich**; Feld bauen wenn Call-Volumen es rechtfertigt (Lead-/Case-Record).
+5. **[Monatspreis]** = bewusst Variable (~500 Early-Bird ↔ ~950 ICP-fix) — Founder liest Interesse. **Entschieden, kein To-do.**
+
+### §7.9 Datenschutz — Check-Ergebnis (2026-06-29, Quelle `compliance/data_processing.md`)
+- ✅ **„Keine Gesprächsaufnahmen"** = belastbar (Retell Recording OFF, kein Audio gespeichert, PII-Redaction). **Verbatim sicher.**
+- ⚠️ **„Server in Frankfurt"** stimmt für **Falldaten** (Supabase/Vercel eu-central-1), **nicht** für die **Sprachverarbeitung** (Retell = US, live, speichert nichts, schwärzt PII). → Sales-Zeile auf **„Ihre Falldaten liegen auf EU-Servern in Frankfurt"** schärfen (nicht pauschal „alles in Frankfurt"). Nachfrage-Antwort: „Spracherkennung über US-Dienstleister, live, speichert nichts, schwärzt persönliche Daten."
+- ⚠️ **AVV:** kundenseitig im Cockpit ✅; **Subprozessor-DPAs (Retell/Resend/Twilio/Sentry, US→SCC/DPF) noch offen** (§6) → Compliance-Backlog (Recht/Anwalt vor Skalierung). Kein Sales-Problem.
+- → **geschärfte §7.9-Zeile** für den Q-Durchgang vorgemerkt.
