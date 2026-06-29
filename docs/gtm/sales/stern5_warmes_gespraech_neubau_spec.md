@@ -1,0 +1,97 @@
+# Stern 5 — Warmes Verkaufsgespräch · Neubau-Spec (Skelett v2)
+
+> **STATUS: SKELETT v2 GELOCKT (2026-06-29).** Übergabe-Zustand + Block-Struktur (Rolle/Aufgabe je
+> Block) fest. **Wortlaut folgt** Block für Block (wie bei den Knoten). Neubau auf Basis des frisch
+> gelockten Verlaufs Stern 1–4 — **nicht** Fortschreibung des Altbestands.
+>
+> **Altbestand** (`stern5_warmes_verkaufsgespraech_uebergabe_cc.md`, V1) = **Ersatzteillager, nicht
+> Bauplan.** Einzelne überlebende Zeilen (Ton „echter Typ, kein Drücker", Preis-Moment-Psychologie,
+> Erreichbarkeits-Gate) bergen wir gezielt — erst wenn das neue Skelett das Skelett gibt.
+> Einstieg: [Stern-5-Karte](../../modules/customer_journey/stern_5_verkaufsgespraech.md).
+
+## Zweck (Konversion)
+Das warme Gespräch nach dem Klick. **Kein Re-Pitch, kein Problem-neu-aufdecken** — er hat die Lösung
+im Hero schon *gesehen*. **Konversions-Ereignis (neu): Zusage zum Gratis-Live-Test.** (Preis + Zahlung
+landen *nach* dem Test — s. „Gratis-Test"-Entscheidung.)
+
+## Grundhaltung (gelockt)
+Echter Typ, kein Drücker. Ein Nein wird **sofort geehrt** (kein Drehen — wie Stern 2). Wert vor Preis.
+
+---
+
+## Übergabe-Zustand (der Anker — was wahr ist, wenn Stern 5 beginnt)
+
+**A — Sicher wahr (darauf berufen):**
+- Er hat im Cold Call (frage-first) **aktiv „ja, schick den Link" gesagt** → kein Kaltkontakt, Konsistenz-Hebel.
+- Er hat die **Mail mit der Hero-Seite** bekommen (zwei Stränge: nicht erreicht / erreicht+gebeten).
+- Der Hero hat **eine** Sache bewiesen: *ein Auftrag, den er sonst verliert, wird sauber gefangen* —
+  + Versprechen „bei Ihnen geht nichts mehr verloren" + Risiko-Umkehr „ich trage das Risiko, nicht Sie".
+- **Preis bewusst NICHT genannt** — in Knoten ④ explizit in *dieses* Gespräch vertagt.
+- **Bewertungs-Feature NICHT gezeigt** — zurückgehalten als Trumpf für jetzt.
+
+**B — Wir wissen es, legen es NIE offen (Signal = Steuerung, kein Protzen):**
+- Dass er geschaut hat (Stern-4-Signal) — sonst gäb's diesen Anruf nicht.
+- **Welchen Knoten er geklickt hat = sein lautester Zweifel** (Gesicht / Kontrolle / Vertrauen / Geld).
+  Schärfste Munition — aber **nie** „ich seh, Sie haben auf X geklickt" (creepy, verbrennt Vertrauen).
+- **Wie tief er geschaut hat** — technisch erfasst (`proof_watch`: max % je Take/Session, ehrlicher als
+  Bunnys Aggregat). Wird **nie ausgesprochen.**
+
+**C — Wirklich unbekannt (muss der Opener abklopfen):**
+- Was *qualitativ* hängt (Begeisterung vs. konkreter Einwand obenauf).
+- Ob seit dem Call Stimmung/Lage gekippt ist.
+→ Opener klopft **das Qualitative** ab, *nicht* das Quantitative (das wissen wir längst — wäre unecht).
+
+**D — Psychologische Ausgangslage (Sanitär-Brille):**
+- Nicht mehr kalt, aber nicht warm-committed. Skeptisch, misstrauisch, kein Sales-Fan, zeitknapp.
+- **Unterschied zu Stern 2:** dort Problem *aufdecken* — hier hat er's als **gelöst gesehen.** Frage ist
+  nicht „haben Sie ein Problem", sondern **„passt das für *meinen* Betrieb — kann ich dem trauen — was kostet's".**
+
+---
+
+## Skelett v2 (gelockt) — Blöcke mit Rolle + Aufgabe
+
+| # | Block | Rolle | Aufgabe |
+|---|---|---|---|
+| **0** | **Rahmen / Erreichbarkeit** | Türöffner · Respekt-Geste | Erlaubnis holen, *jetzt* zu sprechen (oder sauber vertagen, kein Druck). Knüpft an den **E-Mail-CTA** an (Payoff, wie WARM-Opener ↔ §4). Zeit des Inhabers respektieren. |
+| **1** | **Anschluss & Verortung** | Brücke · Sensor | Warm an den Stern-2-Call anknüpfen, **Boden öffnen**, ihn verorten — **ohne** Watch-Wissen zu zeigen. **Zwei-Spur:** A = hat Reaktion → direkt rein · B = kaum Zeit → die *eine* Sache kurz re-ankern (kein Re-Pitch). Das **Qualitative** lesen. |
+| **2** | **Den profilierten Zweifel bedienen** ⭐ | Bremse lösen *(das neue Herz)* | Den geklickten Knoten = lautesten Zweifel **unauffällig** ansteuern, *ihn* bestätigen lassen, **genau diesen einen** in die Tiefe lösen (Sanitär-konkret). Vier vorbereitete Spuren (①Gesicht ②Kontrolle ③Vertrauen ④Geld); andere nur, wenn *er* sie aufmacht. **Komprimierte Discovery** sitzt hier (Notdienst? wie laufen Anrufe heute? wer hebt ab?). |
+| **3** | **Konsequenz & Wert schärfen** | Gas geben | Von „Zweifel weg" zu „was ist das für *Ihren* Betrieb wert". Sanitär-konkret: *ein* verpasster Bad-/Wärmepumpen-Auftrag = mehrere tausend Franken. **Wert wird gebaut — bevor die Zahl fällt.** |
+| **4** | **Trumpf — Bewertungs-Feature** | Aufwärts-Schub · Wachstums-Beweis | Das zurückgehaltene Feature einbringen: Fall erledigt → Button „Bewertung anfragen" → SMS-Link an *seinen* Kunden → 2 Klicks, Sterne → **seine** Google-Bewertungen wachsen → mehr Sichtbarkeit, mehr Anfragen. **Erwähnen im Call, zeigen im Live-Test.** Letztes Wert-Beat auf der Aufwärtsbewegung. |
+| **5** | **Das Gratis-Test-Angebot** | Risiko-Umkehr · die stärkste Karte | Den Gratis-Live-Test anbieten. Beats: **(a) Angebot** „ein paar Tage gratis live" · **(b) Sicherheitsnetz-Wie** „Lisa fängt nur, was Sie verpassen; Sie heben normal weiter ab (4–5× klingeln, dann Lisa)" · **(c) Begleitung** „ich bin dabei" · **(d) danach** „gemeinsam entscheiden → *dann* der Preis → *dann* gezahlt". Haltung: **Selbstsicherheit, kein Discount.** Reveal erst hier (Eskalation). |
+| **6** | **Abschluss zum Live-Test** | Der kleine, sichere nächste Schritt | Das **Ja zum Test** holen (= Konversion). Crown: **„Es muss für uns beide passen."** Kein Druck, gegenseitig. |
+| **Q** | **Einwand-Handling** *(Querschnitt, durchgewoben)* | Schutzschild | Sanitär-Persona-Einwände ehrlich nehmen („Kunden wollen *mich*", „Roboter schreckt ab", „keine Zeit für noch ein Tool", „was, wenn's nicht läuft"). **Nein ehren, nicht drehen.** R1/R2-Discovery-Anker liegen bereit, falls er skeptisch wird. |
+
+**Eskalations-Prinzip (gelockt):** Stärkste Karte (Gratis-Test) **zuletzt**, als Belohnung — nicht
+verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
+
+---
+
+## Gelockte Entscheidungen (Begründung kurz)
+
+- **Gratis-Live-Test statt „Aufbau-dann-zahlen":** tötet die drei echten Inhaber-Ängste (Team-Akzeptanz /
+  „doch ein IT-Projekt" / versteckte Haken) durch **gelebte Erfahrung** statt Worte. Ultimative
+  Risiko-Umkehr (Hormozi) → „Risiko trage ich, nicht Sie" wird *wörtlich* wahr. **Wirkt nicht billig**,
+  weil getragen von **Selbstsicherheit, nicht Bitte**: Wert zuerst (Hero-Beweis), verdient (erst im warmen
+  Call), Risiko-Umkehr statt Preisnachlass (Preis bleibt voll).
+- **Test-Konfig = Sicherheitsnetz, nicht Leitungs-Ersatz:** Lisa fängt nur Verpasstes (kein Abheben nach
+  4–5× Klingeln — bewährte Live-Einstellung) → diese Anrufe waren *eh* weg → **null Downside, reiner
+  Zugewinn**, exakt das Hero-Versprechen. Entschärft „nie daneben"-Risiko an echten Kunden + die
+  „5 Tage = garantiert Aufträge"-Annahme (selbst *ein* gefangener Anruf = Beweis).
+- **Test NICHT volumen-garantieren:** auf *Erfahrung + Passung* rahmen, nicht „garantiert kommen Aufträge"
+  (stille Woche → „kam ja nix"). Ehrlich über Varianz.
+- **Hinterhälfte umgebaut:** geführter Aufbau (Stern 6) + Go-live (Stern 7) passieren **im Test, vor der
+  Zahlung**, Founder begleitet. **Preis wandert hinter den Test.** Block 5 = Angebot (keine Zahl), Block 6 =
+  Zusage zum Test. **Monatlich kündbar bleibt** (auch nach Test kein Lock-in).
+- **Stern 1–3 NICHT umbauen:** sie laufen schon ideal auf den Test zu. Hero-Zeile *„bezahlt erst, wenn's
+  läuft"* ist der **Samen** — der Test ist deren *konkrete Einlösung*. Konsistenz = Vertrauen. Früher
+  enthüllen würde Eskalation + Wirkung des Tests verschenken (und auf Einweg-Video als Gimmick lesen).
+- **Trumpf korrekt = Bewertungs-Feature** (Kunden bewerten *ihn*, Reputation wächst), **nicht** Social
+  Proof über uns (den haben wir early-stage eh noch nicht). Vorwärtsgewandt → ideales letztes Wert-Beat.
+- **Knoten-Signal nutzen, nie offenlegen** (B). **Watch-Tiefe nie aussprechen.** Opener klopft Qualitatives ab.
+
+## Offen / nächste Schritte
+1. **E-Mail-CTA + Block 0 als Paar** definieren (CTA = Payoff-Vorlage für Block 0). Aktuelle Mails = Altlast;
+   exakter CTA-Wortlaut wartet bewusst, weil der Gratis-Test den Call-Zweck mitprägt.
+2. **Wortlaut Block für Block** (Start: 0/1), dann gegen reale Calls schärfen.
+3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
+4. Überlebende Altbestand-Zeilen gezielt bergen (Ton, Preis-Moment, Erreichbarkeits-Gate).
