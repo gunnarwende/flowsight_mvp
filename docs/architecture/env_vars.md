@@ -33,6 +33,10 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - RETELL_API_KEY -> Retell Dashboard (optional)
 - RETELL_AGENT_ID -> optional
 
+## Cal.com (Self-Scheduling — Stern 5 Rückruf-Buchung)
+- CAL_WEBHOOK_SECRET -> Cal.com Webhook „Secret" (für /api/cal/webhook Signatur-Check, Header X-Cal-Signature-256)
+- CAL_BOOKING_URL -> öffentlicher Cal.com Buchungs-Link (Slot-Button in der Outreach-Mail), z.B. https://cal.com/gunnar-wende/rueckruf
+
 ## Twilio (Voice/SIP only — kein SMS)
 - TWILIO_ACCOUNT_SID -> Twilio Console
 - TWILIO_AUTH_TOKEN -> Twilio Console

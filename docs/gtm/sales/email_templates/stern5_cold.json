@@ -1,0 +1,16 @@
+{
+  "_hinweis": "Referenz-Template COLD (nie erreicht). Pro Prospect [Name]/[Betrieb] ersetzen → nach docs/customers/<slug>/outreach/email.json kopieren. Versand: send_outreach.mjs (--live nur auf Wort). Slot-Button erscheint, wenn CAL_BOOKING_URL gesetzt ist.",
+  "subject": "Herr [Name] — ich hab etwas für [Betrieb] gemacht",
+  "paragraphs": [
+    "Grüezi Herr [Name],",
+    "Sie sind oft selber unterwegs — und **genau dann klingelt's.** Wer Sie grad nicht erreicht, wartet nicht; der ruft den Nächsten an.",
+    "Ich hab [Betrieb] mal sichtbar gemacht: in **90 Sekunden** sehen Sie, wie bei Ihnen so ein Anruf trotzdem sauber gefangen wird — **auf Ihren Namen, Ihr echtes System:**"
+  ],
+  "linkLabel": "Ihr persönlicher Einblick",
+  "closing": [
+    "Ich bin Gunnar Wende aus Oberrieden — ich bau das für Sanitärbetriebe in der Region und **nehm bewusst nur ein paar**, drum **melde ich mich persönlich.**",
+    "Wenn's Sie anspricht, sagen Sie mir, **wann ich Sie kurz anrufen darf** — auch abends oder am Wochenende:"
+  ],
+  "slotLabel": "Zeit für einen kurzen Rückruf wählen",
+  "signature": ["Herzliche Grüsse", "Gunnar Wende"]
+}

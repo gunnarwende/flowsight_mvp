@@ -361,10 +361,26 @@ Betreff: „Wie besprochen — Ihr Einblick für [Betrieb]"
 - **„Wie schnell wäre das live?"** → „Wenige Tage: Sie gehen den Aufbau durch, ich prüf's, dann gehen wir gemeinsam live. Sauber vor schnell."
 - **Echtes Nein → ehren + Referral-Tür** → „Lieber ein klares Nein als was Aufgebautes ohne Nutzen. Eine letzte Frage: Kennen Sie im Sanitär-/Heizungsbereich einen Betrieb, bei dem genau das ein Thema sein könnte?"
 
+## Umsetzung — Code-Bauten (Branch-only, 2026-06-29; kein Deploy ohne Founder-Wort)
+
+> **Scoping-Befund (Explore):** Bewertungs-Button + Outreach-Mail existierten **bereits**; echte Lücke war nur das Self-Scheduling. Entscheidung **B (Cal.com + Mini-Webhook)** statt bespoke (MVP/Nordstern: kein eigenes Buchungssystem bauen, wenn ein erprobtes Tool es heute besser/sicherer kann).
+
+- **Bewertungs-Button: ✅ existierte schon** — `BewertungEndCap` (`CaseDetailForm.tsx`) + `/api/ops/cases/[id]/request-review` (eCall-SMS + Resend-Fallback) + `/review/[caseId]` + Status-Tracking. Erscheint automatisch bei `status="done"` → **im Test von selbst sichtbar. Nichts gebaut.**
+- **Cal.com-Webhook: ✅ neu gebaut** — `src/web/app/api/cal/webhook/route.ts`. HMAC-signatur-verifiziert (`CAL_WEBHOOK_SECRET`), nur `BOOKING_CREATED`, liest Phone aus mehreren Cal-Pfaden, sendet eCall-SMS „Gunnar ruft Sie am [Sa, 05.07. um 10:00] an." (CH-Zeit, Sender „FlowSight"), nie crashen (Sentry), idempotenz-freundlich (200 → kein Retry-Sturm). Lint + Typecheck sauber.
+- **Outreach-Mail: ✅ erweitert** — `send_outreach.mjs` um **zweiten (sekundären) Button** (Slot, aus `CAL_BOOKING_URL`); rückwärtskompatibel. **Templates** `docs/gtm/sales/email_templates/stern5_{cold,warm}.json` (neuer Wortlaut, 2 Links).
+
+**📋 Founder-Setup (Cal.com, einmalig — deine Hoheit):**
+1. Cal.com Event-Type „Rückruf" anlegen, Verfügbarkeit = **abends + Samstagvormittag** (kein Sonntag), Dauer ~15 Min.
+2. **Pflichtfeld Telefonnummer** im Buchungsformular (sonst keine SMS möglich).
+3. Webhook → `https://flowsight.ch/api/cal/webhook`, Trigger `Booking created`, **Secret** setzen → als `CAL_WEBHOOK_SECRET` in Vercel-Env.
+4. `CAL_BOOKING_URL` (öffentlicher Buchungs-Link) in Vercel-Env.
+5. Verifizieren: Testbuchung → SMS kommt an. (`SMS_ALLOWED_NUMBERS` ggf. für den Test setzen.)
+
+> ⚠️ **Abhängigkeit:** Der `[link]` der Mail zeigt auf die Beweis-Seite `/p/[token]` — **heute noch das alte 4-Video-Modell.** Der **Hero+Knoten-Neubau** (Stern 3, geparkt) muss erst stehen, bevor die neue Mail real rausgeht.
+
 ## Offen / nächste Schritte
-1. ✅ **Warm- + Cold-Strang + Einwand-Querschnitt Q KOMPLETT gelockt.** Wortlaut-Teil von Stern 5 ist durch — offen nur noch **Code-Bauten**.
-2. **E-Mail (warm + cold) + Slot-Mechanik:** ✅ **Design gelockt** (s. „E-Mail"). Offen nur noch der **Code-Bau** (Resend-Templates + Buchungs-Flow) — separater Schritt, Founder-Hoheit.
-3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
+1. ✅ **Wortlaut komplett** (beide Stränge + Q) · ✅ **Code-Bauten** (Cal-Webhook + Mail-Erweiterung + Templates, Branch). Offen: **Founder-Cal.com-Setup** (o.) + Merge/Deploy auf dein Wort.
+2. **Bewertungs-Button** ✅ existierte bereits (kein To-do).
 4. **Cold-Call-Notizfeld** (Backlog): füttert Block 2a-warm. Erfasst Methode/Leck (§3-Auffahrt) · Notdienst j/n · Gewerk/Anliegen · Zweifel-Signal. **Jetzt handschriftlich**; Feld bauen wenn Call-Volumen es rechtfertigt (Lead-/Case-Record).
 5. **[Monatspreis]** = bewusst Variable (~500 Early-Bird ↔ ~950 ICP-fix) — Founder liest Interesse. **Entschieden, kein To-do.**
 

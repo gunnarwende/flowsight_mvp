@@ -65,6 +65,14 @@ const photoBlock = photoB64
   : "";
 const button = `<p style="margin:0 0 24px;text-align:center;"><a href="${link}" style="display:inline-block;background:#0b1f33;color:#f6c945;text-decoration:none;font-weight:700;font-size:16px;padding:15px 32px;border-radius:11px;">${esc(mail.linkLabel || "Ihr persönlicher Einblick")}&nbsp; →</a></p>`;
 
+// Zweiter (sekundärer) Link: Self-Scheduling-Slot (Cal.com). Gleich für alle →
+// aus CAL_BOOKING_URL (env), oder pro Betrieb via mail.slotUrl überschreibbar.
+// Sekundär gestylt (Outline), damit er den Beweis-Button (Hero) nicht überstrahlt.
+const slotUrl = process.env.CAL_BOOKING_URL || mail.slotUrl || null;
+const slotButton = (slotUrl && mail.slotLabel)
+  ? `<p style="margin:0 0 24px;text-align:center;"><a href="${slotUrl}" style="display:inline-block;background:#ffffff;color:#0b1f33;text-decoration:none;font-weight:700;font-size:15px;padding:13px 28px;border-radius:11px;border:2px solid #0b1f33;">${esc(mail.slotLabel)}&nbsp; →</a></p>`
+  : "";
+
 // Light-Standard (FB36): Sanitär-Betriebe nutzen ganz überwiegend Hell-Modus
 // (Default-Setup, kein getweakter Dark Mode). Wir optimieren auf eine helle, edle
 // weiße Karte mit knalligem Navy-Button — so kommt sie beim Empfänger an.
@@ -82,6 +90,7 @@ ${(mail.paragraphs || []).map(par).join("\n")}
 ${photoBlock}
 ${button}
 ${(mail.closing || []).map(par).join("\n")}
+${slotButton}
 <p style="margin:0;color:#475467;">${(mail.signature || []).map(esc).join("<br>")}</p>
 </td></tr></table>
 </td></tr></table>
@@ -96,7 +105,9 @@ if (preview) {
 const text = [
   ...(mail.paragraphs || []),
   `\n${mail.linkLabel || "Ihr persönlicher Einblick"}: ${link}\n`,
-  ...(mail.closing || []), "", ...(mail.signature || []),
+  ...(mail.closing || []),
+  ...(slotUrl && mail.slotLabel ? [`\n${mail.slotLabel}: ${slotUrl}\n`] : []),
+  "", ...(mail.signature || []),
 ].join("\n\n").replace(/\*\*/g, "");
 
 const attachments = photoB64 ? [{ filename: "gunnar.png", content: photoB64, content_id: "facepic" }] : [];
