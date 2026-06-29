@@ -215,6 +215,23 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - **Sofort konkreter nächster Schritt nach dem Ja** → Momentum, kein Versanden.
 - **„Er baut, ich prüfe, gemeinsam live"** = echter Cockpit-Vorgang + stützt Eigentum (③); „das Meiste vorbereitet" statt „80%".
 
+## Wortlaut — Cold-Strang (GELOCKT 2026-06-29)
+
+> **Er hat nie mit dir gesprochen** (Cold Call nicht erreicht → Hero per Cold-Mail). **Nur 2 Deltas; Block 1, 3, 4, 5, 6 = identisch zum Warm-Strang.**
+
+**Entry = gleiches Self-Scheduling wie warm:** Cold-Mail führt mit Hero + Slot-Tipp → *er bucht* → du rufst zum Slot. **Er opt-in't selbst** (kein creepy „ich hab gesehen, dass Sie geschaut haben" — B-Regel). Fall „geschaut, nicht gebucht" → später **sanfter Mail-Nudge**, **nie** Kalt-Anruf aufs Watch-Signal.
+
+**Delta 1 — Block 0 (mehr Selbst-ID + Ein-Zeilen-Reminder, kein „wir hatten telefoniert"):**
+> „Grüezi Herr [Name], hier ist Gunnar Wende. Ich hatte Ihnen die Seite für [Betrieb] geschickt — die kurze, wo Sie sehen, wie bei Ihnen kein Anruf mehr verloren geht. Sie hatten sich ja diesen Moment ausgesucht — **passt's grad noch?**"
+
+**Delta 2 — Block 2 = frische Discovery** (keine Cold-Call-Discovery zum Aufgreifen):
+> „…wenn eine Anfrage reinkommt und Sie grad auf dem Bau sind: **Wer geht ran? Und wenn niemand kann?**" + **Disqualify-Sonde** „Kommt genug rein, dass das ein Thema ist — oder läuft's rund?" → dann 2b/2c wie warm.
+
+**Gelockte Begründungen:**
+- **Block 0:** „die Seite für [Betrieb] geschickt" + Ein-Zeilen-Reminder verortet dich **ohne** Call zu behaupten; Buchung referenziert (kein Ambush). **Fakt statt Vermutung** gewahrt.
+- **Block 2 frisch**, weil im Cold-Strang nichts vor-besprochen wurde (anders als warm: dort aufgreifen). Disqualify-Sonde bleibt (kein Buchungs-/Call-Vorqualifikat wie warm — nur die Buchung).
+- **Rest erbt warm** — keine Doppelpflege.
+
 ## Gelockte Entscheidungen (Begründung kurz)
 
 - **Gratis-Live-Test statt „Aufbau-dann-zahlen":** tötet die drei echten Inhaber-Ängste (Team-Akzeptanz /
@@ -275,7 +292,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ **Warm-Strang Block 0–6 KOMPLETT gelockt** → offen: Einwand-Querschnitt (Q, aus §7 bergen) + Cold-Strang.
+1. **Warm-Strang Wortlaut weiter:** ✅ **Warm- + Cold-Strang KOMPLETT gelockt** → offen nur noch: Einwand-Querschnitt (Q, aus §7 bergen).
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
