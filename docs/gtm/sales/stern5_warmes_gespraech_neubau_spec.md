@@ -68,13 +68,42 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 
 ## Wortlaut — Warmer Strang
 
-### E-Mail-CTA (Konzept gelockt 2026-06-29)
-**Self-Scheduling.** Mail-Reihenfolge: **Hero zuerst** → *dann* der Slot-Tipp (darf den Watch nicht überstrahlen).
-> „Schauen Sie in Ruhe rein. Wenn's Sie anspricht, tippen Sie sich zwei ruhige Minuten — auch abends oder am Wochenende. Ich richt mich nach Ihnen."
-- **Tap-Slots** mit Optionen, die in *seine* Realität lehnen (abends / Samstagvormittag) **+ „andere Zeit vorschlagen"** (nie eingeengt). Tap → Kalendereintrag → Bestätigungs-SMS.
-- **Wochenende per *seiner* Wahl** — wir schlagen **keinen Sonntag** vor (CH-Tabu), er darf ihn wählen.
-- **Kein Nein-Button** (verworfen 2026-06-29: würde verfrühte Neins von Ambivalenten ernten; hat aktuell keine Platzierung verdient). *Tap > Reply* (weniger Reibung, konkreteres Commitment).
-- Voller Mail-Wortlaut + Slot-Mechanik (Anzahl/Zeiten) = noch offen (eigener Bau).
+### E-Mail (Design GELOCKT 2026-06-29) — Code-Bau separat (Founder-Hoheit)
+
+> **Hook = seine Wunde, personalisiert** (nicht das Produkt). **„Echt" über „auf Ihren Namen"**, nie über Negation. **Endet auf der Handlung** (Slot) — kein Exit-Satz (der primt den Skeptiker auf „nichts tun"). **Self-Scheduling**, kein Nein-Button (verworfen). Basis = live B-Vorlage (Template NEU 11.06.), entlastet um Altlast (4-Video „bis zur Bewertung" → Hero 90s; Bewertung **raus**, für Stern 5 gehalten; Variante-A-Callback → Self-Schedule).
+
+**COLD-Mail (er kennt dich nicht — führt mit IHM):**
+Betreff: „Herr [Name] — ich hab etwas für [Betrieb] gemacht"
+> Grüezi Herr [Name],
+> Sie sind oft selber unterwegs — und **genau dann klingelt's.** Wer Sie grad nicht erreicht, wartet nicht; der ruft den Nächsten an.
+> Ich hab [Betrieb] mal sichtbar gemacht: in **90 Sekunden** sehen Sie, wie bei Ihnen so ein Anruf trotzdem sauber gefangen wird — **auf Ihren Namen, Ihr echtes System:**
+> 👉 [link]
+> Ich bin Gunnar Wende aus Oberrieden — ich bau das für Sanitärbetriebe in der Region und **nehm bewusst nur ein paar**, drum **melde ich mich persönlich.**
+> Wenn's Sie anspricht, sagen Sie mir, **wann ich Sie kurz anrufen darf** — auch abends oder am Wochenende: 👉 [slot]
+> Herzliche Grüsse, Gunnar Wende
+
+**WARM-Mail (telefoniert, hat um den Link gebeten — kurz, „wie besprochen"):**
+Betreff: „Wie besprochen — Ihr Einblick für [Betrieb]"
+> Grüezi Herr [Name],
+> schön, dass wir telefoniert haben. Wie besprochen — hier Ihr persönlicher Einblick für [Betrieb]:
+> 👉 [link]
+> In 90 Sekunden sehen Sie, wie bei Ihnen kein Anruf mehr verloren geht — **auf Ihren Namen, Ihr echtes System.**
+> **Schauen Sie in Ruhe, ob's für Ihren Betrieb passt.** Wenn ja, sagen Sie mir, **wann ich Sie kurz anrufen darf** — auch abends oder am Wochenende: 👉 [slot]
+> Herzliche Grüsse, Gunnar Wende
+
+**Slot-Mechanik (Design):**
+- **3 vorgeschlagene Fenster**, die in *seine* Realität lehnen — **abends + Samstagvormittag** (nie Werktag-Mittag), relativ zum Versandtag, aus **Founders echter Verfügbarkeit** + **„andere Zeit vorschlagen"** (nie eingeengt).
+- **Kein Sonntag vorgeschlagen** (CH-Tabu); Frei-Wahl erlaubt ihn.
+- **Tap → Eintrag in Founders Kalender → Bestätigungs-SMS** („Gunnar ruft Sie am [X] an") **+ Reminder.**
+- **Hero zuerst, Slot danach** (Slot überstrahlt den Watch nicht). *Tap > Reply.*
+
+**Gelockte Begründungen:**
+- **„zwei Minuten" gestrichen** — der Slot bucht das warme Gespräch (~10–15 Min); falsche Zahl = Vertrauensbruch. „Kurz anrufen" = knapp ohne Lüge.
+- **„kein Werbe-Mockup" gestrichen** (Negation = ruft Mockup auf). Positiv: „auf Ihren Namen, Ihr echtes System".
+- **Exit-Satz („wenn's nichts ist…") gestrichen** — macht das Nein salient/leicht → Skeptiker nimmt Weg des geringsten Widerstands. Mail **endet auf der Handlung**; „kein Drücker" trägt der weiche CTA, nicht ein Nein-Angebot.
+- **Cold führt mit der Wunde** (er fühlt sich gesehen) → Beweis → kurz wer du bist (+ Selektivität: Privileg-Zug + Spam-Angst positiv erschlagen) → CTA. **Warm = „wie besprochen"** (§4/WARM-Opener-Sprache).
+- **≤ ~600 Zeichen, ein Link, Founder sendet selbst** (Gold-Regel behalten).
+- **Bau = separater Schritt** (Resend-Templates + Buchungs-Flow), **nur mit Founder-Erlaubnis**.
 
 ### Block 0 + 1 — Einstieg (GELOCKT 2026-06-29)
 > Kontext: Du rufst zum vom Inhaber **selbst gebuchten** Slot an (Bestätigungs-SMS lief, er erwartet den Anruf). Er hebt ab, meist mit Firmenname.
@@ -293,7 +322,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 
 ## Offen / nächste Schritte
 1. ✅ **Warm- + Cold-Strang KOMPLETT gelockt** → offen nur noch: **Einwand-Querschnitt Q** (aus §7 bergen, frischer Durchgang).
-2. **E-Mail (warm + cold):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen — der große Vorlauf (Block 0 hängt am CTA).
+2. **E-Mail (warm + cold) + Slot-Mechanik:** ✅ **Design gelockt** (s. „E-Mail"). Offen nur noch der **Code-Bau** (Resend-Templates + Buchungs-Flow) — separater Schritt, Founder-Hoheit.
 3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
 4. **Cold-Call-Notizfeld** (Backlog): füttert Block 2a-warm. Erfasst Methode/Leck (§3-Auffahrt) · Notdienst j/n · Gewerk/Anliegen · Zweifel-Signal. **Jetzt handschriftlich**; Feld bauen wenn Call-Volumen es rechtfertigt (Lead-/Case-Record).
 5. **[Monatspreis]** = bewusst Variable (~500 Early-Bird ↔ ~950 ICP-fix) — Founder liest Interesse. **Entschieden, kein To-do.**
