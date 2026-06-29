@@ -115,6 +115,16 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 **Cold-Strang — keine Vorab-Discovery → hier frisch (Mom Test):**
 > (2a) „…wenn eine Anfrage reinkommt und Sie grad auf dem Bau sind: Wer geht ran? Und wenn niemand kann?" + **Disqualify-Sonde** „Kommt genug rein, dass das ein Thema ist — oder läuft's rund?" *(ehrliches Nein → ehren/parken)* → dann 2b/2c wie oben.
 
+**Beispiel-Durchlauf (Sanitär Steiner · Combox-Leck · Knoten ① · Samstag-Slot):** Block 1 „was ist hängengeblieben?" → ER nennt ① selbst („wie redet die Computerstimme mit meinen Kunden") → 2c ① direkt, Notdienst klärt sich nebenbei → ER: „klingt vernünftig" → Block 3.
+
+**Gelockte Begründungen (Block 2):**
+- **2a warm ≈ Cold-Call-§3-Aufsetzer** → im Warm-Strang **nicht wiederholen** (Rapport-Schaden: „das hab ich Ihnen doch grad erzählt"), nur aufgreifen. Frische Discovery gehört in den **Cold-Strang**.
+- **„Wer fragt, führt":** offene Frage statt Statement-zum-Bestätigen.
+- **Knoten = stiller Kompass** (Vorbereitung), nie ausgesprochen (B-Regel).
+- **④ nicht hier** (Eskalationskarte Block 5). **Config (Notdienst)** klärt sich nebenbei / im Aufbau — kein Nachjagen.
+- **Disqualify-Sonde nur Cold-Strang** (Warm hat sich durch Buchen + Cold-Call-Discovery qualifiziert).
+- **Abhängigkeit (Backlog):** Block 2a warm braucht die Cold-Call-Notiz (seine Methode/Leck) → später Feld im Lead-/Case-Record (vorerst handschriftlich).
+
 ### Block 3 — Konsequenz & Wert schärfen (GELOCKT 2026-06-29)
 
 > **Leichter als der Altbestand:** dort musste der Wert den ganzen Preis tragen (kein Test). Jetzt **beweist der Gratis-Test den Wert live** → Block 3 muss nur die **Einsätze in *seinen* Franken** greifbar machen (damit die Zahl in Block 5 klein wirkt) + Lust wecken, nicht wasserdicht schließen.
@@ -138,15 +148,29 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - **Leichter dank Test** — „Sie sehen's gleich selbst" übergibt den Beweis an den Live-Test (kein Überzeugen-bis-Anschlag, weniger verkäuferisch).
 - **Reframe ehrt den Stolz** (nie „bei Ihnen läuft's schlecht"). **3d optional.**
 
-**Beispiel-Durchlauf (Sanitär Steiner · Combox-Leck · Knoten ① · Samstag-Slot):** Block 1 „was ist hängengeblieben?" → ER nennt ① selbst („wie redet die Computerstimme mit meinen Kunden") → 2c ① direkt, Notdienst klärt sich nebenbei → ER: „klingt vernünftig" → Block 3.
+### Block 4 — Bewertungs-Trumpf (GELOCKT 2026-06-29)
 
-**Gelockte Begründungen:**
-- **2a warm ≈ Cold-Call-§3-Aufsetzer** → im Warm-Strang **nicht wiederholen** (Rapport-Schaden: „das hab ich Ihnen doch grad erzählt"), nur aufgreifen. Frische Discovery gehört in den **Cold-Strang**.
-- **„Wer fragt, führt":** offene Frage statt Statement-zum-Bestätigen.
-- **Knoten = stiller Kompass** (Vorbereitung), nie ausgesprochen (B-Regel).
-- **④ nicht hier** (Eskalationskarte Block 5). **Config (Notdienst)** klärt sich nebenbei / im Aufbau — kein Nachjagen.
-- **Disqualify-Sonde nur Cold-Strang** (Warm hat sich durch Buchen + Cold-Call-Discovery qualifiziert).
-- **Abhängigkeit (Backlog):** Block 2a warm braucht die Cold-Call-Notiz (seine Methode/Leck) → später Feld im Lead-/Case-Record (vorerst handschriftlich).
+> Kurz — **Bonus-Beat, kein zweiter Pitch.** Aus Hero+Knoten bewusst zurückgehalten → landet jetzt frisch. (Alt §7.19 = reaktiv; neu = proaktiv.)
+
+**(4a) Optional Mom-Test-Auftakt** *(er fühlt die Lücke selbst):*
+> „Wie viele Google-Bewertungen haben Sie heute eigentlich?" *(→ „zu wenige" Standard → Trumpf landet härter)*
+
+**(4b) Der Haken, den er selbst kennt:**
+> „Sie wissen's ja: der zufriedene Kunde sagt nichts und geht weiter — laut wird nur der, der sich mal ärgert."
+
+**(4c) Mechanismus — zeigen, nicht behaupten:**
+> „Ist ein Auftrag sauber erledigt, haben Sie einen Knopf — *Bewertung anfragen*. Ein Tipp, Ihr Kunde kriegt einen Link aufs Handy, zwei Klicks, fertig. Genau im richtigen Moment — **ohne dass Sie betteln müssen.**"
+
+**(4d) Payoff + Brücke in den Test:**
+> „Über die Zeit: mehr echte Bewertungen, mehr Sichtbarkeit, mehr Anfragen — von selbst. Und auch *das* sehen Sie im Test, beim ersten erledigten Fall."
+
+→ Brücke zu **Block 5**.
+
+**Gelockte Begründungen (Block 4):**
+- **Zurückgehalten → landet frisch** im Entscheidungsmoment.
+- **Aufwärts/Wachstum als letztes Wert-Beat** → Preis (Block 5) wirkt wie *Investition in Wachstum*, nicht Kosten.
+- **§7.19-Psychologie** („happy = still, angry = laut") = sofort gefühlter Schmerz. **Zeigen statt sagen + Test.**
+- **Kurz halten** — rein, rauf, weiter zum Close.
 
 ## Gelockte Entscheidungen (Begründung kurz)
 
@@ -208,7 +232,7 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–3 gelockt → **als Nächstes Block 4** (Bewertungs-Trumpf), dann 5–6.
+1. **Warm-Strang Wortlaut weiter:** ✅ Block 0–4 gelockt → **als Nächstes Block 5** (Preis + Gratis-Test, Herzstück), dann 6.
 2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
 3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
 4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
