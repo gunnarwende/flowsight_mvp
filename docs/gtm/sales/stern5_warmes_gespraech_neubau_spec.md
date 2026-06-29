@@ -11,8 +11,8 @@
 
 ## Zweck (Konversion)
 Das warme Gespräch nach dem Klick. **Kein Re-Pitch, kein Problem-neu-aufdecken** — er hat die Lösung
-im Hero schon *gesehen*. **Konversions-Ereignis (neu): Zusage zum Gratis-Live-Test.** (Preis + Zahlung
-landen *nach* dem Test — s. „Gratis-Test"-Entscheidung.)
+im Hero schon *gesehen*. **Konversions-Ereignis (neu): Zusage zum Gratis-Live-Test.** **Preis wird im
+Call *genannt* (qualifiziert vor dem Aufbau), die *Zahlung* fließt erst nach dem Test** — s. „Preis-Modell".
 
 ## Grundhaltung (gelockt)
 Echter Typ, kein Drücker. Ein Nein wird **sofort geehrt** (kein Drehen — wie Stern 2). Wert vor Preis.
@@ -57,7 +57,7 @@ Echter Typ, kein Drücker. Ein Nein wird **sofort geehrt** (kein Drehen — wie 
 | **2** | **Den profilierten Zweifel bedienen** ⭐ | Bremse lösen *(das neue Herz)* | Den geklickten Knoten = lautesten Zweifel **unauffällig** ansteuern, *ihn* bestätigen lassen, **genau diesen einen** in die Tiefe lösen (Sanitär-konkret). Vier vorbereitete Spuren (①Gesicht ②Kontrolle ③Vertrauen ④Geld); andere nur, wenn *er* sie aufmacht. **Komprimierte Discovery** sitzt hier (Notdienst? wie laufen Anrufe heute? wer hebt ab?). |
 | **3** | **Konsequenz & Wert schärfen** | Gas geben | Von „Zweifel weg" zu „was ist das für *Ihren* Betrieb wert". Sanitär-konkret: *ein* verpasster Bad-/Wärmepumpen-Auftrag = mehrere tausend Franken. **Wert wird gebaut — bevor die Zahl fällt.** |
 | **4** | **Trumpf — Bewertungs-Feature** | Aufwärts-Schub · Wachstums-Beweis | Das zurückgehaltene Feature einbringen: Fall erledigt → Button „Bewertung anfragen" → SMS-Link an *seinen* Kunden → 2 Klicks, Sterne → **seine** Google-Bewertungen wachsen → mehr Sichtbarkeit, mehr Anfragen. **Erwähnen im Call, zeigen im Live-Test.** Letztes Wert-Beat auf der Aufwärtsbewegung. |
-| **5** | **Das Gratis-Test-Angebot** | Risiko-Umkehr · die stärkste Karte | Den Gratis-Live-Test anbieten. Beats: **(a) Angebot** „ein paar Tage gratis live" · **(b) Sicherheitsnetz-Wie** „Lisa fängt nur, was Sie verpassen; Sie heben normal weiter ab (4–5× klingeln, dann Lisa)" · **(c) Begleitung** „ich bin dabei" · **(d) danach** „gemeinsam entscheiden → *dann* der Preis → *dann* gezahlt". Haltung: **Selbstsicherheit, kein Discount.** Reveal erst hier (Eskalation). |
+| **5** | **Preis-Moment + Gratis-Test-Angebot** | Qualifizierer + Risiko-Umkehr · die stärkste Karte | **Zwei Bewegungen.** **(I) Preis-Moment** — wenn der Wert steht / **er fragt**: die **Zahl geradeheraus** (wert-verankert), dann **schweigen** (§5.1-Disziplin). Honoriert Knoten ④ („geradeheraus, wenn wir reden") + **qualifiziert vor dem halben-Tag-Aufbau.** **(II) Test-Hülle** als Risiko-Umkehr drumherum: (a) Angebot „ein paar Tage gratis live" · (b) Sicherheitsnetz „Lisa fängt nur, was Sie verpassen; Sie heben normal weiter ab, 4–5× klingeln" · (c) Begleitung „ich bin dabei" · (d) **Zahlung erst nach dem Test, monatlich kündbar, keine Aktivierungskosten.** Haltung: **Selbstsicherheit, kein Discount.** Reveal (Test) erst hier (Eskalation). |
 | **6** | **Abschluss zum Live-Test** | Der kleine, sichere nächste Schritt | Das **Ja zum Test** holen (= Konversion). Crown: **„Es muss für uns beide passen."** Kein Druck, gegenseitig. |
 | **Q** | **Einwand-Handling** *(Querschnitt, durchgewoben)* | Schutzschild | Sanitär-Persona-Einwände ehrlich nehmen („Kunden wollen *mich*", „Roboter schreckt ab", „keine Zeit für noch ein Tool", „was, wenn's nicht läuft"). **Nein ehren, nicht drehen.** R1/R2-Discovery-Anker liegen bereit, falls er skeptisch wird. |
 
@@ -80,8 +80,18 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 - **Test NICHT volumen-garantieren:** auf *Erfahrung + Passung* rahmen, nicht „garantiert kommen Aufträge"
   (stille Woche → „kam ja nix"). Ehrlich über Varianz.
 - **Hinterhälfte umgebaut:** geführter Aufbau (Stern 6) + Go-live (Stern 7) passieren **im Test, vor der
-  Zahlung**, Founder begleitet. **Preis wandert hinter den Test.** Block 5 = Angebot (keine Zahl), Block 6 =
-  Zusage zum Test. **Monatlich kündbar bleibt** (auch nach Test kein Lock-in).
+  Zahlung**, Founder begleitet. Block 6 = Zusage zum Test. **Monatlich kündbar bleibt** (auch nach Test kein Lock-in).
+- **Preis-Modell (präzisiert):** *Zahl nennen* ≠ *Zahlung*. Die **Zahl wird im Call genannt** (wenn der Wert
+  steht / er fragt) → **qualifiziert vor dem halben-Tag-Aufbau** (kein Bauen für jemand, der nie zahlt) +
+  honoriert Knoten ④ („geradeheraus, wenn wir reden"). Die **Zahlung fließt erst nach dem Test** (Risiko-Umkehr).
+  Klare Zahl + verschobene Zahlung = *weniger* Angst als Preis-Mysterium, und **nicht billig** (voller Preis,
+  nur das Risiko wandert). ICP 1–3 ≈ ~fix (kein Größen-Zwei-Stufen-Modell — Altlast).
+- **Keine Aktivierungskosten** (auch nicht nachträglich — Bait-and-Switch verletzt das Ehrlichkeits-Rückgrat).
+  Aufbau-Wert ggf. in den Monatspreis falten. §5.2-Altbestand (2'500) gestrichen. *Eine* Zahl, *eine*
+  risiko-umgekehrte Zahlung, monatlich kündbar = max. Einfachheit = max. Vertrauen.
+- **Discovery = Mom Test** (Block 2): nach **vergangenem, konkretem Verhalten** fragen statt Hypothese
+  („*wann* ist Ihnen das letzte Mal aufgefallen, dass…" statt „angenommen, einmal pro Woche…"),
+  **disqualifizierende Fragen zulassen** (ehrliches Nein provozieren, nicht vermeiden), kein Pitch, kein Lob-Fluff.
 - **Stern 1–3 NICHT umbauen:** sie laufen schon ideal auf den Test zu. Hero-Zeile *„bezahlt erst, wenn's
   läuft"* ist der **Samen** — der Test ist deren *konkrete Einlösung*. Konsistenz = Vertrauen. Früher
   enthüllen würde Eskalation + Wirkung des Tests verschenken (und auf Einweg-Video als Gimmick lesen).
@@ -89,9 +99,35 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
   Proof über uns (den haben wir early-stage eh noch nicht). Vorwärtsgewandt → ideales letztes Wert-Beat.
 - **Knoten-Signal nutzen, nie offenlegen** (B). **Watch-Tiefe nie aussprechen.** Opener klopft Qualitatives ab.
 
+## Ersatzteillager — was aus dem Altbestand (V1) wohin wandert
+
+> Analyse 2026-06-29. Der Altbestand ist v.a. im **28-teiligen Einwand-Katalog (§7)** + **Discovery (§2.0)**
+> Gold (redet über *Produkt* + *Persona* — driftfrei). **Schlüssel-Fund: §7.5 („Können wir testen?") ist der
+> *Samen* des Gratis-Tests** — die alte Antwort wollte schon „kein Fake-Test + zahl erst wenn bereit"; der
+> Gratis-Live-Test ist deren Auflösung. Kein Pivot, sondern Evolution.
+
+| Alt § | Inhalt | → Block | Status |
+|---|---|---|---|
+| §1.1 | Erreichbarkeits-Gate „erwische ich Sie kurz?" | 0 | Gold — Vokabel fixen (Videoseite→Hero, Oberrieden) |
+| §1.2/1.3 + Merksatz | Spur A/B, „erster Gedanke?", nicht zerreden→vertagen | 1 | Gold — „als Sie das gesehen haben" entschärfen (kein Sehen unterstellen) |
+| §2.0 | Warm-Pfad Standard, keine 6-Fragen-Liturgie, **Eager-Buyer-Pfad** | 2 | Gold-Prinzip |
+| §2.1–2.3 | Realität/Blindspot/Konsequenz | 2 (+R1/R2 bei Skepsis) | Gold — Mom-Test-schärfen (Vergangenheit statt Hypothese) |
+| §2.4 / §2.5 | Wert „paar hundert/tausend?" / 3-Monats-Erfolgsbild | 3 | Gold (Wert vor Preis) |
+| §3.1 V6 B1 | „nicht ob sauber gearbeitet — kein Auftrag rutscht durch" | 3→5-Brücke | Gold (ehrt Stolz) |
+| §4 | geführter Aufbau (Link/kein Formular/<1h/ich prüfe) | 5c | Gold — = Schritt 1 *im Test* |
+| §5.1 | „[dann schweigst du]" nach der Zahl | 5-I | Gold-Disziplin |
+| §6 | kleiner konkreter Schritt + weicher Close | 6 | Gold — Ziel = Test |
+| §7.8/7.9/7.10/7.12/7.25/7.26/7.28 | KI-Angst, **Datenschutz (Recording OFF!)**, Lisa-Grenzen, Nummer bleibt, Direktanrufe, wer sieht's, Termine | Q | **Gold, fast 1:1** |
+| §7.7/7.13/7.16/7.17/7.27 | IT / reingefallen / Team / Betreuung / „warum Sie" | Q | Gold — durch Test verkürzt/verstärkt |
+| §7.5 | „zuerst testen?" | 5/Q | **Samen des Gratis-Tests — invertiert zu JA** |
+| §7.3/§7.18/§7.23 | „so günstig"(Frühphase) / kündbar / „wie schnell live" | Q/5 | Gold — passt zu Knoten ③/④ |
+| §9 | Nein sauber + Referral-Tür | 6/Q | Gold (Nein ehren) |
+| §5.1 „[950/2000] nach Größe" · §5.2 „2'500 Aktivierung" | Preis | — | **Altlast — raus** (ICP fix; keine Aktivierung) |
+| „Videoseite" überall | — | — | → „Hero-Seite" |
+
 ## Offen / nächste Schritte
 1. **E-Mail-CTA + Block 0 als Paar** definieren (CTA = Payoff-Vorlage für Block 0). Aktuelle Mails = Altlast;
    exakter CTA-Wortlaut wartet bewusst, weil der Gratis-Test den Call-Zweck mitprägt.
-2. **Wortlaut Block für Block** (Start: 0/1), dann gegen reale Calls schärfen.
+2. **Wortlaut Block für Block** (Start: 0/1), dann gegen reale Calls schärfen — Ersatzteile (o.) gezielt bergen.
 3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
-4. Überlebende Altbestand-Zeilen gezielt bergen (Ton, Preis-Moment, Erreichbarkeits-Gate).
+4. **§7.9-Check:** „Server Frankfurt / AVV" technisch noch aktuell? (vor Verbatim-Übernahme verifizieren).
