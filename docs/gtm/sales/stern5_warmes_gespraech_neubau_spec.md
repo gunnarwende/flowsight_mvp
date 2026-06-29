@@ -66,6 +66,35 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 
 ---
 
+## Wortlaut — Warmer Strang
+
+### E-Mail-CTA (Konzept gelockt 2026-06-29)
+**Self-Scheduling.** Mail-Reihenfolge: **Hero zuerst** → *dann* der Slot-Tipp (darf den Watch nicht überstrahlen).
+> „Schauen Sie in Ruhe rein. Wenn's Sie anspricht, tippen Sie sich zwei ruhige Minuten — auch abends oder am Wochenende. Ich richt mich nach Ihnen."
+- **Tap-Slots** mit Optionen, die in *seine* Realität lehnen (abends / Samstagvormittag) **+ „andere Zeit vorschlagen"** (nie eingeengt). Tap → Kalendereintrag → Bestätigungs-SMS.
+- **Wochenende per *seiner* Wahl** — wir schlagen **keinen Sonntag** vor (CH-Tabu), er darf ihn wählen.
+- **Kein Nein-Button** (verworfen 2026-06-29: würde verfrühte Neins von Ambivalenten ernten; hat aktuell keine Platzierung verdient). *Tap > Reply* (weniger Reibung, konkreteres Commitment).
+- Voller Mail-Wortlaut + Slot-Mechanik (Anzahl/Zeiten) = noch offen (eigener Bau).
+
+### Block 0 + 1 — Einstieg (GELOCKT 2026-06-29)
+> Kontext: Du rufst zum vom Inhaber **selbst gebuchten** Slot an (Bestätigungs-SMS lief, er erwartet den Anruf). Er hebt ab, meist mit Firmenname.
+
+**Block 0 — Begrüßung + Erlaubnis:**
+> „Grüezi Herr [Name], hier ist Gunnar Wende. Sie hatten sich ja diesen Moment ausgesucht — passt's bei Ihnen grad noch?"
+- → „passt" → weiter · „grad schlecht" → sauber vertagen, kein Druck.
+
+**Block 1 — Verortung (ohne Unterstellung):**
+> „Schön. Sagen Sie — haben Sie vorab schon reingeschaut, oder schauen wir's gleich kurz zusammen an?"
+- **Spur A** („ja"): → „Und ganz ehrlich — was ist bei Ihnen hängengeblieben?" *(dünn → nachschärfen: „Hat's grundsätzlich einen Punkt getroffen — oder war's für Sie eher nichts?")* → **Block 2**
+- **Spur B** („noch nicht"): → „Kein Thema, dann führ ich Sie kurz durch — keine zwei Minuten." *(gemeinsam draufschauen)* → **Block 2**
+
+**Gelockte Begründungen:**
+- **Prinzip „Fakt statt Vermutung":** Block 0 referenziert nur den **gebuchten Slot** (sicher); Block 1 **fragt**, ob er geschaut hat — nie behaupten (B-Regel, kein Ertappt-Stich), obwohl wir's übers Tracking wissen.
+- **Self-Schedule killt den Ambush-Gate:** kein „erwische ich Sie kurz / ruf ich nochmal an" mehr — er hat den Moment gewählt; nur noch Höflichkeits-Check „passt's grad noch?".
+- **Spur B = führen statt vertagen** (er hat den Slot geschenkt — nimm ihn an).
+- Slot **konkret** nennen, wenn Variable da ("den Samstagvormittag"); sonst „diesen Moment".
+- **Opener gibt *ihm* den Boden** (kein Pitch) — beim Skeptiker das stärkste Signal: hören, nicht verkaufen.
+
 ## Gelockte Entscheidungen (Begründung kurz)
 
 - **Gratis-Live-Test statt „Aufbau-dann-zahlen":** tötet die drei echten Inhaber-Ängste (Team-Akzeptanz /
@@ -126,8 +155,9 @@ verstreut, nicht früh. Blöcke 1–4 bauen darauf hin; Reveal in Block 5.
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
 ## Offen / nächste Schritte
-1. **E-Mail-CTA + Block 0 als Paar** definieren (CTA = Payoff-Vorlage für Block 0). Aktuelle Mails = Altlast;
-   exakter CTA-Wortlaut wartet bewusst, weil der Gratis-Test den Call-Zweck mitprägt.
-2. **Wortlaut Block für Block** (Start: 0/1), dann gegen reale Calls schärfen — Ersatzteile (o.) gezielt bergen.
-3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
-4. **§7.9-Check:** „Server Frankfurt / AVV" technisch noch aktuell? (vor Verbatim-Übernahme verifizieren).
+1. **Warm-Strang Wortlaut weiter:** ✅ Block 0 + 1 gelockt → **als Nächstes Block 2** (profilierter Zweifel, Mom-Test-Discovery), dann 3–6.
+2. **Cold-Strang** komplett offen (eigener Opener — er kennt dich nicht — + eigener E-Mail-CTA).
+3. **E-Mail (warm):** voller Wortlaut + Slot-Mechanik (Anzahl/Zeiten) bauen.
+4. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
+5. **§7.9-Check:** „Server Frankfurt / AVV" technisch noch aktuell? (vor Verbatim-Übernahme verifizieren).
+6. Überlebende Altbestand-Zeilen (Ersatzteillager o.) beim jeweiligen Block bergen.
