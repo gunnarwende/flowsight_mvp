@@ -1,8 +1,9 @@
 # Stern 5 — Warmes Verkaufsgespräch · Neubau-Spec (Skelett v2)
 
-> **STATUS: SKELETT v2 GELOCKT (2026-06-29).** Übergabe-Zustand + Block-Struktur (Rolle/Aufgabe je
-> Block) fest. **Wortlaut folgt** Block für Block (wie bei den Knoten). Neubau auf Basis des frisch
-> gelockten Verlaufs Stern 1–4 — **nicht** Fortschreibung des Altbestands.
+> **STATUS: WORTLAUT KOMPLETT GELOCKT (2026-06-29).** Beide Stränge (warm + cold) Block 0–6 + E-Mail
+> (cold + warm) + Slot-Mechanik + Einwand-Querschnitt Q — alles wort-genau. Offen nur noch **Code-Bauten**
+> (E-Mail/Buchungs-Flow, Bewertungs-Button im Test). Neubau auf Basis des Verlaufs Stern 1–4 — **nicht**
+> Fortschreibung des Altbestands.
 >
 > **Altbestand** (`stern5_warmes_verkaufsgespraech_uebergabe_cc.md`, V1) = **Ersatzteillager, nicht
 > Bauplan.** Einzelne überlebende Zeilen (Ton „echter Typ, kein Drücker", Preis-Moment-Psychologie,
@@ -320,8 +321,48 @@ Betreff: „Wie besprochen — Ihr Einblick für [Betrieb]"
 | §5.1 „[950/2000] nach Größe" · §5.2 „2'500 Aktivierung" | Preis | — | **Altlast — raus** (ICP fix; keine Aktivierung) |
 | „Videoseite" überall | — | — | → „Hero-Seite" |
 
+## Einwand-Querschnitt Q (GELOCKT 2026-06-29)
+
+> **Kein Skript zum Ablesen — Nachschlag-Katalog.** Haltung: **Nein ehren, nicht drehen** · zeigen statt sagen · keine Negation · *eine* ehrliche Antwort, dann zurück zum Faden. **Meta-Einsicht: der Gratis-Test ist der universelle Ent-Risiker** — „testen / zu teuer / muss überlegen / Team / schon mal reingefallen" kollabieren alle zu *„Sie sehen's ein paar Tage live, gratis, zahlen erst danach."* Quelle der Bergung: Altbestand §7 (umverdrahtet).
+
+### A — Produkt / Lisa (Persona-Wahrheiten, überleben ~1:1)
+- **„Kunden wollen nicht mit KI sprechen."** → „Verstehe ich — das wär für mich auch eine rote Linie. Lisa fertigt niemanden ab und ersetzt keinen Fachmann: sie nimmt sauber auf, fragt das Wichtigste, gibt strukturiert an Sie weiter — keine Preise, keine Diagnosen, keine fixen Termine, keine Versprechen. **Die Frage ist eher: Wenn ein Kunde Sie grad nicht erreicht — besser, seine Anfrage wird sauber aufgenommen, oder er ruft den Nächsten an?**"
+- **„Was, wenn Lisa was Falsches sagt?"** → „Genau deshalb darf sie nicht frei entscheiden. Klare Grenzen; bei Unsicherheit nimmt sie's auf und gibt's an Sie weiter. Zweck ist nicht, den Fachmann zu ersetzen — sondern dass nichts verloren geht."
+- **„Was sagt Lisa zu Terminen?"** → „Nie einen fixen Termin. Sie setzt nur die Erwartung, die *Sie* festlegen (‚ein Mitarbeiter meldet sich und bestätigt'), und nimmt Wunschzeit + Dringlichkeit auf."
+- **„Datenschutz? Wird das Gespräch aufgenommen?"** (geschärft) → „**Keine Gesprächsaufnahmen** — es nimmt nur die nötigen Angaben strukturiert auf, kein Audio wird gespeichert. **Ihre Falldaten liegen auf EU-Servern in Frankfurt.** Und ein **Auftragsverarbeitungsvertrag ist Teil des Aufbaus.**" *(Nachfrage Sprachteil: „Die Spracherkennung läuft über einen US-Dienstleister, live — speichert nichts, schwärzt persönliche Daten.")*
+- **„Kann ich meine Nummer behalten?"** → „Ja, Ihre Nummer bleibt. Im Aufbau klären wir, wann Lisa übernimmt (nach 4–5× Klingeln) und wann direkt zu Ihnen. Nichts wird blind umgestellt — erst eingerichtet, geprüft, dann live."
+- **„Kunden rufen trotzdem direkt bei mir an."** → „Soll so sein — Lisa verhindert das nicht. Der Punkt ist nur: was aus so einem Gespräch entsteht, soll danach sichtbar im System landen, nicht auf einem Zettel."
+- **„Wer sieht die Anfragen?"** → „Legen Sie im Aufbau fest. Die richtigen Leute sehen das Relevante; Sie als Inhaber haben den Überblick, ohne jedem Fall hinterherzulaufen."
+
+### B — Vertrauen / Skepsis (umverdrahtet auf Gratis-Test)
+- **„Können wir das zuerst testen?"** → **„Genau das machen wir: ein paar Tage gratis live, Ihr echtes System. Sie zahlen erst, wenn's bei Ihnen was gefangen hat."** *(der §7.5-Samen, jetzt eingelöst.)*
+- **„Schon mal bei einer Agentur reingefallen."** → „Dann wär ich an Ihrer Stelle auch vorsichtig. Drum zahlen Sie keinen Franken, bis Sie in Ihrem Betrieb echt was gefangen sehen. Sie bauen's geführt auf, ich schau drüber, dann gehen wir gemeinsam live."
+- **„Läuft das dann schon scharf bei mir?"** → „Im Test schalten wir's bewusst live — aber als Sicherheitsnetz: Lisa fängt nur, was Sie verpassen. Und bis zum gemeinsamen Go-live ist nichts scharf, ich schau vorher selbst drüber."
+- **„Wer betreut das nach dem Go-live?"** → „Gerade am Anfang schau ich mit drauf, ob die ersten echten Anfragen sauber reinkommen. Läuft was nicht, wird's angepasst."
+- **„Warum gerade jetzt mit Ihnen, noch am Anfang?"** → „Sie kriegen kein anonymes Standardprodukt, sondern meine persönliche Aufmerksamkeit — ich nehm nur eine Handvoll Betriebe. Und ich verkauf Ihnen nichts, wenn ich merke, dass es nicht passt."
+- **„Mindestlaufzeit?"** → „Nein. Monatlich kündbar. Es muss im Alltag Nutzen bringen — nicht im Vertrag."
+
+### C — Preis (Zahl im Call genannt, Zahlung nach Test)
+- **„Das ist viel / zu teuer."** → *(nicht verteidigen)* „Verstehe ich — die Zahl muss sich über den Alltag rechnen. **Genau deshalb zahlen Sie sie erst, wenn's bei Ihnen was gebracht hat.** Bringt's nichts, zahlen Sie nichts."
+- **„Warum ist das so teuer?"** → „Weil's im Alltag zuverlässig funktionieren muss, nicht nur gut aussehen. Aber Sie zahlen erst, wenn Sie *sehen*, dass es das tut."
+- **„Warum ist das so günstig?"** → „Ich bau grad mit den ersten Betrieben sauber auf — Sie kriegen dafür sehr direkte Nähe zu mir. Später wird's standardisierter und weniger persönlich."
+
+### D — Aufwand / Team / Zeit (überleben, leicht umverdrahtet)
+- **„Keine Zeit / ich bin kein IT-Mensch."** → „Genau deshalb ist es kein IT-Projekt. Sie gehen's geführt durch, keine Stunde, ergänzen nur, was nur Sie wissen — den technischen Teil mach ich."
+- **„Mein Team nimmt das nicht an."** → „Wichtiger Punkt. **Genau das sehen Sie im Test** — Ihr Team lebt ein paar Tage damit. Macht's den Alltag einfacher (weniger Nachfragen, klarer sehen, was offen ist), merken sie's selbst."
+- **„Meine Frau / das Büro macht das schon."** → „Gut — dann ist wer verantwortlich. Mir geht's nicht ums Ersetzen: Sieht der Betrieb später sauber, was alles reinkam und was offen ist — egal über welchen Weg?"
+- **„Warum nicht intern lösen?"** → „Können Sie. Frage ist, ob's wirklich als durchgängiges System entsteht — oder am Ende wieder Zettel, Listen und Absprachen nebeneinander."
+- **„Brauchen wir das überhaupt?"** *(Disqualify ehren)* → „Maßstab ist nicht ‚mehr Digitalisierung'. Sondern: Kommt genug über verschiedene Wege rein, dass Sichtbarkeit echten Nutzen bringt? Wenn nein, brauchen Sie's nicht."
+
+### E — Aufschub / Nein (Nein ehren)
+- **„Ich muss es überlegen / mit Partner besprechen."** → „Klar. Und das Schöne: Sie müssen's nicht auf dem Papier entscheiden — **Sie sehen's ein paar Tage am lebenden System, dann wissen Sie's.** Lassen Sie uns für danach einen kurzen Zeitpunkt setzen."
+- **„Schauen wir später / nach den Ferien an."** → „Was glauben Sie, ändert sich bis dahin? Anfragen kommen ja weiter rein. Lieber sauber parkieren mit konkretem Zeitpunkt als lose im Raum."
+- **„Schicken Sie's mir schriftlich."** → „Mach ich gern — nur bleibt's nicht bei Standard-Unterlagen; der Punkt ist Ihr konkreter Betrieb. Drum der Test."
+- **„Wie schnell wäre das live?"** → „Wenige Tage: Sie gehen den Aufbau durch, ich prüf's, dann gehen wir gemeinsam live. Sauber vor schnell."
+- **Echtes Nein → ehren + Referral-Tür** → „Lieber ein klares Nein als was Aufgebautes ohne Nutzen. Eine letzte Frage: Kennen Sie im Sanitär-/Heizungsbereich einen Betrieb, bei dem genau das ein Thema sein könnte?"
+
 ## Offen / nächste Schritte
-1. ✅ **Warm- + Cold-Strang KOMPLETT gelockt** → offen nur noch: **Einwand-Querschnitt Q** (aus §7 bergen, frischer Durchgang).
+1. ✅ **Warm- + Cold-Strang + Einwand-Querschnitt Q KOMPLETT gelockt.** Wortlaut-Teil von Stern 5 ist durch — offen nur noch **Code-Bauten**.
 2. **E-Mail (warm + cold) + Slot-Mechanik:** ✅ **Design gelockt** (s. „E-Mail"). Offen nur noch der **Code-Bau** (Resend-Templates + Buchungs-Flow) — separater Schritt, Founder-Hoheit.
 3. **Bewertungs-Feature im Live-Test zeigbar** machen (Button auf echtem erledigten Fall).
 4. **Cold-Call-Notizfeld** (Backlog): füttert Block 2a-warm. Erfasst Methode/Leck (§3-Auffahrt) · Notdienst j/n · Gewerk/Anliegen · Zweifel-Signal. **Jetzt handschriftlich**; Feld bauen wenn Call-Volumen es rechtfertigt (Lead-/Case-Record).
