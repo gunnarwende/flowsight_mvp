@@ -79,6 +79,15 @@
 
 ## Updates
 
+### 2026-06-29 | CC | Wochenrapport abgeschaltet (Opt-out)
+- Founder bekam den deutschen Sani-Wochenrapport für BigBen (ging an `gunnar.wende@flowsight.ch`, **nicht** an Paul — Tenant-Mail = noch Founder-Adresse). Für einen Gastro-Pub (cases-basiert, EN-only Inhaber) sinnlos.
+- `weekly_report.mjs` um **Opt-out** erweitert: `modules.weekly_report === false` → Tenant wird übersprungen (Default = senden, rückwärtskompatibel).
+- **TODO Founder (DB):** Flag für BigBen setzen, damit der Montag-Cron ihn überspringt:
+  ```sql
+  UPDATE tenants SET modules = modules || '{"weekly_report": false}'::jsonb WHERE slug = 'bigben-pub';
+  ```
+  (Greift erst, wenn Code in `main` + Flag gesetzt — vor nächstem Montag 07:00 UTC.)
+
 ### 2026-04-16 | CC | Go-Live Prep Complete (PRs #479-#491, 13 PRs)
 - No-Show System LIVE (Yellow/Red Card, status field)
 - Walk-in Quick-Add LIVE
