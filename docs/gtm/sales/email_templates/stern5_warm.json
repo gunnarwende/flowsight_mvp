@@ -1,0 +1,14 @@
+{
+  "_hinweis": "Referenz-Template WARM (telefoniert + um den Link gebeten). Pro Prospect [Name]/[Betrieb] ersetzen → nach docs/customers/<slug>/outreach/email.json kopieren. Versand: send_outreach.mjs (--live nur auf Wort). Slot-Button erscheint, wenn CAL_BOOKING_URL gesetzt ist.",
+  "subject": "Wie besprochen — Ihr Einblick für [Betrieb]",
+  "paragraphs": [
+    "Grüezi Herr [Name],",
+    "schön, dass wir telefoniert haben. Wie besprochen — in **90 Sekunden** sehen Sie, wie bei Ihnen kein Anruf mehr verloren geht, **auf Ihren Namen, Ihr echtes System:**"
+  ],
+  "linkLabel": "Ihr persönlicher Einblick",
+  "closing": [
+    "**Schauen Sie in Ruhe, ob's für Ihren Betrieb passt.** Wenn ja, sagen Sie mir, **wann ich Sie kurz anrufen darf** — auch abends oder am Wochenende:"
+  ],
+  "slotLabel": "Zeit für einen kurzen Rückruf wählen",
+  "signature": ["Herzliche Grüsse", "Gunnar Wende"]
+}
