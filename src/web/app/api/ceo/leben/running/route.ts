@@ -4,8 +4,14 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 
 // GET /api/ceo/leben/running — Laeufe + Wochenstatistik + Jungfrau-Countdown.
 
-// Garmin activityType.typeKey-Werte, die als "Lauf" ins Wochen-Volumen zaehlen.
+// Sport-Typen, die als "Lauf" ins Wochen-Volumen zaehlen.
+// Strava (CamelCase) + Garmin (typeKey, lowercase) — life_activities ist quell-agnostisch.
 const RUN_TYPES = new Set([
+  // Strava sport_type
+  "Run",
+  "TrailRun",
+  "VirtualRun",
+  // Garmin activityType.typeKey
   "running",
   "trail_running",
   "treadmill_running",
