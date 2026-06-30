@@ -73,7 +73,7 @@ App-Login (einmalig)       ─► /api/ceo/leben/garmin/connect ─► garmin-au
 - **„Token ungültig/abgelaufen"** (nach ~1 Jahr) → einmal neu verbinden.
 
 ## Wettkampf-Datum
-Default = 2026-09-12 (Jungfrau-Marathon). Überschreibbar per Env
+Default = 2026-09-05 (Jungfrau-Marathon). Überschreibbar per Env
 `LIFE_JUNGFRAU_DATE` oder in-app via `life_settings`-Key `race`
-(`{ "date": "2026-09-12", "name": "Jungfrau-Marathon" }`).
+(`{ "date": "2026-09-05", "name": "Jungfrau-Marathon" }`).
 **TODO Founder:** exaktes Renndatum bestätigen.

@@ -14,7 +14,7 @@ const RUN_TYPES = new Set([
   "indoor_running",
   "obstacle_run",
 ]);
-const DEFAULT_RACE = { date: "2026-09-12", name: "Jungfrau-Marathon" };
+const DEFAULT_RACE = { date: "2026-09-05", name: "Jungfrau-Marathon" };
 
 interface ActivityRow {
   id: string;

@@ -40,7 +40,7 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 ## Garmin (Sektion „Leben" / Running — Garmin-Direkt-Import)
 - GH_DISPATCH_TOKEN -> bereits vorhanden (Cockpit-Dispatch); die App löst damit garmin-sync.yml / garmin-auth.yml aus
 - SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY -> bereits vorhanden; die Garmin-Workflows schreiben damit in life_activities (GitHub-Actions-Secrets)
-- LIFE_JUNGFRAU_DATE -> optional, Wettkampf-Datum ISO (Default 2026-09-12); in-app via life_settings-Key „race" überschreibbar
+- LIFE_JUNGFRAU_DATE -> optional, Wettkampf-Datum ISO (Default 2026-09-05); in-app via life_settings-Key „race" überschreibbar
 - LIFE_WORKFLOW_REF -> optional, Ref für den Dispatch der Garmin-Workflows (Default „main"; vor Merge für Tests = Branchname)
 - Garmin-Login: KEIN dauerhaftes Secret. Einmal-Login via App → garth-Token (widerrufbar) in life_settings.garmin_token. Setup-Runbook: docs/runbooks/garmin_setup.md
 
