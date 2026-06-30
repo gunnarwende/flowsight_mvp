@@ -21,5 +21,8 @@
 - Kompletter Neubau durchdacht (s. Neubau-Spec): 2-Strang-Kanal-Modell · Default-first · Audio-Lisa + Foto-Hilfe · Gratis-Test-Reframe · inhaltlich vollständig (pingpong-fest).
 - Inhalts-Audit gegen die neue Welt: E-Mail = kein eigener Strang (Offerte-Thread, nicht Intake; Formular ist die Antwort) · „Vor Ort" raus · Hero-E-Mail-Versprechen reframen.
 
-## Offen / nächster Schritt — nur noch Bau
-- **Code-Redesign** nach Neubau-Spec (Founder-Hoheit) · **Audio-Lisa + Foto-Guides** · **Hero-Konsistenz** (E-Mail-Reframe).
+## Stand (2026-06-30) — ✅ Code-Redesign KOMPLETT + live
+- Alle Bereiche auf Schablone (vertikale Karten, default-first): **Lisa** (`#748`/`#750`) · **Online-Anfragen** (`#754`) · **Leitsystem-Hub** 6 Karten (`#757`) · **Freigabe** = Gratis-Test (`#758`). Go-live-Prüfung entschärft + „Vor Ort"-Strang raus (`#757`); Journey-Stern-6-Sessions klickbar → live Cockpit (`#755`).
+
+## Offen / nächster Schritt
+- **Founder-Verifikation** (Cockpit-Durchklick, Desktop+Handy) · **Audio-Lisa-Clips + Foto-Guides** produzieren (ersetzen Platzhalter) · **Hero-Konsistenz** (E-Mail-Reframe).

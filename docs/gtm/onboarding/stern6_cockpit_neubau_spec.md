@@ -97,9 +97,16 @@ Stern 6 ist erfolgreich, **wenn der Test wowt → Conversion** (Zahlung kommt er
 ## Bau-Fortschritt
 - **2026-06-30 — Strang 1 (Lisa) gebaut** (`CockpitApp.tsx`): radiale Konstellation → **vertikale Karten-Liste** (Schablone), default-first-Plaketten **„✓ steht"/„✓ aus Website"/„○ braucht Sie"/„✓ bestätigt"**, **Hochdeutsch-Schutz** an jedem Lisa-spricht-Feld (Begrüssung · Wissen · Preis-Antwort · Ferien), **„kleine Lisa"-Audio-Platzhalter** pro Karte (Gist lesbar bis Audio produziert), **Sicherheitsnetz-Reframe** + **Foto-Guide-Platzhalter** im Telefonie-Schritt, **„nie besetzt — 2. Lisa"**-Zeile. Avatar erwacht Karte um Karte. Datenvertrag (draft/autosave/submit) unverändert.
 - **2026-06-30 — Mobile-Vorschau** `/aufbau/vorschau` (Demo „Muster Sanitär AG", kein DB-Eintrag, `preview`-Flag schaltet jedes Speichern/Senden ab) → Founder-Review am Handy + Verkaufs-Demo.
-- **Offen am Bau:** Strang 2 (Online-Anfragen) + Leitsystem-Hub + Freigabe nach Schablone angleichen · **Go-live-Prüfung entschärfen** (`submit/route.ts`: `google_review_url` + `staff_admin` aus Pflicht) · echte Audio-/Foto-Guides produzieren.
+- **2026-06-30 — Strang 2 (Online-Anfragen) gebaut** (`#754`): Website→Online-Anfragen nach Schablone, 3 Karten (💬 Formular `✓ steht` · 🧩 Kategorien `✓ vorbereitet` · 🌐 Website `⚪ optional`), Formular sofort als Link, Integration optional (blockt Test nicht).
+- **2026-06-30 — Leitsystem-Hub gebaut** (`#757`): 6 Karten (📨 Fall-Ziel · 💬 Kunden-Nachrichten · 🎨 Marke · 👥 Team · 📅 Kalender · ⭐ Bewertungen); „Benachrichtigungen" in Fall-Ziel vs. Kunden-Nachrichten aufgeteilt; radiale Konstellation/StarGlyph raus.
+- **2026-06-30 — Go-live-Prüfung entschärft** (`#757`, `submit/route.ts`): Pflicht nur Begrüssung · Telefonanbieter · Notfall-Kontakt (wenn Notdienst) · Geschäfts-E-Mail · Login-E-Mail · AVV. Nicht blockierend: Team/staff · `google_review_url` · Website-Integration.
+- **2026-06-30 — „Vor Ort"-Strang raus** (`#757`): 3 Eingänge → 2 (Lisa · Online-Anfragen).
+- **2026-06-30 — Freigabe auf Gratis-Test umgerahmt** (`#758`): CTA „An Gunnar — wir gehen gemeinsam live" (kein „Freischalten"), Wochen-Rapport-Zeile raus, Safety-Net/„bezahlt erst wenn's läuft"-Zeile rein.
+- **2026-06-30 — Erreichbarkeit** (`#755`): CEO-App Journey → Stern 6 „Im Aufbau"-Sessions klickbar → öffnen das echte live Cockpit (`/aufbau/[token]`).
+- **✅ Cockpit-Code-Redesign damit KOMPLETT + live** (alle Stränge + Hub + Freigabe auf Schablone).
+- **⚠️ Offen am Bau:** **Founder-Verifikation** (Durchklick am Dörfler-Beispiel, Desktop+Handy) · echte **Audio-Clips + Foto-Guides** produzieren (ersetzen die Platzhalter) · **Hero-Konsistenz** (E-Mail-Versprechen reframen, `HERO_DEMO_SPEC`).
 
-## Offen / nächste Schritte — ✅ Design komplett, Bau läuft
+## Offen / nächste Schritte — ✅ Design + Code komplett, nur noch Verifikation + Medien
 1. **Code-Redesign** des Cockpits nach diesem Spec (separater Schritt, Founder-Hoheit). Inkl. **Go-live-Prüfung entschärfen** (Tier) + **leeren „Vor Ort"-Strang raus** + **Gratis-Test-Reframe der Copy**.
 2. **„Kleine-Lisa"-Audio-Clips (pro Abschnitt, Hochdeutsch) + Foto-/Screenshot-Guides** produzieren (Weiterleitung pro Anbieter · Kalender Outlook/Google).
 3. **Hero-Konsistenz:** E-Mail-Versprechen reframen (Formular als Antwort auf Mail-Pingpong) — `HERO_DEMO_SPEC`.
