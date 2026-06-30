@@ -377,6 +377,10 @@ export function CockpitApp({ session, preview = false }: { session: CockpitSessi
 
   const brandColor = draft.branding?.brandColor || pf.branding.brandColor;
 
+  // Beim Ansichtswechsel immer oben starten — sonst landet der Inhaber mitten auf
+  // der Seite (die Scroll-Position der Übersicht bleibt sonst stehen).
+  useEffect(() => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); }, [view]);
+
   // ── Autosave: ganzen Draft (debounced) ─────────────────────────────────────
   const draftRef = useRef(draft);
   useEffect(() => { draftRef.current = draft; }, [draft]);
@@ -593,7 +597,7 @@ function StatusBadge({ tone, label }: { tone: "ready" | "needs" | "done"; label:
     : tone === "ready"
       ? { bg: "rgba(200,162,74,0.15)", color: GOLD }
       : { bg: "rgba(255,255,255,0.08)", color: "#cbd5e1" };
-  return <span className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ backgroundColor: s.bg, color: s.color }}>{label}</span>;
+  return <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ backgroundColor: s.bg, color: s.color }}>{label}</span>;
 }
 
 /** „Kleine Lisa" — Sprach-Hilfe pro Abschnitt (≈20 s). Audio folgt; bis dahin steht
@@ -818,7 +822,7 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
     <Detail
       icon="📞"
       title={`Bauen wir ${lisaName}`}
-      claim={`Ihre neue Mitarbeiterin am Telefon — sie nimmt jeden Anruf auf, wenn Sie gerade nicht können. Sie heben weiter ab wie immer.`}
+      claim="Ihre neue Mitarbeiterin am Telefon."
       onBack={onBack}
       onDone={allDone ? onDone : undefined}
       doneLabel={`${lisaName} ist startklar`}
@@ -826,20 +830,14 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
       {/* Avatar erwacht Karte um Karte — „seine neue Mitarbeiterin anlernen" */}
       <div className="flex flex-col items-center text-center">
         <LisaAvatar stars={doneN} />
-        <p className="mt-2 text-sm font-bold text-white">{lisaName}</p>
+        <p className="mt-2 text-base font-bold text-white">{lisaName}</p>
         {allDone
-          ? <p className="text-[11px] font-semibold" style={{ color: GOLD }}>★ startklar</p>
-          : <p className="text-[11px] text-slate-400">{doneN} von {CATS.length} bestätigt — {lisaName} erwacht Schritt für Schritt</p>}
+          ? <p className="text-xs font-semibold" style={{ color: GOLD }}>★ startklar</p>
+          : <p className="text-xs text-slate-400">{doneN} von {CATS.length} bestätigt — sie erwacht Schritt für Schritt</p>}
       </div>
 
-      <PainHint items={[
-        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
-        { pain: "Ein Lieferant meldet sich (z. B. Bauteil verspätet) oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
-        { pain: "Werbe- und Spam-Anrufe kosten mich ständig Zeit", relief: `${lisaName} wimmelt Werbung freundlich ab — die kommt gar nicht erst zu Ihnen.` },
-      ]} />
-
-      <p className="text-xs leading-relaxed text-slate-400">
-        Das meiste steht schon — bei <span style={{ color: GOLD }}>✓ steht</span> schauen Sie nur kurz drüber und bestätigen. Bei <span className="text-slate-300">○ braucht Sie</span> wissen nur Sie die Antwort. Tippen Sie eine Karte an.
+      <p className="text-sm leading-relaxed text-slate-200">
+        Tippen Sie eine Karte an. <span className="font-semibold" style={{ color: GOLD }}>✓ steht</span> = nur kurz bestätigen · <span className="font-semibold text-white">○ braucht Sie</span> = das wissen nur Sie.
       </p>
 
       {/* Vertikale Karten-Liste — eine Metapher, default-first (Schablone) */}
@@ -856,14 +854,16 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
           return (
             <div key={key} className="overflow-hidden rounded-xl border bg-white/[0.03]" style={{ borderColor: done ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
               <button type="button" onClick={() => setOpenCard(expanded ? null : key)} aria-expanded={expanded}
-                className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-white/[0.03]">
-                <span className="text-lg leading-none">{c.icon}</span>
+                className="flex w-full items-start gap-3 px-4 py-4 text-left transition hover:bg-white/[0.03]">
+                <span className="mt-0.5 text-2xl leading-none">{c.icon}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-white">{c.title}</span>
-                  <span className="block text-[11px] text-slate-400">{meta.sub}</span>
+                  <span className="flex items-start justify-between gap-2">
+                    <span className="text-[15px] font-semibold leading-snug text-white">{c.title}</span>
+                    <span className="mt-0.5 shrink-0 text-lg leading-none text-slate-500 transition-transform" style={{ transform: expanded ? "rotate(90deg)" : "none" }}>›</span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-400">{meta.sub}</span>
+                  <span className="mt-2 block"><StatusBadge tone={badgeTone} label={badgeLabel} /></span>
                 </span>
-                <StatusBadge tone={badgeTone} label={badgeLabel} />
-                <span className="text-slate-500 transition-transform" style={{ transform: expanded ? "rotate(90deg)" : "none" }}>›</span>
               </button>
               {expanded ? (
                 <div className="space-y-4 border-t border-white/10 px-4 py-4">
@@ -890,6 +890,12 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
           );
         })}
       </div>
+
+      <PainHint items={[
+        { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
+        { pain: "Ein Lieferant meldet sich oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
+        { pain: "Werbe- und Spam-Anrufe kosten mich ständig Zeit", relief: `${lisaName} wimmelt Werbung freundlich ab — die kommt gar nicht erst zu Ihnen.` },
+      ]} />
 
       <NotesField value={draft.notes?.voice ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, voice: val } }))} />
     </Detail>
