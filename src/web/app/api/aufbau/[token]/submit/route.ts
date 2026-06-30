@@ -32,13 +32,9 @@ function missingFields(draft: CockpitDraft): string[] {
   if (!draft.voice?.telco?.provider) missing.push("telco");
   // Notfall-Empfänger ist Pflicht, sobald ein Notdienst angeboten wird (sonst läuft die Alarmierung ins Leere).
   if (draft.voice?.emergencyService === true && !(draft.voice?.emergencyContact?.name ?? "").trim()) missing.push("emergency_contact");
-  // R7-Wizard-Modell: Online-Formular nur Pflicht-relevant, wenn der Betrieb es überhaupt will (formRelevant !== false).
-  if (draft.wizard?.formRelevant !== false) {
-    if (!draft.wizard?.integrationLocation) missing.push("wizard_integration");
-    // Liegt der Einbau bei der Agentur: Kontakt nötig, sonst Sackgasse.
-    const atAgency = draft.wizard?.integrationLocation === "agentur" || draft.wizard?.caretaker === "agentur";
-    if (atAgency && !EMAIL_RE.test(draft.wizard?.agencyEmail ?? "")) missing.push("agency_email");
-  }
+  // Online-Anfragen (Strang 2): das Formular ist sofort als Link nutzbar; die Website-Integration
+  // (intern/Agentur) ist OPTIONAL und blockt den Test-Start NICHT (Neubau-Spec). Daher hier
+  // bewusst KEINE Pflicht auf integrationLocation/agencyEmail — wird nach dem Go-live nachgezogen.
 
   return missing;
 }
