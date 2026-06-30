@@ -50,6 +50,20 @@ Stern 6 ist erfolgreich, **wenn der Test wowt → Conversion** (Zahlung kommt er
 - **Foto-/Screenshot-Anleitung für externe „wo ist der Knopf"-Schritte** (Outlook/Google-Kalender): „wo klicken" *zeigt* man — Audio kann nicht auf einen Button deuten. Für den 50-jährigen Inhaber.
 - **Alles inline + kontextuell**, antizipiert die echte Frage (Kalender: „wo finde ich die Einstellung, was braucht Lisa von mir").
 
+## Strang 1 — Lisa (Schablone GELOCKT 2026-06-29) — der WOW-Träger
+> Emotionaler Kern: **kein Formular, sondern „Bauen wir Ihre Lisa" — er lernt seine neue Mitarbeiterin an.** Progressiver Avatar (erwacht Zug um Zug) + **vertikale Karten-Liste** (eine Metapher, keine radiale Konstellation). 3× `✓ steht` (bestätigen) + 2× `○ braucht Sie`.
+
+**⚠️ TTS-Sicherheit (hart):** Lisa = deutsche Engine → **kein „Grüezi"/Mundart** (verhunzt CH-Wörter). Begrüssung-Default = **„Guten Tag"** (`getGreeting.ts`, = Hero). **Hochdeutsch-Schutz an JEDEM Lisa-spricht-Feld** (Begrüssung, Wissen, Preis-Antwort, Ferien-Hinweis): *„Was Sie hier schreiben, sagt Lisa wortwörtlich — bitte Hochdeutsch. ‚Guten Tag' statt ‚Grüezi'."*
+**Name:** `assistantName || "Lisa"` ist im ganzen Cockpit + Agenten verknüpft (umbenennen → überall mit). Bereits live.
+
+| # | Karte | Status | Default / Inhalt | ▶ Lisa-Audio (Gist, Hochdeutsch) |
+|---|---|---|---|---|
+| 1 | 🗣 **So meldet sich Lisa** | ✓ steht | „**Guten Tag**, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" + Name | „So melde ich mich; in CH Pflicht: ich sage offen, dass ich digital bin. Sonst bestätigen." |
+| 2 | 📚 **Das weiss Lisa über Sie** *(WOW-Kern)* | ✓ aus Website | Öffnungszeiten · Einzugsgebiet (nur Info, kein Filter) · Leistungen · Notfall-Regel — vorbefüllt, korrigieren | „Aus Ihrer Website vorbereitet — korrigieren Sie, was nicht stimmt. Je besser ich Sie kenne, desto echter klinge ich." |
+| 3 | 🎧 **So reagiert Lisa** | ✓ steht | **🛡 Grenzen:** nie Preise/Termin/Diagnose/Garantie · **💪 nie besetzt** (2. Lisa übernimmt) · Dispositionen vorbelegt (Auftrag→Fall · Info→Antwort · Chef→Nachricht · Reklamation→Prio · Werbung→tschüss) | „Ich behandle jeden Anruf passend, bei Notfall Alarm sofort. Vorbelegt — reinschauen nur, wenn Sie was anders wollen." |
+| 4 | 🚨 **Wann Lisa erreichbar ist** | ○ braucht Sie | Notdienst Ja/Nein → bei Ja: Name+Nummer; bei Nein: „melden uns am nächsten Werktag" | „Sagen Sie, ob Sie Notdienst anbieten — dann alarmiere ich die richtige Person. Sonst nehm ich den Fall trotzdem auf." |
+| 5 | ☎️ **So kommt der Anruf zu Lisa** *(die eine Aktion)* | ○ braucht Sie | **Sicherheitsnetz-Reframe:** „fängt nur, was Sie verpassen" · Anbieter (Radio) · „übernimmt nach 5× klingeln" (Default) · **📷 Weiterleitung-Foto-Guide** (anbieter-spez.) | „Ihre Nummer bleibt — wir leiten nur um, was Sie nicht abnehmen. Anbieter wählen, dann zeig ich die Tastenkombi mit Bild." |
+
 ## Ist-Cockpit = Ersatzteillager (Gold behalten)
 80/20-Framing · **progressiver Lisa-Avatar** (Konstellation) · „nichts live bis Freigabe"-Vertrauen · „geht direkt an Gunnar"-Notizen · **Lisa-Grenzen-Beruhigung** (nie Preise/Diagnose/Termin/Garantie) · `PainHint` „Kennen Sie das?" · Autosave · **Freigabe → Founder-Review → gemeinsam live** (Stern-6-Realität). **Raus/neu:** Über-Dichte, „Freischalten"-Post-Kauf-Framing → Gratis-Test-Reframe, leerer „Vor Ort"-Strang, Technik-Kram ohne Default+Bild-Hilfe.
 
