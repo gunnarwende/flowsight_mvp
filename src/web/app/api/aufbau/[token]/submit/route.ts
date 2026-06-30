@@ -17,25 +17,19 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 function missingFields(draft: CockpitDraft): string[] {
   const missing: string[] = [];
-  const staff = Array.isArray(draft.staff) ? draft.staff : [];
-  const validStaff = staff.filter(
-    (s) => s && s.name?.trim() && EMAIL_RE.test(s.email ?? ""),
-  );
-  if (validStaff.length === 0) missing.push("staff");
-  else if (!validStaff.some((s) => s.role === "admin")) missing.push("staff_admin");
-
+  // Pflicht NUR, was der Gratis-Test wirklich braucht (Neubau-Spec, Tier-Angleich):
+  //   Begrüssung · Telefonanbieter · Notfall-Kontakt (wenn Notdienst) · Geschäfts-E-Mail · Login-E-Mail · AVV.
   if (!EMAIL_RE.test(draft.review?.notificationEmail ?? "")) missing.push("notification_email");
-  if (!(draft.review?.googleReviewUrl ?? "").trim()) missing.push("google_review_url");
   if (!EMAIL_RE.test(draft.golive?.adminEmail ?? "")) missing.push("admin_email");
   if (draft.golive?.avvAccepted !== true) missing.push("avv");
   if (!(draft.voice?.greetingText ?? "").trim()) missing.push("greeting");
   if (!draft.voice?.telco?.provider) missing.push("telco");
   // Notfall-Empfänger ist Pflicht, sobald ein Notdienst angeboten wird (sonst läuft die Alarmierung ins Leere).
   if (draft.voice?.emergencyService === true && !(draft.voice?.emergencyContact?.name ?? "").trim()) missing.push("emergency_contact");
-  // Online-Anfragen (Strang 2): das Formular ist sofort als Link nutzbar; die Website-Integration
-  // (intern/Agentur) ist OPTIONAL und blockt den Test-Start NICHT (Neubau-Spec). Daher hier
-  // bewusst KEINE Pflicht auf integrationLocation/agencyEmail — wird nach dem Go-live nachgezogen.
 
+  // NICHT blockierend (Default-first, nach Go-live nachgezogen): Team/staff (Default „nur Sie"),
+  // Bewertungslink (Stern-5-Trumpf für später), Kalender, Website-Integration. Sonst steckt
+  // der Inhaber im Test fest = genau das Pingpong, das wir vermeiden.
   return missing;
 }
 
