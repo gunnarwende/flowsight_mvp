@@ -76,6 +76,7 @@ export function RunningView() {
   const [data, setData] = useState<RunningData | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const loadStatus = useCallback(async () => {
@@ -127,6 +128,28 @@ export function RunningView() {
       setToast("Aktualisieren fehlgeschlagen.");
     }
     setSyncing(false);
+  };
+
+  const importCsv = async (file: File) => {
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const res = await fetch("/api/ceo/leben/running/import", {
+        method: "POST",
+        headers: { "Content-Type": "text/csv" },
+        body: text,
+      });
+      const j = await res.json().catch(() => null);
+      if (res.ok) {
+        setToast(`${j?.imported ?? 0} Aktivitäten importiert.`);
+        await loadData();
+      } else {
+        setToast(j?.error === "unrecognized_format" ? "CSV-Format nicht erkannt." : "Import fehlgeschlagen.");
+      }
+    } catch {
+      setToast("Import fehlgeschlagen.");
+    }
+    setImporting(false);
   };
 
   const enableWebhook = async () => {
@@ -185,16 +208,37 @@ export function RunningView() {
               )}
               {status.athlete_name && <span className="text-gray-400">Strava: {status.athlete_name}</span>}
             </div>
-            <button
-              onClick={sync}
-              disabled={syncing}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-navy-800 text-white hover:bg-navy-700 disabled:opacity-40 transition-colors"
-            >
-              <svg className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992V4.356M2.985 19.644v-4.992h4.992m-4.745 0a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-              </svg>
-              {syncing ? "Lädt…" : "Aktualisieren"}
-            </button>
+            <div className="flex items-center gap-2">
+              <label
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium border border-navy-200 text-navy-600 hover:bg-navy-50 cursor-pointer transition-colors ${importing ? "opacity-40 pointer-events-none" : ""}`}
+                title="Garmin-Connect-CSV mit deiner Lauf-Historie hochladen"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 7.5 12 3m0 0L7.5 7.5M12 3v13.5" />
+                </svg>
+                {importing ? "Importiere…" : "Historie importieren"}
+                <input
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) importCsv(f);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              <button
+                onClick={sync}
+                disabled={syncing}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-navy-800 text-white hover:bg-navy-700 disabled:opacity-40 transition-colors"
+              >
+                <svg className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992V4.356M2.985 19.644v-4.992h4.992m-4.745 0a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                {syncing ? "Lädt…" : "Aktualisieren"}
+              </button>
+            </div>
           </div>
 
           <ActivityList activities={data.activities} />
