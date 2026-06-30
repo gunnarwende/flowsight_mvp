@@ -110,3 +110,4 @@ scripts/_ops/APR_*.png
 scripts/_ops/PEV*.png
 
 supabase/.branches/
+__pycache__/
