@@ -143,11 +143,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unrecognized_format" }, { status: 400 });
   }
 
+  const header = rows[0];
   const records: Record<string, unknown>[] = [];
   for (const row of rows.slice(1)) {
     const startLocal = isoLocal(cell(row, idx.date));
     if (!startLocal) continue;
     const moving = durationSeconds(cell(row, idx.movingTime)) ?? durationSeconds(cell(row, idx.time));
+
+    // Komplette CSV-Zeile verlustfrei mitspeichern (Kadenz, Schrittlänge, beste
+    // Pace, TSS, Schritte … → fuer den Coach), zusaetzlich zu den getypten Spalten.
+    const raw: Record<string, string> = {};
+    header.forEach((h, i) => {
+      const v = cell(row, i);
+      if (v && v !== "--") raw[h.trim()] = v;
+    });
+
     records.push({
       source: "garmin_csv",
       external_id: startLocal,
@@ -162,6 +172,7 @@ export async function POST(req: NextRequest) {
       avg_hr: num(cell(row, idx.avgHr)),
       max_hr: num(cell(row, idx.maxHr)),
       calories: num(cell(row, idx.calories)),
+      raw,
       updated_at: new Date().toISOString(),
     });
   }
