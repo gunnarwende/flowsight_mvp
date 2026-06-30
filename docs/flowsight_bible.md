@@ -56,6 +56,9 @@ Datei-Bereich** → parallel bearbeitbar, ohne zu kollidieren.
 | **Recht** | Verträge · AGB · Haftung | [→](modules/recht.md) |
 | **Monitoring** | Der Puls: morning-report · Sentry · Kennzahlen | [→](modules/monitoring.md) |
 | **Marke** | Positionierung · Kategorie-Claim · Ton · Sprache | [→](modules/marke/_index.md) |
+| **Leben** | Persönliche Säule des Founders: Gesundheit · Sport · Energie (Running/Marathon, später Kraftsport · Ernährung · Coach) | [→](modules/leben.md) |
+
+> *Hinweis: „Leben" ist Founder-**persönlich** (CEO-App-Sektion `/ceo/leben`, `isAdmin`-Guard) — kein Kunden-/Produkt-Modul, sondern das System, mit dem der Founder die beste Version aus sich holt (Leila-Hormozi-Prinzip: Systeme statt Willenskraft).*
 
 ---
 
