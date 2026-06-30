@@ -15,9 +15,15 @@ const REPO = "gunnarwende/flowsight_mvp";
 const SYNC_WORKFLOW = "garmin-sync.yml";
 const AUTH_WORKFLOW = "garmin-auth.yml";
 
-/** Ref, auf dem die Workflows liegen (nach Merge: main). */
+/**
+ * Ref, auf dem die Workflows liegen.
+ * - explizit via LIFE_WORKFLOW_REF, sonst
+ * - der Branch der laufenden Vercel-Deployment (VERCEL_GIT_COMMIT_REF) →
+ *   Branch-Vorschau dispatcht automatisch gegen ihren eigenen Branch (kein Setup),
+ * - Fallback main (Production).
+ */
 function workflowRef(): string {
-  return process.env.LIFE_WORKFLOW_REF || "main";
+  return process.env.LIFE_WORKFLOW_REF || process.env.VERCEL_GIT_COMMIT_REF || "main";
 }
 
 export async function getSetting<T = unknown>(key: string): Promise<T | null> {
