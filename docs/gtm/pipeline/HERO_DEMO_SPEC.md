@@ -236,6 +236,19 @@ echte System arbeiten.
 - **Kein „Gunnar" laut** — vorgelesener Vorname wirkt wie eine laut vorgetragene Signatur. Name höchstens als visuelle Unterzeile.
 - **Letztes Wort = das Versprechen** („Bei Ihnen geht ab jetzt nichts mehr verloren."), dann Knoten-Reveal.
 
+## Cold-Mail-Audio-Hook (Idee 2026-06-30, Leila-Hormozi-Inspiration) — zu designen mit Stern 3
+> **Auslöser:** Leila Hormozi stellte einen Top-Manager ein, weil er ihr **Audiodateien** schickte („das ist kein Scherz, drück Play" → dann bewies er, was er kann). Founder-Übertrag auf unsere **Cold-Mail** (wenn beim Cold Call niemand rangeht): nicht *über* das Produkt schreiben — **hören lassen.**
+
+**Idee:** In der Nicht-erreicht-Mail ein **~20-Sek-Audio** (Play-Button). **Lisa stellt sich vor + sagt, was sie kann** → Übergang „wir haben ein Leitsystem **nur für [Betrieb]** gebaut" (dynamisch) → Übergang zum **Button** (Klick auf die Beweis-Seite). Effekt: Der Inhaber wusste vorher nicht, was ein „Leitsystem" ist — **nach 20 Sek weiss er's genau.**
+
+**Warum stark:** Unser Produkt **ist eine Stimme** → sie hören = ehrlichster Beweis („show, don't tell"). Personalisiert (Betriebsname → „für MICH gebaut"). Neuartig (niemand schickt Audio). Löst das „kennt den Begriff nicht"-Problem. = Leilas „make a difference".
+
+**Gelockte Rahmen-Entscheidungen (aus der Founder-Diskussion):**
+- **Audio NICHT im Mail-Body** — Gmail/Outlook strippen `<audio>` + Autoplay → würde kaputt aussehen. → Audio lebt auf der **Beweis-Seite** (`/p/[token]`); die Mail zeigt nur ein **Play-Button-Bild + eine Zeile**, die den Klick verdient („Hören Sie 20 Sekunden, was wir für [Betrieb] gebaut haben"). Klick → Seite → Lisa spielt (grosser Play-Button). Audio-Play = **Warm-Signal** (tracken wie Watch-Tiefe).
+- **⚠️ TTS-Risiko = der kritische Punkt:** erste Begegnung = deutsch klingende Stimme könnte bei CH-Sanitär **nach hinten losgehen.** ABER ein **gescriptetes 20-Sek-Hochdeutsch-Intro ist der sicherste Fall** (kein „Grüezi"/keine CH-Ortsnamen, voll kontrolliert, neu-renderbar bis es sitzt) **und gleichzeitig der billigste echte Test**, ob die Stimme „gut genug" ist. Überzeugt es nicht → Signal, dass die **High-End-Stimme (V8 PVC, CH-Sprecherin)** *vor* lautem Outreach kommen muss.
+- **Veredelung (näher an Leila):** evtl. mit **einer kurzen menschlichen Zeile von Gunnar** öffnen (einmal generisch aufgenommen, skaliert): „Kein Verkaufstrick — 20 Sekunden, dann wissen Sie, warum ich anrufe." → dann übernimmt Lisa. Verheiratet Mensch-Echtheit + Produkt-Beweis, hält's ehrlich statt Werbe-slick.
+- **Verhältnis zum Hero:** Audio = der niederschwellige 20-Sek-Hook (kann das **Intro der Beweis-Seite** sein, bevor der Hero/die Knoten kommen). Hero (90s) + Knoten = die tiefere Schicht für die, die dranbleiben. Nicht zwei konkurrierende Beweise — **Audio führt rein, Hero vertieft.**
+
 ## Offen / nächste Schritte
 1. ~~**WARM-Opener** (Strang b)~~ → **GELOCKT 2026-06-28** (s. „WARM-Strang"-Abschnitt).
 2. **Knoten-Set:** ✅ **alle 4 wortgenau gelockt** (① + ② + ③ + ④, s. „Knoten"-Abschnitt). Set komplett.
@@ -244,3 +257,4 @@ echte System arbeiten.
 4. **Text IM Fall** (Beschreibung etc.) = Job des Pipeline-Crawlings / der neuen PIPELINE_BIBLE.
 5. **Demo-Adresse pro Kanton** pflegen (Vermerk bei Kantonswechsel).
 6. *(optional)* Live-Agent Namen-Nutzung an die Demo angleichen.
+7. **Cold-Mail-Audio-Hook** (Leila-Inspiration, s. eigener Abschnitt oben): 20-Sek-Lisa-Audio auf der Beweis-Seite, Mail teasert mit Play-Button-Bild. Designen mit Stern 3; hängt an V8-Stimmen-Qualität (gescriptetes Intro = sicherster Fall + Test).
