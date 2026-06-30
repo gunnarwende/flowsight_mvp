@@ -437,7 +437,7 @@ function Overview({ token, preview, brandColor, companyName, assistantName, prog
       <div className="mt-4 text-center">
         <button type="button" onClick={() => onOpen("freigabe")} disabled={false}
           className="rounded-xl px-6 py-3 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-          An Gunnar zum Freischalten senden
+          An Gunnar — wir gehen gemeinsam live
         </button>
         {!allDone ? <p className="mt-2 text-[11px] text-slate-400">Tipp: gehen Sie zuerst die drei Stränge + Ihr Leitsystem durch.</p> : null}
         {/* L-18: PDF-Auszug auch direkt von der Hauptseite ziehbar. */}
@@ -1271,12 +1271,12 @@ function Freigabe({ token, preview, draft, update, onBack, companyName }: {
         <span className="text-sm text-slate-200">Ich akzeptiere die AVV. Schweizer Datenschutz (revDSG), Server in Frankfurt, keine Gesprächsaufnahmen.{draft.golive?.avvAccepted && draft.golive?.avvAcceptedAt ? <span className="mt-0.5 block text-[11px] text-slate-500">Akzeptiert · Version {draft.golive.avvVersion}</span> : null}</span>
       </button>
 
-      <Disclosure summary="Was passiert nach dem Freischalten?">
+      <Disclosure summary="Was passiert, wenn wir gemeinsam starten?">
         <ul className="space-y-1.5">
-          <li>🧪 Die <span className="text-slate-200">Demo-Fälle aus dem Video verschwinden</span> — Ihr erster echter Anruf wird Ihr erster Fall.</li>
+          <li>🧪 Die <span className="text-slate-200">Demo-Fälle verschwinden</span> — Ihr erster echter Anruf wird Ihr erster Fall.</li>
           <li>📍 Jeder Fall durchläuft: <span className="text-slate-200">Neu → Geplant → In Arbeit → Erledigt</span> — Sie sehen jederzeit, wo er steht.</li>
           <li>📱 Installieren Sie das Leitsystem als <span className="text-slate-200">App aufs Handy</span> — jeder Fall ist auch unterwegs auf der Baustelle dabei.</li>
-          <li>📊 Jeden Montag bekommen Sie automatisch einen kurzen <span className="text-slate-200">Wochen-Rapport</span> (Fälle, Bewertungen) an Ihre Login-E-Mail.</li>
+          <li>🤝 <span className="text-slate-200">Wir testen es ein paar Tage gemeinsam</span> — {(draft.voice?.assistantName ?? "").trim() || "Lisa"} fängt nur, was Sie verpassen. Bezahlt wird erst, wenn es für Sie läuft.</li>
           <li>🔒 Bis zum gemeinsamen Go-live ist nichts scharf — Gunnar schaut drüber, dann gehen Sie live.</li>
         </ul>
       </Disclosure>
@@ -1289,7 +1289,7 @@ function Freigabe({ token, preview, draft, update, onBack, companyName }: {
       ) : null}
 
       <button type="button" onClick={submit} disabled={state === "sending"} className="rounded-xl px-6 py-3 text-sm font-bold disabled:opacity-60" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-        {state === "sending" ? "Senden …" : "An Gunnar zum Freischalten senden"}
+        {state === "sending" ? "Senden …" : "An Gunnar — wir gehen gemeinsam live"}
       </button>
       {state === "error" ? <p className="text-[11px] text-red-300">Senden fehlgeschlagen — bitte erneut.</p> : null}
     </Detail>
