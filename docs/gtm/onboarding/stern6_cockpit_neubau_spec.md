@@ -64,6 +64,30 @@ Stern 6 ist erfolgreich, **wenn der Test wowt → Conversion** (Zahlung kommt er
 | 4 | 🚨 **Wann Lisa erreichbar ist** | ○ braucht Sie | Notdienst Ja/Nein → bei Ja: Name+Nummer; bei Nein: „melden uns am nächsten Werktag" | „Sagen Sie, ob Sie Notdienst anbieten — dann alarmiere ich die richtige Person. Sonst nehm ich den Fall trotzdem auf." |
 | 5 | ☎️ **So kommt der Anruf zu Lisa** *(die eine Aktion)* | ○ braucht Sie | **Sicherheitsnetz-Reframe:** „fängt nur, was Sie verpassen" · Anbieter (Radio) · „übernimmt nach 5× klingeln" (Default) · **📷 Weiterleitung-Foto-Guide** (anbieter-spez.) | „Ihre Nummer bleibt — wir leiten nur um, was Sie nicht abnehmen. Anbieter wählen, dann zeig ich die Tastenkombi mit Bild." |
 
+## Strang 2 — Online-Anfragen (Website-Formular) (GELOCKT 2026-06-29)
+> Rahmen: **„Statt E-Mail-Pingpong — eine saubere Anfrage."** **Friction-Killer:** das Formular ist **sofort als Link nutzbar** (✓ steht); die Website-Integration (Agentur-Reibung) ist **optional, blockt den Test-Start NICHT.**
+
+| # | Karte | Status | Inhalt |
+|---|---|---|---|
+| 1 | 💬 **Ihr Anfrage-Formular** | ✓ steht | Startklar in Ihrem Look · `🔗 Link sofort nutzbar` (Google/Visitenkarte/WhatsApp) · 📷 Foto vom Schaden automatisch. Audio: „ersetzt das Mail-Hin-und-Her → sauberer Fall." |
+| 2 | 🧩 **Womit Kunden starten** | ✓ vorbereitet | 3 eigene (aus Gewerk) + 3 Standard, tippen zum Ändern |
+| 3 | 🌐 **Aufs Ihre Website bringen** | ⚪ optional | Default eingeklappt („nicht nötig zum Starten") → selbst (Schnipsel + 📷 Anleitung) / Agentur (Name+Mail → wir schicken Anleitung) |
+
+## Strang-Hub + Freigabe (GELOCKT 2026-06-29)
+**◆ Leitsystem (der Hub — Knoten ②):** 1 Essential + 4 vorab-gesetzt.
+| # | Karte | Status | Inhalt |
+|---|---|---|---|
+| 1 | 📨 **Wohin Ihre Fälle gemeldet werden** | ○ braucht Sie | Geschäfts-E-Mail (= die Fälle sehen, der Beweis) + Push-Toggle |
+| 2 | 🎨 **Ihre Marke** | ✓ aus Website | Farbe + Fall-Kürzel, vorbefüllt |
+| 3 | 👥 **Ihr Team** | ⚪ nur Sie | Default: nur er (Leitung); später erweitern |
+| 4 | 📅 **Kalender** | ⚪ später | Default: abfangen; aufklappen → Outlook/Google + 📷 Anleitung |
+| 5 | ⭐ **Bewertungen** | ⚪ aus | Default aus (Stern-5-Trumpf für später); aufklappen → Google-Link + Schwelle |
+
+**🚀 Freigabe — auf Gratis-Test umgerahmt (kein „Freischalten"-Post-Kauf):**
+- Login-E-Mail · **AVV** (revDSG · **Falldaten in Frankfurt** · keine Gesprächsaufnahmen — §7.9-geschärft).
+- „Was passiert, wenn wir starten": Demo-Fälle weg → erster echter Anruf = erster Fall · App aufs Handy · **„Ich schaue drüber, dann gehen wir gemeinsam live."** *(Wochen-Rapport-Zeile = später/Conversion, nicht im Test.)*
+- Button: **„An Gunnar — wir gehen gemeinsam live"** (statt „zum Freischalten senden").
+
 ## Ist-Cockpit = Ersatzteillager (Gold behalten)
 80/20-Framing · **progressiver Lisa-Avatar** (Konstellation) · „nichts live bis Freigabe"-Vertrauen · „geht direkt an Gunnar"-Notizen · **Lisa-Grenzen-Beruhigung** (nie Preise/Diagnose/Termin/Garantie) · `PainHint` „Kennen Sie das?" · Autosave · **Freigabe → Founder-Review → gemeinsam live** (Stern-6-Realität). **Raus/neu:** Über-Dichte, „Freischalten"-Post-Kauf-Framing → Gratis-Test-Reframe, leerer „Vor Ort"-Strang, Technik-Kram ohne Default+Bild-Hilfe.
 
