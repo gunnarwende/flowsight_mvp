@@ -46,7 +46,11 @@ export async function POST(req: NextRequest) {
 
       if (event.aspect_type === "delete") {
         const supabase = getServiceClient();
-        await supabase.from("life_activities").delete().eq("strava_id", event.object_id);
+        await supabase
+          .from("life_activities")
+          .delete()
+          .eq("source", "strava")
+          .eq("external_id", String(event.object_id));
       } else {
         // create + update: Detail holen und upserten.
         const activity = await fetchActivity(event.object_id);
