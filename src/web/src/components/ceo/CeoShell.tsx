@@ -63,6 +63,11 @@ const AdminIcon = (
     <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" />
   </svg>
 );
+const LebenIcon = (
+  <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+  </svg>
+);
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Pulse", href: "/ceo/pulse", icon: PulseIcon },
@@ -74,6 +79,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Wissen", href: "/ceo/knowledge", icon: BookIcon },
   { label: "Team", href: "/ceo/team", icon: TeamIcon },
   { label: "Admin", href: "/ceo/admin", icon: AdminIcon },
+  { label: "Leben", href: "/ceo/leben", icon: LebenIcon },
 ];
 
 export function CeoShell({

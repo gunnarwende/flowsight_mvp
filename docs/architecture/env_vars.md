@@ -37,6 +37,13 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - CAL_WEBHOOK_SECRET -> Cal.com Webhook „Secret" (für /api/cal/webhook Signatur-Check, Header X-Cal-Signature-256)
 - CAL_BOOKING_URL -> öffentlicher Cal.com Buchungs-Link (Slot-Button in der Outreach-Mail), z.B. https://cal.com/gunnar-wende/rueckruf
 
+## Strava (Sektion „Leben" / Running — Garmin-Auto-Import)
+- STRAVA_CLIENT_ID -> strava.com/settings/api (API-Anwendung), Client ID
+- STRAVA_CLIENT_SECRET -> strava.com/settings/api, Client Secret (server-only)
+- STRAVA_WEBHOOK_VERIFY_TOKEN -> selbst gewählter String (Webhook-Subscription-Validierung); Default „flowsight-leben"
+- LIFE_JUNGFRAU_DATE -> optional, Wettkampf-Datum ISO (Default 2026-09-12); in-app via life_settings-Key „race" überschreibbar
+- Hinweis: Authorization Callback Domain in der Strava-App = App-Domain (z.B. flowsight.ch). Setup-Runbook: docs/runbooks/strava_setup.md
+
 ## Twilio (Voice/SIP only — kein SMS)
 - TWILIO_ACCOUNT_SID -> Twilio Console
 - TWILIO_AUTH_TOKEN -> Twilio Console
