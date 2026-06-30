@@ -1,0 +1,62 @@
+name: Garmin – Verbinden (Login → Token)
+
+# Einmalige Anmeldung: meldet sich via garth bei Garmin an und speichert das
+# resultierende, widerrufbare Token in life_settings.garmin_token. Das Passwort
+# wird NICHT gespeichert (nur transient zum Token-Tausch). Danach läuft der
+# automatische Sync (garmin-sync.yml) ohne erneuten Login.
+#
+# Ausgelöst aus der App (/api/ceo/leben/garmin/connect → workflow_dispatch).
+# Hinweis: dispatch-Inputs erscheinen in der Run-Übersicht des (privaten) Repos;
+# das Passwort wird in den Logs maskiert. Bei Bedarf danach rotieren.
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "Garmin-E-Mail"
+        required: true
+        type: string
+      password:
+        description: "Garmin-Passwort (einmalig, wird nicht gespeichert)"
+        required: true
+        type: string
+      mfa:
+        description: "2-Faktor-Code (falls aktiv)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: garmin-auth
+  cancel-in-progress: true
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Eingaben in Logs maskieren
+        run: |
+          echo "::add-mask::${{ inputs.password }}"
+          echo "::add-mask::${{ inputs.mfa }}"
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: garth + requests installieren
+        run: pip install --quiet garth requests
+
+      - name: Login + Token speichern + Erst-Abruf
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GARMIN_EMAIL: ${{ inputs.email }}
+          GARMIN_PASSWORD: ${{ inputs.password }}
+          GARMIN_MFA: ${{ inputs.mfa }}
+        run: python scripts/_ops/garmin_sync.py --login

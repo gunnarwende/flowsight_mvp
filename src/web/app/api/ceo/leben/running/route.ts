@@ -4,14 +4,23 @@ import { getServiceClient } from "@/src/lib/supabase/server";
 
 // GET /api/ceo/leben/running — Laeufe + Wochenstatistik + Jungfrau-Countdown.
 
-const RUN_TYPES = new Set(["Run", "TrailRun", "VirtualRun", "Treadmill"]);
+// Garmin activityType.typeKey-Werte, die als "Lauf" ins Wochen-Volumen zaehlen.
+const RUN_TYPES = new Set([
+  "running",
+  "trail_running",
+  "treadmill_running",
+  "track_running",
+  "virtual_run",
+  "indoor_running",
+  "obstacle_run",
+]);
 const DEFAULT_RACE = { date: "2026-09-12", name: "Jungfrau-Marathon" };
 
 interface ActivityRow {
   id: string;
-  strava_id: number;
+  external_id: string;
+  source: string | null;
   sport_type: string | null;
-  type: string | null;
   name: string | null;
   start_time: string | null;
   start_time_local: string | null;
@@ -59,7 +68,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("life_activities")
     .select(
-      "id, strava_id, sport_type, type, name, start_time, start_time_local, distance_m, moving_time_s, elapsed_time_s, elevation_gain_m, avg_hr, max_hr, avg_speed_ms",
+      "id, external_id, source, sport_type, name, start_time, start_time_local, distance_m, moving_time_s, elapsed_time_s, elevation_gain_m, avg_hr, max_hr, avg_speed_ms",
     )
     .order("start_time", { ascending: false })
     .limit(60);
@@ -79,7 +88,7 @@ export async function GET() {
   const activities = rows.map((r) => {
     const dist = Number(r.distance_m ?? 0);
     const time = Number(r.moving_time_s ?? 0);
-    const sport = r.sport_type ?? r.type ?? "Workout";
+    const sport = r.sport_type ?? "other";
     const isRun = RUN_TYPES.has(sport);
     const ts = r.start_time_local ? new Date(r.start_time_local).getTime() : new Date(r.start_time ?? 0).getTime();
 
@@ -95,7 +104,7 @@ export async function GET() {
 
     return {
       id: r.id,
-      strava_id: r.strava_id,
+      external_id: r.external_id,
       sport,
       isRun,
       name: r.name,

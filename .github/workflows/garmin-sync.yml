@@ -1,0 +1,45 @@
+name: Garmin – Läufe abrufen (Sync)
+
+# Holt die letzten Aktivitäten aus Garmin Connect (garth) und upsertet sie in
+# life_activities. Läuft alle 30 Min automatisch (Cron, nur auf main) + auf
+# Knopfdruck aus der App (workflow_dispatch via /api/ceo/leben/garmin/sync).
+# Das Handy fasst keinen Key an — der Lauf hat in CI vollen Key-Zugriff.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Anzahl Aktivitäten"
+        required: false
+        type: string
+        default: "30"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: garmin-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: garth + requests installieren
+        run: pip install --quiet garth requests
+
+      - name: Abruf
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          LIMIT: ${{ inputs.limit || '30' }}
+        run: python scripts/_ops/garmin_sync.py

@@ -13,7 +13,7 @@ ein KI-Coach die Tagesbilanz und plant voraus. Leitthema: Gesundheit.
 ## Bausteine
 | Baustein | Status | Quelle |
 |---|---|---|
-| **Running** (inkl. Fussball) | **Phase 1 — live gebaut** | Garmin → Strava → Webhook → `life_activities` |
+| **Running** (inkl. Fussball) | **Phase 1 — live gebaut** | Garmin Connect → garth (CI-Cron) → `life_activities` |
 | Kraftsport | geplant (Phase 3) | — |
 | Ernährung | geplant (Phase 3) | — |
 | **KI-Coach** (Tagesbilanz + Plan + Chat) | geplant (Phase 2, bis Ende KW) | `src/lib/ai` (Anthropic) |
@@ -23,20 +23,23 @@ ein KI-Coach die Tagesbilanz und plant voraus. Leitthema: Gesundheit.
 - Tab **Running**: Jungfrau-Countdown, Wochenstatistik (km, Höhenmeter, Läufe, Zeit),
   Aktivitätenliste (Pace, Höhenmeter, Puls). Fussball wird mitgeführt, aber nicht
   als Lauf-Volumen gezählt; Tischtennis bewusst draussen.
-- **Datenweg = Strava-Brücke** (offiziell, OAuth, kein Garmin-Passwort): automatischer
-  Import per Webhook + manueller „Aktualisieren"-Knopf.
+- **Datenweg = Garmin-Direkt** (kostenlos, kein Strava): garth-Login einmalig →
+  widerrufbares Token → CI-Cron (alle 30 Min) holt Läufe + „Aktualisieren"-Knopf.
+  Kein Garmin-Passwort dauerhaft gespeichert. Runbook: `docs/runbooks/garmin_setup.md`.
 
 ## Datei-/Code-Bereich (Parallel-Konflikt-Regel)
 - **Besitzt:** `app/ceo/(dashboard)/leben/*`, `app/api/ceo/leben/**`,
   `src/components/ceo/LebenView.tsx` + `RunningView.tsx`, `src/lib/leben/*`,
-  `supabase/migrations/*life*`, `docs/runbooks/strava_setup.md`, diese Karte.
+  `scripts/_ops/garmin_sync.py`, `.github/workflows/garmin-*.yml`,
+  `supabase/migrations/*life*`, `docs/runbooks/garmin_setup.md`, diese Karte.
 - **Kollidiert mit:** CeoShell-Nav (`src/components/ceo/CeoShell.tsx` — nur der
-  `NAV_ITEMS`-Eintrag „Leben"), env_vars-Registry (Strava-Block).
+  `NAV_ITEMS`-Eintrag „Leben"), env_vars-Registry (Garmin-Block).
 
 ## Datenmodell
-- `life_activities` — eine Zeile pro Strava-Aktivität (Distanz, Zeit, Höhenmeter, Puls, raw).
-- `life_strava_tokens` — OAuth-Tokens (Founder-only), Auto-Refresh.
-- `life_settings` — Key/Value (Wettkampf-Datum, Webhook-Subscription, später Trainingsplan).
+- `life_activities` — eine Zeile pro Aktivität, quell-agnostisch (`source` +
+  `external_id`, UNIQUE) (Distanz, Zeit, Höhenmeter, Puls, raw).
+- `life_settings` — Key/Value: `garmin_token` (widerrufbar), `garmin_last_sync`,
+  `race` (Wettkampf-Ziel), später Trainingsplan.
 
 ## Nächste Schritte
 1. **Phase 2 (bis Ende KW):** KI-Coach — Jungfrau-Trainingsplan (Horizont → Wochen/Tage),
