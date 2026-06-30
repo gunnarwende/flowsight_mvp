@@ -1,9 +1,10 @@
 # Stern 6 — Geführter Aufbau (Cockpit) · Neubau-Spec
 
-> **STATUS: FUNDAMENT GELOCKT (2026-06-29).** Übergabe-Zustand + die EINE Aufgabe + Design-Prinzipien
-> + Tiering + Hilfe-Modell fest. **Als Nächstes:** EINEN Strang (Lisa) als Schablone bauen, dann über
-> alle Stränge rollen. Ist-Cockpit (`src/web/app/aufbau/[token]/CockpitApp.tsx`, „Redesign v2") =
-> **Ersatzteillager, nicht Bauplan.** Schwester-Specs: alte `phase2_cockpit_redesign.md`.
+> **STATUS: DESIGN-TEIL KOMPLETT (2026-06-29).** Fundament + Struktur (2-Strang-Kanal-Modell) +
+> beide Stränge (Lisa · Online-Anfragen) + Leitsystem-Hub + Freigabe — alle nach Schablone, default-first,
+> Gratis-Test-gerahmt, inhaltlich vollständig (pingpong-fest: Kunden-Nachrichten-Karte + Go-live-Prüfung
+> angeglichen). **Offen = nur noch Bau** (Code-Redesign · Audio/Foto-Guides · Hero-Konsistenz). Ist-Cockpit
+> (`src/web/app/aufbau/[token]/CockpitApp.tsx`, „Redesign v2") = **Ersatzteillager, nicht Bauplan.**
 
 ## Zweck — die EINE Aufgabe
 > *Den Inhaber mit **minimalem Aufwand** zu einem **Live-Test bringen, der ihn WOWt** — Lisa gut genug,
@@ -74,28 +75,27 @@ Stern 6 ist erfolgreich, **wenn der Test wowt → Conversion** (Zahlung kommt er
 | 3 | 🌐 **Aufs Ihre Website bringen** | ⚪ optional | Default eingeklappt („nicht nötig zum Starten") → selbst (Schnipsel + 📷 Anleitung) / Agentur (Name+Mail → wir schicken Anleitung) |
 
 ## Strang-Hub + Freigabe (GELOCKT 2026-06-29)
-**◆ Leitsystem (der Hub — Knoten ②):** 1 Essential + 4 vorab-gesetzt.
+**◆ Leitsystem (der Hub — Knoten ②):** 2 zu prüfen + 4 vorab-gesetzt.
 | # | Karte | Status | Inhalt |
 |---|---|---|---|
 | 1 | 📨 **Wohin Ihre Fälle gemeldet werden** | ○ braucht Sie | Geschäfts-E-Mail (= die Fälle sehen, der Beweis) + Push-Toggle |
-| 2 | 🎨 **Ihre Marke** | ✓ aus Website | Farbe + Fall-Kürzel, vorbefüllt |
-| 3 | 👥 **Ihr Team** | ⚪ nur Sie | Default: nur er (Leitung); später erweitern |
-| 4 | 📅 **Kalender** | ⚪ später | Default: abfangen; aufklappen → Outlook/Google + 📷 Anleitung |
-| 5 | ⭐ **Bewertungen** | ⚪ aus | Default aus (Stern-5-Trumpf für später); aufklappen → Google-Link + Schwelle |
+| 2 | 💬 **Nachrichten an Ihre Kunden** *(feuern im Test!)* | ✓ steht | Die 3 Texte, alle vorbefüllt + sein **SMS-Absender (≤11 Z.)**: **Empfangsbestätigung (SMS nach jedem Fall)** · Termin-Erinnerung · Bewertungsanfrage. **„Sie sehen + verantworten, was an Ihre Kunden geht."** 1× bestätigen. *(Loch-Fix: gehen in seinem Namen raus — nie still defaulten.)* |
+| 3 | 🎨 **Ihre Marke** | ✓ aus Website | Farbe + Fall-Kürzel, vorbefüllt |
+| 4 | 👥 **Ihr Team** | ⚪ nur Sie | Default: nur er (Leitung); später erweitern |
+| 5 | 📅 **Kalender** | ⚪ später | Default: abfangen; aufklappen → Outlook/Google + 📷 Anleitung |
+| 6 | ⭐ **Bewertungen** | ⚪ aus | Default aus (Stern-5-Trumpf für später); aufklappen → Google-Link + Schwelle |
 
 **🚀 Freigabe — auf Gratis-Test umgerahmt (kein „Freischalten"-Post-Kauf):**
 - Login-E-Mail · **AVV** (revDSG · **Falldaten in Frankfurt** · keine Gesprächsaufnahmen — §7.9-geschärft).
 - „Was passiert, wenn wir starten": Demo-Fälle weg → erster echter Anruf = erster Fall · App aufs Handy · **„Ich schaue drüber, dann gehen wir gemeinsam live."** *(Wochen-Rapport-Zeile = später/Conversion, nicht im Test.)*
 - Button: **„An Gunnar — wir gehen gemeinsam live"** (statt „zum Freischalten senden").
+- **⚠️ Go-live-Prüfung an die Tier angleichen (Inkonsistenz-Fix):** Pflicht **nur** was der Test braucht — Begrüssung · Telefonanbieter · Notfall-Kontakt (wenn Notdienst=Ja) · Geschäfts-E-Mail · Login-E-Mail · AVV. **NICHT blockierend:** `google_review_url`, Team-Mehrpersonen, Kalender, Website-Integration (heutige `MISSING_LABEL`-Liste verlangt review-url + staff-admin → entschärfen, sonst steckt der Inhaber fest = Pingpong).
 
 ## Ist-Cockpit = Ersatzteillager (Gold behalten)
 80/20-Framing · **progressiver Lisa-Avatar** (Konstellation) · „nichts live bis Freigabe"-Vertrauen · „geht direkt an Gunnar"-Notizen · **Lisa-Grenzen-Beruhigung** (nie Preise/Diagnose/Termin/Garantie) · `PainHint` „Kennen Sie das?" · Autosave · **Freigabe → Founder-Review → gemeinsam live** (Stern-6-Realität). **Raus/neu:** Über-Dichte, „Freischalten"-Post-Kauf-Framing → Gratis-Test-Reframe, leerer „Vor Ort"-Strang, Technik-Kram ohne Default+Bild-Hilfe.
 
-## Offen / nächste Schritte
-1. **Lisa-Strang wortgenau** nach der Schablone (WOW-Träger) — Bauplan-Karte (Status-Badge · 1 Warum-Zeile · ▶ Lisa-Audio · Default-Felder · „Passt so ✓"); Avatar bleibt, aber **vertikale Karten-Liste statt radialer Konstellation** (eine Metapher).
-2. Muster über **Online-Anfragen · Leitsystem · Freigabe** rollen.
-3. **Gratis-Test-Reframe** der Copy (statt „Freischalten" → „Ihren Test aufsetzen / gemeinsam live"); **„Vor Ort"-Strang raus**.
-4. **Hero-Konsistenz:** E-Mail-Versprechen reframen (s. Struktur-Abschnitt).
-5. „Kleine-Lisa"-Audio + Foto-Guides produzieren (separater Bau).
-6. Code-Redesign = separater Schritt (Founder-Hoheit).
-7. *(Backlog)* echtes Inbound-E-Mail via dedizierte Anfrage-Adresse → Fall (umgeht Thread-Chaos).
+## Offen / nächste Schritte — ✅ Design komplett, nur noch Bau
+1. **Code-Redesign** des Cockpits nach diesem Spec (separater Schritt, Founder-Hoheit). Inkl. **Go-live-Prüfung entschärfen** (Tier) + **leeren „Vor Ort"-Strang raus** + **Gratis-Test-Reframe der Copy**.
+2. **„Kleine-Lisa"-Audio-Clips (pro Abschnitt, Hochdeutsch) + Foto-/Screenshot-Guides** produzieren (Weiterleitung pro Anbieter · Kalender Outlook/Google).
+3. **Hero-Konsistenz:** E-Mail-Versprechen reframen (Formular als Antwort auf Mail-Pingpong) — `HERO_DEMO_SPEC`.
+4. *(Backlog)* echtes Inbound-E-Mail via dedizierte Anfrage-Adresse → Fall (umgeht Thread-Chaos).

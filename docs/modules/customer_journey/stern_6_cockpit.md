@@ -4,17 +4,22 @@
 > [Customer Journey Bible §3](../../gtm/CUSTOMER_JOURNEY_BIBLE.md). **Abschnitt: Onboarding.**
 > *(Bible-Heading bisher „Aufbau (Cockpit)" — Modulname jetzt „Cockpit".)*
 
-- **Zweck (Orientierung):** Der Kunde baut sein Leitsystem geführt selbst im Cockpit (Self-Service, confirm-not-create, ~70 % aus `tenant_config` vorbefüllt). Inkl. Rückmelde-Versprechen + Wunschtermin.
-- **Konversions-Ereignis:** Cockpit durchlaufen → Founder-Review-bereit.
+- **Zweck (Orientierung):** Der Inhaber baut geführt seine **Lisa + sein Leitsystem** — *„seine neue Mitarbeiterin anlernen"*, default-first, in unter einer Stunde, mit minimalem Aufwand → **Live-Test, der WOWt**.
+- **Konversions-Ereignis (neu):** Cockpit durchlaufen → Founder-Review → **gemeinsam live** (Gratis-Test, nicht Post-Kauf).
 
 ## Kanonische Quelle (SSOT)
+- **[stern6_cockpit_neubau_spec.md](../../gtm/onboarding/stern6_cockpit_neubau_spec.md) — NEUBAU (Design KOMPLETT 2026-06-29).** Übergabe-Zustand · Design-Prinzipien (Default-first · ein Bauplan/Strang · Hilfe-die-sitzt) · 2-Strang-Kanal-Modell (Telefon/Lisa · Online-Anfragen → Leitsystem) · alle Karten · Freigabe. Ist-Cockpit = Ersatzteillager.
 - [ONBOARDING_BIBLE](../../gtm/onboarding/ONBOARDING_BIBLE.md) — Cockpit-Aufbau.
-- Cockpit-Code: `src/web/app/aufbau/[token]` (Konstellation + progressives Lisa-Gesicht).
+- Cockpit-Code: `src/web/app/aufbau/[token]` („Redesign v2" = Altlast, wird nach Neubau-Spec umgebaut).
 - [phase2_rueckmelde_termin_logik](../../gtm/onboarding/phase2_rueckmelde_termin_logik.md) + `cockpit_*`.
 
 ## Dateibereich (Parallel-Konflikt-Regel)
 - **Besitzt:** diese Karte + `src/web/app/aufbau/` + die `cockpit_*`-Docs in `gtm/onboarding/`.
 - **Kollidiert mit:** Stern 7 + 8 (teilen sich `ONBOARDING_BIBLE.md`).
 
-## Offen / nächster Schritt
-- Cockpit-Build entlang OC-Backlog (Design steht, Build offen).
+## Stand (2026-06-29) — ✅ Design-Teil KOMPLETT
+- Kompletter Neubau durchdacht (s. Neubau-Spec): 2-Strang-Kanal-Modell · Default-first · Audio-Lisa + Foto-Hilfe · Gratis-Test-Reframe · inhaltlich vollständig (pingpong-fest).
+- Inhalts-Audit gegen die neue Welt: E-Mail = kein eigener Strang (Offerte-Thread, nicht Intake; Formular ist die Antwort) · „Vor Ort" raus · Hero-E-Mail-Versprechen reframen.
+
+## Offen / nächster Schritt — nur noch Bau
+- **Code-Redesign** nach Neubau-Spec (Founder-Hoheit) · **Audio-Lisa + Foto-Guides** · **Hero-Konsistenz** (E-Mail-Reframe).
