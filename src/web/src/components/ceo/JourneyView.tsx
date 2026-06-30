@@ -822,13 +822,15 @@ function CockpitList({ rows, title, empty, fmtDate }: { rows: Cockpit[]; title: 
       {rows.length === 0 ? <p className="text-sm text-navy-400">{empty}</p> : (
         <div className="divide-y divide-navy-50">
           {rows.map((c) => (
-            <div key={c.token} className="flex items-center gap-3 py-2.5">
+            <a key={c.token} href={`/aufbau/${c.token}`} target="_blank" rel="noopener"
+              className="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-navy-50">
               <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-navy-900 text-sm truncate">{c.company_name || c.slug || "—"}</div>
+                <div className="font-semibold text-navy-900 text-sm truncate group-hover:text-gold-700">{c.company_name || c.slug || "—"}</div>
                 <div className="text-[11px] text-navy-400">Status {c.status} · seit {fmtDate(c.created_at)}</div>
               </div>
-            </div>
+              <span className="shrink-0 text-[11px] font-semibold text-gold-600 opacity-0 transition-opacity group-hover:opacity-100">Cockpit öffnen ↗</span>
+            </a>
           ))}
         </div>
       )}
