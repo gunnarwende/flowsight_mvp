@@ -4,11 +4,20 @@
 > **vor** der Demo liegen (Produkt selbst). Founder hat die Adress-Schichten **2/3/4 explizit bestätigt**.
 > Tickets: V8 (Stimme) + V9 (Adresse) in `docs/ticketlist.md`. **Live-Agent (BigBen) NICHT ohne Founder-Go anfassen.**
 
-> ### 🔖 STAND 2026-06-29 — Swiss-Post-Zugang (wenn Antwort kommt, hier weiter)
+> ### 🔖 STAND 2026-06-30 — Swiss-Post-Zugang GEKLÄRT (Antwort da)
 > **Wo wir stehen:** V9-Adress-Lib ist gebaut + fail-safe (`src/web/src/lib/address/validateAddress.ts`); offen ist NUR die Stub-Funktion `callSwissPost()`. Ohne Credentials → `skipped` (neutral, kein Flag). Code braucht exakt **BuildingVerification** („existiert die Adresse?", Hauptbedarf Voice-Intake) **+ AutoComplete** (Strasse-Fuzz, Online-Wizard).
-> **Mail-Wechsel mit Swiss Post (Milena Burgener, adresspflege@post.ch):** Sie bot 3 Services an → **1 Adressassistent (kostenlos) = exakt unser Use Case** (AutoComplete + BuildingVerification). 2 Adressprüfung (Person/Firma) + 3 Adresspflege (Umzug/Inaktivität) = kostenpflichtig + **nicht** unser Fall.
-> **Antwort-Mail (2026-06-29 raus):** Option 1 gewählt + 3 Rückfragen: (a) server-seitig per REST/API nutzbar? (b) Zugang/Auth (API-Key vs OAuth2) + wie Credentials? (c) BuildingVerification inklusive (nicht nur AutoComplete)?
-> **➡️ Wenn Swiss-Post-Antwort da ist:** `callSwissPost()` verdrahten (BuildingVerification primär, AutoComplete für Wizard) → Credentials als `SWISSPOST_API_KEY` **oder** `SWISSPOST_CLIENT_ID` in Vercel-Env (die Lib gated genau darauf, `swissPostConfigured()`). Use-Case-Bestätigung Founder: nur „existiert/auffindbar", **nicht** „wohnt Person dort".
+> **Antwort Swiss Post (Milena Burgener, 2026-06-30) — alle 3 Fragen beantwortet:**
+> - (a) **Ja, server-seitig per REST.** Endpoint: `https://webservices.post.ch:17023/IN_SYNSYN_EXT/REST/v1/autocomplete4`. Doku: developer.post.ch → „Address web services REST".
+> - (b) **Auth = BasicAuth** (technischer Benutzer + Passwort bei *jeder* Abfrage). **Kostenlos → KEINE Produktions-Aufschaltung nötig.**
+> - (c) **BuildingVerification ist dabei** — Funktion **4.5** (Prüfung Strasse/Nr/PLZ/Ort, nicht-personenbezogen). **AutoComplete = 4.4** (Vervollständigung).
+> **Technischen Benutzer anlegen (Founder, manuell im Post-Kundencenter — laut PDF „Technischer_Benutzer_Anleitung_BasicAuth"):** post.ch Geschäftslogin → Kundencenter → „Meine Post" → „Mitarbeiter und Rollen" (braucht **SuperAdmin**) → „Benutzer erfassen" → „Technischer Benutzer" → Username+Passwort werden generiert (**sofort notieren!**) → Bezeichnung → Erfassen → Weiter → Speichern.
+> **➡️ Verdrahtung (CC, wenn Creds da):** `callSwissPost()` gegen `autocomplete4` (BuildingVerification 4.5 primär, AutoComplete 4.4 für Wizard) mit **BasicAuth**. Creds als **`SWISSPOST_USER` + `SWISSPOST_PASSWORD`** in Vercel-Env. ⚠️ **Gate anpassen:** `swissPostConfigured()` gated heute auf `SWISSPOST_API_KEY`/`SWISSPOST_CLIENT_ID` — auf die BasicAuth-Paar-Variante umstellen + `env_vars.md` nachziehen. Exakte Request/Response-Form vor dem Coden von developer.post.ch (4.4/4.5) holen. Use-Case (Founder): nur „existiert/auffindbar", **nicht** „wohnt Person dort".
+>
+> #### ⏸ 2026-06-30 — UNTERBROCHEN (Post-Website-Ladefehler), offene Schritte:
+> - ✅ **Geschäftskonto erstellt:** SwissID (Gunnar Wende, gunnar.wende@flowsight.ch) → Geschäftskunde „FlowSight" → **Rolle Superadministrator** bestätigt.
+> - ⏳ **Technischen Benutzer anlegen — HÄNGT:** Post-Kundencenter („Meine Post") lädt nicht („Etwas ist schiefgelaufen / Funktionen zurzeit nicht verfügbar") — typisch bei frischem Konto (Provisionierung). **Später erneut** (reload / aus- & einloggen / 5–10 Min warten): `Meine Post → Mitarbeiter und Rollen → Benutzer erfassen → Technischer Benutzer` → Username+Passwort **sofort notieren** → in **Vercel** als `SWISSPOST_USER`/`SWISSPOST_PASSWORD`.
+> - ⏳ **Dann:** CC verdrahtet `callSwissPost()` (s. o.).
+> - 📧 **REMINDER (Founder):** **Milena Burgener noch auf die Mail antworten** (höflicher Dank/kurze Rückmeldung) — nicht untergehen lassen.
 
 ## Ground Truth (im Code geprüft, deutscher Strang)
 Quellen: `retell/templates/global_prompt_de.txt`, `retell/templates/agent_template_de.json`, `retell/exports/doerfler_agent.json`.

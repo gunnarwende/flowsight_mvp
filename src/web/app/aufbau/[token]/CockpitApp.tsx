@@ -138,20 +138,6 @@ function PainHint({ items }: { items: { pain: string; relief: string }[] }) {
   );
 }
 
-/** Nummerierter Abschnitt mit „was bewirkt dieser Block"-Zeile = der rote Faden (Q2). */
-function Section({ n, icon, title, lead, children }: { n: number; icon: string; title: string; lead: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-      <div className="flex items-center gap-2.5">
-        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{ backgroundColor: "rgba(200,162,74,0.16)", color: GOLD }}>{n}</span>
-        <h3 className="text-sm font-semibold text-white">{icon} {title}</h3>
-      </div>
-      <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{lead}</p>
-      <div className="mt-3 space-y-3">{children}</div>
-    </section>
-  );
-}
-
 // ── Konstellation (Welle 3): Knoten als 5-Sterne-Sternbild (Entität in der Mitte) ──
 type StarState = "empty" | "partial" | "done";
 const PENTA = [{ x: 50, y: 15 }, { x: 87, y: 40 }, { x: 72, y: 83 }, { x: 28, y: 83 }, { x: 13, y: 40 }];
@@ -292,7 +278,7 @@ function BrandIcon({ size = 108 }: { size?: number }) {
 const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
   { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen", nutzen: "Kein Zettel geht verloren" },
   { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Anrufe werden aufgenommen und sichtbar gemacht" },
-  { key: "website", icon: "🌐", titel: "Website", cta: "Strang öffnen", unter: "Online-Meldungen Ihrer Kunden", nutzen: "Anfragen rund um die Uhr" },
+  { key: "website", icon: "🌐", titel: "Online-Anfragen", cta: "Strang öffnen", unter: "Anfragen über Ihr Formular", nutzen: "Rund um die Uhr, ohne Mail-Chaos" },
 ];
 
 // Per-Stern „Was läuft bei Ihnen noch?"-Beispiele — STRANG-SPEZIFISCH + konkret
@@ -591,7 +577,7 @@ function VorOrt({ draft, update, onDone, onBack }: { draft: CockpitDraft; update
 
 // ── Schablone-Bausteine (Stern-6-Neubau: default-first, Lisa-Stimme) ─────────
 /** Status-Plakette: „✓ steht"/„✓ aus Website" (vorbereitet) · „○ braucht Sie" · „✓ bestätigt". */
-function StatusBadge({ tone, label }: { tone: "ready" | "needs" | "done"; label: string }) {
+function StatusBadge({ tone, label }: { tone: "ready" | "needs" | "done" | "optional"; label: string }) {
   const s = tone === "done"
     ? { bg: "rgba(134,199,154,0.16)", color: "#86c79a" }
     : tone === "ready"
@@ -903,115 +889,158 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
 }
 
 // ── Strang: Website ──────────────────────────────────────────────────────────
+// Audio-Gist der „kleinen Lisa" pro Online-Anfragen-Karte (Hochdeutsch).
+const WEB_CARD_AUDIO: Record<string, string> = {
+  formular: "Ihr Formular ist startklar, in Ihrem Look. Es ersetzt das E-Mail-Hin-und-Her — aus jeder Anfrage wird ein sauberer Fall, samt Foto vom Schaden.",
+  kategorien: "Womit Ihre Kunden starten: drei aus Ihrem Gewerk, drei Standard. Tippen Sie rein, was nicht passt — fertig.",
+  website: "Das ist optional — zum Starten brauchen Sie's nicht, der Link läuft schon. Wenn Sie wollen, verankern wir das Formular fest auf Ihrer Website; sagen Sie nur, wer sie betreut.",
+};
+
 function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["prefill"]; draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void }) {
-  const cats = draft.wizard?.categories ?? pf.wizard.categories;
+  const [openCard, setOpenCard] = useState<string | null>(null);
   const w = draft.wizard ?? {};
-  // R7-Punkt-1 (hart): Default = Ja. Nur explizites „Nein" blendet den Rest aus.
+  const cats = w.categories ?? pf.wizard.categories;
+  // Default = Ja. Nur explizites „Nein" (in Karte 1 versteckt) blendet die Folgekarten aus.
   const formRelevant = w.formRelevant !== false;
   const atAgency = w.integrationLocation === "agentur" || w.caretaker === "agentur";
-  // L-17: „✓ passt" erst, wenn Pflichtfelder sitzen (spiegelt submit). „Nein" = sofort fertig.
   const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
-  const wMissing: string[] = !formRelevant
-    ? []
-    : [
-        ...(w.integrationLocation ? [] : ["wer Ihre Website betreut"]),
-        ...(atAgency && !emailOk(w.agencyEmail) ? ["die E-Mail der Web-Agentur"] : []),
-      ];
-  return (
-    <Detail icon="🌐" title="Ihr Online-Meldeformular" claim="Wie Anfragen von draussen sauber bei Ihnen landen — in Ihrem Look." onBack={onBack} onDone={wMissing.length ? undefined : onDone}>
+  const setW = (patch: Partial<NonNullable<CockpitDraft["wizard"]>>) => update((d) => ({ ...d, wizard: { ...d.wizard, ...patch } }));
+  const isDone = (k: string) => !!draft.stepDone?.[`website_${k}`];
+  const markCard = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`website_${k}`]: true } }));
 
+  type Tone = "ready" | "optional";
+  const CARDS: { key: string; icon: string; title: string; sub: string; tone: Tone; badge: string; render: () => React.ReactNode }[] = [
+    {
+      key: "formular", icon: "💬", title: "Ihr Anfrage-Formular", sub: "Statt E-Mail-Pingpong — eine saubere Anfrage", tone: "ready", badge: "✓ steht",
+      render: () => (
+        <>
+          <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            <span className="text-slate-200">Sofort nutzbar — als Link.</span> Teilen Sie ihn auf Google, Visitenkarte oder per WhatsApp; er funktioniert, ganz ohne Einbau auf der Website. Kunden melden sich rund um die Uhr, jede Meldung landet als <span className="text-slate-200">sauberer Fall</span> im Leitsystem — kein Mail-Chaos.
+          </p>
+          <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            📷 <span className="text-slate-200">Foto vom Schaden</span> automatisch dabei — Sie sehen ihn, bevor Sie hinfahren (richtiges Material, weniger Leerfahrten). Nichts einzustellen.
+          </p>
+          <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
+            👁 Ihr gebrandetes Formular ansehen
+          </a>
+          <Disclosure summary="Ich möchte gar kein Online-Formular">
+            <RadioGroup value={formRelevant ? "ja" : "nein"} onChange={(val) => setW({ formRelevant: val === "ja" })}
+              options={[
+                { value: "ja", label: "Doch — Anfragen sollen online reinkommen" },
+                { value: "nein", label: "Nein — Lisa am Telefon + Leitsystem genügen mir", hint: "Wir lassen das Formular weg. Jederzeit wieder einschaltbar." },
+              ]} />
+            {!formRelevant ? <p className="mt-2 text-[11px] leading-relaxed text-slate-400">Alles klar — kein Online-Formular. Ihre Anfragen laufen über Lisa + Leitsystem. Dieser Strang ist damit fertig.</p> : null}
+          </Disclosure>
+        </>
+      ),
+    },
+    {
+      key: "kategorien", icon: "🧩", title: "Womit Kunden starten", sub: "Die Auswahl im Formular", tone: "ready", badge: "✓ vorbereitet",
+      render: () => (
+        <>
+          <p className="text-xs leading-relaxed text-slate-400">Die ersten drei sind aus Ihrem Gewerk, die letzten drei Standard. Tippen zum Ändern.</p>
+          <div className="space-y-2">
+            {cats.map((c: WizardCategory, i: number) => (
+              <div key={i} className="flex items-center gap-2">
+                <TextInput value={c.label} disabled={c.fixed}
+                  onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
+                {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+              </div>
+            ))}
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "website", icon: "🌐", title: "Aufs Ihre Website bringen", sub: "Optional — blockt den Start nicht", tone: "optional", badge: "⚪ optional",
+      render: () => (
+        <>
+          <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            Zum <span className="text-slate-200">Starten nicht nötig</span> — das Formular läuft schon als Link. Wenn Sie wollen, binden wir es <span className="text-slate-200">fest auf Ihrer Website</span> ein.
+          </p>
+          <Field label="Wer betreut Ihre Website?">
+            <RadioGroup value={w.integrationLocation} onChange={(val) => setW({ integrationLocation: val })}
+              options={[
+                { value: "intern", label: "Wir selbst", hint: "Sie bekommen den fertigen Einbau-Schnipsel + Foto-Anleitung." },
+                { value: "agentur", label: "Eine Web-Agentur", hint: "Wir schicken der Agentur die fertige Anleitung." },
+              ]} />
+          </Field>
+          {atAgency ? (
+            <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die Anleitung schicken können, brauchen wir deren Kontakt.</p>
+              <Field label="Name der Web-Agentur">
+                <TextInput placeholder="z. B. Muster Web GmbH" value={w.agencyName ?? ""} onChange={(e) => setW({ agencyName: e.target.value })} />
+              </Field>
+              <Field label="E-Mail der Agentur">
+                <TextInput type="email" placeholder="kontakt@agentur.ch" value={w.agencyEmail ?? ""} onChange={(e) => setW({ agencyEmail: e.target.value })} />
+              </Field>
+              {!emailOk(w.agencyEmail) ? <p className="text-[11px] leading-relaxed text-slate-400">Ohne E-Mail können wir die Anleitung später nicht direkt schicken — Sie können sie aber jederzeit nachreichen.</p> : null}
+            </div>
+          ) : null}
+          <Field label="Haben Sie schon ein Formular auf der Website?">
+            <RadioGroup value={w.formMode} onChange={(val) => setW({ formMode: val })}
+              options={[
+                { value: "ersetzen", label: "Ja — das neue ersetzt das alte" },
+                { value: "ergaenzen", label: "Es kommt ergänzend dazu" },
+              ]} />
+          </Field>
+        </>
+      ),
+    },
+  ];
+
+  const ORDER = formRelevant ? ["formular", "kategorien", "website"] : ["formular"];
+  const visible = ORDER.map((k) => CARDS.find((c) => c.key === k)!);
+  const doneN = visible.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === visible.length;
+
+  return (
+    <Detail icon="🌐" title="Online-Anfragen" claim="Statt E-Mail-Pingpong — eine saubere Anfrage." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Online-Anfragen sind startklar">
       <PainHint items={[
         { pain: "Anfragen kommen nachts oder am Wochenende", relief: "Das Formular nimmt sie rund um die Uhr auf — Sie sehen sie am Morgen." },
-        { pain: "Kunden wissen nicht, was sie überhaupt angeben sollen", relief: "Geführte Fragen + Foto vom Schaden — Sie haben alles, bevor Sie hinfahren." },
+        { pain: "Mail-hin-und-her, bis eine Anfrage komplett ist", relief: "Geführte Fragen + Foto → eine saubere Anfrage, alles am selben Ort." },
       ]} />
 
-      {/* Punkt 1 — harter Gate: spielt das Formular überhaupt eine Rolle? */}
-      <Section n={1} icon="🧭" title="Spielt das Online-Meldeformular für Sie eine Rolle?" lead="Manche Betriebe wollen nur Lisa am Telefon und ihr Leitsystem — ganz ohne Online-Formular. Völlig in Ordnung.">
-        <RadioGroup value={w.formRelevant === false ? "nein" : "ja"}
-          onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formRelevant: val === "ja" } }))}
-          options={[
-            { value: "ja", label: "Ja — Anfragen sollen auch online reinkommen", hint: "Kunden melden sich rund um die Uhr per Formular, alles landet im Leitsystem." },
-            { value: "nein", label: "Nein — Telefon (Lisa) + Leitsystem genügen mir", hint: "Wir lassen das Online-Formular weg. Sie können es hier jederzeit wieder einschalten." },
-          ]} />
-        {!formRelevant ? (
-          <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-            Alles klar — wir richten <span className="text-slate-200">kein Online-Formular</span> ein. Ihre Anfragen laufen über <span className="text-slate-200">Lisa am Telefon</span> und Ihr <span className="text-slate-200">Leitsystem</span>. Dieser Strang ist damit fertig — tippen Sie unten auf „✓ passt&quot;.
-          </p>
-        ) : null}
-      </Section>
+      <p className="text-sm leading-relaxed text-slate-200">
+        Tippen Sie eine Karte an. <span className="font-semibold" style={{ color: GOLD }}>✓ steht</span> = nur kurz bestätigen · <span className="font-semibold text-white">⚪ optional</span> = nicht nötig zum Starten.
+      </p>
 
-      {formRelevant ? (
-        <>
-          {/* Punkt 2 — Anliegen-Kategorien */}
-          <Section n={2} icon="🧩" title="Anliegen-Kategorien" lead="Womit Kunden im Formular starten. Die ersten drei sind Ihre, die letzten drei Standard — tippen zum Ändern.">
-            <div className="space-y-2">
-              {cats.map((c: WizardCategory, i: number) => (
-                <div key={i} className="flex items-center gap-2">
-                  <TextInput value={c.label} disabled={c.fixed}
-                    onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, categories: (d.wizard?.categories ?? cats).map((x, j) => j === i ? { ...x, label: e.target.value, value: e.target.value } : x) } }))} />
-                  {c.fixed ? <span className="text-[10px] text-slate-500">fix</span> : null}
+      <div className="space-y-2.5">
+        {visible.map((c) => {
+          const expanded = openCard === c.key;
+          const done = isDone(c.key);
+          const badgeTone: "ready" | "optional" | "done" = done ? "done" : c.tone;
+          const badgeLabel = done ? "✓ bestätigt" : c.badge;
+          return (
+            <div key={c.key} className="overflow-hidden rounded-xl border bg-white/[0.03]" style={{ borderColor: done ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
+              <button type="button" onClick={() => setOpenCard(expanded ? null : c.key)} aria-expanded={expanded}
+                className="flex w-full items-start gap-3 px-4 py-4 text-left transition hover:bg-white/[0.03]">
+                <span className="mt-0.5 text-2xl leading-none">{c.icon}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-start justify-between gap-2">
+                    <span className="text-[15px] font-semibold leading-snug text-white">{c.title}</span>
+                    <span className="mt-0.5 shrink-0 text-lg leading-none text-slate-500 transition-transform" style={{ transform: expanded ? "rotate(90deg)" : "none" }}>›</span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-400">{c.sub}</span>
+                  <span className="mt-2 block"><StatusBadge tone={badgeTone} label={badgeLabel} /></span>
+                </span>
+              </button>
+              {expanded ? (
+                <div className="space-y-4 border-t border-white/10 px-4 py-4">
+                  <LisaHelp text={WEB_CARD_AUDIO[c.key]} />
+                  {c.render()}
+                  <button type="button" onClick={() => { markCard(c.key); setOpenCard(null); }}
+                    className="rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+                    {done ? "✓ Gespeichert — zuklappen" : c.tone === "optional" ? "✓ Gesehen — weiter" : "✓ Passt so — bestätigen"}
+                  </button>
                 </div>
-              ))}
+              ) : null}
             </div>
-          </Section>
-
-          {/* Punkt 3 — Fotos vom Schaden */}
-          <Section n={3} icon="📷" title="Fotos vom Schaden" lead="Ein stiller Helfer, der Ihnen Leerfahrten spart.">
-            <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-              Ihre Kunden können schon beim Melden <span className="text-slate-200">Fotos anhängen</span> — und nach der Aufnahme per Link weitere nachreichen. So sehen Sie den Schaden, <span className="text-slate-200">bevor Sie hinfahren</span>: richtiges Material dabei, weniger Leerfahrten. Nichts einzustellen — läuft automatisch.
-            </p>
-          </Section>
-
-          {/* Punkt 4 — Integration (der wichtigste): wie kommt das Formular auf die Website? */}
-          <Section n={4} icon="🔌" title="So binden wir das Formular ein" lead="Der wichtigste Punkt: Damit wir das Formular sauber auf Ihrer Website verankern, brauchen wir kurz, wie das bei Ihnen läuft.">
-            <Field label="Wer betreut Ihre Website?">
-              <RadioGroup value={w.integrationLocation} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, integrationLocation: val } }))}
-                options={[
-                  { value: "intern", label: "Wir selbst", hint: "Wir haben Zugriff auf unsere Website und können das Formular selbst verankern." },
-                  { value: "agentur", label: "Eine Web-Agentur", hint: "Eine Agentur betreut unsere Website — sie verankert das Formular für uns." },
-                ]} />
-            </Field>
-
-            {atAgency ? (
-              <div className="space-y-3 rounded-lg border border-white/10 bg-white/5 p-3">
-                <p className="text-xs leading-relaxed text-slate-300">Damit wir Ihrer Agentur die <span className="text-slate-200">fertige Einbau-Anleitung</span> direkt schicken können, brauchen wir deren Kontakt — sonst bleibt es liegen.</p>
-                <Field label="Name der Web-Agentur">
-                  <TextInput placeholder="z. B. Muster Web GmbH" value={w.agencyName ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyName: e.target.value } }))} />
-                </Field>
-                <Field label="E-Mail der Agentur">
-                  <TextInput type="email" placeholder="kontakt@agentur.ch" value={w.agencyEmail ?? ""} onChange={(e) => update((d) => ({ ...d, wizard: { ...d.wizard, agencyEmail: e.target.value } }))} />
-                </Field>
-              </div>
-            ) : null}
-
-            <Field label="Haben Sie schon ein Kontakt- oder Meldeformular auf der Website?">
-              <RadioGroup value={w.formMode} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, formMode: val } }))}
-                options={[
-                  { value: "ersetzen", label: "Ja — das neue ersetzt das alte", hint: "Wir lösen Ihr bisheriges Formular ab, damit alles an einem Ort landet." },
-                  { value: "ergaenzen", label: "Es kommt ergänzend dazu", hint: "Ihr bestehendes Formular bleibt, das neue kommt zusätzlich dazu." },
-                ]} />
-            </Field>
-
-            <Field label="Wer kümmert sich um den Einbau?">
-              <RadioGroup value={w.caretaker} onChange={(val) => update((d) => ({ ...d, wizard: { ...d.wizard, caretaker: val } }))}
-                options={[
-                  { value: "wir", label: "FlowSight — machen wir für Sie", hint: "Wir verankern das Formular, Sie müssen nichts tun." },
-                  { value: "betrieb", label: "Wir selbst im Betrieb", hint: "Sie bekommen den fertigen Einbau-Schnipsel + Anleitung." },
-                  { value: "agentur", label: "Unsere Web-Agentur", hint: "Wir schicken der Agentur die fertige Anleitung." },
-                ]} />
-            </Field>
-
-            <a href="#" onClick={(e) => e.preventDefault()} className="block rounded-lg border border-dashed border-white/20 px-3 py-2 text-center text-sm text-slate-300">
-              👁 Ihr gebrandetes Formular ansehen (Vorschau)
-            </a>
-          </Section>
-        </>
-      ) : null}
+          );
+        })}
+      </div>
 
       <NotesField value={draft.notes?.website ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, website: val } }))} />
-      {wMissing.length ? (
-        <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Strang fertig ist, fehlt noch: {wMissing.join(", ")}.</p>
-      ) : null}
     </Detail>
   );
 }
