@@ -94,7 +94,12 @@ Stern 6 ist erfolgreich, **wenn der Test wowt → Conversion** (Zahlung kommt er
 ## Ist-Cockpit = Ersatzteillager (Gold behalten)
 80/20-Framing · **progressiver Lisa-Avatar** (Konstellation) · „nichts live bis Freigabe"-Vertrauen · „geht direkt an Gunnar"-Notizen · **Lisa-Grenzen-Beruhigung** (nie Preise/Diagnose/Termin/Garantie) · `PainHint` „Kennen Sie das?" · Autosave · **Freigabe → Founder-Review → gemeinsam live** (Stern-6-Realität). **Raus/neu:** Über-Dichte, „Freischalten"-Post-Kauf-Framing → Gratis-Test-Reframe, leerer „Vor Ort"-Strang, Technik-Kram ohne Default+Bild-Hilfe.
 
-## Offen / nächste Schritte — ✅ Design komplett, nur noch Bau
+## Bau-Fortschritt
+- **2026-06-30 — Strang 1 (Lisa) gebaut** (`CockpitApp.tsx`): radiale Konstellation → **vertikale Karten-Liste** (Schablone), default-first-Plaketten **„✓ steht"/„✓ aus Website"/„○ braucht Sie"/„✓ bestätigt"**, **Hochdeutsch-Schutz** an jedem Lisa-spricht-Feld (Begrüssung · Wissen · Preis-Antwort · Ferien), **„kleine Lisa"-Audio-Platzhalter** pro Karte (Gist lesbar bis Audio produziert), **Sicherheitsnetz-Reframe** + **Foto-Guide-Platzhalter** im Telefonie-Schritt, **„nie besetzt — 2. Lisa"**-Zeile. Avatar erwacht Karte um Karte. Datenvertrag (draft/autosave/submit) unverändert.
+- **2026-06-30 — Mobile-Vorschau** `/aufbau/vorschau` (Demo „Muster Sanitär AG", kein DB-Eintrag, `preview`-Flag schaltet jedes Speichern/Senden ab) → Founder-Review am Handy + Verkaufs-Demo.
+- **Offen am Bau:** Strang 2 (Online-Anfragen) + Leitsystem-Hub + Freigabe nach Schablone angleichen · **Go-live-Prüfung entschärfen** (`submit/route.ts`: `google_review_url` + `staff_admin` aus Pflicht) · echte Audio-/Foto-Guides produzieren.
+
+## Offen / nächste Schritte — ✅ Design komplett, Bau läuft
 1. **Code-Redesign** des Cockpits nach diesem Spec (separater Schritt, Founder-Hoheit). Inkl. **Go-live-Prüfung entschärfen** (Tier) + **leeren „Vor Ort"-Strang raus** + **Gratis-Test-Reframe der Copy**.
 2. **„Kleine-Lisa"-Audio-Clips (pro Abschnitt, Hochdeutsch) + Foto-/Screenshot-Guides** produzieren (Weiterleitung pro Anbieter · Kalender Outlook/Google).
 3. **Hero-Konsistenz:** E-Mail-Versprechen reframen (Formular als Antwort auf Mail-Pingpong) — `HERO_DEMO_SPEC`.

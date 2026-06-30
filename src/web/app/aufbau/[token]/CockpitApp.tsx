@@ -347,7 +347,7 @@ const MSG_DEFAULTS = {
 };
 
 // ── Hauptkomponente ──────────────────────────────────────────────────────────
-export function CockpitApp({ session }: { session: CockpitSession }) {
+export function CockpitApp({ session, preview = false }: { session: CockpitSession; preview?: boolean }) {
   const { token, prefill: pf } = session;
   const init = session.draft ?? {};
   const [view, setView] = useState<View>("overview");
@@ -383,6 +383,9 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const post = useCallback(async (draftPatch: CockpitDraft, progressPatch?: Record<string, boolean>) => {
+    // Vorschau-Modus: nichts an den Server schicken (kein DB-Session) — der Stand
+    // lebt rein im Browser, damit die Betriebe das Cockpit gefahrlos durchklicken können.
+    if (preview) { setSaveState("saved"); return; }
     setSaveState("saving");
     try {
       const res = await fetch(`/api/aufbau/${token}/save`, {
@@ -394,7 +397,7 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
       if (j.progress) setProgress(j.progress);
       setSaveState("saved");
     } catch { setSaveState("error"); }
-  }, [token]);
+  }, [token, preview]);
 
   const update = useCallback((fn: (d: CockpitDraft) => CockpitDraft) => {
     setDraft((prev) => fn(prev));
@@ -405,23 +408,29 @@ export function CockpitApp({ session }: { session: CockpitSession }) {
   const markDone = useCallback((key: string) => {
     const next = { ...draftRef.current, stepDone: { ...draftRef.current.stepDone, [key]: true } };
     setDraft(next);
+    if (preview) setProgress((p) => ({ ...p, [key]: true })); // ohne Server: Fortschritt lokal mitführen
     post(next, { [key]: true });
     setView("overview");
-  }, [post]);
+  }, [post, preview]);
 
   const doneCount = CAPABILITIES.filter((c) => progress[c]).length;
 
   return (
     <div className="flex min-h-dvh flex-col" style={{ background: "radial-gradient(1000px circle at 50% 54%, #18374f 0%, #0b1f33 56%)", color: "#e8eef5" }}>
+      {preview ? (
+        <div className="sticky top-0 z-50 px-4 py-1.5 text-center text-[11px] font-semibold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+          Vorschau · So erleben Ihre Betriebe das Cockpit — Eingaben werden hier nicht gespeichert
+        </div>
+      ) : null}
       <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-10 sm:py-16">
         {view === "overview" && (
-          <Overview token={token} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
+          <Overview token={token} preview={preview} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
         {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
         {view === "website" && <Website pf={pf} draft={draft} update={update} onDone={() => markDone("website")} onBack={() => setView("overview")} />}
         {view === "system" && <SystemNode pf={pf} draft={draft} brandColor={brandColor} update={update} onDone={() => markDone("system")} onBack={() => setView("overview")} />}
-        {view === "freigabe" && <Freigabe token={token} draft={draft} update={update} onBack={() => setView("overview")} companyName={session.company_name} />}
+        {view === "freigabe" && <Freigabe token={token} preview={preview} draft={draft} update={update} onBack={() => setView("overview")} companyName={session.company_name} />}
       </main>
       <footer className="px-4 py-6 text-center text-xs text-slate-500">
         FlowSight · Oberrieden · Kommen Sie nicht weiter? Schreiben Sie Gunnar direkt:{" "}
@@ -438,8 +447,8 @@ function SaveDot({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
 }
 
 // ── Overview = die System-Karte ──────────────────────────────────────────────
-function Overview({ token, brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
-  token: string; brandColor: string; companyName: string; assistantName: string;
+function Overview({ token, preview, brandColor, companyName, assistantName, progress, doneCount, saveState, onOpen }: {
+  token: string; preview: boolean; brandColor: string; companyName: string; assistantName: string;
   progress: Record<string, boolean>; doneCount: number; saveState: "idle" | "saving" | "saved" | "error";
   onOpen: (v: View) => void;
 }) {
@@ -524,9 +533,11 @@ function Overview({ token, brandColor, companyName, assistantName, progress, don
         </button>
         {!allDone ? <p className="mt-2 text-[11px] text-slate-400">Tipp: gehen Sie zuerst die drei Stränge + Ihr Leitsystem durch.</p> : null}
         {/* L-18: PDF-Auszug auch direkt von der Hauptseite ziehbar. */}
-        <p className="mt-5">
-          <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="text-xs font-medium text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-slate-200">📄 Ihren Setup-Stand als PDF sichern</a>
-        </p>
+        {!preview ? (
+          <p className="mt-5">
+            <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="text-xs font-medium text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-slate-200">📄 Ihren Setup-Stand als PDF sichern</a>
+          </p>
+        ) : null}
       </div>
     </>
   );
@@ -574,13 +585,62 @@ function VorOrt({ draft, update, onDone, onBack }: { draft: CockpitDraft; update
   );
 }
 
+// ── Schablone-Bausteine (Stern-6-Neubau: default-first, Lisa-Stimme) ─────────
+/** Status-Plakette: „✓ steht"/„✓ aus Website" (vorbereitet) · „○ braucht Sie" · „✓ bestätigt". */
+function StatusBadge({ tone, label }: { tone: "ready" | "needs" | "done"; label: string }) {
+  const s = tone === "done"
+    ? { bg: "rgba(134,199,154,0.16)", color: "#86c79a" }
+    : tone === "ready"
+      ? { bg: "rgba(200,162,74,0.15)", color: GOLD }
+      : { bg: "rgba(255,255,255,0.08)", color: "#cbd5e1" };
+  return <span className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ backgroundColor: s.bg, color: s.color }}>{label}</span>;
+}
+
+/** „Kleine Lisa" — Sprach-Hilfe pro Abschnitt (≈20 s). Audio folgt; bis dahin steht
+ *  derselbe Wortlaut lesbar da, damit der Schritt sofort verständlich ist (Hilfe, die sitzt). */
+function LisaHelp({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-[#0e2336]/70 px-3 py-2.5">
+      <span className="shrink-0 self-start"><LisaAvatar size={36} stars={5} /></span>
+      <div className="min-w-0">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: GOLD }} title="Sprachhilfe folgt in Kürze">
+          <span className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[8px]" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>▶</span>
+          Lisa erklärt diesen Schritt
+        </span>
+        <p className="mt-1 text-[11px] leading-relaxed text-slate-300">„{text}&quot;</p>
+      </div>
+    </div>
+  );
+}
+
+/** TTS-Schutz: Lisa ist eine deutsche Stimme — was hier steht, spricht sie wörtlich. */
+function HochdeutschGuard({ name }: { name: string }) {
+  return (
+    <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-relaxed text-slate-400">
+      <span style={{ color: GOLD }}>🗣</span>
+      <span>Was Sie hier schreiben, sagt {name} <span className="text-slate-300">wortwörtlich</span> — bitte Hochdeutsch: „Guten Tag&quot; statt „Grüezi&quot; (Schweizer Mundart spricht sie sonst falsch aus).</span>
+    </p>
+  );
+}
+
+// Reihenfolge + Plaketten der Lisa-Karten (Schablone, default-first). „ready" = vorbereitet,
+// nur bestätigen · „needs" = nur der Inhaber weiss es. Audio = Gist der „kleinen Lisa" (Hochdeutsch).
+const LISA_CARD_ORDER = ["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const;
+const LISA_CARD_META: Record<string, { sub: string; tone: "ready" | "needs"; badge: string; audio: string }> = {
+  begruessung: { sub: "Der erste Satz bei jedem Anruf", tone: "ready", badge: "✓ steht", audio: "So melde ich mich. In der Schweiz ist Pflicht, dass ich offen sage, dass ich digital bin. Passt das für Sie, bestätigen Sie einfach." },
+  wissen: { sub: "Aus Ihrer Website vorbereitet", tone: "ready", badge: "✓ aus Website", audio: "Das habe ich aus Ihrer Website vorbereitet. Korrigieren Sie, was nicht stimmt. Je besser ich Sie kenne, desto echter klinge ich." },
+  anruflogik: { sub: "Bei jeder Anruf-Art das Richtige", tone: "ready", badge: "✓ steht", audio: "Ich behandle jeden Anruf passend, und bei einem Notfall alarmiere ich sofort. Alles ist vorbelegt, schauen Sie nur rein, wenn Sie etwas anders möchten." },
+  notfall: { sub: "Notdienst & Erreichbarkeit", tone: "needs", badge: "○ braucht Sie", audio: "Sagen Sie mir, ob Sie einen Notdienst anbieten, dann alarmiere ich die richtige Person. Sonst nehme ich den Fall trotzdem auf." },
+  telefonie: { sub: "Das Sicherheitsnetz für verpasste Anrufe", tone: "needs", badge: "○ braucht Sie", audio: "Ihre Nummer bleibt Ihre Nummer. Wir leiten nur um, was Sie nicht selbst abnehmen. Wählen Sie Ihren Anbieter, dann zeige ich Ihnen die Tastenkombination mit Bild." },
+};
+
 // ── Strang: Lisa ─────────────────────────────────────────────────────────────
 function Lisa({ pf, draft, update, onDone, onBack }: {
   pf: CockpitSession["prefill"]; draft: CockpitDraft;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
-  const [star, setStar] = useState<string | null>(null);
-  const [open, setOpen] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(null); // Wissen-Unterfelder
   const v = draft.voice ?? {};
   const lisaName = (v.assistantName ?? "").trim() || "Lisa";
   const disp = v.dispositions ?? DISPOSITION_DEFAULTS;
@@ -592,10 +652,9 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
   const setV = (patch: Partial<NonNullable<CockpitDraft["voice"]>>) => update((d) => ({ ...d, voice: { ...d.voice, ...patch } }));
   const isDone = (k: string) => !!draft.stepDone?.[`lisa_${k}`];
   const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`lisa_${k}`]: true } }));
-  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
 
-  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit). Stern wird
-  // NUR gold, wenn missing() leer ist — sonst bleibt er offen + Inline-Hinweis.
+  // L-17: Pflichtfelder pro Karte (spiegelt /api/aufbau/[token]/submit). Eine Karte wird
+  // NUR „✓ bestätigt", wenn missing() leer ist — sonst bleibt sie offen + Inline-Hinweis.
   const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
     {
       key: "begruessung", star: `So meldet sich ${lisaName}`, icon: "🗣", title: `So meldet sich ${lisaName}`,
@@ -608,6 +667,7 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
           </Field>
           <Field label="Begrüssung" hint={`Der erste Satz bei jedem Anruf — er macht erkennbar, dass ${lisaName} eine digitale Assistentin ist (in der Schweiz Pflicht).`}>
             <TextArea value={v.greetingText ?? pf.voice.greetingSuggestion} onChange={(e) => setV({ greetingText: e.target.value })} />
+            <HochdeutschGuard name={lisaName} />
           </Field>
         </>
       ),
@@ -618,7 +678,10 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
       missing: () => v.telco?.provider ? [] : ["Ihren Telefonanbieter"],
       render: () => (
         <>
-          <Field label="Ihr Telefonanbieter" hint="Ihre Rufnummer behalten Sie — wir leiten nur weiter, nichts wird gekündigt.">
+          <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            <span className="text-slate-200">Ihre Nummer bleibt Ihre Nummer.</span> {lisaName} ist ein Sicherheitsnetz — sie fängt nur die Anrufe, die Sie gerade <span className="text-slate-200">nicht selbst abnehmen</span>. Sie telefonieren weiter wie bisher; es wird nichts gekündigt und nichts umgestellt.
+          </p>
+          <Field label="Ihr Telefonanbieter" hint="Bestimmt die passende Weiterleitungs-Anleitung — Ihre Rufnummer behalten Sie.">
             <RadioGroup value={v.telco?.provider} onChange={(val) => setV({ telco: { ...v.telco, provider: val } })} options={TELCO_OPTIONS} />
           </Field>
           {v.telco?.provider === "other" ? (
@@ -626,10 +689,14 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
               <TextInput placeholder="z. B. Wingo, Lebara, iWay …" value={v.telco?.otherName ?? ""} onChange={(e) => setV({ telco: { ...v.telco, otherName: e.target.value } })} />
             </Field>
           ) : null}
-          <Field label={`Wann soll ${lisaName} rangehen?`} hint={`Ab wann ein unbeantworteter Anruf zu ${lisaName} läuft.`}>
+          <Field label={`Wann soll ${lisaName} rangehen?`} hint={`Ab wann ein unbeantworteter Anruf zu ${lisaName} läuft. Standard: nach ein paar Mal Klingeln.`}>
             <RadioGroup value={v.pickup} onChange={(val) => setV({ pickup: val })}
               options={(["sofort", "nach_10s", "nach_15s", "nach_20s", "nach_30s"] as const).map((p) => ({ value: p, label: pickupLabel[p] }))} />
           </Field>
+          <div className="flex items-start gap-2.5 rounded-lg border border-dashed border-white/15 px-3 py-2.5 text-[11px] leading-relaxed text-slate-400">
+            <span className="shrink-0 text-base leading-none">📷</span>
+            <span>Sobald Sie Ihren Anbieter gewählt haben, zeigen wir Ihnen die Weiterleitung <span className="text-slate-300">Schritt für Schritt mit Bildern</span> — passend zu {provLabel[v.telco?.provider ?? ""] ?? "Ihrem Anbieter"}. Meist eine kurze Tastenkombination am Telefon, rund 2 Minuten.</span>
+          </div>
           <Disclosure summary="Wie richte ich die Weiterleitung ein?">
             Nach dem Freischalten erhalten Sie von uns die <span className="text-slate-200">genaue, auf {provLabel[v.telco?.provider ?? ""] ?? "Ihren Anbieter"} zugeschnittene Anleitung</span> — meist eine kurze Tastenkombination auf Ihrem Telefon (~2 Minuten). Ihre bisherige Nummer bleibt unverändert; nur nicht angenommene Anrufe übernimmt {lisaName}.
           </Disclosure>
@@ -667,6 +734,7 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
           </div>
           <Field label="Geplante Betriebsferien? (optional)" hint={`z. B. „Betriebsferien 21.7.–4.8.“ — ${lisaName} weist Anrufer dann aktiv darauf hin.`}>
             <TextInput placeholder="Zeitraum oder leer lassen" value={v.vacationNote ?? ""} onChange={(e) => setV({ vacationNote: e.target.value })} />
+            <HochdeutschGuard name={lisaName} />
           </Field>
         </>
       ),
@@ -695,6 +763,7 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
               );
             })}
           </div>
+          <HochdeutschGuard name={lisaName} />
         </>
       ),
     },
@@ -703,12 +772,16 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
       touched: false,
       render: () => (
         <>
-          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — jederzeit änderbar.</p>
+          <p className="text-xs leading-relaxed text-slate-400">Trainieren Sie, was {lisaName} bei welcher Anruf-Art tut. Sinnvoll vorbelegt — Sie schauen nur rein, wenn Sie etwas anders möchten.</p>
           <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
             🛡 <span className="text-slate-200">{lisaName}s feste Grenzen (zu Ihrem Schutz):</span> nie Preise, nie ein verbindlicher Termin, keine Ferndiagnose, keine Garantie.
           </div>
+          <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
+            💪 <span className="text-slate-200">Nie besetzt:</span> Kommen zwei Anrufe gleichzeitig, übernimmt automatisch eine zweite {lisaName} — niemand hört das Besetztzeichen, kein Auftrag geht verloren.
+          </div>
           <Field label={`Was ${lisaName} auf Preisfragen antwortet`} hint="Keine Zahlen nennen — höflich auf eine Besichtigung/Offerte lenken.">
             <TextArea value={v.wissen?.priceDeflect ?? pf.voice.wissen.priceDeflect} onChange={(e) => update((d) => ({ ...d, voice: { ...d.voice, wissen: { ...d.voice?.wissen, priceDeflect: e.target.value } } }))} />
+            <HochdeutschGuard name={lisaName} />
           </Field>
           {DISPOSITION_CARDS.map((c, i) => {
             const k = disp[c.key].korb;
@@ -738,55 +811,85 @@ function Lisa({ pf, draft, update, onDone, onBack }: {
     },
   ];
 
-  // Drill-in: eine Stern-Kategorie im Fokus (Option A „Eintauchen & zurück")
-  if (star) {
-    const cat = CATS.find((c) => c.key === star);
-    if (cat) {
-      const miss = cat.missing?.() ?? [];
-      return (
-        <div className="mx-auto max-w-[680px]">
-          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
-          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
-          <div className="mt-5 space-y-4">{cat.render()}</div>
-          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field
-              label={cat.key === "begruessung" ? "Hinweis (optional)" : `Was läuft bei Ihnen noch, das ${lisaName} unbedingt wissen sollte,`}
-              hint={cat.key === "begruessung" ? undefined : "Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
-            >
-              <TextArea placeholder={cat.key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`lisa_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${cat.key}`]: e.target.value } }))} />
-            </Field>
-          </div>
-          {miss.length > 0 ? (
-            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
-          ) : null}
-          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
-          </button>
-        </div>
-      );
-    }
-  }
-
   const doneN = CATS.filter((c) => isDone(c.key)).length;
   const allDone = doneN === CATS.length;
+
   return (
-    <Detail icon="📞" title={`Ihre ${lisaName}`} claim="Nimmt Anrufe auf, wenn gerade niemand kann." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel={`${lisaName} ist startklar`}>
+    <Detail
+      icon="📞"
+      title={`Bauen wir ${lisaName}`}
+      claim={`Ihre neue Mitarbeiterin am Telefon — sie nimmt jeden Anruf auf, wenn Sie gerade nicht können. Sie heben weiter ab wie immer.`}
+      onBack={onBack}
+      onDone={allDone ? onDone : undefined}
+      doneLabel={`${lisaName} ist startklar`}
+    >
+      {/* Avatar erwacht Karte um Karte — „seine neue Mitarbeiterin anlernen" */}
+      <div className="flex flex-col items-center text-center">
+        <LisaAvatar stars={doneN} />
+        <p className="mt-2 text-sm font-bold text-white">{lisaName}</p>
+        {allDone
+          ? <p className="text-[11px] font-semibold" style={{ color: GOLD }}>★ startklar</p>
+          : <p className="text-[11px] text-slate-400">{doneN} von {CATS.length} bestätigt — {lisaName} erwacht Schritt für Schritt</p>}
+      </div>
+
       <PainHint items={[
         { pain: "Ich bin auf der Baustelle und komme nicht ans Telefon", relief: `${lisaName} nimmt jeden Anruf an — kein Auftrag geht mehr verloren.` },
         { pain: "Ein Lieferant meldet sich (z. B. Bauteil verspätet) oder ein Kunde hat eine Rückfrage", relief: `${lisaName} nimmt die Nachricht auf und meldet sie Ihnen — kein Rückruf geht unter.` },
         { pain: "Werbe- und Spam-Anrufe kosten mich ständig Zeit", relief: `${lisaName} wimmelt Werbung freundlich ab — die kommt gar nicht erst zu Ihnen.` },
       ]} />
 
-      <Constellation
-        center={<LisaAvatar stars={doneN} />}
-        centerLabel={lisaName}
-        awakeLabel="startklar"
-        stars={(["begruessung", "wissen", "anruflogik", "notfall", "telefonie"] as const)
-          .map((k) => CATS.find((c) => c.key === k)!)
-          .map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
-        onOpen={setStar}
-      />
-      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
+      <p className="text-xs leading-relaxed text-slate-400">
+        Das meiste steht schon — bei <span style={{ color: GOLD }}>✓ steht</span> schauen Sie nur kurz drüber und bestätigen. Bei <span className="text-slate-300">○ braucht Sie</span> wissen nur Sie die Antwort. Tippen Sie eine Karte an.
+      </p>
+
+      {/* Vertikale Karten-Liste — eine Metapher, default-first (Schablone) */}
+      <div className="space-y-2.5">
+        {LISA_CARD_ORDER.map((key) => {
+          const c = CATS.find((x) => x.key === key);
+          if (!c) return null;
+          const meta = LISA_CARD_META[key];
+          const expanded = openCard === key;
+          const done = isDone(key);
+          const miss = c.missing?.() ?? [];
+          const badgeTone: "ready" | "needs" | "done" = done ? "done" : meta.tone;
+          const badgeLabel = done ? "✓ bestätigt" : meta.badge;
+          return (
+            <div key={key} className="overflow-hidden rounded-xl border bg-white/[0.03]" style={{ borderColor: done ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
+              <button type="button" onClick={() => setOpenCard(expanded ? null : key)} aria-expanded={expanded}
+                className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-white/[0.03]">
+                <span className="text-lg leading-none">{c.icon}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-white">{c.title}</span>
+                  <span className="block text-[11px] text-slate-400">{meta.sub}</span>
+                </span>
+                <StatusBadge tone={badgeTone} label={badgeLabel} />
+                <span className="text-slate-500 transition-transform" style={{ transform: expanded ? "rotate(90deg)" : "none" }}>›</span>
+              </button>
+              {expanded ? (
+                <div className="space-y-4 border-t border-white/10 px-4 py-4">
+                  <LisaHelp text={meta.audio} />
+                  {c.render()}
+                  <div className="rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
+                    <Field
+                      label={key === "begruessung" ? "Hinweis an uns (optional)" : `Läuft bei Ihnen etwas anders, das ${lisaName} wissen sollte? (optional)`}
+                      hint={key === "begruessung" ? "Geht direkt an Gunnar." : "Ihre Besonderheiten, Ausnahmen, typischen Fälle. Je mehr wir wissen, desto runder läuft es ab Tag 1 — geht direkt an Gunnar."}
+                    >
+                      <TextArea placeholder={key === "begruessung" ? "" : (LISA_STAR_NOTE_PLACEHOLDER[key] ?? "")} value={draft.starNotes?.[`lisa_${key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`lisa_${key}`]: e.target.value } }))} />
+                    </Field>
+                  </div>
+                  {miss.length > 0 ? (
+                    <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Punkt sitzt, fehlt noch: {miss.join(", ")}.</p>
+                  ) : null}
+                  <button type="button" disabled={miss.length > 0} onClick={() => { markStar(key); setOpenCard(null); }}
+                    className="rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+                    {done ? "✓ Gespeichert — zuklappen" : meta.tone === "ready" ? "✓ Passt so — bestätigen" : "✓ Dieser Punkt passt"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
 
       <NotesField value={draft.notes?.voice ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, voice: val } }))} />
     </Detail>
@@ -1146,8 +1249,8 @@ const MISSING_LABEL: Record<string, string> = {
   telco: "Ihr Telefonanbieter (Lisa-Strang)", emergency_contact: "Notfall-Empfänger (Name) — bei aktivem Notdienst", agency_email: "E-Mail der Web-Agentur",
 };
 
-function Freigabe({ token, draft, update, onBack, companyName }: {
-  token: string; draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onBack: () => void; companyName: string;
+function Freigabe({ token, preview, draft, update, onBack, companyName }: {
+  token: string; preview: boolean; draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onBack: () => void; companyName: string;
 }) {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [missing, setMissing] = useState<string[]>([]);
@@ -1158,6 +1261,7 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
   });
   const submit = async () => {
     setState("sending"); setMissing([]);
+    if (preview) { setState("sent"); return; } // Vorschau: nur den Abschluss-Screen zeigen, nichts senden
     try {
       const res = await fetch(`/api/aufbau/${token}/submit`, { method: "POST" });
       if (res.status === 422) { const j = await res.json(); setMissing(j.missing ?? []); setState("idle"); return; }
@@ -1169,8 +1273,10 @@ function Freigabe({ token, draft, update, onBack, companyName }: {
   if (state === "sent") {
     return (
       <Detail icon="🎉" title="Geschafft." onBack={onBack}>
-        <p className="text-sm text-slate-300">Sie haben {companyName} aufgebaut. Gunnar schaut es kurz durch und meldet sich — dann gehen Sie live. Nichts ist verloren.</p>
-        <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="mt-4 inline-block rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>📄 Ihr Setup als PDF sichern</a>
+        <p className="text-sm text-slate-300">Sie haben {companyName} aufgebaut. Gunnar schaut es kurz durch und meldet sich — dann gehen Sie gemeinsam live. Nichts ist verloren.</p>
+        {!preview ? (
+          <a href={`/aufbau/${token}/zusammenfassung`} target="_blank" rel="noopener" className="mt-4 inline-block rounded-xl px-5 py-2.5 text-sm font-bold" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>📄 Ihr Setup als PDF sichern</a>
+        ) : null}
       </Detail>
     );
   }
