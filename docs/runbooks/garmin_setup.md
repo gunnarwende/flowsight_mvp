@@ -41,12 +41,29 @@ App-Login (einmalig)       ─► /api/ceo/leben/garmin/connect ─► garmin-au
 3. `GH_DISPATCH_TOKEN`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` sind bereits
    als Vercel-Env bzw. GitHub-Actions-Secrets vorhanden (mobile-parity).
 
-## Scharfschalten (in der App)
-1. `/ceo/leben` → Tab **Running** → **„Mit Garmin verbinden"**: Garmin-E-Mail +
-   Passwort (+ 2-Faktor-Code, falls aktiv) eingeben → „Verbinden".
-   - Startet `garmin-auth.yml`: Login → Token speichern → erster Abruf (~1–2 Min).
-   - Die App lädt den Status danach automatisch nach; deine Läufe erscheinen.
-2. Ab jetzt **automatisch alle 30 Min**. **„Aktualisieren"** = sofortiger Abruf.
+## Wichtig: Garmin drosselt Logins von Server-IPs (429)
+Garmin gibt auf Logins von Rechenzentrums-IPs (GitHub Actions, Vercel) ein
+`429 Too Many Requests`. Darum wird das Token **einmal lokal** auf einer normalen
+Verbindung erzeugt und in die App eingefügt. Der spätere Abruf nutzt eine andere
+Garmin-Schnittstelle (mit Token), die nicht so gedrosselt wird → läuft stabil in CI.
+
+## Scharfschalten (in der App) — Token-Weg (empfohlen)
+1. **Token lokal erzeugen** (eigener Rechner, ~30 Sek):
+   ```
+   pip3 install garth
+   python3 scripts/_ops/garmin_token_local.py
+   ```
+   Garmin-Login eingeben → das Script gibt einen Token-String aus.
+   (Der genaue Befehl steht auch direkt in der App auf der Connect-Karte.)
+2. `/ceo/leben` → Tab **Running** → **„Mit Garmin verbinden"** → Token-String
+   einfügen → **„Token verbinden"**. Speichert das Token in `life_settings.garmin_token`
+   und stösst sofort einen Abruf an.
+3. Ab jetzt **automatisch alle 30 Min**. **„Aktualisieren"** = sofortiger Abruf.
+
+### Fallback: Login via Server (klappt nur ohne 429)
+`POST /api/ceo/leben/garmin/connect` mit `{ email, password, mfa }` löst
+`garmin-auth.yml` aus (garth-Login in CI, mit Retry/Backoff). Funktioniert nur,
+wenn Garmin die Server-IP gerade nicht drosselt — daher zweite Wahl.
 
 ## Verifikation
 - `GET /api/ceo/leben/garmin/status` → `{ connected: true, lastSync, lastCount }`.

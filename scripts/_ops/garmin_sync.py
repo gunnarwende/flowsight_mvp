@@ -20,10 +20,26 @@ Env:
 import os
 import sys
 import json
+import time
 import datetime as dt
 
 import garth
 import requests
+
+
+def _retry(fn, *, tries=4, base=10, label=""):
+    """Wiederholt fn bei transienten Fehlern (429/403/Timeout) mit Backoff."""
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001
+            msg = str(e)
+            transient = any(s in msg for s in ("429", "Too Many Requests", "403", "timed out", "Timeout"))
+            if i == tries - 1 or not transient:
+                raise
+            wait = base * (2 ** i)
+            print(f"… {label}: {msg[:90]} — neuer Versuch in {wait}s ({i + 1}/{tries})", file=sys.stderr)
+            time.sleep(wait)
 
 SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
 SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_SERVICE_KEY")
@@ -93,9 +109,12 @@ def map_activity(a):
 
 
 def fetch_activities(limit):
-    data = garth.connectapi(
-        "/activitylist-service/activities/search/activities",
-        params={"start": 0, "limit": limit},
+    data = _retry(
+        lambda: garth.connectapi(
+            "/activitylist-service/activities/search/activities",
+            params={"start": 0, "limit": limit},
+        ),
+        label="Aktivitäten-Abruf",
     )
     return data or []
 
@@ -125,10 +144,10 @@ def do_login():
         print("✗ GARMIN_EMAIL / GARMIN_PASSWORD fehlen", file=sys.stderr)
         sys.exit(1)
     try:
-        if mfa:
-            garth.login(email, password, prompt_mfa=lambda: mfa)
-        else:
-            garth.login(email, password)
+        _retry(
+            lambda: garth.login(email, password, prompt_mfa=lambda: mfa) if mfa else garth.login(email, password),
+            label="Garmin-Login",
+        )
     except Exception as e:  # noqa: BLE001
         print(f"✗ Garmin-Login fehlgeschlagen: {e}", file=sys.stderr)
         sys.exit(2)

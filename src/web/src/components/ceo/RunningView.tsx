@@ -292,36 +292,47 @@ function ActivityList({ activities }: { activities: Activity[] }) {
   );
 }
 
+const TOKEN_CMD =
+  `pip3 install garth\n` +
+  `python3 -c "import garth,getpass;e=input('Garmin E-Mail: ');p=getpass.getpass('Passwort: ');m=input('2FA-Code (Enter=keiner): ').strip();garth.login(e,p,prompt_mfa=lambda:m) if m else garth.login(e,p);print('\\n=== TOKEN ===');print(garth.client.dumps())"`;
+
 function ConnectCard({ dispatchReady, onConnected }: { dispatchReady: boolean; onConnected: () => void }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mfa, setMfa] = useState("");
+  const [token, setToken] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  const submit = async (e: FormEvent) => {
+  const submitToken = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password || submitting) return;
+    if (token.trim().length < 20 || submitting) return;
     setSubmitting(true);
     setError(null);
     try {
       const res = await fetch("/api/ceo/leben/garmin/connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password, mfa: mfa.trim() }),
+        body: JSON.stringify({ token: token.trim() }),
       });
       if (res.ok) {
-        setPassword("");
-        setMfa("");
+        setToken("");
         onConnected();
       } else {
-        const j = await res.json().catch(() => null);
-        setError(j?.error === "dispatch_failed" ? "Anbindung noch nicht scharf (Workflow/Env)." : "Login konnte nicht gestartet werden.");
+        setError("Token konnte nicht hinterlegt werden.");
       }
     } catch {
-      setError("Login konnte nicht gestartet werden.");
+      setError("Token konnte nicht hinterlegt werden.");
     }
     setSubmitting(false);
+  };
+
+  const copyCmd = async () => {
+    try {
+      await navigator.clipboard.writeText(TOKEN_CMD);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -332,52 +343,54 @@ function ConnectCard({ dispatchReady, onConnected }: { dispatchReady: boolean; o
         </div>
         <h3 className="text-base font-bold text-gray-900">Mit Garmin verbinden</h3>
         <p className="text-xs text-gray-500 mt-1.5 max-w-sm mx-auto">
-          Einmal anmelden – danach landet jeder Lauf automatisch hier. Kein Tippen, keine Screenshots.
+          Einmal ein Token von deiner eigenen Verbindung erzeugen – danach landet jeder Lauf automatisch hier.
         </p>
       </div>
 
       {!dispatchReady && (
         <p className="mt-4 text-[11px] text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
-          Hinweis: Die Server-Anbindung (GH_DISPATCH_TOKEN) ist noch nicht gesetzt – der Login startet erst, wenn sie steht.
+          Hinweis: Die Server-Anbindung (GH_DISPATCH_TOKEN) ist noch nicht gesetzt – der Abruf startet erst, wenn sie steht.
         </p>
       )}
 
-      <form onSubmit={submit} className="mt-4 space-y-3 max-w-sm mx-auto">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Garmin-E-Mail"
-          autoComplete="off"
-          className="w-full text-sm rounded-lg border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gold-500/30"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Garmin-Passwort"
-          autoComplete="off"
-          className="w-full text-sm rounded-lg border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gold-500/30"
-        />
-        <input
-          type="text"
-          value={mfa}
-          onChange={(e) => setMfa(e.target.value)}
-          placeholder="2-Faktor-Code (nur falls aktiv)"
-          inputMode="numeric"
-          autoComplete="off"
-          className="w-full text-sm rounded-lg border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gold-500/30"
+      {/* Anleitung */}
+      <div className="mt-4 max-w-md mx-auto">
+        <p className="text-[11px] font-semibold text-gray-700 mb-1.5">So bekommst du dein Token (einmalig, ~30 Sek):</p>
+        <ol className="text-[11px] text-gray-500 space-y-1 mb-2">
+          <li>1. Auf deinem Computer ein Terminal öffnen.</li>
+          <li>2. Diesen Befehl einfügen, ausführen, Garmin-Login eingeben.</li>
+          <li>3. Den ausgegebenen Token-Text unten einfügen.</li>
+        </ol>
+        <div className="relative">
+          <pre className="text-[10px] bg-navy-950 text-gray-200 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-all">{TOKEN_CMD}</pre>
+          <button
+            onClick={copyCmd}
+            className="absolute top-2 right-2 text-[10px] px-2 py-1 rounded bg-white/10 text-white hover:bg-white/20"
+          >
+            {copied ? "kopiert ✓" : "kopieren"}
+          </button>
+        </div>
+      </div>
+
+      {/* Token einfügen */}
+      <form onSubmit={submitToken} className="mt-4 space-y-3 max-w-md mx-auto">
+        <textarea
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
+          placeholder="Token hier einfügen…"
+          rows={3}
+          className="w-full text-xs rounded-lg border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gold-500/30 resize-none font-mono break-all"
         />
         {error && <p className="text-[11px] text-red-500">{error}</p>}
         <button
           type="submit"
-          disabled={!email.trim() || !password || submitting}
+          disabled={token.trim().length < 20 || submitting}
           className="w-full px-5 py-2.5 rounded-xl bg-navy-800 text-white text-sm font-semibold hover:bg-navy-700 disabled:opacity-40 transition-colors"
         >
-          {submitting ? "Startet…" : "Verbinden"}
+          {submitting ? "Verbinde…" : "Token verbinden"}
         </button>
         <p className="text-[11px] text-gray-400 text-center">
-          Dein Passwort wird nur einmal verwendet, um ein widerrufbares Token zu erzeugen – wir speichern es nicht.
+          Das Token ist widerrufbar (jederzeit „trennen“ oder in den Garmin-Einstellungen) und ersetzt kein dauerhaftes Passwort.
         </p>
       </form>
     </div>
