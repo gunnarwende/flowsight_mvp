@@ -22,8 +22,8 @@ import { AVV_TEXT, AVV_VERSION, AVV_SUBPROCESSORS } from "@/src/lib/cockpit/avv"
 
 const GOLD = "#c8a24a";
 
-type View = "overview" | "vorort" | "lisa" | "website" | "system" | "freigabe";
-const CAPABILITIES = ["vorort", "lisa", "website", "system"] as const;
+type View = "overview" | "lisa" | "website" | "system" | "freigabe";
+const CAPABILITIES = ["lisa", "website", "system"] as const;
 
 // ── UI-Bausteine ─────────────────────────────────────────────────────────────
 const inputCls =
@@ -138,24 +138,6 @@ function PainHint({ items }: { items: { pain: string; relief: string }[] }) {
   );
 }
 
-// ── Konstellation (Welle 3): Knoten als 5-Sterne-Sternbild (Entität in der Mitte) ──
-type StarState = "empty" | "partial" | "done";
-const PENTA = [{ x: 50, y: 15 }, { x: 87, y: 40 }, { x: 72, y: 83 }, { x: 28, y: 83 }, { x: 13, y: 40 }];
-// Innere Endpunkte am Avatar-Rand (gleicher Radius je Strahl → überall gleich, berührt sauber).
-const INNER = [{ x: 50, y: 37 }, { x: 62.6, y: 46.6 }, { x: 57.2, y: 60.8 }, { x: 42.8, y: 60.8 }, { x: 37.4, y: 46.6 }];
-// Äussere Endpunkte: kurz VOR der Stern-Mitte → Strahl endet am Stern-Rand (nicht in der Mitte).
-const OUTER = [{ x: 50, y: 19 }, { x: 83.1, y: 41 }, { x: 69.8, y: 79.7 }, { x: 30.2, y: 79.7 }, { x: 16.9, y: 41 }];
-
-function StarGlyph({ state, size = 30 }: { state: StarState; size?: number }) {
-  const fill = state === "done" ? GOLD : state === "partial" ? "rgba(200,162,74,0.35)" : "transparent";
-  const stroke = state === "empty" ? "rgba(255,255,255,0.4)" : GOLD;
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={state === "done" ? { filter: "drop-shadow(0 0 6px rgba(212,168,67,0.85))" } : undefined}>
-      <path d="M12 2.2l2.85 6.2 6.75.7-5 4.55 1.4 6.65L12 17.6 5.6 20.3 7 13.65l-5-4.55 6.75-.7z" fill={fill} stroke={stroke} strokeWidth="1.3" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 /** Lisa als Team — progressives Gesicht: pro gesetztem Stern erscheint ein Zug
  *  (1★ Haare · 2★ Augen · 3★ Nase · 4★ Mund · 5★ Team mit Headset). Spielerischer
  *  Onboarding-Moment: man baut Lisa Schritt für Schritt zur Kollegin. Kein Headset vorn. */
@@ -207,60 +189,6 @@ function LisaAvatar({ size = 118, stars = 0 }: { size?: number; stars?: number }
   );
 }
 
-function Constellation({ center, centerLabel, awakeLabel, stars, onOpen }: {
-  center: React.ReactNode; centerLabel: string; awakeLabel: string;
-  stars: { key: string; label: string; state: StarState }[];
-  onOpen: (key: string) => void;
-}) {
-  const doneCount = stars.filter((s) => s.state === "done").length;
-  const allDone = doneCount === stars.length;
-  const counter = allDone
-    ? <p className="text-[11px] font-semibold" style={{ color: GOLD }}>★ {awakeLabel}</p>
-    : <p className="text-[11px] text-slate-400">{doneCount}/{stars.length} Sterne</p>;
-  return (
-    <div>
-      {/* Desktop: radiale Konstellation */}
-      <div className="relative mx-auto hidden aspect-square w-full max-w-[420px] sm:block">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
-          {stars.map((s, i) => (
-            <line key={s.key} x1={INNER[i].x} y1={INNER[i].y} x2={OUTER[i].x} y2={OUTER[i].y} stroke={GOLD} strokeWidth="0.4" strokeOpacity={s.state === "done" ? 0.65 : 0.18} />
-          ))}
-        </svg>
-        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-          {center}
-          <p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>
-          {counter}
-        </div>
-        {stars.map((s, i) => {
-          const below = PENTA[i].y > 70; // untere zwei Sterne: Label unterhalb
-          return (
-            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-              className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-transform duration-200 hover:scale-110"
-              style={{ left: `${PENTA[i].x}%`, top: `${PENTA[i].y}%` }}>
-              <span className={`absolute ${below ? "top-[calc(100%+3px)]" : "bottom-[calc(100%+3px)]"} w-[132px] text-center text-[11px] font-medium leading-tight text-slate-200`}>{s.label}</span>
-              <StarGlyph state={s.state} />
-            </button>
-          );
-        })}
-      </div>
-      {/* Handy: Sternen-Leiter */}
-      <div className="sm:hidden">
-        <div className="mb-4 flex flex-col items-center">{center}<p className="mt-2 text-sm font-bold text-white">{centerLabel}</p>{counter}</div>
-        <div className="space-y-2">
-          {stars.map((s) => (
-            <button key={s.key} type="button" onClick={() => onOpen(s.key)}
-              className="flex w-full items-center gap-3 rounded-xl border bg-white/5 px-3 py-2.5 text-left" style={{ borderColor: s.state === "done" ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
-              <StarGlyph state={s.state} size={24} />
-              <span className="flex-1 text-sm text-white">{s.label}</span>
-              <span className="text-slate-500">›</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /** Das FlowSight-Leitsystem-App-Icon (Navy + Gold) — identisch zur Beweis-Seite: nur Quadrat + Punkt. */
 function BrandIcon({ size = 108 }: { size?: number }) {
   return (
@@ -275,8 +203,7 @@ function BrandIcon({ size = 108 }: { size?: number }) {
 }
 
 // ── Strang-Definitionen (für die Karte) ──────────────────────────────────────
-const STRANDS: { key: "vorort" | "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
-  { key: "vorort", icon: "🚪", titel: "Vor Ort", cta: "ansehen", unter: "Fälle, die Sie selbst aufnehmen", nutzen: "Kein Zettel geht verloren" },
+const STRANDS: { key: "lisa" | "website"; icon: string; titel: string; cta: string; unter: string; nutzen: string }[] = [
   { key: "lisa", icon: "📞", titel: "Lisa", cta: "Lisa trainieren", unter: "Ihre Telefon-Assistentin", nutzen: "Anrufe werden aufgenommen und sichtbar gemacht" },
   { key: "website", icon: "🌐", titel: "Online-Anfragen", cta: "Strang öffnen", unter: "Anfragen über Ihr Formular", nutzen: "Rund um die Uhr, ohne Mail-Chaos" },
 ];
@@ -289,14 +216,6 @@ const LISA_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
   notfall: `z. B. „Am Wochenende nur Heizungsausfälle als Notfall", „Samstag bis 12 Uhr besetzt, danach Notdienst"`,
   wissen: `z. B. „Wir machen keine Ölheizungen mehr", „Service-Abo-Kunden haben bei Terminen Vorrang"`,
   anruflogik: `z. B. „Heizungsausfall im Winter immer als Notfall behandeln", „Stammkunde Meier immer direkt an den Chef"`,
-};
-
-// Per-Leitsystem-Stern strang-spezifische Beispiele (R8/L-6). „marke" = minimal (s. Drill-in).
-const SYSTEM_STAR_NOTE_PLACEHOLDER: Record<string, string> = {
-  team: `z. B. „Lehrling Sven darf keine Notfälle übernehmen", „Chef sieht alles, Monteure nur die eigene Region"`,
-  kalender: `z. B. „Wir nutzen keinen Kalender", „Nur der Chef-Kalender ist massgeblich"`,
-  nachrichten: `z. B. „Rechnungen immer CC an die Buchhaltung", „Notfälle zusätzlich aufs Privat-Handy"`,
-  bewertungen: `z. B. „Wir arbeiten nie mit Anbieter X", „Stammkunden fragen wir nicht aktiv nach Bewertung"`,
 };
 
 // ── Dispositions-Karten (mit INFO-WEG) ───────────────────────────────────────
@@ -416,7 +335,6 @@ export function CockpitApp({ session, preview = false }: { session: CockpitSessi
         {view === "overview" && (
           <Overview token={token} preview={preview} brandColor={brandColor} companyName={session.company_name} assistantName={(draft.voice?.assistantName ?? "").trim() || "Lisa"} progress={progress} doneCount={doneCount} saveState={saveState} onOpen={setView} />
         )}
-        {view === "vorort" && <VorOrt draft={draft} update={update} onDone={() => markDone("vorort")} onBack={() => setView("overview")} />}
         {view === "lisa" && <Lisa pf={pf} draft={draft} update={update} onDone={() => markDone("lisa")} onBack={() => setView("overview")} />}
         {view === "website" && <Website pf={pf} draft={draft} update={update} onDone={() => markDone("website")} onBack={() => setView("overview")} />}
         {view === "system" && <SystemNode pf={pf} draft={draft} brandColor={brandColor} update={update} onDone={() => markDone("system")} onBack={() => setView("overview")} />}
@@ -466,8 +384,8 @@ function Overview({ token, preview, brandColor, companyName, assistantName, prog
       </div>
 
       {/* 3 Eingangs-Stränge */}
-      <p className="mt-14 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500">Diese drei Eingänge speisen Ihr Leitsystem</p>
-      <div className="mt-4 grid gap-4 sm:grid-cols-3 sm:gap-6">
+      <p className="mt-14 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500">Diese zwei Eingänge speisen Ihr Leitsystem</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 sm:gap-6">
         {STRANDS.map((s) => {
           const done = !!progress[s.key];
           return (
@@ -489,11 +407,11 @@ function Overview({ token, preview, brandColor, companyName, assistantName, prog
         })}
       </div>
 
-      {/* Pfeile: je ein Strang fliesst in den Hub (Desktop 3-spaltig, Handy einer) */}
-      <div className="my-5 hidden sm:grid sm:grid-cols-3 sm:gap-6">
-        {[0, 1, 2].map((i) => (
+      {/* Pfeile: je ein Strang fliesst in den Hub (Desktop 2-spaltig, Handy einer) */}
+      <div className="my-5 hidden sm:grid sm:grid-cols-2 sm:gap-6">
+        {[0, 1].map((i) => (
           <div key={i} className="text-center text-2xl" style={{ color: `${GOLD}99` }}>
-            <span className="inline-block" style={{ transform: i === 0 ? "rotate(-32deg)" : i === 2 ? "rotate(32deg)" : "none" }}>↓</span>
+            <span className="inline-block" style={{ transform: i === 0 ? "rotate(-22deg)" : "rotate(22deg)" }}>↓</span>
           </div>
         ))}
       </div>
@@ -557,21 +475,6 @@ function NotesField({ value, onChange }: { value: string; onChange: (v: string) 
     <Field label="Ihre Hinweise an uns (optional)" hint="Was sollen wir wissen, das oben nicht passt? Geht direkt an Gunnar.">
       <TextArea value={value} onChange={(e) => onChange(e.target.value)} placeholder="z. B. Besonderheiten, Wünsche, Ausnahmen …" />
     </Field>
-  );
-}
-
-// ── Strang: Vor Ort ──────────────────────────────────────────────────────────
-function VorOrt({ draft, update, onDone, onBack }: { draft: CockpitDraft; update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void }) {
-  return (
-    <Detail icon="🚪" title="Vor Ort & manuell" claim="Anliegen, die Sie selbst auf der Baustelle aufnehmen." onBack={onBack} onDone={onDone} doneLabel="Passt — bestätigen">
-      <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-sm text-slate-300">
-        Sie können jederzeit selbst einen Fall im Leitsystem erfassen — z. B. direkt beim Kunden. Nichts weiter einzustellen.
-      </p>
-      <PainHint items={[
-        { pain: "Beim Kunden schnell etwas notiert — und vergessen, es einzutragen", relief: "Erfassen Sie den Fall direkt im Leitsystem, auch unterwegs vom Handy." },
-      ]} />
-      <NotesField value={draft.notes?.vorort ?? ""} onChange={(v) => update((d) => ({ ...d, notes: { ...d.notes, vorort: v } }))} />
-    </Detail>
   );
 }
 
@@ -1046,24 +949,78 @@ function Website({ pf, draft, update, onDone, onBack }: { pf: CockpitSession["pr
 }
 
 // ── Leitsystem-Knoten (Settings) ─────────────────────────────────────────────
+// Audio-Gist der „kleinen Lisa" pro Leitsystem-Karte (Hochdeutsch).
+const SYSTEM_CARD_AUDIO: Record<string, string> = {
+  nachrichten_ziel: "Hierhin melde ich Ihnen jeden neuen Fall — Ihre Geschäfts-E-Mail. Das ist Ihr Beweis, dass es läuft; die brauche ich von Ihnen.",
+  kundennachrichten: "Diese drei Nachrichten gehen in Ihrem Namen an Ihre Kunden. Schauen Sie kurz drüber — Wortlaut und Kanal bestimmen Sie.",
+  marke: "Ihre Farbe und Ihr Fall-Kürzel, aus Ihrer Website vorbereitet. Korrigieren Sie nur, was nicht passt.",
+  team: "Allein im Betrieb? Dann sind nur Sie die Leitung — mehr braucht es nicht. Wächst Ihr Team, fügen Sie jederzeit Leute hinzu.",
+  kalender: "Optional — Sie können später Ihren Kalender anbinden, dann sehe ich, wann Sie schon belegt sind. Zum Starten nicht nötig.",
+  bewertungen: "Erst einmal aus — das ist Ihr Trumpf für später. Wenn Sie wollen, sammeln wir damit automatisch gute Google-Bewertungen.",
+};
+
 function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
   pf: CockpitSession["prefill"]; draft: CockpitDraft; brandColor: string;
   update: (fn: (d: CockpitDraft) => CockpitDraft) => void; onDone: () => void; onBack: () => void;
 }) {
-  const [star, setStar] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<string | null>(null);
   const staff = draft.staff ?? [];
   const setStaff = (next: StaffMember[]) => update((d) => ({ ...d, staff: next }));
   const rThr = draft.review?.internalThreshold ?? 3;
-  const isDone = (k: string) => !!draft.stepDone?.[`system_${k}`];
-  const markStar = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`system_${k}`]: true } }));
-  const stateOf = (k: string, touched: boolean): StarState => (isDone(k) ? "done" : touched ? "partial" : "empty");
-
-  // L-17: Pflichtfelder pro Stern (spiegelt /api/aufbau/[token]/submit).
   const emailOk = (e?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e ?? "");
-  const CATS: { key: string; star: string; icon: string; title: string; touched: boolean; missing?: () => string[]; render: () => React.ReactNode }[] = [
+  const isDone = (k: string) => !!draft.stepDone?.[`system_${k}`];
+  const markCard = (k: string) => update((d) => ({ ...d, stepDone: { ...d.stepDone, [`system_${k}`]: true } }));
+
+  type Tone = "ready" | "needs" | "optional";
+  // Reihenfolge + Tier nach Neubau-Spec: erst was nur der Inhaber weiss (○), dann vorbereitet (✓),
+  // dann vorab-gesetzt (⚪, optional). Pflicht (submit) NUR „Wohin Fälle".
+  const CARDS: { key: string; icon: string; title: string; sub: string; tone: Tone; badge: string; missing: () => string[]; render: () => React.ReactNode }[] = [
     {
-      key: "marke", star: "Marke", icon: "🎨", title: "Ihre Marke",
-      touched: !!(draft.branding?.brandColor || draft.branding?.caseIdPrefix),
+      key: "nachrichten_ziel", icon: "📨", title: "Wohin Ihre Fälle gemeldet werden", sub: "Damit Sie jeden Fall sehen", tone: "needs", badge: "○ braucht Sie",
+      missing: () => emailOk(draft.review?.notificationEmail) ? [] : ["die Geschäfts-E-Mail für neue Fälle"],
+      render: () => (
+        <>
+          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail — hier sehen Sie jeden Fall.">
+            <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
+          </Field>
+          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Rückruf-Nachrichten zusätzlich per E-Mail an mich (sonst nur in der Nachrichten-Liste)" />
+        </>
+      ),
+    },
+    {
+      key: "kundennachrichten", icon: "💬", title: "Nachrichten an Ihre Kunden", sub: "Gehen in Ihrem Namen raus", tone: "ready", badge: "✓ steht",
+      missing: () => [],
+      render: () => (
+        <>
+          <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
+          <div className="space-y-3.5">
+            <div>
+              <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
+              <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
+              <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}&quot;</p>
+              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}&quot;</p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
+              <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
+            </div>
+          </div>
+          <Field label="SMS-Absender (max. 11 Zeichen)" hint="Erscheint als Absender Ihrer Kunden-SMS.">
+            <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
+          </Field>
+          <p className="text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
+        </>
+      ),
+    },
+    {
+      key: "marke", icon: "🎨", title: "Ihre Marke", sub: "Farbe & Fall-Kürzel", tone: "ready", badge: "✓ aus Website",
+      missing: () => [],
       render: () => (
         <div className="space-y-4">
           <Field label="Ihre Farbe" hint="Trägt jeden Fall, jede SMS und jede E-Mail Ihres Systems.">
@@ -1079,14 +1036,8 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
       ),
     },
     {
-      key: "team", star: "Team", icon: "👥", title: "Ihr Team & Rollen",
-      touched: staff.length > 0,
-      missing: () => {
-        const valid = staff.filter((s) => s?.name?.trim() && emailOk(s.email));
-        if (valid.length === 0) return ["mindestens eine Person mit Name + E-Mail"];
-        if (!valid.some((s) => s.role === "admin")) return ["eine Person als Leitung"];
-        return [];
-      },
+      key: "team", icon: "👥", title: "Ihr Team", sub: "Standard: nur Sie als Leitung", tone: "optional", badge: "⚪ nur Sie",
+      missing: () => [],
       render: () => (
         <>
           <p className="text-xs text-slate-400">Wer arbeitet mit dem Leitsystem? Die Leitung sieht alle Fälle, Techniker nur die eigenen.</p>
@@ -1108,11 +1059,11 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
       ),
     },
     {
-      key: "kalender", star: "Kalender", icon: "📅", title: "Kalender & Verfügbarkeit",
-      touched: draft.calendar?.connect !== undefined,
+      key: "kalender", icon: "📅", title: "Kalender", sub: "Optional — später anbindbar", tone: "optional", badge: "⚪ später",
+      missing: () => [],
       render: () => (
         <div className="space-y-3">
-          <p className="text-xs text-slate-400">Kalender anbinden → beim Terminsetzen sofort sehen, ob jemand schon belegt ist. So überplanen Sie niemanden.</p>
+          <p className="text-xs text-slate-400">Kalender anbinden → beim Terminsetzen sofort sehen, ob jemand schon belegt ist. So überplanen Sie niemanden. Zum Starten nicht nötig.</p>
           <Field label="Kalender anbinden?">
             <RadioGroup value={draft.calendar?.connect === undefined ? undefined : draft.calendar.connect ? "ja" : "nein"}
               onChange={(v) => update((d) => ({ ...d, calendar: { ...d.calendar, connect: v === "ja", provider: v === "nein" ? "none" : d.calendar?.provider } }))}
@@ -1152,45 +1103,8 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
       ),
     },
     {
-      key: "nachrichten", star: "Benachrichtigungen", icon: "📨", title: "Benachrichtigungen & E-Mail",
-      touched: !!draft.review?.notificationEmail,
-      missing: () => emailOk(draft.review?.notificationEmail) ? [] : ["die Geschäfts-E-Mail für neue Fälle"],
-      render: () => (
-        <>
-          <Field label="Wohin sollen neue Fälle gemeldet werden?" hint="Ihre echte Geschäfts-E-Mail.">
-            <TextInput type="email" placeholder={pf.hints.crawledEmail ?? "ihre@firma.ch"} value={draft.review?.notificationEmail ?? ""} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, notificationEmail: e.target.value } }))} />
-          </Field>
-          <Toggle on={!!draft.review?.notifyMessagesByEmail} onChange={(on) => update((d) => ({ ...d, review: { ...d.review, notifyMessagesByEmail: on } }))} label="Rückruf-Nachrichten zusätzlich per E-Mail an mich (sonst nur in der Nachrichten-Liste)" />
-          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-            <p className="text-xs font-semibold text-slate-100">Diese 3 Nachrichten gehen an Ihre Kunden</p>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">Wortlaut und Kanal bestimmen <span className="text-slate-300">Sie</span> — was hier steht, geht so an Ihre Kunden. Sie haben es gesehen, Sie verantworten es.</p>
-            <div className="mt-3 space-y-3.5">
-              <div>
-                <p className="text-xs font-semibold text-white">📩 Empfangsbestätigung <span className="font-normal text-slate-400">· SMS, direkt nach jedem Fall</span></p>
-                <div className="mt-1"><TextArea maxLength={160} value={draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm} onChange={(e) => update((d) => ({ ...d, messages: { ...d.messages, confirmSms: e.target.value.slice(0, 160) } }))} /></div>
-                <p className="mt-0.5 text-[11px] text-slate-500">{(draft.messages?.confirmSms ?? MSG_DEFAULTS.confirm).length}/160 Zeichen · {"{Absender}"} und [Link] setzen wir automatisch ein</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-white">⏰ Termin-Erinnerung <span className="font-normal text-slate-400">· rund 24 h vorher</span></p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.reminder}&quot;</p>
-                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reminderChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reminderChannel: c } }))} /></div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-white">⭐ Bewertungsanfrage <span className="font-normal text-slate-400">· Sie lösen sie aus (1 Klick im Leitsystem)</span></p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">„{MSG_DEFAULTS.review}&quot;</p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">Nicht automatisch — Sie entscheiden pro erledigtem Auftrag. Höchstens 2× pro Kunde, mit 7 Tagen Abstand (kein Spam).</p>
-                <div className="mt-1.5 flex items-center gap-2"><span className="text-[11px] text-slate-400">Kanal:</span><ChannelPick value={draft.messages?.reviewChannel ?? "email"} onChange={(c) => update((d) => ({ ...d, messages: { ...d.messages, reviewChannel: c } }))} /></div>
-              </div>
-            </div>
-            <p className="mt-3 text-[11px] leading-relaxed text-slate-500">💡 SMS kommt sicher an (auch ohne dass jemand Mails liest), kostet aber pro Versand. E-Mail ist gratis. Ihre Wahl — Ihre Verantwortung, dass die Nachricht ankommt.</p>
-          </div>
-        </>
-      ),
-    },
-    {
-      key: "bewertungen", star: "Bewertungen", icon: "⭐", title: "Bewertungen — Ihre Aussenwirkung",
-      touched: !!draft.review?.googleReviewUrl,
-      missing: () => (draft.review?.googleReviewUrl ?? "").trim() ? [] : ["Ihren Google-Bewertungslink (oder Firmenname)"],
+      key: "bewertungen", icon: "⭐", title: "Bewertungen", sub: "Optional — Ihr Trumpf für später", tone: "optional", badge: "⚪ aus",
+      missing: () => [],
       render: () => (
         <>
           <Field label="Ihr Google-Bewertungslink" hint="Unsicher? Tragen Sie einfach Ihren Firmennamen ein — wir finden ihn.">
@@ -1219,58 +1133,72 @@ function SystemNode({ pf, draft, brandColor, update, onDone, onBack }: {
               ? "Der Kunde tippt auf Sterne und wird bei jeder Bewertung direkt zu Ihrem Google-Profil geleitet — alles landet öffentlich."
               : `Der Kunde bekommt einen Link und tippt auf Sterne. Bei mehr als ${rThr} Sternen sieht er „Auf Google bewerten" und wird direkt zu Ihrem Profil geleitet (stärkt Ihre Sichtbarkeit). Bei ${rThr} oder weniger sieht er stattdessen „Was können wir besser machen?" — dieses Feedback bleibt intern bei Ihnen. So sammeln Sie öffentlich 5★ und lernen aus Kritik unter vier Augen.`}
           </Disclosure>
-          <Field label={`SMS-Absender (max. 11 Zeichen)`} hint="Erscheint als Absender Ihrer SMS (z. B. Empfangsbestätigung, Bewertungslink).">
-            <TextInput maxLength={11} value={draft.review?.smsSenderName ?? pf.review.smsSenderName} onChange={(e) => update((d) => ({ ...d, review: { ...d.review, smsSenderName: e.target.value } }))} />
-          </Field>
         </>
       ),
     },
   ];
 
-  if (star) {
-    const cat = CATS.find((c) => c.key === star);
-    if (cat) {
-      const miss = cat.missing?.() ?? [];
-      return (
-        <div className="mx-auto max-w-[680px]">
-          <button type="button" onClick={() => setStar(null)} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white"><span style={{ color: GOLD }}>‹</span> Zurück zum Sternbild</button>
-          <h2 className="mt-4 flex items-center gap-2 text-xl font-bold text-white"><span>{cat.icon}</span>{cat.title}</h2>
-          <div className="mt-5 space-y-4">{cat.render()}</div>
-          <div className="mt-5 rounded-xl border border-dashed p-3" style={{ borderColor: `${GOLD}44` }}>
-            <Field
-              label={cat.key === "marke" ? "Hinweis (optional)" : "Was läuft bei Ihnen noch, das wir unbedingt wissen sollten,"}
-              hint={cat.key === "marke" ? undefined : "Ihre Besonderheiten, Ausnahmen, Wünsche. Je mehr Sie uns verraten, desto reibungsloser läuft es ab Tag 1 — geht direkt an Gunnar."}
-            >
-              <TextArea placeholder={cat.key === "marke" ? "" : (SYSTEM_STAR_NOTE_PLACEHOLDER[cat.key] ?? "")} value={draft.starNotes?.[`system_${cat.key}`] ?? ""} onChange={(e) => update((d) => ({ ...d, starNotes: { ...d.starNotes, [`system_${cat.key}`]: e.target.value } }))} />
-            </Field>
-          </div>
-          {miss.length > 0 ? (
-            <p className="mt-5 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Stern gold wird, fehlt noch: {miss.join(", ")}.</p>
-          ) : null}
-          <button type="button" disabled={miss.length > 0} onClick={() => { markStar(cat.key); setStar(null); }} className="mt-3 rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
-            {isDone(cat.key) ? "✓ Speichern und zurück" : "✓ Dieser Punkt passt — Stern setzen"}
-          </button>
-        </div>
-      );
-    }
-  }
+  const doneN = CARDS.filter((c) => isDone(c.key)).length;
+  const allDone = doneN === CARDS.length;
 
-  const doneN = CATS.filter((c) => isDone(c.key)).length;
-  const allDone = doneN === CATS.length;
   return (
-    <Detail icon="🤍" title="Ihr Leitsystem — Einstellungen" claim="Bauen Sie Stern für Stern Ihr Leitsystem — das Herz Ihres Betriebs." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
+    <Detail icon="◆" title="Ihr Leitsystem" claim="Das Herz Ihres Betriebs — hier läuft alles zusammen." onBack={onBack} onDone={allDone ? onDone : undefined} doneLabel="Leitsystem ist startklar">
+      <div className="flex flex-col items-center text-center">
+        <BrandIcon size={84} />
+        <p className="mt-3 text-base font-bold text-white">Ihr Leitsystem</p>
+        {allDone
+          ? <p className="text-xs font-semibold" style={{ color: GOLD }}>★ startklar</p>
+          : <p className="text-xs text-slate-400">{doneN} von {CARDS.length} bestätigt</p>}
+      </div>
+
       <PainHint items={[
         { pain: "Zettel, Anrufe und Mails gehen im Alltag unter", relief: "Jeder Fall landet sauber an einem Ort — nichts geht mehr verloren." },
         { pain: "Kunden vergessen den vereinbarten Termin", relief: "Automatische Erinnerung — weniger Leerfahrten, weniger Ärger." },
       ]} />
-      <Constellation
-        center={<span style={{ filter: allDone ? "drop-shadow(0 0 18px rgba(212,168,67,0.7))" : undefined }}><BrandIcon size={96} /></span>}
-        centerLabel="Ihr Leitsystem"
-        awakeLabel="startklar"
-        stars={CATS.map((c) => ({ key: c.key, label: c.star, state: stateOf(c.key, c.touched) }))}
-        onOpen={setStar}
-      />
-      <p className="text-center text-xs text-slate-400">Tippen Sie einen Stern an, füllen Sie ihn aus — er leuchtet gold, wenn er sitzt.</p>
+
+      <p className="text-sm leading-relaxed text-slate-200">
+        Tippen Sie eine Karte an. <span className="font-semibold" style={{ color: GOLD }}>✓ steht</span> = bestätigen · <span className="font-semibold text-white">○ braucht Sie</span> = nur Sie wissen&#39;s · <span className="font-semibold text-white">⚪</span> = vorab gesetzt, optional.
+      </p>
+
+      <div className="space-y-2.5">
+        {CARDS.map((c) => {
+          const expanded = openCard === c.key;
+          const done = isDone(c.key);
+          const miss = c.missing();
+          const badgeTone: "ready" | "needs" | "optional" | "done" = done ? "done" : c.tone;
+          const badgeLabel = done ? "✓ bestätigt" : c.badge;
+          return (
+            <div key={c.key} className="overflow-hidden rounded-xl border bg-white/[0.03]" style={{ borderColor: done ? `${GOLD}55` : "rgba(255,255,255,0.1)" }}>
+              <button type="button" onClick={() => setOpenCard(expanded ? null : c.key)} aria-expanded={expanded}
+                className="flex w-full items-start gap-3 px-4 py-4 text-left transition hover:bg-white/[0.03]">
+                <span className="mt-0.5 text-2xl leading-none">{c.icon}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-start justify-between gap-2">
+                    <span className="text-[15px] font-semibold leading-snug text-white">{c.title}</span>
+                    <span className="mt-0.5 shrink-0 text-lg leading-none text-slate-500 transition-transform" style={{ transform: expanded ? "rotate(90deg)" : "none" }}>›</span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-400">{c.sub}</span>
+                  <span className="mt-2 block"><StatusBadge tone={badgeTone} label={badgeLabel} /></span>
+                </span>
+              </button>
+              {expanded ? (
+                <div className="space-y-4 border-t border-white/10 px-4 py-4">
+                  <LisaHelp text={SYSTEM_CARD_AUDIO[c.key]} />
+                  {c.render()}
+                  {miss.length > 0 ? (
+                    <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-100/90">Damit dieser Punkt sitzt, fehlt noch: {miss.join(", ")}.</p>
+                  ) : null}
+                  <button type="button" disabled={miss.length > 0} onClick={() => { markCard(c.key); setOpenCard(null); }}
+                    className="rounded-xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40" style={{ backgroundColor: GOLD, color: "#1a1a1a" }}>
+                    {done ? "✓ Gespeichert — zuklappen" : c.tone === "needs" ? "✓ Dieser Punkt passt" : "✓ Passt so — bestätigen"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+
       <NotesField value={draft.notes?.system ?? ""} onChange={(val) => update((d) => ({ ...d, notes: { ...d.notes, system: val } }))} />
     </Detail>
   );
