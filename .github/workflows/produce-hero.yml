@@ -1,0 +1,88 @@
+name: Produce Hero
+
+# Gated key-op (Stern 3): erzeugt Hero-Beweis-Seite-Assets.
+# Phase "call" = Lisa+Herr-Brunner Call-Audio via ElevenLabs -> EIN Master-WAV
+# (das einzige noch fehlende Audio-Stück; Founder-VO/Gesicht liegen schon auf Bunny).
+#
+# Vom Handy per Actions -> "Run workflow" auslösbar. Secrets bleiben im Runner,
+# nie in der Sandbox. ERST mit dry_run=true testen (Default), dann scharf.
+#
+# Secrets nötig: ELEVENLABS_API_KEY (call) · BUNNY_STORAGE_API_KEY (--upload).
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "call | screens | montage | proof (nur 'call' implementiert)"
+        required: false
+        default: "call"
+      gewerk:
+        description: "waerme | sanitaer (Anliegen-Variante)"
+        required: false
+        default: "waerme"
+      betrieb:
+        description: "Betriebsname im Lisa-Greeting"
+        required: false
+        default: "Dörfler AG"
+      brunner_voice:
+        description: "ElevenLabs-Voice für Herr Brunner (Platzhalter: gunnar)"
+        required: false
+        default: "gunnar"
+      upload:
+        description: "Master zu Bunny Storage hochladen?"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Nur Plan zeigen, nichts generieren (zuerst true!)"
+        type: boolean
+        default: true
+
+jobs:
+  produce:
+    name: produce-hero
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install web deps
+        run: cd src/web && npm ci
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Produce Hero
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          BUNNY_STORAGE_API_KEY: ${{ secrets.BUNNY_STORAGE_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set +e
+          EXTRA=""
+          [ "${{ inputs.upload }}" = "true" ]  && EXTRA="$EXTRA --upload"
+          [ "${{ inputs.dry_run }}" = "true" ] && EXTRA="$EXTRA --dry-run"
+          node scripts/_ops/produce_hero.mjs \
+            --phase "${{ inputs.phase }}" \
+            --gewerk "${{ inputs.gewerk }}" \
+            --betrieb "${{ inputs.betrieb }}" \
+            --brunner-voice "${{ inputs.brunner_voice }}" \
+            $EXTRA 2>&1 | tee /tmp/hero.log
+          STATUS=${PIPESTATUS[0]}
+          if [ "$STATUS" -ne 0 ]; then
+            echo "::error::produce_hero exit $STATUS — echte Ursache im Log oben."
+          fi
+          exit $STATUS
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-call
+          path: docs/gtm/pipeline/06_video_production/_generated/hero_call/
+          if-no-files-found: ignore

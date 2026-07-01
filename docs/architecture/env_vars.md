@@ -118,6 +118,16 @@ Diese Datei ist eine Liste aller benötigten Env Vars + Herkunft. Keine Werte ei
 - TELEGRAM_BOT_TOKEN -> BotFather (already documented under Telegram CI)
 - TELEGRAM_ALLOWED_USER_ID -> Founder Telegram user ID (whitelist)
 
+## ElevenLabs (Hero/Demo TTS — Stern 3 Pipeline)
+- ELEVENLABS_API_KEY -> ElevenLabs Dashboard → Profile → API Key
+  - Genutzt von `scripts/_ops/audio/_lib/eleven.mjs` (`tts()`), `generate_lisa_tts.mjs`, `produce_hero.mjs` (Hero-Call-Audio Lisa+Brunner).
+  - **Als GitHub Actions Secret gesetzt (2026-07-01)** → `produce-hero.yml` (Mobile-Ops). Lag vorher nur in Vercel/lokal (`src/web/.env.local`).
+
+## Bunny Storage (Hero-Audio-Master + Assets — Stern 3)
+- BUNNY_STORAGE_API_KEY -> Bunny Storage → Zone `flowsight-stern3-backup` → Password (Storage-AccessKey; NICHT das Bunny-**Stream**-Key `BUNNY_API_KEY`/`BUNNY_LIBRARY_ID` von `build_proof_page.mjs`).
+  - Genutzt von `produce_hero.mjs --upload` (PUT/GET auf `storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/…`). Die 42 Founder-Master liegen dort (URLs in `aufnahme/_takes/manifest.json`).
+  - **Als GitHub Actions Secret gesetzt (2026-07-01).** Lokal in `src/web/.env.local` als `BUNNY_STORAGE_PASSWORD`.
+
 ---
 
 ## How to sync env (no drift)
