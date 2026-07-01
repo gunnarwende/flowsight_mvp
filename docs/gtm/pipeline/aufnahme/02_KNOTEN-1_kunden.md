@@ -9,8 +9,8 @@
 ---
 
 ## 🎯 Schnipsel — Satz + mit welcher Überzeugung
-**K1-01** — „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
-→ Ruhig, überzeugt, kein Verkauf. Du fasst zusammen, was der Zuhörer gerade gehört hat, wie eine Feststellung. „ein sauberer Fall" als Landung leicht betont.
+**K1-01** — „Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall."
+→ Ruhig, überzeugt, eine Feststellung — kein Verkauf. Dreier-Reihe fließt, Hauptsatz landet auf „vor Ihren Kunden" (beantwortet die Blamage-Angst direkt). „— auch wenn's mal hektisch zugeht." als kurzer, souveräner Kicker (Schulterzucken, kein Geständnis). „ein sauberer Fall" als Landung leicht betont.
 
 ---
 

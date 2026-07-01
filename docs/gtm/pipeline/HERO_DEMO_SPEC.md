@@ -168,7 +168,8 @@ echte System arbeiten.
 | LISA | „Sehr gern. Auf Wiederhören." |
 
 **VO-Schluss · DU (Stimme über Screen):**
-> „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
+> „Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall."
+> *(Wortlaut 2026-07-01: ganzer Satz statt Fragmenten; „im richtigen Ton vor Ihren Kunden" beantwortet die Blamage-Angst direkt; **universell** — nennt bewusst nichts Anruf-Spezifisches, da die Calls nach Notdienst-Flag wechseln.)*
 
 **Dynamik:** pro Betrieb neu vertont = **alle 3 Begrüßungen** (`[Betrieb]`) · Call-1B-Lisa · Call-2 Kunde-Z2 + Lisa-Z3+Z5 (`[Inhaber]`). Rest = einmal für alle. **Fallback** Inhaber „?": „Herr [Inhaber]" → „der Chef" (Universal-Aufnahme).
 
