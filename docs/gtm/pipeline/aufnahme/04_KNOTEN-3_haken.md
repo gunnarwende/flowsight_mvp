@@ -1,17 +1,15 @@
-# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Aufnahme
+# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Audio-Aufnahme
 
-> **Eine Aufnahme-Einheit.** Du, **Gesicht direkt in die Linse**, 5 Beats. Der eine Knoten, wo der Mensch zurückkommt.
+> **Jetzt nur Audio.** Du sprichst **5 Beats**. Bild (Gesicht in die Linse) = spätere Session — dann läuft dieses Audio im Hintergrund, damit Mimik/Gestik exakt darauf sitzen.
 > **Teil 1** = reiner Sprechtext · **Teil 2** = wie ich es sage.
-> Legende: **[GESICHT]** = Blick in die Linse → **Teleprompter unter der Linse oder frei sprechen, nicht vom Script oben ablesen.**
 
 ## ⭐ Prinzip (über allem)
 **SALES = INHALT × ÜBERZEUGUNG.** Überzeugung ist der Multiplikator. **Zweifel hier:** „Wo ist die Falle? Das ist zu schön, um wahr zu sein." **Deine Überzeugung = Souveränität:** wer den Haken *zuerst selbst* nennt, hat nichts zu verstecken. Ruhig, ehrlich, **keine Unterstellung** — du kippst den Haken zur Stärke (Eigentum + Selektivität).
 
 ---
 
-## 🎙 TEIL 1 — Reiner Sprechtext (vorlesen / verinnerlichen)
+## 🎙 TEIL 1 — Reiner Sprechtext (ablesen, von oben nach unten)
 
-**[GESICHT]**
 „Den Haken sag ich Ihnen lieber selbst."
 „Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist. Das stellen Sie ein. Ihr Betrieb, Ihre Regeln."
 „Und das machen Sie nicht allein. Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram. Am Ende schau ich selbst drüber, dass es passt."
@@ -30,4 +28,7 @@
 
 ---
 
-Vollständiger Zusammenhang + gelockte Begründungen: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ③, gelockt).
+## 📋 Take-Disziplin
+Pro Beat **min. 3 Takes**, ansagen, besten merken. Nach jedem Beat 1 Sek Stille.
+
+*Bild = spätere Session — hier nur Audio.* Wortlaut + Begründungen gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ③).

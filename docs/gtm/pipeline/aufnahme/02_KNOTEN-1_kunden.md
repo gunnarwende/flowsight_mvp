@@ -1,17 +1,16 @@
-# KNOTEN ① — „Und bei *meinen* Kunden?" — Aufnahme (Audio)
+# KNOTEN ① — „Und bei *meinen* Kunden?" — Audio-Aufnahme
 
-> **Eine Aufnahme-Einheit.** Die 3 Anrufe sind 🤖 vorproduziert (Lisa + Kundenstimmen) — **du sprichst NUR den VO-Schluss.**
-> **Teil 1** = dein reiner Sprechtext · **Teil 2** = wie ich es sage · unten der 🤖-Kontext.
-> Legende: **[NUR STIMME]** = reine VO über Screen, ablesen ist perfekt.
+> **Jetzt nur Audio.** Die 3 Anrufe sind 🤖 vorproduziert (Lisa + Kundenstimmen) — **du sprichst NUR den VO-Schluss.** Bild = spätere Session (Audio läuft dann im Hintergrund für die Synchro).
+> **Teil 1** = reiner Sprechtext · **Teil 2** = wie ich es sage · unten 🤖-Kontext.
 
 ## ⭐ Prinzip (über allem)
-**SALES = INHALT × ÜBERZEUGUNG.** Überzeugung ist der Multiplikator. **Zweifel hier:** „Ein Roboter blamiert mich vor *meinen* Kunden." **Deine Überzeugung = Gelassenheit:** du behauptest nicht, dass Lisa gut ist — die drei Anrufe *zeigen* es. Dein Schluss ist nur die ruhige Bestätigung dessen, was der Zuhörer gerade selbst gehört hat.
+**SALES = INHALT × ÜBERZEUGUNG.** Überzeugung ist der Multiplikator. **Zweifel hier:** „Ein Roboter blamiert mich vor *meinen* Kunden." **Deine Überzeugung = Gelassenheit:** du behauptest nicht, dass Lisa gut ist — die drei Anrufe *zeigen* es. Dein Schluss ist die ruhige Bestätigung dessen, was der Zuhörer gerade selbst gehört hat.
 
 ---
 
-## 🎙 TEIL 1 — Reiner Sprechtext (vorlesen)
+## 🎙 TEIL 1 — Reiner Sprechtext (ablesen)
 
-**VO-Schluss [NUR STIMME]**
+**VO-Schluss**
 „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
 
 ---
@@ -23,7 +22,6 @@
 ---
 
 ## 🤖 Kontext — die 3 Anrufe (NICHT von dir, vorproduziert)
-Nur zum Verständnis, worauf dein Schluss antwortet:
 
 **Call 1A — Notfall (mit Notdienst) · Kunde hektisch**
 > LISA: „Guten Tag, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" · KUNDE: „Bei mir steht das Wasser im Keller, ich brauch sofort jemanden!" · LISA: „Verstanden — das hat Vorrang. Ich nehm das gleich auf und geb's sofort als Notfall an den Techniker weiter, jemand meldet sich umgehend bei Ihnen." · KUNDE: „Oh, super — danke!" · LISA: „Sehr gern. Bis gleich, auf Wiederhören."
@@ -34,4 +32,4 @@ Nur zum Verständnis, worauf dein Schluss antwortet:
 **Call 2 — „Der Chef ist nicht da" (universell) · Kunde ruhig**
 > LISA: „Guten Tag, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" · KUNDE: „Guten Tag — ist Herr [Inhaber] grad zu sprechen?" · LISA: „Herr [Inhaber] ist grad auf einem Einsatz unterwegs — aber ich helf Ihnen gern weiter. Worum geht's denn?" · KUNDE: „Es geht um meine Offerte — ich wollt wissen, ob da noch Zusatzkosten auf mich zukommen." · LISA: „Das klärt er am besten direkt mit Ihnen, damit Sie eine verlässliche Antwort kriegen. Ich notier Ihre Frage und geb's ihm weiter — er meldet sich bei Ihnen." · KUNDE: „Alles klar, danke." · LISA: „Sehr gern. Auf Wiederhören."
 
-Vollständiger Zusammenhang + Begründungen: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ①, gelockt).
+Wortlaut + Begründungen gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ①).
