@@ -90,7 +90,7 @@ function getCategories() {
 const REPORTER_NAMES = [
   "Martin Keller", "Monika Wenger", "Andreas Gerber", "Barbara Steiner",
   "Hans Bühler", "Brigitte Baumann", "Franziska Gerber", "Stefan Fischer",
-  "Claudia Huber", "Thomas Meier", "Sandra Schmid", "Peter Brunner",
+  "Claudia Huber", "Thomas Meier", "Sandra Schmid", "Peter Kaufmann",
   "Elisabeth Widmer", "Markus Weber", "Ursula Frei", "Daniel Keller",
   "Ruth Schneider", "René Müller", "Anna Hofer", "Kurt Zimmermann",
   "Heidi Gerber", "Marcel Müller", "Doris Gerber", "Niklaus Baumann",
@@ -314,7 +314,9 @@ async function main() {
     status: "in_arbeit",
     urgency: "notfall",
     source: "voice",
-    reporter_name: "Claudia Brunner",
+    // "Brunner" ist reservierter Hero-Demo-Name (nur der NEU-Phone-Fall) — Notfall
+    // bekommt einen anderen Nachnamen aus der Config (kein Namens-Klon in der Liste).
+    reporter_name: notfallCaseConfig.reporter_name || "Claudia Roth",
     contact_phone: "+41767134096",
     street: "Friesenstrasse",
     house_number: "58",
