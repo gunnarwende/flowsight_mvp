@@ -53,8 +53,9 @@
 → Ruhige Gewissheit, keine Bravour. Kleine Pause davor. Du meinst es.
 
 ### Schluss — ⭐ Beat 3 (das Warum — der Lackmustest)
-**HERO-13** — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken."
+**HERO-13** — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben."
 → **Deutliche Pause davor.** Langsamer, leiser, persönlich. Der heilige Satz. **Du musst es MEINEN, nicht sagen.** So viele Takes wie nötig, bis er echt ist.
+→ „**Genau wie Sie's bis eben nicht gemerkt haben.**" ganz ruhig, **kein Vorwurf** — eine geteilte Wahrheit, die er selbst nickt. Schließt den Hook-Kreis („Sie nicht") und scharniert „bis eben" → „ab jetzt" (HERO-14).
 
 ### Schluss — Beat 4 (das Versprechen)
 **HERO-14** — „Bei Ihnen geht ab jetzt nichts mehr verloren."
