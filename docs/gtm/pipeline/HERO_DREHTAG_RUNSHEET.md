@@ -4,6 +4,13 @@
 > [`HERO_DEMO_SPEC.md`](HERO_DEMO_SPEC.md). Nur Founder-abhängige Aufnahmen (universell,
 > einmal für ALLE Betriebe). Den Anruf (Lisa+Brunner) nimmst du NICHT auf.
 
+## ⭐ Das Prinzip (über allem)
+> **SALES = INHALT × ÜBERZEUGUNG.** Der Inhalt (Script) ist gelockt — er ist der eine Faktor.
+> **Überzeugung ist der Multiplikator.** Ein perfekter Satz ohne Überzeugung = 0. Deshalb ist der
+> Drehtag kein „Ablesen", sondern **Performance.** Vorbild = **Alex Hormozi:** direkt, schnörkellos,
+> **mit Gefühl**, bedacht, clever. Kein Verkäufer-Ton, keine Show — ehrliche Überzeugung, ruhig
+> vorgetragen. **Beat 3 (das Warum) ist der Lackmustest:** klingt er echt, trägt das ganze Video.
+
 ## ✅ Setup-Checkliste (VOR der ersten Klappe — 80 % der Qualität)
 - [ ] **Ton:** Røde NT-USB+ nah (~1 Faustbreite), Pop-Schutz, Pegel testen (Peaks ~ −12 dB, **nie clippen**).
 - [ ] **Raum gedämpft:** Textilien/Decken gegen Hall (klatschen → kein Nachhall).
