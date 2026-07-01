@@ -112,17 +112,17 @@
       "dringlichkeit": "Dringend"
     },
     "phone_demo_case": {
-      "kategorie": "Rohrbruch",
-      "urgency": "dringend",
+      "kategorie": "Wärmepumpe",
+      "urgency": "normal",
       "source": "voice",
-      "reporter_name": "Wende",
+      "reporter_name": "Brunner",
       "reporter_phone": "076 489 89 80",
-      "beschreibung": "Anrufer steht im Keller knöcheltief im Wasser, vermutlich Rohrbruch. Klingelschild: Wende.",
-      "strasse": "Seestrasse",
+      "beschreibung": "Anrufer möchte auf eine Wärmepumpe umstellen und holt gerade Offerten ein. Klingelschild: Brunner.",
+      "strasse": "Bahnhofstrasse",
       "hausnummer": "14",
-      "stadt": "Oberrieden",
-      "plz": "8942",
-      "dringlichkeit": "Dringend"
+      "stadt": "Frauenfeld",
+      "plz": "8500",
+      "dringlichkeit": "Normal"
     },
     "notfall_case": {
       "kategorie": "Boiler",

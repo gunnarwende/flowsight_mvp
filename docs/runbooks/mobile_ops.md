@@ -30,6 +30,7 @@ Ergebnis kommt server-seitig zurück (Telegram-Alert / Action-Log / ggf. PR-Komm
 | BigBen Voice-Health | `bigben-check.yml` | `to_number`, `fetch_limit` | |
 | BigBen Calls syncen / Voice refresh | `bigben-sync-calls.yml` · `bigben-voice-daily.yml` | — | |
 | **Hero-Assets bauen** (Stern 3) | `produce-hero.yml` | `phase` (call), `gewerk` (waerme/sanitaer), `betrieb`, `brunner_voice`, `upload`, `dry_run` | Phase `call` = Lisa+Brunner-Call-Audio via **ElevenLabs** → Master-WAV (+ optional Bunny-Upload). **Erst `dry_run=true`!** Artefakt „hero-call" im Run. `screens/montage/proof` brauchen erst Founder-Gesichts-Footage. |
+| **Hero-Demo-Fall seeden** (Stern 3) | `seed-hero.yml` | `slug` (doerfler-ag), `confirm` | Setzt den Hero-Fall (Brunner · Wärmepumpe · Frauenfeld). **⚠️ DESTRUKTIV** (löscht+reseedet alle Fälle des Tenants). Default = **Preview**; echter Lauf nur mit `confirm=true`. |
 
 ## Goldene Regeln (Mobile Live-Ops)
 - **Schreibende/publishende Workflows zuerst im Dry-Run** (z. B. `retell-publish dry_run=true`), Ergebnis lesen, dann scharf.
