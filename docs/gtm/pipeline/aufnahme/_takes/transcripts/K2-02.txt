@@ -1,0 +1,4 @@
+# K2-02  quelle=K2/2.wav
+SHIP-TRUTH (gesprochen): Was reinkommt, steht von selbst drin. Sie tippen nichts ab.
+SKRIPT-SOLL (gelockt):   Was reinkommt, steht von selbst drin — Sie tippen nichts ab.
+match=exakt  sim=1.0  status=ok

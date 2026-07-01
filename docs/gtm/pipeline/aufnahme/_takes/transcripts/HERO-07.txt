@@ -1,0 +1,4 @@
+# HERO-07  quelle=Hero/cold/5.wav
+SHIP-TRUTH (gesprochen): Eingegangen, erfasst, schon beim Team, bevor sie überhaupt davon wussten.
+SKRIPT-SOLL (gelockt):   Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten.
+match=exakt  sim=1.0  status=ok

@@ -1,0 +1,4 @@
+# K4-08  quelle=K4/4.wav
+SHIP-TRUTH (gesprochen): Alles weitere kommt offen auf den Tisch, denn wissen Sie,
+SKRIPT-SOLL (gelockt):   Alles Weitere kommt offen auf den Tisch.
+match=leichte_abweichung  sim=0.824  status=ok

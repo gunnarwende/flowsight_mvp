@@ -1,0 +1,4 @@
+# K3-09  quelle=K3/8.wav
+SHIP-TRUTH (gesprochen): Nicht viele, dafür jeden richtig.
+SKRIPT-SOLL (gelockt):   Nicht viele — dafür jeden richtig.
+match=exakt  sim=1.0  status=ok

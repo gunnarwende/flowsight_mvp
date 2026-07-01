@@ -1,0 +1,4 @@
+# K3-01  quelle=K3/1.wav
+SHIP-TRUTH (gesprochen): Den Haken sage ich Ihnen lieber selbst.
+SKRIPT-SOLL (gelockt):   Den Haken sag ich Ihnen lieber selbst.
+match=leichte_abweichung  sim=0.857  status=ok

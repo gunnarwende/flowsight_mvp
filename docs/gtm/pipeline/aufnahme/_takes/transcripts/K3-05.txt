@@ -1,0 +1,4 @@
+# K3-05  quelle=K3/4.wav
+SHIP-TRUTH (gesprochen): Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand. Eine knappe Stunde ohne Technikram.
+SKRIPT-SOLL (gelockt):   Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram.
+match=leichte_abweichung  sim=0.909  status=ok

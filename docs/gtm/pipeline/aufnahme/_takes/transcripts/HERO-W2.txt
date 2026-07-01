@@ -1,0 +1,4 @@
+# HERO-W2  quelle=Hero/warm/2.wav
+SHIP-TRUTH (gesprochen): Schauen Sie in Ruhe, ob es für Ihren Betrieb passt.
+SKRIPT-SOLL (gelockt):   Schauen Sie in Ruhe, ob's für Ihren Betrieb passt.
+match=exakt  sim=1.0  status=ok

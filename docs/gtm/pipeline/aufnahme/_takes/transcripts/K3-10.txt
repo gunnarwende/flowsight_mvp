@@ -1,0 +1,4 @@
+# K3-10  quelle=K3/9.wav
+SHIP-TRUTH (gesprochen): Den Rest besprechen wir in Ruhe, ehrlich, ohne Druck.
+SKRIPT-SOLL (gelockt):   Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck.
+match=exakt  sim=1.0  status=ok

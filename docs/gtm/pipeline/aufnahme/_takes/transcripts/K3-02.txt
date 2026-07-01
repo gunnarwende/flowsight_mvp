@@ -1,0 +1,4 @@
+# K3-02  quelle=K3/2.wav
+SHIP-TRUTH (gesprochen): Lisa weiß von allein nicht, wie ihr Betrieb tickt, was sie wissen muss, wie sie auf jeden Anruf reagiert oder wann sie für sie erreichbar ist.
+SKRIPT-SOLL (gelockt):   Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist.
+match=exakt  sim=0.98  status=ok

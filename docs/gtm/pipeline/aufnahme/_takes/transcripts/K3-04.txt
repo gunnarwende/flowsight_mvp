@@ -1,0 +1,4 @@
+# K3-04  quelle=K3/4.wav
+SHIP-TRUTH (gesprochen): Und das machen Sie nicht allein.
+SKRIPT-SOLL (gelockt):   Und das machen Sie nicht allein.
+match=exakt  sim=1.0  status=ok

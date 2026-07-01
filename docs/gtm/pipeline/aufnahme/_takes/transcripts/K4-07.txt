@@ -1,0 +1,4 @@
+# K4-07  quelle=K4/4.wav
+SHIP-TRUTH (gesprochen): Das Risiko trage ich, nicht sie.
+SKRIPT-SOLL (gelockt):   Das Risiko trage ich. Nicht Sie.
+match=exakt  sim=1.0  status=ok

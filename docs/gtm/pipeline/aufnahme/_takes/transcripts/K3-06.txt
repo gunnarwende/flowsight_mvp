@@ -1,0 +1,4 @@
+# K3-06  quelle=K3/5.wav
+SHIP-TRUTH (gesprochen): Am Ende schaue ich selbst drüber, dass es passt.
+SKRIPT-SOLL (gelockt):   Am Ende schau ich selbst drüber, dass es passt.
+match=leichte_abweichung  sim=0.889  status=ok

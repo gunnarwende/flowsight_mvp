@@ -1,0 +1,4 @@
+# HERO-08  quelle=Hero/cold/6.wav
+SHIP-TRUTH (gesprochen): Das ist ihr echtes System. Auf ihren Namen.
+SKRIPT-SOLL (gelockt):   Das ist Ihr echtes System — auf Ihren Namen.
+match=exakt  sim=1.0  status=ok

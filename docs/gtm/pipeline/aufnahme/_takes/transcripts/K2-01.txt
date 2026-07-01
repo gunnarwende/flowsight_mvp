@@ -1,0 +1,4 @@
+# K2-01  quelle=K2/1.wav
+SHIP-TRUTH (gesprochen): Das hier ist alles. Eine Liste auf Ihrem Handy.
+SKRIPT-SOLL (gelockt):   Das hier ist alles. Eine Liste, auf Ihrem Handy.
+match=exakt  sim=1.0  status=ok

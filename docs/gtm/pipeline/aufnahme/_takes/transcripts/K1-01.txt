@@ -1,0 +1,4 @@
+# K1-01  quelle=K1/1.wav
+SHIP-TRUTH (gesprochen): Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor ihren Kunden, auch wenn es mal hektisch zugeht. So wird aus jedem Anruf bei ihnen ein sauberer Fall.
+SKRIPT-SOLL (gelockt):   Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall.
+match=exakt  sim=1.0  status=ok

@@ -1,0 +1,4 @@
+# K3-08  quelle=K3/7.wav
+SHIP-TRUTH (gesprochen): Genau darum bin ich persönlich dabei und nehme nur eine Handvoll Betriebe.
+SKRIPT-SOLL (gelockt):   Genau darum bin ich persönlich dabei und nehm nur eine Handvoll Betriebe.
+match=leichte_abweichung  sim=0.917  status=ok

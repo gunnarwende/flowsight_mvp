@@ -1,0 +1,4 @@
+# HERO-06  quelle=Hero/cold/4.wav
+SHIP-TRUTH (gesprochen): Ein vollständiger Auftrag. Angenommen, während Sie weitergearbeitet haben.
+SKRIPT-SOLL (gelockt):   Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben.
+match=exakt  sim=1.0  status=ok

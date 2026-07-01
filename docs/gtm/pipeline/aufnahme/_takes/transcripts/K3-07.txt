@@ -1,0 +1,4 @@
+# K3-07  quelle=K3/6.wav
+SHIP-TRUTH (gesprochen): Und ja, sie wären unter den Ersten.
+SKRIPT-SOLL (gelockt):   Und ja — Sie wären unter den Ersten.
+match=exakt  sim=1.0  status=ok

@@ -1,0 +1,4 @@
+# HERO-10  quelle=Hero/cold/8.wav
+SHIP-TRUTH (gesprochen): Kein IT -Projekt. Sie steuern alles selbst.
+SKRIPT-SOLL (gelockt):   Kein IT-Projekt — Sie steuern alles selbst.
+match=exakt  sim=1.0  status=ok

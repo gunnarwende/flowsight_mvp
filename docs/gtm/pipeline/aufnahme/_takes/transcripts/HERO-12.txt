@@ -1,0 +1,4 @@
+# HERO-12  quelle=Hero/cold/8.wav
+SHIP-TRUTH (gesprochen): Das Risiko trage ich, nicht Sie.
+SKRIPT-SOLL (gelockt):   Das Risiko trage ich, nicht Sie.
+match=exakt  sim=1.0  status=ok

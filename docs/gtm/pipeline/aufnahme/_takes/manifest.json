@@ -1,0 +1,1206 @@
+{
+  "generated": "2026-07-01",
+  "phase": "1 — Founder-Audio Ingest",
+  "model": "faster-whisper large-v3 (de)",
+  "governance": "transkript = ship-truth (tatsaechlich gesprochen); skript_soll = gelockter Skript-Wortlaut",
+  "master_spec": {
+    "lufs": -16.0,
+    "true_peak_dbtp": -1.0,
+    "format": "wav pcm_s24le 48kHz mono"
+  },
+  "source_root": "docs/gtm/pipeline/Aufnahmen",
+  "reference_scripts": "docs/gtm/pipeline/aufnahme/*.md (Wortlaut gelockt: HERO_DEMO_SPEC.md)",
+  "hosting": "Master-WAV -> Bunny Storage (URLs je Schnipsel); Text (Manifest+Transkripte) -> git; Master zusaetzlich lokal fuer Phase-2-Montage (Laptop).",
+  "counts": {
+    "total": 42,
+    "ok": 42,
+    "exakt": 33,
+    "leichte_abweichung": 9
+  },
+  "snippets": [
+    {
+      "id": "HERO-01",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/1.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/1.wav",
+          "start_s": 0.0,
+          "end_s": 4.64
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.64,
+      "dauer_s": 4.64,
+      "lufs": -26.9,
+      "peak_dbtp": -7.8,
+      "transkript": "Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?",
+      "skript_soll": "Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-01.wav",
+      "master_dur_s": 4.64,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-01.wav"
+    },
+    {
+      "id": "HERO-02",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/1.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/1.wav",
+          "start_s": 5.94,
+          "end_s": 7.02
+        }
+      ],
+      "start_s": 5.94,
+      "end_s": 7.02,
+      "dauer_s": 1.08,
+      "lufs": -26.9,
+      "peak_dbtp": -7.8,
+      "transkript": "Sie nicht.",
+      "skript_soll": "Sie nicht.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "per Ohr bestaetigt: 'Sie nicht.' (leise Stelle)",
+      "master_file": "HERO-02.wav",
+      "master_dur_s": 1.08,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -3.6,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-02.wav"
+    },
+    {
+      "id": "HERO-03",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/1.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/1.wav",
+          "start_s": 7.75,
+          "end_s": 12.469
+        }
+      ],
+      "start_s": 7.75,
+      "end_s": 12.469,
+      "dauer_s": 4.719,
+      "lufs": -26.9,
+      "peak_dbtp": -7.8,
+      "transkript": "Und was Sie nicht sehen, geht lautlos zum nächsten.",
+      "skript_soll": "Und was Sie nicht sehen, geht lautlos zum Nächsten.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-03.wav",
+      "master_dur_s": 4.719,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.1,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-03.wav"
+    },
+    {
+      "id": "HERO-04",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/2.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/2.wav",
+          "start_s": 0.0,
+          "end_s": 3.697
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 3.697,
+      "dauer_s": 1.583,
+      "lufs": -26.8,
+      "peak_dbtp": -13.3,
+      "transkript": "Genau das hört jetzt auf.",
+      "skript_soll": "Genau das hört jetzt auf.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-04.wav",
+      "master_dur_s": 1.583,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -2.9,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-04.wav"
+    },
+    {
+      "id": "HERO-05",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/3.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/3.wav",
+          "start_s": 0.0,
+          "end_s": 3.84
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 3.84,
+      "dauer_s": 1.239,
+      "lufs": -29.1,
+      "peak_dbtp": -13.8,
+      "transkript": "Ein neuer Kunde ruft an.",
+      "skript_soll": "Ein neuer Kunde ruft an.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-05.wav",
+      "master_dur_s": 1.239,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -2.5,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-05.wav"
+    },
+    {
+      "id": "HERO-06",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/4.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/4.wav",
+          "start_s": 0.0,
+          "end_s": 7.395
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 7.395,
+      "dauer_s": 4.853,
+      "lufs": -30.2,
+      "peak_dbtp": -15.2,
+      "transkript": "Ein vollständiger Auftrag. Angenommen, während Sie weitergearbeitet haben.",
+      "skript_soll": "Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-06.wav",
+      "master_dur_s": 4.853,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.2,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-06.wav"
+    },
+    {
+      "id": "HERO-07",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/5.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/5.wav",
+          "start_s": 0.0,
+          "end_s": 7.839
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 7.839,
+      "dauer_s": 5.779,
+      "lufs": -28.9,
+      "peak_dbtp": -10.1,
+      "transkript": "Eingegangen, erfasst, schon beim Team, bevor sie überhaupt davon wussten.",
+      "skript_soll": "Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-07.wav",
+      "master_dur_s": 5.779,
+      "master_lufs": -16.1,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-07.wav"
+    },
+    {
+      "id": "HERO-08",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/6.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/6.wav",
+          "start_s": 0.0,
+          "end_s": 5.89
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.89,
+      "dauer_s": 4.327,
+      "lufs": -27.4,
+      "peak_dbtp": -9.4,
+      "transkript": "Das ist ihr echtes System. Auf ihren Namen.",
+      "skript_soll": "Das ist Ihr echtes System — auf Ihren Namen.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-08.wav",
+      "master_dur_s": 4.327,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-08.wav"
+    },
+    {
+      "id": "HERO-09",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/7.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/7.wav",
+          "start_s": 0.0,
+          "end_s": 9.66
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 9.66,
+      "dauer_s": 7.369,
+      "lufs": -28.5,
+      "peak_dbtp": -10.9,
+      "transkript": "Und nicht nur Anrufe, auch was über Ihre Website oder per E-Mail reinkommt, landet hier am selben Ort.",
+      "skript_soll": "Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-09.wav",
+      "master_dur_s": 7.369,
+      "master_lufs": -16.1,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-09.wav"
+    },
+    {
+      "id": "HERO-10",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/8.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/8.wav",
+          "start_s": 0.0,
+          "end_s": 4.16
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.16,
+      "dauer_s": 4.16,
+      "lufs": -28.7,
+      "peak_dbtp": -11.1,
+      "transkript": "Kein IT -Projekt. Sie steuern alles selbst.",
+      "skript_soll": "Kein IT-Projekt — Sie steuern alles selbst.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-10.wav",
+      "master_dur_s": 4.16,
+      "master_lufs": -14.5,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-10.wav"
+    },
+    {
+      "id": "HERO-11",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/8.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/8.wav",
+          "start_s": 4.84,
+          "end_s": 6.22
+        }
+      ],
+      "start_s": 4.84,
+      "end_s": 6.22,
+      "dauer_s": 1.38,
+      "lufs": -28.7,
+      "peak_dbtp": -11.1,
+      "transkript": "Monatlich kündbar?",
+      "skript_soll": "Monatlich kündbar.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-11.wav",
+      "master_dur_s": 1.38,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.1,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-11.wav"
+    },
+    {
+      "id": "HERO-12",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/8.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/8.wav",
+          "start_s": 6.26,
+          "end_s": 11.021
+        }
+      ],
+      "start_s": 6.26,
+      "end_s": 11.021,
+      "dauer_s": 4.761,
+      "lufs": -28.7,
+      "peak_dbtp": -11.1,
+      "transkript": "Das Risiko trage ich, nicht Sie.",
+      "skript_soll": "Das Risiko trage ich, nicht Sie.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-12.wav",
+      "master_dur_s": 4.761,
+      "master_lufs": -15.7,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-12.wav"
+    },
+    {
+      "id": "HERO-13",
+      "group": "Hero/cold",
+      "quelldatei": [
+        "Hero/cold/9.wav",
+        "Hero/cold/10.wav"
+      ],
+      "spans": [
+        {
+          "file": "Hero/cold/9.wav",
+          "start_s": 0.0,
+          "end_s": 11.308
+        },
+        {
+          "file": "Hero/cold/10.wav",
+          "start_s": 0.0,
+          "end_s": 4.672
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.672,
+      "dauer_s": 12.579,
+      "lufs": -30.3,
+      "peak_dbtp": -13.2,
+      "transkript": "Ich habe das gebaut, weil ich gesehen habe, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie sie es bis eben nicht gemerkt haben.",
+      "skript_soll": "Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.929,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "HERO-13.wav",
+      "master_dur_s": 12.579,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-13.wav"
+    },
+    {
+      "id": "HERO-14",
+      "group": "Hero/cold",
+      "quelldatei": "Hero/cold/11.wav",
+      "spans": [
+        {
+          "file": "Hero/cold/11.wav",
+          "start_s": 0.0,
+          "end_s": 7.495
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 7.495,
+      "dauer_s": 4.106,
+      "lufs": -27.1,
+      "peak_dbtp": -12.4,
+      "transkript": "Bei ihnen geht ab jetzt nichts mehr verloren.",
+      "skript_soll": "Bei Ihnen geht ab jetzt nichts mehr verloren.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-14.wav",
+      "master_dur_s": 4.106,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.7,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-14.wav"
+    },
+    {
+      "id": "HERO-W1",
+      "group": "Hero/warm",
+      "quelldatei": "Hero/warm/1.wav",
+      "spans": [
+        {
+          "file": "Hero/warm/1.wav",
+          "start_s": 0.0,
+          "end_s": 6.32
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 6.32,
+      "dauer_s": 3.756,
+      "lufs": -28.5,
+      "peak_dbtp": -11.7,
+      "transkript": "Schön, dass wir telefoniert haben. Wie besprochen.",
+      "skript_soll": "Schön, dass wir telefoniert haben. Wie besprochen.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-W1.wav",
+      "master_dur_s": 3.756,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-W1.wav"
+    },
+    {
+      "id": "HERO-W2",
+      "group": "Hero/warm",
+      "quelldatei": "Hero/warm/2.wav",
+      "spans": [
+        {
+          "file": "Hero/warm/2.wav",
+          "start_s": 0.0,
+          "end_s": 4.786
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.786,
+      "dauer_s": 2.669,
+      "lufs": -29.3,
+      "peak_dbtp": -13.8,
+      "transkript": "Schauen Sie in Ruhe, ob es für Ihren Betrieb passt.",
+      "skript_soll": "Schauen Sie in Ruhe, ob's für Ihren Betrieb passt.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-W2.wav",
+      "master_dur_s": 2.669,
+      "master_lufs": -16.1,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-W2.wav"
+    },
+    {
+      "id": "HERO-W3",
+      "group": "Hero/warm",
+      "quelldatei": "Hero/warm/3.wav",
+      "spans": [
+        {
+          "file": "Hero/warm/3.wav",
+          "start_s": 0.0,
+          "end_s": 3.697
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 3.697,
+      "dauer_s": 0.799,
+      "lufs": -28.0,
+      "peak_dbtp": -12.1,
+      "transkript": "Fangen wir an.",
+      "skript_soll": "Fangen wir an.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "HERO-W3.wav",
+      "master_dur_s": 0.799,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -2.3,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/HERO-W3.wav"
+    },
+    {
+      "id": "K1-01",
+      "group": "K1",
+      "quelldatei": "K1/1.wav",
+      "spans": [
+        {
+          "file": "K1/1.wav",
+          "start_s": 0.0,
+          "end_s": 14.691
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 14.691,
+      "dauer_s": 12.412,
+      "lufs": -28.3,
+      "peak_dbtp": -12.4,
+      "transkript": "Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor ihren Kunden, auch wenn es mal hektisch zugeht. So wird aus jedem Anruf bei ihnen ein sauberer Fall.",
+      "skript_soll": "Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K1-01.wav",
+      "master_dur_s": 12.412,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K1-01.wav"
+    },
+    {
+      "id": "K2-01",
+      "group": "K2",
+      "quelldatei": "K2/1.wav",
+      "spans": [
+        {
+          "file": "K2/1.wav",
+          "start_s": 0.0,
+          "end_s": 5.79
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.79,
+      "dauer_s": 3.659,
+      "lufs": -27.0,
+      "peak_dbtp": -11.6,
+      "transkript": "Das hier ist alles. Eine Liste auf Ihrem Handy.",
+      "skript_soll": "Das hier ist alles. Eine Liste, auf Ihrem Handy.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K2-01.wav",
+      "master_dur_s": 3.659,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K2-01.wav"
+    },
+    {
+      "id": "K2-02",
+      "group": "K2",
+      "quelldatei": "K2/2.wav",
+      "spans": [
+        {
+          "file": "K2/2.wav",
+          "start_s": 0.0,
+          "end_s": 6.779
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 6.779,
+      "dauer_s": 3.787,
+      "lufs": -28.7,
+      "peak_dbtp": -11.5,
+      "transkript": "Was reinkommt, steht von selbst drin. Sie tippen nichts ab.",
+      "skript_soll": "Was reinkommt, steht von selbst drin — Sie tippen nichts ab.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K2-02.wav",
+      "master_dur_s": 3.787,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K2-02.wav"
+    },
+    {
+      "id": "K2-03",
+      "group": "K2",
+      "quelldatei": "K2/3.wav",
+      "spans": [
+        {
+          "file": "K2/3.wav",
+          "start_s": 0.0,
+          "end_s": 10.276
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 10.276,
+      "dauer_s": 6.964,
+      "lufs": -30.8,
+      "peak_dbtp": -13.6,
+      "transkript": "Ein Blick, was ist neu, was läuft, was ist erledigt.",
+      "skript_soll": "Ein Blick: was ist neu, was läuft, was ist erledigt.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K2-03.wav",
+      "master_dur_s": 6.964,
+      "master_lufs": -15.8,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K2-03.wav"
+    },
+    {
+      "id": "K2-04",
+      "group": "K2",
+      "quelldatei": "K2/4.wav",
+      "spans": [
+        {
+          "file": "K2/4.wav",
+          "start_s": 0.0,
+          "end_s": 4.285
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.285,
+      "dauer_s": 2.446,
+      "lufs": -27.4,
+      "peak_dbtp": -13.5,
+      "transkript": "Antippen, wer es macht. Fertig.",
+      "skript_soll": "Antippen, wer's macht — fertig.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K2-04.wav",
+      "master_dur_s": 2.446,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -2.4,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K2-04.wav"
+    },
+    {
+      "id": "K2-05",
+      "group": "K2",
+      "quelldatei": "K2/5.wav",
+      "spans": [
+        {
+          "file": "K2/5.wav",
+          "start_s": 0.0,
+          "end_s": 11.007
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 11.007,
+      "dauer_s": 8.964,
+      "lufs": -30.9,
+      "peak_dbtp": -15.5,
+      "transkript": "Kein Programm, das sie pflegen müssen. Es nimmt ihnen den Zettel und das im Kopfbehalten ab. Weniger Arbeit, mehr Überblick.",
+      "skript_soll": "Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger Arbeit, mehr Überblick.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.927,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K2-05.wav",
+      "master_dur_s": 8.964,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K2-05.wav"
+    },
+    {
+      "id": "K3-01",
+      "group": "K3",
+      "quelldatei": "K3/1.wav",
+      "spans": [
+        {
+          "file": "K3/1.wav",
+          "start_s": 0.0,
+          "end_s": 5.532
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.532,
+      "dauer_s": 2.476,
+      "lufs": -28.7,
+      "peak_dbtp": -12.5,
+      "transkript": "Den Haken sage ich Ihnen lieber selbst.",
+      "skript_soll": "Den Haken sag ich Ihnen lieber selbst.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.857,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K3-01.wav",
+      "master_dur_s": 2.476,
+      "master_lufs": -16.3,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-01.wav"
+    },
+    {
+      "id": "K3-02",
+      "group": "K3",
+      "quelldatei": "K3/2.wav",
+      "spans": [
+        {
+          "file": "K3/2.wav",
+          "start_s": 0.0,
+          "end_s": 13.587
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 13.587,
+      "dauer_s": 10.752,
+      "lufs": -28.7,
+      "peak_dbtp": -12.0,
+      "transkript": "Lisa weiß von allein nicht, wie ihr Betrieb tickt, was sie wissen muss, wie sie auf jeden Anruf reagiert oder wann sie für sie erreichbar ist.",
+      "skript_soll": "Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 0.98,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-02.wav",
+      "master_dur_s": 10.752,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-02.wav"
+    },
+    {
+      "id": "K3-03",
+      "group": "K3",
+      "quelldatei": "K3/3.wav",
+      "spans": [
+        {
+          "file": "K3/3.wav",
+          "start_s": 0.0,
+          "end_s": 8.14
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 8.14,
+      "dauer_s": 4.612,
+      "lufs": -27.4,
+      "peak_dbtp": -11.7,
+      "transkript": "Das stellen Sie ein. Ihr Betrieb, Ihre Regeln.",
+      "skript_soll": "Das stellen Sie ein. Ihr Betrieb, Ihre Regeln.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-03.wav",
+      "master_dur_s": 4.612,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-03.wav"
+    },
+    {
+      "id": "K3-04",
+      "group": "K3",
+      "quelldatei": "K3/4.wav",
+      "spans": [
+        {
+          "file": "K3/4.wav",
+          "start_s": 0.0,
+          "end_s": 2.82
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 2.82,
+      "dauer_s": 2.82,
+      "lufs": -26.9,
+      "peak_dbtp": -10.9,
+      "transkript": "Und das machen Sie nicht allein.",
+      "skript_soll": "Und das machen Sie nicht allein.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-04.wav",
+      "master_dur_s": 2.82,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -2.4,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-04.wav"
+    },
+    {
+      "id": "K3-05",
+      "group": "K3",
+      "quelldatei": "K3/4.wav",
+      "spans": [
+        {
+          "file": "K3/4.wav",
+          "start_s": 3.58,
+          "end_s": 11.007
+        }
+      ],
+      "start_s": 3.58,
+      "end_s": 11.007,
+      "dauer_s": 7.427,
+      "lufs": -26.9,
+      "peak_dbtp": -10.9,
+      "transkript": "Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand. Eine knappe Stunde ohne Technikram.",
+      "skript_soll": "Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.909,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K3-05.wav",
+      "master_dur_s": 7.427,
+      "master_lufs": -16.1,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-05.wav"
+    },
+    {
+      "id": "K3-06",
+      "group": "K3",
+      "quelldatei": "K3/5.wav",
+      "spans": [
+        {
+          "file": "K3/5.wav",
+          "start_s": 0.0,
+          "end_s": 5.847
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.847,
+      "dauer_s": 3.151,
+      "lufs": -25.6,
+      "peak_dbtp": -8.9,
+      "transkript": "Am Ende schaue ich selbst drüber, dass es passt.",
+      "skript_soll": "Am Ende schau ich selbst drüber, dass es passt.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.889,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K3-06.wav",
+      "master_dur_s": 3.151,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-06.wav"
+    },
+    {
+      "id": "K3-07",
+      "group": "K3",
+      "quelldatei": "K3/6.wav",
+      "spans": [
+        {
+          "file": "K3/6.wav",
+          "start_s": 0.0,
+          "end_s": 5.345
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.345,
+      "dauer_s": 2.809,
+      "lufs": -25.5,
+      "peak_dbtp": -10.3,
+      "transkript": "Und ja, sie wären unter den Ersten.",
+      "skript_soll": "Und ja — Sie wären unter den Ersten.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-07.wav",
+      "master_dur_s": 2.809,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.5,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-07.wav"
+    },
+    {
+      "id": "K3-08",
+      "group": "K3",
+      "quelldatei": "K3/7.wav",
+      "spans": [
+        {
+          "file": "K3/7.wav",
+          "start_s": 0.0,
+          "end_s": 8.814
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 8.814,
+      "dauer_s": 5.45,
+      "lufs": -26.2,
+      "peak_dbtp": -9.8,
+      "transkript": "Genau darum bin ich persönlich dabei und nehme nur eine Handvoll Betriebe.",
+      "skript_soll": "Genau darum bin ich persönlich dabei und nehm nur eine Handvoll Betriebe.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.917,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K3-08.wav",
+      "master_dur_s": 5.45,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-08.wav"
+    },
+    {
+      "id": "K3-09",
+      "group": "K3",
+      "quelldatei": "K3/8.wav",
+      "spans": [
+        {
+          "file": "K3/8.wav",
+          "start_s": 0.0,
+          "end_s": 6.549
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 6.549,
+      "dauer_s": 3.823,
+      "lufs": -25.8,
+      "peak_dbtp": -9.8,
+      "transkript": "Nicht viele, dafür jeden richtig.",
+      "skript_soll": "Nicht viele — dafür jeden richtig.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-09.wav",
+      "master_dur_s": 3.823,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-09.wav"
+    },
+    {
+      "id": "K3-10",
+      "group": "K3",
+      "quelldatei": "K3/9.wav",
+      "spans": [
+        {
+          "file": "K3/9.wav",
+          "start_s": 0.0,
+          "end_s": 7.854
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 7.854,
+      "dauer_s": 4.703,
+      "lufs": -26.5,
+      "peak_dbtp": -11.0,
+      "transkript": "Den Rest besprechen wir in Ruhe, ehrlich, ohne Druck.",
+      "skript_soll": "Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K3-10.wav",
+      "master_dur_s": 4.703,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K3-10.wav"
+    },
+    {
+      "id": "K4-01",
+      "group": "K4",
+      "quelldatei": "K4/1.wav",
+      "spans": [
+        {
+          "file": "K4/1.wav",
+          "start_s": 0.0,
+          "end_s": 3.86
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 3.86,
+      "dauer_s": 3.86,
+      "lufs": -28.3,
+      "peak_dbtp": -11.7,
+      "transkript": "Sie haben jetzt gesehen, worum es geht.",
+      "skript_soll": "Sie haben jetzt gesehen, worum's geht.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K4-01.wav",
+      "master_dur_s": 3.86,
+      "master_lufs": -15.8,
+      "master_peak_dbtp": -2.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-01.wav"
+    },
+    {
+      "id": "K4-02",
+      "group": "K4",
+      "quelldatei": "K4/1.wav",
+      "spans": [
+        {
+          "file": "K4/1.wav",
+          "start_s": 4.38,
+          "end_s": 13.859
+        }
+      ],
+      "start_s": 4.38,
+      "end_s": 13.859,
+      "dauer_s": 9.479,
+      "lufs": -28.3,
+      "peak_dbtp": -11.7,
+      "transkript": "Den Preis sage ich Ihnen gerade heraus, wenn wir reden. Er muss sich für Ihren Betrieb rechnen.",
+      "skript_soll": "Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.848,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K4-02.wav",
+      "master_dur_s": 9.479,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-02.wav"
+    },
+    {
+      "id": "K4-03",
+      "group": "K4",
+      "quelldatei": "K4/2.wav",
+      "spans": [
+        {
+          "file": "K4/2.wav",
+          "start_s": 0.0,
+          "end_s": 5.216
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 5.216,
+      "dauer_s": 2.638,
+      "lufs": -25.2,
+      "peak_dbtp": -7.9,
+      "transkript": "Genau das schauen wir uns gemeinsam an.",
+      "skript_soll": "Genau das schauen wir uns gemeinsam an.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K4-03.wav",
+      "master_dur_s": 2.638,
+      "master_lufs": -17.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-03.wav"
+    },
+    {
+      "id": "K4-04",
+      "group": "K4",
+      "quelldatei": "K4/3.wav",
+      "spans": [
+        {
+          "file": "K4/3.wav",
+          "start_s": 0.0,
+          "end_s": 4.26
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.26,
+      "dauer_s": 4.26,
+      "lufs": -28.6,
+      "peak_dbtp": -11.6,
+      "transkript": "Was jetzt schon gilt, monatlich kündbar.",
+      "skript_soll": "Was jetzt schon gilt: monatlich kündbar.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K4-04.wav",
+      "master_dur_s": 4.26,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -2.1,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-04.wav"
+    },
+    {
+      "id": "K4-05",
+      "group": "K4",
+      "quelldatei": "K4/3.wav",
+      "spans": [
+        {
+          "file": "K4/3.wav",
+          "start_s": 5.07,
+          "end_s": 10.52
+        }
+      ],
+      "start_s": 5.07,
+      "end_s": 10.52,
+      "dauer_s": 5.45,
+      "lufs": -28.6,
+      "peak_dbtp": -11.6,
+      "transkript": "Ihre Nummer bleibt und das Zurückdrehen dauert nur zwei Minuten.",
+      "skript_soll": "Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.824,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K4-05.wav",
+      "master_dur_s": 5.45,
+      "master_lufs": -15.7,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-05.wav"
+    },
+    {
+      "id": "K4-06",
+      "group": "K4",
+      "quelldatei": "K4/3.wav",
+      "spans": [
+        {
+          "file": "K4/3.wav",
+          "start_s": 11.29,
+          "end_s": 15.551
+        }
+      ],
+      "start_s": 11.29,
+      "end_s": 15.551,
+      "dauer_s": 4.261,
+      "lufs": -28.6,
+      "peak_dbtp": -11.6,
+      "transkript": "Und bezahlt wird erst, wenn es bei Ihnen läuft.",
+      "skript_soll": "Und bezahlt wird erst, wenn's bei Ihnen läuft.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K4-06.wav",
+      "master_dur_s": 4.261,
+      "master_lufs": -16.0,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-06.wav"
+    },
+    {
+      "id": "K4-07",
+      "group": "K4",
+      "quelldatei": "K4/4.wav",
+      "spans": [
+        {
+          "file": "K4/4.wav",
+          "start_s": 0.0,
+          "end_s": 4.2
+        }
+      ],
+      "start_s": 0.0,
+      "end_s": 4.2,
+      "dauer_s": 4.2,
+      "lufs": -30.4,
+      "peak_dbtp": -13.2,
+      "transkript": "Das Risiko trage ich, nicht sie.",
+      "skript_soll": "Das Risiko trage ich. Nicht Sie.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "",
+      "master_file": "K4-07.wav",
+      "master_dur_s": 4.2,
+      "master_lufs": -15.6,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-07.wav"
+    },
+    {
+      "id": "K4-08",
+      "group": "K4",
+      "quelldatei": "K4/4.wav",
+      "spans": [
+        {
+          "file": "K4/4.wav",
+          "start_s": 4.74,
+          "end_s": 8.99
+        }
+      ],
+      "start_s": 4.74,
+      "end_s": 8.99,
+      "dauer_s": 4.25,
+      "lufs": -30.4,
+      "peak_dbtp": -13.2,
+      "transkript": "Alles weitere kommt offen auf den Tisch, denn wissen Sie,",
+      "skript_soll": "Alles Weitere kommt offen auf den Tisch.",
+      "wortlaut_match": "leichte_abweichung",
+      "similarity_to_skript": 0.824,
+      "status": "ok",
+      "problem": "Wortlaut weicht leicht vom Skript-Soll ab (ship-truth = transkript)",
+      "master_file": "K4-08.wav",
+      "master_dur_s": 4.25,
+      "master_lufs": -15.9,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-08.wav"
+    },
+    {
+      "id": "K4-09",
+      "group": "K4",
+      "quelldatei": "K4/4.wav",
+      "spans": [
+        {
+          "file": "K4/4.wav",
+          "start_s": 8.99,
+          "end_s": 12.569
+        }
+      ],
+      "start_s": 8.99,
+      "end_s": 12.569,
+      "dauer_s": 3.579,
+      "lufs": -30.4,
+      "peak_dbtp": -13.2,
+      "transkript": "es muss für uns beide passen.",
+      "skript_soll": "Es muss für uns beide passen.",
+      "wortlaut_match": "exakt",
+      "similarity_to_skript": 1.0,
+      "status": "ok",
+      "problem": "per Ohr bestaetigt: 'Es muss fuer uns beide passen.'",
+      "master_file": "K4-09.wav",
+      "master_dur_s": 3.579,
+      "master_lufs": -15.8,
+      "master_peak_dbtp": -1.0,
+      "hosting_url": "https://storage.bunnycdn.com/flowsight-stern3-backup/hero-audio/masters/K4-09.wav"
+    }
+  ]
+}

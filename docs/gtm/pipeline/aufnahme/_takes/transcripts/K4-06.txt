@@ -1,0 +1,4 @@
+# K4-06  quelle=K4/3.wav
+SHIP-TRUTH (gesprochen): Und bezahlt wird erst, wenn es bei Ihnen läuft.
+SKRIPT-SOLL (gelockt):   Und bezahlt wird erst, wenn's bei Ihnen läuft.
+match=exakt  sim=1.0  status=ok

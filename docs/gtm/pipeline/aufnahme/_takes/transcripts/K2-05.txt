@@ -1,0 +1,4 @@
+# K2-05  quelle=K2/5.wav
+SHIP-TRUTH (gesprochen): Kein Programm, das sie pflegen müssen. Es nimmt ihnen den Zettel und das im Kopfbehalten ab. Weniger Arbeit, mehr Überblick.
+SKRIPT-SOLL (gelockt):   Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger Arbeit, mehr Überblick.
+match=leichte_abweichung  sim=0.927  status=ok
