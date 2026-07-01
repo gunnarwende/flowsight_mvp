@@ -26,11 +26,11 @@
 „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben."
 „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten."
 
-**Schluss**
-„Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
-„Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie."
-„Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken."
-„Bei Ihnen geht ab jetzt nichts mehr verloren."
+**Schluss** *(4 Beats = EINE Bewegung)*
+**Beat 1** — „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
+**Beat 2** — „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie."
+**⭐ Beat 3** — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken."
+**Beat 4** — „Bei Ihnen geht ab jetzt nichts mehr verloren."
 
 **WARM-Opener** *(eigene Datei — ersetzt später nur den Hook, ab „Ein neuer Kunde ruft an." identisch)*
 „Schön, dass wir telefoniert haben. Wie besprochen."
@@ -54,11 +54,11 @@
 - „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." — stiller Stolz, kein Verkauf.
 - „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." — drei Schritte, leichtes Crescendo, „bevor Sie … wussten" weicher.
 
-**Schluss** — 4 Beats = EINE Bewegung
-- „Das ist Ihr echtes System — auf Ihren Namen. … am selben Ort." — geerdet, betone **„Ihr" / „auf Ihren Namen"**. Nicht hetzen.
-- „Kein IT-Projekt — … Das Risiko trage ich, nicht Sie." — Mauer runter. „Das Risiko trage ich, nicht Sie" mit **ruhiger Gewissheit**, kleine Pause davor.
-- ⭐ **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken." — **langsamer, leiser, persönlich. Du musst es MEINEN.** Der heilige Satz — genug Takes, bis er sitzt.
-- „Bei Ihnen geht ab jetzt nichts mehr verloren." — **letztes Wort, am langsamsten**, jedes Wort einzeln. Stille danach kommen lassen.
+**Schluss** — 4 Beats = EINE Bewegung *(echt+alle-Kanäle → einfach+risikofrei → das Warum → das Versprechen)*
+- **Beat 1** — „Das ist Ihr echtes System — auf Ihren Namen. … am selben Ort." — geerdet, betone **„Ihr" / „auf Ihren Namen"**. Nicht hetzen.
+- **Beat 2** — „Kein IT-Projekt — … Das Risiko trage ich, nicht Sie." — Mauer runter. „Das Risiko trage ich, nicht Sie" mit **ruhiger Gewissheit**, kleine Pause davor.
+- **⭐ Beat 3 (der Lackmustest)** — **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken." — **langsamer, leiser, persönlich. Du musst es MEINEN.** Der heilige Satz, das Warum/die Wunde — daran hängt der ganze Verkauf. Genug Takes, bis er sitzt.
+- **Beat 4** — „Bei Ihnen geht ab jetzt nichts mehr verloren." — das Versprechen. **Letztes Wort, am langsamsten**, jedes Wort einzeln. Stille danach kommen lassen.
 
 **WARM-Opener**
 - „Schön, dass wir telefoniert haben. Wie besprochen." — warm, vertraut, **kein Hook, keine Wunde** (er hat schon Ja gesagt).
