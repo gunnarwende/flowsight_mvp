@@ -1,0 +1,54 @@
+name: Seed Hero Demo
+
+# Gated key-op (Stern 3): setzt den Hero-Demo-Fall (Herr Brunner · Wärmepumpe ·
+# Bahnhofstrasse 14, 8500 Frauenfeld) im Demo-Tenant via seed_screenflow_from_config.
+#
+# ⚠️ DESTRUKTIV: der Seed LÖSCHT alle Fälle des Tenants und baut sie neu.
+# Darum: Default = Preview (zeigt nur, WAS gesetzt würde). Der echte Lauf braucht
+# confirm=true — bewusste Founder-Entscheidung, vom Handy.
+#
+# Secrets: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (Actions).
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Tenant-Slug (Demo-/Render-Tenant)"
+        required: false
+        default: "doerfler-ag"
+      confirm:
+        description: "DESTRUKTIV wirklich seeden? (löscht+reseedet alle Fälle des Tenants)"
+        type: boolean
+        default: false
+
+jobs:
+  seed:
+    name: seed-hero
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+      - name: Install web deps
+        run: cd src/web && npm ci
+
+      - name: Preview (immer)
+        run: |
+          echo "== Hero-Demo-Fall aus docs/customers/${{ inputs.slug }}/tenant_config.json =="
+          node -e "const c=require('./docs/customers/${{ inputs.slug }}/tenant_config.json'); console.log(JSON.stringify(c.seed?.phone_demo_case||{}, null, 2));"
+          echo "confirm=${{ inputs.confirm }}"
+
+      - name: Seed (nur bei confirm=true — DESTRUKTIV)
+        if: ${{ inputs.confirm == true }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set +e
+          node scripts/_ops/seed_screenflow_from_config.mjs --slug "${{ inputs.slug }}" 2>&1 | tee /tmp/seed.log
+          STATUS=${PIPESTATUS[0]}
+          [ "$STATUS" -ne 0 ] && echo "::error::seed exit $STATUS — Ursache im Log oben."
+          exit $STATUS
