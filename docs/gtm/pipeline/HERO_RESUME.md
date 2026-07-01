@@ -9,6 +9,10 @@
 einmal für ALLE Betriebe). Danach: Montage zur fertigen Beweis-Seite (Stern 3). Nordstern des Founders:
 *„Der Erfolg meines Unternehmens steht über allem"* — **hart challengen, nie rubber-stampen.**
 
+**Sales-Kernprinzip (über allem):** **SALES = INHALT × ÜBERZEUGUNG.** Inhalt (Script) gelockt = der eine
+Faktor; **Überzeugung = der Multiplikator.** Vorbild Alex Hormozi: direkt, schnörkellos, mit Gefühl, bedacht,
+clever. Gilt für jeden Founder-Take (s. `HERO_DREHTAG_RUNSHEET.md` §Prinzip) und jeden Sales-Text.
+
 ## Die 3 Hero-SSOT-Docs (Reihenfolge zum Einlesen)
 1. [`HERO_DEMO_SPEC.md`](HERO_DEMO_SPEC.md) — **das WAS**: Hero 90 s wortgenau (COLD 0–85 + WARM-Opener + Knoten ①–④), Screenflow, Swap-Inventar, alle Regie-Entscheidungen gelockt.
 2. [`HERO_DREHTAG_RUNSHEET.md`](HERO_DREHTAG_RUNSHEET.md) — **Drehtag**: Setup-/Qualitäts-Checkliste, Gesichts-Blöcke in Shoot-Reihenfolge, VO-Zeilen, Take-Disziplin, Performance-Regie.
