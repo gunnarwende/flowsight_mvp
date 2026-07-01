@@ -1,34 +1,49 @@
-# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Audio-Aufnahme
+# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Audio (Schnipsel)
 
-> **Jetzt nur Audio.** Du sprichst **5 Beats**. Bild (Gesicht in die Linse) = spätere Session — dann läuft dieses Audio im Hintergrund, damit Mimik/Gestik exakt darauf sitzen.
-> **Teil 1** = reiner Sprechtext · **Teil 2** = wie ich es sage.
+> **Nur das hier.** Jede Zeile = **EIN Schnipsel = EINE Aufnahme.** Satz komplett, dahinter mit welcher Überzeugung.
+> Einzeln aufnehmen (`K3-01.wav` …), **1 Sek Stille vor/nach**, min. 3 Takes.
 
-## ⭐ Prinzip (über allem)
-**SALES = INHALT × ÜBERZEUGUNG.** Überzeugung ist der Multiplikator. **Zweifel hier:** „Wo ist die Falle? Das ist zu schön, um wahr zu sein." **Deine Überzeugung = Souveränität:** wer den Haken *zuerst selbst* nennt, hat nichts zu verstecken. Ruhig, ehrlich, **keine Unterstellung** — du kippst den Haken zur Stärke (Eigentum + Selektivität).
-
----
-
-## 🎙 TEIL 1 — Reiner Sprechtext (ablesen, von oben nach unten)
-
-„Den Haken sag ich Ihnen lieber selbst."
-„Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist. Das stellen Sie ein. Ihr Betrieb, Ihre Regeln."
-„Und das machen Sie nicht allein. Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram. Am Ende schau ich selbst drüber, dass es passt."
-„Und ja — Sie wären unter den Ersten. Genau darum bin ich persönlich dabei und nehm nur eine Handvoll Betriebe. Nicht viele — dafür jeden richtig."
-„Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck."
+## ⭐ Prinzip
+**SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Wo ist die Falle? Das ist zu schön, um wahr zu sein." **Deine Überzeugung = Souveränität** — wer den Haken *zuerst selbst* nennt, hat nichts zu verstecken. Ruhig, ehrlich, **keine Unterstellung**.
 
 ---
 
-## 🎯 TEIL 2 — Wie ich es sage (Zeile für Zeile)
+## 🎯 Schnipsel — Satz + mit welcher Überzeugung
 
-1. „Den Haken sag ich Ihnen lieber selbst." — ehrlicher Auftakt, **keine Unterstellung**. Ruhig, du übernimmst.
-2. „Lisa weiß von allein nicht, wie *Ihr* Betrieb tickt — … Das stellen *Sie* ein. Ihr Betrieb, Ihre Regeln." — betone **„Sie" / „Ihr Betrieb, Ihre Regeln"** (Eigentum). Der Haken kippt zur Kontrolle.
-3. „Und das machen Sie nicht allein. … Am Ende schau ich selbst drüber, dass es passt." — entlastend, warm. „Am Ende schau ich selbst drüber" = deine Sorgfalt, kein Commitment.
-4. „Und ja — Sie wären unter den Ersten. … Nicht viele — dafür jeden richtig." — **ruhiger Stolz** (Selektivität), kein Werben. „dafür jeden richtig" leicht betont.
-5. „Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck." — Tür auf, **kein CTA, keine Entschuldigung.** Souverän, lässt ihm die Kontrolle.
+### Beat 1 — der ehrliche Auftakt
+**K3-01** — „Den Haken sag ich Ihnen lieber selbst."
+→ Ehrlicher Auftakt, keine Unterstellung. Ruhig, du übernimmst.
+
+### Beat 2 — der Haken kippt zu Eigentum
+**K3-02** — „Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist."
+→ Ruhig erklärend, ehrlich. Kein Defizit-Ton — das ist normal.
+
+**K3-03** — „Das stellen Sie ein. Ihr Betrieb, Ihre Regeln."
+→ Betone **„Sie" / „Ihr Betrieb, Ihre Regeln"** — Eigentum. Souverän, als Punkt. *(Zwei kurze Sätze in EINEM Atem.)*
+
+### Beat 3 — Zusammenarbeit (entschärft)
+**K3-04** — „Und das machen Sie nicht allein."
+→ Entlastend, warm.
+
+**K3-05** — „Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram."
+→ Ruhig, greifbar. „ohne Technik-Kram" nimmt die Angst.
+
+**K3-06** — „Am Ende schau ich selbst drüber, dass es passt."
+→ Deine Sorgfalt, persönlich — kein Commitment, eine Zusage.
+
+### Beat 4 — der Flip (Selektivität)
+**K3-07** — „Und ja — Sie wären unter den Ersten."
+→ Offen zugegeben, kein Beschönigen.
+
+**K3-08** — „Genau darum bin ich persönlich dabei und nehm nur eine Handvoll Betriebe."
+→ Ruhiger Stolz, kein Werben.
+
+**K3-09** — „Nicht viele — dafür jeden richtig."
+→ Fester, klarer Punkt. „richtig" leicht betont.
+
+### Beat 5 — Tür zum Gespräch
+**K3-10** — „Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck."
+→ Tür auf, **kein CTA, keine Entschuldigung.** Souverän, lässt ihm die Kontrolle.
 
 ---
-
-## 📋 Take-Disziplin
-Pro Beat **min. 3 Takes**, ansagen, besten merken. Nach jedem Beat 1 Sek Stille.
-
-*Bild = spätere Session — hier nur Audio.* Wortlaut + Begründungen gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ③).
+Wortlaut + Begründungen gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ③).

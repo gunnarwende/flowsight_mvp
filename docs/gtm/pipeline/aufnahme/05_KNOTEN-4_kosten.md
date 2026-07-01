@@ -1,32 +1,45 @@
-# KNOTEN ④ — „Was kostet das — und wie komm ich wieder raus?" — Audio-Aufnahme
+# KNOTEN ④ — „Was kostet das — und wie komm ich wieder raus?" — Audio (Schnipsel)
 
-> **Jetzt nur Audio.** Du sprichst **4 Beats**. **Keine Zahl nennen.** Bild (Gesicht in die Linse) = spätere Session — dann läuft dieses Audio im Hintergrund für die Synchro.
-> **Teil 1** = reiner Sprechtext · **Teil 2** = wie ich es sage.
+> **Nur das hier.** Jede Zeile = **EIN Schnipsel = EINE Aufnahme.** Satz komplett, dahinter mit welcher Überzeugung. **Keine Zahl nennen.**
+> Einzeln aufnehmen (`K4-01.wav` …), **1 Sek Stille vor/nach**, min. 3 Takes.
 
-## ⭐ Prinzip (über allem)
-**SALES = INHALT × ÜBERZEUGUNG.** Überzeugung ist der Multiplikator. **Zweifel hier:** „Was kostet mich das — und häng ich dann fest?" **Deine Überzeugung = Gewissheit:** Wert vor Preis (Preis zuletzt, im Gespräch), volle Risiko-Umkehr, sauberer Ausstieg. „Das Risiko trage ich, nicht Sie" ist nur glaubhaft, wenn du es **ruhig sagst wie eine Selbstverständlichkeit** — kein Verkaufsargument, eine Tatsache.
-
----
-
-## 🎙 TEIL 1 — Reiner Sprechtext (ablesen, von oben nach unten)
-
-„Sie haben jetzt gesehen, worum's geht. Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen. Genau das schauen wir uns gemeinsam an."
-„Was jetzt schon gilt: monatlich kündbar. Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten. Und bezahlt wird erst, wenn's bei Ihnen läuft."
-„Das Risiko trage ich. Nicht Sie."
-„Alles Weitere kommt offen auf den Tisch. Es muss für uns beide passen."
+## ⭐ Prinzip
+**SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Was kostet mich das — und häng ich dann fest?" **Deine Überzeugung = Gewissheit** — Wert vor Preis, volle Risiko-Umkehr, sauberer Ausstieg. „Das Risiko trage ich" nur glaubhaft, wenn du es ruhig sagst wie eine Selbstverständlichkeit.
 
 ---
 
-## 🎯 TEIL 2 — Wie ich es sage (Zeile für Zeile)
+## 🎯 Schnipsel — Satz + mit welcher Überzeugung
 
-1. „Sie haben jetzt gesehen, worum's geht. Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen. Genau das schauen wir uns gemeinsam an." — **Wert vor Preis**, kein Ausweichen. „geradeheraus" ehrlich betont — du verschweigst nichts, du verlegst es ins Gespräch.
-2. „Was jetzt schon gilt: monatlich kündbar. Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten. Und bezahlt wird erst, wenn's bei Ihnen läuft." — konkrete Sicherheiten, **ruhig aufzählen** (nicht runterrattern). Jede einzeln landen lassen.
-3. „Das Risiko trage ich. Nicht Sie." — **ruhige Gewissheit** (Echo zum Hero-Schluss). Kurze Pause zwischen den beiden Sätzen. Keine Bravour — eine Tatsache.
-4. „Alles Weitere kommt offen auf den Tisch. Es muss für uns beide passen." — gegenseitige Passung, souverän, **kein Drücker.** „für uns beide" betont.
+### Beat 1 — Wert vor Preis
+**K4-01** — „Sie haben jetzt gesehen, worum's geht."
+→ Würdigt die Reise, ruhig. Kein Anlauf, eine Feststellung.
+
+**K4-02** — „Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen."
+→ „geradeheraus" ehrlich betont — du verschweigst nichts, du verlegst es ins Gespräch. Kein Ausweichen.
+
+**K4-03** — „Genau das schauen wir uns gemeinsam an."
+→ Ruhig, partnerschaftlich. Einladung, kein Druck.
+
+### Beat 2 — konkrete Sicherheiten
+**K4-04** — „Was jetzt schon gilt: monatlich kündbar."
+→ Klar, ein Fakt. Keine Angst.
+
+**K4-05** — „Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten."
+→ Ruhig, konkret. Nimmt die Lock-in-Angst.
+
+**K4-06** — „Und bezahlt wird erst, wenn's bei Ihnen läuft."
+→ Selbstverständlich, ruhig. Der stärkste Sicherheits-Punkt — nicht anpreisen.
+
+### Beat 3 — Risiko-Umkehr
+**K4-07** — „Das Risiko trage ich. Nicht Sie."
+→ **Ruhige Gewissheit** (Echo zum Hero-Schluss). Kurze Pause zwischen den beiden Sätzen. Keine Bravour — eine Tatsache. *(Zwei Sätze, aber bewusst mit Trenn-Pause.)*
+
+### Beat 4 — Tür zum Gespräch
+**K4-08** — „Alles Weitere kommt offen auf den Tisch."
+→ Offen, souverän.
+
+**K4-09** — „Es muss für uns beide passen."
+→ Gegenseitige Passung, **kein Drücker.** „für uns beide" betont.
 
 ---
-
-## 📋 Take-Disziplin
-Pro Beat **min. 3 Takes**, ansagen, besten merken. Nach jedem Beat 1 Sek Stille.
-
-*Bild = spätere Session — hier nur Audio.* Wortlaut + Begründungen (u. a. *warum keine Zahl*) gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ④).
+Wortlaut + Begründungen (u. a. *warum keine Zahl*) gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ④).
