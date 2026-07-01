@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { tts, mp3ToWav48kMono } from "./audio/_lib/eleven.mjs";
-import { concatWavs, loudnormTwoPass, ffprobeInfo, renderWaveformPng } from "./audio/_lib/ffmpeg.mjs";
+import { concatWavs, loudnormTwoPass, ffprobeInfo, renderWaveformPng, run } from "./audio/_lib/ffmpeg.mjs";
 import { gateLoudness, gateNoClipping } from "./audio/_lib/quality.mjs";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -139,15 +139,136 @@ async function phaseCall() {
   }
 }
 
+// ── Phase "montage" — Screen-Section (13–49, OHNE Gesicht) auf die Audio-Master-Uhr ──
+// Baut den mittleren, screen-getriebenen Abschnitt: Audio = Master-Uhr (VO HERO-05/06/07 +
+// Call-Audio), Screen slavt darauf. Gesicht-Bookends (0–13 / 49–82) = Post-Layer (separat).
+// Immunsystem: Gesicht NIE in der Source · pro Block EIN Encode (kein N-fach) · state/audio-
+// getriebene Anker (Blockgrenzen aus echten Audiodauern) · Backup-first (nur _generated,
+// Originale unangetastet) · Gates.
+const MASTERS_DIR = path.join(REPO_ROOT, "docs/gtm/pipeline/aufnahme/_takes/_masters");
+const LZ_FRAMES_DIR = path.join(REPO_ROOT, "production/screens/doerfler-ag");
+const MONT_DIR = path.join(REPO_ROOT, "docs/gtm/pipeline/06_video_production/_generated/hero_montage");
+const VP = { w: 392, h: 852 }; // Mobile-Viewport (gerade Maße für libx264/yuv420p; Webm ist 392×852)
+
+// Spec-Pausen (HERO_DEMO_SPEC Screenflow 13–49). Anker sonst aus echten Audiodauern.
+const GAP = { ring: 0.5, ended: 1.0, dash_detail: 0.3 };
+
+async function silence(sec, out) {
+  await run("ffmpeg", ["-hide_banner", "-y", "-f", "lavfi", "-t", sec.toFixed(3),
+    "-i", "anullsrc=r=48000:cl=mono", "-c:a", "pcm_s16le", out], { captureStderr: true });
+  return out;
+}
+async function phaseMontage() {
+  fs.mkdirSync(MONT_DIR, { recursive: true });
+  const need = (p, hint) => { if (!fs.existsSync(p)) throw new Error(`fehlt: ${p}${hint ? ` (${hint})` : ""}`); };
+  const callWav = path.join(OUT_DIR, `hero_call_${GEWERK}.wav`);
+  need(callWav, "erst: produce_hero --phase call");
+  const h05 = path.join(MASTERS_DIR, "HERO-05.wav"); // "Ein neuer Kunde ruft an."
+  const h06 = path.join(MASTERS_DIR, "HERO-06.wav"); // "Ein vollständiger Auftrag …"
+  const h07 = path.join(MASTERS_DIR, "HERO-07.wav"); // "Eingegangen, erfasst …"
+  [h05, h06, h07].forEach((p) => need(p, "Phase-1 Master (aufnahme/_takes/_masters)"));
+
+  // ── 1) AUDIO MASTER-UHR (screen section) ────────────────────────────────
+  const d05 = (await ffprobeInfo(h05)).duration;
+  const dCall = (await ffprobeInfo(callWav)).duration;
+  const d06 = (await ffprobeInfo(h06)).duration;
+  const d07 = (await ffprobeInfo(h07)).duration;
+  const silRing = await silence(GAP.ring, path.join(MONT_DIR, "_sil_ring.wav"));
+  const silEnded = await silence(GAP.ended, path.join(MONT_DIR, "_sil_ended.wav"));
+  const silDd = await silence(GAP.dash_detail, path.join(MONT_DIR, "_sil_dd.wav"));
+  const rawAudio = path.join(MONT_DIR, "hero_screen_audio_raw.wav");
+  // Reihenfolge = Spec: HERO-05 · [ring] · CALL · [ended-still] · HERO-06 · [gap] · HERO-07
+  await concatWavs([h05, silRing, callWav, silEnded, h06, silDd, h07], rawAudio, { gapMs: 0 });
+  const screenAudio = path.join(MONT_DIR, "hero_screen_audio.wav");
+  await loudnormTwoPass(rawAudio, screenAudio, { I: -16, TP: -1, LRA: 11, sampleRate: 48000 });
+  const aGL = await gateLoudness(screenAudio, { expectedI: -16, tolerance: 1.0, maxTP: -1.0 });
+  const aGC = await gateNoClipping(screenAudio);
+
+  // Master-Uhr-Anker (absolute Sekunden ab Screen-Section-Start t=0)
+  const tRingStart = 0;
+  const tCallStart = d05 + GAP.ring;
+  const tCallEnd = tCallStart + dCall;
+  const tPhoneEnd = tCallEnd + GAP.ended;        // Ende Telefon-Block ("Anruf beendet")
+  const tDashStart = tPhoneEnd;                    // Leitzentrale beginnt (HERO-06)
+  const tDetailStart = tDashStart + d06 + GAP.dash_detail;
+  const tEnd = tDetailStart + d07;
+  const lzDur = tEnd - tDashStart;                 // Leitzentrale-Blockdauer (HERO-06+gap+HERO-07)
+
+  // ── 2) LEITZENTRALE-BLOCK (Screen slavt auf HERO-06+HERO-07) ────────────
+  // v1 = frame-basiert aus den echten Capture-PNGs, präzise auf die VO-Beats getaktet:
+  //   HERO-06 (dashboard→NEU-Filter) · HERO-07 (Fall-Detail→VERLAUF), endet auf VERLAUF.
+  // (Motion-Webm-Sync = v2: der Hero-Webm startet mit Lade-Weiss + endet auf Übersicht,
+  //  darum für präzisen Block-Sync die verifizierten Standbilder — echtes System, harte Cuts.)
+  const lzAudio = path.join(MONT_DIR, "_lz_audio.wav");
+  await concatWavs([h06, silDd, h07], lzAudio, { gapMs: 0 });
+  const frames = ["02_dashboard.png", "03_neu_filter.png", "04_fall_oben.png", "06_verlauf.png"]
+    .map((f) => path.join(LZ_FRAMES_DIR, f));
+  let lzBlock = null, lzMode = "none";
+  if (frames.every((f) => fs.existsSync(f))) {
+    lzMode = "frames";
+    lzBlock = path.join(MONT_DIR, "block_leitzentrale.mp4");
+    // Beat-Takt: HERO-06 → dashboard + NEU-Filter; HERO-07 → Fall-Detail + VERLAUF (bis Ende).
+    const half06 = d06 / 2, half07 = (d07 + GAP.dash_detail) / 2;
+    const holds = [half06, d06 - half06 + GAP.dash_detail / 2, half07, lzDur - (half06 + (d06 - half06 + GAP.dash_detail / 2) + half07)];
+    const args = ["-hide_banner", "-y"];
+    frames.forEach((f, i) => args.push("-loop", "1", "-t", holds[i].toFixed(3), "-i", f));
+    args.push("-i", lzAudio);
+    const parts = frames.map((_, i) => `[${i}:v]scale=${VP.w}:${VP.h}:force_original_aspect_ratio=decrease,pad=${VP.w}:${VP.h}:(ow-iw)/2:(oh-ih)/2:white,setsar=1,fps=30[v${i}]`);
+    const vlabels = frames.map((_, i) => `[v${i}]`).join("");
+    const filter = parts.join(";") + ";" + vlabels + `concat=n=${frames.length}:v=1:a=0[v]`;
+    args.push("-filter_complex", filter, "-map", "[v]", "-map", `${frames.length}:a`,
+      "-t", lzDur.toFixed(3),
+      "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
+      "-c:a", "aac", "-b:a", "192k", lzBlock);
+    await run("ffmpeg", args, { captureStderr: true });
+  } else {
+    console.log(`[hero] ⚠️ Leitzentrale-Frames fehlen (${LZ_FRAMES_DIR}) — Block übersprungen. Erst: record_leitsystem_screen.mjs --flow=hero`);
+  }
+
+  // ── 3) Timeline + Report ────────────────────────────────────────────────
+  const timeline = {
+    generated: new Date().toISOString().slice(0, 10),
+    phase: "montage", section: "screen 13–49 (ohne Gesicht)",
+    gewerk: GEWERK, betrieb: BETRIEB,
+    master_clock: "audio", brunner_voice: BRUNNER_VOICE,
+    anchors_s: {
+      ring_start: +tRingStart.toFixed(3), call_start: +tCallStart.toFixed(3),
+      call_end: +tCallEnd.toFixed(3), phone_end: +tPhoneEnd.toFixed(3),
+      dash_start: +tDashStart.toFixed(3), detail_start: +tDetailStart.toFixed(3),
+      end: +tEnd.toFixed(3),
+    },
+    durations_s: { HERO05: +d05.toFixed(3), call: +dCall.toFixed(3), HERO06: +d06.toFixed(3),
+      HERO07: +d07.toFixed(3), leitzentrale_block: +lzDur.toFixed(3) },
+    blocks: {
+      phone: { built: false, note: "Phone-Visual (ring→call→ended) = eigener Render, s. Rest-Blocker" },
+      leitzentrale: { built: !!lzBlock, mode: lzMode,
+        file: lzBlock ? path.relative(REPO_ROOT, lzBlock) : null,
+        sync: "beat-getaktet: HERO-06=dashboard+NEU, HERO-07=detail+VERLAUF (frame-basiert v1; Motion-Webm=v2)" },
+    },
+    audio_master: { file: path.relative(REPO_ROOT, screenAudio),
+      total_dur_s: +tEnd.toFixed(3), gates: { loudness: aGL, clipping: aGC } },
+    open: ["Phone-Visual-Block (Samsung ring→call→ended, ohne Gesicht)",
+           "Gesicht-Bookends 0–13 / 49–82 (Post-Layer)", "Brunner-FINAL-Stimme (Platzhalter gunnar)"],
+  };
+  fs.writeFileSync(path.join(MONT_DIR, "hero_montage.timeline.json"), JSON.stringify(timeline, null, 2));
+
+  console.log(`[hero] ✅ Montage (screen section):`);
+  console.log(`[hero]   Audio-Master ${timeline.audio_master.total_dur_s}s · loudness ${aGL.pass ? "PASS" : "FAIL"} · clipping ${aGC.pass ? "PASS" : "FAIL"}`);
+  console.log(`[hero]   Anker: ring@${tRingStart.toFixed(1)} call@${tCallStart.toFixed(1)}–${tCallEnd.toFixed(1)} dash@${tDashStart.toFixed(1)} detail@${tDetailStart.toFixed(1)} end@${tEnd.toFixed(1)}`);
+  if (lzBlock) console.log(`[hero]   Leitzentrale-Block ${lzDur.toFixed(1)}s (${lzMode}, beat-getaktet HERO-06/07) → ${path.relative(REPO_ROOT, lzBlock)}`);
+  if (!aGL.pass || !aGC.pass) { console.log("[hero] ⚠️ Audio-Gate FAIL"); process.exitCode = 3; }
+}
+
 async function main() {
   if (PHASE === "call") return phaseCall();
-  if (["screens", "montage", "proof", "all"].includes(PHASE)) {
+  if (PHASE === "montage") return phaseMontage();
+  if (["screens", "proof", "all"].includes(PHASE)) {
     console.log(`[hero] Phase '${PHASE}' noch nicht implementiert.`);
-    console.log("[hero] Braucht: Founder-Gesichts-Footage (Bookend + Knoten ③/④) + Seed Brunner/Frauenfeld.");
+    console.log("[hero] montage baut die Screen-Section (ohne Gesicht); screens/proof/all folgen.");
     console.log("[hero] Siehe docs/gtm/pipeline/HERO_PIPELINE_BAUPLAN.md.");
     process.exit(2);
   }
-  throw new Error(`Unbekannte --phase '${PHASE}' (call|screens|montage|proof).`);
+  throw new Error(`Unbekannte --phase '${PHASE}' (call|montage|screens|proof).`);
 }
 
 main().catch((e) => { console.error("[hero] FEHLER:", e.message); process.exit(1); });
