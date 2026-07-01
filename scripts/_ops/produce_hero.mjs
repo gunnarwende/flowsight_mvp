@@ -225,6 +225,36 @@ async function phaseMontage() {
     console.log(`[hero] ⚠️ Leitzentrale-Frames fehlen (${LZ_FRAMES_DIR}) — Block übersprungen. Erst: record_leitsystem_screen.mjs --flow=hero`);
   }
 
+  // ── 2b) VOLLER SCREEN-SECTION-PREVIEW (Phone + Leitzentrale → Master-Audio) ──
+  // Wenn der Phone-Block existiert (render_hero_phone.mjs): Video-Concat phone+lz,
+  // Audio = hero_screen_audio (Master-Uhr). EIN Encode. Gesicht = Post-Layer.
+  const phoneBlock = path.join(MONT_DIR, "block_phone.mp4");
+  let heroScreen = null, phoneDur = null;
+  if (fs.existsSync(phoneBlock) && lzBlock) {
+    phoneDur = (await ffprobeInfo(phoneBlock)).duration;
+    heroScreen = path.join(MONT_DIR, "hero_screen.mp4");
+    await run("ffmpeg", ["-hide_banner", "-y",
+      "-i", phoneBlock, "-i", lzBlock, "-i", screenAudio,
+      "-filter_complex",
+        `[0:v]fps=30,scale=${VP.w}:${VP.h},setsar=1[p];[1:v]fps=30,scale=${VP.w}:${VP.h},setsar=1[l];[p][l]concat=n=2:v=1:a=0[v]`,
+      "-map", "[v]", "-map", "2:a", "-t", tEnd.toFixed(3),
+      "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
+      "-c:a", "aac", "-b:a", "192k", heroScreen], { captureStderr: true });
+  } else if (!fs.existsSync(phoneBlock)) {
+    console.log(`[hero]   [i] Phone-Block fehlt (${path.relative(REPO_ROOT, phoneBlock)}) — erst: render_hero_phone.mjs --call-dur ${dCall.toFixed(1)}`);
+  }
+
+  // Gate: voller Screen-Preview ≈ Audio-Master-Dauer, Start ≠ schwarz
+  let heroGate = null;
+  if (heroScreen) {
+    const hd = (await ffprobeInfo(heroScreen)).duration;
+    const { stderr: bd } = await run("ffmpeg", ["-hide_banner", "-i", heroScreen,
+      "-vf", "blackdetect=d=0.2:pic_th=0.98", "-an", "-f", "null", "-"], { captureStderr: true }).catch((e) => ({ stderr: String(e) }));
+    const startBlack = /black_start:0[.\s]/.test(bd);
+    heroGate = { dur_ok: Math.abs(hd - tEnd) < 0.4, dur_s: +hd.toFixed(3), start_not_black: !startBlack };
+    console.log(`[hero]   Hero-Screen ${hd.toFixed(1)}s · dur_ok ${heroGate.dur_ok ? "PASS" : "FAIL"} · start≠schwarz ${heroGate.start_not_black ? "PASS" : "FAIL"} → ${path.relative(REPO_ROOT, heroScreen)}`);
+  }
+
   // ── 3) Timeline + Report ────────────────────────────────────────────────
   const timeline = {
     generated: new Date().toISOString().slice(0, 10),
@@ -240,11 +270,15 @@ async function phaseMontage() {
     durations_s: { HERO05: +d05.toFixed(3), call: +dCall.toFixed(3), HERO06: +d06.toFixed(3),
       HERO07: +d07.toFixed(3), leitzentrale_block: +lzDur.toFixed(3) },
     blocks: {
-      phone: { built: false, note: "Phone-Visual (ring→call→ended) = eigener Render, s. Rest-Blocker" },
+      phone: { built: !!phoneDur, file: phoneDur ? "block_phone.mp4" : null,
+        dur_s: phoneDur ? +phoneDur.toFixed(3) : null,
+        sync: "ring→call-active(Timer)→beendet, getaktet auf HERO-05+ring+Call-Audio; OHNE Gesicht (Post-Layer)",
+        note: "Brunner-Stimme = Platzhalter gunnar; Call-Screen-Ort zeigt 'Zürich' (kosmetisch)" },
       leitzentrale: { built: !!lzBlock, mode: lzMode,
         file: lzBlock ? path.relative(REPO_ROOT, lzBlock) : null,
         sync: "beat-getaktet: HERO-06=dashboard+NEU, HERO-07=detail+VERLAUF (frame-basiert v1; Motion-Webm=v2)" },
     },
+    hero_screen: heroScreen ? { file: path.relative(REPO_ROOT, heroScreen), gate: heroGate } : null,
     audio_master: { file: path.relative(REPO_ROOT, screenAudio),
       total_dur_s: +tEnd.toFixed(3), gates: { loudness: aGL, clipping: aGC } },
     open: ["Phone-Visual-Block (Samsung ring→call→ended, ohne Gesicht)",
