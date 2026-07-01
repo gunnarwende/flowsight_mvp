@@ -119,14 +119,15 @@ async function knoten2Flow(page, shot) {
   await mitInput.waitFor({ state: "visible", timeout: 8000 });
   await mitInput.scrollIntoViewIfNeeded().catch(() => {});
   await shot("k2_04a_edit.png");
-  // Picker öffnen → erstes Mitglied ("Dörfler") wählen
+  // Picker öffnen → Mitarbeiter "M. Keller" wählen (Owner Dörfler delegiert an Team)
+  const TEAMMATE = process.env.TEAMMATE || "M. Keller";
   await mitInput.click();
-  const option = page.getByText("Dörfler", { exact: true }).first();
+  const option = page.getByText(TEAMMATE, { exact: true }).first();
   await option.waitFor({ state: "visible", timeout: 6000 });
   await shot("k2_04b_picker.png");
   await option.click();
-  // Anker: Zuständig-Chip "Dörfler ✕" gesetzt
-  await page.locator(':text("Dörfler"):visible').first().waitFor({ state: "visible", timeout: 5000 });
+  // Anker: Zuständig-Chip "M. Keller ✕" gesetzt
+  await page.locator(`:text("${TEAMMATE}"):visible`).first().waitFor({ state: "visible", timeout: 5000 });
   // Speichern — löst Benachrichtigungs-Warnung aus (Zuständiger würde per E-Mail
   // benachrichtigt). WICHTIG: NIE "Benachrichtigen" (echte Mail an Prospect-Adresse!),
   // sondern "Trotzdem speichern" → persistiert ohne Versand.

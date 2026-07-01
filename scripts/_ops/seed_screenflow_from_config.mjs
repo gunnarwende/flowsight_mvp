@@ -175,10 +175,16 @@ async function main() {
   // with the correct display_name. We add BOTH as staff:
   //   - prospect email (for OTP login in pipeline)
   //   - admin@flowsight.ch (for admin magic-link login in produce_screenflow.mjs)
+  // Bible §12: Der ZUSTÄNDIG-Picker muss ein REALISTISCHES, DISTINKTES Team zeigen
+  // (nie 2× derselbe Name). admin@flowsight.ch = eingeloggter User im Dreh → treibt das
+  // Greeting "Guten Abend, <tenantShortName>" (getGreeting + staffName). Darum bleibt admin@
+  // = tenantShortName ("Dörfler"). Der prospect-Staff wird ein distinkter Dummy-Mitarbeiter,
+  // damit der Picker zwei verschiedene Personen zeigt (Owner + Mitarbeiter) statt Duplikat.
+  const teammate = seed.dummy_teammate || "M. Keller";
   const staffEntries = [
     {
       tenant_id: TID,
-      display_name: tenantShortName,
+      display_name: teammate,
       email: prospectEmail,
       role: "admin",
       is_active: true,
@@ -210,7 +216,7 @@ async function main() {
       await sb.from("staff").insert(entry);
     }
   }
-  console.log(`✓ Staff upserted: display_name="${tenantShortName}" for ${prospectEmail} + admin@flowsight.ch`);
+  console.log(`✓ Staff upserted: "${teammate}" (${prospectEmail}) + "${tenantShortName}" (admin@flowsight.ch) → Picker = 2 distinkte Personen, Greeting via admin@`);
 
   // B4 (Quality Gate): Admin-User app_metadata für neuen Tenant updaten.
   // Ohne das sieht admin@flowsight.ch die Leitzentrale mit JWT-Home-Tenant
