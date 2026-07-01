@@ -174,7 +174,7 @@ echte System arbeiten.
 **Dynamik:** pro Betrieb neu vertont = **alle 3 Begrüßungen** (`[Betrieb]`) · Call-1B-Lisa · Call-2 Kunde-Z2 + Lisa-Z3+Z5 (`[Inhaber]`). Rest = einmal für alle. **Fallback** Inhaber „?": „Herr [Inhaber]" → „der Chef" (Universal-Aufnahme).
 
 ### Knoten ② — „Behalt ich den Überblick?" (GELOCKT 2026-06-28)
-**Ziel:** Büro-/Mehraufwand-Angst auflösen — der Flip *weniger, nicht mehr*: eine Liste am Handy, füllt sich selbst, ersetzt Zettel + Im-Kopf-Behalten (kein Tool *mehr*). **Form:** Bildschirm-Aufnahme der Leitzentrale **am Handy** (echte App, kaum Post) + **DU im VO** — kein Anruf, kein Gesicht, der Screen führt. **Universell** (kein Swap, *eine* Aufnahme für alle).
+**Ziel:** Büro-/Mehraufwand-Angst auflösen — der Flip *weniger Arbeit, mehr Überblick*: eine Liste am Handy, füllt sich selbst, ersetzt Zettel + Im-Kopf-Behalten (kein Tool *mehr*, sondern der Überblick, den er sucht). **Form:** Bildschirm-Aufnahme der Leitzentrale **am Handy** (echte App, kaum Post) + **DU im VO** — kein Anruf, kein Gesicht, der Screen führt. **Universell** (kein Swap, *eine* Aufnahme für alle).
 
 | Bild (echte App, Handy) | DU (VO) |
 |---|---|
@@ -182,7 +182,7 @@ echte System arbeiten.
 | (nichts wird getippt — der Fall steht schon da) | „Was reinkommt, steht von selbst drin — Sie tippen nichts ab." |
 | Blick über **Neu · Bei uns · Erledigt** | „Ein Blick: was ist neu, was läuft, was ist erledigt." |
 | Tipp auf Brunner → Zuständig/Status setzen | „Antippen, wer's macht — fertig." |
-| zurück zur Liste, ruhig | „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. **Weniger, nicht mehr.**" |
+| zurück zur Liste, ruhig | „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. **Weniger Arbeit, mehr Überblick.**" |
 
 **Liste = sauber:** nur der **Brunner-Fall aus dem Hero** (Kontinuität — den sehen *alle*) + **neutrale „Bei uns/Erledigt"-Füllung** (etabliert, wie Hero-Dashboard NEU 1 / Bei uns 7 / Erledigt 23). **Die Knoten-①-Fälle (Notfall/Frust/Zusatzkosten-Anruf) bleiben DRAUSSEN** — Knoten sind opt-in & unabhängig, ② darf nur auf den Hero bauen, nicht auf ein gesehenes ①.
 **Abhängigkeit:** Seed-Demo-Fall (Brunner). *(Optional geparkt: Vorher/Nachher Zettelchaos → eine Liste — kostet ein gestelltes Set, v1 trägt's der VO.)*
