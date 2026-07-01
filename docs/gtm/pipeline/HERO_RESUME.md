@@ -22,10 +22,12 @@ Lessons-Fundus: [`_archive/PIPELINE_BIBLE_historie_bis_20260603.md`](../../_arch
 
 ## Wo wir stehen (Stand 2026-07-01)
 - Hero-**Script + Runsheet + Bauplan = fertig & gemerged.** Founder verinnerlicht den Hero.
-- **Founder dreht heute/morgen** die universellen Gesichts- + VO-Blöcke (Røde/Loom/Speakflow).
-- **Noch NICHT gebaut:** `produce_hero`-Orchestrator · Hero-Call-Audio (Lisa+Brunner, neue kurze Zeilen) · Seed Brunner/Frauenfeld (Supabase) · Screen-Renders (Telefon + Leitzentrale-NEU→Filter→Fall→Verlauf) · Knoten-Reveal-Frontend · Hero-QG · Beweis-Seite auf „1 Hero + Knoten".
+- **Aufnahme-Skripte** (Schnipsel-Format, je Satz + Regie) live: `docs/gtm/pipeline/aufnahme/01_HERO.md`…`05_KNOTEN-4_kosten.md` (IDs HERO-01..14 +W1–3, K1-01, K2-01..05, K3-01..10, K4-01..09).
+- ✅ **Founder-Audio Phase 1 KOMPLETT (gemerged #771):** alle 42 Founder-Schnipsel aufgenommen, transkript-gemappt (Whisper large-v3), gemastert (−16 LUFS / TP −1 dBTP, 48 kHz mono). Kein Re-Take. Manifest + Transkripte im git (`aufnahme/_takes/manifest.json`, `transcripts/`); Master-WAV auf **Bunny Storage** (Zone `flowsight-stern3-backup`, `hero-audio/masters/`, URLs im Manifest) + lokal auf dem Laptop für die Montage. **Governance:** `transkript` = ship-truth, `skript_soll` = gelockter Wortlaut daneben; Skripte bleiben clean (Filler NICHT enshrined).
+- **Noch NICHT gebaut (Phase 2):** `produce_hero`-Orchestrator · Hero-Call-Audio (Lisa+Brunner, neue kurze Zeilen) · Seed Brunner/Frauenfeld (Supabase) · Screen-Renders (Telefon + Leitzentrale-NEU→Filter→Fall→Verlauf) · Knoten-Reveal-Frontend · Hero-QG · Beweis-Seite auf „1 Hero + Knoten".
 
-## Nächste Aktion (wenn Founder am Laptop / Aufnahmen im Kasten)
+## Nächste Aktion — Phase 2 (Founder-Audio ist im Kasten; laptop-/key-gebunden)
+0. **Founder-Audio** = fertig (s. o., Bunny + `_takes/manifest.json`). Ab hier baut die Montage darauf auf.
 1. **Seed** Brunner/Bad-Wärmepumpe/Frauenfeld setzen (Demo-Tenant Dörfler AG) — Supabase/Laptop bzw. Workflow.
 2. **Hero-Call-Audio** (Lisa 6 Zeilen + Brunner 3) rendern (ElevenLabs) + `assemble_call`-Struktur; **Greeting = volle-Zeile-Render**, kein fester Slot.
 3. **Screen-Footage** via `record_leitsystem_screen.mjs` + `record_phone_call_visual.mjs` (Playwright).
