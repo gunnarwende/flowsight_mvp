@@ -1,0 +1,72 @@
+{
+  "generated": "2026-07-01",
+  "phase": "montage",
+  "section": "screen 13–49 (ohne Gesicht)",
+  "gewerk": "waerme",
+  "betrieb": "Dörfler AG",
+  "master_clock": "audio",
+  "brunner_voice": "gunnar",
+  "anchors_s": {
+    "ring_start": 0,
+    "call_start": 1.739,
+    "call_end": 31.618,
+    "phone_end": 32.618,
+    "dash_start": 32.618,
+    "detail_start": 37.77,
+    "end": 43.55
+  },
+  "durations_s": {
+    "HERO05": 1.239,
+    "call": 29.879,
+    "HERO06": 4.853,
+    "HERO07": 5.779,
+    "leitzentrale_block": 10.932
+  },
+  "blocks": {
+    "phone": {
+      "built": false,
+      "note": "Phone-Visual (ring→call→ended) = eigener Render, s. Rest-Blocker"
+    },
+    "leitzentrale": {
+      "built": true,
+      "mode": "frames",
+      "file": "docs\\gtm\\pipeline\\06_video_production\\_generated\\hero_montage\\block_leitzentrale.mp4",
+      "sync": "beat-getaktet: HERO-06=dashboard+NEU, HERO-07=detail+VERLAUF (frame-basiert v1; Motion-Webm=v2)"
+    }
+  },
+  "audio_master": {
+    "file": "docs\\gtm\\pipeline\\06_video_production\\_generated\\hero_montage\\hero_screen_audio.wav",
+    "total_dur_s": 43.55,
+    "gates": {
+      "loudness": {
+        "pass": true,
+        "metric": {
+          "I": -15.9,
+          "TP": -1,
+          "LRA": 4.6,
+          "fallbackMeanVolume": null
+        },
+        "expected": {
+          "I": "-16±1",
+          "TP": "≤-1"
+        },
+        "msg": "loudness ok"
+      },
+      "clipping": {
+        "pass": true,
+        "metric": {
+          "TP": -1
+        },
+        "expected": {
+          "TP": "<0 dBFS"
+        },
+        "msg": "no clipping"
+      }
+    }
+  },
+  "open": [
+    "Phone-Visual-Block (Samsung ring→call→ended, ohne Gesicht)",
+    "Gesicht-Bookends 0–13 / 49–82 (Post-Layer)",
+    "Brunner-FINAL-Stimme (Platzhalter gunnar)"
+  ]
+}
