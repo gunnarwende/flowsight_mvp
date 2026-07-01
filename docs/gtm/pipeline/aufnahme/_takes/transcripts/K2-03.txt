@@ -1,0 +1,4 @@
+# K2-03  quelle=K2/3.wav
+SHIP-TRUTH (gesprochen): Ein Blick, was ist neu, was läuft, was ist erledigt.
+SKRIPT-SOLL (gelockt):   Ein Blick: was ist neu, was läuft, was ist erledigt.
+match=exakt  sim=1.0  status=ok

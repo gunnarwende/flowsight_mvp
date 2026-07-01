@@ -1,0 +1,4 @@
+# HERO-03  quelle=Hero/cold/1.wav
+SHIP-TRUTH (gesprochen): Und was Sie nicht sehen, geht lautlos zum nächsten.
+SKRIPT-SOLL (gelockt):   Und was Sie nicht sehen, geht lautlos zum Nächsten.
+match=exakt  sim=1.0  status=ok

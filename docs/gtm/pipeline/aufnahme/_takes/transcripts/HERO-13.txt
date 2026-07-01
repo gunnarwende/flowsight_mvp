@@ -1,0 +1,4 @@
+# HERO-13  quelle=['Hero/cold/9.wav', 'Hero/cold/10.wav']
+SHIP-TRUTH (gesprochen): Ich habe das gebaut, weil ich gesehen habe, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie sie es bis eben nicht gemerkt haben.
+SKRIPT-SOLL (gelockt):   Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben.
+match=leichte_abweichung  sim=0.929  status=ok

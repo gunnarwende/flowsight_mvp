@@ -1,0 +1,4 @@
+# HERO-05  quelle=Hero/cold/3.wav
+SHIP-TRUTH (gesprochen): Ein neuer Kunde ruft an.
+SKRIPT-SOLL (gelockt):   Ein neuer Kunde ruft an.
+match=exakt  sim=1.0  status=ok

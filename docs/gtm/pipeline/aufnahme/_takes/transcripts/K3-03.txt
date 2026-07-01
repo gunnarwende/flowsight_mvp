@@ -1,0 +1,4 @@
+# K3-03  quelle=K3/3.wav
+SHIP-TRUTH (gesprochen): Das stellen Sie ein. Ihr Betrieb, Ihre Regeln.
+SKRIPT-SOLL (gelockt):   Das stellen Sie ein. Ihr Betrieb, Ihre Regeln.
+match=exakt  sim=1.0  status=ok

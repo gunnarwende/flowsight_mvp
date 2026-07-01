@@ -1,0 +1,4 @@
+# K2-04  quelle=K2/4.wav
+SHIP-TRUTH (gesprochen): Antippen, wer es macht. Fertig.
+SKRIPT-SOLL (gelockt):   Antippen, wer's macht — fertig.
+match=exakt  sim=1.0  status=ok

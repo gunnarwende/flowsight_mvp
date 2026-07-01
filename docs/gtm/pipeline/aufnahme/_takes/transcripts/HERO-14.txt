@@ -1,0 +1,4 @@
+# HERO-14  quelle=Hero/cold/11.wav
+SHIP-TRUTH (gesprochen): Bei ihnen geht ab jetzt nichts mehr verloren.
+SKRIPT-SOLL (gelockt):   Bei Ihnen geht ab jetzt nichts mehr verloren.
+match=exakt  sim=1.0  status=ok

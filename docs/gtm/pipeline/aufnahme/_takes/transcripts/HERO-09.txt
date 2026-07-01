@@ -1,0 +1,4 @@
+# HERO-09  quelle=Hero/cold/7.wav
+SHIP-TRUTH (gesprochen): Und nicht nur Anrufe, auch was über Ihre Website oder per E-Mail reinkommt, landet hier am selben Ort.
+SKRIPT-SOLL (gelockt):   Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort.
+match=exakt  sim=1.0  status=ok

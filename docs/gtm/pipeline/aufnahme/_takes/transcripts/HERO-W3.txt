@@ -1,0 +1,4 @@
+# HERO-W3  quelle=Hero/warm/3.wav
+SHIP-TRUTH (gesprochen): Fangen wir an.
+SKRIPT-SOLL (gelockt):   Fangen wir an.
+match=exakt  sim=1.0  status=ok

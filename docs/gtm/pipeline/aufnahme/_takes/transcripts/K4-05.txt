@@ -1,0 +1,4 @@
+# K4-05  quelle=K4/3.wav
+SHIP-TRUTH (gesprochen): Ihre Nummer bleibt und das Zurückdrehen dauert nur zwei Minuten.
+SKRIPT-SOLL (gelockt):   Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten.
+match=leichte_abweichung  sim=0.824  status=ok

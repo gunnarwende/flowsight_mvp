@@ -1,0 +1,4 @@
+# K4-04  quelle=K4/3.wav
+SHIP-TRUTH (gesprochen): Was jetzt schon gilt, monatlich kündbar.
+SKRIPT-SOLL (gelockt):   Was jetzt schon gilt: monatlich kündbar.
+match=exakt  sim=1.0  status=ok

@@ -1,0 +1,4 @@
+# HERO-01  quelle=Hero/cold/1.wav
+SHIP-TRUTH (gesprochen): Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?
+SKRIPT-SOLL (gelockt):   Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?
+match=exakt  sim=1.0  status=ok

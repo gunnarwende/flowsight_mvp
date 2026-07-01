@@ -1,0 +1,4 @@
+# HERO-11  quelle=Hero/cold/8.wav
+SHIP-TRUTH (gesprochen): Monatlich kündbar?
+SKRIPT-SOLL (gelockt):   Monatlich kündbar.
+match=exakt  sim=1.0  status=ok

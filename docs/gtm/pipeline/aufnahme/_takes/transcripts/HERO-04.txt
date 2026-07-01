@@ -1,0 +1,4 @@
+# HERO-04  quelle=Hero/cold/2.wav
+SHIP-TRUTH (gesprochen): Genau das hört jetzt auf.
+SKRIPT-SOLL (gelockt):   Genau das hört jetzt auf.
+match=exakt  sim=1.0  status=ok

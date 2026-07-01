@@ -1,0 +1,4 @@
+# K4-02  quelle=K4/1.wav
+SHIP-TRUTH (gesprochen): Den Preis sage ich Ihnen gerade heraus, wenn wir reden. Er muss sich für Ihren Betrieb rechnen.
+SKRIPT-SOLL (gelockt):   Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen.
+match=leichte_abweichung  sim=0.848  status=ok

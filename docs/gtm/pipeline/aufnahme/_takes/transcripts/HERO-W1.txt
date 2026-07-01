@@ -1,0 +1,4 @@
+# HERO-W1  quelle=Hero/warm/1.wav
+SHIP-TRUTH (gesprochen): Schön, dass wir telefoniert haben. Wie besprochen.
+SKRIPT-SOLL (gelockt):   Schön, dass wir telefoniert haben. Wie besprochen.
+match=exakt  sim=1.0  status=ok

@@ -1,0 +1,4 @@
+# K4-01  quelle=K4/1.wav
+SHIP-TRUTH (gesprochen): Sie haben jetzt gesehen, worum es geht.
+SKRIPT-SOLL (gelockt):   Sie haben jetzt gesehen, worum's geht.
+match=exakt  sim=1.0  status=ok
