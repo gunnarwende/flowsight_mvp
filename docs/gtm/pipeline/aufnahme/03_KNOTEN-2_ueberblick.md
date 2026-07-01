@@ -4,7 +4,7 @@
 > Einzeln aufnehmen (`K2-01.wav` …), **1 Sek Stille vor/nach**, min. 3 Takes. Später VO über den Leitzentrale-Screen.
 
 ## ⭐ Prinzip
-**SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Noch ein Programm, das ich pflegen muss — mehr Büro-Arbeit." **Deine Überzeugung = Entlastung** — der Flip *weniger, nicht mehr*. Ruhig, fast erleichtert, **nicht anpreisen** — als nähmst du jemandem eine Last ab.
+**SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Noch ein Programm, das ich pflegen muss — mehr Büro-Arbeit." **Deine Überzeugung = Entlastung** — der Flip *weniger Arbeit, mehr Überblick*. Ruhig, fast erleichtert, **nicht anpreisen** — als nähmst du jemandem eine Last ab.
 
 ---
 
@@ -22,8 +22,8 @@
 **K2-04** — „Antippen, wer's macht — fertig."
 → Knapp, leicht. „fertig" mit einem kleinen Punkt dahinter.
 
-**K2-05** — „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger, nicht mehr."
-→ Ruhig aufbauen, dann **„Weniger, nicht mehr." als betonter Schlusspunkt**, klar getrennt.
+**K2-05** — „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger Arbeit, mehr Überblick."
+→ Ruhig aufbauen, dann **„Weniger Arbeit, mehr Überblick." als betonter Schlusspunkt** — klare Antithese, benennt den Payoff (Überblick = die Knoten-Überschrift).
 
 ---
 Wortlaut gelockt: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md) (Knoten ②).
