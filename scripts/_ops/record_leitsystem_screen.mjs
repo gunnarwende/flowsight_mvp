@@ -1,212 +1,128 @@
 #!/usr/bin/env node
 /**
- * record_leitsystem_screen.mjs — Programmatischer Leitsystem Screen-Capture
+ * record_leitsystem_screen.mjs — Hero-Leitzentrale Screen-Capture (Stern 3)
  *
- * Öffnet das Leitsystem im Mobile-Viewport, navigiert durch die App,
- * nimmt Screenshots + Video auf. Kein echtes Handy nötig.
+ * Nimmt das Hero-Dashboard + Knoten-②-Flow am Mobile-Viewport auf:
+ *   Dashboard (NEU=1) → NEU-Filter → Brunner-Fall → Fall-Detail → Scroll zum VERLAUF.
+ * Alles ECHTE App-Interaktion gegen die Live-App. State-basierte Anker (waitForSelector),
+ * NIE blinde Timeouts an kritischen Stellen (Anker-Disziplin, PIPELINE_BIBLE §4/§9).
+ *
+ * Auth: Cookies aus production/.playwright_cookies.json (generate_auth_link.mjs
+ *       --email=admin@flowsight.ch VORHER laufen lassen). Tenant via fs_active_tenant.
  *
  * Usage:
- *   node --env-file=.env.local scripts/_ops/record_leitsystem_screen.mjs \
- *     --slug=doerfler-ag --case-id=<uuid> [--output-dir=production/screens/doerfler-ag]
+ *   node --env-file=src/web/.env.local scripts/_ops/record_leitsystem_screen.mjs \
+ *     --slug=doerfler-ag [--case-id=<uuid>] [--output-dir=production/screens/doerfler-ag]
+ *   HEADLESS=1 … → headless (CI); Default: sichtbar (Laptop).
  *
- * Requires: Playwright, SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
- *
- * Output:
- *   <output-dir>/
- *     01_homescreen.png       — App icon on homescreen (static)
- *     02_leitsystem_overview.png — KPI overview
- *     03_kpi_neu.png          — "Neu" KPI highlighted
- *     04_kpi_bei_uns.png      — "Bei uns" KPI highlighted
- *     05_kpi_erledigt.png     — "Erledigt" KPI highlighted
- *     06_kpi_bewertung.png    — "Bewertung" KPI highlighted
- *     07_scroll_tabelle.png   — Table scrolled down
- *     08_fall_oben.png        — Case detail top
- *     09_fall_mitte.png       — Case detail middle (description + contact)
- *     10_fall_unten.png       — Case detail bottom (timeline)
- *     screen_recording.webm   — Full screen recording
+ * Output: <output-dir>/{02_dashboard,03_neu_filter,04_fall_oben,05_fall_mitte,
+ *         06_verlauf,07_overview_final}.png + screen_recording.webm
  */
-
-import { chromium } from "playwright";
+import { createRequire } from "node:module";
 import fs from "node:fs";
 import path from "node:path";
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
 
-// ── Args ──────────────────────────────────────────────────────────
-const args = Object.fromEntries(
-  process.argv.slice(2).map((a) => {
-    const idx = a.indexOf("=");
-    if (idx === -1) return [a.replace(/^--/, ""), "true"];
-    return [a.substring(0, idx).replace(/^--/, ""), a.substring(idx + 1)];
-  })
-);
-
+const args = Object.fromEntries(process.argv.slice(2).map((a) => {
+  const i = a.indexOf("="); if (i === -1) return [a.replace(/^--/, ""), "true"];
+  return [a.substring(0, i).replace(/^--/, ""), a.substring(i + 1)];
+}));
 const slug = args.slug || "doerfler-ag";
 const caseId = args["case-id"] || "";
 const outputDir = args["output-dir"] || `production/screens/${slug}`;
 const baseUrl = "https://flowsight.ch";
+const headless = process.env.HEADLESS === "1";
+const COOKIE_FILE = "production/.playwright_cookies.json";
+const VIEWPORT = { width: 393, height: 852 };
 
 fs.mkdirSync(outputDir, { recursive: true });
 
-// ── Phone viewport (Samsung S23 equivalent) ───────────────────────
-const VIEWPORT = { width: 393, height: 852 };
-
-// ── Main ──────────────────────────────────────────────────────────
 async function main() {
-  console.log(`\n  Leitsystem Screen Capture`);
-  console.log(`  Slug:    ${slug}`);
-  console.log(`  Case:    ${caseId || "auto (first 'new' case)"}`);
-  console.log(`  Output:  ${outputDir}`);
-  console.log(`  Base:    ${baseUrl}\n`);
+  console.log(`\n  Hero-Leitzentrale Capture · slug=${slug} · headless=${headless}`);
+  if (!fs.existsSync(COOKIE_FILE)) {
+    console.error(`  ❌ ${COOKIE_FILE} fehlt. Erst: node --env-file=src/web/.env.local scripts/_ops/generate_auth_link.mjs --email=admin@flowsight.ch`);
+    process.exit(1);
+  }
+  const cookies = JSON.parse(fs.readFileSync(COOKIE_FILE, "utf8"));
 
-  const browser = await chromium.launch({ headless: false, slowMo: 300 }); // slowMo for natural-looking navigation
+  const browser = await chromium.launch({ headless, slowMo: headless ? 0 : 250 });
   const context = await browser.newContext({
-    viewport: VIEWPORT,
-    deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true,
+    viewport: VIEWPORT, deviceScaleFactor: 2, isMobile: true, hasTouch: true,
     userAgent: "Mozilla/5.0 (Linux; Android 14; SM-S911B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    recordVideo: { dir: outputDir, size: VIEWPORT }, // → screen_recording.webm (Montage-Input)
   });
-
-  // Start recording
+  await context.addCookies(cookies);
+  await context.addCookies([{ name: "fs_active_tenant", value: slug, domain: "flowsight.ch", path: "/" }]);
   const page = await context.newPage();
-  await page.video()?.path(); // Initialize video if available
+  const shot = async (n) => { await page.screenshot({ path: path.join(outputDir, n) }); console.log("  📸", n); };
 
-  // ── Step 1: Auto-Login via Magic Link ─────────────────────────────
-  console.log("  1. Authenticating...");
+  // ── 1. Dashboard laden + Login-Anker ──────────────────────────────
+  await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "networkidle", timeout: 20000 });
+  if (page.url().includes("login")) { console.error("  ❌ Nicht eingeloggt — Cookies abgelaufen? Neu generieren."); process.exit(1); }
+  // Anker: KPI-Leiste da (NEU sichtbar) + Hero-Fall in der Liste.
+  // "Frauenfeld" statt "Wärmepumpe" — letzteres matcht ein hidden <option> im
+  // Kategorie-Filter; Frauenfeld ist nur dem Brunner-Fall eigen + sichtbar.
+  await page.locator('button:has-text("NEU"):visible').first().waitFor({ state: "visible", timeout: 15000 });
+  await page.locator(':text("Frauenfeld"):visible').first().waitFor({ state: "visible", timeout: 15000 });
+  console.log("  ✅ Eingeloggt, Dashboard geladen (NEU + Brunner sichtbar)");
 
-  // Read pre-generated magic link (no OTP needed)
-  const authLinkPath = "production/.playwright_auth_link";
-  if (!fs.existsSync(authLinkPath)) {
-    console.error("  ❌ No auth link found. Run: node --env-file=.env.local -e '...' to generate one.");
-    process.exit(1);
+  // Push/Notif-Banner wegklicken (räumt das Bild)
+  for (const label of ["Später", "Nicht jetzt", "Schliessen"]) {
+    const el = page.locator(`button:has-text("${label}")`).first();
+    if (await el.count() && await el.isVisible().catch(() => false)) { await el.click().catch(() => {}); break; }
   }
+  await page.waitForLoadState("networkidle");
+  await shot("02_dashboard.png");
 
-  const authLink = fs.readFileSync(authLinkPath, "utf8").trim();
+  // ── 2. NEU-Filter tippen → nur der Brunner-Fall (blauer Ring) ─────
+  await page.locator('button:has-text("NEU"):visible').first().click();
+  // Anker (state, nicht Zeit): der Notfall "Claudia Roth" (In Arbeit) verschwindet
+  // aus der Liste, der Brunner-Fall (Frauenfeld) bleibt.
+  await page.locator(':text("Claudia Roth"):visible').first()
+    .waitFor({ state: "hidden", timeout: 8000 })
+    .catch(() => console.log("  ⚠️ NEU-Filter-Anker weich (prüfe Bild)"));
+  await page.locator(':text("Frauenfeld"):visible').first().waitFor({ state: "visible", timeout: 5000 });
+  await shot("03_neu_filter.png");
 
-  // Navigate to the magic link → auto-login
-  await page.goto(authLink, { waitUntil: "networkidle", timeout: 15000 });
-  await page.waitForTimeout(2000);
-
-  // Set tenant cookie for the target slug
-  await context.addCookies([{
-    name: "fs_active_tenant",
-    value: slug,
-    domain: "flowsight.ch",
-    path: "/",
-  }]);
-
-  // Navigate to cases
-  await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "networkidle", timeout: 15000 });
-
-  // Check if we're logged in
-  const currentUrl = page.url();
-  if (currentUrl.includes("login")) {
-    console.error("  ❌ Login failed. Magic link may be expired. Regenerate it.");
-    process.exit(1);
-  }
-
-  console.log("  ✅ Logged in successfully (no OTP)");
-  await page.waitForTimeout(3000);
-
-  // ── Step 2: Overview Screenshot ─────────────────────────────────
-  console.log("  2. Overview screenshot...");
-  await page.screenshot({ path: path.join(outputDir, "02_leitsystem_overview.png") });
-
-  // ── Step 3: KPI Highlights (click each KPI) ────────────────────
-  console.log("  3. KPI highlights...");
-
-  // Click "Neu" KPI
-  try {
-    const neuKpi = page.locator("text=NEU").first();
-    await neuKpi.click();
-    await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(outputDir, "03_kpi_neu.png") });
-
-    // Click "Bei uns" KPI
-    const beiUnsKpi = page.locator("text=BEI UNS").first();
-    await beiUnsKpi.click();
-    await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(outputDir, "04_kpi_bei_uns.png") });
-
-    // Click "Erledigt" KPI
-    const erledigtKpi = page.locator("text=ERLEDIGT").first();
-    await erledigtKpi.click();
-    await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(outputDir, "05_kpi_erledigt.png") });
-
-    // Click "Bewertung" KPI (stars area)
-    const bewertungKpi = page.locator("text=BEWERTUNG").first();
-    await bewertungKpi.click();
-    await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(outputDir, "06_kpi_bewertung.png") });
-
-    // Reset filter
-    const resetBtn = page.locator("text=Filter zurücksetzen");
-    if (await resetBtn.isVisible()) {
-      await resetBtn.click();
-      await page.waitForTimeout(500);
-    }
-  } catch (e) {
-    console.log("  ⚠️  KPI click failed:", e.message);
-  }
-
-  // ── Step 4: Scroll down to show table ──────────────────────────
-  console.log("  4. Scroll table...");
-  await page.evaluate(() => window.scrollTo({ top: 400, behavior: "smooth" }));
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: path.join(outputDir, "07_scroll_tabelle.png") });
-
-  // ── Step 5: Open case detail ───────────────────────────────────
-  console.log("  5. Case detail...");
-
-  // Find and click the target case (or first "Neu" case)
-  try {
-    let caseLink;
-    if (caseId) {
-      caseLink = page.locator(`a[href*="${caseId}"]`).first();
-    } else {
-      // Click the first case with "Rohrbruch" and "Neu" status
-      caseLink = page.locator("text=Rohrbruch").first();
-    }
-
-    await caseLink.click();
-    await page.waitForTimeout(2000);
-
-    // Scroll to top
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(outputDir, "08_fall_oben.png") });
-
-    // Scroll to middle (description + contact)
-    await page.evaluate(() => window.scrollTo({ top: 300, behavior: "smooth" }));
-    await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(outputDir, "09_fall_mitte.png") });
-
-    // Scroll to bottom (timeline)
-    await page.evaluate(() => window.scrollTo({ top: 600, behavior: "smooth" }));
-    await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(outputDir, "10_fall_unten.png") });
-  } catch (e) {
-    console.log("  ⚠️  Case detail failed:", e.message);
-  }
-
-  // ── Step 6: Go back to overview ────────────────────────────────
-  console.log("  6. Back to overview...");
-  await page.goBack();
-  await page.waitForTimeout(2000);
+  // ── 3. Brunner-Fall tippen → Fall-Detail ──────────────────────────
+  await page.locator(':text("Frauenfeld"):visible').first().click();
+  await page.waitForURL(/\/ops\/cases\/[0-9a-f-]{8}/, { timeout: 10000 }).catch(() => {});
+  // Anker: Detail-Kopf da (Adresse/Kunde des Falls)
+  await page.locator(':text("Frauenfeld"):visible').first().waitFor({ state: "visible", timeout: 10000 });
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(500);
-  await page.screenshot({ path: path.join(outputDir, "11_overview_final.png") });
+  await shot("04_fall_oben.png");
+  await page.evaluate(() => window.scrollTo({ top: 320, behavior: "instant" }));
+  await shot("05_fall_mitte.png");
 
-  // ── Done ───────────────────────────────────────────────────────
+  // ── 4. Sanfter Scroll zum VERLAUF (Timeline-Anker, state-basiert) ─
+  let anchored = false;
+  for (const key of ["Verlauf", "Team informiert", "Anruf eingegangen"]) {
+    const el = page.getByText(key).first();
+    if (await el.count()) {
+      await el.scrollIntoViewIfNeeded().catch(() => {});
+      await el.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
+      anchored = true; console.log(`  ⚓ Verlauf-Anker: "${key}"`); break;
+    }
+  }
+  if (!anchored) { console.log("  ⚠️ Kein Verlauf-Anker gefunden — scrolle ans Ende"); await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)); }
+  await shot("06_verlauf.png");
+
+  // ── 5. Zurück zur Übersicht ───────────────────────────────────────
+  await page.goto(`${baseUrl}/ops/cases`, { waitUntil: "networkidle", timeout: 15000 });
+  await page.locator('button:has-text("NEU"):visible').first().waitFor({ state: "visible", timeout: 10000 }).catch(() => {});
+  await shot("07_overview_final.png");
+
+  // ── Video sichern ─────────────────────────────────────────────────
+  const vid = page.video();
+  await context.close();               // finalisiert das Video
+  if (vid) {
+    const src = await vid.path();
+    const dst = path.join(outputDir, "screen_recording.webm");
+    fs.copyFileSync(src, dst); fs.rmSync(src, { force: true });
+    console.log("  🎞️  screen_recording.webm gespeichert");
+  }
   await browser.close();
-
-  console.log(`\n  ✅ Done. Screenshots in ${outputDir}/`);
-  console.log(`  Files:`);
-  const files = fs.readdirSync(outputDir).filter(f => f.endsWith(".png"));
-  files.forEach(f => console.log(`    ${f}`));
+  console.log(`\n  ✅ Fertig → ${outputDir}/`);
 }
-
-main().catch((err) => {
-  console.error("Error:", err);
-  process.exit(1);
-});
+main().catch((e) => { console.error("Error:", e); process.exit(1); });

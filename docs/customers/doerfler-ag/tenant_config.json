@@ -126,6 +126,7 @@
     },
     "notfall_case": {
       "kategorie": "Boiler",
+      "reporter_name": "Claudia Roth",
       "beschreibung": "Boiler komplett defekt — kein Warmwasser. Kunde wartet auf Techniker."
     },
     "wizard_demo_case": {
