@@ -53,7 +53,42 @@ Gesicht+Stimme zusammen (Røde als Mikro der Loom/Kamera): **Hook 0–10**, **Sc
 - **Laptop (Founder):** Gesicht-Aufnahme (Røde/Loom/Speakflow), finale ffmpeg-Heirat, visuelle Abnahme. Supabase-Seed (oder per CI-Workflow).
 
 ## Offen / als Nächstes (CC)
-- `produce_hero.mjs` skizzieren (ruft die Primitive in Hero-Reihenfolge).
+- `produce_hero.mjs` skizzieren (ruft die Primitive in Hero-Reihenfolge). ✅ Phase „call" gebaut (`#773`).
 - Hero-Audio-Segmente exakt auf `assemble_call.mjs`-Struktur mappen (welche Zeile = welches Segment) + Greeting volle-Zeile-Render.
 - Leitzentrale-Nav-Pfad in `record_leitsystem_screen.mjs` auf den Hero-Flow (NEU→Filter→Fall→Verlauf) setzen.
 - Prüfen, ob die Screen-Renders in der Sandbox laufen (Chromium/Playwright) — sonst Laptop-Runbook.
+
+---
+
+> **Geltungsbereich:** Dieser Bauplan gilt für das **ganze Stern-3-Bündel** — Hero **und** Knoten ①–④ **und** E-Mail/Beweis-Seite. Sie sind gekoppelt (s. „go"-Vertrag unten), nicht vier Einzelprojekte.
+
+## 🛡️ Immunsystem — Lehren aus der alten Pipeline (nicht verhandelbar)
+Destilliert aus `PIPELINE_BIBLE.md` §4/§8/§9 + Historie §47/§48/§53 (5 Wochen, inkl. 29.04.-Crash). Jede Regel hat Blut gekostet:
+1. **Audio ist die Master-Uhr.** Erst Call-/VO-Audio final locken, dann slavt ALLES Visuelle (Screen, Gesicht) darauf. **Nie Screen-first** (= der Resync-Rattenschwanz, §53 Phase 2: „Mapping absolut falsch"). *(Bei Stern 3 präventiv erledigt: Founder-Audio Phase 1 zuerst gelockt.)*
+2. **Gesicht/Overlay NIE in der Build-Source.** Visual-Layer (Gesicht, Maus) gehören in **Post**, nie in die Aufnahme (§48/§53: eingefrorenes Loom 0:11–0:50 durch Sharpness-Freeze der Source).
+3. **Overlays in EINEN Filtergraph — kein N-faches Re-Encode.** Das 5-fach-Re-Encode auf 1440×900 H.264 fror die alte Pipeline ein (>1h, >300 MB, 29.04.-Crash). Toast/Badge/Stern-Region = ein `overlay/drawbox`-Graph, nicht sequenziell. Weniger Generationsverlust obendrein.
+4. **Backup-first.** Source NIE ohne Backup überschreiben; **jeden abgenommenen Take/Master sofort sichern** (29.04. = 4–6 h verloren, gerettet nur durchs Apr-27-Backup). *(Stern 3: Founder-Master verlustfrei auf Bunny + Manifest, Originale unangetastet.)*
+5. **Config/Manifest = SSOT, kein Hardcoding.** `HERO_DEMO_SPEC.md` (Wortlaut) + `aufnahme/_takes/manifest.json` (Audio) steuern downstream. Ein Firmenname steht in KEINEM Script.
+6. **Gates = Immunsystem.** Jede vom Founder gefundene Fehlerklasse wird zu einem Gate → fängt sich beim nächsten Build selbst (alt: 12 Gates). Hero-Gates: Start≠schwarz · Greeting-Firmenname (STT) · Schluss-Stille-Cap · Reveal-Timing · Call-Loudness/Clipping (schon in `produce_hero`).
+
+## ⚓ Anker-Disziplin (NEU — dynamisch + state-basiert)
+Die alte Pipeline blutete, wo Anker **fehlten** (§9: „Part 5 GAR NICHT geankert → Maus hängt hinterher"). Neu, härter:
+- **Anker nach JEDER Screenflow-Änderung** — jedes Bild, jeder Flow, jede Animation bekommt sofort einen Ankerpunkt.
+- **State-basiert statt Zeit:** `waitForSelector`/echte Zustands-Events, **nicht** blinde `waitForTimeout` (killt den Aufnahme-Jitter an der Wurzel — der `holdUntilMaster`-Nachfolger).
+- **Verify pro Durchlauf, pro Betrieb:** nach jedem Build je Betrieb gegen die Prüfsteine messen — **Dauer · Sequenz · Qualität**. Der Founder legt die Prüfsteine; jeder wird zu einem Gate.
+- **Dynamisch, nicht hart verdrahtet:** Anker leiten sich aus der Audio-Master-Uhr + Zuständen ab, damit sie über Betriebe/Varianten tragen (alt≠neu: statt fixer Master-Zeiten → aus dem gelockten Audio abgeleitet).
+
+## ⏱️ Performance-Ziel: ~10 Min/Betrieb (alt: 22–40)
+Wo die Zeit steckte (§9-Messung Dörfler 04.06.): T2 5:23 · T3 6:15 · **T4 8:00** — fast alles in Echtzeit-Recordings + T4s fünf Re-Encodes. Hebel neu:
+- **Kürzerer Körper:** 1 Hero (90 s) + kurze Knoten statt 4×~3–6 Min Takes.
+- **Overlays gemerged** (ein Filtergraph, s. Immunsystem #3) → der größte alte Zeitfresser fällt.
+- **Universell-einmal / Canonical-Prinzip:** Hero-Gesicht + Knoten ③/④ = einmal für alle; pro Betrieb nur Greeting/Anliegen-Swap + Seed → Re-Runs erzeugen fast nichts neu.
+- **CI-Parallelität:** mehrere Betriebe auf getrennten Runnern (die alte „strikt sequenziell"-Regel galt dem *einen* lokalen Dev-Server; CI hebt den Flaschenhals).
+- **Cache:** Screen-Renders + Call-Audio cachebar (nur bei Änderung neu).
+
+## 🚦 Der „go"-Vertrag: 1 Betrieb = volles Bündel
+**Trigger:** Sales-Go (Stern-2-Cold-Call positiv, Weg-1-„ja, schicken Sie") — nicht spekulativ kalt (s. `SALES_BIBLE`).
+**Ein Kommando** (`produce_hero --slug <betrieb> --all`, Nachfolger von `produce_videos`) produziert das **ganze Bündel** für den Betrieb:
+- **Hero** (90 s, Bookend) · **Knoten ①–④** · **E-Mail** (`send_outreach`) · **Beweis-Seite** `/p/[token]` (Hero + Knoten-Reveal statt 4 Takes).
+- **Universell (einmal, geteilt):** Founder-Gesicht/VO-Master, Knoten ③/④-Gesicht, Lisa-Zeilen, Schablonen. **Pro Betrieb (Swap):** Greeting-`[Betrieb]`, Anliegen-Gewerk, `[Inhaber]`-Knoten-①-Zeilen, Seed (Fall/Adresse/Kanton), Brand-Farbe, E-Mail-Haken.
+- Gate-gated + pro Betrieb verifiziert (Anker-Disziplin oben), bevor die Beweis-Seite scharf geht.
