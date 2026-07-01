@@ -62,7 +62,7 @@ Ab 49 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drü
 |---|---|---|---|
 | 49–58 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
 | 58–66 | DU | **DU** | „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie." |
-| 66–74 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken." |
+| 66–74 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
 | 74–~82 | DU, Blick hält | **DU** | „Bei Ihnen geht ab jetzt nichts mehr verloren." |
 | ~82–85 | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
 
@@ -235,6 +235,7 @@ echte System arbeiten.
 - **Kein gesprochenes CTA im Hero** — der CTA ist der **Klick auf einen Knoten**, ausgelöst durch den **Reveal**. Schriftlicher CTA sitzt vorgelagert in der E-Mail.
 - **Kein „Gunnar" laut** — vorgelesener Vorname wirkt wie eine laut vorgetragene Signatur. Name höchstens als visuelle Unterzeile.
 - **Letztes Wort = das Versprechen** („Bei Ihnen geht ab jetzt nichts mehr verloren."), dann Knoten-Reveal.
+- **Beat 3 endet auf den Hook-Rückschluss** („Genau wie Sie's bis eben nicht gemerkt haben.", 2026-07-01) — zieht die allgemeine Wunde zu *ihm*, schließt den Hook-Kreis („Sie nicht") und scharniert „bis eben" → „ab jetzt" (Beat 4). Ruhig, kein Vorwurf; **kein Hedge** („vielleicht" bewusst verworfen).
 
 ## Cold-Mail-Audio-Hook (Idee 2026-06-30, Leila-Hormozi-Inspiration) — zu designen mit Stern 3
 > **Auslöser:** Leila Hormozi stellte einen Top-Manager ein, weil er ihr **Audiodateien** schickte („das ist kein Scherz, drück Play" → dann bewies er, was er kann). Founder-Übertrag auf unsere **Cold-Mail** (wenn beim Cold Call niemand rangeht): nicht *über* das Produkt schreiben — **hören lassen.**
