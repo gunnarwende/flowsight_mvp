@@ -24,14 +24,25 @@
   },
   "blocks": {
     "phone": {
-      "built": false,
-      "note": "Phone-Visual (ring→call→ended) = eigener Render, s. Rest-Blocker"
+      "built": true,
+      "file": "block_phone.mp4",
+      "dur_s": 32.633,
+      "sync": "ring→call-active(Timer)→beendet, getaktet auf HERO-05+ring+Call-Audio; OHNE Gesicht (Post-Layer)",
+      "note": "Brunner-Stimme = Platzhalter gunnar; Call-Screen-Ort zeigt 'Zürich' (kosmetisch)"
     },
     "leitzentrale": {
       "built": true,
       "mode": "frames",
       "file": "docs\\gtm\\pipeline\\06_video_production\\_generated\\hero_montage\\block_leitzentrale.mp4",
       "sync": "beat-getaktet: HERO-06=dashboard+NEU, HERO-07=detail+VERLAUF (frame-basiert v1; Motion-Webm=v2)"
+    }
+  },
+  "hero_screen": {
+    "file": "docs\\gtm\\pipeline\\06_video_production\\_generated\\hero_montage\\hero_screen.mp4",
+    "gate": {
+      "dur_ok": true,
+      "dur_s": 43.55,
+      "start_not_black": true
     }
   },
   "audio_master": {
