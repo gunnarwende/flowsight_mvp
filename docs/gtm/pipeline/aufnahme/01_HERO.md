@@ -60,7 +60,19 @@
 **HERO-05** — „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an."
 → Einladend, du trittst zurück und zeigst hin. „Schauen Sie selbst" ruhig (er ist jetzt der, der *sieht*). Danach übernimmt das **Klingeln** (einmal, vollständig) → der Anruf trägt.
 
-## 🟩 SEGMENT 2 — Der Beweis wirkt (VO)
+## 🟩 SEGMENT 2 — Der Beweis wirkt
+
+### 🤖 Der Anruf (vorproduziert — **NICHT du**; damit du weißt, was direkt vor deinen VO-Sätzen läuft)
+> *Ablauf:* einmal Klingeln → dieser Anruf (Lisa + Herr Brunner) → **„Anruf beendet"** → ~1 Sek still → **dann deine VO** (HERO-06/07) über den Dashboard-Screen.
+
+- 🤖 **LISA:** „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?"
+- 🤖 **HERR BRUNNER** *(Wärme-Variante):* „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein." *(Sanitär-Variante: „…jemanden für ein neues Bad, und es eilt ein bisschen.")*
+- 🤖 **LISA:** „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf."
+- 🤖 **LISA:** „Herr Brunner, wie lautet Ihre Adresse?" — 🤖 **BRUNNER:** „Bahnhofstrasse 14, 8500 Frauenfeld."
+- 🤖 **LISA:** „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!"
+- 🤖 **BRUNNER:** „Danke, auf Wiederhören." → **Anruf beendet** → ~1 Sek still
+
+### 👤 Jetzt DEINE zwei VO-Sätze (über den Dashboard-Screen)
 
 **HERO-06** — „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben."
 → Stiller Stolz, kein Verkauf. Fast beiläufig, als wär's selbstverständlich.
