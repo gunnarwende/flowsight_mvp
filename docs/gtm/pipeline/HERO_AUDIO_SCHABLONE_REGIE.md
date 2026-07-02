@@ -29,8 +29,8 @@
 | 4B | **HERO-04B** „Ab jetzt nicht mehr." | **Kipp-Punkt**: Resignation → ruhige Entschlossenheit | **1,0s** (Atem) | 0,5s | *COLD-only, neu*; Konter auf „merken's nicht mal", nicht laut |
 | 5 | **HERO-05** „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an." | einladend, du trittst zurück und zeigst hin | 0,4s | → **KLINGELN** | danach NICHT direkt Lisa |
 | — | **CALL-Block** (Klingeln — *ein vollständiges* → Lisa+Brunner) | menschlich: klingelt einmal ganz, *dann* abnehmen | — | **1,0s** (Anruf beendet) | Founder schweigt; **ein voller „Rrring"** (nicht abgeschnitten) = Pflicht — Kontrast zu „keiner ist rangegangen" |
-| 6 | **HERO-06** „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." | stiller Stolz, unterstated | — | 0,4s | ruhig beginnen |
-| 7 | **HERO-07** „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." | leichtes Crescendo, „…davon wussten" weicher | 0,4s | **1,5s** | eng an 06; danach Atem für die Rückkehr (Bookend) |
+| 6 | **HERO-06** „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren." | stiller Stolz, unterstated | — | **dynamisch** ↓ | **eigenes Snippet**; Pause danach = Dauer des Screen-Übergangs (Tipp→Detail→Scroll), fix erst mit gebautem Screen |
+| 7 | **HERO-07** „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten." | drei Beats leicht getaktet, „…davon wussten" weicher | **dynamisch** ↑ | **1,5s** | **eigenes Snippet** (getrennt von 06 → Pause dazwischen frei setzbar); danach Atem für die Rückkehr (Bookend) |
 | 8 | **HERO-08** „Das ist Ihr echtes System — auf Ihren Namen." | Schluss beginnt: geerdet, warm | **1,2s** | 0,3s | Bookend-Rückkehr; betone „Ihr"/„auf Ihren Namen" |
 | 9 | **HERO-09** „Und nicht nur Anrufe: … am selben Ort." | ruhig ergänzend | 0,3s | **0,5s** | ein Gedanke mit 08 (fließend) |
 | 10 | **HERO-10** „Kein IT-Projekt — Sie steuern alles selbst." | Mauer runter | 0,5s | 0,35s | fließend (eine Bewegung) |

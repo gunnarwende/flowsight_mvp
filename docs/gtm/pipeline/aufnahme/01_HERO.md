@@ -26,8 +26,8 @@
 
 ## 🟩 SEGMENT 2 — Der Beweis wirkt  *(VO über den Dashboard-Screen)*
 > *[Anruf Lisa + Herr Brunner läuft — **nicht du**. Danach kurz still, dann:]*
-> „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben.
-> Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten."
+> „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren.
+> Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."
 
 ## 🟨 SEGMENT 3 — Schluss / Bookend  *(Gesicht zurück, bildfüllend — 4 Beats als EINE Bewegung)*
 > „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort.
@@ -76,12 +76,13 @@
 - 🤖 **BRUNNER:** „Danke, auf Wiederhören." → **Anruf beendet** → ~1 Sek still
 
 ### 👤 Jetzt DEINE zwei VO-Sätze (über den Dashboard-Screen)
+> **Als ZWEI getrennte Snippets aufnehmen** (erst HERO-06, dann HERO-07). Die Pause dazwischen = der Screen-Übergang (Tipp auf die Karte → Detail → Scroll zum Verlauf) — die Länge steht erst mit dem gebauten Screen, darum getrennt: die Montage setzt sie dynamisch. Tipp: 07 direkt nach 06 sprechen, gleicher Ton (Emotion trägt über den Schnitt).
 
-**HERO-06** — „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben."
-→ Stiller Stolz, kein Verkauf. Fast beiläufig, als wär's selbstverständlich.
+**HERO-06** — „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren."
+→ Stiller Stolz, kein Verkauf. **Punkt** nach „Auftrag" = voller Stopp (hier leuchtet die Karte auf). „Angenommen" mit winzigem Gewicht — der stille Konter zu „keiner ist rangegangen".
 
-**HERO-07** — „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten."
-→ Drei Schritte leicht getaktet, kleines Crescendo; „bevor Sie überhaupt davon wussten" weicher/leiser.
+**HERO-07** — „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."
+→ Drei zügige Beats (spiegeln den VERLAUF: *Anruf eingegangen → Fall erfasst → In Ihrer Liste*). **Punkt** nach „bei Ihnen", dann „Bevor Sie überhaupt davon wussten." weicher/leiser.
 
 ## 🟨 SEGMENT 3 — Schluss / Bookend
 
