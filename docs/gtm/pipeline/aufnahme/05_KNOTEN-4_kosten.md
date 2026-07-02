@@ -1,14 +1,31 @@
-# KNOTEN ④ — „Was kostet das — und wie komm ich wieder raus?" — Audio (Schnipsel)
+# KNOTEN ④ — „Was kostet das — und wie komm ich wieder raus?" — Audio
 
-> **Nur das hier.** Jede Zeile = **EIN Schnipsel = EINE Aufnahme.** Satz komplett, dahinter mit welcher Überzeugung. **Keine Zahl nennen.**
-> Einzeln aufnehmen (`K4-01.wav` …), **1 Sek Stille vor/nach**, min. 3 Takes.
+> **So nimmst du auf:** Du, Gesicht (wie der Hero-Schluss). Nimm die 4 Beats als **eine fließende Performance** auf, mehrere Takes. **1 Sek Stille am Anfang und Ende. Keine Zahl nennen.**
+> **Teil 1** = das ganze Script in Beats. **Teil 2** = jeder Satz einzeln + *wie* du ihn sagst.
+> ⚠️ **Inhalt = aktueller gelockter Stand.** Menschlichkeits-Pass (Gedankenstriche → Komma; „Das Risiko trage ich" steht jetzt auch im Hero-Schluss → differenzieren) folgt gemeinsam.
 
 ## ⭐ Prinzip
 **SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Was kostet mich das — und häng ich dann fest?" **Deine Überzeugung = Gewissheit** — Wert vor Preis, volle Risiko-Umkehr, sauberer Ausstieg. „Das Risiko trage ich" nur glaubhaft, wenn du es ruhig sagst wie eine Selbstverständlichkeit.
 
 ---
 
-## 🎯 Schnipsel — Satz + mit welcher Überzeugung
+# TEIL 1 — Das ganze Script (4 Beats)
+
+**① Wert vor Preis:**
+> „Sie haben jetzt gesehen, worum's geht. Den Preis sag ich Ihnen geradeheraus, wenn wir reden — er muss sich für Ihren Betrieb rechnen. Genau das schauen wir uns gemeinsam an."
+
+**② Konkrete Sicherheiten:**
+> „Was jetzt schon gilt: monatlich kündbar. Ihre Nummer bleibt, zurückdrehen dauert zwei Minuten. Und bezahlt wird erst, wenn's bei Ihnen läuft."
+
+**③ Risiko-Umkehr:**
+> „Das Risiko trage ich. Nicht Sie."
+
+**④ Tür zum Gespräch:**
+> „Alles Weitere kommt offen auf den Tisch. Es muss für uns beide passen."
+
+---
+
+# TEIL 2 — Satz für Satz: Wortlaut + wie du ihn sagst
 
 ### Beat 1 — Wert vor Preis
 **K4-01** — „Sie haben jetzt gesehen, worum's geht."

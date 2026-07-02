@@ -1,16 +1,23 @@
-# KNOTEN ① — „Und bei meinen Kunden?" — Audio (Schnipsel)
+# KNOTEN ① — „Und bei meinen Kunden?" — Audio
 
-> Die 3 Anrufe sind 🤖 vorproduziert — **du sprichst NUR einen Schnipsel: den VO-Schluss.**
-> Einzeln aufnehmen (`K1-01.wav`), **1 Sek Stille vor/nach**, min. 3 Takes.
+> **Du sprichst NUR eine Zeile: den VO-Schluss (K1-01).** Die 3 Anrufe sind 🤖 vorproduziert (Lisa + je eigene Kundenstimme), **nicht von dir**.
+> Aufnahme: mehrere Takes, **1 Sek Stille vor/nach**. Nur Stimme (VO über die Anruf-Szenen).
+> ⚠️ **Inhalt = aktueller gelockter Stand.** Menschlichkeits-Pass (Gedankenstrich → Komma) folgt gemeinsam.
 
 ## ⭐ Prinzip
 **SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Ein Roboter blamiert mich vor meinen Kunden." **Deine Überzeugung = Gelassenheit** — du behauptest nichts, die Anrufe zeigen es.
 
 ---
 
-## 🎯 Schnipsel — Satz + mit welcher Überzeugung
+# TEIL 1 — Deine Zeile (VO-Schluss)
+> „Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall."
+
+---
+
+# TEIL 2 — Satz für Satz: Wortlaut + wie du ihn sagst
+
 **K1-01** — „Lisa bleibt ruhig, ehrlich und immer im richtigen Ton vor Ihren Kunden — auch wenn's mal hektisch zugeht. So wird aus jedem Anruf bei Ihnen ein sauberer Fall."
-→ Ruhig, überzeugt, eine Feststellung — kein Verkauf. Dreier-Reihe fließt, Hauptsatz landet auf „vor Ihren Kunden" (beantwortet die Blamage-Angst direkt). „— auch wenn's mal hektisch zugeht." als kurzer, souveräner Kicker (Schulterzucken, kein Geständnis). „ein sauberer Fall" als Landung leicht betont.
+→ Ruhig, überzeugt, eine Feststellung — kein Verkauf. Dreier-Reihe fließt, Hauptsatz landet auf „vor Ihren Kunden" (beantwortet die Blamage-Angst direkt). „auch wenn's mal hektisch zugeht" als kurzer, souveräner Kicker (Schulterzucken, kein Geständnis). „ein sauberer Fall" als Landung leicht betont.
 
 ---
 

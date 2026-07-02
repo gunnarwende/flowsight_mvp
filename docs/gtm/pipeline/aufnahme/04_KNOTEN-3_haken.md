@@ -1,14 +1,34 @@
-# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Audio (Schnipsel)
+# KNOTEN ③ — „Ehrlich — wo ist der Haken?" — Audio
 
-> **Nur das hier.** Jede Zeile = **EIN Schnipsel = EINE Aufnahme.** Satz komplett, dahinter mit welcher Überzeugung.
-> Einzeln aufnehmen (`K3-01.wav` …), **1 Sek Stille vor/nach**, min. 3 Takes.
+> **So nimmst du auf:** Du, Gesicht (wie der Hero-Schluss). Nimm die 5 Beats als **eine fließende Performance** auf (nicht Satz für Satz einzeln), mehrere Takes bis einer echt ist. **1 Sek Stille am Anfang und Ende.**
+> **Teil 1** = das ganze Script in Beats (zum Überblick). **Teil 2** = jeder Satz einzeln + *wie* du ihn sagst.
+> ⚠️ **Inhalt = aktueller gelockter Stand.** Den Menschlichkeits-Pass (Gedankenstriche → Komma; „eine knappe Stunde" doppelt sich jetzt mit dem neuen Hero-Beat-2 → auflösen) machen wir gleich gemeinsam Satz für Satz.
 
 ## ⭐ Prinzip
 **SALES = INHALT × ÜBERZEUGUNG.** **Zweifel:** „Wo ist die Falle? Das ist zu schön, um wahr zu sein." **Deine Überzeugung = Souveränität** — wer den Haken *zuerst selbst* nennt, hat nichts zu verstecken. Ruhig, ehrlich, **keine Unterstellung**.
 
 ---
 
-## 🎯 Schnipsel — Satz + mit welcher Überzeugung
+# TEIL 1 — Das ganze Script (5 Beats)
+
+**① Der ehrliche Auftakt:**
+> „Den Haken sag ich Ihnen lieber selbst."
+
+**② Der Haken → Eigentum:**
+> „Lisa weiß von allein nicht, wie Ihr Betrieb tickt — was sie wissen muss, wie sie auf jeden Anruf reagiert, wann sie für Sie erreichbar ist. Das stellen Sie ein. Ihr Betrieb, Ihre Regeln."
+
+**③ Zusammenarbeit (entschärft):**
+> „Und das machen Sie nicht allein. Ein geführter Aufbau nimmt Sie Schritt für Schritt an die Hand — eine knappe Stunde, ohne Technik-Kram. Am Ende schau ich selbst drüber, dass es passt."
+
+**④ Der Flip (Selektivität):**
+> „Und ja — Sie wären unter den Ersten. Genau darum bin ich persönlich dabei und nehm nur eine Handvoll Betriebe. Nicht viele — dafür jeden richtig."
+
+**⑤ Tür zum Gespräch:**
+> „Den Rest besprechen wir in Ruhe — ehrlich, ohne Druck."
+
+---
+
+# TEIL 2 — Satz für Satz: Wortlaut + wie du ihn sagst
 
 ### Beat 1 — der ehrliche Auftakt
 **K3-01** — „Den Haken sag ich Ihnen lieber selbst."
