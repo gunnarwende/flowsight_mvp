@@ -14,39 +14,40 @@ sagen.** Beat 3 des Hero-Schlusses ist der Lackmustest: klingt er echt, trägt d
 
 # 1) HERO (90 s) — COLD-Strang
 
-## Hook 0–10 · 👤 DU, Gesicht bildfüllend
-- **„Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?"** 🎯 Echte Frage, kein Vorwurf. Direkter Blick. **[1 Sek Pause]** — muss im Bauch ankommen.
-- **„Sie nicht."** 🎯 Flach, fast kalt. **[Mini-Pause]** — die Erkenntnis, nicht dramatisieren.
-- **„Und was Sie nicht sehen, geht lautlos zum Nächsten."** 🎯 **Leiser** werden, „lautlos" fast geflüstert. Blick hält.
+## Hook 0–15.5 · 👤 DU, Gesicht bildfüllend *(neu 2026-07-02)*
+- **HERO-01 „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?"** 🎯 Echte Frage, kein Vorwurf. Direkter Blick. **[1 Sek Pause]** — muss im Bauch ankommen. *Du* kennst die Antwort, er nicht.
+- **HERO-02 „Ich hab grad versucht, Sie zu erreichen — keiner ist rangegangen."** 🎯 Fakt, nüchtern. Am „—" **einen Schlag warten** (aufs Klingeln lauschen), dann trocken. Kein Vorwurf, keine Entschuldigung.
+- **HERO-03 „Wenn das bei mir passiert, passiert's bei Ihren Kunden auch."** 🎯 Ruhig verallgemeinern — dreht auf *seinen* Betrieb. Bestimmt, nicht belehrend.
+- **HERO-04 „So geht der Kunde lautlos zum Nächsten. Sie merken's nicht mal."** 🎯 **Leiser** werden, „lautlos" fast geflüstert; „merken's nicht mal" kalter Nachsatz. Blick hält.
 
-## Wende → Anruf 10–15 · 👤 DU (VO), 🤖 Handy erscheint
-- **„Genau das hört jetzt auf."** 🎯 Erste Aufrichtung, ruhige Entschlossenheit.
-- **„Ein neuer Kunde ruft an."** 🎯 Neutral, du trittst zurück.
+## Turn → Anruf 15.5–23 · 👤 DU / DU (VO), 🤖 Handy erscheint + Klingeln
+- **HERO-04B „Ab jetzt nicht mehr."** 🎯 Kipp-Punkt: Resignation → ruhige Entschlossenheit. Drei Wörter, fest, nicht laut. Kleiner Atem davor.
+- **HERO-05 „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an."** 🎯 Einladend, du trittst zurück und zeigst hin. → **einmal Klingeln (vollständig)**, dann nimmt Lisa ab — der Anruf, der oben ins Leere lief, wird hier angenommen.
 
-## 🔇 Beweis-Fenster 15–37.5 · 🤖 vorproduziert — **DU SCHWEIGST** (der Anruf trägt)
+## 🔇 Beweis-Fenster 23–45.5 · 🤖 vorproduziert — **DU SCHWEIGST** (der Anruf trägt)
 - 🤖 LISA: „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?" 🎯 warm, klar, ruhig.
 - 🤖 BRUNNER *(Wärme-Variante)*: „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein." *(Sanitär-Variante: „…jemanden für ein neues Bad, und es eilt ein bisschen.")*
 - 🤖 LISA: „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf."
 - 🤖 LISA/BRUNNER: „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14, 8500 Frauenfeld."
 - 🤖 LISA: „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!"
-- 🤖 BRUNNER: „Danke, auf Wiederhören." → **Anruf beendet** *(37.5–38.5 kurze Stille)*
+- 🤖 BRUNNER: „Danke, auf Wiederhören." → **Anruf beendet** *(45.5–46.5 kurze Stille)*
 
-## Es ist einfach da 38.5–49 · 👤 DU (VO), 🤖 Dashboard-Interaktion
+## Es ist einfach da 46.5–57 · 👤 DU (VO), 🤖 Dashboard-Interaktion
 - **„Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben."** 🎯 Stiller Stolz, kein Verkauf.
 - **„Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten."** 🎯 Drei Schritte, leichtes Crescendo, „bevor Sie … wussten" weicher.
 
-## 👑 Schluss / Bookend 49–82 · 👤 DU, Gesicht (4 Beats = EINE Bewegung)
+## 👑 Schluss / Bookend 57–90 · 👤 DU, Gesicht (4 Beats = EINE Bewegung)
 1. **„Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."** 🎯 Geerdet, betone **„Ihr"** / **„auf Ihren Namen"**. Nicht hetzen.
 2. **„Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie."** 🎯 Mauer runter. „Das Risiko trage ich, nicht Sie" mit **ruhiger Gewissheit** (keine Bravour), kleine Pause davor.
 3. ⭐ **[deutliche Pause davor]** **„Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken."** 🎯 **Langsamer, leiser, persönlich. Du musst es MEINEN.** Der heilige Satz.
-4. **„Bei Ihnen geht ab jetzt nichts mehr verloren."** 🎯 **Letztes Wort, am langsamsten**, jedes Wort einzeln. **Blick hält danach** — Stille kommen lassen.
+4. **„Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."** 🎯 **Der Bogen zu Frage ①.** Am „—" kurz halten, **„Keinen."** hart & einzeln, „Und Sie sehen jeden einzelnen" ruhig-gewiss. **Letztes Wort, am langsamsten. Blick hält danach** — Stille kommen lassen.
 
-## Knoten-Reveal ~82–85 · 🤖 Karten gleiten unter den Hero · — still —
+## Knoten-Reveal ~90–92 · 🤖 Karten gleiten unter den Hero · — still —
 🎯 Kein gesprochenes CTA, kein „Gunnar" laut.
 
 ---
 
-## 🔁 WARM-Opener (ersetzt NUR 0–13; ab „Ein neuer Kunde ruft an." alles identisch)
+## 🔁 WARM-Opener (ersetzt NUR den Hook; ab HERO-05 „Schauen Sie selbst …" alles identisch — WARM-Anschluss wird noch gelockt)
 - 👤 **„Schön, dass wir telefoniert haben. Wie besprochen."** 🎯 Warm, vertraut, kein Hook/keine Wunde.
 - 👤 **„Schauen Sie in Ruhe, ob's für Ihren Betrieb passt."** 🎯 Druckfrei.
 - 👤 (VO) **„Fangen wir an."**
@@ -118,5 +119,5 @@ sagen.** Beat 3 des Hero-Schlusses ist der Lackmustest: klingt er echt, trägt d
 
 ## 🎬 Was DU heute/morgen aufnimmst (der Rest ist 🤖 Maschine)
 **Gesicht:** Hook · Schluss (4 Beats) · WARM-Opener · Knoten ③ (5) · Knoten ④ (4).
-**Stimme (VO):** Hero-VO (10–15, 38.5–49) · Knoten ① VO-Schluss (1) · Knoten ② (5).
+**Stimme (VO):** Hero-VO (HERO-05 „Schauen Sie selbst …" 17–20.5 · Dashboard 46.5–57) · Knoten ① VO-Schluss (1) · Knoten ② (5).
 **NICHT du:** die Anrufe (Lisa + Kunden), der Screen, der Knoten-Reveal.

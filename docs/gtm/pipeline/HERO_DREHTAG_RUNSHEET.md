@@ -42,22 +42,24 @@
 3. (VO, Handy erscheint) „Fangen wir an."
 🎯 Warm, vertraut, **kein Hook/keine Wunde** (er hat schon Ja gesagt).
 
-### 👑 DIE KRONE — Hook (0–10, Gesicht bildfüllend)
+### 👑 DIE KRONE — Hook (0–15.5, Gesicht bildfüllend) *(neu 2026-07-02)*
 1. „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?" — **[1 Sek Pause]**
-2. „Sie nicht." — *flach, fast kalt* — **[Mini-Pause]**
-3. „Und was Sie nicht sehen, geht lautlos zum Nächsten." — *leiser werden, „lautlos" fast geflüstert*.
-🎯 Echte Frage, kein Vorwurf. Blick hält. Die Wahrheit sticht von allein — nicht dramatisieren.
+2. „Ich hab grad versucht, Sie zu erreichen — keiner ist rangegangen." — am „—" *ein Schlag* (aufs Klingeln lauschen), dann trocken.
+3. „Wenn das bei mir passiert, passiert's bei Ihren Kunden auch." — *ruhig verallgemeinern, dreht auf seinen Betrieb*.
+4. „So geht der Kunde lautlos zum Nächsten. Sie merken's nicht mal." — *leiser, „lautlos" fast geflüstert; „merken's nicht mal" kalter Nachsatz*.
+5. (Turn) „Ab jetzt nicht mehr." — *Kipp-Punkt: Resignation → Entschlossenheit; fest, nicht laut, Atem davor*.
+🎯 Echte Frage, kein Vorwurf. Blick hält. Die Wahrheit sticht von allein — nicht dramatisieren. *Du* kennst die Antwort, er nicht.
 
-### 👑 DIE KRONE — Schluss / Bookend (49–82, Gesicht, 4 Beats = EINE Bewegung)
-1. (49–58) „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
-2. (58–66) „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie."
-3. (66–74) ⭐ **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken." — *langsamer, leiser, persönlich. Du musst es MEINEN.*
-4. (74–82) „Bei Ihnen geht ab jetzt nichts mehr verloren." — **letztes Wort, am langsamsten, Blick hält danach.** Stille kommen lassen.
+### 👑 DIE KRONE — Schluss / Bookend (57–90, Gesicht, 4 Beats = EINE Bewegung)
+1. (57–66) „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
+2. (66–74) „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie."
+3. (74–82) ⭐ **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." — *langsamer, leiser, persönlich. Du musst es MEINEN.*
+4. (82–90) „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." — **der Bogen zu Frage ①**; am „—" kurz halten, „Keinen." hart & einzeln. **Letztes Wort, am langsamsten, Blick hält danach.** Stille kommen lassen.
 🎯 **Beat 3 ist heilig** — der ganze Verkauf hängt daran, dass dieser Satz echt ist. Genug Takes bis er sitzt.
 
 ## 🎙 TAG 2 — VO-Zeilen (nur Stimme, Røde/Audacity; teils über Audio+Screen fürs Timing)
-- Hero-VO: „Genau das hört jetzt auf." · „Ein neuer Kunde ruft an." (10–15)
-- Hero-VO Dashboard (38.5–49): „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." · „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." 🎯 stiller Stolz, kein Verkauf.
+- Hero-VO: „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an." (17–20.5, → einmal Klingeln)
+- Hero-VO Dashboard (46.5–57): „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." · „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." 🎯 stiller Stolz, kein Verkauf.
 - Knoten ① VO-Schluss: „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
 - Knoten ② VO (5 Zeilen, über Leitzentrale-Screen): „Das hier ist alles. Eine Liste, auf Ihrem Handy." · „Was reinkommt, steht von selbst drin — Sie tippen nichts ab." · „Ein Blick: was ist neu, was läuft, was ist erledigt." · „Antippen, wer's macht — fertig." · „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger, nicht mehr."
 - **Pickups/Re-Takes** von Tag 1 · **Puffer.**

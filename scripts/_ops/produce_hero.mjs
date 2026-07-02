@@ -163,7 +163,7 @@ async function phaseMontage() {
   const need = (p, hint) => { if (!fs.existsSync(p)) throw new Error(`fehlt: ${p}${hint ? ` (${hint})` : ""}`); };
   const callWav = path.join(OUT_DIR, `hero_call_${GEWERK}.wav`);
   need(callWav, "erst: produce_hero --phase call");
-  const h05 = path.join(MASTERS_DIR, "HERO-05.wav"); // "Ein neuer Kunde ruft an."
+  const h05 = path.join(MASTERS_DIR, "HERO-05.wav"); // "Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an."
   const h06 = path.join(MASTERS_DIR, "HERO-06.wav"); // "Ein vollständiger Auftrag …"
   const h07 = path.join(MASTERS_DIR, "HERO-07.wav"); // "Eingegangen, erfasst …"
   [h05, h06, h07].forEach((p) => need(p, "Phase-1 Master (aufnahme/_takes/_masters)"));

@@ -36,8 +36,8 @@ const wav = (id) => path.join(M, `${id}.wav`);
 const HERO_TAIL = ["HERO-06", "HERO-07", "HERO-08", "HERO-09", "HERO-10", "HERO-11", "HERO-12", "HERO-13", "HERO-14"];
 // "CALL" = Platzhalter für hero_call_waerme.wav (Brunner-Stimme = Platzhalter gunnar, offen).
 const UNITS = {
-  HERO_COLD: { title: "Hero (COLD) — voll", ids: ["HERO-01", "HERO-02", "HERO-03", "HERO-04", "HERO-05", "CALL", ...HERO_TAIL] },
-  // WARM: kein HERO-04 ("Genau das hört jetzt auf." = COLD-only laut Spec). Ab HERO-05 identisch.
+  HERO_COLD: { title: "Hero (COLD) — voll", ids: ["HERO-01", "HERO-02", "HERO-03", "HERO-04", "HERO-04B", "HERO-05", "CALL", ...HERO_TAIL] },
+  // WARM: kein HERO-04/04B (Wunde "…Sie merken's nicht mal." + Turn "Ab jetzt nicht mehr." = COLD-only laut Spec). Ab HERO-05 identisch.
   HERO_WARM: { title: "Hero (WARM) — voll", ids: ["HERO-W1", "HERO-W2", "HERO-W3", "HERO-05", "CALL", ...HERO_TAIL] },
   KNOTEN2: { title: "Knoten 2 — Überblick", ids: ["K2-01", "K2-02", "K2-03", "K2-04", "K2-05"] },
   KNOTEN3: { title: "Knoten 3 — Haken", ids: ["K3-01", "K3-02", "K3-03", "K3-04", "K3-05", "K3-06", "K3-07", "K3-08", "K3-09", "K3-10"] },

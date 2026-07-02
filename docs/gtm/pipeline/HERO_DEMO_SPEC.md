@@ -1,7 +1,9 @@
 # Hero-Demo — Produktions-Spec (Beweis-Seite neu, Stern 3)
 
-> **STATUS: BEIDE OPENER + KNOTEN-SET ①–④ GELOCKT (Stand 2026-06-28).** COLD 0–~85 (Hook→Versprechen
-> + Knoten-Reveal) + WARM-Opener 0–13 + alle 4 Knoten wortgenau. Offen: Seed-Fall · Volle-Zeile-Render.
+> **STATUS: COLD-HOOK NEU GELOCKT (Stand 2026-07-02) · KNOTEN-SET ①–④ GELOCKT.** COLD 0–~92
+> (Hook → Bogen-Schluss + Knoten-Reveal): Hook menschlich neugefasst (aus Founder-Stimme, „Sie nicht." raus),
+> Schluss endet jetzt mit dem **Bogen zurück zu Frage ①**. WARM-Opener 0–13 gelockt — Anschluss an den neuen
+> COLD-Übergang wird als Nächstes nachgezogen. Offen: WARM-Übergang · Seed-Fall · Volle-Zeile-Render.
 > Das **WAS** der neuen Beweis-Seite — das exakte
 > Script + Screenflow, das die (neu zu bauende) Pipeline produzieren muss. Schwester-Doc:
 > das **WARUM** = [`_strategy_notes/2026-06-22_demo-architektur.md`](../../_strategy_notes/2026-06-22_demo-architektur.md)
@@ -22,53 +24,66 @@ Wert zuerst (die Seite IST das Geschenk) — aber **ruhig, respektvoll, kein Dr�
 Live-Call-Lessons: Druck kostet den Abschluss).
 
 ## Kamera (gelockt): „Bookend"
-Dein **Gesicht groß** am **Hook (0–10)** und am **Schluss (~75–90, morgen)**. Dazwischen
+Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwischen
 **führt der Screen**, deine **Stimme (VO)** drüber. Du nimmst **nur Gesicht + Stimme** auf —
 **keinen Live-Anruf.** Der Anruf (Lisa + Kunde) ist vorproduziertes Audio.
 
 ## Zwei Stränge (nur der Opener verzweigt)
-- **(a) COLD** — telefonisch nicht erreicht. **Hier vollständig definiert (0–49).**
-- **(b) WARM** — erreicht, bat um die Mail. **Opener 0–13 GELOCKT** (s. u.). Körper + Schluss identisch.
+- **(a) COLD** — telefonisch nicht erreicht. **Hier vollständig definiert (0–~57), Hook neu 2026-07-02.**
+- **(b) WARM** — erreicht, bat um die Mail. **Opener 0–13 GELOCKT** (s. u.); Anschluss an den neuen
+  COLD-Übergang (HERO-05 „Schauen Sie selbst …") wird als Nächstes nachgezogen. Körper + Schluss identisch.
 
 ---
 
-## COLD-Strang · Transkript + Screenflow 0–~85 (GELOCKT)
+## COLD-Strang · Transkript + Screenflow 0–~92 (GELOCKT — Hook neu 2026-07-02)
 
-| Zeit | Bild | Sprecher | Wortlaut |
-|---|---|---|---|
-| 0–4 | DU, bildfüllend | **DU** | „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?" |
-| 4–6 | DU | **DU** | „Sie nicht." |
-| 6–10 | DU | **DU** | „Und was Sie nicht sehen, geht lautlos zum Nächsten." |
-| 10–13 | Handy erscheint | **DU (VO)** | „Genau das hört jetzt auf." |
-| 13–15 | Anruf klingelt | **DU (VO)** | „Ein neuer Kunde ruft an." |
-| 15–20 🔵 | „[Betrieb] · angenommen", Lisa zuerst | **LISA** | „Guten Tag, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" |
-| 20–26 🟢 | Kunde sagt Anliegen | **BRUNNER** | `{Anliegen}` *(s. u.)* |
-| 26–28 | Lisa nimmt an | **LISA** | „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf." |
-| 28–31.5 | Adresse | **LISA / BRUNNER** | „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14, 8500 Frauenfeld." |
-| 31.5–36 | Abschluss | **LISA** | „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!" |
-| 36–37.5 | Auflegen (Kunde legt auf) | **BRUNNER** | „Danke, auf Wiederhören." → **Anruf beendet** |
-| 37.5–38.5 | „Anruf beendet" (kurz) | — | *— still —* |
-| 38.5–43 | **Dashboard** · Tipp **NEU** (echte Interaktion: blauer Ring + Filter auf den einen Fall) | **DU (VO)** | „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." |
-| 43–49 | **Fall-Detail** · sanfter Scroll zum **VERLAUF** („Anruf eingegangen — Fall erstellt → Team informiert") | **DU (VO)** | „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." |
+> **Hook-Neufassung 2026-07-02 (menschlich, aus Founder-Stimme):** „Sie nicht." verworfen (Handwerker
+> versteht die Ellipse nicht). Neuer Bau = Frage ① → selbst-referenzieller Cold-Call-Beweis („grad
+> angerufen, keiner ran") → verallgemeinert („passiert bei Ihren Kunden auch") → Wunde („lautlos zum
+> Nächsten. Sie merken's nicht mal.") → Turn „Ab jetzt nicht mehr." → Übergabe an die Demo.
+> **Zeiten ab dem Klingeln sind Richtwerte** — final gegen die Master-Aufnahme (Audio = Master-Uhr).
 
-**Regie:** 15–37.5 = **Beweis-Fenster**, DU schweigst (der Anruf trägt). Kunde + Lisa klingen
-„durchs Handy" (komprimiert), dein VO warm & nah → nie verwechselbar.
+| Zeit | ID | Bild | Sprecher | Wortlaut |
+|---|---|---|---|---|
+| 0–4 | HERO-01 | DU, bildfüllend | **DU** | „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?" |
+| 4–8 | HERO-02 | DU | **DU** | „Ich hab grad versucht, Sie zu erreichen — keiner ist rangegangen." |
+| 8–11.5 | HERO-03 | DU | **DU** | „Wenn das bei mir passiert, passiert's bei Ihren Kunden auch." |
+| 11.5–15.5 | HERO-04 | DU | **DU** | „So geht der Kunde lautlos zum Nächsten. Sie merken's nicht mal." |
+| 15.5–17 | HERO-04B | DU (Kipp: Resignation → Entschlossenheit) | **DU** | „Ab jetzt nicht mehr." |
+| 17–20.5 | HERO-05 | Handy erscheint | **DU (VO)** | „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an." |
+| 20.5–23 | — | Anruf klingelt (**einmal, vollständig**) | — | *— ein voller „Rrring", ausklingen lassen, dann Abnahme —* |
+| 23–28 🔵 | — | „[Betrieb] · angenommen", Lisa zuerst | **LISA** | „Guten Tag, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" |
+| 28–34 🟢 | — | Kunde sagt Anliegen | **BRUNNER** | `{Anliegen}` *(s. u.)* |
+| 34–36 | — | Lisa nimmt an | **LISA** | „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf." |
+| 36–39.5 | — | Adresse | **LISA / BRUNNER** | „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14, 8500 Frauenfeld." |
+| 39.5–44 | — | Abschluss | **LISA** | „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!" |
+| 44–45.5 | — | Auflegen (Kunde legt auf) | **BRUNNER** | „Danke, auf Wiederhören." → **Anruf beendet** |
+| 45.5–46.5 | — | „Anruf beendet" (kurz) | — | *— still —* |
+| 46.5–51 | HERO-06 | **Dashboard** · Tipp **NEU** (echte Interaktion: blauer Ring + Filter auf den einen Fall) | **DU (VO)** | „Ein vollständiger Auftrag — angenommen, während Sie weitergearbeitet haben." |
+| 51–57 | HERO-07 | **Fall-Detail** · sanfter Scroll zum **VERLAUF** („Anruf eingegangen — Fall erstellt → Team informiert") | **DU (VO)** | „Eingegangen, erfasst, schon beim Team — bevor Sie überhaupt davon wussten." |
 
-### Schluss 49–~85 (GELOCKT) — Gesicht zurück (Bookend)
+**Regie:** 23–45.5 = **Beweis-Fenster**, DU schweigst (der Anruf trägt). Kunde + Lisa klingen
+„durchs Handy" (komprimiert), dein VO warm & nah → nie verwechselbar. **Der Klingel-Beat (20.5–23) ist
+Pflicht** — *ein vollständiges* Klingeln (nicht abgeschnitten), dann nimmt Lisa ab: der Anruf, der im Hook
+(„keiner ist rangegangen") ins Leere lief, wird *hier* angenommen — **derselbe Klang, zwei Welten.**
 
-Ab 49 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drücker:
+### Schluss 57–~92 (GELOCKT) — Gesicht zurück (Bookend)
 
-| Zeit | Bild | Sprecher | Wortlaut |
-|---|---|---|---|
-| 49–58 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
-| 58–66 | DU | **DU** | „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie." |
-| 66–74 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
-| 74–~82 | DU, Blick hält | **DU** | „Bei Ihnen geht ab jetzt nichts mehr verloren." |
-| ~82–85 | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
+Ab 57 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drücker:
+
+| Zeit | ID | Bild | Sprecher | Wortlaut |
+|---|---|---|---|---|
+| 57–66 | HERO-08/09 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
+| 66–74 | HERO-10/11/12 | DU | **DU** | „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie." |
+| 74–82 | HERO-13 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
+| 82–~90 | HERO-14 | DU, Blick hält | **DU** | „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." |
+| ~90–92 | — | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
 
 **Regie Schluss:** Die vier Beats sind **eine Bewegung** — *echt+alle-Kanäle → einfach+risikofrei →
-das Warum (Wunde) → das Versprechen*. Beat 4 ist das **letzte gesprochene Wort**. **Kein gesprochenes
-CTA, kein „Gunnar" laut.** Name nur optional als **visuelle Unterzeile** (lower third), nicht vorgelesen.
+das Warum (Wunde) → der Bogen zurück zu Frage ①*. Beat 4 ist das **letzte gesprochene Wort** und
+**schließt den Kreis**: er spiegelt den Hook wörtlich („wie viele Aufträge… verloren" → „…ab jetzt noch
+verlieren") und beantwortet ihn endlich — „Keinen." **Kein gesprochenes CTA, kein „Gunnar" laut.** Name
+nur optional als **visuelle Unterzeile** (lower third), nicht vorgelesen.
 
 ### Knoten-Reveal (~82s) — der CTA, der nicht gesprochen wird
 - **Was:** Genau wenn das Versprechen landet, **gleiten/faden die anklickbaren Knoten** unter den
@@ -82,17 +97,17 @@ CTA, kein „Gunnar" laut.** Name nur optional als **visuelle Unterzeile** (lowe
   - „Was kostet mich das — und wie komme ich da wieder raus?"
 - **Kein gesprochener Verweis** auf die Knoten — das Bild führt. Der Hero gibt die Führung bewusst ab.
 
-### 🟢 `{Anliegen}` — fixer Slot 20–26 (6,0 s, beide darauf gepaddet)
+### 🟢 `{Anliegen}` — fixer Slot 28–34 (6,0 s, beide darauf gepaddet)
 - **Sanitär:** „Hallo, hier ist Herr Brunner. Ich bräuchte jemanden für ein neues Bad, und es eilt ein bisschen."
 - **Heizung / Gebäudetechnik (Wärme-Cluster):** „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein."
 
 ### Swap-Inventar (driftfrei)
-- 🔵 **Swap A — Greeting [Betrieb]** (15–20): Firmenname pro Tenant. **⚠️ Volle Zeile vertonen, NICHT in festen Slot padden** (s. „Namen & Betrieb"-Regel im Knoten-Abschnitt — Hood-AG-Leerlauf vermeiden). Heutiges `swap_tenant_greeting` (fix 5 s) entsprechend umstellen.
-- 🟢 **Swap B — {Anliegen}** (20–26, fix 6,0 s): pro Gewerk, exakt auf Slot-Länge geschnitten/gepaddet.
+- 🔵 **Swap A — Greeting [Betrieb]** (23–28): Firmenname pro Tenant. **⚠️ Volle Zeile vertonen, NICHT in festen Slot padden** (s. „Namen & Betrieb"-Regel im Knoten-Abschnitt — Hood-AG-Leerlauf vermeiden). Heutiges `swap_tenant_greeting` (fix 5 s) entsprechend umstellen.
+- 🟢 **Swap B — {Anliegen}** (28–34, fix 6,0 s): pro Gewerk, exakt auf Slot-Länge geschnitten/gepaddet.
 - **Demo-Adresse „Bahnhofstrasse 14, 8500 Frauenfeld"** = **kanton-gebunden** (Thurgau, gut sprechbar). **Bei Kantonswechsel neue Demo-Stadt setzen!**
 - Demo-Kunde „Herr Brunner" + alle Lisa-Zeilen = **universell** (einmal aufgenommen).
 
-### Screenflow 37.5–49 (alles ECHTE App-Interaktion)
+### Screenflow 45.5–57 (alles ECHTE App-Interaktion)
 Dashboard: **NEU = 1** (Fokus), **BEI UNS / ERLEDIGT voll** (wirkt etabliert). Tipp NEU → echtes
 Highlight (blauer Ring + Fill) + Filter auf den einen Fall → Tipp Fall → echte Navigation ins
 Detail → echter sanfter Scroll zum VERLAUF. **Kaum Postproduktion** — der Zuschauer sieht das
@@ -225,7 +240,7 @@ echte System arbeiten.
 - **Brücke zu Stern 5:** ④ verkauft nicht zu Ende — es macht den Preis *besprechbar* und übergibt den profilierten Geld-Zweifel ans warme Gespräch.
 
 ## Gelockte Entscheidungen (Begründung kurz)
-- **Hook = der „Flip"** (Geld + Unsichtbarkeit): „…Sie nicht. Was Sie nicht sehen, geht lautlos zum Nächsten."
+- **Hook (neu 2026-07-02) = Geld + Unsichtbarkeit, aus Founder-Stimme:** „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?" → selbst-referenzieller Cold-Call-Beweis („Ich hab grad versucht, Sie zu erreichen — keiner ist rangegangen") → verallgemeinert („passiert's bei Ihren Kunden auch") → Wunde („lautlos zum Nächsten. Sie merken's nicht mal.") → Turn („Ab jetzt nicht mehr."). Verworfen: **„Sie nicht."** (Handwerker versteht die Ellipse nicht) · **„kann keiner wissen"** (impliziert, der Founder kenne die Antwort selbst nicht — untergräbt die Autorität) · **„Test"/„nur ich"** (macht den Founder klein / signalisiert „keiner schaut hin").
 - **Output Hochdeutsch** (Mundart geparkt, V8); **kein „Grüezi"** (TTS verhunzt CH-Wörter).
 - **revDSG-Disclosure** im Greeting („die digitale Assistentin von …") — ehrlich + gute Außenwirkung.
 - **Kunde = Herr Brunner (männlich)** — klare Stimm-Trennung zu Lisa (weiblich). Demo darf wärmer sein als der Live-Agent (der sagt heute keine Namen).
@@ -235,8 +250,8 @@ echte System arbeiten.
 - **Schluss = 4 Beats als eine Bewegung** (echt+alle-Kanäle → einfach+risikofrei → das Warum → das Versprechen). „Alle Kanäle" mitnehmen (er hat im Hero nur den Anruf gesehen → Website/E-Mail dazu). Risiko **gruppiert mit Einfachheit** (nicht als isolierte Insel). „Das Risiko trage ich, nicht Sie" = Risiko-Umkehr ohne formelle Garantie (Garantie/Preis = Knoten/warmes Gespräch).
 - **Kein gesprochenes CTA im Hero** — der CTA ist der **Klick auf einen Knoten**, ausgelöst durch den **Reveal**. Schriftlicher CTA sitzt vorgelagert in der E-Mail.
 - **Kein „Gunnar" laut** — vorgelesener Vorname wirkt wie eine laut vorgetragene Signatur. Name höchstens als visuelle Unterzeile.
-- **Letztes Wort = das Versprechen** („Bei Ihnen geht ab jetzt nichts mehr verloren."), dann Knoten-Reveal.
-- **Beat 3 endet auf den Hook-Rückschluss** („Genau wie Sie's bis eben nicht gemerkt haben.", 2026-07-01) — zieht die allgemeine Wunde zu *ihm*, schließt den Hook-Kreis („Sie nicht") und scharniert „bis eben" → „ab jetzt" (Beat 4). Ruhig, kein Vorwurf; **kein Hedge** („vielleicht" bewusst verworfen).
+- **Letztes Wort = der Bogen zu Frage ①** („Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."), dann Knoten-Reveal. Spiegelt den Hook wörtlich und beantwortet ihn (Hormozi-Schleife: der Hook *öffnet* die Frage und hält sie offen; die Demo *zeigt* die Antwort; der Schluss *sagt* sie). „Sie sehen jeden einzelnen" zahlt die Autorität aus dem Hook ein: *er* merkte vorher nichts → jetzt sieht *er* alles. **Ersetzt** das alte „Bei Ihnen geht ab jetzt nichts mehr verloren."
+- **Beat 3 endet auf den Hook-Rückschluss** („Genau wie Sie's bis eben nicht gemerkt haben.", 2026-07-01) — zieht die allgemeine Wunde zu *ihm* und schließt den Kreis jetzt über **„merken"**: Hook-Wunde „Sie merken's nicht mal" → Schluss „bis eben nicht gemerkt haben". Scharniert „bis eben" → „ab jetzt" (Beat 4). Ruhig, kein Vorwurf; **kein Hedge** („vielleicht" bewusst verworfen). *(Doppel-Bookend: Beat 3 schließt die „merken"-Wunde, Beat 4 schließt die „wie viele"-Frage.)*
 
 ## Cold-Mail-Audio-Hook (Idee 2026-06-30, Leila-Hormozi-Inspiration) — zu designen mit Stern 3
 > **Auslöser:** Leila Hormozi stellte einen Top-Manager ein, weil er ihr **Audiodateien** schickte („das ist kein Scherz, drück Play" → dann bewies er, was er kann). Founder-Übertrag auf unsere **Cold-Mail** (wenn beim Cold Call niemand rangeht): nicht *über* das Produkt schreiben — **hören lassen.**
