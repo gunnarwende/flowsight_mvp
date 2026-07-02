@@ -40,7 +40,7 @@ function flag(name, def = null) {
 const PHASE = flag("phase", "call");
 const GEWERK = flag("gewerk", "waerme");
 const BETRIEB = flag("betrieb", "Dörfler AG");
-const BRUNNER_VOICE = flag("brunner-voice", "gunnar");
+const BRUNNER_VOICE = flag("brunner-voice", "brunner");
 const UPLOAD = argv.includes("--upload");
 const DRY = argv.includes("--dry-run");
 

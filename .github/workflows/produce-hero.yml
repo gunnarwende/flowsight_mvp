@@ -25,9 +25,9 @@ on:
         required: false
         default: "Dörfler AG"
       brunner_voice:
-        description: "ElevenLabs-Voice für Herr Brunner (Platzhalter: gunnar)"
+        description: "ElevenLabs-Voice für Herr Brunner (Default: brunner = echte Demo-Kunden-Stimme)"
         required: false
-        default: "gunnar"
+        default: "brunner"
       upload:
         description: "Master zu Bunny Storage hochladen?"
         type: boolean

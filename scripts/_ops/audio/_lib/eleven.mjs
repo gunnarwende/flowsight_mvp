@@ -1,4 +1,4 @@
-// ElevenLabs TTS wrapper — voice-locked for Lisa (Ela DE), Juniper (EN), Gunnar (Fallback).
+// ElevenLabs TTS wrapper — voice-locked for Lisa (Ela DE), Juniper (EN), Brunner (Demo-Kunde DE male), Gunnar (Fallback).
 // Returns mp3 (or wav via ffmpeg decode). Designed for idempotent cache: same text+voice+model = same file.
 import fs from "node:fs";
 import path from "node:path";
@@ -23,6 +23,12 @@ export const VOICES = {
     lang: "de",
     model: "eleven_multilingual_v2",
     name: "Gunnar Clone (Fallback)",
+  },
+  brunner: {
+    id: "MbbPUteESkJWr4IAaW35",
+    lang: "de",
+    model: "eleven_multilingual_v2",
+    name: "Brunner (Demo-Kunde DE male)",
   },
 };
 
