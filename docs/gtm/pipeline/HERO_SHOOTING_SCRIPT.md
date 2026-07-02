@@ -33,7 +33,7 @@ sagen.** Beat 3 des Hero-Schlusses ist der Lackmustest: klingt er echt, trägt d
 - 🤖 BRUNNER: „Danke, auf Wiederhören." → **Anruf beendet** *(45.5–46.5 kurze Stille)*
 
 ## Es ist einfach da 46.5–57 · 👤 DU (VO), 🤖 Dashboard-Interaktion
-- **„Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren."** 🎯 Stiller Stolz, kein Verkauf.
+- **„Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren."** 🎯 Stiller Stolz, kein Verkauf.
 - **„Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."** 🎯 Drei Schritte, leichtes Crescendo, „bevor Sie … wussten" weicher. *(06 + 07 = 2 getrennte Snippets, Pause dazwischen = Screen-Übergang.)*
 
 ## 👑 Schluss / Bookend 57–90 · 👤 DU, Gesicht (4 Beats = EINE Bewegung)

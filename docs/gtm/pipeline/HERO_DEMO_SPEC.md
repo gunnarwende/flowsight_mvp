@@ -59,7 +59,7 @@ Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwi
 | 39.5–44 | — | Abschluss | **LISA** | „Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören." |
 | 44–45.5 | — | Auflegen (Kunde legt auf) | **BRUNNER** | „Danke, auf Wiederhören." → **Anruf beendet** |
 | 45.5–46.5 | — | „Anruf beendet" (kurz) | — | *— still —* |
-| 46.5–51 | HERO-06 | **Dashboard** · Tipp **NEU** (echte Interaktion: blauer Ring + Filter auf den einen Fall) | **DU (VO)** | „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren." |
+| 46.5–51 | HERO-06 | **Dashboard** · Tipp **NEU** (echte Interaktion: blauer Ring + Filter auf den einen Fall) | **DU (VO)** | „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren." |
 | 51–57 | HERO-07 | **Fall-Detail** · sanfter Scroll zum **VERLAUF** („Anruf eingegangen → Fall erfasst → In Ihrer Liste") | **DU (VO)** | „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten." |
 
 **Regie:** 23–45.5 = **Beweis-Fenster**, DU schweigst (der Anruf trägt). Kunde + Lisa klingen

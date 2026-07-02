@@ -26,7 +26,7 @@
 
 ## 🟩 SEGMENT 2 — Der Beweis wirkt  *(VO über den Dashboard-Screen)*
 > *[Anruf Lisa + Herr Brunner läuft — **nicht du**. Danach kurz still, dann:]*
-> „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren.
+> „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren.
 > Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."
 
 ## 🟨 SEGMENT 3 — Schluss / Bookend  *(Gesicht zurück, bildfüllend — 4 Beats als EINE Bewegung)*
@@ -78,8 +78,8 @@
 ### 👤 Jetzt DEINE zwei VO-Sätze (über den Dashboard-Screen)
 > **Als ZWEI getrennte Snippets aufnehmen** (erst HERO-06, dann HERO-07). Die Pause dazwischen = der Screen-Übergang (Tipp auf die Karte → Detail → Scroll zum Verlauf) — die Länge steht erst mit dem gebauten Screen, darum getrennt: die Montage setzt sie dynamisch. Tipp: 07 direkt nach 06 sprechen, gleicher Ton (Emotion trägt über den Schnitt).
 
-**HERO-06** — „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren."
-→ Stiller Stolz, kein Verkauf. **Punkt** nach „Auftrag" = voller Stopp (hier leuchtet die Karte auf). „Angenommen" mit winzigem Gewicht — der stille Konter zu „keiner ist rangegangen".
+**HERO-06** — „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren."
+→ Stiller Stolz, kein Verkauf. **Punkt** nach „Auftrag" = voller Stopp (hier leuchtet die Karte auf). **Hauptgewicht auf „Angenommen"** (der stille Konter zu „keiner ist rangegangen"). Die zwei Bilder „Baustelle / Kundengespräch" nur **leicht** heben, vivid aber beiläufig (fast schulterzuckend) — **nicht hämmern**, sonst wird's eine Verkaufsliste und klaut „Angenommen" den Punch. Der Kontrast trägt: tief in echter Arbeit, *und trotzdem* angenommen.
 
 **HERO-07** — „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."
 → Drei zügige Beats (spiegeln den VERLAUF: *Anruf eingegangen → Fall erfasst → In Ihrer Liste*). **Punkt** nach „bei Ihnen", dann „Bevor Sie überhaupt davon wussten." weicher/leiser.

@@ -59,7 +59,7 @@
 
 ## 🎙 TAG 2 — VO-Zeilen (nur Stimme, Røde/Audacity; teils über Audio+Screen fürs Timing)
 - Hero-VO: „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an." (17–20.5, → einmal Klingeln)
-- Hero-VO Dashboard (46.5–57): „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle waren." · „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten." 🎯 stiller Stolz, kein Verkauf. **Als 2 getrennte Snippets (06, 07) — Pause dazwischen = Screen-Übergang.**
+- Hero-VO Dashboard (46.5–57): „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren." · „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten." 🎯 stiller Stolz, kein Verkauf. **Als 2 getrennte Snippets (06, 07) — Pause dazwischen = Screen-Übergang.**
 - Knoten ① VO-Schluss: „Ruhig unter Druck, ehrlich, nie daneben — und jeder Anruf wird bei Ihnen ein sauberer Fall."
 - Knoten ② VO (5 Zeilen, über Leitzentrale-Screen): „Das hier ist alles. Eine Liste, auf Ihrem Handy." · „Was reinkommt, steht von selbst drin — Sie tippen nichts ab." · „Ein Blick: was ist neu, was läuft, was ist erledigt." · „Antippen, wer's macht — fertig." · „Kein Programm, das Sie pflegen müssen — es nimmt Ihnen den Zettel und das Im-Kopf-Behalten ab. Weniger, nicht mehr."
 - **Pickups/Re-Takes** von Tag 1 · **Puffer.**
