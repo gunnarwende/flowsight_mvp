@@ -77,29 +77,37 @@ export async function loudnormTwoPass(inFile, outFile, { I = -14, TP = -1.5, LRA
   return { measured, outFile };
 }
 
-// Apply a tail-trim: remove last N ms (to kill the mouse-click at the end),
-// then trim silence < -40dB longer than 200ms at start/end.
-export async function cleanFounderSegment(inFile, outFile, { tailTrimMs = 280, fadeOutMs = 60, silenceDb = -42 } = {}) {
-  const info = await ffprobeInfo(inFile);
-  const trimTo = Math.max(0.1, info.duration - tailTrimMs / 1000);
-  const fadeStart = Math.max(0, trimTo - fadeOutMs / 1000);
-  const filter = [
-    `atrim=end=${trimTo.toFixed(3)}`,
-    "asetpts=N/SR/TB",
-    `afade=t=out:st=${fadeStart.toFixed(3)}:d=${(fadeOutMs / 1000).toFixed(3)}`,
-    // leading silence only — trim anything below silenceDb longer than 180ms
-    `silenceremove=start_periods=1:start_duration=0.18:start_threshold=${silenceDb}dB:detection=peak`,
-    // trailing silence — same
-    `areverse`,
-    `silenceremove=start_periods=1:start_duration=0.18:start_threshold=${silenceDb}dB:detection=peak`,
-    `areverse`,
-  ].join(",");
+// Clean a founder take's edges WITHOUT clipping the last sound.
+// Tail-Bug-Fix: KEIN blindes N-ms-Abschneiden am Ende (das fraß Schluss-Konsonanten/
+// Zischlaute: "heiß"→"hei"). Stattdessen nur sub-threshold-STILLE an den Kanten entfernen
+// (schützt echten Laut) + winziges Edge-Fade gegen Klick/Stop-Geräusch.
+// tailTrimMs bleibt als opt-in (Default 0) — nur setzen, wenn ein Take echt zu lang ist.
+export async function cleanFounderSegment(inFile, outFile, { tailTrimMs = 0, edgeFadeMs = 25, silenceDb = -42 } = {}) {
+  const parts = [];
+  if (tailTrimMs > 0) {
+    const info = await ffprobeInfo(inFile);
+    const trimTo = Math.max(0.1, info.duration - tailTrimMs / 1000);
+    parts.push(`atrim=end=${trimTo.toFixed(3)}`, "asetpts=N/SR/TB");
+  }
+  const fade = (edgeFadeMs / 1000).toFixed(3);
+  parts.push(
+    // führende Stille (nur unter Schwelle) weg
+    `silenceremove=start_periods=1:start_duration=0.12:start_threshold=${silenceDb}dB:detection=peak`,
+    "areverse",
+    // nachlaufende Stille weg — Schluss-Laut bleibt, weil nur < silenceDb entfernt wird
+    `silenceremove=start_periods=1:start_duration=0.12:start_threshold=${silenceDb}dB:detection=peak`,
+    // winziges Fade auf das (reversed) Ende = echtes Take-Ende → killt Stop-Klick, ohne zu schneiden
+    `afade=t=in:st=0:d=${fade}`,
+    "areverse",
+    // gleiches winziges Fade am echten Anfang
+    `afade=t=in:st=0:d=${fade}`,
+  );
   await run(
     "ffmpeg",
     [
       "-hide_banner", "-y",
       "-i", inFile,
-      "-af", filter,
+      "-af", parts.join(","),
       "-ar", "48000",
       "-ac", "1",
       "-c:a", "pcm_s16le",
