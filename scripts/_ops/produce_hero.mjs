@@ -18,6 +18,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { tts, mp3ToWav48kMono } from "./audio/_lib/eleven.mjs";
 import { concatWavs, loudnormTwoPass, ffprobeInfo, renderWaveformPng, run } from "./audio/_lib/ffmpeg.mjs";
@@ -49,6 +50,9 @@ const ANLIEGEN = {
   waerme: "Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein.",
   sanitaer: "Hallo, hier ist Herr Brunner. Ich bräuchte jemanden für ein neues Bad, und es eilt ein bisschen.",
 };
+// Voice-Settings für den Call = die alten, guten Lisa-Werte (aus generate_lisa_tts.mjs), NICHT die
+// flachen eleven.mjs-Defaults (style 0.0 = robotisch). style 0.1 gibt Wärme/Betonung.
+const CALL_VOICE_SETTINGS = { stability: 0.55, similarity: 0.8, style: 0.1, speakerBoost: true };
 function heroCallLines() {
   const anliegen = ANLIEGEN[GEWERK] || ANLIEGEN.waerme;
   return [
@@ -56,7 +60,7 @@ function heroCallLines() {
     { id: "brunner_anliegen",  role: "brunner", voice: BRUNNER_VOICE,  text: anliegen },
     { id: "lisa_annahme",      role: "lisa",    voice: "ela",          text: "Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf." },
     { id: "lisa_adresse_frage",role: "lisa",    voice: "ela",          text: "Herr Brunner, wie lautet Ihre Adresse?" },
-    { id: "brunner_adresse",   role: "brunner", voice: BRUNNER_VOICE,  text: "Bahnhofstrasse 14, 8500 Frauenfeld." },
+    { id: "brunner_adresse",   role: "brunner", voice: BRUNNER_VOICE,  text: "Bahnhofstrasse 14 in Frauenfeld." },
     { id: "lisa_abschluss",    role: "lisa",    voice: "ela",          text: "Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören." },
     { id: "brunner_ende",      role: "brunner", voice: BRUNNER_VOICE,  text: "Danke, auf Wiederhören." },
   ];
@@ -96,12 +100,14 @@ async function phaseCall() {
   const segWavs = [];
   const seq = [];
   for (const l of lines) {
-    const mp3 = path.join(OUT_DIR, `seg_${l.id}.mp3`);
-    const wav = path.join(OUT_DIR, `seg_${l.id}.wav`);
+    // Content-adressierter Dateiname (Text+Voice+Settings). SONST greift die outFile-Existenzprüfung
+    // in tts() blind auf ALTE seg_<id>-Dateien zu → geänderte Zeile/Stimme wird stumm ignoriert, und
+    // brunner_anliegen kollidiert zwischen waerme/sanitaer (gleiche id, anderer Text). Hash = frischer Render bei jeder Änderung.
+    const sig = crypto.createHash("sha1").update(JSON.stringify({ t: l.text, v: l.voice, s: CALL_VOICE_SETTINGS })).digest("hex").slice(0, 8);
+    const mp3 = path.join(OUT_DIR, `seg_${l.id}_${sig}.mp3`);
+    const wav = path.join(OUT_DIR, `seg_${l.id}_${sig}.wav`);
     console.log(`[hero] TTS ${l.id} (${l.voice}) …`);
-    // Voice-Settings = die alten, guten Lisa-Werte (aus generate_lisa_tts.mjs) — NICHT die flachen
-    // eleven.mjs-Defaults (style 0.0), die klangen robotisch. style 0.1 gibt Wärme/Betonung zurück.
-    await tts({ text: l.text, voice: l.voice, outFile: mp3, stability: 0.55, similarity: 0.8, style: 0.1, speakerBoost: true });
+    await tts({ text: l.text, voice: l.voice, outFile: mp3, ...CALL_VOICE_SETTINGS });
     await mp3ToWav48kMono(mp3, wav, { applyLoudnorm: false });
     const info = await ffprobeInfo(wav);
     seq.push({ id: l.id, role: l.role, voice: l.voice, text: l.text, dur_s: Number(info.duration) });

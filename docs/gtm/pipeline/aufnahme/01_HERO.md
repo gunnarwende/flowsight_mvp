@@ -71,7 +71,7 @@
   - 🔥 **Wärme / Heizung / Gebäudetechnik:** „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein."
   - 🚿 **Sanitär:** „Hallo, hier ist Herr Brunner. Ich bräuchte jemanden für ein neues Bad, und es eilt ein bisschen."
 - 🤖 **LISA:** „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf."
-- 🤖 **LISA:** „Herr Brunner, wie lautet Ihre Adresse?" — 🤖 **BRUNNER:** „Bahnhofstrasse 14, 8500 Frauenfeld."
+- 🤖 **LISA:** „Herr Brunner, wie lautet Ihre Adresse?" — 🤖 **BRUNNER:** „Bahnhofstrasse 14 in Frauenfeld." *(ohne PLZ gesprochen; Karte zeigt „8500 Frauenfeld")*
 - 🤖 **LISA:** „Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören."
 - 🤖 **BRUNNER:** „Danke, auf Wiederhören." → **Anruf beendet** → ~1 Sek still
 

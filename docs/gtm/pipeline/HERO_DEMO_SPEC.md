@@ -55,7 +55,7 @@ Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwi
 | 23–28 🔵 | — | „[Betrieb] · angenommen", Lisa zuerst | **LISA** | „Guten Tag, hier ist Lisa, die digitale Assistentin von [Betrieb] — was kann ich für Sie tun?" |
 | 28–34 🟢 | — | Kunde sagt Anliegen | **BRUNNER** | `{Anliegen}` *(s. u.)* |
 | 34–36 | — | Lisa nimmt an | **LISA** | „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf." |
-| 36–39.5 | — | Adresse | **LISA / BRUNNER** | „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14, 8500 Frauenfeld." |
+| 36–39.5 | — | Adresse | **LISA / BRUNNER** | „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14 in Frauenfeld." *(gesprochen ohne PLZ — natürlicher + TTS-sicher; Karte/Seed zeigt „8500 Frauenfeld")* |
 | 39.5–44 | — | Abschluss | **LISA** | „Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören." |
 | 44–45.5 | — | Auflegen (Kunde legt auf) | **BRUNNER** | „Danke, auf Wiederhören." → **Anruf beendet** |
 | 45.5–46.5 | — | „Anruf beendet" (kurz) | — | *— still —* |
