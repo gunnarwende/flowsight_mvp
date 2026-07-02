@@ -37,6 +37,10 @@ const firma = va.company_name || t.name || slug;
 const telefon = vid.display_phone || vid.telefon_display || va.phone || "+41 44 505 74 21";
 const initial = (firma.charAt(0) || "?").toUpperCase();
 const brandColor = t.brand_color || "#003478";
+// Ort des Betriebs aus voice_agent.address ableiten (Skalierung: Dörfler=Oberrieden,
+// nicht hardcoded "Zürich"). Fallback: leer → Call-Screen blendet die Zeile aus.
+const ortMatch = (va.address || "").match(/\d{4}\s+([A-ZÄÖÜ][a-zäöüA-ZÄÖÜ\s\-]+?)(?:,|$)/);
+const ort = ortMatch ? ortMatch[1].trim() : "";
 
 const outDir = join(repoRoot, "docs", "gtm", "pipeline", "06_video_production", "_generated", "hero_montage");
 await mkdir(outDir, { recursive: true });
@@ -48,7 +52,7 @@ const htmlPath = join(repoRoot, "scripts", "_ops", "screen_templates", "sequence
 const fileUrl = "file:///" + htmlPath.split(sep).join("/");
 const params = new URLSearchParams({
   firma, telefon, sms_sender: t.name, case_ref: t.case_id_prefix || "XX",
-  uhrzeit: "08:04", datum: "Dienstag, 1. Juli", initial,
+  uhrzeit: "08:04", datum: "Dienstag, 1. Juli", initial, ort,
   anruf_dauer: String(Math.round(callDur)),
   ring_duration: String(Math.round(ringSec * 1000)),
   dial_delay: "600",
