@@ -37,10 +37,10 @@
 🎯 **Keine Zahl.** Beat 3 mit ruhiger Gewissheit. Beat 4 = gegenseitige Passung, kein Drücker.
 
 ### WARM-Opener (0–13, Gesicht → Handy)
-1. „Schön, dass wir telefoniert haben. Wie besprochen."
-2. „Schauen Sie in Ruhe, ob's für Ihren Betrieb passt."
-3. (VO, Handy erscheint) „Fangen wir an."
-🎯 Warm, vertraut, **kein Hook/keine Wunde** (er hat schon Ja gesagt).
+1. „Schön, dass wir telefoniert haben."
+2. „Wie besprochen, schauen Sie in Ruhe, ob's für Ihren Betrieb passt."
+3. (VO, Handy erscheint) „Fangen wir an, ein Kunde ruft grad bei Ihnen an." → Klingeln
+🎯 Warm, vertraut, **kein Hook/keine Wunde** (er hat schon Ja gesagt). W3 kündigt den Anruf an (kein HERO-05).
 
 ### 👑 DIE KRONE — Hook (0–15.5, Gesicht bildfüllend) *(neu 2026-07-02)*
 1. „Wissen Sie, wie viele Aufträge Sie diesen Monat verloren haben?" — **[1 Sek Pause]**

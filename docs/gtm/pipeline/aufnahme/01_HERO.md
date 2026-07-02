@@ -109,17 +109,17 @@
 
 ---
 
-## 🔁 SEGMENT 1 — WARM-Variante *(nur der Kopf; ⚠️ Anschluss noch in Arbeit)*
-> Für den Fall **telefonisch erreicht + bat um die Mail**. Kein Hook, keine Wunde (er hat schon Ja gesagt).
+## 🔁 SEGMENT 1 — WARM-Variante *(nur der Kopf; ab dem Anruf identisch mit COLD)*
+> Für den Fall **telefonisch erreicht + bat um die Mail**. Kein Hook, keine Wunde (er hat schon Ja gesagt). Die drei Zeilen ersetzen den COLD-Hook; ab dem Klingeln läuft alles gleich (Segment 2 + 3).
 
-**HERO-W1** — „Schön, dass wir telefoniert haben. Wie besprochen."
-→ Warm, vertraut. „Wie besprochen" ruhig als Einlösung. *(Zwei kurze Sätze in EINEM Atem.)*
+**HERO-W1** — „Schön, dass wir telefoniert haben."
+→ Warm, vertraut. Ein ganzer ruhiger Satz (kein „Wie besprochen." als Anhängsel — das wandert nach W2).
 
-**HERO-W2** — „Schauen Sie in Ruhe, ob's für Ihren Betrieb passt."
-→ Druckfrei, einladend.
+**HERO-W2** — „Wie besprochen, schauen Sie in Ruhe, ob's für Ihren Betrieb passt."
+→ „Wie besprochen" leitet den Satz ein (löst das Telefon-Versprechen ein), dann druckfrei-einladend. **Komma** nach „besprochen", kurz durchatmen.
 
-→ dann direkt **HERO-05** „Schauen Sie selbst. Ein Kunde ruft grad wieder bei Ihnen an." → Klingeln.
-> ⚠️ **Offen:** ob „Fangen wir an." (altes W3) bleibt oder entfällt — wird noch gelockt. Erst COLD-Segment 1 aufnehmen.
+**HERO-W3** — „Fangen wir an, ein Kunde ruft grad bei Ihnen an."
+→ Leicht, du trittst zurück. **Komma** nach „an", dann kündigt der zweite Teil den Anruf an → Klingeln. *(WARM nutzt **nicht** HERO-05 — W3 macht die Übergabe selbst.)*
 
 ---
 🤖 Der Anruf zwischen Segment 1 und 2 (Lisa + Herr Brunner) ist vorproduziert — **nicht von dir.** Wortlaut: [`../HERO_DEMO_SPEC.md`](../HERO_DEMO_SPEC.md).

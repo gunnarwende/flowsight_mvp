@@ -40,9 +40,9 @@
 | 14 | **HERO-14** „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." | letztes Wort, **am langsamsten**; am „—" kurz halten, „Keinen." hart & einzeln | 1,0s | **2,0s** Stille | *neuer Bogen-Schluss*; Ende NICHT abschneiden; ausklingen lassen |
 
 ## WARM-Variante (nur der Kopf ändert)
-Ersetze Segmente 1–4B durch **HERO-W1 → W2 → W3**, dann Segment 5 (HERO-05). **Kein HERO-04/04B** (COLD-only: Wunde + Turn).
-Übergänge W1→W2→W3: warm, vertraut, **kein Hook/keine Wunde** — kleinere Pausen (~0,4–0,6s), W3 „Fangen wir an." leicht → Klingeln.
-⚠️ **Offen:** WARM-Anschluss an das neue HERO-05 („Schauen Sie selbst …") — wird als Nächstes gelockt (Task „WARM-Variante").
+Ersetze Segmente 1–5 durch **HERO-W1 → W2 → W3** (W3 kündigt den Anruf selbst an → direkt Klingeln). **Kein HERO-04/04B** (COLD-only: Wunde + Turn) und **kein HERO-05** („Schauen Sie selbst" = COLD-only).
+W1 „Schön, dass wir telefoniert haben." · W2 „Wie besprochen, schauen Sie in Ruhe, ob's für Ihren Betrieb passt." · W3 „Fangen wir an, ein Kunde ruft grad bei Ihnen an."
+Übergänge W1→W2→W3: warm, vertraut, **kein Hook/keine Wunde** — kleinere Pausen (~0,4–0,6s), W3 leicht → Klingeln.
 
 ## Iteration
 Leppy rendert nach dieser Regie → Founder hört → Feinjustierung der Pausen-Werte/Trims hier eintragen → neu rendern. Die Zahlen oben sind **Startwerte** (aus dem Sinn), nicht heilig — das Ohr des Founders entscheidet final.

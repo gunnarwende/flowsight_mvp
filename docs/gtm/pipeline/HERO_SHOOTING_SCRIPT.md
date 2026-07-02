@@ -47,10 +47,10 @@ sagen.** Beat 3 des Hero-Schlusses ist der Lackmustest: klingt er echt, trägt d
 
 ---
 
-## 🔁 WARM-Opener (ersetzt NUR den Hook; ab HERO-05 „Schauen Sie selbst …" alles identisch — WARM-Anschluss wird noch gelockt)
-- 👤 **„Schön, dass wir telefoniert haben. Wie besprochen."** 🎯 Warm, vertraut, kein Hook/keine Wunde.
-- 👤 **„Schauen Sie in Ruhe, ob's für Ihren Betrieb passt."** 🎯 Druckfrei.
-- 👤 (VO) **„Fangen wir an."**
+## 🔁 WARM-Opener (ersetzt NUR den Hook; ab dem Anruf alles identisch mit COLD)
+- 👤 **„Schön, dass wir telefoniert haben."** 🎯 Warm, vertraut, ein ganzer Satz.
+- 👤 **„Wie besprochen, schauen Sie in Ruhe, ob's für Ihren Betrieb passt."** 🎯 „Wie besprochen" leitet ein (löst Telefon-Versprechen), dann druckfrei.
+- 👤 (VO) **„Fangen wir an, ein Kunde ruft grad bei Ihnen an."** 🎯 Leicht, kündigt den Anruf an → Klingeln (kein HERO-05).
 
 ---
 

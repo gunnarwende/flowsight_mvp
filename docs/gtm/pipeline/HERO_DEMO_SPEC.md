@@ -2,8 +2,8 @@
 
 > **STATUS: COLD-HOOK NEU GELOCKT (Stand 2026-07-02) · KNOTEN-SET ①–④ GELOCKT.** COLD 0–~92
 > (Hook → Bogen-Schluss + Knoten-Reveal): Hook menschlich neugefasst (aus Founder-Stimme, „Sie nicht." raus),
-> Schluss endet jetzt mit dem **Bogen zurück zu Frage ①**. WARM-Opener 0–13 gelockt — Anschluss an den neuen
-> COLD-Übergang wird als Nächstes nachgezogen. Offen: WARM-Übergang · Seed-Fall · Volle-Zeile-Render.
+> Schluss endet jetzt mit dem **Bogen zurück zu Frage ①**. WARM-Kopf komplett gelockt (W1–W3, W3 macht die
+> Übergabe → kein HERO-05). Offen: Seed-Fall · Volle-Zeile-Render.
 > Das **WAS** der neuen Beweis-Seite — das exakte
 > Script + Screenflow, das die (neu zu bauende) Pipeline produzieren muss. Schwester-Doc:
 > das **WARUM** = [`_strategy_notes/2026-06-22_demo-architektur.md`](../../_strategy_notes/2026-06-22_demo-architektur.md)
@@ -30,8 +30,8 @@ Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwi
 
 ## Zwei Stränge (nur der Opener verzweigt)
 - **(a) COLD** — telefonisch nicht erreicht. **Hier vollständig definiert (0–~57), Hook neu 2026-07-02.**
-- **(b) WARM** — erreicht, bat um die Mail. **Opener 0–13 GELOCKT** (s. u.); Anschluss an den neuen
-  COLD-Übergang (HERO-05 „Schauen Sie selbst …") wird als Nächstes nachgezogen. Körper + Schluss identisch.
+- **(b) WARM** — erreicht, bat um die Mail. **Kopf 0–13 GELOCKT** (W1–W3, s. u.); W3 kündigt den Anruf
+  selbst an → ab dem Klingeln identisch mit COLD (Körper + Schluss).
 
 ---
 
@@ -115,24 +115,24 @@ echte System arbeiten.
 
 ---
 
-## WARM-Strang · Opener 0–13 (GELOCKT 2026-06-27)
+## WARM-Strang · Opener 0–13 (GELOCKT 2026-06-27 · Kopf menschlich neugefasst 2026-07-02)
 
 > Für den Fall **erreicht + bat um die Mail** (Cold Call §4-Folge-Anruf). Nur diese ~13 s ersetzen den
-> COLD-Hook; **ab „Ein neuer Kunde ruft an." (13) ist alles identisch** (Körper + Schluss). Er hat am
+> COLD-Hook; **ab dem Klingeln (13) ist alles identisch** (Körper + Schluss). Er hat am
 > Telefon schon Ja gesagt → **kein Hook, keine Wunde, kein Re-Pitch.** Warm reinholen, das
 > §4-Versprechen einlösen — der Körper macht die Gefühlsarbeit.
 
 | Zeit | Bild | Sprecher | Wortlaut |
 |---|---|---|---|
-| 0–5 | DU, bildfüllend | **DU** | „Schön, dass wir telefoniert haben. Wie besprochen." |
-| 5–10 | DU | **DU** | „Schauen Sie in Ruhe, ob's für Ihren Betrieb passt." |
-| 10–13 | Handy erscheint, DU (VO) | **DU (VO)** | „Fangen wir an." |
-| → 13 | **[GETEILTER KÖRPER]** Anruf klingelt | **DU (VO)** | „Ein neuer Kunde ruft an." |
+| 0–4 | DU, bildfüllend | **DU** | „Schön, dass wir telefoniert haben." |
+| 4–9 | DU | **DU** | „Wie besprochen, schauen Sie in Ruhe, ob's für Ihren Betrieb passt." |
+| 9–13 | Handy erscheint, DU (VO) | **DU (VO)** | „Fangen wir an, ein Kunde ruft grad bei Ihnen an." |
+| → 13 | **[GETEILTER KÖRPER]** Anruf klingelt (einmal) | — | *W3 hat den Anruf schon angekündigt → direkt Klingeln → Anruf* |
 
-- **„Wie besprochen"** löst das §4-Versprechen ein („ich schick's Ihnen rüber"); **„Schauen Sie in Ruhe, ob's für Ihren Betrieb passt"** = *wörtlich* die §4-Sprache (druckfrei).
-- **„hier ist sie" bewusst gestrichen** — „sie" hätte am Videostart keinen Bezug (Mini-Reibung). „Wie besprochen." allein ist souveräner.
+- **„Wie besprochen"** (jetzt Kopf von W2) löst das §4-Versprechen ein („ich schick's Ihnen rüber"); **„schauen Sie in Ruhe, ob's für Ihren Betrieb passt"** = *wörtlich* die §4-Sprache (druckfrei).
+- **„Wie besprochen." nicht mehr als Fragment** — als eigener Zwei-Wort-Satz schwer sprechbar (Founder), wandert als Einleitung in W2. **W3 kündigt den Anruf selbst an** → WARM braucht **kein HERO-05** („Schauen Sie selbst" = COLD-only).
 - **Universell** (kein [Betrieb]/[Name]) → *eine* Aufnahme für alle, wie der COLD-Opener.
-- **Naht:** WARM besitzt **0–13** (endet: Handy im Bild). „Genau das hört jetzt auf." bleibt **COLD-only**.
+- **Naht:** WARM besitzt **0–13** (endet: Handy im Bild, Anruf angekündigt). Hook/Wunde/Turn (HERO-01…04B) **und** HERO-05 bleiben **COLD-only**.
 
 ---
 
