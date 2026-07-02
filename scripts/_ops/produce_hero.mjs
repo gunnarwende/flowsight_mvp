@@ -53,6 +53,19 @@ const ANLIEGEN = {
 // Voice-Settings für den Call = die alten, guten Lisa-Werte (aus generate_lisa_tts.mjs), NICHT die
 // flachen eleven.mjs-Defaults (style 0.0 = robotisch). style 0.1 gibt Wärme/Betonung.
 const CALL_VOICE_SETTINGS = { stability: 0.55, similarity: 0.8, style: 0.1, speakerBoost: true };
+
+// Dynamische Pausen NACH jedem Turn (ms) — aus dem Gesprächssinn, NICHT gerastert.
+// Ein starres Gap (egal ob 150 oder 350) klingt „zack-zack". Frage→Antwort & „verstehen"-
+// Beats bekommen mehr Luft, eine kurze Verabschiedung weniger. So trägt der Fluss.
+const CALL_GAPS_MS = {
+  lisa_greeting: 550,        // Brunner nimmt den Gruß auf, dann antwortet er
+  brunner_anliegen: 650,     // Lisa registriert das Anliegen (warmer Beat)
+  lisa_annahme: 550,         // Lisa „öffnet den Fall", bevor sie nach der Adresse fragt
+  lisa_adresse_frage: 700,   // Brunner überlegt/nennt die Adresse — menschlichster Beat
+  brunner_adresse: 600,      // Lisa notiert, bestätigt
+  lisa_abschluss: 450,       // knappe, natürliche Verabschiedung
+  brunner_ende: 0,
+};
 function heroCallLines() {
   const anliegen = ANLIEGEN[GEWERK] || ANLIEGEN.waerme;
   return [
@@ -115,8 +128,15 @@ async function phaseCall() {
   }
 
   const rawCall = path.join(OUT_DIR, `hero_call_${GEWERK}_raw.wav`);
-  // 150ms war maschinengewehr-eng → ~350ms = natürliches Telefon-Turn-Taking (jeder Turn = Sprecherwechsel).
-  await concatWavs(segWavs, rawCall, { gapMs: 350 });
+  // Dynamische Turn-Gaps (aus CALL_GAPS_MS) statt starrem Raster: pro Turn eine eigene Stille
+  // einfügen, dann ohne weiteres Gap zusammensetzen. So ungleich wie ein echtes Telefonat.
+  const parts = [];
+  for (let i = 0; i < segWavs.length; i++) {
+    parts.push(segWavs[i]);
+    const gapMs = i < segWavs.length - 1 ? (CALL_GAPS_MS[lines[i].id] ?? 500) : 0;
+    if (gapMs > 0) parts.push(await silence(gapMs / 1000, path.join(OUT_DIR, `_gap_${i}_${gapMs}.wav`)));
+  }
+  await concatWavs(parts, rawCall, { gapMs: 0 });
   const finalCall = path.join(OUT_DIR, `hero_call_${GEWERK}.wav`);
   await loudnormTwoPass(rawCall, finalCall, { I: -16, TP: -1, LRA: 11, sampleRate: 48000 });
 
