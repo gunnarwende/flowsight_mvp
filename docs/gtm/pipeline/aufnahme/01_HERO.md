@@ -66,7 +66,10 @@
 > *Ablauf:* einmal Klingeln → dieser Anruf (Lisa + Herr Brunner) → **„Anruf beendet"** → ~1 Sek still → **dann deine VO** (HERO-06/07) über den Dashboard-Screen.
 
 - 🤖 **LISA:** „Guten Tag, hier ist Lisa, die digitale Assistentin von **[Betrieb]** — was kann ich für Sie tun?"
-- 🤖 **HERR BRUNNER** *(Wärme-Variante):* „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein." *(Sanitär-Variante: „…jemanden für ein neues Bad, und es eilt ein bisschen.")*
+  *(`[Betrieb]` = Firmenname pro Kunde — die einzige variable Stelle in Lisas Zeilen.)*
+- 🤖 **HERR BRUNNER** — *je nach Gewerk **eine** der beiden Varianten (der **einzige** wechselnde Satz im Anruf):*
+  - 🔥 **Wärme / Heizung / Gebäudetechnik:** „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein."
+  - 🚿 **Sanitär:** „Hallo, hier ist Herr Brunner. Ich bräuchte jemanden für ein neues Bad, und es eilt ein bisschen."
 - 🤖 **LISA:** „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf."
 - 🤖 **LISA:** „Herr Brunner, wie lautet Ihre Adresse?" — 🤖 **BRUNNER:** „Bahnhofstrasse 14, 8500 Frauenfeld."
 - 🤖 **LISA:** „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!"
