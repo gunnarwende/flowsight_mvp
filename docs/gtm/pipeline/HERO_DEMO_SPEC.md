@@ -75,7 +75,7 @@ Ab 57 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drü
 |---|---|---|---|---|
 | 57–66 | HERO-08/09 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
 | 66–78 | HERO-10/11/12 | DU | **DU** | „Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie." |
-| 78–86 | HERO-13 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
+| 78–86 | HERO-13 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
 | 86–~94 | HERO-14 | DU, Blick hält | **DU** | „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." |
 | ~94–96 | — | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
 

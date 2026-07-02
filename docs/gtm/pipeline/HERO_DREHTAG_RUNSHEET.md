@@ -53,7 +53,7 @@
 ### 👑 DIE KRONE — Schluss / Bookend (57–90, Gesicht, 4 Beats = EINE Bewegung)
 1. (57–66) „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
 2. (66–78) „Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie." — *Lisa-als-Mitarbeiterin; endet auf dem Risiko-Satz → führt in Beat 3.*
-3. (78–86) ⭐ **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." — *langsamer, leiser, persönlich. Du musst es MEINEN.*
+3. (78–86) ⭐ **[deutliche Pause davor]** „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." — *langsamer, leiser, persönlich. Du musst es MEINEN.*
 4. (86–94) „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." — **der Bogen zu Frage ①**; am „—" kurz halten, „Keinen." hart & einzeln. **Letztes Wort, am langsamsten, Blick hält danach.** Stille kommen lassen.
 🎯 **Beat 3 ist heilig** — der ganze Verkauf hängt daran, dass dieser Satz echt ist. Genug Takes bis er sitzt.
 

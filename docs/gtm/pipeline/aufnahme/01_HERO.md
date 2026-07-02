@@ -29,11 +29,16 @@
 > „Ein vollständiger Auftrag. Angenommen, während Sie auf der Baustelle oder in einem Kundengespräch waren.
 > Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten."
 
-## 🟨 SEGMENT 3 — Schluss / Bookend  *(Gesicht zurück, bildfüllend — 4 Beats als EINE Bewegung)*
-> „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort.
-> Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie.
-> Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben.
-> Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."
+## 🟨 SEGMENT 3 — Schluss / Bookend  *(Gesicht zurück, bildfüllend — 4 Beats, EINE Bewegung; 2 markierte Pausen ⏸)*
+
+**① Das Angebot:**
+> „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort. Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie."
+
+**⏸ ② kleine Pause — jetzt wird's persönlich:**
+> „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben."
+
+**⏸ ③ kleine Pause — das Versprechen:**
+> „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."
 > → *[Knoten-Reveal, still]*
 
 ---
@@ -103,7 +108,7 @@
 **HERO-12** — „Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie."
 → Die Absicherung. „binden Sie sich an nichts" nimmt die Verpflichtungs-Angst; die zwei Beweise ruhig aufzählen; **„Das Risiko trage ich, nicht Sie"** zum Schluss, ruhige Gewissheit (keine Bravour) — führt direkt in Beat 3 („**Ich** hab das gebaut…").
 
-**HERO-13** ⭐ — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben."
+**HERO-13** ⭐ — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert, ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben."
 → **Deutliche Pause davor.** Langsamer, leiser, persönlich. Der heilige Satz. **Du musst es MEINEN, nicht sagen.** So viele Takes wie nötig, bis er echt ist. „Genau wie Sie's bis eben nicht gemerkt haben." ganz ruhig, **kein Vorwurf** — eine geteilte Wahrheit, die er selbst nickt.
 
 **HERO-14** — „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."
