@@ -706,7 +706,7 @@
 
   <div class="call-contact">
     <div class="name" id="call-name">Stark Haustechnik GmbH</div>
-    <div class="location">Zürich</div>
+    <div class="location" id="call-location">Zürich</div>
   </div>
 
   <div class="call-actions">
@@ -871,6 +871,9 @@ const CONFIG = {
   datum: params.get("datum") || "Sonntag, 20. April",
   anrufDauer: parseInt(params.get("anruf_dauer") || "191"),
   initial: params.get("initial") || "S",
+  // Ort des angerufenen Betriebs (Skalierung: aus tenant_config abgeleitet, NICHT hardcoded).
+  // Leer → Zeile ausgeblendet (neutraler Fallback statt falschem "Zürich" für alle).
+  ort: params.get("ort") || "",
   brandColor: params.get("brand_color") || "#003478",
   // Akku-Stand: T2=86 (frischer Akku, früher Zeitpunkt), T4=71 (später, wenn Handy
   // als Proof reinkommt). Default 71 = T4. T2-Loader (produce_screenflow) übergibt 86.
@@ -908,6 +911,9 @@ function applyConfig() {
 
   // Call
   document.getElementById("call-name").textContent = CONFIG.firma;
+  // Ort: aus Config setzen, sonst Zeile ausblenden (kein hardcoded "Zürich" für alle)
+  const callLoc = document.getElementById("call-location");
+  if (callLoc) { callLoc.textContent = CONFIG.ort; callLoc.style.display = CONFIG.ort ? "" : "none"; }
 
   // Call ended
   document.getElementById("ended-name").textContent = CONFIG.firma;
