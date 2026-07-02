@@ -31,7 +31,7 @@
 
 ## 🟨 SEGMENT 3 — Schluss / Bookend  *(Gesicht zurück, bildfüllend — 4 Beats als EINE Bewegung)*
 > „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort.
-> Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie.
+> Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie.
 > Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben.
 > Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen."
 > → *[Knoten-Reveal, still]*
@@ -92,14 +92,16 @@
 **HERO-09** — „Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort."
 → Ruhig ergänzend. „am selben Ort" als beruhigende Landung.
 
-**HERO-10** — „Kein IT-Projekt — Sie steuern alles selbst."
-→ Mauer runter, entlastend. „Sie steuern alles selbst" mit leiser Selbstverständlichkeit.
+> **Beat 2 = eine fließende Performance** (die 3 IDs sind die Unter-Beats: Reframe/Setup → Wert → Absicherung).
 
-**HERO-11** — „Monatlich kündbar."
-→ Knapp, klar, keine Angst. Ein Fakt, kein Verkaufsargument.
+**HERO-10** — „Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam."
+→ Mauer runter, entlastend. Nicht „Software", sondern eine **Kraft, die man einarbeitet**. „gemeinsam" warm (du bist dabei). Ehrlich zur Stunde — **kein** „kein Aufwand".
 
-**HERO-12** — „Das Risiko trage ich, nicht Sie."
-→ Ruhige Gewissheit, keine Bravour. Kleine Pause davor. Du meinst es.
+**HERO-11** — „Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden."
+→ Der Wert-Hammer, ruhig-stolz. Darf leicht **dramatisieren**. „ohne je krank zu werden" = der Kontrast zur echten Kraft. „verpasst keinen Anruf" schließt den Hook-Kreis („keiner ist rangegangen").
+
+**HERO-12** — „Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie."
+→ Die Absicherung. „binden Sie sich an nichts" nimmt die Verpflichtungs-Angst; die zwei Beweise ruhig aufzählen; **„Das Risiko trage ich, nicht Sie"** zum Schluss, ruhige Gewissheit (keine Bravour) — führt direkt in Beat 3 („**Ich** hab das gebaut…").
 
 **HERO-13** ⭐ — „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben."
 → **Deutliche Pause davor.** Langsamer, leiser, persönlich. Der heilige Satz. **Du musst es MEINEN, nicht sagen.** So viele Takes wie nötig, bis er echt ist. „Genau wie Sie's bis eben nicht gemerkt haben." ganz ruhig, **kein Vorwurf** — eine geteilte Wahrheit, die er selbst nickt.

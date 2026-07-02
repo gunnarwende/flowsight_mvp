@@ -1,6 +1,6 @@
 # Hero-Demo — Produktions-Spec (Beweis-Seite neu, Stern 3)
 
-> **STATUS: COLD-HOOK NEU GELOCKT (Stand 2026-07-02) · KNOTEN-SET ①–④ GELOCKT.** COLD 0–~92
+> **STATUS: COLD-HOOK NEU GELOCKT (Stand 2026-07-02) · KNOTEN-SET ①–④ GELOCKT.** COLD 0–~96
 > (Hook → Bogen-Schluss + Knoten-Reveal): Hook menschlich neugefasst (aus Founder-Stimme, „Sie nicht." raus),
 > Schluss endet jetzt mit dem **Bogen zurück zu Frage ①**. WARM-Kopf komplett gelockt (W1–W3, W3 macht die
 > Übergabe → kein HERO-05). Offen: Seed-Fall · Volle-Zeile-Render.
@@ -24,7 +24,7 @@ Wert zuerst (die Seite IST das Geschenk) — aber **ruhig, respektvoll, kein Dr�
 Live-Call-Lessons: Druck kostet den Abschluss).
 
 ## Kamera (gelockt): „Bookend"
-Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwischen
+Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–96)**. Dazwischen
 **führt der Screen**, deine **Stimme (VO)** drüber. Du nimmst **nur Gesicht + Stimme** auf —
 **keinen Live-Anruf.** Der Anruf (Lisa + Kunde) ist vorproduziertes Audio.
 
@@ -35,7 +35,7 @@ Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwi
 
 ---
 
-## COLD-Strang · Transkript + Screenflow 0–~92 (GELOCKT — Hook neu 2026-07-02)
+## COLD-Strang · Transkript + Screenflow 0–~96 (GELOCKT — Hook neu 2026-07-02)
 
 > **Hook-Neufassung 2026-07-02 (menschlich, aus Founder-Stimme):** „Sie nicht." verworfen (Handwerker
 > versteht die Ellipse nicht). Neuer Bau = Frage ① → selbst-referenzieller Cold-Call-Beweis („grad
@@ -67,17 +67,17 @@ Dein **Gesicht groß** am **Hook (0–17)** und am **Schluss (~57–92)**. Dazwi
 Pflicht** — *ein vollständiges* Klingeln (nicht abgeschnitten), dann nimmt Lisa ab: der Anruf, der im Hook
 („keiner ist rangegangen") ins Leere lief, wird *hier* angenommen — **derselbe Klang, zwei Welten.**
 
-### Schluss 57–~92 (GELOCKT) — Gesicht zurück (Bookend)
+### Schluss 57–~96 (GELOCKT) — Gesicht zurück (Bookend)
 
-Ab 57 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drücker:
+Ab 57 **Gesicht zurück** (bildfüllend, wie am Hook). 4 Beats, ruhig, kein Drücker. *(Beat 2 neu 2026-07-02: Lisa-als-Mitarbeiterin; Zeiten provisorisch, final gegen Master.)*
 
 | Zeit | ID | Bild | Sprecher | Wortlaut |
 |---|---|---|---|---|
 | 57–66 | HERO-08/09 | DU, bildfüllend | **DU** | „Das ist Ihr echtes System — auf Ihren Namen. Und nicht nur Anrufe: Auch was über Ihre Website oder per E-Mail reinkommt, landet hier, am selben Ort." |
-| 66–74 | HERO-10/11/12 | DU | **DU** | „Kein IT-Projekt — Sie steuern alles selbst. Monatlich kündbar. Das Risiko trage ich, nicht Sie." |
-| 74–82 | HERO-13 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
-| 82–~90 | HERO-14 | DU, Blick hält | **DU** | „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." |
-| ~90–92 | — | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
+| 66–78 | HERO-10/11/12 | DU | **DU** | „Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam. Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden. Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie." |
+| 78–86 | HERO-13 | DU (ruhiger, persönlich) | **DU** | „Ich hab das gebaut, weil ich gesehen hab, wie ein guter Betrieb Aufträge verliert — ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." |
+| 86–~94 | HERO-14 | DU, Blick hält | **DU** | „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." |
+| ~94–96 | — | **Knoten-Reveal** (s. u.) — Karten gleiten unter den Hero, dein Gesicht hält | — | *— still, Versprechen wirkt nach —* |
 
 **Regie Schluss:** Die vier Beats sind **eine Bewegung** — *echt+alle-Kanäle → einfach+risikofrei →
 das Warum (Wunde) → der Bogen zurück zu Frage ①*. Beat 4 ist das **letzte gesprochene Wort** und

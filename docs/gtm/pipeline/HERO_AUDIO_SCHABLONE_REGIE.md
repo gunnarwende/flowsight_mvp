@@ -33,9 +33,9 @@
 | 7 | **HERO-07** „Eingegangen, erfasst, schon bei Ihnen. Bevor Sie überhaupt davon wussten." | drei Beats leicht getaktet, „…davon wussten" weicher | **dynamisch** ↑ | **1,5s** | **eigenes Snippet** (getrennt von 06 → Pause dazwischen frei setzbar); danach Atem für die Rückkehr (Bookend) |
 | 8 | **HERO-08** „Das ist Ihr echtes System — auf Ihren Namen." | Schluss beginnt: geerdet, warm | **1,2s** | 0,3s | Bookend-Rückkehr; betone „Ihr"/„auf Ihren Namen" |
 | 9 | **HERO-09** „Und nicht nur Anrufe: … am selben Ort." | ruhig ergänzend | 0,3s | **0,5s** | ein Gedanke mit 08 (fließend) |
-| 10 | **HERO-10** „Kein IT-Projekt — Sie steuern alles selbst." | Mauer runter | 0,5s | 0,35s | fließend (eine Bewegung) |
-| 11 | **HERO-11** „Monatlich kündbar." | knapp, klar, ein Fakt | 0,35s | 0,4s | keine Angst |
-| 12 | **HERO-12** „Das Risiko trage ich, nicht Sie." | ruhige Gewissheit | **0,5s** | **1,5s** ⭐ | kleine Pause davor; danach die **heilige** Pause |
+| 10 | **HERO-10** „Kein IT-Projekt. Lisa ist wie eine neue Mitarbeiterin. Die arbeiten Sie einmal ein, eine knappe Stunde, gemeinsam." | Mauer runter, entlastend; „gemeinsam" warm | 0,5s | 0,4s | Reframe Software→Kraft; ehrlich zur Stunde |
+| 11 | **HERO-11** „Dann verpasst sie keinen Anruf mehr, Tag und Nacht, ohne je krank zu werden." | Wert-Hammer, ruhig-stolz, darf dramatisieren | 0,4s | 0,4s | Kontrast zur echten Kraft; schließt Hook-Kreis |
+| 12 | **HERO-12** „Und anders als bei einer echten Mitarbeiterin binden Sie sich an nichts: monatlich kündbar, und Sie zahlen erst, wenn's für Sie läuft. Das Risiko trage ich, nicht Sie." | Absicherung; „Das Risiko trage ich" ruhige Gewissheit | 0,5s | **1,5s** ⭐ | Brücke nimmt Verpflichtungs-Angst; danach die **heilige** Pause (vor Beat 3) |
 | 13 | ⭐ **HERO-13** „Ich hab das gebaut, weil ich gesehen hab, … ohne es überhaupt zu merken. Genau wie Sie's bis eben nicht gemerkt haben." | **langsamer, leiser, persönlich** — der Lackmustest | **1,5s** (deutlich) | **1,0s** | NICHTS drängen; volle Wirkung |
 | 14 | **HERO-14** „Wie viele Aufträge Sie ab jetzt noch verlieren? — Keinen. Und Sie sehen jeden einzelnen." | letztes Wort, **am langsamsten**; am „—" kurz halten, „Keinen." hart & einzeln | 1,0s | **2,0s** Stille | *neuer Bogen-Schluss*; Ende NICHT abschneiden; ausklingen lassen |
 
