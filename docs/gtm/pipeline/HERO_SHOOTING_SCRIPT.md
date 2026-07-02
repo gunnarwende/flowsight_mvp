@@ -29,7 +29,7 @@ sagen.** Beat 3 des Hero-Schlusses ist der Lackmustest: klingt er echt, trägt d
 - 🤖 BRUNNER *(Wärme-Variante)*: „Hallo, hier ist Herr Brunner. Wir möchten auf eine Wärmepumpe umstellen, und holen grad Offerten ein." *(Sanitär-Variante: „…jemanden für ein neues Bad, und es eilt ein bisschen.")*
 - 🤖 LISA: „Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf."
 - 🤖 LISA/BRUNNER: „Herr Brunner, wie lautet Ihre Adresse?" — „Bahnhofstrasse 14, 8500 Frauenfeld."
-- 🤖 LISA: „Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!"
+- 🤖 LISA: „Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören."
 - 🤖 BRUNNER: „Danke, auf Wiederhören." → **Anruf beendet** *(45.5–46.5 kurze Stille)*
 
 ## Es ist einfach da 46.5–57 · 👤 DU (VO), 🤖 Dashboard-Interaktion

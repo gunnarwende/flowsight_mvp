@@ -57,7 +57,7 @@ function heroCallLines() {
     { id: "lisa_annahme",      role: "lisa",    voice: "ela",          text: "Sehr gerne, da sind Sie genau richtig. Ich nehme das gleich auf." },
     { id: "lisa_adresse_frage",role: "lisa",    voice: "ela",          text: "Herr Brunner, wie lautet Ihre Adresse?" },
     { id: "brunner_adresse",   role: "brunner", voice: BRUNNER_VOICE,  text: "Bahnhofstrasse 14, 8500 Frauenfeld." },
-    { id: "lisa_abschluss",    role: "lisa",    voice: "ela",          text: "Alles aufgenommen, Herr Brunner — ich gebe das direkt an unseren Techniker weiter. Sie erhalten gleich eine SMS. Auf Wiederhören!" },
+    { id: "lisa_abschluss",    role: "lisa",    voice: "ela",          text: "Alles aufgenommen, Herr Brunner. Sie bekommen gleich eine SMS zur Bestätigung, und der Chef meldet sich dann persönlich bei Ihnen. Auf Wiederhören." },
     { id: "brunner_ende",      role: "brunner", voice: BRUNNER_VOICE,  text: "Danke, auf Wiederhören." },
   ];
 }
@@ -99,7 +99,9 @@ async function phaseCall() {
     const mp3 = path.join(OUT_DIR, `seg_${l.id}.mp3`);
     const wav = path.join(OUT_DIR, `seg_${l.id}.wav`);
     console.log(`[hero] TTS ${l.id} (${l.voice}) …`);
-    await tts({ text: l.text, voice: l.voice, outFile: mp3 });
+    // Voice-Settings = die alten, guten Lisa-Werte (aus generate_lisa_tts.mjs) — NICHT die flachen
+    // eleven.mjs-Defaults (style 0.0), die klangen robotisch. style 0.1 gibt Wärme/Betonung zurück.
+    await tts({ text: l.text, voice: l.voice, outFile: mp3, stability: 0.55, similarity: 0.8, style: 0.1, speakerBoost: true });
     await mp3ToWav48kMono(mp3, wav, { applyLoudnorm: false });
     const info = await ffprobeInfo(wav);
     seq.push({ id: l.id, role: l.role, voice: l.voice, text: l.text, dur_s: Number(info.duration) });
@@ -107,7 +109,8 @@ async function phaseCall() {
   }
 
   const rawCall = path.join(OUT_DIR, `hero_call_${GEWERK}_raw.wav`);
-  await concatWavs(segWavs, rawCall, { gapMs: 150 });
+  // 150ms war maschinengewehr-eng → ~350ms = natürliches Telefon-Turn-Taking (jeder Turn = Sprecherwechsel).
+  await concatWavs(segWavs, rawCall, { gapMs: 350 });
   const finalCall = path.join(OUT_DIR, `hero_call_${GEWERK}.wav`);
   await loudnormTwoPass(rawCall, finalCall, { I: -16, TP: -1, LRA: 11, sampleRate: 48000 });
 
